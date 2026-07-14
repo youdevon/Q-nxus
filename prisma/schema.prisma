@@ -1,0 +1,326 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["core", "hr", "payroll", "notifications", "audit"]
+}
+
+enum ModuleHealth {
+  OPERATIONAL
+  DEGRADED
+  UNAVAILABLE
+
+  @@schema("core")
+}
+
+enum EmploymentStatus {
+  ACTIVE
+  ON_LEAVE
+  SUSPENDED
+  TERMINATED
+  RETIRED
+  INACTIVE
+
+  @@schema("hr")
+}
+
+enum EmploymentType {
+  PERMANENT
+  CONTRACT
+  TEMPORARY
+  PART_TIME
+  INTERN
+  CONSULTANT
+
+  @@schema("hr")
+}
+
+enum NotificationSeverity {
+  SUCCESS
+  INFORMATION
+  WARNING
+  ERROR
+  CRITICAL
+
+  @@schema("notifications")
+}
+
+enum NotificationReadStatus {
+  UNREAD
+  READ
+  DISMISSED
+
+  @@schema("notifications")
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  shortName String?
+  legalName String?
+  email     String?
+  phone     String?
+  website   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  departments Department[]
+  users       User[]
+  employees   Employee[]
+
+  @@map("organizations")
+  @@schema("core")
+}
+
+model ApplicationSetting {
+  id               String   @id @default(cuid())
+  internalCodename String   @default("Q-NXUS")
+  displayName      String   @default("Q-NXUS")
+  shortName        String   @default("Q-NXUS")
+  organizationName String?
+  logoUrl          String?
+  faviconUrl       String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("application_settings")
+  @@schema("core")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  organizationId String
+  email          String    @unique
+  firstName      String
+  lastName       String
+  passwordHash   String?
+  isActive       Boolean   @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization  Organization            @relation(fields: [organizationId], references: [id])
+  roles         UserRole[]
+  notifications NotificationRecipient[]
+  auditEvents   AuditEvent[]
+
+  @@index([organizationId])
+  @@map("users")
+  @@schema("core")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isSystem    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users UserRole[]
+
+  @@map("roles")
+  @@schema("core")
+}
+
+model UserRole {
+  userId     String
+  roleId     String
+  assignedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+  @@schema("core")
+}
+
+model ModuleStatus {
+  id         String       @id @default(cuid())
+  moduleKey  String       @unique
+  moduleName String
+  health     ModuleHealth @default(OPERATIONAL)
+  message    String?
+  checkedAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@map("module_statuses")
+  @@schema("core")
+}
+
+model Department {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  code           String?
+  description    String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  positions    Position[]
+  employees    Employee[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
+  @@map("departments")
+  @@schema("hr")
+}
+
+model Position {
+  id           String   @id @default(cuid())
+  departmentId String
+  title        String
+  code         String?
+  description  String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  department Department @relation(fields: [departmentId], references: [id])
+  employees  Employee[]
+
+  @@unique([departmentId, title])
+  @@index([departmentId])
+  @@map("positions")
+  @@schema("hr")
+}
+
+model Employee {
+  id               String           @id @default(cuid())
+  organizationId   String
+  departmentId     String?
+  positionId       String?
+  employeeNumber   String
+  firstName        String
+  middleName       String?
+  lastName         String
+  preferredName    String?
+  workEmail        String?
+  personalEmail    String?
+  phone            String?
+  employmentStatus EmploymentStatus @default(ACTIVE)
+  employmentType   EmploymentType
+  hireDate         DateTime
+  terminationDate  DateTime?
+  isArchived       Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  organization   Organization         @relation(fields: [organizationId], references: [id])
+  department     Department?          @relation(fields: [departmentId], references: [id])
+  position       Position?            @relation(fields: [positionId], references: [id])
+  contracts      EmploymentContract[]
+  payrollProfile PayrollProfile?
+
+  @@unique([organizationId, employeeNumber])
+  @@index([organizationId])
+  @@index([departmentId])
+  @@index([positionId])
+  @@map("employees")
+  @@schema("hr")
+}
+
+model EmploymentContract {
+  id         String    @id @default(cuid())
+  employeeId String
+  startDate  DateTime
+  endDate    DateTime?
+  jobTitle   String
+  baseSalary Decimal   @db.Decimal(14, 2)
+  currency   String    @default("TTD")
+  isCurrent  Boolean   @default(true)
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+  @@map("employment_contracts")
+  @@schema("hr")
+}
+
+model PayrollProfile {
+  id             String   @id @default(cuid())
+  employeeId     String   @unique
+  paymentMethod  String?
+  bankName       String?
+  bankAccountNo  String?
+  taxIdentifier  String?
+  isPayrollReady Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@map("payroll_profiles")
+  @@schema("payroll")
+}
+
+model Notification {
+  id          String               @id @default(cuid())
+  title       String
+  message     String
+  severity    NotificationSeverity
+  moduleKey   String
+  actionUrl   String?
+  relatedType String?
+  relatedId   String?
+  expiresAt   DateTime?
+  createdAt   DateTime             @default(now())
+
+  recipients NotificationRecipient[]
+
+  @@index([moduleKey])
+  @@index([createdAt])
+  @@map("notifications")
+  @@schema("notifications")
+}
+
+model NotificationRecipient {
+  notificationId String
+  userId         String
+  status         NotificationReadStatus @default(UNREAD)
+  readAt         DateTime?
+  dismissedAt    DateTime?
+
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([notificationId, userId])
+  @@index([userId, status])
+  @@map("notification_recipients")
+  @@schema("notifications")
+}
+
+model AuditEvent {
+  id            String   @id @default(cuid())
+  userId        String?
+  moduleKey     String
+  action        String
+  entityType    String
+  entityId      String?
+  description   String?
+  oldValues     Json?
+  newValues     Json?
+  ipAddress     String?
+  userAgent     String?
+  correlationId String?
+  createdAt     DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([moduleKey])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_events")
+  @@schema("audit")
+}
