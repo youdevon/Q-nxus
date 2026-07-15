@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Building2, KeyRound, MapPin, Network } from "lucide-react"
+import { Building2, KeyRound, MapPin, Network, SlidersHorizontal } from "lucide-react"
 
 const items = [
   {
@@ -24,6 +24,11 @@ const items = [
     title: "Users and Roles",
     href: "/administration/access",
     icon: KeyRound,
+  },
+  {
+    title: "Feature Controls",
+    href: "/administration/features",
+    icon: SlidersHorizontal,
   },
 ]
 
