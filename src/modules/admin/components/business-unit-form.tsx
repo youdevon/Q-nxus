@@ -102,7 +102,7 @@ export function BusinessUnitForm({
           <div className="flex gap-2">
             <Button
               variant="outline"
-              render={<Link href="/administration/business-units" />}
+              render={<Link href={businessUnit ? `/administration/business-units/${businessUnit.id}` : "/administration/business-units"} />}
             >
               <ArrowLeft />
               Cancel
