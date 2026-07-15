@@ -233,7 +233,12 @@ export function AccessDirectory({
                 {users.map((user) => (
                   <tr key={user.id} className="hover:bg-muted/30">
                     <td className="px-3 py-3 font-medium">
-                      {user.firstName} {user.lastName}
+                      <Link
+                        href={`/administration/access/users/${user.id}`}
+                        className="hover:underline"
+                      >
+                        {user.firstName} {user.lastName}
+                      </Link>
                     </td>
 
                     <td className="px-3 py-3 text-muted-foreground">
