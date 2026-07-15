@@ -1,7 +1,8 @@
 "use client"
 
 import { useActionState, useEffect } from "react"
-import { Save, SlidersHorizontal } from "lucide-react"
+import Link from "next/link"
+import { ArrowLeft, Save, SlidersHorizontal } from "lucide-react"
 import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
@@ -72,10 +73,20 @@ export function FeatureControlsForm({
         title="Feature Controls"
         description="Enable or disable Organization features and manage their operational status and effective period."
         actions={
-          <Button type="submit" disabled={isPending}>
-            <Save />
-            {isPending ? "Saving…" : "Save feature controls"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              render={<Link href="/administration/features" />}
+            >
+              <ArrowLeft />
+              Cancel
+            </Button>
+
+            <Button type="submit" disabled={isPending}>
+              <Save />
+              {isPending ? "Saving…" : "Save feature controls"}
+            </Button>
+          </div>
         }
       />
 

@@ -1,7 +1,8 @@
 "use client"
 
 import { useActionState, useEffect } from "react"
-import { Hash, RotateCcw, Save } from "lucide-react"
+import Link from "next/link"
+import { ArrowLeft, Hash, RotateCcw, Save } from "lucide-react"
 import { toast } from "sonner"
 
 import { Badge } from "@/components/ui/badge"
@@ -73,10 +74,22 @@ export function NumberingSequencesForm({
         title="Numbering Sequences"
         description="Manage prefixes, suffixes, number lengths and reset rules for system-generated references."
         actions={
-          <Button type="submit" disabled={isPending}>
-            <Save />
-            {isPending ? "Saving…" : "Save sequences"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              render={
+                <Link href="/administration/numbering-sequences" />
+              }
+            >
+              <ArrowLeft />
+              Cancel
+            </Button>
+
+            <Button type="submit" disabled={isPending}>
+              <Save />
+              {isPending ? "Saving…" : "Save sequences"}
+            </Button>
+          </div>
         }
       />
 
