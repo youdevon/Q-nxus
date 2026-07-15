@@ -2,7 +2,12 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Network, Users } from "lucide-react"
+import {
+  CalendarDays,
+  Network,
+  PanelsTopLeft,
+  Users,
+} from "lucide-react"
 
 const items = [
   {
@@ -14,6 +19,16 @@ const items = [
     title: "Structure",
     href: "/people/structure",
     icon: Network,
+  },
+  {
+    title: "Organization Chart",
+    href: "/people/structure/chart",
+    icon: PanelsTopLeft,
+  },
+  {
+    title: "Leave",
+    href: "/people/leave/types",
+    icon: CalendarDays,
   },
 ]
 
@@ -31,7 +46,9 @@ export function PeopleNav() {
           item.href === "/people"
             ? pathname === "/people" ||
               pathname.startsWith("/people/employees")
-            : pathname.startsWith(item.href)
+            : item.href === "/people/structure"
+              ? pathname === "/people/structure"
+              : pathname.startsWith(item.href)
 
         return (
           <Link

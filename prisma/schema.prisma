@@ -77,6 +77,21 @@ enum SequenceResetFrequency {
   @@schema("core")
 }
 
+enum EmployeeAssignmentType {
+  INITIAL_APPOINTMENT
+  TRANSFER
+  PROMOTION
+  DEMOTION
+  ACTING_APPOINTMENT
+  TEMPORARY_ASSIGNMENT
+  SECONDMENT
+  REASSIGNMENT
+  RETURN_TO_SUBSTANTIVE
+  OTHER
+
+  @@schema("hr")
+}
+
 enum EmploymentStatus {
   ACTIVE
   ON_LEAVE
@@ -84,6 +99,152 @@ enum EmploymentStatus {
   TERMINATED
   RETIRED
   INACTIVE
+
+  @@schema("hr")
+}
+
+enum JobDescriptionStatus {
+  DRAFT
+  ACTIVE
+  RETIRED
+  ARCHIVED
+
+  @@schema("hr")
+}
+
+enum JobCriterionType {
+  DUTY
+  RESPONSIBILITY
+  PERFORMANCE_OBJECTIVE
+  KEY_PERFORMANCE_INDICATOR
+  TECHNICAL_COMPETENCY
+  BEHAVIOURAL_COMPETENCY
+  QUALIFICATION
+  EXPERIENCE
+  OTHER
+
+  @@schema("hr")
+}
+
+enum AllowanceFrequency {
+  MONTHLY
+  WEEKLY
+  BIWEEKLY
+  PER_PAY_PERIOD
+  ANNUAL
+  ONE_TIME
+
+  @@schema("hr")
+}
+
+enum EmploymentContractStatus {
+  DRAFT
+  ACTIVE
+  EXPIRED
+  SUPERSEDED
+  TERMINATED
+  CANCELLED
+
+  @@schema("hr")
+}
+
+enum EmploymentContractType {
+  PERMANENT
+  FIXED_TERM
+  TEMPORARY
+  PART_TIME
+  INTERNSHIP
+  CONSULTANCY
+  ACTING
+  SECONDMENT
+  OTHER
+
+  @@schema("hr")
+}
+
+enum ContractChangeType {
+  INITIAL
+  RENEWAL
+  EXTENSION
+  AMENDMENT
+  SALARY_ADJUSTMENT
+  POSITION_CHANGE
+  TERMINATION
+  OTHER
+
+  @@schema("hr")
+}
+
+enum LeaveUnit {
+  DAYS
+  HOURS
+
+  @@schema("hr")
+}
+
+enum LeaveAccrualMethod {
+  ANNUAL_GRANT
+  MONTHLY
+  PER_PAY_PERIOD
+  MANUAL
+  NONE
+
+  @@schema("hr")
+}
+
+enum LeaveBalanceTransactionType {
+  OPENING_BALANCE
+  ENTITLEMENT
+  ACCRUAL
+  CARRY_FORWARD
+  REQUEST_RESERVED
+  REQUEST_RELEASED
+  LEAVE_TAKEN
+  ADJUSTMENT
+  EXPIRY
+  REVERSAL
+
+  @@schema("hr")
+}
+
+enum LeaveRequestStatus {
+  DRAFT
+  SUBMITTED
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  CANCELLED
+  WITHDRAWN
+
+  @@schema("hr")
+}
+
+enum LeaveApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SKIPPED
+  CANCELLED
+
+  @@schema("hr")
+}
+
+enum PerformanceAppraisalStatus {
+  DRAFT
+  IN_PROGRESS
+  SUBMITTED
+  SUPERVISOR_REVIEWED
+  EMPLOYEE_ACKNOWLEDGED
+  COMPLETED
+  CANCELLED
+
+  @@schema("hr")
+}
+
+enum PerformanceRatingScale {
+  ONE_TO_FIVE
+  ONE_TO_TEN
+  PERCENTAGE
 
   @@schema("hr")
 }
@@ -97,6 +258,25 @@ enum EmploymentType {
   CONSULTANT
 
   @@schema("hr")
+}
+
+enum EmailDeliveryStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  CANCELLED
+
+  @@schema("notifications")
+}
+
+enum EmailPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+
+  @@schema("notifications")
 }
 
 enum NotificationSeverity {
@@ -138,16 +318,20 @@ model Organization {
   updatedAt       DateTime           @updatedAt
   archivedAt      DateTime?
 
-  departments        Department[]
-  users              User[]
-  employees          Employee[]
-  roles              Role[]
-  businessUnits      BusinessUnit[]
-  locations          Location[]
-  referenceDataSets  ReferenceDataSet[]
-  featureControls    FeatureControl[]
-  domainSettings     DomainSetting[]
-  numberingSequences NumberingSequence[]
+  departments         Department[]
+  users               User[]
+  employees           Employee[]
+  roles               Role[]
+  businessUnits       BusinessUnit[]
+  locations           Location[]
+  referenceDataSets   ReferenceDataSet[]
+  featureControls     FeatureControl[]
+  domainSettings      DomainSetting[]
+  numberingSequences  NumberingSequence[]
+  allowanceCategories AllowanceCategory[]
+
+  leaveTypes            LeaveType[]
+  leaveEntitlementRules LeaveEntitlementRule[]
 
   @@index([status])
   @@map("organizations")
@@ -187,10 +371,13 @@ model User {
   updatedAt           DateTime          @updatedAt
   archivedAt          DateTime?
 
-  organization  Organization            @relation(fields: [organizationId], references: [id])
-  roles         UserRole[]
-  notifications NotificationRecipient[]
-  auditEvents   AuditEvent[]
+  organization         Organization            @relation(fields: [organizationId], references: [id])
+  roles                UserRole[]
+  notifications        NotificationRecipient[]
+  auditEvents          AuditEvent[]
+  supervisedAppraisals PerformanceAppraisal[]  @relation("AppraisalSupervisor")
+
+  createdLeaveTransactions LeaveBalanceTransaction[] @relation("LeaveTransactionCreator")
 
   @@index([organizationId])
   @@index([organizationId, status])
@@ -459,9 +646,10 @@ model Department {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  positions    Position[]
-  employees    Employee[]
+  organization        Organization         @relation(fields: [organizationId], references: [id])
+  positions           Position[]
+  employees           Employee[]
+  employeeAssignments EmployeeAssignment[]
 
   @@unique([organizationId, name])
   @@index([organizationId])
@@ -470,20 +658,26 @@ model Department {
 }
 
 model Position {
-  id           String   @id @default(cuid())
-  departmentId String
-  title        String
-  code         String?
-  description  String?
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                  String   @id @default(cuid())
+  departmentId        String
+  reportsToPositionId String?
+  title               String
+  code                String?
+  description         String?
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
-  department Department @relation(fields: [departmentId], references: [id])
-  employees  Employee[]
+  department        Department               @relation(fields: [departmentId], references: [id])
+  reportsToPosition Position?                @relation("PositionHierarchy", fields: [reportsToPositionId], references: [id], onDelete: SetNull)
+  directReports     Position[]               @relation("PositionHierarchy")
+  employees         Employee[]
+  assignments       EmployeeAssignment[]
+  jobDescriptions   PositionJobDescription[]
 
   @@unique([departmentId, title])
   @@index([departmentId])
+  @@index([reportsToPositionId])
   @@map("positions")
   @@schema("hr")
 }
@@ -509,11 +703,16 @@ model Employee {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  organization   Organization         @relation(fields: [organizationId], references: [id])
-  department     Department?          @relation(fields: [departmentId], references: [id])
-  position       Position?            @relation(fields: [positionId], references: [id])
+  organization   Organization           @relation(fields: [organizationId], references: [id])
+  department     Department?            @relation(fields: [departmentId], references: [id])
+  position       Position?              @relation(fields: [positionId], references: [id])
   contracts      EmploymentContract[]
+  assignments    EmployeeAssignment[]
+  appraisals     PerformanceAppraisal[]
   payrollProfile PayrollProfile?
+
+  leaveBalances     EmployeeLeaveBalance[]
+  leaveTransactions LeaveBalanceTransaction[]
 
   @@unique([organizationId, employeeNumber])
   @@index([organizationId])
@@ -523,23 +722,374 @@ model Employee {
   @@schema("hr")
 }
 
-model EmploymentContract {
-  id         String    @id @default(cuid())
-  employeeId String
-  startDate  DateTime
-  endDate    DateTime?
-  jobTitle   String
-  baseSalary Decimal   @db.Decimal(14, 2)
-  currency   String    @default("TTD")
-  isCurrent  Boolean   @default(true)
-  notes      String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+model PositionJobDescription {
+  id                        String               @id @default(cuid())
+  positionId                String
+  versionNumber             Int
+  title                     String
+  summary                   String?
+  positionPurpose           String?
+  reportsTo                 String?
+  supervisoryResponsibility String?
+  qualifications            String?
+  requiredExperience        String?
+  status                    JobDescriptionStatus @default(DRAFT)
+  effectiveFrom             DateTime
+  effectiveUntil            DateTime?
+  isCurrent                 Boolean              @default(false)
+  createdAt                 DateTime             @default(now())
+  updatedAt                 DateTime             @updatedAt
 
-  employee Employee @relation(fields: [employeeId], references: [id])
+  position    Position                  @relation(fields: [positionId], references: [id])
+  criteria    JobDescriptionCriterion[]
+  assignments EmployeeAssignment[]
+  appraisals  PerformanceAppraisal[]
+
+  @@unique([positionId, versionNumber])
+  @@index([positionId])
+  @@index([status])
+  @@index([isCurrent])
+  @@map("position_job_descriptions")
+  @@schema("hr")
+}
+
+model JobDescriptionCriterion {
+  id               String           @id @default(cuid())
+  jobDescriptionId String
+  criterionType    JobCriterionType
+  title            String
+  description      String?
+  measurement      String?
+  weight           Decimal          @default(0) @db.Decimal(5, 2)
+  sortOrder        Int              @default(0)
+  isActive         Boolean          @default(true)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  jobDescription PositionJobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+
+  @@index([jobDescriptionId])
+  @@index([criterionType])
+  @@map("job_description_criteria")
+  @@schema("hr")
+}
+
+model EmployeeAssignment {
+  id               String                 @id @default(cuid())
+  employeeId       String
+  departmentId     String
+  positionId       String?
+  jobDescriptionId String?
+  assignmentType   EmployeeAssignmentType @default(INITIAL_APPOINTMENT)
+  startDate        DateTime
+  endDate          DateTime?
+  isCurrent        Boolean                @default(true)
+  isActing         Boolean                @default(false)
+  referenceNumber  String?
+  reason           String?
+  notes            String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  employee       Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  department     Department              @relation(fields: [departmentId], references: [id])
+  position       Position?               @relation(fields: [positionId], references: [id])
+  jobDescription PositionJobDescription? @relation(fields: [jobDescriptionId], references: [id])
+  appraisals     PerformanceAppraisal[]
 
   @@index([employeeId])
+  @@index([departmentId])
+  @@index([positionId])
+  @@index([jobDescriptionId])
+  @@index([employeeId, isCurrent])
+  @@index([startDate])
+  @@map("employee_assignments")
+  @@schema("hr")
+}
+
+model LeaveType {
+  id                     String    @id @default(cuid())
+  organizationId         String
+  code                   String
+  name                   String
+  description            String?
+  unit                   LeaveUnit @default(DAYS)
+  isPaid                 Boolean   @default(true)
+  requiresBalance        Boolean   @default(true)
+  requiresDocument       Boolean   @default(false)
+  documentRequiredAfter  Decimal?  @db.Decimal(7, 2)
+  minimumNoticeDays      Int       @default(0)
+  maximumConsecutiveDays Decimal?  @db.Decimal(7, 2)
+  allowsHalfDay          Boolean   @default(false)
+  allowsNegativeBalance  Boolean   @default(false)
+  carryForwardAllowed    Boolean   @default(false)
+  carryForwardLimit      Decimal?  @db.Decimal(9, 2)
+  carryForwardExpiryDays Int?
+  colour                 String?
+  sortOrder              Int       @default(0)
+  isSystem               Boolean   @default(false)
+  isActive               Boolean   @default(true)
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  organization     Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  entitlementRules LeaveEntitlementRule[]
+  balances         EmployeeLeaveBalance[]
+  transactions     LeaveBalanceTransaction[]
+
+  @@unique([organizationId, code])
+  @@unique([organizationId, name])
+  @@index([organizationId, isActive])
+  @@index([sortOrder])
+  @@map("leave_types")
+  @@schema("hr")
+}
+
+model LeaveEntitlementRule {
+  id                   String             @id @default(cuid())
+  organizationId       String
+  leaveTypeId          String
+  name                 String
+  employmentType       EmploymentType?
+  minimumServiceMonths Int                @default(0)
+  maximumServiceMonths Int?
+  annualEntitlement    Decimal            @default(0) @db.Decimal(9, 2)
+  accrualMethod        LeaveAccrualMethod @default(ANNUAL_GRANT)
+  accrualAmount        Decimal?           @db.Decimal(9, 4)
+  maximumBalance       Decimal?           @db.Decimal(9, 2)
+  prorateFirstYear     Boolean            @default(true)
+  prorateFinalYear     Boolean            @default(true)
+  effectiveFrom        DateTime
+  effectiveTo          DateTime?
+  priority             Int                @default(0)
+  isActive             Boolean            @default(true)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  leaveType    LeaveType    @relation(fields: [leaveTypeId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([leaveTypeId])
+  @@index([employmentType])
+  @@index([effectiveFrom, effectiveTo])
+  @@index([priority])
+  @@map("leave_entitlement_rules")
+  @@schema("hr")
+}
+
+model EmployeeLeaveBalance {
+  id               String    @id @default(cuid())
+  employeeId       String
+  leaveTypeId      String
+  leaveYear        Int
+  openingBalance   Decimal   @default(0) @db.Decimal(9, 2)
+  entitlement      Decimal   @default(0) @db.Decimal(9, 2)
+  accrued          Decimal   @default(0) @db.Decimal(9, 2)
+  carriedForward   Decimal   @default(0) @db.Decimal(9, 2)
+  adjustments      Decimal   @default(0) @db.Decimal(9, 2)
+  reserved         Decimal   @default(0) @db.Decimal(9, 2)
+  taken            Decimal   @default(0) @db.Decimal(9, 2)
+  expired          Decimal   @default(0) @db.Decimal(9, 2)
+  availableBalance Decimal   @default(0) @db.Decimal(9, 2)
+  lastCalculatedAt DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  employee     Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType    LeaveType                 @relation(fields: [leaveTypeId], references: [id])
+  transactions LeaveBalanceTransaction[]
+
+  @@unique([employeeId, leaveTypeId, leaveYear])
+  @@index([employeeId, leaveYear])
+  @@index([leaveTypeId, leaveYear])
+  @@index([availableBalance])
+  @@map("employee_leave_balances")
+  @@schema("hr")
+}
+
+model LeaveBalanceTransaction {
+  id              String                      @id @default(cuid())
+  employeeId      String
+  leaveTypeId     String
+  leaveBalanceId  String?
+  transactionType LeaveBalanceTransactionType
+  quantity        Decimal                     @db.Decimal(9, 2)
+  balanceBefore   Decimal?                    @db.Decimal(9, 2)
+  balanceAfter    Decimal?                    @db.Decimal(9, 2)
+  effectiveDate   DateTime
+  referenceType   String?
+  referenceId     String?
+  description     String
+  createdByUserId String?
+  createdAt       DateTime                    @default(now())
+
+  employee     Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  leaveType    LeaveType             @relation(fields: [leaveTypeId], references: [id])
+  leaveBalance EmployeeLeaveBalance? @relation(fields: [leaveBalanceId], references: [id], onDelete: SetNull)
+  createdBy    User?                 @relation("LeaveTransactionCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@index([employeeId])
+  @@index([leaveTypeId])
+  @@index([leaveBalanceId])
+  @@index([transactionType])
+  @@index([effectiveDate])
+  @@index([referenceType, referenceId])
+  @@index([createdByUserId])
+  @@map("leave_balance_transactions")
+  @@schema("hr")
+}
+
+model PerformanceAppraisal {
+  id                     String                     @id @default(cuid())
+  employeeId             String
+  assignmentId           String?
+  jobDescriptionId       String?
+  supervisorUserId       String?
+  appraisalNumber        String?
+  title                  String
+  periodStart            DateTime
+  periodEnd              DateTime
+  reviewDueDate          DateTime?
+  status                 PerformanceAppraisalStatus @default(DRAFT)
+  ratingScale            PerformanceRatingScale     @default(ONE_TO_FIVE)
+  overallScore           Decimal?                   @db.Decimal(7, 2)
+  maximumScore           Decimal                    @default(5) @db.Decimal(7, 2)
+  employeeComments       String?
+  supervisorComments     String?
+  developmentPlan        String?
+  employeeAcknowledgedAt DateTime?
+  supervisorReviewedAt   DateTime?
+  completedAt            DateTime?
+  createdAt              DateTime                   @default(now())
+  updatedAt              DateTime                   @updatedAt
+
+  employee       Employee                        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  assignment     EmployeeAssignment?             @relation(fields: [assignmentId], references: [id])
+  jobDescription PositionJobDescription?         @relation(fields: [jobDescriptionId], references: [id])
+  supervisor     User?                           @relation("AppraisalSupervisor", fields: [supervisorUserId], references: [id], onDelete: SetNull)
+  criteria       PerformanceAppraisalCriterion[]
+
+  @@unique([employeeId, periodStart, periodEnd])
+  @@index([employeeId])
+  @@index([assignmentId])
+  @@index([jobDescriptionId])
+  @@index([supervisorUserId])
+  @@index([status])
+  @@index([periodStart, periodEnd])
+  @@index([reviewDueDate])
+  @@map("performance_appraisals")
+  @@schema("hr")
+}
+
+model PerformanceAppraisalCriterion {
+  id                 String           @id @default(cuid())
+  appraisalId        String
+  sourceCriterionId  String?
+  criterionType      JobCriterionType
+  title              String
+  description        String?
+  measurement        String?
+  weight             Decimal          @default(0) @db.Decimal(5, 2)
+  sortOrder          Int              @default(0)
+  employeeRating     Decimal?         @db.Decimal(7, 2)
+  supervisorRating   Decimal?         @db.Decimal(7, 2)
+  finalRating        Decimal?         @db.Decimal(7, 2)
+  weightedScore      Decimal?         @db.Decimal(7, 2)
+  employeeComments   String?
+  supervisorComments String?
+  evidence           String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  appraisal PerformanceAppraisal @relation(fields: [appraisalId], references: [id], onDelete: Cascade)
+
+  @@index([appraisalId])
+  @@index([criterionType])
+  @@index([sourceCriterionId])
+  @@map("performance_appraisal_criteria")
+  @@schema("hr")
+}
+
+model EmploymentContract {
+  id                String                   @id @default(cuid())
+  employeeId        String
+  sourceContractId  String?
+  contractNumber    String?
+  contractType      EmploymentContractType
+  changeType        ContractChangeType       @default(INITIAL)
+  status            EmploymentContractStatus @default(ACTIVE)
+  startDate         DateTime
+  endDate           DateTime?
+  jobTitle          String
+  baseSalary        Decimal                  @db.Decimal(14, 2)
+  currency          String                   @default("TTD")
+  gratuityEligible  Boolean                  @default(false)
+  gratuityRate      Decimal?                 @db.Decimal(5, 2)
+  gratuityTaxRate   Decimal?                 @db.Decimal(5, 2)
+  isCurrent         Boolean                  @default(true)
+  signedDate        DateTime?
+  terminationDate   DateTime?
+  terminationReason String?
+  documentReference String?
+  notes             String?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+
+  employee       Employee                      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  sourceContract EmploymentContract?           @relation("ContractHistory", fields: [sourceContractId], references: [id])
+  amendments     EmploymentContract[]          @relation("ContractHistory")
+  allowances     EmploymentContractAllowance[]
+
+  @@index([employeeId])
+  @@index([employeeId, isCurrent])
+  @@index([status])
+  @@index([endDate])
+  @@index([sourceContractId])
   @@map("employment_contracts")
+  @@schema("hr")
+}
+
+model AllowanceCategory {
+  id                        String   @id @default(cuid())
+  organizationId            String
+  code                      String?
+  name                      String
+  description               String?
+  isTaxableDefault          Boolean  @default(true)
+  includedInGratuityDefault Boolean  @default(false)
+  isActive                  Boolean  @default(true)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  organization       Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  contractAllowances EmploymentContractAllowance[]
+
+  @@unique([organizationId, name])
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+  @@map("allowance_categories")
+  @@schema("hr")
+}
+
+model EmploymentContractAllowance {
+  id                 String             @id @default(cuid())
+  contractId         String
+  categoryId         String
+  amount             Decimal            @db.Decimal(14, 2)
+  frequency          AllowanceFrequency @default(MONTHLY)
+  isTaxable          Boolean            @default(true)
+  includedInGratuity Boolean            @default(false)
+  notes              String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  contract EmploymentContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  category AllowanceCategory  @relation(fields: [categoryId], references: [id])
+
+  @@index([contractId])
+  @@index([categoryId])
+  @@map("employment_contract_allowances")
   @@schema("hr")
 }
 
@@ -593,6 +1143,91 @@ model NotificationRecipient {
   @@id([notificationId, userId])
   @@index([userId, status])
   @@map("notification_recipients")
+  @@schema("notifications")
+}
+
+model EmailDelivery {
+  id                  String              @id @default(cuid())
+  notificationId      String?
+  templateKey         String?
+  moduleKey           String?
+  relatedType         String?
+  relatedId           String?
+  recipientUserId     String?
+  recipientEmail      String
+  recipientName       String?
+  subject             String
+  textBody            String?
+  htmlBody            String?
+  priority            EmailPriority       @default(NORMAL)
+  status              EmailDeliveryStatus @default(PENDING)
+  attemptCount        Int                 @default(0)
+  maximumAttempts     Int                 @default(3)
+  nextAttemptAt       DateTime?
+  processingStartedAt DateTime?
+  sentAt              DateTime?
+  failedAt            DateTime?
+  cancelledAt         DateTime?
+  lastError           String?
+  messageId           String?
+  smtpResponse        String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  attempts EmailDeliveryAttempt[]
+
+  @@index([status, nextAttemptAt])
+  @@index([recipientUserId])
+  @@index([recipientEmail])
+  @@index([notificationId])
+  @@index([moduleKey])
+  @@index([relatedType, relatedId])
+  @@index([createdAt])
+  @@map("email_deliveries")
+  @@schema("notifications")
+}
+
+model EmailDeliveryAttempt {
+  id              String              @id @default(cuid())
+  emailDeliveryId String
+  attemptNumber   Int
+  status          EmailDeliveryStatus
+  startedAt       DateTime            @default(now())
+  completedAt     DateTime?
+  errorMessage    String?
+  smtpResponse    String?
+  messageId       String?
+  createdAt       DateTime            @default(now())
+
+  emailDelivery EmailDelivery @relation(fields: [emailDeliveryId], references: [id], onDelete: Cascade)
+
+  @@index([emailDeliveryId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("email_delivery_attempts")
+  @@schema("notifications")
+}
+
+model EmailTemplate {
+  id              String   @id @default(cuid())
+  organizationId  String?
+  key             String
+  name            String
+  description     String?
+  subjectTemplate String
+  textTemplate    String?
+  htmlTemplate    String?
+  moduleKey       String?
+  isSystem        Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([organizationId, key])
+  @@index([organizationId])
+  @@index([moduleKey])
+  @@index([isActive])
+  @@map("email_templates")
   @@schema("notifications")
 }
 
