@@ -236,3 +236,112 @@ export async function getPermissionOptions(): Promise<
     },
   })
 }
+
+export type RoleProfileRecord = {
+  id: string
+  organizationId: string | null
+  code: string
+  name: string
+  description: string | null
+  isSystem: boolean
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
+  permissions: {
+    id: string
+    code: string
+    name: string
+    description: string | null
+    moduleKey: string
+  }[]
+  assignments: {
+    id: string
+    status: string
+    effectiveFrom: Date
+    effectiveUntil: Date | null
+    user: {
+      id: string
+      firstName: string
+      lastName: string
+      email: string
+    }
+  }[]
+}
+
+export async function getRoleProfile(
+  id: string,
+): Promise<RoleProfileRecord | null> {
+  const role = await prisma.role.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      organizationId: true,
+      code: true,
+      name: true,
+      description: true,
+      isSystem: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+      permissions: {
+        orderBy: {
+          permission: {
+            name: "asc",
+          },
+        },
+        select: {
+          permission: {
+            select: {
+              id: true,
+              code: true,
+              name: true,
+              description: true,
+              moduleKey: true,
+            },
+          },
+        },
+      },
+      users: {
+        orderBy: {
+          assignedAt: "desc",
+        },
+        select: {
+          id: true,
+          status: true,
+          effectiveFrom: true,
+          effectiveUntil: true,
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!role) {
+    return null
+  }
+
+  return {
+    id: role.id,
+    organizationId: role.organizationId,
+    code: role.code,
+    name: role.name,
+    description: role.description,
+    isSystem: role.isSystem,
+    isActive: role.isActive,
+    createdAt: role.createdAt,
+    updatedAt: role.updatedAt,
+    permissions: role.permissions.map(
+      (assignment) => assignment.permission,
+    ),
+    assignments: role.users,
+  }
+}

@@ -111,10 +111,14 @@ export function UserAccessForm({
         actions={
           <Button
             variant="outline"
-            render={<Link href="/administration/access" />}
+            render={
+              <Link
+                href={`/administration/access/users/${user.id}`}
+              />
+            }
           >
             <ArrowLeft />
-            Back to users and roles
+            Cancel
           </Button>
         }
       />

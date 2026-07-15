@@ -109,7 +109,15 @@ export function RoleForm({
           <div className="flex gap-2">
             <Button
               variant="outline"
-              render={<Link href="/administration/access" />}
+              render={
+                <Link
+                  href={
+                    role
+                      ? `/administration/access/roles/${role.id}`
+                      : "/administration/access"
+                  }
+                />
+              }
             >
               <ArrowLeft />
               Cancel
