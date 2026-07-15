@@ -20,88 +20,164 @@ export type OrganizationModel = runtime.Types.Result.DefaultSelection<Prisma.$Or
 
 export type AggregateOrganization = {
   _count: OrganizationCountAggregateOutputType | null
+  _avg: OrganizationAvgAggregateOutputType | null
+  _sum: OrganizationSumAggregateOutputType | null
   _min: OrganizationMinAggregateOutputType | null
   _max: OrganizationMaxAggregateOutputType | null
 }
 
+export type OrganizationAvgAggregateOutputType = {
+  firstDayOfWeek: number | null
+  version: number | null
+}
+
+export type OrganizationSumAggregateOutputType = {
+  firstDayOfWeek: number | null
+  version: number | null
+}
+
 export type OrganizationMinAggregateOutputType = {
   id: string | null
+  code: string | null
   name: string | null
   shortName: string | null
   legalName: string | null
   email: string | null
   phone: string | null
   website: string | null
+  status: $Enums.OrganizationStatus | null
+  defaultTimeZone: string | null
+  defaultCurrency: string | null
+  defaultLanguage: string | null
+  dateFormat: string | null
+  firstDayOfWeek: number | null
+  version: number | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  archivedAt: Date | null
 }
 
 export type OrganizationMaxAggregateOutputType = {
   id: string | null
+  code: string | null
   name: string | null
   shortName: string | null
   legalName: string | null
   email: string | null
   phone: string | null
   website: string | null
+  status: $Enums.OrganizationStatus | null
+  defaultTimeZone: string | null
+  defaultCurrency: string | null
+  defaultLanguage: string | null
+  dateFormat: string | null
+  firstDayOfWeek: number | null
+  version: number | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
+  archivedAt: Date | null
 }
 
 export type OrganizationCountAggregateOutputType = {
   id: number
+  code: number
   name: number
   shortName: number
   legalName: number
   email: number
   phone: number
   website: number
+  status: number
+  defaultTimeZone: number
+  defaultCurrency: number
+  defaultLanguage: number
+  dateFormat: number
+  firstDayOfWeek: number
+  version: number
   isActive: number
   createdAt: number
   updatedAt: number
+  archivedAt: number
   _all: number
 }
 
 
+export type OrganizationAvgAggregateInputType = {
+  firstDayOfWeek?: true
+  version?: true
+}
+
+export type OrganizationSumAggregateInputType = {
+  firstDayOfWeek?: true
+  version?: true
+}
+
 export type OrganizationMinAggregateInputType = {
   id?: true
+  code?: true
   name?: true
   shortName?: true
   legalName?: true
   email?: true
   phone?: true
   website?: true
+  status?: true
+  defaultTimeZone?: true
+  defaultCurrency?: true
+  defaultLanguage?: true
+  dateFormat?: true
+  firstDayOfWeek?: true
+  version?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  archivedAt?: true
 }
 
 export type OrganizationMaxAggregateInputType = {
   id?: true
+  code?: true
   name?: true
   shortName?: true
   legalName?: true
   email?: true
   phone?: true
   website?: true
+  status?: true
+  defaultTimeZone?: true
+  defaultCurrency?: true
+  defaultLanguage?: true
+  dateFormat?: true
+  firstDayOfWeek?: true
+  version?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  archivedAt?: true
 }
 
 export type OrganizationCountAggregateInputType = {
   id?: true
+  code?: true
   name?: true
   shortName?: true
   legalName?: true
   email?: true
   phone?: true
   website?: true
+  status?: true
+  defaultTimeZone?: true
+  defaultCurrency?: true
+  defaultLanguage?: true
+  dateFormat?: true
+  firstDayOfWeek?: true
+  version?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
+  archivedAt?: true
   _all?: true
 }
 
@@ -143,6 +219,18 @@ export type OrganizationAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: OrganizationAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: OrganizationSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: OrganizationMinAggregateInputType
@@ -173,22 +261,35 @@ export type OrganizationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: OrganizationCountAggregateInputType | true
+  _avg?: OrganizationAvgAggregateInputType
+  _sum?: OrganizationSumAggregateInputType
   _min?: OrganizationMinAggregateInputType
   _max?: OrganizationMaxAggregateInputType
 }
 
 export type OrganizationGroupByOutputType = {
   id: string
+  code: string
   name: string
   shortName: string | null
   legalName: string | null
   email: string | null
   phone: string | null
   website: string | null
+  status: $Enums.OrganizationStatus
+  defaultTimeZone: string
+  defaultCurrency: string
+  defaultLanguage: string
+  dateFormat: string
+  firstDayOfWeek: number
+  version: number
   isActive: boolean
   createdAt: Date
   updatedAt: Date
+  archivedAt: Date | null
   _count: OrganizationCountAggregateOutputType | null
+  _avg: OrganizationAvgAggregateOutputType | null
+  _sum: OrganizationSumAggregateOutputType | null
   _min: OrganizationMinAggregateOutputType | null
   _max: OrganizationMaxAggregateOutputType | null
 }
@@ -213,38 +314,71 @@ export type OrganizationWhereInput = {
   OR?: Prisma.OrganizationWhereInput[]
   NOT?: Prisma.OrganizationWhereInput | Prisma.OrganizationWhereInput[]
   id?: Prisma.StringFilter<"Organization"> | string
+  code?: Prisma.StringFilter<"Organization"> | string
   name?: Prisma.StringFilter<"Organization"> | string
   shortName?: Prisma.StringNullableFilter<"Organization"> | string | null
   legalName?: Prisma.StringNullableFilter<"Organization"> | string | null
   email?: Prisma.StringNullableFilter<"Organization"> | string | null
   phone?: Prisma.StringNullableFilter<"Organization"> | string | null
   website?: Prisma.StringNullableFilter<"Organization"> | string | null
+  status?: Prisma.EnumOrganizationStatusFilter<"Organization"> | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFilter<"Organization"> | string
+  defaultCurrency?: Prisma.StringFilter<"Organization"> | string
+  defaultLanguage?: Prisma.StringFilter<"Organization"> | string
+  dateFormat?: Prisma.StringFilter<"Organization"> | string
+  firstDayOfWeek?: Prisma.IntFilter<"Organization"> | number
+  version?: Prisma.IntFilter<"Organization"> | number
   isActive?: Prisma.BoolFilter<"Organization"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
+  archivedAt?: Prisma.DateTimeNullableFilter<"Organization"> | Date | string | null
   departments?: Prisma.DepartmentListRelationFilter
   users?: Prisma.UserListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
+  roles?: Prisma.RoleListRelationFilter
+  businessUnits?: Prisma.BusinessUnitListRelationFilter
+  locations?: Prisma.LocationListRelationFilter
+  referenceDataSets?: Prisma.ReferenceDataSetListRelationFilter
+  featureControls?: Prisma.FeatureControlListRelationFilter
+  domainSettings?: Prisma.DomainSettingListRelationFilter
+  numberingSequences?: Prisma.NumberingSequenceListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   shortName?: Prisma.SortOrderInput | Prisma.SortOrder
   legalName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  defaultTimeZone?: Prisma.SortOrder
+  defaultCurrency?: Prisma.SortOrder
+  defaultLanguage?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  firstDayOfWeek?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   departments?: Prisma.DepartmentOrderByRelationAggregateInput
   users?: Prisma.UserOrderByRelationAggregateInput
   employees?: Prisma.EmployeeOrderByRelationAggregateInput
+  roles?: Prisma.RoleOrderByRelationAggregateInput
+  businessUnits?: Prisma.BusinessUnitOrderByRelationAggregateInput
+  locations?: Prisma.LocationOrderByRelationAggregateInput
+  referenceDataSets?: Prisma.ReferenceDataSetOrderByRelationAggregateInput
+  featureControls?: Prisma.FeatureControlOrderByRelationAggregateInput
+  domainSettings?: Prisma.DomainSettingOrderByRelationAggregateInput
+  numberingSequences?: Prisma.NumberingSequenceOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  code?: string
   AND?: Prisma.OrganizationWhereInput | Prisma.OrganizationWhereInput[]
   OR?: Prisma.OrganizationWhereInput[]
   NOT?: Prisma.OrganizationWhereInput | Prisma.OrganizationWhereInput[]
@@ -254,28 +388,54 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   email?: Prisma.StringNullableFilter<"Organization"> | string | null
   phone?: Prisma.StringNullableFilter<"Organization"> | string | null
   website?: Prisma.StringNullableFilter<"Organization"> | string | null
+  status?: Prisma.EnumOrganizationStatusFilter<"Organization"> | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFilter<"Organization"> | string
+  defaultCurrency?: Prisma.StringFilter<"Organization"> | string
+  defaultLanguage?: Prisma.StringFilter<"Organization"> | string
+  dateFormat?: Prisma.StringFilter<"Organization"> | string
+  firstDayOfWeek?: Prisma.IntFilter<"Organization"> | number
+  version?: Prisma.IntFilter<"Organization"> | number
   isActive?: Prisma.BoolFilter<"Organization"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Organization"> | Date | string
+  archivedAt?: Prisma.DateTimeNullableFilter<"Organization"> | Date | string | null
   departments?: Prisma.DepartmentListRelationFilter
   users?: Prisma.UserListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
-}, "id">
+  roles?: Prisma.RoleListRelationFilter
+  businessUnits?: Prisma.BusinessUnitListRelationFilter
+  locations?: Prisma.LocationListRelationFilter
+  referenceDataSets?: Prisma.ReferenceDataSetListRelationFilter
+  featureControls?: Prisma.FeatureControlListRelationFilter
+  domainSettings?: Prisma.DomainSettingListRelationFilter
+  numberingSequences?: Prisma.NumberingSequenceListRelationFilter
+}, "id" | "code">
 
 export type OrganizationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   shortName?: Prisma.SortOrderInput | Prisma.SortOrder
   legalName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  defaultTimeZone?: Prisma.SortOrder
+  defaultCurrency?: Prisma.SortOrder
+  defaultLanguage?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  firstDayOfWeek?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.OrganizationCountOrderByAggregateInput
+  _avg?: Prisma.OrganizationAvgOrderByAggregateInput
   _max?: Prisma.OrganizationMaxOrderByAggregateInput
   _min?: Prisma.OrganizationMinOrderByAggregateInput
+  _sum?: Prisma.OrganizationSumOrderByAggregateInput
 }
 
 export type OrganizationScalarWhereWithAggregatesInput = {
@@ -283,162 +443,304 @@ export type OrganizationScalarWhereWithAggregatesInput = {
   OR?: Prisma.OrganizationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OrganizationScalarWhereWithAggregatesInput | Prisma.OrganizationScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Organization"> | string
+  code?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   name?: Prisma.StringWithAggregatesFilter<"Organization"> | string
   shortName?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
   legalName?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
   website?: Prisma.StringNullableWithAggregatesFilter<"Organization"> | string | null
+  status?: Prisma.EnumOrganizationStatusWithAggregatesFilter<"Organization"> | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringWithAggregatesFilter<"Organization"> | string
+  defaultCurrency?: Prisma.StringWithAggregatesFilter<"Organization"> | string
+  defaultLanguage?: Prisma.StringWithAggregatesFilter<"Organization"> | string
+  dateFormat?: Prisma.StringWithAggregatesFilter<"Organization"> | string
+  firstDayOfWeek?: Prisma.IntWithAggregatesFilter<"Organization"> | number
+  version?: Prisma.IntWithAggregatesFilter<"Organization"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"Organization"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Organization"> | Date | string
+  archivedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
 }
 
 export type OrganizationCreateInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
   users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
   users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
 }
 
 export type OrganizationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type OrganizationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type OrganizationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   shortName?: Prisma.SortOrder
   legalName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  defaultTimeZone?: Prisma.SortOrder
+  defaultCurrency?: Prisma.SortOrder
+  defaultLanguage?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  firstDayOfWeek?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
+}
+
+export type OrganizationAvgOrderByAggregateInput = {
+  firstDayOfWeek?: Prisma.SortOrder
+  version?: Prisma.SortOrder
 }
 
 export type OrganizationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   shortName?: Prisma.SortOrder
   legalName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  defaultTimeZone?: Prisma.SortOrder
+  defaultCurrency?: Prisma.SortOrder
+  defaultLanguage?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  firstDayOfWeek?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
 }
 
 export type OrganizationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   shortName?: Prisma.SortOrder
   legalName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   website?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  defaultTimeZone?: Prisma.SortOrder
+  defaultCurrency?: Prisma.SortOrder
+  defaultLanguage?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  firstDayOfWeek?: Prisma.SortOrder
+  version?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  archivedAt?: Prisma.SortOrder
+}
+
+export type OrganizationSumOrderByAggregateInput = {
+  firstDayOfWeek?: Prisma.SortOrder
+  version?: Prisma.SortOrder
 }
 
 export type OrganizationScalarRelationFilter = {
   is?: Prisma.OrganizationWhereInput
   isNot?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationNullableScalarRelationFilter = {
+  is?: Prisma.OrganizationWhereInput | null
+  isNot?: Prisma.OrganizationWhereInput | null
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -449,12 +751,28 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
+export type EnumOrganizationStatusFieldUpdateOperationsInput = {
+  set?: $Enums.OrganizationStatus
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type OrganizationCreateNestedOneWithoutUsersInput = {
@@ -469,6 +787,108 @@ export type OrganizationUpdateOneRequiredWithoutUsersNestedInput = {
   upsert?: Prisma.OrganizationUpsertWithoutUsersInput
   connect?: Prisma.OrganizationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutUsersInput, Prisma.OrganizationUpdateWithoutUsersInput>, Prisma.OrganizationUncheckedUpdateWithoutUsersInput>
+}
+
+export type OrganizationCreateNestedOneWithoutRolesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutRolesInput, Prisma.OrganizationUncheckedCreateWithoutRolesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutRolesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneWithoutRolesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutRolesInput, Prisma.OrganizationUncheckedCreateWithoutRolesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutRolesInput
+  upsert?: Prisma.OrganizationUpsertWithoutRolesInput
+  disconnect?: Prisma.OrganizationWhereInput | boolean
+  delete?: Prisma.OrganizationWhereInput | boolean
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutRolesInput, Prisma.OrganizationUpdateWithoutRolesInput>, Prisma.OrganizationUncheckedUpdateWithoutRolesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutBusinessUnitsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutBusinessUnitsInput, Prisma.OrganizationUncheckedCreateWithoutBusinessUnitsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutBusinessUnitsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutBusinessUnitsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutBusinessUnitsInput, Prisma.OrganizationUncheckedCreateWithoutBusinessUnitsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutBusinessUnitsInput
+  upsert?: Prisma.OrganizationUpsertWithoutBusinessUnitsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutBusinessUnitsInput, Prisma.OrganizationUpdateWithoutBusinessUnitsInput>, Prisma.OrganizationUncheckedUpdateWithoutBusinessUnitsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutLocationsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLocationsInput, Prisma.OrganizationUncheckedCreateWithoutLocationsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLocationsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutLocationsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLocationsInput, Prisma.OrganizationUncheckedCreateWithoutLocationsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLocationsInput
+  upsert?: Prisma.OrganizationUpsertWithoutLocationsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutLocationsInput, Prisma.OrganizationUpdateWithoutLocationsInput>, Prisma.OrganizationUncheckedUpdateWithoutLocationsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutReferenceDataSetsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReferenceDataSetsInput, Prisma.OrganizationUncheckedCreateWithoutReferenceDataSetsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReferenceDataSetsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneWithoutReferenceDataSetsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutReferenceDataSetsInput, Prisma.OrganizationUncheckedCreateWithoutReferenceDataSetsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutReferenceDataSetsInput
+  upsert?: Prisma.OrganizationUpsertWithoutReferenceDataSetsInput
+  disconnect?: Prisma.OrganizationWhereInput | boolean
+  delete?: Prisma.OrganizationWhereInput | boolean
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutReferenceDataSetsInput, Prisma.OrganizationUpdateWithoutReferenceDataSetsInput>, Prisma.OrganizationUncheckedUpdateWithoutReferenceDataSetsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutFeatureControlsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutFeatureControlsInput, Prisma.OrganizationUncheckedCreateWithoutFeatureControlsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutFeatureControlsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutFeatureControlsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutFeatureControlsInput, Prisma.OrganizationUncheckedCreateWithoutFeatureControlsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutFeatureControlsInput
+  upsert?: Prisma.OrganizationUpsertWithoutFeatureControlsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutFeatureControlsInput, Prisma.OrganizationUpdateWithoutFeatureControlsInput>, Prisma.OrganizationUncheckedUpdateWithoutFeatureControlsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutDomainSettingsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutDomainSettingsInput, Prisma.OrganizationUncheckedCreateWithoutDomainSettingsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutDomainSettingsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutDomainSettingsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutDomainSettingsInput, Prisma.OrganizationUncheckedCreateWithoutDomainSettingsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutDomainSettingsInput
+  upsert?: Prisma.OrganizationUpsertWithoutDomainSettingsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutDomainSettingsInput, Prisma.OrganizationUpdateWithoutDomainSettingsInput>, Prisma.OrganizationUncheckedUpdateWithoutDomainSettingsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutNumberingSequencesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutNumberingSequencesInput, Prisma.OrganizationUncheckedCreateWithoutNumberingSequencesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutNumberingSequencesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutNumberingSequencesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutNumberingSequencesInput, Prisma.OrganizationUncheckedCreateWithoutNumberingSequencesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutNumberingSequencesInput
+  upsert?: Prisma.OrganizationUpsertWithoutNumberingSequencesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutNumberingSequencesInput, Prisma.OrganizationUpdateWithoutNumberingSequencesInput>, Prisma.OrganizationUncheckedUpdateWithoutNumberingSequencesInput>
 }
 
 export type OrganizationCreateNestedOneWithoutDepartmentsInput = {
@@ -501,32 +921,64 @@ export type OrganizationUpdateOneRequiredWithoutEmployeesNestedInput = {
 
 export type OrganizationCreateWithoutUsersInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutUsersInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutUsersInput = {
@@ -547,62 +999,1106 @@ export type OrganizationUpdateToOneWithWhereWithoutUsersInput = {
 
 export type OrganizationUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutRolesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutRolesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutRolesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutRolesInput, Prisma.OrganizationUncheckedCreateWithoutRolesInput>
+}
+
+export type OrganizationUpsertWithoutRolesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutRolesInput, Prisma.OrganizationUncheckedUpdateWithoutRolesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutRolesInput, Prisma.OrganizationUncheckedCreateWithoutRolesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutRolesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutRolesInput, Prisma.OrganizationUncheckedUpdateWithoutRolesInput>
+}
+
+export type OrganizationUpdateWithoutRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutRolesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutBusinessUnitsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutBusinessUnitsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutBusinessUnitsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutBusinessUnitsInput, Prisma.OrganizationUncheckedCreateWithoutBusinessUnitsInput>
+}
+
+export type OrganizationUpsertWithoutBusinessUnitsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutBusinessUnitsInput, Prisma.OrganizationUncheckedUpdateWithoutBusinessUnitsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutBusinessUnitsInput, Prisma.OrganizationUncheckedCreateWithoutBusinessUnitsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutBusinessUnitsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutBusinessUnitsInput, Prisma.OrganizationUncheckedUpdateWithoutBusinessUnitsInput>
+}
+
+export type OrganizationUpdateWithoutBusinessUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutBusinessUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutLocationsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutLocationsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutLocationsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLocationsInput, Prisma.OrganizationUncheckedCreateWithoutLocationsInput>
+}
+
+export type OrganizationUpsertWithoutLocationsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutLocationsInput, Prisma.OrganizationUncheckedUpdateWithoutLocationsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLocationsInput, Prisma.OrganizationUncheckedCreateWithoutLocationsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutLocationsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutLocationsInput, Prisma.OrganizationUncheckedUpdateWithoutLocationsInput>
+}
+
+export type OrganizationUpdateWithoutLocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutLocationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutReferenceDataSetsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutReferenceDataSetsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutReferenceDataSetsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReferenceDataSetsInput, Prisma.OrganizationUncheckedCreateWithoutReferenceDataSetsInput>
+}
+
+export type OrganizationUpsertWithoutReferenceDataSetsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutReferenceDataSetsInput, Prisma.OrganizationUncheckedUpdateWithoutReferenceDataSetsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutReferenceDataSetsInput, Prisma.OrganizationUncheckedCreateWithoutReferenceDataSetsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutReferenceDataSetsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutReferenceDataSetsInput, Prisma.OrganizationUncheckedUpdateWithoutReferenceDataSetsInput>
+}
+
+export type OrganizationUpdateWithoutReferenceDataSetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutReferenceDataSetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutFeatureControlsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutFeatureControlsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutFeatureControlsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutFeatureControlsInput, Prisma.OrganizationUncheckedCreateWithoutFeatureControlsInput>
+}
+
+export type OrganizationUpsertWithoutFeatureControlsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutFeatureControlsInput, Prisma.OrganizationUncheckedUpdateWithoutFeatureControlsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutFeatureControlsInput, Prisma.OrganizationUncheckedCreateWithoutFeatureControlsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutFeatureControlsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutFeatureControlsInput, Prisma.OrganizationUncheckedUpdateWithoutFeatureControlsInput>
+}
+
+export type OrganizationUpdateWithoutFeatureControlsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutFeatureControlsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutDomainSettingsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutDomainSettingsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutDomainSettingsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutDomainSettingsInput, Prisma.OrganizationUncheckedCreateWithoutDomainSettingsInput>
+}
+
+export type OrganizationUpsertWithoutDomainSettingsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutDomainSettingsInput, Prisma.OrganizationUncheckedUpdateWithoutDomainSettingsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutDomainSettingsInput, Prisma.OrganizationUncheckedCreateWithoutDomainSettingsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutDomainSettingsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutDomainSettingsInput, Prisma.OrganizationUncheckedUpdateWithoutDomainSettingsInput>
+}
+
+export type OrganizationUpdateWithoutDomainSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutDomainSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutNumberingSequencesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutNumberingSequencesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutNumberingSequencesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutNumberingSequencesInput, Prisma.OrganizationUncheckedCreateWithoutNumberingSequencesInput>
+}
+
+export type OrganizationUpsertWithoutNumberingSequencesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutNumberingSequencesInput, Prisma.OrganizationUncheckedUpdateWithoutNumberingSequencesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutNumberingSequencesInput, Prisma.OrganizationUncheckedCreateWithoutNumberingSequencesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutNumberingSequencesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutNumberingSequencesInput, Prisma.OrganizationUncheckedUpdateWithoutNumberingSequencesInput>
+}
+
+export type OrganizationUpdateWithoutNumberingSequencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutNumberingSequencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDepartmentsInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -623,62 +2119,126 @@ export type OrganizationUpdateToOneWithWhereWithoutDepartmentsInput = {
 
 export type OrganizationUpdateWithoutDepartmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeesInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
   users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeesInput = {
   id?: string
+  code: string
   name: string
   shortName?: string | null
   legalName?: string | null
   email?: string | null
   phone?: string | null
   website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  archivedAt?: Date | string | null
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeesInput = {
@@ -699,32 +2259,64 @@ export type OrganizationUpdateToOneWithWhereWithoutEmployeesInput = {
 
 export type OrganizationUpdateWithoutEmployeesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
   users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -736,12 +2328,26 @@ export type OrganizationCountOutputType = {
   departments: number
   users: number
   employees: number
+  roles: number
+  businessUnits: number
+  locations: number
+  referenceDataSets: number
+  featureControls: number
+  domainSettings: number
+  numberingSequences: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   departments?: boolean | OrganizationCountOutputTypeCountDepartmentsArgs
   users?: boolean | OrganizationCountOutputTypeCountUsersArgs
   employees?: boolean | OrganizationCountOutputTypeCountEmployeesArgs
+  roles?: boolean | OrganizationCountOutputTypeCountRolesArgs
+  businessUnits?: boolean | OrganizationCountOutputTypeCountBusinessUnitsArgs
+  locations?: boolean | OrganizationCountOutputTypeCountLocationsArgs
+  referenceDataSets?: boolean | OrganizationCountOutputTypeCountReferenceDataSetsArgs
+  featureControls?: boolean | OrganizationCountOutputTypeCountFeatureControlsArgs
+  domainSettings?: boolean | OrganizationCountOutputTypeCountDomainSettingsArgs
+  numberingSequences?: boolean | OrganizationCountOutputTypeCountNumberingSequencesArgs
 }
 
 /**
@@ -775,68 +2381,167 @@ export type OrganizationCountOutputTypeCountEmployeesArgs<ExtArgs extends runtim
   where?: Prisma.EmployeeWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RoleWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountBusinessUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BusinessUnitWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountLocationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LocationWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountReferenceDataSetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReferenceDataSetWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountFeatureControlsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FeatureControlWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountDomainSettingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DomainSettingWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountNumberingSequencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NumberingSequenceWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  code?: boolean
   name?: boolean
   shortName?: boolean
   legalName?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
+  status?: boolean
+  defaultTimeZone?: boolean
+  defaultCurrency?: boolean
+  defaultLanguage?: boolean
+  dateFormat?: boolean
+  firstDayOfWeek?: boolean
+  version?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  archivedAt?: boolean
   departments?: boolean | Prisma.Organization$departmentsArgs<ExtArgs>
   users?: boolean | Prisma.Organization$usersArgs<ExtArgs>
   employees?: boolean | Prisma.Organization$employeesArgs<ExtArgs>
+  roles?: boolean | Prisma.Organization$rolesArgs<ExtArgs>
+  businessUnits?: boolean | Prisma.Organization$businessUnitsArgs<ExtArgs>
+  locations?: boolean | Prisma.Organization$locationsArgs<ExtArgs>
+  referenceDataSets?: boolean | Prisma.Organization$referenceDataSetsArgs<ExtArgs>
+  featureControls?: boolean | Prisma.Organization$featureControlsArgs<ExtArgs>
+  domainSettings?: boolean | Prisma.Organization$domainSettingsArgs<ExtArgs>
+  numberingSequences?: boolean | Prisma.Organization$numberingSequencesArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
 export type OrganizationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  code?: boolean
   name?: boolean
   shortName?: boolean
   legalName?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
+  status?: boolean
+  defaultTimeZone?: boolean
+  defaultCurrency?: boolean
+  defaultLanguage?: boolean
+  dateFormat?: boolean
+  firstDayOfWeek?: boolean
+  version?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  archivedAt?: boolean
 }, ExtArgs["result"]["organization"]>
 
 export type OrganizationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  code?: boolean
   name?: boolean
   shortName?: boolean
   legalName?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
+  status?: boolean
+  defaultTimeZone?: boolean
+  defaultCurrency?: boolean
+  defaultLanguage?: boolean
+  dateFormat?: boolean
+  firstDayOfWeek?: boolean
+  version?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  archivedAt?: boolean
 }, ExtArgs["result"]["organization"]>
 
 export type OrganizationSelectScalar = {
   id?: boolean
+  code?: boolean
   name?: boolean
   shortName?: boolean
   legalName?: boolean
   email?: boolean
   phone?: boolean
   website?: boolean
+  status?: boolean
+  defaultTimeZone?: boolean
+  defaultCurrency?: boolean
+  defaultLanguage?: boolean
+  dateFormat?: boolean
+  firstDayOfWeek?: boolean
+  version?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  archivedAt?: boolean
 }
 
-export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "shortName" | "legalName" | "email" | "phone" | "website" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+export type OrganizationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "code" | "name" | "shortName" | "legalName" | "email" | "phone" | "website" | "status" | "defaultTimeZone" | "defaultCurrency" | "defaultLanguage" | "dateFormat" | "firstDayOfWeek" | "version" | "isActive" | "createdAt" | "updatedAt" | "archivedAt", ExtArgs["result"]["organization"]>
 export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   departments?: boolean | Prisma.Organization$departmentsArgs<ExtArgs>
   users?: boolean | Prisma.Organization$usersArgs<ExtArgs>
   employees?: boolean | Prisma.Organization$employeesArgs<ExtArgs>
+  roles?: boolean | Prisma.Organization$rolesArgs<ExtArgs>
+  businessUnits?: boolean | Prisma.Organization$businessUnitsArgs<ExtArgs>
+  locations?: boolean | Prisma.Organization$locationsArgs<ExtArgs>
+  referenceDataSets?: boolean | Prisma.Organization$referenceDataSetsArgs<ExtArgs>
+  featureControls?: boolean | Prisma.Organization$featureControlsArgs<ExtArgs>
+  domainSettings?: boolean | Prisma.Organization$domainSettingsArgs<ExtArgs>
+  numberingSequences?: boolean | Prisma.Organization$numberingSequencesArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -848,18 +2553,34 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     departments: Prisma.$DepartmentPayload<ExtArgs>[]
     users: Prisma.$UserPayload<ExtArgs>[]
     employees: Prisma.$EmployeePayload<ExtArgs>[]
+    roles: Prisma.$RolePayload<ExtArgs>[]
+    businessUnits: Prisma.$BusinessUnitPayload<ExtArgs>[]
+    locations: Prisma.$LocationPayload<ExtArgs>[]
+    referenceDataSets: Prisma.$ReferenceDataSetPayload<ExtArgs>[]
+    featureControls: Prisma.$FeatureControlPayload<ExtArgs>[]
+    domainSettings: Prisma.$DomainSettingPayload<ExtArgs>[]
+    numberingSequences: Prisma.$NumberingSequencePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    code: string
     name: string
     shortName: string | null
     legalName: string | null
     email: string | null
     phone: string | null
     website: string | null
+    status: $Enums.OrganizationStatus
+    defaultTimeZone: string
+    defaultCurrency: string
+    defaultLanguage: string
+    dateFormat: string
+    firstDayOfWeek: number
+    version: number
     isActive: boolean
     createdAt: Date
     updatedAt: Date
+    archivedAt: Date | null
   }, ExtArgs["result"]["organization"]>
   composites: {}
 }
@@ -1257,6 +2978,13 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   departments<T extends Prisma.Organization$departmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$departmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   users<T extends Prisma.Organization$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employees<T extends Prisma.Organization$employeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  roles<T extends Prisma.Organization$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  businessUnits<T extends Prisma.Organization$businessUnitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$businessUnitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  locations<T extends Prisma.Organization$locationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$locationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  referenceDataSets<T extends Prisma.Organization$referenceDataSetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$referenceDataSetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReferenceDataSetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  featureControls<T extends Prisma.Organization$featureControlsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$featureControlsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeatureControlPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  domainSettings<T extends Prisma.Organization$domainSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$domainSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DomainSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  numberingSequences<T extends Prisma.Organization$numberingSequencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$numberingSequencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NumberingSequencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1287,15 +3015,24 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
  */
 export interface OrganizationFieldRefs {
   readonly id: Prisma.FieldRef<"Organization", 'String'>
+  readonly code: Prisma.FieldRef<"Organization", 'String'>
   readonly name: Prisma.FieldRef<"Organization", 'String'>
   readonly shortName: Prisma.FieldRef<"Organization", 'String'>
   readonly legalName: Prisma.FieldRef<"Organization", 'String'>
   readonly email: Prisma.FieldRef<"Organization", 'String'>
   readonly phone: Prisma.FieldRef<"Organization", 'String'>
   readonly website: Prisma.FieldRef<"Organization", 'String'>
+  readonly status: Prisma.FieldRef<"Organization", 'OrganizationStatus'>
+  readonly defaultTimeZone: Prisma.FieldRef<"Organization", 'String'>
+  readonly defaultCurrency: Prisma.FieldRef<"Organization", 'String'>
+  readonly defaultLanguage: Prisma.FieldRef<"Organization", 'String'>
+  readonly dateFormat: Prisma.FieldRef<"Organization", 'String'>
+  readonly firstDayOfWeek: Prisma.FieldRef<"Organization", 'Int'>
+  readonly version: Prisma.FieldRef<"Organization", 'Int'>
   readonly isActive: Prisma.FieldRef<"Organization", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Organization", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Organization", 'DateTime'>
+  readonly archivedAt: Prisma.FieldRef<"Organization", 'DateTime'>
 }
     
 
@@ -1758,6 +3495,174 @@ export type Organization$employeesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeScalarFieldEnum | Prisma.EmployeeScalarFieldEnum[]
+}
+
+/**
+ * Organization.roles
+ */
+export type Organization$rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Role
+   */
+  select?: Prisma.RoleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Role
+   */
+  omit?: Prisma.RoleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RoleInclude<ExtArgs> | null
+  where?: Prisma.RoleWhereInput
+  orderBy?: Prisma.RoleOrderByWithRelationInput | Prisma.RoleOrderByWithRelationInput[]
+  cursor?: Prisma.RoleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RoleScalarFieldEnum | Prisma.RoleScalarFieldEnum[]
+}
+
+/**
+ * Organization.businessUnits
+ */
+export type Organization$businessUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BusinessUnit
+   */
+  select?: Prisma.BusinessUnitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BusinessUnit
+   */
+  omit?: Prisma.BusinessUnitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BusinessUnitInclude<ExtArgs> | null
+  where?: Prisma.BusinessUnitWhereInput
+  orderBy?: Prisma.BusinessUnitOrderByWithRelationInput | Prisma.BusinessUnitOrderByWithRelationInput[]
+  cursor?: Prisma.BusinessUnitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BusinessUnitScalarFieldEnum | Prisma.BusinessUnitScalarFieldEnum[]
+}
+
+/**
+ * Organization.locations
+ */
+export type Organization$locationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Location
+   */
+  select?: Prisma.LocationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Location
+   */
+  omit?: Prisma.LocationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LocationInclude<ExtArgs> | null
+  where?: Prisma.LocationWhereInput
+  orderBy?: Prisma.LocationOrderByWithRelationInput | Prisma.LocationOrderByWithRelationInput[]
+  cursor?: Prisma.LocationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LocationScalarFieldEnum | Prisma.LocationScalarFieldEnum[]
+}
+
+/**
+ * Organization.referenceDataSets
+ */
+export type Organization$referenceDataSetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReferenceDataSet
+   */
+  select?: Prisma.ReferenceDataSetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReferenceDataSet
+   */
+  omit?: Prisma.ReferenceDataSetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReferenceDataSetInclude<ExtArgs> | null
+  where?: Prisma.ReferenceDataSetWhereInput
+  orderBy?: Prisma.ReferenceDataSetOrderByWithRelationInput | Prisma.ReferenceDataSetOrderByWithRelationInput[]
+  cursor?: Prisma.ReferenceDataSetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReferenceDataSetScalarFieldEnum | Prisma.ReferenceDataSetScalarFieldEnum[]
+}
+
+/**
+ * Organization.featureControls
+ */
+export type Organization$featureControlsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FeatureControl
+   */
+  select?: Prisma.FeatureControlSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FeatureControl
+   */
+  omit?: Prisma.FeatureControlOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FeatureControlInclude<ExtArgs> | null
+  where?: Prisma.FeatureControlWhereInput
+  orderBy?: Prisma.FeatureControlOrderByWithRelationInput | Prisma.FeatureControlOrderByWithRelationInput[]
+  cursor?: Prisma.FeatureControlWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FeatureControlScalarFieldEnum | Prisma.FeatureControlScalarFieldEnum[]
+}
+
+/**
+ * Organization.domainSettings
+ */
+export type Organization$domainSettingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DomainSetting
+   */
+  select?: Prisma.DomainSettingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DomainSetting
+   */
+  omit?: Prisma.DomainSettingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DomainSettingInclude<ExtArgs> | null
+  where?: Prisma.DomainSettingWhereInput
+  orderBy?: Prisma.DomainSettingOrderByWithRelationInput | Prisma.DomainSettingOrderByWithRelationInput[]
+  cursor?: Prisma.DomainSettingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DomainSettingScalarFieldEnum | Prisma.DomainSettingScalarFieldEnum[]
+}
+
+/**
+ * Organization.numberingSequences
+ */
+export type Organization$numberingSequencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NumberingSequence
+   */
+  select?: Prisma.NumberingSequenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NumberingSequence
+   */
+  omit?: Prisma.NumberingSequenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NumberingSequenceInclude<ExtArgs> | null
+  where?: Prisma.NumberingSequenceWhereInput
+  orderBy?: Prisma.NumberingSequenceOrderByWithRelationInput | Prisma.NumberingSequenceOrderByWithRelationInput[]
+  cursor?: Prisma.NumberingSequenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NumberingSequenceScalarFieldEnum | Prisma.NumberingSequenceScalarFieldEnum[]
 }
 
 /**

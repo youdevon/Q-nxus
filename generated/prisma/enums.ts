@@ -18,6 +18,73 @@ export const ModuleHealth = {
 export type ModuleHealth = (typeof ModuleHealth)[keyof typeof ModuleHealth]
 
 
+export const OrganizationStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  INACTIVE: 'INACTIVE',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type OrganizationStatus = (typeof OrganizationStatus)[keyof typeof OrganizationStatus]
+
+
+export const UserAccountStatus = {
+  INVITED: 'INVITED',
+  ACTIVE: 'ACTIVE',
+  LOCKED: 'LOCKED',
+  SUSPENDED: 'SUSPENDED',
+  DISABLED: 'DISABLED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type UserAccountStatus = (typeof UserAccountStatus)[keyof typeof UserAccountStatus]
+
+
+export const RoleAssignmentStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED'
+} as const
+
+export type RoleAssignmentStatus = (typeof RoleAssignmentStatus)[keyof typeof RoleAssignmentStatus]
+
+
+export const ConfigurationStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type ConfigurationStatus = (typeof ConfigurationStatus)[keyof typeof ConfigurationStatus]
+
+
+export const SettingDataType = {
+  STRING: 'STRING',
+  INTEGER: 'INTEGER',
+  DECIMAL: 'DECIMAL',
+  BOOLEAN: 'BOOLEAN',
+  DATE: 'DATE',
+  DATETIME: 'DATETIME',
+  JSON: 'JSON'
+} as const
+
+export type SettingDataType = (typeof SettingDataType)[keyof typeof SettingDataType]
+
+
+export const SequenceResetFrequency = {
+  NEVER: 'NEVER',
+  MONTHLY: 'MONTHLY',
+  ANNUALLY: 'ANNUALLY',
+  FINANCIAL_YEAR: 'FINANCIAL_YEAR',
+  MANUAL: 'MANUAL'
+} as const
+
+export type SequenceResetFrequency = (typeof SequenceResetFrequency)[keyof typeof SequenceResetFrequency]
+
+
 export const EmploymentStatus = {
   ACTIVE: 'ACTIVE',
   ON_LEAVE: 'ON_LEAVE',

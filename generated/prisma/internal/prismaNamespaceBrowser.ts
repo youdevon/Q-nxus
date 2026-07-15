@@ -56,6 +56,15 @@ export const ModelName = {
   User: 'User',
   Role: 'Role',
   UserRole: 'UserRole',
+  Permission: 'Permission',
+  RolePermission: 'RolePermission',
+  BusinessUnit: 'BusinessUnit',
+  Location: 'Location',
+  ReferenceDataSet: 'ReferenceDataSet',
+  ReferenceDataValue: 'ReferenceDataValue',
+  FeatureControl: 'FeatureControl',
+  DomainSetting: 'DomainSetting',
+  NumberingSequence: 'NumberingSequence',
   ModuleStatus: 'ModuleStatus',
   Department: 'Department',
   Position: 'Position',
@@ -85,15 +94,24 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const OrganizationScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   name: 'name',
   shortName: 'shortName',
   legalName: 'legalName',
   email: 'email',
   phone: 'phone',
   website: 'website',
+  status: 'status',
+  defaultTimeZone: 'defaultTimeZone',
+  defaultCurrency: 'defaultCurrency',
+  defaultLanguage: 'defaultLanguage',
+  dateFormat: 'dateFormat',
+  firstDayOfWeek: 'firstDayOfWeek',
+  version: 'version',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
 } as const
 
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
@@ -121,10 +139,16 @@ export const UserScalarFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   passwordHash: 'passwordHash',
+  status: 'status',
   isActive: 'isActive',
+  emailVerifiedAt: 'emailVerifiedAt',
   lastLoginAt: 'lastLoginAt',
+  failedLoginAttempts: 'failedLoginAttempts',
+  lockedUntil: 'lockedUntil',
+  version: 'version',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -132,9 +156,12 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 
 export const RoleScalarFieldEnum = {
   id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
   name: 'name',
   description: 'description',
   isSystem: 'isSystem',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -143,12 +170,171 @@ export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof Role
 
 
 export const UserRoleScalarFieldEnum = {
+  id: 'id',
   userId: 'userId',
   roleId: 'roleId',
-  assignedAt: 'assignedAt'
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  assignedAt: 'assignedAt',
+  revokedAt: 'revokedAt',
+  reason: 'reason'
 } as const
 
 export type UserRoleScalarFieldEnum = (typeof UserRoleScalarFieldEnum)[keyof typeof UserRoleScalarFieldEnum]
+
+
+export const PermissionScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  moduleKey: 'moduleKey',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermissionScalarFieldEnum = (typeof PermissionScalarFieldEnum)[keyof typeof PermissionScalarFieldEnum]
+
+
+export const RolePermissionScalarFieldEnum = {
+  roleId: 'roleId',
+  permissionId: 'permissionId',
+  grantedAt: 'grantedAt'
+} as const
+
+export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
+
+
+export const BusinessUnitScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  parentId: 'parentId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusinessUnitScalarFieldEnum = (typeof BusinessUnitScalarFieldEnum)[keyof typeof BusinessUnitScalarFieldEnum]
+
+
+export const LocationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  locationType: 'locationType',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  city: 'city',
+  region: 'region',
+  countryCode: 'countryCode',
+  postalCode: 'postalCode',
+  timeZone: 'timeZone',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LocationScalarFieldEnum = (typeof LocationScalarFieldEnum)[keyof typeof LocationScalarFieldEnum]
+
+
+export const ReferenceDataSetScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  moduleKey: 'moduleKey',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReferenceDataSetScalarFieldEnum = (typeof ReferenceDataSetScalarFieldEnum)[keyof typeof ReferenceDataSetScalarFieldEnum]
+
+
+export const ReferenceDataValueScalarFieldEnum = {
+  id: 'id',
+  dataSetId: 'dataSetId',
+  parentId: 'parentId',
+  code: 'code',
+  label: 'label',
+  description: 'description',
+  sortOrder: 'sortOrder',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReferenceDataValueScalarFieldEnum = (typeof ReferenceDataValueScalarFieldEnum)[keyof typeof ReferenceDataValueScalarFieldEnum]
+
+
+export const FeatureControlScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  featureCode: 'featureCode',
+  isEnabled: 'isEnabled',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  reason: 'reason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FeatureControlScalarFieldEnum = (typeof FeatureControlScalarFieldEnum)[keyof typeof FeatureControlScalarFieldEnum]
+
+
+export const DomainSettingScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  settingCode: 'settingCode',
+  moduleKey: 'moduleKey',
+  name: 'name',
+  description: 'description',
+  dataType: 'dataType',
+  value: 'value',
+  isSensitive: 'isSensitive',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DomainSettingScalarFieldEnum = (typeof DomainSettingScalarFieldEnum)[keyof typeof DomainSettingScalarFieldEnum]
+
+
+export const NumberingSequenceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  sequenceCode: 'sequenceCode',
+  prefix: 'prefix',
+  suffix: 'suffix',
+  currentNumber: 'currentNumber',
+  minimumLength: 'minimumLength',
+  resetFrequency: 'resetFrequency',
+  lastResetAt: 'lastResetAt',
+  isActive: 'isActive',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NumberingSequenceScalarFieldEnum = (typeof NumberingSequenceScalarFieldEnum)[keyof typeof NumberingSequenceScalarFieldEnum]
 
 
 export const ModuleStatusScalarFieldEnum = {
@@ -309,6 +495,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

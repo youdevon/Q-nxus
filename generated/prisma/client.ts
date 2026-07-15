@@ -67,6 +67,51 @@ export type Role = Prisma.RoleModel
  */
 export type UserRole = Prisma.UserRoleModel
 /**
+ * Model Permission
+ * 
+ */
+export type Permission = Prisma.PermissionModel
+/**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
+ * Model BusinessUnit
+ * 
+ */
+export type BusinessUnit = Prisma.BusinessUnitModel
+/**
+ * Model Location
+ * 
+ */
+export type Location = Prisma.LocationModel
+/**
+ * Model ReferenceDataSet
+ * 
+ */
+export type ReferenceDataSet = Prisma.ReferenceDataSetModel
+/**
+ * Model ReferenceDataValue
+ * 
+ */
+export type ReferenceDataValue = Prisma.ReferenceDataValueModel
+/**
+ * Model FeatureControl
+ * 
+ */
+export type FeatureControl = Prisma.FeatureControlModel
+/**
+ * Model DomainSetting
+ * 
+ */
+export type DomainSetting = Prisma.DomainSettingModel
+/**
+ * Model NumberingSequence
+ * 
+ */
+export type NumberingSequence = Prisma.NumberingSequenceModel
+/**
  * Model ModuleStatus
  * 
  */

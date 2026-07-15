@@ -16,6 +16,67 @@ enum ModuleHealth {
   @@schema("core")
 }
 
+enum OrganizationStatus {
+  DRAFT
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+  ARCHIVED
+
+  @@schema("core")
+}
+
+enum UserAccountStatus {
+  INVITED
+  ACTIVE
+  LOCKED
+  SUSPENDED
+  DISABLED
+  ARCHIVED
+
+  @@schema("core")
+}
+
+enum RoleAssignmentStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  REVOKED
+
+  @@schema("core")
+}
+
+enum ConfigurationStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+
+  @@schema("core")
+}
+
+enum SettingDataType {
+  STRING
+  INTEGER
+  DECIMAL
+  BOOLEAN
+  DATE
+  DATETIME
+  JSON
+
+  @@schema("core")
+}
+
+enum SequenceResetFrequency {
+  NEVER
+  MONTHLY
+  ANNUALLY
+  FINANCIAL_YEAR
+  MANUAL
+
+  @@schema("core")
+}
+
 enum EmploymentStatus {
   ACTIVE
   ON_LEAVE
@@ -57,21 +118,38 @@ enum NotificationReadStatus {
 }
 
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  shortName String?
-  legalName String?
-  email     String?
-  phone     String?
-  website   String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String             @id @default(cuid())
+  code            String             @unique
+  name            String
+  shortName       String?
+  legalName       String?
+  email           String?
+  phone           String?
+  website         String?
+  status          OrganizationStatus @default(DRAFT)
+  defaultTimeZone String             @default("America/Port_of_Spain")
+  defaultCurrency String             @default("TTD")
+  defaultLanguage String             @default("en")
+  dateFormat      String             @default("dd/MM/yyyy")
+  firstDayOfWeek  Int                @default(1)
+  version         Int                @default(1)
+  isActive        Boolean            @default(true)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  archivedAt      DateTime?
 
-  departments Department[]
-  users       User[]
-  employees   Employee[]
+  departments        Department[]
+  users              User[]
+  employees          Employee[]
+  roles              Role[]
+  businessUnits      BusinessUnit[]
+  locations          Location[]
+  referenceDataSets  ReferenceDataSet[]
+  featureControls    FeatureControl[]
+  domainSettings     DomainSetting[]
+  numberingSequences NumberingSequence[]
 
+  @@index([status])
   @@map("organizations")
   @@schema("core")
 }
@@ -92,16 +170,22 @@ model ApplicationSetting {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  organizationId String
-  email          String    @unique
-  firstName      String
-  lastName       String
-  passwordHash   String?
-  isActive       Boolean   @default(true)
-  lastLoginAt    DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id                  String            @id @default(cuid())
+  organizationId      String
+  email               String            @unique
+  firstName           String
+  lastName            String
+  passwordHash        String?
+  status              UserAccountStatus @default(INVITED)
+  isActive            Boolean           @default(true)
+  emailVerifiedAt     DateTime?
+  lastLoginAt         DateTime?
+  failedLoginAttempts Int               @default(0)
+  lockedUntil         DateTime?
+  version             Int               @default(1)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  archivedAt          DateTime?
 
   organization  Organization            @relation(fields: [organizationId], references: [id])
   roles         UserRole[]
@@ -109,34 +193,246 @@ model User {
   auditEvents   AuditEvent[]
 
   @@index([organizationId])
+  @@index([organizationId, status])
   @@map("users")
   @@schema("core")
 }
 
 model Role {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  isSystem    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  organizationId String?
+  code           String
+  name           String
+  description    String?
+  isSystem       Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  users UserRole[]
+  organization Organization?    @relation(fields: [organizationId], references: [id])
+  users        UserRole[]
+  permissions  RolePermission[]
 
+  @@unique([organizationId, code])
+  @@index([organizationId])
   @@map("roles")
   @@schema("core")
 }
 
 model UserRole {
-  userId     String
-  roleId     String
-  assignedAt DateTime @default(now())
+  id             String               @id @default(cuid())
+  userId         String
+  roleId         String
+  status         RoleAssignmentStatus @default(ACTIVE)
+  effectiveFrom  DateTime             @default(now())
+  effectiveUntil DateTime?
+  assignedAt     DateTime             @default(now())
+  revokedAt      DateTime?
+  reason         String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
-  @@id([userId, roleId])
+  @@index([userId, status])
+  @@index([roleId, status])
+  @@index([effectiveFrom, effectiveUntil])
   @@map("user_roles")
+  @@schema("core")
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  description String?
+  moduleKey   String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  roles RolePermission[]
+
+  @@index([moduleKey])
+  @@map("permissions")
+  @@schema("core")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  grantedAt    DateTime @default(now())
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+  @@schema("core")
+}
+
+model BusinessUnit {
+  id             String              @id @default(cuid())
+  organizationId String
+  parentId       String?
+  code           String
+  name           String
+  description    String?
+  status         ConfigurationStatus @default(ACTIVE)
+  effectiveFrom  DateTime            @default(now())
+  effectiveUntil DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  organization Organization   @relation(fields: [organizationId], references: [id])
+  parent       BusinessUnit?  @relation("BusinessUnitHierarchy", fields: [parentId], references: [id])
+  children     BusinessUnit[] @relation("BusinessUnitHierarchy")
+
+  @@unique([organizationId, code])
+  @@index([organizationId, status])
+  @@index([parentId])
+  @@map("business_units")
+  @@schema("core")
+}
+
+model Location {
+  id             String              @id @default(cuid())
+  organizationId String
+  code           String
+  name           String
+  locationType   String
+  addressLine1   String?
+  addressLine2   String?
+  city           String?
+  region         String?
+  countryCode    String              @default("TT")
+  postalCode     String?
+  timeZone       String              @default("America/Port_of_Spain")
+  status         ConfigurationStatus @default(ACTIVE)
+  effectiveFrom  DateTime            @default(now())
+  effectiveUntil DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, code])
+  @@index([organizationId, status])
+  @@map("locations")
+  @@schema("core")
+}
+
+model ReferenceDataSet {
+  id             String              @id @default(cuid())
+  organizationId String?
+  code           String
+  name           String
+  description    String?
+  moduleKey      String
+  status         ConfigurationStatus @default(ACTIVE)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  organization Organization?        @relation(fields: [organizationId], references: [id])
+  values       ReferenceDataValue[]
+
+  @@unique([organizationId, code])
+  @@index([moduleKey])
+  @@map("reference_data_sets")
+  @@schema("core")
+}
+
+model ReferenceDataValue {
+  id             String              @id @default(cuid())
+  dataSetId      String
+  parentId       String?
+  code           String
+  label          String
+  description    String?
+  sortOrder      Int                 @default(0)
+  status         ConfigurationStatus @default(ACTIVE)
+  effectiveFrom  DateTime            @default(now())
+  effectiveUntil DateTime?
+  metadata       Json?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  dataSet  ReferenceDataSet     @relation(fields: [dataSetId], references: [id], onDelete: Cascade)
+  parent   ReferenceDataValue?  @relation("ReferenceValueHierarchy", fields: [parentId], references: [id])
+  children ReferenceDataValue[] @relation("ReferenceValueHierarchy")
+
+  @@unique([dataSetId, code])
+  @@index([dataSetId, status])
+  @@index([parentId])
+  @@map("reference_data_values")
+  @@schema("core")
+}
+
+model FeatureControl {
+  id             String              @id @default(cuid())
+  organizationId String
+  featureCode    String
+  isEnabled      Boolean             @default(false)
+  status         ConfigurationStatus @default(ACTIVE)
+  effectiveFrom  DateTime            @default(now())
+  effectiveUntil DateTime?
+  reason         String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, featureCode])
+  @@index([organizationId, isEnabled])
+  @@map("feature_controls")
+  @@schema("core")
+}
+
+model DomainSetting {
+  id             String              @id @default(cuid())
+  organizationId String
+  settingCode    String
+  moduleKey      String
+  name           String
+  description    String?
+  dataType       SettingDataType
+  value          Json
+  isSensitive    Boolean             @default(false)
+  status         ConfigurationStatus @default(ACTIVE)
+  effectiveFrom  DateTime            @default(now())
+  effectiveUntil DateTime?
+  version        Int                 @default(1)
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, settingCode])
+  @@index([organizationId, moduleKey])
+  @@map("domain_settings")
+  @@schema("core")
+}
+
+model NumberingSequence {
+  id             String                 @id @default(cuid())
+  organizationId String
+  sequenceCode   String
+  prefix         String?
+  suffix         String?
+  currentNumber  BigInt                 @default(0)
+  minimumLength  Int                    @default(5)
+  resetFrequency SequenceResetFrequency @default(NEVER)
+  lastResetAt    DateTime?
+  isActive       Boolean                @default(true)
+  version        Int                    @default(1)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, sequenceCode])
+  @@index([organizationId, isActive])
+  @@map("numbering_sequences")
   @@schema("core")
 }
 
