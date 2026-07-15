@@ -374,27 +374,6 @@ async function seedFeatureControls(): Promise<void> {
 async function seedDomainSettings(): Promise<void> {
   const settings = [
     {
-      settingCode: "platform.organization_name",
-      moduleKey: "core",
-      name: "Organization name",
-      dataType: SettingDataType.STRING,
-      value: "Q-NXUS Demo Organization",
-    },
-    {
-      settingCode: "platform.time_zone",
-      moduleKey: "core",
-      name: "Default time zone",
-      dataType: SettingDataType.STRING,
-      value: "America/Port_of_Spain",
-    },
-    {
-      settingCode: "platform.currency",
-      moduleKey: "core",
-      name: "Default currency",
-      dataType: SettingDataType.STRING,
-      value: "TTD",
-    },
-    {
       settingCode: "identity.mfa_required",
       moduleKey: "identity",
       name: "Require multi-factor authentication",
