@@ -277,6 +277,8 @@ export async function updateDepartment(
     }
 
     revalidatePath("/people/structure")
+    revalidatePath(`/people/structure/departments/${id}`)
+    revalidatePath(`/people/structure/departments/${id}/edit`)
 
     return {
       status: "success",
@@ -533,6 +535,8 @@ export async function updatePosition(
     }
 
     revalidatePath("/people/structure")
+    revalidatePath(`/people/structure/positions/${id}`)
+    revalidatePath(`/people/structure/positions/${id}/edit`)
 
     return {
       status: "success",
