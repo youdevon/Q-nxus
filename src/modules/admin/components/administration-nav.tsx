@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Building2, KeyRound, MapPin, Network, SlidersHorizontal } from "lucide-react"
+import { Building2, Hash, KeyRound, MapPin, Network, SlidersHorizontal } from "lucide-react"
 
 const items = [
   {
@@ -29,6 +29,11 @@ const items = [
     title: "Feature Controls",
     href: "/administration/features",
     icon: SlidersHorizontal,
+  },
+  {
+    title: "Numbering Sequences",
+    href: "/administration/numbering-sequences",
+    icon: Hash,
   },
 ]
 
