@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Building2, Hash, KeyRound, MapPin, Network, SlidersHorizontal } from "lucide-react"
+import { Building2, FileClock, Hash, KeyRound, MapPin, Network, Settings2, SlidersHorizontal } from "lucide-react"
 
 const items = [
   {
@@ -34,6 +34,16 @@ const items = [
     title: "Numbering Sequences",
     href: "/administration/numbering-sequences",
     icon: Hash,
+  },
+  {
+    title: "Domain Settings",
+    href: "/administration/settings",
+    icon: Settings2,
+  },
+  {
+    title: "Audit Trail",
+    href: "/administration/audit",
+    icon: FileClock,
   },
 ]
 
