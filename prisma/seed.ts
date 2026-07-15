@@ -1,3 +1,5 @@
+import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
 import {
   ConfigurationStatus,
   OrganizationStatus,
@@ -8,7 +10,22 @@ import {
   UserAccountStatus,
 } from "../generated/prisma/client";
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error(
+    "DATABASE_URL is not configured. Add it to the project .env file.",
+  );
+}
+
+const adapter = new PrismaPg({
+  connectionString,
+});
+
+const prisma = new PrismaClient({
+  adapter,
+  log: ["error", "warn"],
+});
 
 const organizationId = "org-q-nxus-main";
 const administratorRoleId = "role-system-administrator";
