@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Building2, MapPin, Network } from "lucide-react"
+import { Building2, KeyRound, MapPin, Network } from "lucide-react"
 
 const items = [
   {
@@ -19,6 +19,11 @@ const items = [
     title: "Business Units",
     href: "/administration/business-units",
     icon: Network,
+  },
+  {
+    title: "Users and Roles",
+    href: "/administration/access",
+    icon: KeyRound,
   },
 ]
 
