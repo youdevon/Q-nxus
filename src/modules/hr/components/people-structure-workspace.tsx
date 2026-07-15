@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+
 import {
   useActionState,
   useEffect,
@@ -227,6 +229,19 @@ function PositionEditor({
           />
           Active
         </label>
+
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          render={
+            <Link
+              href={`/people/structure/positions/${position.id}/job-descriptions`}
+            />
+          }
+        >
+          Job description
+        </Button>
 
         <Button type="submit" size="sm" disabled={pending}>
           <Save />

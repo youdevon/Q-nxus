@@ -95,6 +95,19 @@ export function EmployeeForm({
               Directory
             </Button>
 
+            {employee && (
+              <Button
+                variant="outline"
+                render={
+                  <Link
+                    href={`/people/employees/${employee.id}/job-description`}
+                  />
+                }
+              >
+                Job description
+              </Button>
+            )}
+
             <Button type="submit" disabled={pending}>
               <Save />
               {pending
