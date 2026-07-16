@@ -169,3 +169,33 @@
 @utility ui-meta-label {
   @apply text-xs text-muted-foreground;
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    background: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+.payslip-print-page {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+@media print {
+  .payslip-batch-page {
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .payslip-batch-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+}
