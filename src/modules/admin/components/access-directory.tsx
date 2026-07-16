@@ -41,6 +41,7 @@ export function AccessDirectory({
         description="Manage platform accounts, security roles and permission assignments."
         actions={
           <Button
+            nativeButton={false}
             render={<Link href="/administration/access/roles/new" />}
           >
             <Plus />

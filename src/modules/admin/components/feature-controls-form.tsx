@@ -75,6 +75,7 @@ export function FeatureControlsForm({
         actions={
           <div className="flex gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/administration/features" />}
             >

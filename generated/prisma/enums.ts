@@ -85,6 +85,22 @@ export const SequenceResetFrequency = {
 export type SequenceResetFrequency = (typeof SequenceResetFrequency)[keyof typeof SequenceResetFrequency]
 
 
+export const EmployeeAssignmentType = {
+  INITIAL_APPOINTMENT: 'INITIAL_APPOINTMENT',
+  TRANSFER: 'TRANSFER',
+  PROMOTION: 'PROMOTION',
+  DEMOTION: 'DEMOTION',
+  ACTING_APPOINTMENT: 'ACTING_APPOINTMENT',
+  TEMPORARY_ASSIGNMENT: 'TEMPORARY_ASSIGNMENT',
+  SECONDMENT: 'SECONDMENT',
+  REASSIGNMENT: 'REASSIGNMENT',
+  RETURN_TO_SUBSTANTIVE: 'RETURN_TO_SUBSTANTIVE',
+  OTHER: 'OTHER'
+} as const
+
+export type EmployeeAssignmentType = (typeof EmployeeAssignmentType)[keyof typeof EmployeeAssignmentType]
+
+
 export const EmploymentStatus = {
   ACTIVE: 'ACTIVE',
   ON_LEAVE: 'ON_LEAVE',
@@ -97,6 +113,165 @@ export const EmploymentStatus = {
 export type EmploymentStatus = (typeof EmploymentStatus)[keyof typeof EmploymentStatus]
 
 
+export const JobDescriptionStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  RETIRED: 'RETIRED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type JobDescriptionStatus = (typeof JobDescriptionStatus)[keyof typeof JobDescriptionStatus]
+
+
+export const JobCriterionType = {
+  DUTY: 'DUTY',
+  RESPONSIBILITY: 'RESPONSIBILITY',
+  PERFORMANCE_OBJECTIVE: 'PERFORMANCE_OBJECTIVE',
+  KEY_PERFORMANCE_INDICATOR: 'KEY_PERFORMANCE_INDICATOR',
+  TECHNICAL_COMPETENCY: 'TECHNICAL_COMPETENCY',
+  BEHAVIOURAL_COMPETENCY: 'BEHAVIOURAL_COMPETENCY',
+  QUALIFICATION: 'QUALIFICATION',
+  EXPERIENCE: 'EXPERIENCE',
+  OTHER: 'OTHER'
+} as const
+
+export type JobCriterionType = (typeof JobCriterionType)[keyof typeof JobCriterionType]
+
+
+export const AllowanceFrequency = {
+  MONTHLY: 'MONTHLY',
+  WEEKLY: 'WEEKLY',
+  BIWEEKLY: 'BIWEEKLY',
+  PER_PAY_PERIOD: 'PER_PAY_PERIOD',
+  ANNUAL: 'ANNUAL',
+  ONE_TIME: 'ONE_TIME'
+} as const
+
+export type AllowanceFrequency = (typeof AllowanceFrequency)[keyof typeof AllowanceFrequency]
+
+
+export const EmploymentContractStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  SUPERSEDED: 'SUPERSEDED',
+  TERMINATED: 'TERMINATED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type EmploymentContractStatus = (typeof EmploymentContractStatus)[keyof typeof EmploymentContractStatus]
+
+
+export const EmploymentContractType = {
+  PERMANENT: 'PERMANENT',
+  FIXED_TERM: 'FIXED_TERM',
+  TEMPORARY: 'TEMPORARY',
+  PART_TIME: 'PART_TIME',
+  INTERNSHIP: 'INTERNSHIP',
+  CONSULTANCY: 'CONSULTANCY',
+  ACTING: 'ACTING',
+  SECONDMENT: 'SECONDMENT',
+  OTHER: 'OTHER'
+} as const
+
+export type EmploymentContractType = (typeof EmploymentContractType)[keyof typeof EmploymentContractType]
+
+
+export const ContractChangeType = {
+  INITIAL: 'INITIAL',
+  RENEWAL: 'RENEWAL',
+  EXTENSION: 'EXTENSION',
+  AMENDMENT: 'AMENDMENT',
+  SALARY_ADJUSTMENT: 'SALARY_ADJUSTMENT',
+  POSITION_CHANGE: 'POSITION_CHANGE',
+  TERMINATION: 'TERMINATION',
+  OTHER: 'OTHER'
+} as const
+
+export type ContractChangeType = (typeof ContractChangeType)[keyof typeof ContractChangeType]
+
+
+export const LeaveUnit = {
+  DAYS: 'DAYS',
+  HOURS: 'HOURS'
+} as const
+
+export type LeaveUnit = (typeof LeaveUnit)[keyof typeof LeaveUnit]
+
+
+export const LeaveAccrualMethod = {
+  ANNUAL_GRANT: 'ANNUAL_GRANT',
+  MONTHLY: 'MONTHLY',
+  PER_PAY_PERIOD: 'PER_PAY_PERIOD',
+  MANUAL: 'MANUAL',
+  NONE: 'NONE'
+} as const
+
+export type LeaveAccrualMethod = (typeof LeaveAccrualMethod)[keyof typeof LeaveAccrualMethod]
+
+
+export const LeaveBalanceTransactionType = {
+  OPENING_BALANCE: 'OPENING_BALANCE',
+  ENTITLEMENT: 'ENTITLEMENT',
+  ACCRUAL: 'ACCRUAL',
+  CARRY_FORWARD: 'CARRY_FORWARD',
+  REQUEST_RESERVED: 'REQUEST_RESERVED',
+  REQUEST_RELEASED: 'REQUEST_RELEASED',
+  LEAVE_TAKEN: 'LEAVE_TAKEN',
+  ADJUSTMENT: 'ADJUSTMENT',
+  EXPIRY: 'EXPIRY',
+  REVERSAL: 'REVERSAL'
+} as const
+
+export type LeaveBalanceTransactionType = (typeof LeaveBalanceTransactionType)[keyof typeof LeaveBalanceTransactionType]
+
+
+export const LeaveRequestStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type LeaveRequestStatus = (typeof LeaveRequestStatus)[keyof typeof LeaveRequestStatus]
+
+
+export const LeaveApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SKIPPED: 'SKIPPED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type LeaveApprovalStatus = (typeof LeaveApprovalStatus)[keyof typeof LeaveApprovalStatus]
+
+
+export const PerformanceAppraisalStatus = {
+  DRAFT: 'DRAFT',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUBMITTED: 'SUBMITTED',
+  SUPERVISOR_REVIEWED: 'SUPERVISOR_REVIEWED',
+  EMPLOYEE_ACKNOWLEDGED: 'EMPLOYEE_ACKNOWLEDGED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PerformanceAppraisalStatus = (typeof PerformanceAppraisalStatus)[keyof typeof PerformanceAppraisalStatus]
+
+
+export const PerformanceRatingScale = {
+  ONE_TO_FIVE: 'ONE_TO_FIVE',
+  ONE_TO_TEN: 'ONE_TO_TEN',
+  PERCENTAGE: 'PERCENTAGE'
+} as const
+
+export type PerformanceRatingScale = (typeof PerformanceRatingScale)[keyof typeof PerformanceRatingScale]
+
+
 export const EmploymentType = {
   PERMANENT: 'PERMANENT',
   CONTRACT: 'CONTRACT',
@@ -107,6 +282,27 @@ export const EmploymentType = {
 } as const
 
 export type EmploymentType = (typeof EmploymentType)[keyof typeof EmploymentType]
+
+
+export const EmailDeliveryStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type EmailDeliveryStatus = (typeof EmailDeliveryStatus)[keyof typeof EmailDeliveryStatus]
+
+
+export const EmailPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+} as const
+
+export type EmailPriority = (typeof EmailPriority)[keyof typeof EmailPriority]
 
 
 export const NotificationSeverity = {

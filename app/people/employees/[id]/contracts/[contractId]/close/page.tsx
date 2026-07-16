@@ -1,0 +1,41 @@
+import type { Metadata } from "next"
+import { notFound, redirect } from "next/navigation"
+
+import { CloseEmploymentContractForm } from "@/src/modules/hr/components/close-employment-contract-form"
+import { getEmploymentContractProfile } from "@/src/modules/hr/data/get-employment-contracts"
+
+export const metadata: Metadata = {
+  title: "Close Employment Contract",
+}
+
+export const dynamic = "force-dynamic"
+
+export default async function CloseEmploymentContractPage({
+  params,
+}: {
+  params: Promise<{
+    id: string
+    contractId: string
+  }>
+}) {
+  const { id, contractId } = await params
+
+  const contract = await getEmploymentContractProfile(
+    id,
+    contractId,
+  )
+
+  if (!contract) {
+    notFound()
+  }
+
+  if (!contract.isCurrent) {
+    redirect(
+      `/people/employees/${id}/contracts/${contractId}`,
+    )
+  }
+
+  return (
+    <CloseEmploymentContractForm contract={contract} />
+  )
+}

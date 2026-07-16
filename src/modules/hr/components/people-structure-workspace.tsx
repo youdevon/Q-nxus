@@ -8,6 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import type { DepartmentRecord } from "@/src/modules/hr/data/get-people-structure"
 import { PeopleNav } from "./people-nav"
 
@@ -31,15 +32,16 @@ export function PeopleStructureWorkspace({
   )
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <PageShell size="lg">
       <PeopleNav />
 
       <PageHeader
         title="People Structure"
         description="Departments and positions used across employee records."
         actions={
-          <div className="flex flex-wrap gap-2">
+          <>
             <Button
+              nativeButton={false}
               variant="outline"
               disabled={departments.length === 0}
               render={
@@ -53,6 +55,7 @@ export function PeopleStructureWorkspace({
             </Button>
 
             <Button
+              nativeButton={false}
               render={
                 <Link href="/people/structure/departments/new" />
               }
@@ -60,7 +63,7 @@ export function PeopleStructureWorkspace({
               <Plus />
               New department
             </Button>
-          </div>
+          </>
         }
       />
 
@@ -243,6 +246,6 @@ export function PeopleStructureWorkspace({
           ))}
         </div>
       )}
-    </div>
+    </PageShell>
   )
 }

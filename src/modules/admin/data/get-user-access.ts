@@ -21,6 +21,14 @@ export type UserAccessRecord = {
   lastName: string
   status: string
   isActive: boolean
+  employeeId: string | null
+  employee: {
+    id: string
+    employeeNumber: string
+    firstName: string
+    lastName: string
+    positionTitle: string | null
+  } | null
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
   failedLoginAttempts: number
@@ -28,6 +36,15 @@ export type UserAccessRecord = {
   version: number
   updatedAt: Date
   assignments: UserRoleAssignment[]
+}
+
+export type LinkableEmployeeOption = {
+  id: string
+  employeeNumber: string
+  firstName: string
+  lastName: string
+  positionTitle: string | null
+  alreadyLinked: boolean
 }
 
 export type AssignableRole = {
@@ -53,12 +70,26 @@ export async function getUserAccess(
       lastName: true,
       status: true,
       isActive: true,
+      employeeId: true,
       emailVerifiedAt: true,
       lastLoginAt: true,
       failedLoginAttempts: true,
       lockedUntil: true,
       version: true,
       updatedAt: true,
+      employee: {
+        select: {
+          id: true,
+          employeeNumber: true,
+          firstName: true,
+          lastName: true,
+          position: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      },
       roles: {
         orderBy: {
           assignedAt: "desc",
@@ -95,6 +126,16 @@ export async function getUserAccess(
     lastName: user.lastName,
     status: user.status,
     isActive: user.isActive,
+    employeeId: user.employeeId,
+    employee: user.employee
+      ? {
+          id: user.employee.id,
+          employeeNumber: user.employee.employeeNumber,
+          firstName: user.employee.firstName,
+          lastName: user.employee.lastName,
+          positionTitle: user.employee.position?.title ?? null,
+        }
+      : null,
     emailVerifiedAt: user.emailVerifiedAt,
     lastLoginAt: user.lastLoginAt,
     failedLoginAttempts: user.failedLoginAttempts,
@@ -114,6 +155,63 @@ export async function getUserAccess(
       reason: assignment.reason,
     })),
   }
+}
+
+export async function getLinkableEmployees(
+  organizationId: string,
+  currentEmployeeId?: string | null,
+): Promise<LinkableEmployeeOption[]> {
+  const employees = await prisma.employee.findMany({
+    where: {
+      organizationId,
+      isArchived: false,
+      OR: [
+        {
+          user: null,
+        },
+        ...(currentEmployeeId
+          ? [
+              {
+                id: currentEmployeeId,
+              },
+            ]
+          : []),
+      ],
+    },
+    orderBy: [
+      {
+        lastName: "asc",
+      },
+      {
+        firstName: "asc",
+      },
+    ],
+    select: {
+      id: true,
+      employeeNumber: true,
+      firstName: true,
+      lastName: true,
+      position: {
+        select: {
+          title: true,
+        },
+      },
+      user: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  })
+
+  return employees.map((employee) => ({
+    id: employee.id,
+    employeeNumber: employee.employeeNumber,
+    firstName: employee.firstName,
+    lastName: employee.lastName,
+    positionTitle: employee.position?.title ?? null,
+    alreadyLinked: Boolean(employee.user),
+  }))
 }
 
 export async function getAssignableRoles(

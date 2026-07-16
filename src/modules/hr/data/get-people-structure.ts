@@ -214,6 +214,7 @@ export type PositionProfileRecord = {
   title: string
   code: string | null
   description: string | null
+  systemRoleCode: string | null
   isActive: boolean
   createdAt: string
   updatedAt: string
@@ -251,6 +252,7 @@ export async function getPositionProfile(
       title: true,
       code: true,
       description: true,
+      systemRoleCode: true,
       isActive: true,
       createdAt: true,
       updatedAt: true,
@@ -303,6 +305,7 @@ export async function getPositionProfile(
     title: position.title,
     code: position.code,
     description: position.description,
+    systemRoleCode: position.systemRoleCode,
     isActive: position.isActive,
     createdAt: position.createdAt.toISOString(),
     updatedAt: position.updatedAt.toISOString(),

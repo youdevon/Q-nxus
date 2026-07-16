@@ -101,6 +101,7 @@ export function BusinessUnitForm({
         actions={
           <div className="flex gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href={businessUnit ? `/administration/business-units/${businessUnit.id}` : "/administration/business-units"} />}
             >

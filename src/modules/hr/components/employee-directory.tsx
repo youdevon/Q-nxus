@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import type {
   EmployeeDirectoryData,
   EmployeeDirectoryFilters,
@@ -61,14 +62,17 @@ export function EmployeeDirectory({
   filters,
 }: EmployeeDirectoryProps) {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <PageShell size="lg">
       <PeopleNav />
 
       <PageHeader
         title="Employees"
         description="Manage employee records, work assignments and employment status."
         actions={
-          <Button render={<Link href="/people/employees/new" />}>
+          <Button
+            nativeButton={false}
+            render={<Link href="/people/employees/new" />}
+          >
             <Plus />
             New employee
           </Button>
@@ -198,6 +202,7 @@ export function EmployeeDirectory({
           </Button>
 
           <Button
+            nativeButton={false}
             variant="outline"
             render={<Link href="/people" />}
           >
@@ -311,6 +316,7 @@ export function EmployeeDirectory({
 
         <div className="flex gap-2">
           <Button
+            nativeButton={false}
             variant="outline"
             disabled={data.page <= 1}
             render={
@@ -328,6 +334,7 @@ export function EmployeeDirectory({
           </Button>
 
           <Button
+            nativeButton={false}
             variant="outline"
             disabled={data.page >= data.totalPages}
             render={
@@ -345,6 +352,6 @@ export function EmployeeDirectory({
           </Button>
         </div>
       </footer>
-    </div>
+    </PageShell>
   )
 }

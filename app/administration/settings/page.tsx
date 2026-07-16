@@ -81,6 +81,7 @@ export default async function DomainSettingsPage() {
         description="Current business, security and module configuration values."
         actions={
           <Button
+            nativeButton={false}
             render={<Link href="/administration/settings/edit" />}
           >
             <Pencil />
@@ -249,6 +250,7 @@ export default async function DomainSettingsPage() {
         </p>
 
         <Button
+          nativeButton={false}
           variant="outline"
           render={<Link href="/administration/settings/edit" />}
         >

@@ -9,38 +9,58 @@ import {
   Users,
 } from "lucide-react"
 
+import { useAuth } from "@/src/modules/auth/context/auth-provider"
+
 const items = [
   {
     title: "Employees",
     href: "/people",
     icon: Users,
+    anyOf: ["people.directory.view", "people.manage"],
   },
   {
     title: "Structure",
     href: "/people/structure",
     icon: Network,
+    anyOf: ["people.manage"],
   },
   {
     title: "Organization Chart",
     href: "/people/structure/chart",
     icon: PanelsTopLeft,
+    anyOf: ["people.directory.view", "people.manage"],
   },
   {
-    title: "Leave",
+    title: "Leave Types",
     href: "/people/leave/types",
     icon: CalendarDays,
+    anyOf: ["leave.manage"],
+  },
+  {
+    title: "Leave Balances",
+    href: "/people/leave/balances",
+    icon: CalendarDays,
+    anyOf: ["leave.manage", "people.manage"],
   },
 ]
 
 export function PeopleNav() {
   const pathname = usePathname()
+  const { canAny } = useAuth()
+  const visibleItems = items.filter((item) =>
+    canAny(...item.anyOf),
+  )
+
+  if (visibleItems.length === 0) {
+    return null
+  }
 
   return (
     <nav
       aria-label="People navigation"
       className="flex flex-wrap gap-1 border-b border-border"
     >
-      {items.map((item) => {
+      {visibleItems.map((item) => {
         const Icon = item.icon
         const active =
           item.href === "/people"

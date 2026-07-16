@@ -60,6 +60,7 @@ export function JobDescriptionLifecycle({
         actions={
           <div className="flex gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/people/structure" />}
             >
@@ -67,6 +68,7 @@ export function JobDescriptionLifecycle({
             </Button>
 
             <Button
+              nativeButton={false}
               render={
                 <Link
                   href={`/people/structure/positions/${data.position.id}/job-descriptions/new`}
@@ -208,6 +210,7 @@ export function JobDescriptionLifecycle({
 
                     <div className="flex flex-wrap gap-2">
                       <Button
+                        nativeButton={false}
                         variant="outline"
                         render={
                           <Link

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import {
   createDepartment,
   createPosition,
@@ -66,10 +67,8 @@ export function DepartmentRecordForm({
   useStructureMessage(state)
 
   return (
-    <form
-      action={formAction}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
+    <form action={formAction}>
+      <PageShell>
       <PeopleNav />
 
       <PageHeader
@@ -78,8 +77,9 @@ export function DepartmentRecordForm({
         }
         description="Configure the department identity and status."
         actions={
-          <div className="flex gap-2">
+          <>
             <Button
+              nativeButton={false}
               variant="outline"
               render={
                 <Link
@@ -99,7 +99,7 @@ export function DepartmentRecordForm({
               <Save />
               {pending ? "Saving…" : "Save department"}
             </Button>
-          </div>
+          </>
         }
       />
 
@@ -189,6 +189,7 @@ export function DepartmentRecordForm({
           )}
         </div>
       </section>
+      </PageShell>
     </form>
   )
 }
@@ -210,18 +211,17 @@ export function PositionRecordForm({
   useStructureMessage(state)
 
   return (
-    <form
-      action={formAction}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
+    <form action={formAction}>
+      <PageShell>
       <PeopleNav />
 
       <PageHeader
         title={position ? "Edit position" : "New position"}
         description="Configure the position identity and department."
         actions={
-          <div className="flex gap-2">
+          <>
             <Button
+              nativeButton={false}
               variant="outline"
               render={
                 <Link
@@ -241,7 +241,7 @@ export function PositionRecordForm({
               <Save />
               {pending ? "Saving…" : "Save position"}
             </Button>
-          </div>
+          </>
         }
       />
 
@@ -344,6 +344,39 @@ export function PositionRecordForm({
             />
           </div>
 
+          <div>
+            <label
+              htmlFor="systemRoleCode"
+              className="text-sm font-medium"
+            >
+              System access role
+            </label>
+            <select
+              id="systemRoleCode"
+              name="systemRoleCode"
+              defaultValue={position?.systemRoleCode ?? ""}
+              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+            >
+              <option value="">
+                Employee self-service only
+              </option>
+              <option value="LEAVE_APPROVER">
+                Leave Approver
+              </option>
+              <option value="HR_ADMINISTRATOR">
+                HR Administrator
+              </option>
+              <option value="SYSTEM_ADMINISTRATOR">
+                System Administrator
+              </option>
+            </select>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Holders of this position receive the selected
+              elevated access in addition to employee
+              self-service.
+            </p>
+          </div>
+
           <div className="md:col-span-2">
             <label
               htmlFor="description"
@@ -375,6 +408,7 @@ export function PositionRecordForm({
           )}
         </div>
       </section>
+      </PageShell>
     </form>
   )
 }

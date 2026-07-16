@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
 
 export const metadata: Metadata = {
@@ -86,15 +87,16 @@ export default async function LocationPage({
     .join(", ")
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <PageShell>
       <AdministrationNav />
 
       <PageHeader
         title={location.name}
         description="Location profile and regional configuration."
         actions={
-          <div className="flex flex-wrap gap-2">
+          <>
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/administration/locations" />}
             >
@@ -103,6 +105,7 @@ export default async function LocationPage({
             </Button>
 
             <Button
+              nativeButton={false}
               render={
                 <Link
                   href={`/administration/locations/${location.id}/edit`}
@@ -112,7 +115,7 @@ export default async function LocationPage({
               <Pencil />
               Edit location
             </Button>
-          </div>
+          </>
         }
       />
 
@@ -255,6 +258,7 @@ export default async function LocationPage({
         </p>
 
         <Button
+          nativeButton={false}
           variant="outline"
           render={
             <Link
@@ -266,6 +270,6 @@ export default async function LocationPage({
           Edit location
         </Button>
       </footer>
-    </div>
+    </PageShell>
   )
 }

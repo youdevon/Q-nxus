@@ -25,34 +25,25 @@ import {
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
+import { resolveBreadcrumb } from "@/src/components/layout/resolve-breadcrumb"
 import { ThemeSwitcher } from "@/src/components/layout/theme-switcher"
-import { navigationConfig } from "@/src/config/navigation.config"
+import { logout } from "@/src/modules/auth/actions/login"
+import { useAuth } from "@/src/modules/auth/context/auth-provider"
 import { NotificationBell } from "@/src/modules/notifications"
 
-function resolveBreadcrumb(pathname: string) {
-  if (pathname === "/") {
-    return [{ label: "Dashboard", href: "/", current: true }]
-  }
-
-  const match = navigationConfig
-    .flatMap((section) => section.items)
-    .find(
-      (item) => item.href !== "/" && pathname.startsWith(item.href)
-    )
-
-  return [
-    { label: "Dashboard", href: "/", current: false },
-    {
-      label: match?.title ?? "Page",
-      href: match?.href ?? pathname,
-      current: true,
-    },
-  ]
+function initials(firstName: string, lastName: string): string {
+  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
 }
 
 export function AppHeader() {
   const pathname = usePathname()
   const crumbs = resolveBreadcrumb(pathname)
+  const { user } = useAuth()
+
+  const displayName = user
+    ? `${user.firstName} ${user.lastName}`
+    : "Signed out"
+  const email = user?.email ?? ""
 
   return (
     <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/90 px-4 backdrop-blur supports-backdrop-filter:bg-background/75">
@@ -62,11 +53,13 @@ export function AppHeader() {
       <Breadcrumb className="hidden min-w-0 sm:block">
         <BreadcrumbList>
           {crumbs.map((crumb, index) => (
-            <div key={crumb.href} className="contents">
+            <div key={`${crumb.href}-${index}`} className="contents">
               {index > 0 && <BreadcrumbSeparator />}
               <BreadcrumbItem>
                 {crumb.current ? (
-                  <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                  <BreadcrumbPage className="truncate">
+                    {crumb.label}
+                  </BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink render={<Link href={crumb.href} />}>
                     {crumb.label}
@@ -112,23 +105,35 @@ export function AppHeader() {
             }
           >
             <Avatar size="sm">
-              <AvatarFallback>AM</AvatarFallback>
+              <AvatarFallback>
+                {user
+                  ? initials(user.firstName, user.lastName)
+                  : "?"}
+              </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium">Alex Morgan</span>
-                <span className="text-xs text-muted-foreground">
-                  alex.morgan@example.com
+                <span className="text-sm font-medium">
+                  {displayName}
                 </span>
+                {email && (
+                  <span className="text-xs text-muted-foreground">
+                    {email}
+                  </span>
+                )}
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Preferences</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Sign out</DropdownMenuItem>
+            <form action={logout}>
+              <DropdownMenuItem
+                nativeButton={false}
+                render={<button type="submit" className="w-full" />}
+              >
+                Sign out
+              </DropdownMenuItem>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

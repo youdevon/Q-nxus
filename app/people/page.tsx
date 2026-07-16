@@ -1,10 +1,12 @@
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 
 import { EmployeeDirectory } from "@/src/modules/hr/components/employee-directory"
 import {
   getEmployees,
   type EmployeeDirectoryFilters,
 } from "@/src/modules/hr/data/get-employees"
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
 
 export const metadata: Metadata = {
   title: "Employees",
@@ -25,6 +27,25 @@ export default async function PeoplePage({
 }: {
   searchParams: SearchParams
 }) {
+  const capabilities = await getUserCapabilities()
+
+  if (!capabilities) {
+    redirect("/login")
+  }
+
+  if (
+    !capabilities.canAny(
+      "people.directory.view",
+      "people.manage",
+    )
+  ) {
+    if (capabilities.employeeId) {
+      redirect(`/people/employees/${capabilities.employeeId}`)
+    }
+
+    redirect("/")
+  }
+
   const params = await searchParams
 
   const filters: EmployeeDirectoryFilters = {

@@ -96,6 +96,7 @@ export default async function UserAccountPage({
         actions={
           <div className="flex flex-wrap gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/administration/access" />}
             >
@@ -104,6 +105,7 @@ export default async function UserAccountPage({
             </Button>
 
             <Button
+              nativeButton={false}
               render={
                 <Link
                   href={`/administration/access/users/${user.id}/edit`}
@@ -318,6 +320,7 @@ export default async function UserAccountPage({
         </p>
 
         <Button
+          nativeButton={false}
           variant="outline"
           render={
             <Link

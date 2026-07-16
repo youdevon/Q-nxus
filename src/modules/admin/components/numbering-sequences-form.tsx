@@ -76,6 +76,7 @@ export function NumberingSequencesForm({
         actions={
           <div className="flex gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={
                 <Link href="/administration/numbering-sequences" />

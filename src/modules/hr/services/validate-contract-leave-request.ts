@@ -1,0 +1,148 @@
+import { Prisma } from "@/generated/prisma/client"
+import { prisma } from "@/lib/prisma"
+import { calculateLeaveDays } from "@/src/modules/hr/services/calculate-leave-days"
+
+export type ValidatedContractLeaveRequest = {
+  employeeId: string
+  contractId: string
+  leaveTypeId: string
+  leaveBalanceId: string | null
+  requestedQuantity: Prisma.Decimal
+  days: {
+    leaveDate: Date
+    quantity: Prisma.Decimal
+    isWorkingDay: boolean
+  }[]
+}
+
+export async function validateContractLeaveRequest({
+  employeeId,
+  contractId,
+  leaveTypeId,
+  startDate,
+  endDate,
+}: {
+  employeeId: string
+  contractId: string
+  leaveTypeId: string
+  startDate: Date
+  endDate: Date
+}): Promise<ValidatedContractLeaveRequest> {
+  const contract =
+    await prisma.employmentContract.findFirst({
+      where: {
+        id: contractId,
+        employeeId,
+      },
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+      },
+    })
+
+  if (!contract) {
+    throw new Error(
+      "The selected employment contract is invalid.",
+    )
+  }
+
+  if (!contract.endDate) {
+    throw new Error(
+      "The selected contract does not have an end date.",
+    )
+  }
+
+  if (
+    startDate < contract.startDate ||
+    endDate > contract.endDate
+  ) {
+    throw new Error(
+      "The leave request must fall entirely within the selected contract period.",
+    )
+  }
+
+  const leaveType = await prisma.leaveType.findFirst({
+    where: {
+      id: leaveTypeId,
+      isActive: true,
+    },
+    select: {
+      id: true,
+      requiresBalance: true,
+      allowsNegativeBalance: true,
+      maximumConsecutiveDays: true,
+    },
+  })
+
+  if (!leaveType) {
+    throw new Error(
+      "The selected leave type is invalid or inactive.",
+    )
+  }
+
+  const calculation = calculateLeaveDays({
+    startDate,
+    endDate,
+  })
+
+  if (calculation.requestedQuantity.lte(0)) {
+    throw new Error(
+      "The selected dates do not include any working days.",
+    )
+  }
+
+  if (
+    leaveType.maximumConsecutiveDays &&
+    calculation.requestedQuantity.gt(
+      leaveType.maximumConsecutiveDays,
+    )
+  ) {
+    throw new Error(
+      `This leave type permits a maximum of ${leaveType.maximumConsecutiveDays.toString()} consecutive working days.`,
+    )
+  }
+
+  const balance =
+    await prisma.employeeLeaveBalance.findUnique({
+      where: {
+        contractId_leaveTypeId: {
+          contractId,
+          leaveTypeId,
+        },
+      },
+      select: {
+        id: true,
+        availableBalance: true,
+      },
+    })
+
+  if (leaveType.requiresBalance && !balance) {
+    throw new Error(
+      "No leave balance exists for this contract and leave type.",
+    )
+  }
+
+  if (
+    leaveType.requiresBalance &&
+    balance &&
+    !leaveType.allowsNegativeBalance &&
+    calculation.requestedQuantity.gt(
+      balance.availableBalance,
+    )
+  ) {
+    throw new Error(
+      `The requested leave exceeds the available balance of ${balance.availableBalance.toString()} days.`,
+    )
+  }
+
+  return {
+    employeeId,
+    contractId,
+    leaveTypeId,
+    leaveBalanceId: balance?.id ?? null,
+    requestedQuantity:
+      calculation.requestedQuantity,
+    days: calculation.days,
+  }
+}

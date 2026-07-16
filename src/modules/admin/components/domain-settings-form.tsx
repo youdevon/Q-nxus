@@ -226,6 +226,7 @@ export function DomainSettingsForm({
         actions={
           <div className="flex gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/administration/settings" />}
             >

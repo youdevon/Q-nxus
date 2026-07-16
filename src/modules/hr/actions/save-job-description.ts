@@ -10,6 +10,7 @@ import {
   Prisma,
 } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
 
 export type JobDescriptionFormState = {
   status: "idle" | "error" | "conflict"
@@ -48,19 +49,6 @@ async function getRequestMetadata() {
       null,
     userAgent: requestHeaders.get("user-agent"),
   }
-}
-
-async function getAdministratorId(): Promise<string | null> {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: "admin@q-nxus.local",
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  return user?.id ?? null
 }
 
 function parseCriteria(formData: FormData) {
@@ -155,6 +143,16 @@ export async function createJobDescription(
   _previousState: JobDescriptionFormState,
   formData: FormData,
 ): Promise<JobDescriptionFormState> {
+
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const positionId = textValue(formData, "positionId")
   const title = textValue(formData, "title")
   const effectiveFrom = parseDate(
@@ -183,9 +181,7 @@ export async function createJobDescription(
   try {
     const criteria = parseCriteria(formData)
     const metadata = await getRequestMetadata()
-    const administratorId = await getAdministratorId()
-
-    const created = await prisma.$transaction(
+        const created = await prisma.$transaction(
       async (transaction) => {
         const position = await transaction.position.findUnique({
           where: {
@@ -253,7 +249,7 @@ export async function createJobDescription(
 
         await transaction.auditEvent.create({
           data: {
-            userId: administratorId,
+            userId: actor.actor.userId,
             moduleKey: "hr",
             action: "CREATE",
             entityType: "PositionJobDescription",
@@ -314,6 +310,16 @@ export async function updateJobDescription(
   _previousState: JobDescriptionFormState,
   formData: FormData,
 ): Promise<JobDescriptionFormState> {
+
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const id = textValue(formData, "id")
   const positionId = textValue(formData, "positionId")
   const submittedUpdatedAt = textValue(formData, "updatedAt")
@@ -375,9 +381,7 @@ export async function updateJobDescription(
     }
 
     const metadata = await getRequestMetadata()
-    const administratorId = await getAdministratorId()
-
-    const saved = await prisma.$transaction(
+        const saved = await prisma.$transaction(
       async (transaction) => {
         const updatedCount =
           await transaction.positionJobDescription.updateMany({
@@ -438,7 +442,7 @@ export async function updateJobDescription(
 
         await transaction.auditEvent.create({
           data: {
-            userId: administratorId,
+            userId: actor.actor.userId,
             moduleKey: "hr",
             action: "UPDATE",
             entityType: "PositionJobDescription",
@@ -518,6 +522,12 @@ export async function updateJobDescription(
 export async function activateJobDescription(
   formData: FormData,
 ): Promise<void> {
+
+  const actor = await requireActor("people.manage")
+  if (!actor.ok) {
+    throw new Error(actor.message)
+  }
+
   const id = textValue(formData, "id")
   const positionId = textValue(formData, "positionId")
 
@@ -526,9 +536,7 @@ export async function activateJobDescription(
   }
 
   const metadata = await getRequestMetadata()
-  const administratorId = await getAdministratorId()
-
-  await prisma.$transaction(async (transaction) => {
+    await prisma.$transaction(async (transaction) => {
     const current =
       await transaction.positionJobDescription.findUnique({
         where: {
@@ -566,7 +574,7 @@ export async function activateJobDescription(
 
     await transaction.auditEvent.create({
       data: {
-        userId: administratorId,
+        userId: actor.actor.userId,
         moduleKey: "hr",
         action: "ACTIVATE",
         entityType: "PositionJobDescription",
@@ -594,6 +602,12 @@ export async function activateJobDescription(
 export async function cloneJobDescription(
   formData: FormData,
 ): Promise<void> {
+
+  const actor = await requireActor("people.manage")
+  if (!actor.ok) {
+    throw new Error(actor.message)
+  }
+
   const id = textValue(formData, "id")
   const positionId = textValue(formData, "positionId")
 
@@ -602,9 +616,7 @@ export async function cloneJobDescription(
   }
 
   const metadata = await getRequestMetadata()
-  const administratorId = await getAdministratorId()
-
-  const cloned = await prisma.$transaction(
+    const cloned = await prisma.$transaction(
     async (transaction) => {
       const source =
         await transaction.positionJobDescription.findFirst({
@@ -684,7 +696,7 @@ export async function cloneJobDescription(
 
       await transaction.auditEvent.create({
         data: {
-          userId: administratorId,
+          userId: actor.actor.userId,
           moduleKey: "hr",
           action: "CLONE",
           entityType: "PositionJobDescription",
@@ -725,6 +737,12 @@ export async function cloneJobDescription(
 export async function retireJobDescription(
   formData: FormData,
 ): Promise<void> {
+
+  const actor = await requireActor("people.manage")
+  if (!actor.ok) {
+    throw new Error(actor.message)
+  }
+
   const id = textValue(formData, "id")
   const positionId = textValue(formData, "positionId")
 
@@ -733,9 +751,7 @@ export async function retireJobDescription(
   }
 
   const metadata = await getRequestMetadata()
-  const administratorId = await getAdministratorId()
-
-  await prisma.$transaction(async (transaction) => {
+    await prisma.$transaction(async (transaction) => {
     const current =
       await transaction.positionJobDescription.findFirst({
         where: {
@@ -763,7 +779,7 @@ export async function retireJobDescription(
 
     await transaction.auditEvent.create({
       data: {
-        userId: administratorId,
+        userId: actor.actor.userId,
         moduleKey: "hr",
         action: "RETIRE",
         entityType: "PositionJobDescription",

@@ -21,6 +21,7 @@ export function BusinessUnitsDirectory({
         description="Manage operational divisions, reporting relationships and effective organizational structures."
         actions={
           <Button
+            nativeButton={false}
             render={<Link href="/administration/business-units/new" />}
           >
             <Plus />

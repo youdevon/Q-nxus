@@ -54,6 +54,7 @@ export default async function NumberingSequencesPage() {
         description="Current prefixes, number lengths, reset rules and reference previews."
         actions={
           <Button
+            nativeButton={false}
             render={
               <Link href="/administration/numbering-sequences/edit" />
             }
@@ -224,6 +225,7 @@ export default async function NumberingSequencesPage() {
         </p>
 
         <Button
+          nativeButton={false}
           variant="outline"
           render={
             <Link href="/administration/numbering-sequences/edit" />

@@ -46,6 +46,7 @@ export default async function FeaturesPage() {
         description="Current feature availability, operating status and effective periods."
         actions={
           <Button
+            nativeButton={false}
             render={<Link href="/administration/features/edit" />}
           >
             <Pencil />
@@ -164,6 +165,7 @@ export default async function FeaturesPage() {
         </p>
 
         <Button
+          nativeButton={false}
           variant="outline"
           render={<Link href="/administration/features/edit" />}
         >

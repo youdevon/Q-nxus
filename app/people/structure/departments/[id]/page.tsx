@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import { PeopleNav } from "@/src/modules/hr/components/people-nav"
 import { getDepartmentProfile } from "@/src/modules/hr/data/get-people-structure"
 
@@ -36,15 +37,16 @@ export default async function DepartmentPage({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <PageShell size="lg">
       <PeopleNav />
 
       <PageHeader
         title={department.name}
         description="Department profile, positions and assigned employees."
         actions={
-          <div className="flex gap-2">
+          <>
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/people/structure" />}
             >
@@ -53,6 +55,7 @@ export default async function DepartmentPage({
             </Button>
 
             <Button
+              nativeButton={false}
               render={
                 <Link
                   href={`/people/structure/departments/${department.id}/edit`}
@@ -62,7 +65,7 @@ export default async function DepartmentPage({
               <Pencil />
               Edit department
             </Button>
-          </div>
+          </>
         }
       />
 
@@ -180,6 +183,6 @@ export default async function DepartmentPage({
           </div>
         )}
       </section>
-    </div>
+    </PageShell>
   )
 }

@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { revalidatePath } from "next/cache"
 
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
 
 export type RoleFormState = {
   status: "idle" | "success" | "error" | "conflict"
@@ -29,6 +30,15 @@ export async function saveRole(
   _previousState: RoleFormState,
   formData: FormData,
 ): Promise<RoleFormState> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const id = textValue(formData, "id")
   const submittedUpdatedAt = textValue(formData, "updatedAt")
 
@@ -144,15 +154,6 @@ export async function saveRole(
         }
       }
 
-      const administrator = await transaction.user.findUnique({
-        where: {
-          email: "admin@q-nxus.local",
-        },
-        select: {
-          id: true,
-        },
-      })
-
       if (!id) {
         const created = await transaction.role.create({
           data: {
@@ -176,7 +177,7 @@ export async function saveRole(
 
         await transaction.auditEvent.create({
           data: {
-            userId: administrator?.id ?? null,
+            userId: actor.actor.userId,
             moduleKey: "identity",
             action: "CREATE",
             entityType: "Role",
@@ -286,7 +287,7 @@ export async function saveRole(
 
       await transaction.auditEvent.create({
         data: {
-          userId: administrator?.id ?? null,
+          userId: actor.actor.userId,
           moduleKey: "identity",
           action: "UPDATE",
           entityType: "Role",

@@ -257,6 +257,7 @@ export function AuditTrail({
             </Button>
 
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/administration/audit" />}
             >
@@ -384,6 +385,7 @@ export function AuditTrail({
 
         <div className="flex gap-2">
           <Button
+            nativeButton={false}
             variant="outline"
             disabled={data.page <= 1}
             render={
@@ -404,6 +406,7 @@ export function AuditTrail({
           </Button>
 
           <Button
+            nativeButton={false}
             variant="outline"
             disabled={data.page >= data.totalPages}
             render={

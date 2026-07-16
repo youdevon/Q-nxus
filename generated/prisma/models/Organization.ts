@@ -342,6 +342,10 @@ export type OrganizationWhereInput = {
   featureControls?: Prisma.FeatureControlListRelationFilter
   domainSettings?: Prisma.DomainSettingListRelationFilter
   numberingSequences?: Prisma.NumberingSequenceListRelationFilter
+  allowanceCategories?: Prisma.AllowanceCategoryListRelationFilter
+  leaveTypes?: Prisma.LeaveTypeListRelationFilter
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
@@ -374,6 +378,10 @@ export type OrganizationOrderByWithRelationInput = {
   featureControls?: Prisma.FeatureControlOrderByRelationAggregateInput
   domainSettings?: Prisma.DomainSettingOrderByRelationAggregateInput
   numberingSequences?: Prisma.NumberingSequenceOrderByRelationAggregateInput
+  allowanceCategories?: Prisma.AllowanceCategoryOrderByRelationAggregateInput
+  leaveTypes?: Prisma.LeaveTypeOrderByRelationAggregateInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleOrderByRelationAggregateInput
+  leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -409,6 +417,10 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   featureControls?: Prisma.FeatureControlListRelationFilter
   domainSettings?: Prisma.DomainSettingListRelationFilter
   numberingSequences?: Prisma.NumberingSequenceListRelationFilter
+  allowanceCategories?: Prisma.AllowanceCategoryListRelationFilter
+  leaveTypes?: Prisma.LeaveTypeListRelationFilter
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }, "id" | "code">
 
 export type OrganizationOrderByWithAggregationInput = {
@@ -493,6 +505,10 @@ export type OrganizationCreateInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
@@ -525,6 +541,10 @@ export type OrganizationUncheckedCreateInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
@@ -557,6 +577,10 @@ export type OrganizationUpdateInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
@@ -589,6 +613,10 @@ export type OrganizationUncheckedUpdateInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
@@ -919,6 +947,62 @@ export type OrganizationUpdateOneRequiredWithoutEmployeesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutEmployeesInput, Prisma.OrganizationUpdateWithoutEmployeesInput>, Prisma.OrganizationUncheckedUpdateWithoutEmployeesInput>
 }
 
+export type OrganizationCreateNestedOneWithoutLeaveTypesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveTypesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveTypesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLeaveTypesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutLeaveTypesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveTypesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveTypesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLeaveTypesInput
+  upsert?: Prisma.OrganizationUpsertWithoutLeaveTypesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutLeaveTypesInput, Prisma.OrganizationUpdateWithoutLeaveTypesInput>, Prisma.OrganizationUncheckedUpdateWithoutLeaveTypesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutLeaveEntitlementRulesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveEntitlementRulesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLeaveEntitlementRulesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutLeaveEntitlementRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveEntitlementRulesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLeaveEntitlementRulesInput
+  upsert?: Prisma.OrganizationUpsertWithoutLeaveEntitlementRulesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutLeaveEntitlementRulesInput, Prisma.OrganizationUpdateWithoutLeaveEntitlementRulesInput>, Prisma.OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutLeaveRequestsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveRequestsInput, Prisma.OrganizationUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLeaveRequestsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutLeaveRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveRequestsInput, Prisma.OrganizationUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutLeaveRequestsInput
+  upsert?: Prisma.OrganizationUpsertWithoutLeaveRequestsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutLeaveRequestsInput, Prisma.OrganizationUpdateWithoutLeaveRequestsInput>, Prisma.OrganizationUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutAllowanceCategoriesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAllowanceCategoriesInput, Prisma.OrganizationUncheckedCreateWithoutAllowanceCategoriesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAllowanceCategoriesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAllowanceCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAllowanceCategoriesInput, Prisma.OrganizationUncheckedCreateWithoutAllowanceCategoriesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAllowanceCategoriesInput
+  upsert?: Prisma.OrganizationUpsertWithoutAllowanceCategoriesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAllowanceCategoriesInput, Prisma.OrganizationUpdateWithoutAllowanceCategoriesInput>, Prisma.OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput>
+}
+
 export type OrganizationCreateWithoutUsersInput = {
   id?: string
   code: string
@@ -948,6 +1032,10 @@ export type OrganizationCreateWithoutUsersInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutUsersInput = {
@@ -979,6 +1067,10 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutUsersInput = {
@@ -1026,6 +1118,10 @@ export type OrganizationUpdateWithoutUsersInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutUsersInput = {
@@ -1057,6 +1153,10 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRolesInput = {
@@ -1088,6 +1188,10 @@ export type OrganizationCreateWithoutRolesInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRolesInput = {
@@ -1119,6 +1223,10 @@ export type OrganizationUncheckedCreateWithoutRolesInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRolesInput = {
@@ -1166,6 +1274,10 @@ export type OrganizationUpdateWithoutRolesInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRolesInput = {
@@ -1197,6 +1309,10 @@ export type OrganizationUncheckedUpdateWithoutRolesInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutBusinessUnitsInput = {
@@ -1228,6 +1344,10 @@ export type OrganizationCreateWithoutBusinessUnitsInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutBusinessUnitsInput = {
@@ -1259,6 +1379,10 @@ export type OrganizationUncheckedCreateWithoutBusinessUnitsInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutBusinessUnitsInput = {
@@ -1306,6 +1430,10 @@ export type OrganizationUpdateWithoutBusinessUnitsInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBusinessUnitsInput = {
@@ -1337,6 +1465,10 @@ export type OrganizationUncheckedUpdateWithoutBusinessUnitsInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLocationsInput = {
@@ -1368,6 +1500,10 @@ export type OrganizationCreateWithoutLocationsInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -1399,6 +1535,10 @@ export type OrganizationUncheckedCreateWithoutLocationsInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -1446,6 +1586,10 @@ export type OrganizationUpdateWithoutLocationsInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -1477,6 +1621,10 @@ export type OrganizationUncheckedUpdateWithoutLocationsInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutReferenceDataSetsInput = {
@@ -1508,6 +1656,10 @@ export type OrganizationCreateWithoutReferenceDataSetsInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutReferenceDataSetsInput = {
@@ -1539,6 +1691,10 @@ export type OrganizationUncheckedCreateWithoutReferenceDataSetsInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutReferenceDataSetsInput = {
@@ -1586,6 +1742,10 @@ export type OrganizationUpdateWithoutReferenceDataSetsInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutReferenceDataSetsInput = {
@@ -1617,6 +1777,10 @@ export type OrganizationUncheckedUpdateWithoutReferenceDataSetsInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutFeatureControlsInput = {
@@ -1648,6 +1812,10 @@ export type OrganizationCreateWithoutFeatureControlsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutFeatureControlsInput = {
@@ -1679,6 +1847,10 @@ export type OrganizationUncheckedCreateWithoutFeatureControlsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutFeatureControlsInput = {
@@ -1726,6 +1898,10 @@ export type OrganizationUpdateWithoutFeatureControlsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutFeatureControlsInput = {
@@ -1757,6 +1933,10 @@ export type OrganizationUncheckedUpdateWithoutFeatureControlsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDomainSettingsInput = {
@@ -1788,6 +1968,10 @@ export type OrganizationCreateWithoutDomainSettingsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDomainSettingsInput = {
@@ -1819,6 +2003,10 @@ export type OrganizationUncheckedCreateWithoutDomainSettingsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDomainSettingsInput = {
@@ -1866,6 +2054,10 @@ export type OrganizationUpdateWithoutDomainSettingsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDomainSettingsInput = {
@@ -1897,6 +2089,10 @@ export type OrganizationUncheckedUpdateWithoutDomainSettingsInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutNumberingSequencesInput = {
@@ -1928,6 +2124,10 @@ export type OrganizationCreateWithoutNumberingSequencesInput = {
   referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutNumberingSequencesInput = {
@@ -1959,6 +2159,10 @@ export type OrganizationUncheckedCreateWithoutNumberingSequencesInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutNumberingSequencesInput = {
@@ -2006,6 +2210,10 @@ export type OrganizationUpdateWithoutNumberingSequencesInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutNumberingSequencesInput = {
@@ -2037,6 +2245,10 @@ export type OrganizationUncheckedUpdateWithoutNumberingSequencesInput = {
   referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDepartmentsInput = {
@@ -2068,6 +2280,10 @@ export type OrganizationCreateWithoutDepartmentsInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -2099,6 +2315,10 @@ export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -2146,6 +2366,10 @@ export type OrganizationUpdateWithoutDepartmentsInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -2177,6 +2401,10 @@ export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeesInput = {
@@ -2208,6 +2436,10 @@ export type OrganizationCreateWithoutEmployeesInput = {
   featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeesInput = {
@@ -2239,6 +2471,10 @@ export type OrganizationUncheckedCreateWithoutEmployeesInput = {
   featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
   domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeesInput = {
@@ -2286,6 +2522,10 @@ export type OrganizationUpdateWithoutEmployeesInput = {
   featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
@@ -2317,6 +2557,634 @@ export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
   featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
   domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutLeaveTypesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutLeaveTypesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutLeaveTypesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveTypesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveTypesInput>
+}
+
+export type OrganizationUpsertWithoutLeaveTypesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutLeaveTypesInput, Prisma.OrganizationUncheckedUpdateWithoutLeaveTypesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveTypesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveTypesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutLeaveTypesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutLeaveTypesInput, Prisma.OrganizationUncheckedUpdateWithoutLeaveTypesInput>
+}
+
+export type OrganizationUpdateWithoutLeaveTypesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutLeaveTypesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutLeaveEntitlementRulesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutLeaveEntitlementRulesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveEntitlementRulesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput>
+}
+
+export type OrganizationUpsertWithoutLeaveEntitlementRulesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutLeaveEntitlementRulesInput, Prisma.OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveEntitlementRulesInput, Prisma.OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutLeaveEntitlementRulesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutLeaveEntitlementRulesInput, Prisma.OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput>
+}
+
+export type OrganizationUpdateWithoutLeaveEntitlementRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutLeaveRequestsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutLeaveRequestsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutLeaveRequestsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveRequestsInput, Prisma.OrganizationUncheckedCreateWithoutLeaveRequestsInput>
+}
+
+export type OrganizationUpsertWithoutLeaveRequestsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutLeaveRequestsInput, Prisma.OrganizationUncheckedUpdateWithoutLeaveRequestsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutLeaveRequestsInput, Prisma.OrganizationUncheckedCreateWithoutLeaveRequestsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutLeaveRequestsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutLeaveRequestsInput, Prisma.OrganizationUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
+export type OrganizationUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAllowanceCategoriesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAllowanceCategoriesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAllowanceCategoriesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAllowanceCategoriesInput, Prisma.OrganizationUncheckedCreateWithoutAllowanceCategoriesInput>
+}
+
+export type OrganizationUpsertWithoutAllowanceCategoriesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAllowanceCategoriesInput, Prisma.OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAllowanceCategoriesInput, Prisma.OrganizationUncheckedCreateWithoutAllowanceCategoriesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAllowanceCategoriesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAllowanceCategoriesInput, Prisma.OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput>
+}
+
+export type OrganizationUpdateWithoutAllowanceCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -2335,6 +3203,10 @@ export type OrganizationCountOutputType = {
   featureControls: number
   domainSettings: number
   numberingSequences: number
+  allowanceCategories: number
+  leaveTypes: number
+  leaveEntitlementRules: number
+  leaveRequests: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2348,6 +3220,10 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   featureControls?: boolean | OrganizationCountOutputTypeCountFeatureControlsArgs
   domainSettings?: boolean | OrganizationCountOutputTypeCountDomainSettingsArgs
   numberingSequences?: boolean | OrganizationCountOutputTypeCountNumberingSequencesArgs
+  allowanceCategories?: boolean | OrganizationCountOutputTypeCountAllowanceCategoriesArgs
+  leaveTypes?: boolean | OrganizationCountOutputTypeCountLeaveTypesArgs
+  leaveEntitlementRules?: boolean | OrganizationCountOutputTypeCountLeaveEntitlementRulesArgs
+  leaveRequests?: boolean | OrganizationCountOutputTypeCountLeaveRequestsArgs
 }
 
 /**
@@ -2430,6 +3306,34 @@ export type OrganizationCountOutputTypeCountNumberingSequencesArgs<ExtArgs exten
   where?: Prisma.NumberingSequenceWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAllowanceCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AllowanceCategoryWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountLeaveTypesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveTypeWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountLeaveEntitlementRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveEntitlementRuleWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountLeaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveRequestWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2461,6 +3365,10 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   featureControls?: boolean | Prisma.Organization$featureControlsArgs<ExtArgs>
   domainSettings?: boolean | Prisma.Organization$domainSettingsArgs<ExtArgs>
   numberingSequences?: boolean | Prisma.Organization$numberingSequencesArgs<ExtArgs>
+  allowanceCategories?: boolean | Prisma.Organization$allowanceCategoriesArgs<ExtArgs>
+  leaveTypes?: boolean | Prisma.Organization$leaveTypesArgs<ExtArgs>
+  leaveEntitlementRules?: boolean | Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.Organization$leaveRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -2542,6 +3450,10 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   featureControls?: boolean | Prisma.Organization$featureControlsArgs<ExtArgs>
   domainSettings?: boolean | Prisma.Organization$domainSettingsArgs<ExtArgs>
   numberingSequences?: boolean | Prisma.Organization$numberingSequencesArgs<ExtArgs>
+  allowanceCategories?: boolean | Prisma.Organization$allowanceCategoriesArgs<ExtArgs>
+  leaveTypes?: boolean | Prisma.Organization$leaveTypesArgs<ExtArgs>
+  leaveEntitlementRules?: boolean | Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.Organization$leaveRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2560,6 +3472,10 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     featureControls: Prisma.$FeatureControlPayload<ExtArgs>[]
     domainSettings: Prisma.$DomainSettingPayload<ExtArgs>[]
     numberingSequences: Prisma.$NumberingSequencePayload<ExtArgs>[]
+    allowanceCategories: Prisma.$AllowanceCategoryPayload<ExtArgs>[]
+    leaveTypes: Prisma.$LeaveTypePayload<ExtArgs>[]
+    leaveEntitlementRules: Prisma.$LeaveEntitlementRulePayload<ExtArgs>[]
+    leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2985,6 +3901,10 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   featureControls<T extends Prisma.Organization$featureControlsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$featureControlsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeatureControlPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   domainSettings<T extends Prisma.Organization$domainSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$domainSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DomainSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   numberingSequences<T extends Prisma.Organization$numberingSequencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$numberingSequencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NumberingSequencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  allowanceCategories<T extends Prisma.Organization$allowanceCategoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$allowanceCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllowanceCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveTypes<T extends Prisma.Organization$leaveTypesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$leaveTypesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveEntitlementRules<T extends Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveEntitlementRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveRequests<T extends Prisma.Organization$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3663,6 +4583,102 @@ export type Organization$numberingSequencesArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.NumberingSequenceScalarFieldEnum | Prisma.NumberingSequenceScalarFieldEnum[]
+}
+
+/**
+ * Organization.allowanceCategories
+ */
+export type Organization$allowanceCategoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AllowanceCategory
+   */
+  select?: Prisma.AllowanceCategorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AllowanceCategory
+   */
+  omit?: Prisma.AllowanceCategoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AllowanceCategoryInclude<ExtArgs> | null
+  where?: Prisma.AllowanceCategoryWhereInput
+  orderBy?: Prisma.AllowanceCategoryOrderByWithRelationInput | Prisma.AllowanceCategoryOrderByWithRelationInput[]
+  cursor?: Prisma.AllowanceCategoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AllowanceCategoryScalarFieldEnum | Prisma.AllowanceCategoryScalarFieldEnum[]
+}
+
+/**
+ * Organization.leaveTypes
+ */
+export type Organization$leaveTypesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveType
+   */
+  select?: Prisma.LeaveTypeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveType
+   */
+  omit?: Prisma.LeaveTypeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveTypeInclude<ExtArgs> | null
+  where?: Prisma.LeaveTypeWhereInput
+  orderBy?: Prisma.LeaveTypeOrderByWithRelationInput | Prisma.LeaveTypeOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveTypeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveTypeScalarFieldEnum | Prisma.LeaveTypeScalarFieldEnum[]
+}
+
+/**
+ * Organization.leaveEntitlementRules
+ */
+export type Organization$leaveEntitlementRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveEntitlementRule
+   */
+  select?: Prisma.LeaveEntitlementRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveEntitlementRule
+   */
+  omit?: Prisma.LeaveEntitlementRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveEntitlementRuleInclude<ExtArgs> | null
+  where?: Prisma.LeaveEntitlementRuleWhereInput
+  orderBy?: Prisma.LeaveEntitlementRuleOrderByWithRelationInput | Prisma.LeaveEntitlementRuleOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveEntitlementRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveEntitlementRuleScalarFieldEnum | Prisma.LeaveEntitlementRuleScalarFieldEnum[]
+}
+
+/**
+ * Organization.leaveRequests
+ */
+export type Organization$leaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveRequest
+   */
+  select?: Prisma.LeaveRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveRequest
+   */
+  omit?: Prisma.LeaveRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveRequestInclude<ExtArgs> | null
+  where?: Prisma.LeaveRequestWhereInput
+  orderBy?: Prisma.LeaveRequestOrderByWithRelationInput | Prisma.LeaveRequestOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveRequestScalarFieldEnum | Prisma.LeaveRequestScalarFieldEnum[]
 }
 
 /**

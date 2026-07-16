@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 import { ConfigurationStatus } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
 
 export type FeatureControlsFormState = {
   status: "idle" | "success" | "error" | "conflict"
@@ -29,6 +30,15 @@ export async function saveFeatureControls(
   _previousState: FeatureControlsFormState,
   formData: FormData,
 ): Promise<FeatureControlsFormState> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const featureIds = formData
     .getAll("featureIds")
     .filter((value): value is string => typeof value === "string")
@@ -47,15 +57,6 @@ export async function saveFeatureControls(
       requestHeaders.get("x-real-ip") ??
       null
     const userAgent = requestHeaders.get("user-agent")
-
-    const administrator = await prisma.user.findUnique({
-      where: {
-        email: "admin@q-nxus.local",
-      },
-      select: {
-        id: true,
-      },
-    })
 
     const result = await prisma.$transaction(async (transaction) => {
       for (const featureId of featureIds) {
@@ -169,7 +170,7 @@ export async function saveFeatureControls(
         if (changed) {
           await transaction.auditEvent.create({
             data: {
-              userId: administrator?.id ?? null,
+              userId: actor.actor.userId,
               moduleKey: "administration",
               action: "UPDATE",
               entityType: "FeatureControl",

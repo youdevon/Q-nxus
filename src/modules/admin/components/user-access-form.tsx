@@ -28,12 +28,14 @@ import {
 } from "@/src/modules/admin/actions/manage-user-role"
 import type {
   AssignableRole,
+  LinkableEmployeeOption,
   UserAccessRecord,
 } from "@/src/modules/admin/data/get-user-access"
 
 type UserAccessFormProps = {
   user: UserAccessRecord
   roles: AssignableRole[]
+  linkableEmployees: LinkableEmployeeOption[]
 }
 
 const initialUserState: UserAccessFormState = {
@@ -65,6 +67,7 @@ function FieldError({
 export function UserAccessForm({
   user,
   roles,
+  linkableEmployees,
 }: UserAccessFormProps) {
   const [userState, userAction, userPending] = useActionState(
     saveUserAccess,
@@ -110,6 +113,7 @@ export function UserAccessForm({
         description="Manage the user account, account status and effective security-role assignments."
         actions={
           <Button
+            nativeButton={false}
             variant="outline"
             render={
               <Link
@@ -174,6 +178,37 @@ export function UserAccessForm({
                 className="mt-2"
               />
               <FieldError message={userState.errors?.email} />
+            </div>
+
+            <div>
+              <label
+                htmlFor="employeeId"
+                className="text-sm font-medium"
+              >
+                Linked employee
+              </label>
+              <select
+                id="employeeId"
+                name="employeeId"
+                defaultValue={user.employeeId ?? ""}
+                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+              >
+                <option value="">No employee link</option>
+                {linkableEmployees.map((employee) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.lastName}, {employee.firstName} ·{" "}
+                    {employee.employeeNumber}
+                    {employee.positionTitle
+                      ? ` · ${employee.positionTitle}`
+                      : ""}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Required for leave approvals when this person is a
+                supervisor.
+              </p>
+              <FieldError message={userState.errors?.employeeId} />
             </div>
 
             <div>

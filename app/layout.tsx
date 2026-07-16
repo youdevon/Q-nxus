@@ -1,9 +1,12 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { Geist, Geist_Mono } from "next/font/google"
+import { ThemeProvider } from "@wrksz/themes/next"
 
 import { appConfig } from "@/src/config/app.config"
 import { AppProviders } from "@/src/core/providers/app-providers"
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user"
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
 
 import "./globals.css"
 
@@ -25,11 +28,16 @@ export const metadata: Metadata = {
   description: appConfig.description,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode
 }>) {
+  const user = await getCurrentUser()
+  const capabilities = user
+    ? await getUserCapabilities(user.id)
+    : null
+
   return (
     <html
       lang="en"
@@ -37,7 +45,30 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <AppProviders>{children}</AppProviders>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AppProviders
+            user={user}
+            capabilities={
+              capabilities
+                ? {
+                    permissions: capabilities.permissions,
+                    roleCodes: capabilities.roleCodes,
+                    employeeId: capabilities.employeeId,
+                    isSystemAdmin: capabilities.isSystemAdmin,
+                    isHrAdmin: capabilities.isHrAdmin,
+                    isEmployeeOnly: capabilities.isEmployeeOnly,
+                  }
+                : null
+            }
+          >
+            {children}
+          </AppProviders>
+        </ThemeProvider>
       </body>
     </html>
   )

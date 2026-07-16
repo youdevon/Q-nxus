@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 import { ConfigurationStatus } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
 
 export type BusinessUnitFormState = {
   status: "idle" | "success" | "error" | "conflict"
@@ -77,6 +78,15 @@ export async function saveBusinessUnit(
   _previousState: BusinessUnitFormState,
   formData: FormData,
 ): Promise<BusinessUnitFormState> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const id = textValue(formData, "id")
   const submittedUpdatedAt = textValue(formData, "updatedAt")
 
@@ -223,15 +233,6 @@ export async function saveBusinessUnit(
         }
       }
 
-      const administrator = await transaction.user.findUnique({
-        where: {
-          email: "admin@q-nxus.local",
-        },
-        select: {
-          id: true,
-        },
-      })
-
       if (!id) {
         const created = await transaction.businessUnit.create({
           data: {
@@ -248,7 +249,7 @@ export async function saveBusinessUnit(
 
         await transaction.auditEvent.create({
           data: {
-            userId: administrator?.id ?? null,
+            userId: actor.actor.userId,
             moduleKey: "administration",
             action: "CREATE",
             entityType: "BusinessUnit",
@@ -326,7 +327,7 @@ export async function saveBusinessUnit(
 
       await transaction.auditEvent.create({
         data: {
-          userId: administrator?.id ?? null,
+          userId: actor.actor.userId,
           moduleKey: "administration",
           action: "UPDATE",
           entityType: "BusinessUnit",

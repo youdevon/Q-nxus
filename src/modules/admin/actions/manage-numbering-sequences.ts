@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 import { SequenceResetFrequency } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
 
 export type NumberingSequenceFormState = {
   status: "idle" | "success" | "error" | "conflict"
@@ -40,6 +41,15 @@ export async function saveNumberingSequences(
   _previousState: NumberingSequenceFormState,
   formData: FormData,
 ): Promise<NumberingSequenceFormState> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const sequenceIds = formData
     .getAll("sequenceIds")
     .filter((value): value is string => typeof value === "string")
@@ -53,15 +63,6 @@ export async function saveNumberingSequences(
 
   try {
     const { ipAddress, userAgent } = await getRequestMetadata()
-
-    const administrator = await prisma.user.findUnique({
-      where: {
-        email: "admin@q-nxus.local",
-      },
-      select: {
-        id: true,
-      },
-    })
 
     const result = await prisma.$transaction(async (transaction) => {
       for (const sequenceId of sequenceIds) {
@@ -170,7 +171,7 @@ export async function saveNumberingSequences(
         if (changed) {
           await transaction.auditEvent.create({
             data: {
-              userId: administrator?.id ?? null,
+              userId: actor.actor.userId,
               moduleKey: "administration",
               action: "UPDATE",
               entityType: "NumberingSequence",
@@ -264,6 +265,12 @@ export async function saveNumberingSequences(
 export async function resetNumberingSequence(
   formData: FormData,
 ): Promise<void> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    throw new Error(actor.message)
+  }
+
   const id = textValue(formData, "id")
   const submittedVersion = Number(textValue(formData, "version"))
 
@@ -310,18 +317,9 @@ export async function resetNumberingSequence(
         },
       })
 
-    const administrator = await transaction.user.findUnique({
-      where: {
-        email: "admin@q-nxus.local",
-      },
-      select: {
-        id: true,
-      },
-    })
-
     await transaction.auditEvent.create({
       data: {
-        userId: administrator?.id ?? null,
+        userId: actor.actor.userId,
         moduleKey: "administration",
         action: "RESET",
         entityType: "NumberingSequence",

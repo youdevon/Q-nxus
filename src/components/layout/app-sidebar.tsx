@@ -4,7 +4,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import { appConfig } from "@/src/config/app.config"
-import { navigationConfig } from "@/src/config/navigation.config"
+import { filterNavigationForCapabilities } from "@/src/config/navigation.config"
+import { useAuth } from "@/src/modules/auth/context/auth-provider"
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +22,8 @@ import {
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { canAny } = useAuth()
+  const sections = filterNavigationForCapabilities(canAny)
 
   return (
     <Sidebar collapsible="icon" variant="sidebar">
@@ -50,7 +53,7 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        {navigationConfig.map((section, index) => (
+        {sections.map((section, index) => (
           <div key={section.id}>
             {index > 0 && <SidebarSeparator className="mx-0" />}
             <SidebarGroup>

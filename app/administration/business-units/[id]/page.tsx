@@ -110,6 +110,7 @@ export default async function BusinessUnitPage({
         actions={
           <div className="flex flex-wrap gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={
                 <Link href="/administration/business-units" />
@@ -120,6 +121,7 @@ export default async function BusinessUnitPage({
             </Button>
 
             <Button
+              nativeButton={false}
               render={
                 <Link
                   href={`/administration/business-units/${businessUnit.id}/edit`}
@@ -294,6 +296,7 @@ export default async function BusinessUnitPage({
         </p>
 
         <Button
+          nativeButton={false}
           variant="outline"
           render={
             <Link

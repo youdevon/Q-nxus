@@ -9,6 +9,7 @@ import {
   SettingDataType,
 } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
 
 export type DomainSettingsFormState = {
   status: "idle" | "success" | "error" | "conflict"
@@ -141,6 +142,15 @@ export async function saveDomainSettings(
   _previousState: DomainSettingsFormState,
   formData: FormData,
 ): Promise<DomainSettingsFormState> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const settingIds = formData
     .getAll("settingIds")
     .filter((value): value is string => typeof value === "string")
@@ -159,15 +169,6 @@ export async function saveDomainSettings(
       requestHeaders.get("x-real-ip") ??
       null
     const userAgent = requestHeaders.get("user-agent")
-
-    const administrator = await prisma.user.findUnique({
-      where: {
-        email: "admin@q-nxus.local",
-      },
-      select: {
-        id: true,
-      },
-    })
 
     const result = await prisma.$transaction(async (transaction) => {
       for (const settingId of settingIds) {
@@ -294,7 +295,7 @@ export async function saveDomainSettings(
         if (changed) {
           await transaction.auditEvent.create({
             data: {
-              userId: administrator?.id ?? null,
+              userId: actor.actor.userId,
               moduleKey: "administration",
               action: "UPDATE",
               entityType: "DomainSetting",

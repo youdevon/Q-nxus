@@ -27,9 +27,11 @@ export type AggregatePosition = {
 export type PositionMinAggregateOutputType = {
   id: string | null
   departmentId: string | null
+  reportsToPositionId: string | null
   title: string | null
   code: string | null
   description: string | null
+  systemRoleCode: string | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -38,9 +40,11 @@ export type PositionMinAggregateOutputType = {
 export type PositionMaxAggregateOutputType = {
   id: string | null
   departmentId: string | null
+  reportsToPositionId: string | null
   title: string | null
   code: string | null
   description: string | null
+  systemRoleCode: string | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,9 +53,11 @@ export type PositionMaxAggregateOutputType = {
 export type PositionCountAggregateOutputType = {
   id: number
   departmentId: number
+  reportsToPositionId: number
   title: number
   code: number
   description: number
+  systemRoleCode: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -62,9 +68,11 @@ export type PositionCountAggregateOutputType = {
 export type PositionMinAggregateInputType = {
   id?: true
   departmentId?: true
+  reportsToPositionId?: true
   title?: true
   code?: true
   description?: true
+  systemRoleCode?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -73,9 +81,11 @@ export type PositionMinAggregateInputType = {
 export type PositionMaxAggregateInputType = {
   id?: true
   departmentId?: true
+  reportsToPositionId?: true
   title?: true
   code?: true
   description?: true
+  systemRoleCode?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -84,9 +94,11 @@ export type PositionMaxAggregateInputType = {
 export type PositionCountAggregateInputType = {
   id?: true
   departmentId?: true
+  reportsToPositionId?: true
   title?: true
   code?: true
   description?: true
+  systemRoleCode?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -168,9 +180,11 @@ export type PositionGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type PositionGroupByOutputType = {
   id: string
   departmentId: string
+  reportsToPositionId: string | null
   title: string
   code: string | null
   description: string | null
+  systemRoleCode: string | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -200,27 +214,41 @@ export type PositionWhereInput = {
   NOT?: Prisma.PositionWhereInput | Prisma.PositionWhereInput[]
   id?: Prisma.StringFilter<"Position"> | string
   departmentId?: Prisma.StringFilter<"Position"> | string
+  reportsToPositionId?: Prisma.StringNullableFilter<"Position"> | string | null
   title?: Prisma.StringFilter<"Position"> | string
   code?: Prisma.StringNullableFilter<"Position"> | string | null
   description?: Prisma.StringNullableFilter<"Position"> | string | null
+  systemRoleCode?: Prisma.StringNullableFilter<"Position"> | string | null
   isActive?: Prisma.BoolFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
+  reportsToPosition?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
+  directReports?: Prisma.PositionListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
+  assignments?: Prisma.EmployeeAssignmentListRelationFilter
+  jobDescriptions?: Prisma.PositionJobDescriptionListRelationFilter
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepListRelationFilter
 }
 
 export type PositionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  reportsToPositionId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  systemRoleCode?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   department?: Prisma.DepartmentOrderByWithRelationInput
+  reportsToPosition?: Prisma.PositionOrderByWithRelationInput
+  directReports?: Prisma.PositionOrderByRelationAggregateInput
   employees?: Prisma.EmployeeOrderByRelationAggregateInput
+  assignments?: Prisma.EmployeeAssignmentOrderByRelationAggregateInput
+  jobDescriptions?: Prisma.PositionJobDescriptionOrderByRelationAggregateInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepOrderByRelationAggregateInput
 }
 
 export type PositionWhereUniqueInput = Prisma.AtLeast<{
@@ -230,22 +258,31 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PositionWhereInput[]
   NOT?: Prisma.PositionWhereInput | Prisma.PositionWhereInput[]
   departmentId?: Prisma.StringFilter<"Position"> | string
+  reportsToPositionId?: Prisma.StringNullableFilter<"Position"> | string | null
   title?: Prisma.StringFilter<"Position"> | string
   code?: Prisma.StringNullableFilter<"Position"> | string | null
   description?: Prisma.StringNullableFilter<"Position"> | string | null
+  systemRoleCode?: Prisma.StringNullableFilter<"Position"> | string | null
   isActive?: Prisma.BoolFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
+  reportsToPosition?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
+  directReports?: Prisma.PositionListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
+  assignments?: Prisma.EmployeeAssignmentListRelationFilter
+  jobDescriptions?: Prisma.PositionJobDescriptionListRelationFilter
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepListRelationFilter
 }, "id" | "departmentId_title">
 
 export type PositionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  reportsToPositionId?: Prisma.SortOrderInput | Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  systemRoleCode?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -260,9 +297,11 @@ export type PositionScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PositionScalarWhereWithAggregatesInput | Prisma.PositionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Position"> | string
   departmentId?: Prisma.StringWithAggregatesFilter<"Position"> | string
+  reportsToPositionId?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
   title?: Prisma.StringWithAggregatesFilter<"Position"> | string
   code?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
+  systemRoleCode?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Position"> | Date | string
@@ -273,23 +312,35 @@ export type PositionCreateInput = {
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateInput = {
   id?: string
   departmentId: string
+  reportsToPositionId?: string | null
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUpdateInput = {
@@ -297,31 +348,45 @@ export type PositionUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionCreateManyInput = {
   id?: string
   departmentId: string
+  reportsToPositionId?: string | null
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -332,6 +397,7 @@ export type PositionUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,9 +406,11 @@ export type PositionUpdateManyMutationInput = {
 export type PositionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +426,11 @@ export type PositionOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type PositionNullableScalarRelationFilter = {
+  is?: Prisma.PositionWhereInput | null
+  isNot?: Prisma.PositionWhereInput | null
+}
+
 export type PositionDepartmentIdTitleCompoundUniqueInput = {
   departmentId: string
   title: string
@@ -366,9 +439,11 @@ export type PositionDepartmentIdTitleCompoundUniqueInput = {
 export type PositionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  reportsToPositionId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  systemRoleCode?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -377,9 +452,11 @@ export type PositionCountOrderByAggregateInput = {
 export type PositionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  reportsToPositionId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  systemRoleCode?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -388,17 +465,19 @@ export type PositionMaxOrderByAggregateInput = {
 export type PositionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  reportsToPositionId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   code?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  systemRoleCode?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
-export type PositionNullableScalarRelationFilter = {
-  is?: Prisma.PositionWhereInput | null
-  isNot?: Prisma.PositionWhereInput | null
+export type PositionScalarRelationFilter = {
+  is?: Prisma.PositionWhereInput
+  isNot?: Prisma.PositionWhereInput
 }
 
 export type PositionCreateNestedManyWithoutDepartmentInput = {
@@ -443,6 +522,64 @@ export type PositionUncheckedUpdateManyWithoutDepartmentNestedInput = {
   deleteMany?: Prisma.PositionScalarWhereInput | Prisma.PositionScalarWhereInput[]
 }
 
+export type PositionCreateNestedOneWithoutDirectReportsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutDirectReportsInput, Prisma.PositionUncheckedCreateWithoutDirectReportsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutDirectReportsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionCreateNestedManyWithoutReportsToPositionInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutReportsToPositionInput, Prisma.PositionUncheckedCreateWithoutReportsToPositionInput> | Prisma.PositionCreateWithoutReportsToPositionInput[] | Prisma.PositionUncheckedCreateWithoutReportsToPositionInput[]
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutReportsToPositionInput | Prisma.PositionCreateOrConnectWithoutReportsToPositionInput[]
+  createMany?: Prisma.PositionCreateManyReportsToPositionInputEnvelope
+  connect?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+}
+
+export type PositionUncheckedCreateNestedManyWithoutReportsToPositionInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutReportsToPositionInput, Prisma.PositionUncheckedCreateWithoutReportsToPositionInput> | Prisma.PositionCreateWithoutReportsToPositionInput[] | Prisma.PositionUncheckedCreateWithoutReportsToPositionInput[]
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutReportsToPositionInput | Prisma.PositionCreateOrConnectWithoutReportsToPositionInput[]
+  createMany?: Prisma.PositionCreateManyReportsToPositionInputEnvelope
+  connect?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+}
+
+export type PositionUpdateOneWithoutDirectReportsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutDirectReportsInput, Prisma.PositionUncheckedCreateWithoutDirectReportsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutDirectReportsInput
+  upsert?: Prisma.PositionUpsertWithoutDirectReportsInput
+  disconnect?: Prisma.PositionWhereInput | boolean
+  delete?: Prisma.PositionWhereInput | boolean
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutDirectReportsInput, Prisma.PositionUpdateWithoutDirectReportsInput>, Prisma.PositionUncheckedUpdateWithoutDirectReportsInput>
+}
+
+export type PositionUpdateManyWithoutReportsToPositionNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutReportsToPositionInput, Prisma.PositionUncheckedCreateWithoutReportsToPositionInput> | Prisma.PositionCreateWithoutReportsToPositionInput[] | Prisma.PositionUncheckedCreateWithoutReportsToPositionInput[]
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutReportsToPositionInput | Prisma.PositionCreateOrConnectWithoutReportsToPositionInput[]
+  upsert?: Prisma.PositionUpsertWithWhereUniqueWithoutReportsToPositionInput | Prisma.PositionUpsertWithWhereUniqueWithoutReportsToPositionInput[]
+  createMany?: Prisma.PositionCreateManyReportsToPositionInputEnvelope
+  set?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  disconnect?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  delete?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  connect?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  update?: Prisma.PositionUpdateWithWhereUniqueWithoutReportsToPositionInput | Prisma.PositionUpdateWithWhereUniqueWithoutReportsToPositionInput[]
+  updateMany?: Prisma.PositionUpdateManyWithWhereWithoutReportsToPositionInput | Prisma.PositionUpdateManyWithWhereWithoutReportsToPositionInput[]
+  deleteMany?: Prisma.PositionScalarWhereInput | Prisma.PositionScalarWhereInput[]
+}
+
+export type PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutReportsToPositionInput, Prisma.PositionUncheckedCreateWithoutReportsToPositionInput> | Prisma.PositionCreateWithoutReportsToPositionInput[] | Prisma.PositionUncheckedCreateWithoutReportsToPositionInput[]
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutReportsToPositionInput | Prisma.PositionCreateOrConnectWithoutReportsToPositionInput[]
+  upsert?: Prisma.PositionUpsertWithWhereUniqueWithoutReportsToPositionInput | Prisma.PositionUpsertWithWhereUniqueWithoutReportsToPositionInput[]
+  createMany?: Prisma.PositionCreateManyReportsToPositionInputEnvelope
+  set?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  disconnect?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  delete?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  connect?: Prisma.PositionWhereUniqueInput | Prisma.PositionWhereUniqueInput[]
+  update?: Prisma.PositionUpdateWithWhereUniqueWithoutReportsToPositionInput | Prisma.PositionUpdateWithWhereUniqueWithoutReportsToPositionInput[]
+  updateMany?: Prisma.PositionUpdateManyWithWhereWithoutReportsToPositionInput | Prisma.PositionUpdateManyWithWhereWithoutReportsToPositionInput[]
+  deleteMany?: Prisma.PositionScalarWhereInput | Prisma.PositionScalarWhereInput[]
+}
+
 export type PositionCreateNestedOneWithoutEmployeesInput = {
   create?: Prisma.XOR<Prisma.PositionCreateWithoutEmployeesInput, Prisma.PositionUncheckedCreateWithoutEmployeesInput>
   connectOrCreate?: Prisma.PositionCreateOrConnectWithoutEmployeesInput
@@ -459,26 +596,84 @@ export type PositionUpdateOneWithoutEmployeesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutEmployeesInput, Prisma.PositionUpdateWithoutEmployeesInput>, Prisma.PositionUncheckedUpdateWithoutEmployeesInput>
 }
 
+export type PositionCreateNestedOneWithoutJobDescriptionsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutJobDescriptionsInput, Prisma.PositionUncheckedCreateWithoutJobDescriptionsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutJobDescriptionsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneRequiredWithoutJobDescriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutJobDescriptionsInput, Prisma.PositionUncheckedCreateWithoutJobDescriptionsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutJobDescriptionsInput
+  upsert?: Prisma.PositionUpsertWithoutJobDescriptionsInput
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutJobDescriptionsInput, Prisma.PositionUpdateWithoutJobDescriptionsInput>, Prisma.PositionUncheckedUpdateWithoutJobDescriptionsInput>
+}
+
+export type PositionCreateNestedOneWithoutAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutAssignmentsInput, Prisma.PositionUncheckedCreateWithoutAssignmentsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutAssignmentsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneWithoutAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutAssignmentsInput, Prisma.PositionUncheckedCreateWithoutAssignmentsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutAssignmentsInput
+  upsert?: Prisma.PositionUpsertWithoutAssignmentsInput
+  disconnect?: Prisma.PositionWhereInput | boolean
+  delete?: Prisma.PositionWhereInput | boolean
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutAssignmentsInput, Prisma.PositionUpdateWithoutAssignmentsInput>, Prisma.PositionUncheckedUpdateWithoutAssignmentsInput>
+}
+
+export type PositionCreateNestedOneWithoutLeaveApprovalStepsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutLeaveApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutLeaveApprovalStepsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutLeaveApprovalStepsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneWithoutLeaveApprovalStepsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutLeaveApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutLeaveApprovalStepsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutLeaveApprovalStepsInput
+  upsert?: Prisma.PositionUpsertWithoutLeaveApprovalStepsInput
+  disconnect?: Prisma.PositionWhereInput | boolean
+  delete?: Prisma.PositionWhereInput | boolean
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutLeaveApprovalStepsInput, Prisma.PositionUpdateWithoutLeaveApprovalStepsInput>, Prisma.PositionUncheckedUpdateWithoutLeaveApprovalStepsInput>
+}
+
 export type PositionCreateWithoutDepartmentInput = {
   id?: string
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutDepartmentInput = {
   id?: string
+  reportsToPositionId?: string | null
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutDepartmentInput = {
@@ -513,12 +708,158 @@ export type PositionScalarWhereInput = {
   NOT?: Prisma.PositionScalarWhereInput | Prisma.PositionScalarWhereInput[]
   id?: Prisma.StringFilter<"Position"> | string
   departmentId?: Prisma.StringFilter<"Position"> | string
+  reportsToPositionId?: Prisma.StringNullableFilter<"Position"> | string | null
   title?: Prisma.StringFilter<"Position"> | string
   code?: Prisma.StringNullableFilter<"Position"> | string | null
   description?: Prisma.StringNullableFilter<"Position"> | string | null
+  systemRoleCode?: Prisma.StringNullableFilter<"Position"> | string | null
   isActive?: Prisma.BoolFilter<"Position"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Position"> | Date | string
+}
+
+export type PositionCreateWithoutDirectReportsInput = {
+  id?: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionUncheckedCreateWithoutDirectReportsInput = {
+  id?: string
+  departmentId: string
+  reportsToPositionId?: string | null
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionCreateOrConnectWithoutDirectReportsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutDirectReportsInput, Prisma.PositionUncheckedCreateWithoutDirectReportsInput>
+}
+
+export type PositionCreateWithoutReportsToPositionInput = {
+  id?: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionUncheckedCreateWithoutReportsToPositionInput = {
+  id?: string
+  departmentId: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionCreateOrConnectWithoutReportsToPositionInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutReportsToPositionInput, Prisma.PositionUncheckedCreateWithoutReportsToPositionInput>
+}
+
+export type PositionCreateManyReportsToPositionInputEnvelope = {
+  data: Prisma.PositionCreateManyReportsToPositionInput | Prisma.PositionCreateManyReportsToPositionInput[]
+  skipDuplicates?: boolean
+}
+
+export type PositionUpsertWithoutDirectReportsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutDirectReportsInput, Prisma.PositionUncheckedUpdateWithoutDirectReportsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutDirectReportsInput, Prisma.PositionUncheckedCreateWithoutDirectReportsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutDirectReportsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutDirectReportsInput, Prisma.PositionUncheckedUpdateWithoutDirectReportsInput>
+}
+
+export type PositionUpdateWithoutDirectReportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutDirectReportsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionUpsertWithWhereUniqueWithoutReportsToPositionInput = {
+  where: Prisma.PositionWhereUniqueInput
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutReportsToPositionInput, Prisma.PositionUncheckedUpdateWithoutReportsToPositionInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutReportsToPositionInput, Prisma.PositionUncheckedCreateWithoutReportsToPositionInput>
+}
+
+export type PositionUpdateWithWhereUniqueWithoutReportsToPositionInput = {
+  where: Prisma.PositionWhereUniqueInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutReportsToPositionInput, Prisma.PositionUncheckedUpdateWithoutReportsToPositionInput>
+}
+
+export type PositionUpdateManyWithWhereWithoutReportsToPositionInput = {
+  where: Prisma.PositionScalarWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateManyMutationInput, Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionInput>
 }
 
 export type PositionCreateWithoutEmployeesInput = {
@@ -526,21 +867,33 @@ export type PositionCreateWithoutEmployeesInput = {
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutEmployeesInput = {
   id?: string
   departmentId: string
+  reportsToPositionId?: string | null
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutEmployeesInput = {
@@ -564,28 +917,294 @@ export type PositionUpdateWithoutEmployeesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutEmployeesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
-export type PositionCreateManyDepartmentInput = {
+export type PositionCreateWithoutJobDescriptionsInput = {
   id?: string
   title: string
   code?: string | null
   description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionUncheckedCreateWithoutJobDescriptionsInput = {
+  id?: string
+  departmentId: string
+  reportsToPositionId?: string | null
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionCreateOrConnectWithoutJobDescriptionsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutJobDescriptionsInput, Prisma.PositionUncheckedCreateWithoutJobDescriptionsInput>
+}
+
+export type PositionUpsertWithoutJobDescriptionsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutJobDescriptionsInput, Prisma.PositionUncheckedUpdateWithoutJobDescriptionsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutJobDescriptionsInput, Prisma.PositionUncheckedCreateWithoutJobDescriptionsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutJobDescriptionsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutJobDescriptionsInput, Prisma.PositionUncheckedUpdateWithoutJobDescriptionsInput>
+}
+
+export type PositionUpdateWithoutJobDescriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutJobDescriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionCreateWithoutAssignmentsInput = {
+  id?: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionUncheckedCreateWithoutAssignmentsInput = {
+  id?: string
+  departmentId: string
+  reportsToPositionId?: string | null
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionCreateOrConnectWithoutAssignmentsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutAssignmentsInput, Prisma.PositionUncheckedCreateWithoutAssignmentsInput>
+}
+
+export type PositionUpsertWithoutAssignmentsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutAssignmentsInput, Prisma.PositionUncheckedUpdateWithoutAssignmentsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutAssignmentsInput, Prisma.PositionUncheckedCreateWithoutAssignmentsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutAssignmentsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutAssignmentsInput, Prisma.PositionUncheckedUpdateWithoutAssignmentsInput>
+}
+
+export type PositionUpdateWithoutAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionCreateWithoutLeaveApprovalStepsInput = {
+  id?: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+}
+
+export type PositionUncheckedCreateWithoutLeaveApprovalStepsInput = {
+  id?: string
+  departmentId: string
+  reportsToPositionId?: string | null
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+}
+
+export type PositionCreateOrConnectWithoutLeaveApprovalStepsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutLeaveApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutLeaveApprovalStepsInput>
+}
+
+export type PositionUpsertWithoutLeaveApprovalStepsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutLeaveApprovalStepsInput, Prisma.PositionUncheckedUpdateWithoutLeaveApprovalStepsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutLeaveApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutLeaveApprovalStepsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutLeaveApprovalStepsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutLeaveApprovalStepsInput, Prisma.PositionUncheckedUpdateWithoutLeaveApprovalStepsInput>
+}
+
+export type PositionUpdateWithoutLeaveApprovalStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutLeaveApprovalStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+}
+
+export type PositionCreateManyDepartmentInput = {
+  id?: string
+  reportsToPositionId?: string | null
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -596,28 +1215,100 @@ export type PositionUpdateWithoutDepartmentInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   title?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PositionCreateManyReportsToPositionInput = {
+  id?: string
+  departmentId: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type PositionUpdateWithoutReportsToPositionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutReportsToPositionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionUncheckedUpdateManyWithoutReportsToPositionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -629,11 +1320,19 @@ export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
  */
 
 export type PositionCountOutputType = {
+  directReports: number
   employees: number
+  assignments: number
+  jobDescriptions: number
+  leaveApprovalSteps: number
 }
 
 export type PositionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  directReports?: boolean | PositionCountOutputTypeCountDirectReportsArgs
   employees?: boolean | PositionCountOutputTypeCountEmployeesArgs
+  assignments?: boolean | PositionCountOutputTypeCountAssignmentsArgs
+  jobDescriptions?: boolean | PositionCountOutputTypeCountJobDescriptionsArgs
+  leaveApprovalSteps?: boolean | PositionCountOutputTypeCountLeaveApprovalStepsArgs
 }
 
 /**
@@ -649,85 +1348,145 @@ export type PositionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ext
 /**
  * PositionCountOutputType without action
  */
+export type PositionCountOutputTypeCountDirectReportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PositionWhereInput
+}
+
+/**
+ * PositionCountOutputType without action
+ */
 export type PositionCountOutputTypeCountEmployeesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmployeeWhereInput
+}
+
+/**
+ * PositionCountOutputType without action
+ */
+export type PositionCountOutputTypeCountAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeAssignmentWhereInput
+}
+
+/**
+ * PositionCountOutputType without action
+ */
+export type PositionCountOutputTypeCountJobDescriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PositionJobDescriptionWhereInput
+}
+
+/**
+ * PositionCountOutputType without action
+ */
+export type PositionCountOutputTypeCountLeaveApprovalStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveApprovalStepWhereInput
 }
 
 
 export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   departmentId?: boolean
+  reportsToPositionId?: boolean
   title?: boolean
   code?: boolean
   description?: boolean
+  systemRoleCode?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  reportsToPosition?: boolean | Prisma.Position$reportsToPositionArgs<ExtArgs>
+  directReports?: boolean | Prisma.Position$directReportsArgs<ExtArgs>
   employees?: boolean | Prisma.Position$employeesArgs<ExtArgs>
+  assignments?: boolean | Prisma.Position$assignmentsArgs<ExtArgs>
+  jobDescriptions?: boolean | Prisma.Position$jobDescriptionsArgs<ExtArgs>
+  leaveApprovalSteps?: boolean | Prisma.Position$leaveApprovalStepsArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
 
 export type PositionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   departmentId?: boolean
+  reportsToPositionId?: boolean
   title?: boolean
   code?: boolean
   description?: boolean
+  systemRoleCode?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  reportsToPosition?: boolean | Prisma.Position$reportsToPositionArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
 
 export type PositionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   departmentId?: boolean
+  reportsToPositionId?: boolean
   title?: boolean
   code?: boolean
   description?: boolean
+  systemRoleCode?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  reportsToPosition?: boolean | Prisma.Position$reportsToPositionArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
 
 export type PositionSelectScalar = {
   id?: boolean
   departmentId?: boolean
+  reportsToPositionId?: boolean
   title?: boolean
   code?: boolean
   description?: boolean
+  systemRoleCode?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "departmentId" | "title" | "code" | "description" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["position"]>
+export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "departmentId" | "reportsToPositionId" | "title" | "code" | "description" | "systemRoleCode" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["position"]>
 export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  reportsToPosition?: boolean | Prisma.Position$reportsToPositionArgs<ExtArgs>
+  directReports?: boolean | Prisma.Position$directReportsArgs<ExtArgs>
   employees?: boolean | Prisma.Position$employeesArgs<ExtArgs>
+  assignments?: boolean | Prisma.Position$assignmentsArgs<ExtArgs>
+  jobDescriptions?: boolean | Prisma.Position$jobDescriptionsArgs<ExtArgs>
+  leaveApprovalSteps?: boolean | Prisma.Position$leaveApprovalStepsArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PositionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  reportsToPosition?: boolean | Prisma.Position$reportsToPositionArgs<ExtArgs>
 }
 export type PositionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  reportsToPosition?: boolean | Prisma.Position$reportsToPositionArgs<ExtArgs>
 }
 
 export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Position"
   objects: {
     department: Prisma.$DepartmentPayload<ExtArgs>
+    reportsToPosition: Prisma.$PositionPayload<ExtArgs> | null
+    directReports: Prisma.$PositionPayload<ExtArgs>[]
     employees: Prisma.$EmployeePayload<ExtArgs>[]
+    assignments: Prisma.$EmployeeAssignmentPayload<ExtArgs>[]
+    jobDescriptions: Prisma.$PositionJobDescriptionPayload<ExtArgs>[]
+    leaveApprovalSteps: Prisma.$LeaveApprovalStepPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     departmentId: string
+    reportsToPositionId: string | null
     title: string
     code: string | null
     description: string | null
+    /**
+     * * Optional Role.code granted to the holder (e.g. HR_ADMINISTRATOR, SYSTEM_ADMINISTRATOR).
+     */
+    systemRoleCode: string | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1126,7 +1885,12 @@ readonly fields: PositionFieldRefs;
 export interface Prisma__PositionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reportsToPosition<T extends Prisma.Position$reportsToPositionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$reportsToPositionArgs<ExtArgs>>): Prisma.Prisma__PositionClient<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  directReports<T extends Prisma.Position$directReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$directReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employees<T extends Prisma.Position$employeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignments<T extends Prisma.Position$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  jobDescriptions<T extends Prisma.Position$jobDescriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$jobDescriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionJobDescriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveApprovalSteps<T extends Prisma.Position$leaveApprovalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$leaveApprovalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1158,9 +1922,11 @@ export interface Prisma__PositionClient<T, Null = never, ExtArgs extends runtime
 export interface PositionFieldRefs {
   readonly id: Prisma.FieldRef<"Position", 'String'>
   readonly departmentId: Prisma.FieldRef<"Position", 'String'>
+  readonly reportsToPositionId: Prisma.FieldRef<"Position", 'String'>
   readonly title: Prisma.FieldRef<"Position", 'String'>
   readonly code: Prisma.FieldRef<"Position", 'String'>
   readonly description: Prisma.FieldRef<"Position", 'String'>
+  readonly systemRoleCode: Prisma.FieldRef<"Position", 'String'>
   readonly isActive: Prisma.FieldRef<"Position", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Position", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Position", 'DateTime'>
@@ -1565,6 +2331,49 @@ export type PositionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * Position.reportsToPosition
+ */
+export type Position$reportsToPositionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Position
+   */
+  select?: Prisma.PositionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Position
+   */
+  omit?: Prisma.PositionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PositionInclude<ExtArgs> | null
+  where?: Prisma.PositionWhereInput
+}
+
+/**
+ * Position.directReports
+ */
+export type Position$directReportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Position
+   */
+  select?: Prisma.PositionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Position
+   */
+  omit?: Prisma.PositionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PositionInclude<ExtArgs> | null
+  where?: Prisma.PositionWhereInput
+  orderBy?: Prisma.PositionOrderByWithRelationInput | Prisma.PositionOrderByWithRelationInput[]
+  cursor?: Prisma.PositionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PositionScalarFieldEnum | Prisma.PositionScalarFieldEnum[]
+}
+
+/**
  * Position.employees
  */
 export type Position$employeesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1586,6 +2395,78 @@ export type Position$employeesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeScalarFieldEnum | Prisma.EmployeeScalarFieldEnum[]
+}
+
+/**
+ * Position.assignments
+ */
+export type Position$assignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeAssignment
+   */
+  select?: Prisma.EmployeeAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeAssignment
+   */
+  omit?: Prisma.EmployeeAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeAssignmentInclude<ExtArgs> | null
+  where?: Prisma.EmployeeAssignmentWhereInput
+  orderBy?: Prisma.EmployeeAssignmentOrderByWithRelationInput | Prisma.EmployeeAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeAssignmentScalarFieldEnum | Prisma.EmployeeAssignmentScalarFieldEnum[]
+}
+
+/**
+ * Position.jobDescriptions
+ */
+export type Position$jobDescriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PositionJobDescription
+   */
+  select?: Prisma.PositionJobDescriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PositionJobDescription
+   */
+  omit?: Prisma.PositionJobDescriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PositionJobDescriptionInclude<ExtArgs> | null
+  where?: Prisma.PositionJobDescriptionWhereInput
+  orderBy?: Prisma.PositionJobDescriptionOrderByWithRelationInput | Prisma.PositionJobDescriptionOrderByWithRelationInput[]
+  cursor?: Prisma.PositionJobDescriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PositionJobDescriptionScalarFieldEnum | Prisma.PositionJobDescriptionScalarFieldEnum[]
+}
+
+/**
+ * Position.leaveApprovalSteps
+ */
+export type Position$leaveApprovalStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveApprovalStep
+   */
+  select?: Prisma.LeaveApprovalStepSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveApprovalStep
+   */
+  omit?: Prisma.LeaveApprovalStepOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveApprovalStepInclude<ExtArgs> | null
+  where?: Prisma.LeaveApprovalStepWhereInput
+  orderBy?: Prisma.LeaveApprovalStepOrderByWithRelationInput | Prisma.LeaveApprovalStepOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveApprovalStepWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveApprovalStepScalarFieldEnum | Prisma.LeaveApprovalStepScalarFieldEnum[]
 }
 
 /**

@@ -1,11 +1,9 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
-import { EmployeeForm } from "@/src/modules/hr/components/employee-form"
-import {
-  getEmployeeById,
-  getEmployeeFormOptions,
-} from "@/src/modules/hr/data/get-employee-form-data"
+import { EmployeeProfile } from "@/src/modules/hr/components/employee-profile"
+import { getEmployeeProfile } from "@/src/modules/hr/data/get-employee-form-data"
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
 
 export const metadata: Metadata = {
   title: "Employee Profile",
@@ -23,20 +21,41 @@ export default async function EmployeePage({
   params,
 }: EmployeePageProps) {
   const { id } = await params
+  const capabilities = await getUserCapabilities()
 
-  const [employee, departments] = await Promise.all([
-    getEmployeeById(id),
-    getEmployeeFormOptions(),
-  ])
+  if (!capabilities) {
+    redirect("/login")
+  }
+
+  const isOwnProfile = capabilities.employeeId === id
+  const canManagePeople = capabilities.canAny(
+    "people.directory.view",
+    "people.manage",
+  )
+
+  if (!isOwnProfile && !canManagePeople) {
+    notFound()
+  }
+
+  if (
+    isOwnProfile &&
+    !canManagePeople &&
+    !capabilities.can("people.profile.view_own")
+  ) {
+    notFound()
+  }
+
+  const employee = await getEmployeeProfile(id)
 
   if (!employee) {
     notFound()
   }
 
   return (
-    <EmployeeForm
+    <EmployeeProfile
       employee={employee}
-      departments={departments}
+      canManage={capabilities.can("people.manage")}
+      isOwnProfile={isOwnProfile}
     />
   )
 }

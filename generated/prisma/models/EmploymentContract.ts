@@ -28,21 +28,37 @@ export type AggregateEmploymentContract = {
 
 export type EmploymentContractAvgAggregateOutputType = {
   baseSalary: runtime.Decimal | null
+  gratuityRate: runtime.Decimal | null
+  gratuityTaxRate: runtime.Decimal | null
 }
 
 export type EmploymentContractSumAggregateOutputType = {
   baseSalary: runtime.Decimal | null
+  gratuityRate: runtime.Decimal | null
+  gratuityTaxRate: runtime.Decimal | null
 }
 
 export type EmploymentContractMinAggregateOutputType = {
   id: string | null
   employeeId: string | null
+  sourceContractId: string | null
+  contractNumber: string | null
+  contractType: $Enums.EmploymentContractType | null
+  changeType: $Enums.ContractChangeType | null
+  status: $Enums.EmploymentContractStatus | null
   startDate: Date | null
   endDate: Date | null
   jobTitle: string | null
   baseSalary: runtime.Decimal | null
   currency: string | null
+  gratuityEligible: boolean | null
+  gratuityRate: runtime.Decimal | null
+  gratuityTaxRate: runtime.Decimal | null
   isCurrent: boolean | null
+  signedDate: Date | null
+  terminationDate: Date | null
+  terminationReason: string | null
+  documentReference: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,12 +67,24 @@ export type EmploymentContractMinAggregateOutputType = {
 export type EmploymentContractMaxAggregateOutputType = {
   id: string | null
   employeeId: string | null
+  sourceContractId: string | null
+  contractNumber: string | null
+  contractType: $Enums.EmploymentContractType | null
+  changeType: $Enums.ContractChangeType | null
+  status: $Enums.EmploymentContractStatus | null
   startDate: Date | null
   endDate: Date | null
   jobTitle: string | null
   baseSalary: runtime.Decimal | null
   currency: string | null
+  gratuityEligible: boolean | null
+  gratuityRate: runtime.Decimal | null
+  gratuityTaxRate: runtime.Decimal | null
   isCurrent: boolean | null
+  signedDate: Date | null
+  terminationDate: Date | null
+  terminationReason: string | null
+  documentReference: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -65,12 +93,24 @@ export type EmploymentContractMaxAggregateOutputType = {
 export type EmploymentContractCountAggregateOutputType = {
   id: number
   employeeId: number
+  sourceContractId: number
+  contractNumber: number
+  contractType: number
+  changeType: number
+  status: number
   startDate: number
   endDate: number
   jobTitle: number
   baseSalary: number
   currency: number
+  gratuityEligible: number
+  gratuityRate: number
+  gratuityTaxRate: number
   isCurrent: number
+  signedDate: number
+  terminationDate: number
+  terminationReason: number
+  documentReference: number
   notes: number
   createdAt: number
   updatedAt: number
@@ -80,21 +120,37 @@ export type EmploymentContractCountAggregateOutputType = {
 
 export type EmploymentContractAvgAggregateInputType = {
   baseSalary?: true
+  gratuityRate?: true
+  gratuityTaxRate?: true
 }
 
 export type EmploymentContractSumAggregateInputType = {
   baseSalary?: true
+  gratuityRate?: true
+  gratuityTaxRate?: true
 }
 
 export type EmploymentContractMinAggregateInputType = {
   id?: true
   employeeId?: true
+  sourceContractId?: true
+  contractNumber?: true
+  contractType?: true
+  changeType?: true
+  status?: true
   startDate?: true
   endDate?: true
   jobTitle?: true
   baseSalary?: true
   currency?: true
+  gratuityEligible?: true
+  gratuityRate?: true
+  gratuityTaxRate?: true
   isCurrent?: true
+  signedDate?: true
+  terminationDate?: true
+  terminationReason?: true
+  documentReference?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -103,12 +159,24 @@ export type EmploymentContractMinAggregateInputType = {
 export type EmploymentContractMaxAggregateInputType = {
   id?: true
   employeeId?: true
+  sourceContractId?: true
+  contractNumber?: true
+  contractType?: true
+  changeType?: true
+  status?: true
   startDate?: true
   endDate?: true
   jobTitle?: true
   baseSalary?: true
   currency?: true
+  gratuityEligible?: true
+  gratuityRate?: true
+  gratuityTaxRate?: true
   isCurrent?: true
+  signedDate?: true
+  terminationDate?: true
+  terminationReason?: true
+  documentReference?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -117,12 +185,24 @@ export type EmploymentContractMaxAggregateInputType = {
 export type EmploymentContractCountAggregateInputType = {
   id?: true
   employeeId?: true
+  sourceContractId?: true
+  contractNumber?: true
+  contractType?: true
+  changeType?: true
+  status?: true
   startDate?: true
   endDate?: true
   jobTitle?: true
   baseSalary?: true
   currency?: true
+  gratuityEligible?: true
+  gratuityRate?: true
+  gratuityTaxRate?: true
   isCurrent?: true
+  signedDate?: true
+  terminationDate?: true
+  terminationReason?: true
+  documentReference?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -218,12 +298,24 @@ export type EmploymentContractGroupByArgs<ExtArgs extends runtime.Types.Extensio
 export type EmploymentContractGroupByOutputType = {
   id: string
   employeeId: string
+  sourceContractId: string | null
+  contractNumber: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType: $Enums.ContractChangeType
+  status: $Enums.EmploymentContractStatus
   startDate: Date
   endDate: Date | null
   jobTitle: string
   baseSalary: runtime.Decimal
   currency: string
+  gratuityEligible: boolean
+  gratuityRate: runtime.Decimal | null
+  gratuityTaxRate: runtime.Decimal | null
   isCurrent: boolean
+  signedDate: Date | null
+  terminationDate: Date | null
+  terminationReason: string | null
+  documentReference: string | null
   notes: string | null
   createdAt: Date
   updatedAt: Date
@@ -255,31 +347,67 @@ export type EmploymentContractWhereInput = {
   NOT?: Prisma.EmploymentContractWhereInput | Prisma.EmploymentContractWhereInput[]
   id?: Prisma.StringFilter<"EmploymentContract"> | string
   employeeId?: Prisma.StringFilter<"EmploymentContract"> | string
+  sourceContractId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractNumber?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFilter<"EmploymentContract"> | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFilter<"EmploymentContract"> | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFilter<"EmploymentContract"> | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   jobTitle?: Prisma.StringFilter<"EmploymentContract"> | string
   baseSalary?: Prisma.DecimalFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"EmploymentContract"> | string
+  gratuityEligible?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  gratuityRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   notes?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  sourceContract?: Prisma.XOR<Prisma.EmploymentContractNullableScalarRelationFilter, Prisma.EmploymentContractWhereInput> | null
+  amendments?: Prisma.EmploymentContractListRelationFilter
+  allowances?: Prisma.EmploymentContractAllowanceListRelationFilter
+  leaveBalances?: Prisma.EmployeeLeaveBalanceListRelationFilter
+  leaveTransactions?: Prisma.LeaveBalanceTransactionListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }
 
 export type EmploymentContractOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  sourceContractId?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractType?: Prisma.SortOrder
+  changeType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  gratuityEligible?: Prisma.SortOrder
+  gratuityRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  gratuityTaxRate?: Prisma.SortOrderInput | Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
+  signedDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  terminationReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentReference?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
+  sourceContract?: Prisma.EmploymentContractOrderByWithRelationInput
+  amendments?: Prisma.EmploymentContractOrderByRelationAggregateInput
+  allowances?: Prisma.EmploymentContractAllowanceOrderByRelationAggregateInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceOrderByRelationAggregateInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionOrderByRelationAggregateInput
+  leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
 }
 
 export type EmploymentContractWhereUniqueInput = Prisma.AtLeast<{
@@ -288,27 +416,57 @@ export type EmploymentContractWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EmploymentContractWhereInput[]
   NOT?: Prisma.EmploymentContractWhereInput | Prisma.EmploymentContractWhereInput[]
   employeeId?: Prisma.StringFilter<"EmploymentContract"> | string
+  sourceContractId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractNumber?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFilter<"EmploymentContract"> | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFilter<"EmploymentContract"> | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFilter<"EmploymentContract"> | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   jobTitle?: Prisma.StringFilter<"EmploymentContract"> | string
   baseSalary?: Prisma.DecimalFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"EmploymentContract"> | string
+  gratuityEligible?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  gratuityRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   notes?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  sourceContract?: Prisma.XOR<Prisma.EmploymentContractNullableScalarRelationFilter, Prisma.EmploymentContractWhereInput> | null
+  amendments?: Prisma.EmploymentContractListRelationFilter
+  allowances?: Prisma.EmploymentContractAllowanceListRelationFilter
+  leaveBalances?: Prisma.EmployeeLeaveBalanceListRelationFilter
+  leaveTransactions?: Prisma.LeaveBalanceTransactionListRelationFilter
+  leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }, "id">
 
 export type EmploymentContractOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  sourceContractId?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  contractType?: Prisma.SortOrder
+  changeType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  gratuityEligible?: Prisma.SortOrder
+  gratuityRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  gratuityTaxRate?: Prisma.SortOrderInput | Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
+  signedDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  terminationReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentReference?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -325,12 +483,24 @@ export type EmploymentContractScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EmploymentContractScalarWhereWithAggregatesInput | Prisma.EmploymentContractScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"EmploymentContract"> | string
   employeeId?: Prisma.StringWithAggregatesFilter<"EmploymentContract"> | string
+  sourceContractId?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  contractNumber?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeWithAggregatesFilter<"EmploymentContract"> | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeWithAggregatesFilter<"EmploymentContract"> | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusWithAggregatesFilter<"EmploymentContract"> | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
   endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
   jobTitle?: Prisma.StringWithAggregatesFilter<"EmploymentContract"> | string
   baseSalary?: Prisma.DecimalWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringWithAggregatesFilter<"EmploymentContract"> | string
+  gratuityEligible?: Prisma.BoolWithAggregatesFilter<"EmploymentContract"> | boolean
+  gratuityRate?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolWithAggregatesFilter<"EmploymentContract"> | boolean
+  signedDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+  terminationDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+  terminationReason?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  documentReference?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
@@ -338,69 +508,149 @@ export type EmploymentContractScalarWhereWithAggregatesInput = {
 
 export type EmploymentContractCreateInput = {
   id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
   startDate: Date | string
   endDate?: Date | string | null
   jobTitle: string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
 }
 
 export type EmploymentContractUncheckedCreateInput = {
   id?: string
   employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
   startDate: Date | string
   endDate?: Date | string | null
   jobTitle: string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
 }
 
 export type EmploymentContractUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
 }
 
 export type EmploymentContractUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
 }
 
 export type EmploymentContractCreateManyInput = {
   id?: string
   employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
   startDate: Date | string
   endDate?: Date | string | null
   jobTitle: string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -408,12 +658,23 @@ export type EmploymentContractCreateManyInput = {
 
 export type EmploymentContractUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -422,12 +683,24 @@ export type EmploymentContractUpdateManyMutationInput = {
 export type EmploymentContractUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -443,15 +716,37 @@ export type EmploymentContractOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type EmploymentContractScalarRelationFilter = {
+  is?: Prisma.EmploymentContractWhereInput
+  isNot?: Prisma.EmploymentContractWhereInput
+}
+
+export type EmploymentContractNullableScalarRelationFilter = {
+  is?: Prisma.EmploymentContractWhereInput | null
+  isNot?: Prisma.EmploymentContractWhereInput | null
+}
+
 export type EmploymentContractCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  sourceContractId?: Prisma.SortOrder
+  contractNumber?: Prisma.SortOrder
+  contractType?: Prisma.SortOrder
+  changeType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  gratuityEligible?: Prisma.SortOrder
+  gratuityRate?: Prisma.SortOrder
+  gratuityTaxRate?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
+  signedDate?: Prisma.SortOrder
+  terminationDate?: Prisma.SortOrder
+  terminationReason?: Prisma.SortOrder
+  documentReference?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -459,17 +754,31 @@ export type EmploymentContractCountOrderByAggregateInput = {
 
 export type EmploymentContractAvgOrderByAggregateInput = {
   baseSalary?: Prisma.SortOrder
+  gratuityRate?: Prisma.SortOrder
+  gratuityTaxRate?: Prisma.SortOrder
 }
 
 export type EmploymentContractMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  sourceContractId?: Prisma.SortOrder
+  contractNumber?: Prisma.SortOrder
+  contractType?: Prisma.SortOrder
+  changeType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  gratuityEligible?: Prisma.SortOrder
+  gratuityRate?: Prisma.SortOrder
+  gratuityTaxRate?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
+  signedDate?: Prisma.SortOrder
+  terminationDate?: Prisma.SortOrder
+  terminationReason?: Prisma.SortOrder
+  documentReference?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -478,12 +787,24 @@ export type EmploymentContractMaxOrderByAggregateInput = {
 export type EmploymentContractMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  sourceContractId?: Prisma.SortOrder
+  contractNumber?: Prisma.SortOrder
+  contractType?: Prisma.SortOrder
+  changeType?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  gratuityEligible?: Prisma.SortOrder
+  gratuityRate?: Prisma.SortOrder
+  gratuityTaxRate?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
+  signedDate?: Prisma.SortOrder
+  terminationDate?: Prisma.SortOrder
+  terminationReason?: Prisma.SortOrder
+  documentReference?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -491,6 +812,8 @@ export type EmploymentContractMinOrderByAggregateInput = {
 
 export type EmploymentContractSumOrderByAggregateInput = {
   baseSalary?: Prisma.SortOrder
+  gratuityRate?: Prisma.SortOrder
+  gratuityTaxRate?: Prisma.SortOrder
 }
 
 export type EmploymentContractCreateNestedManyWithoutEmployeeInput = {
@@ -535,38 +858,190 @@ export type EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput = {
   deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+export type EmploymentContractCreateNestedOneWithoutLeaveBalancesInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveBalancesInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveBalancesInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutLeaveBalancesInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+}
+
+export type EmploymentContractUpdateOneRequiredWithoutLeaveBalancesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveBalancesInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveBalancesInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutLeaveBalancesInput
+  upsert?: Prisma.EmploymentContractUpsertWithoutLeaveBalancesInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmploymentContractUpdateToOneWithWhereWithoutLeaveBalancesInput, Prisma.EmploymentContractUpdateWithoutLeaveBalancesInput>, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveBalancesInput>
+}
+
+export type EmploymentContractCreateNestedOneWithoutLeaveTransactionsInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveTransactionsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveTransactionsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutLeaveTransactionsInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+}
+
+export type EmploymentContractUpdateOneRequiredWithoutLeaveTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveTransactionsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveTransactionsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutLeaveTransactionsInput
+  upsert?: Prisma.EmploymentContractUpsertWithoutLeaveTransactionsInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmploymentContractUpdateToOneWithWhereWithoutLeaveTransactionsInput, Prisma.EmploymentContractUpdateWithoutLeaveTransactionsInput>, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveTransactionsInput>
+}
+
+export type EmploymentContractCreateNestedOneWithoutLeaveRequestsInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveRequestsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutLeaveRequestsInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+}
+
+export type EmploymentContractUpdateOneRequiredWithoutLeaveRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveRequestsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveRequestsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutLeaveRequestsInput
+  upsert?: Prisma.EmploymentContractUpsertWithoutLeaveRequestsInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmploymentContractUpdateToOneWithWhereWithoutLeaveRequestsInput, Prisma.EmploymentContractUpdateWithoutLeaveRequestsInput>, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
+export type EmploymentContractCreateNestedOneWithoutAmendmentsInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAmendmentsInput, Prisma.EmploymentContractUncheckedCreateWithoutAmendmentsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutAmendmentsInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+}
+
+export type EmploymentContractCreateNestedManyWithoutSourceContractInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput> | Prisma.EmploymentContractCreateWithoutSourceContractInput[] | Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput | Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput[]
+  createMany?: Prisma.EmploymentContractCreateManySourceContractInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput> | Prisma.EmploymentContractCreateWithoutSourceContractInput[] | Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput | Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput[]
+  createMany?: Prisma.EmploymentContractCreateManySourceContractInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EnumEmploymentContractTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EmploymentContractType
+}
+
+export type EnumContractChangeTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ContractChangeType
+}
+
+export type EnumEmploymentContractStatusFieldUpdateOperationsInput = {
+  set?: $Enums.EmploymentContractStatus
+}
+
+export type EmploymentContractUpdateOneWithoutAmendmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAmendmentsInput, Prisma.EmploymentContractUncheckedCreateWithoutAmendmentsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutAmendmentsInput
+  upsert?: Prisma.EmploymentContractUpsertWithoutAmendmentsInput
+  disconnect?: Prisma.EmploymentContractWhereInput | boolean
+  delete?: Prisma.EmploymentContractWhereInput | boolean
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmploymentContractUpdateToOneWithWhereWithoutAmendmentsInput, Prisma.EmploymentContractUpdateWithoutAmendmentsInput>, Prisma.EmploymentContractUncheckedUpdateWithoutAmendmentsInput>
+}
+
+export type EmploymentContractUpdateManyWithoutSourceContractNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput> | Prisma.EmploymentContractCreateWithoutSourceContractInput[] | Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput | Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutSourceContractInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutSourceContractInput[]
+  createMany?: Prisma.EmploymentContractCreateManySourceContractInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutSourceContractInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutSourceContractInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutSourceContractInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutSourceContractInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput> | Prisma.EmploymentContractCreateWithoutSourceContractInput[] | Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput | Prisma.EmploymentContractCreateOrConnectWithoutSourceContractInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutSourceContractInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutSourceContractInput[]
+  createMany?: Prisma.EmploymentContractCreateManySourceContractInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutSourceContractInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutSourceContractInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutSourceContractInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutSourceContractInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractCreateNestedOneWithoutAllowancesInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAllowancesInput, Prisma.EmploymentContractUncheckedCreateWithoutAllowancesInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutAllowancesInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+}
+
+export type EmploymentContractUpdateOneRequiredWithoutAllowancesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAllowancesInput, Prisma.EmploymentContractUncheckedCreateWithoutAllowancesInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutAllowancesInput
+  upsert?: Prisma.EmploymentContractUpsertWithoutAllowancesInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmploymentContractUpdateToOneWithWhereWithoutAllowancesInput, Prisma.EmploymentContractUpdateWithoutAllowancesInput>, Prisma.EmploymentContractUncheckedUpdateWithoutAllowancesInput>
 }
 
 export type EmploymentContractCreateWithoutEmployeeInput = {
   id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
   startDate: Date | string
   endDate?: Date | string | null
   jobTitle: string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
 }
 
 export type EmploymentContractUncheckedCreateWithoutEmployeeInput = {
   id?: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
   startDate: Date | string
   endDate?: Date | string | null
   jobTitle: string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
 }
 
 export type EmploymentContractCreateOrConnectWithoutEmployeeInput = {
@@ -601,25 +1076,815 @@ export type EmploymentContractScalarWhereInput = {
   NOT?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
   id?: Prisma.StringFilter<"EmploymentContract"> | string
   employeeId?: Prisma.StringFilter<"EmploymentContract"> | string
+  sourceContractId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractNumber?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFilter<"EmploymentContract"> | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFilter<"EmploymentContract"> | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFilter<"EmploymentContract"> | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   endDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   jobTitle?: Prisma.StringFilter<"EmploymentContract"> | string
   baseSalary?: Prisma.DecimalFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"EmploymentContract"> | string
+  gratuityEligible?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  gratuityRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   notes?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
 }
 
-export type EmploymentContractCreateManyEmployeeInput = {
+export type EmploymentContractCreateWithoutLeaveBalancesInput = {
   id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
   startDate: Date | string
   endDate?: Date | string | null
   jobTitle: string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutLeaveBalancesInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutLeaveBalancesInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveBalancesInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveBalancesInput>
+}
+
+export type EmploymentContractUpsertWithoutLeaveBalancesInput = {
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutLeaveBalancesInput, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveBalancesInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveBalancesInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveBalancesInput>
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+export type EmploymentContractUpdateToOneWithWhereWithoutLeaveBalancesInput = {
+  where?: Prisma.EmploymentContractWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutLeaveBalancesInput, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveBalancesInput>
+}
+
+export type EmploymentContractUpdateWithoutLeaveBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutLeaveBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractCreateWithoutLeaveTransactionsInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutLeaveTransactionsInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutLeaveTransactionsInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveTransactionsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveTransactionsInput>
+}
+
+export type EmploymentContractUpsertWithoutLeaveTransactionsInput = {
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutLeaveTransactionsInput, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveTransactionsInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveTransactionsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveTransactionsInput>
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+export type EmploymentContractUpdateToOneWithWhereWithoutLeaveTransactionsInput = {
+  where?: Prisma.EmploymentContractWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutLeaveTransactionsInput, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveTransactionsInput>
+}
+
+export type EmploymentContractUpdateWithoutLeaveTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutLeaveTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractCreateWithoutLeaveRequestsInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutLeaveRequestsInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutLeaveRequestsInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveRequestsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveRequestsInput>
+}
+
+export type EmploymentContractUpsertWithoutLeaveRequestsInput = {
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutLeaveRequestsInput, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveRequestsInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutLeaveRequestsInput, Prisma.EmploymentContractUncheckedCreateWithoutLeaveRequestsInput>
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+export type EmploymentContractUpdateToOneWithWhereWithoutLeaveRequestsInput = {
+  where?: Prisma.EmploymentContractWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutLeaveRequestsInput, Prisma.EmploymentContractUncheckedUpdateWithoutLeaveRequestsInput>
+}
+
+export type EmploymentContractUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutLeaveRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractCreateWithoutAmendmentsInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutAmendmentsInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutAmendmentsInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAmendmentsInput, Prisma.EmploymentContractUncheckedCreateWithoutAmendmentsInput>
+}
+
+export type EmploymentContractCreateWithoutSourceContractInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutSourceContractInput = {
+  id?: string
+  employeeId: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutSourceContractInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput>
+}
+
+export type EmploymentContractCreateManySourceContractInputEnvelope = {
+  data: Prisma.EmploymentContractCreateManySourceContractInput | Prisma.EmploymentContractCreateManySourceContractInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmploymentContractUpsertWithoutAmendmentsInput = {
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutAmendmentsInput, Prisma.EmploymentContractUncheckedUpdateWithoutAmendmentsInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAmendmentsInput, Prisma.EmploymentContractUncheckedCreateWithoutAmendmentsInput>
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+export type EmploymentContractUpdateToOneWithWhereWithoutAmendmentsInput = {
+  where?: Prisma.EmploymentContractWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutAmendmentsInput, Prisma.EmploymentContractUncheckedUpdateWithoutAmendmentsInput>
+}
+
+export type EmploymentContractUpdateWithoutAmendmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutAmendmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUpsertWithWhereUniqueWithoutSourceContractInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedUpdateWithoutSourceContractInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedCreateWithoutSourceContractInput>
+}
+
+export type EmploymentContractUpdateWithWhereUniqueWithoutSourceContractInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutSourceContractInput, Prisma.EmploymentContractUncheckedUpdateWithoutSourceContractInput>
+}
+
+export type EmploymentContractUpdateManyWithWhereWithoutSourceContractInput = {
+  where: Prisma.EmploymentContractScalarWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateManyMutationInput, Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractInput>
+}
+
+export type EmploymentContractCreateWithoutAllowancesInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutAllowancesInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutAllowancesInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAllowancesInput, Prisma.EmploymentContractUncheckedCreateWithoutAllowancesInput>
+}
+
+export type EmploymentContractUpsertWithoutAllowancesInput = {
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutAllowancesInput, Prisma.EmploymentContractUncheckedUpdateWithoutAllowancesInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAllowancesInput, Prisma.EmploymentContractUncheckedCreateWithoutAllowancesInput>
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+export type EmploymentContractUpdateToOneWithWhereWithoutAllowancesInput = {
+  where?: Prisma.EmploymentContractWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutAllowancesInput, Prisma.EmploymentContractUncheckedUpdateWithoutAllowancesInput>
+}
+
+export type EmploymentContractUpdateWithoutAllowancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutAllowancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractCreateManyEmployeeInput = {
+  id?: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -627,129 +1892,434 @@ export type EmploymentContractCreateManyEmployeeInput = {
 
 export type EmploymentContractUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
 }
 
 export type EmploymentContractUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
 }
 
 export type EmploymentContractUncheckedUpdateManyWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type EmploymentContractCreateManySourceContractInput = {
+  id?: string
+  employeeId: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmploymentContractUpdateWithoutSourceContractInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutSourceContractInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutSourceContractInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type EmploymentContractCountOutputType
+ */
+
+export type EmploymentContractCountOutputType = {
+  amendments: number
+  allowances: number
+  leaveBalances: number
+  leaveTransactions: number
+  leaveRequests: number
+}
+
+export type EmploymentContractCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  amendments?: boolean | EmploymentContractCountOutputTypeCountAmendmentsArgs
+  allowances?: boolean | EmploymentContractCountOutputTypeCountAllowancesArgs
+  leaveBalances?: boolean | EmploymentContractCountOutputTypeCountLeaveBalancesArgs
+  leaveTransactions?: boolean | EmploymentContractCountOutputTypeCountLeaveTransactionsArgs
+  leaveRequests?: boolean | EmploymentContractCountOutputTypeCountLeaveRequestsArgs
+}
+
+/**
+ * EmploymentContractCountOutputType without action
+ */
+export type EmploymentContractCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContractCountOutputType
+   */
+  select?: Prisma.EmploymentContractCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EmploymentContractCountOutputType without action
+ */
+export type EmploymentContractCountOutputTypeCountAmendmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+/**
+ * EmploymentContractCountOutputType without action
+ */
+export type EmploymentContractCountOutputTypeCountAllowancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmploymentContractAllowanceWhereInput
+}
+
+/**
+ * EmploymentContractCountOutputType without action
+ */
+export type EmploymentContractCountOutputTypeCountLeaveBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeLeaveBalanceWhereInput
+}
+
+/**
+ * EmploymentContractCountOutputType without action
+ */
+export type EmploymentContractCountOutputTypeCountLeaveTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveBalanceTransactionWhereInput
+}
+
+/**
+ * EmploymentContractCountOutputType without action
+ */
+export type EmploymentContractCountOutputTypeCountLeaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveRequestWhereInput
+}
 
 
 export type EmploymentContractSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  sourceContractId?: boolean
+  contractNumber?: boolean
+  contractType?: boolean
+  changeType?: boolean
+  status?: boolean
   startDate?: boolean
   endDate?: boolean
   jobTitle?: boolean
   baseSalary?: boolean
   currency?: boolean
+  gratuityEligible?: boolean
+  gratuityRate?: boolean
+  gratuityTaxRate?: boolean
   isCurrent?: boolean
+  signedDate?: boolean
+  terminationDate?: boolean
+  terminationReason?: boolean
+  documentReference?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
+  amendments?: boolean | Prisma.EmploymentContract$amendmentsArgs<ExtArgs>
+  allowances?: boolean | Prisma.EmploymentContract$allowancesArgs<ExtArgs>
+  leaveBalances?: boolean | Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs>
+  leaveTransactions?: boolean | Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.EmploymentContractCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employmentContract"]>
 
 export type EmploymentContractSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  sourceContractId?: boolean
+  contractNumber?: boolean
+  contractType?: boolean
+  changeType?: boolean
+  status?: boolean
   startDate?: boolean
   endDate?: boolean
   jobTitle?: boolean
   baseSalary?: boolean
   currency?: boolean
+  gratuityEligible?: boolean
+  gratuityRate?: boolean
+  gratuityTaxRate?: boolean
   isCurrent?: boolean
+  signedDate?: boolean
+  terminationDate?: boolean
+  terminationReason?: boolean
+  documentReference?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
 }, ExtArgs["result"]["employmentContract"]>
 
 export type EmploymentContractSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  sourceContractId?: boolean
+  contractNumber?: boolean
+  contractType?: boolean
+  changeType?: boolean
+  status?: boolean
   startDate?: boolean
   endDate?: boolean
   jobTitle?: boolean
   baseSalary?: boolean
   currency?: boolean
+  gratuityEligible?: boolean
+  gratuityRate?: boolean
+  gratuityTaxRate?: boolean
   isCurrent?: boolean
+  signedDate?: boolean
+  terminationDate?: boolean
+  terminationReason?: boolean
+  documentReference?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
 }, ExtArgs["result"]["employmentContract"]>
 
 export type EmploymentContractSelectScalar = {
   id?: boolean
   employeeId?: boolean
+  sourceContractId?: boolean
+  contractNumber?: boolean
+  contractType?: boolean
+  changeType?: boolean
+  status?: boolean
   startDate?: boolean
   endDate?: boolean
   jobTitle?: boolean
   baseSalary?: boolean
   currency?: boolean
+  gratuityEligible?: boolean
+  gratuityRate?: boolean
+  gratuityTaxRate?: boolean
   isCurrent?: boolean
+  signedDate?: boolean
+  terminationDate?: boolean
+  terminationReason?: boolean
+  documentReference?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmploymentContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "startDate" | "endDate" | "jobTitle" | "baseSalary" | "currency" | "isCurrent" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentContract"]>
+export type EmploymentContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "sourceContractId" | "contractNumber" | "contractType" | "changeType" | "status" | "startDate" | "endDate" | "jobTitle" | "baseSalary" | "currency" | "gratuityEligible" | "gratuityRate" | "gratuityTaxRate" | "isCurrent" | "signedDate" | "terminationDate" | "terminationReason" | "documentReference" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentContract"]>
 export type EmploymentContractInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
+  amendments?: boolean | Prisma.EmploymentContract$amendmentsArgs<ExtArgs>
+  allowances?: boolean | Prisma.EmploymentContract$allowancesArgs<ExtArgs>
+  leaveBalances?: boolean | Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs>
+  leaveTransactions?: boolean | Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs>
+  leaveRequests?: boolean | Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs>
+  _count?: boolean | Prisma.EmploymentContractCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmploymentContractIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
 }
 export type EmploymentContractIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
 }
 
 export type $EmploymentContractPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "EmploymentContract"
   objects: {
     employee: Prisma.$EmployeePayload<ExtArgs>
+    sourceContract: Prisma.$EmploymentContractPayload<ExtArgs> | null
+    amendments: Prisma.$EmploymentContractPayload<ExtArgs>[]
+    allowances: Prisma.$EmploymentContractAllowancePayload<ExtArgs>[]
+    leaveBalances: Prisma.$EmployeeLeaveBalancePayload<ExtArgs>[]
+    leaveTransactions: Prisma.$LeaveBalanceTransactionPayload<ExtArgs>[]
+    leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     employeeId: string
+    sourceContractId: string | null
+    contractNumber: string | null
+    contractType: $Enums.EmploymentContractType
+    changeType: $Enums.ContractChangeType
+    status: $Enums.EmploymentContractStatus
     startDate: Date
     endDate: Date | null
     jobTitle: string
     baseSalary: runtime.Decimal
     currency: string
+    gratuityEligible: boolean
+    gratuityRate: runtime.Decimal | null
+    gratuityTaxRate: runtime.Decimal | null
     isCurrent: boolean
+    signedDate: Date | null
+    terminationDate: Date | null
+    terminationReason: string | null
+    documentReference: string | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -1148,6 +2718,12 @@ readonly fields: EmploymentContractFieldRefs;
 export interface Prisma__EmploymentContractClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  sourceContract<T extends Prisma.EmploymentContract$sourceContractArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$sourceContractArgs<ExtArgs>>): Prisma.Prisma__EmploymentContractClient<runtime.Types.Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  amendments<T extends Prisma.EmploymentContract$amendmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$amendmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  allowances<T extends Prisma.EmploymentContract$allowancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$allowancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractAllowancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveBalances<T extends Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeLeaveBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveTransactions<T extends Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveBalanceTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveRequests<T extends Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1179,12 +2755,24 @@ export interface Prisma__EmploymentContractClient<T, Null = never, ExtArgs exten
 export interface EmploymentContractFieldRefs {
   readonly id: Prisma.FieldRef<"EmploymentContract", 'String'>
   readonly employeeId: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly sourceContractId: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly contractNumber: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly contractType: Prisma.FieldRef<"EmploymentContract", 'EmploymentContractType'>
+  readonly changeType: Prisma.FieldRef<"EmploymentContract", 'ContractChangeType'>
+  readonly status: Prisma.FieldRef<"EmploymentContract", 'EmploymentContractStatus'>
   readonly startDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly jobTitle: Prisma.FieldRef<"EmploymentContract", 'String'>
   readonly baseSalary: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
   readonly currency: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly gratuityEligible: Prisma.FieldRef<"EmploymentContract", 'Boolean'>
+  readonly gratuityRate: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
+  readonly gratuityTaxRate: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
   readonly isCurrent: Prisma.FieldRef<"EmploymentContract", 'Boolean'>
+  readonly signedDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
+  readonly terminationDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
+  readonly terminationReason: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly documentReference: Prisma.FieldRef<"EmploymentContract", 'String'>
   readonly notes: Prisma.FieldRef<"EmploymentContract", 'String'>
   readonly createdAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
@@ -1586,6 +3174,145 @@ export type EmploymentContractDeleteManyArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many EmploymentContracts to delete.
    */
   limit?: number
+}
+
+/**
+ * EmploymentContract.sourceContract
+ */
+export type EmploymentContract$sourceContractArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContract
+   */
+  select?: Prisma.EmploymentContractSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmploymentContract
+   */
+  omit?: Prisma.EmploymentContractOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmploymentContractInclude<ExtArgs> | null
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+/**
+ * EmploymentContract.amendments
+ */
+export type EmploymentContract$amendmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContract
+   */
+  select?: Prisma.EmploymentContractSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmploymentContract
+   */
+  omit?: Prisma.EmploymentContractOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmploymentContractInclude<ExtArgs> | null
+  where?: Prisma.EmploymentContractWhereInput
+  orderBy?: Prisma.EmploymentContractOrderByWithRelationInput | Prisma.EmploymentContractOrderByWithRelationInput[]
+  cursor?: Prisma.EmploymentContractWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmploymentContractScalarFieldEnum | Prisma.EmploymentContractScalarFieldEnum[]
+}
+
+/**
+ * EmploymentContract.allowances
+ */
+export type EmploymentContract$allowancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContractAllowance
+   */
+  select?: Prisma.EmploymentContractAllowanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmploymentContractAllowance
+   */
+  omit?: Prisma.EmploymentContractAllowanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmploymentContractAllowanceInclude<ExtArgs> | null
+  where?: Prisma.EmploymentContractAllowanceWhereInput
+  orderBy?: Prisma.EmploymentContractAllowanceOrderByWithRelationInput | Prisma.EmploymentContractAllowanceOrderByWithRelationInput[]
+  cursor?: Prisma.EmploymentContractAllowanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmploymentContractAllowanceScalarFieldEnum | Prisma.EmploymentContractAllowanceScalarFieldEnum[]
+}
+
+/**
+ * EmploymentContract.leaveBalances
+ */
+export type EmploymentContract$leaveBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeLeaveBalance
+   */
+  select?: Prisma.EmployeeLeaveBalanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeLeaveBalance
+   */
+  omit?: Prisma.EmployeeLeaveBalanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeLeaveBalanceInclude<ExtArgs> | null
+  where?: Prisma.EmployeeLeaveBalanceWhereInput
+  orderBy?: Prisma.EmployeeLeaveBalanceOrderByWithRelationInput | Prisma.EmployeeLeaveBalanceOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeLeaveBalanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeLeaveBalanceScalarFieldEnum | Prisma.EmployeeLeaveBalanceScalarFieldEnum[]
+}
+
+/**
+ * EmploymentContract.leaveTransactions
+ */
+export type EmploymentContract$leaveTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveBalanceTransaction
+   */
+  select?: Prisma.LeaveBalanceTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveBalanceTransaction
+   */
+  omit?: Prisma.LeaveBalanceTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveBalanceTransactionInclude<ExtArgs> | null
+  where?: Prisma.LeaveBalanceTransactionWhereInput
+  orderBy?: Prisma.LeaveBalanceTransactionOrderByWithRelationInput | Prisma.LeaveBalanceTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveBalanceTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveBalanceTransactionScalarFieldEnum | Prisma.LeaveBalanceTransactionScalarFieldEnum[]
+}
+
+/**
+ * EmploymentContract.leaveRequests
+ */
+export type EmploymentContract$leaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveRequest
+   */
+  select?: Prisma.LeaveRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveRequest
+   */
+  omit?: Prisma.LeaveRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveRequestInclude<ExtArgs> | null
+  where?: Prisma.LeaveRequestWhereInput
+  orderBy?: Prisma.LeaveRequestOrderByWithRelationInput | Prisma.LeaveRequestOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveRequestScalarFieldEnum | Prisma.LeaveRequestScalarFieldEnum[]
 }
 
 /**

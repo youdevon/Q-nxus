@@ -333,6 +333,8 @@ model Organization {
   leaveTypes            LeaveType[]
   leaveEntitlementRules LeaveEntitlementRule[]
 
+  leaveRequests LeaveRequest[]
+
   @@index([status])
   @@map("organizations")
   @@schema("core")
@@ -360,6 +362,7 @@ model User {
   firstName           String
   lastName            String
   passwordHash        String?
+  mustChangePassword  Boolean           @default(false)
   status              UserAccountStatus @default(INVITED)
   isActive            Boolean           @default(true)
   emailVerifiedAt     DateTime?
@@ -379,6 +382,15 @@ model User {
 
   createdLeaveTransactions LeaveBalanceTransaction[] @relation("LeaveTransactionCreator")
 
+  createdLeaveRequests     LeaveRequest[]      @relation("LeaveRequestCreator")
+  finalLeaveDecisions      LeaveRequest[]      @relation("LeaveFinalDecisionUser")
+  leaveApprovalSteps       LeaveApprovalStep[] @relation("LeaveApprovalUser")
+  uploadedLeaveAttachments LeaveAttachment[]   @relation("LeaveAttachmentUploader")
+
+  employeeId String?   @unique
+  employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  @@index([employeeId])
   @@index([organizationId])
   @@index([organizationId, status])
   @@map("users")
@@ -664,6 +676,8 @@ model Position {
   title               String
   code                String?
   description         String?
+  /** Optional Role.code granted to the holder (e.g. HR_ADMINISTRATOR, SYSTEM_ADMINISTRATOR). */
+  systemRoleCode      String?
   isActive            Boolean  @default(true)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
@@ -674,6 +688,8 @@ model Position {
   employees         Employee[]
   assignments       EmployeeAssignment[]
   jobDescriptions   PositionJobDescription[]
+
+  leaveApprovalSteps LeaveApprovalStep[]
 
   @@unique([departmentId, title])
   @@index([departmentId])
@@ -713,6 +729,10 @@ model Employee {
 
   leaveBalances     EmployeeLeaveBalance[]
   leaveTransactions LeaveBalanceTransaction[]
+
+  leaveRequests LeaveRequest[]
+
+  user User?
 
   @@unique([organizationId, employeeNumber])
   @@index([organizationId])
@@ -837,6 +857,8 @@ model LeaveType {
   balances         EmployeeLeaveBalance[]
   transactions     LeaveBalanceTransaction[]
 
+  requests LeaveRequest[]
+
   @@unique([organizationId, code])
   @@unique([organizationId, name])
   @@index([organizationId, isActive])
@@ -881,8 +903,10 @@ model LeaveEntitlementRule {
 model EmployeeLeaveBalance {
   id               String    @id @default(cuid())
   employeeId       String
+  contractId       String
   leaveTypeId      String
-  leaveYear        Int
+  cycleStart       DateTime
+  cycleEnd         DateTime
   openingBalance   Decimal   @default(0) @db.Decimal(9, 2)
   entitlement      Decimal   @default(0) @db.Decimal(9, 2)
   accrued          Decimal   @default(0) @db.Decimal(9, 2)
@@ -897,12 +921,17 @@ model EmployeeLeaveBalance {
   updatedAt        DateTime  @updatedAt
 
   employee     Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contract     EmploymentContract        @relation(fields: [contractId], references: [id], onDelete: Cascade)
   leaveType    LeaveType                 @relation(fields: [leaveTypeId], references: [id])
   transactions LeaveBalanceTransaction[]
 
-  @@unique([employeeId, leaveTypeId, leaveYear])
-  @@index([employeeId, leaveYear])
-  @@index([leaveTypeId, leaveYear])
+  requests LeaveRequest[]
+
+  @@unique([contractId, leaveTypeId])
+  @@index([employeeId])
+  @@index([employeeId, cycleStart, cycleEnd])
+  @@index([contractId])
+  @@index([leaveTypeId])
   @@index([availableBalance])
   @@map("employee_leave_balances")
   @@schema("hr")
@@ -911,6 +940,7 @@ model EmployeeLeaveBalance {
 model LeaveBalanceTransaction {
   id              String                      @id @default(cuid())
   employeeId      String
+  contractId      String
   leaveTypeId     String
   leaveBalanceId  String?
   transactionType LeaveBalanceTransactionType
@@ -925,11 +955,13 @@ model LeaveBalanceTransaction {
   createdAt       DateTime                    @default(now())
 
   employee     Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contract     EmploymentContract    @relation(fields: [contractId], references: [id], onDelete: Cascade)
   leaveType    LeaveType             @relation(fields: [leaveTypeId], references: [id])
   leaveBalance EmployeeLeaveBalance? @relation(fields: [leaveBalanceId], references: [id], onDelete: SetNull)
   createdBy    User?                 @relation("LeaveTransactionCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
 
   @@index([employeeId])
+  @@index([contractId])
   @@index([leaveTypeId])
   @@index([leaveBalanceId])
   @@index([transactionType])
@@ -937,6 +969,118 @@ model LeaveBalanceTransaction {
   @@index([referenceType, referenceId])
   @@index([createdByUserId])
   @@map("leave_balance_transactions")
+  @@schema("hr")
+}
+
+model LeaveRequest {
+  id                    String             @id @default(cuid())
+  organizationId        String
+  employeeId            String
+  contractId            String
+  leaveTypeId           String
+  leaveBalanceId        String?
+  requestNumber         String?
+  startDate             DateTime
+  endDate               DateTime
+  requestedQuantity     Decimal            @db.Decimal(9, 2)
+  reason                String?
+  employeeComment       String?
+  status                LeaveRequestStatus @default(DRAFT)
+  submittedAt           DateTime?
+  approvedAt            DateTime?
+  rejectedAt            DateTime?
+  cancelledAt           DateTime?
+  withdrawnAt           DateTime?
+  finalDecisionByUserId String?
+  finalDecisionComment  String?
+  createdByUserId       String?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  organization    Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee        Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contract        EmploymentContract    @relation(fields: [contractId], references: [id], onDelete: Restrict)
+  leaveType       LeaveType             @relation(fields: [leaveTypeId], references: [id], onDelete: Restrict)
+  leaveBalance    EmployeeLeaveBalance? @relation(fields: [leaveBalanceId], references: [id], onDelete: SetNull)
+  finalDecisionBy User?                 @relation("LeaveFinalDecisionUser", fields: [finalDecisionByUserId], references: [id], onDelete: SetNull)
+  createdBy       User?                 @relation("LeaveRequestCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  days            LeaveRequestDay[]
+  approvalSteps   LeaveApprovalStep[]
+  attachments     LeaveAttachment[]
+
+  @@unique([organizationId, requestNumber])
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([contractId])
+  @@index([leaveTypeId])
+  @@index([leaveBalanceId])
+  @@index([status])
+  @@index([startDate, endDate])
+  @@index([finalDecisionByUserId])
+  @@index([createdByUserId])
+  @@map("leave_requests")
+  @@schema("hr")
+}
+
+model LeaveRequestDay {
+  id              String   @id @default(cuid())
+  leaveRequestId  String
+  leaveDate       DateTime
+  quantity        Decimal  @db.Decimal(7, 2)
+  isWorkingDay    Boolean  @default(true)
+  isPublicHoliday Boolean  @default(false)
+  note            String?
+  createdAt       DateTime @default(now())
+
+  leaveRequest LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+
+  @@unique([leaveRequestId, leaveDate])
+  @@index([leaveDate])
+  @@map("leave_request_days")
+  @@schema("hr")
+}
+
+model LeaveApprovalStep {
+  id                 String              @id @default(cuid())
+  leaveRequestId     String
+  stepNumber         Int
+  approverUserId     String?
+  approverPositionId String?
+  status             LeaveApprovalStatus @default(PENDING)
+  assignedAt         DateTime            @default(now())
+  decidedAt          DateTime?
+  decisionComment    String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  leaveRequest     LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  approverUser     User?        @relation("LeaveApprovalUser", fields: [approverUserId], references: [id], onDelete: SetNull)
+  approverPosition Position?    @relation(fields: [approverPositionId], references: [id], onDelete: SetNull)
+
+  @@unique([leaveRequestId, stepNumber])
+  @@index([approverUserId])
+  @@index([approverPositionId])
+  @@index([status])
+  @@map("leave_approval_steps")
+  @@schema("hr")
+}
+
+model LeaveAttachment {
+  id               String   @id @default(cuid())
+  leaveRequestId   String
+  fileName         String
+  storageKey       String
+  mimeType         String?
+  fileSize         Int?
+  uploadedByUserId String?
+  uploadedAt       DateTime @default(now())
+
+  leaveRequest LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  uploadedBy   User?        @relation("LeaveAttachmentUploader", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([leaveRequestId])
+  @@index([uploadedByUserId])
+  @@map("leave_attachments")
   @@schema("hr")
 }
 
@@ -1040,6 +1184,11 @@ model EmploymentContract {
   sourceContract EmploymentContract?           @relation("ContractHistory", fields: [sourceContractId], references: [id])
   amendments     EmploymentContract[]          @relation("ContractHistory")
   allowances     EmploymentContractAllowance[]
+
+  leaveBalances     EmployeeLeaveBalance[]
+  leaveTransactions LeaveBalanceTransaction[]
+
+  leaveRequests LeaveRequest[]
 
   @@index([employeeId])
   @@index([employeeId, isCurrent])

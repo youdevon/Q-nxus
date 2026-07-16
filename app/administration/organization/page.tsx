@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
 
 export const metadata: Metadata = {
@@ -55,19 +56,19 @@ export default async function OrganizationPage() {
 
   if (!organization) {
     return (
-      <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+      <PageShell>
         <AdministrationNav />
 
         <PageHeader
           title="Organization"
           description="No organization profile has been configured."
         />
-      </div>
+      </PageShell>
     )
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <PageShell>
       <AdministrationNav />
 
       <PageHeader
@@ -75,6 +76,7 @@ export default async function OrganizationPage() {
         description="Organization identity, contact information and regional defaults."
         actions={
           <Button
+            nativeButton={false}
             render={
               <Link href="/administration/organization/edit" />
             }
@@ -244,6 +246,7 @@ export default async function OrganizationPage() {
         </p>
 
         <Button
+          nativeButton={false}
           variant="outline"
           render={
             <Link href="/administration/organization/edit" />
@@ -253,6 +256,6 @@ export default async function OrganizationPage() {
           Edit organization
         </Button>
       </footer>
-    </div>
+    </PageShell>
   )
 }

@@ -9,6 +9,8 @@ import {
   EmploymentType,
 } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
+import { provisionEmployeeUser } from "@/src/modules/auth/services/provision-employee-user"
 
 export type EmployeeFormState = {
   status: "idle" | "error" | "conflict"
@@ -197,6 +199,15 @@ export async function createEmployee(
   _previousState: EmployeeFormState,
   formData: FormData,
 ): Promise<EmployeeFormState> {
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const validation = validateEmployee(formData)
 
   if (!validation.valid) {
@@ -238,15 +249,6 @@ export async function createEmployee(
 
   try {
     const metadata = await requestMetadata()
-
-    const administrator = await prisma.user.findUnique({
-      where: {
-        email: "admin@q-nxus.local",
-      },
-      select: {
-        id: true,
-      },
-    })
 
     const employee = await prisma.$transaction(
       async (transaction) => {
@@ -310,9 +312,47 @@ export async function createEmployee(
           },
         })
 
+        if (created.departmentId) {
+          let jobDescriptionId: string | null = null
+
+          if (created.positionId) {
+            const currentJobDescription =
+              await transaction.positionJobDescription.findFirst({
+                where: {
+                  positionId: created.positionId,
+                  isCurrent: true,
+                  status: "ACTIVE",
+                },
+                orderBy: {
+                  versionNumber: "desc",
+                },
+                select: {
+                  id: true,
+                },
+              })
+
+            jobDescriptionId =
+              currentJobDescription?.id ?? null
+          }
+
+          await transaction.employeeAssignment.create({
+            data: {
+              employeeId: created.id,
+              departmentId: created.departmentId,
+              positionId: created.positionId,
+              jobDescriptionId,
+              assignmentType: "INITIAL_APPOINTMENT",
+              startDate: created.hireDate,
+              isCurrent: true,
+              isActing: false,
+              reason: "Initial organizational assignment.",
+            },
+          })
+        }
+
         await transaction.auditEvent.create({
           data: {
-            userId: administrator?.id ?? null,
+            userId: actor.actor.userId,
             moduleKey: "hr",
             action: "CREATE",
             entityType: "Employee",
@@ -343,6 +383,15 @@ export async function createEmployee(
       },
     )
 
+    try {
+      await provisionEmployeeUser(employee.id)
+    } catch (provisionError: unknown) {
+      console.error(
+        "Employee created but user account provisioning failed:",
+        provisionError,
+      )
+    }
+
     revalidatePath("/people")
     redirect(`/people/employees/${employee.id}`)
   } catch (error: unknown) {
@@ -361,7 +410,10 @@ export async function createEmployee(
         error instanceof Error &&
         error.message.includes("EMPLOYEE numbering sequence")
           ? error.message
-          : "The employee record could not be created.",
+          : error instanceof Error &&
+              error.message.includes("user account")
+            ? error.message
+            : "The employee record could not be created.",
     }
   }
 }
@@ -370,6 +422,15 @@ export async function updateEmployee(
   _previousState: EmployeeFormState,
   formData: FormData,
 ): Promise<EmployeeFormState> {
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const id = textValue(formData, "id")
   const submittedUpdatedAt = textValue(
     formData,
@@ -413,30 +474,8 @@ export async function updateEmployee(
     }
   }
 
-  const structureError = await validateStructureSelection(
-    current.organizationId,
-    validation.values.departmentId,
-    validation.values.positionId,
-  )
-
-  if (structureError) {
-    return {
-      status: "error",
-      message: structureError,
-    }
-  }
-
   try {
     const metadata = await requestMetadata()
-
-    const administrator = await prisma.user.findUnique({
-      where: {
-        email: "admin@q-nxus.local",
-      },
-      select: {
-        id: true,
-      },
-    })
 
     const result = await prisma.$transaction(
       async (transaction) => {
@@ -463,9 +502,6 @@ export async function updateEmployee(
               hireDate: validation.values.hireDate!,
               terminationDate:
                 validation.values.terminationDate,
-              departmentId:
-                validation.values.departmentId,
-              positionId: validation.values.positionId,
             },
           })
 
@@ -482,7 +518,7 @@ export async function updateEmployee(
 
         await transaction.auditEvent.create({
           data: {
-            userId: administrator?.id ?? null,
+            userId: actor.actor.userId,
             moduleKey: "hr",
             action: "UPDATE",
             entityType: "Employee",

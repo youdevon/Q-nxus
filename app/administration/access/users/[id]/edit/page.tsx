@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { UserAccessForm } from "@/src/modules/admin/components/user-access-form"
 import {
   getAssignableRoles,
+  getLinkableEmployees,
   getUserAccess,
 } from "@/src/modules/admin/data/get-user-access"
 
@@ -26,7 +27,16 @@ export default async function UserAccessPage({
     notFound()
   }
 
-  const roles = await getAssignableRoles(user.organizationId)
+  const [roles, linkableEmployees] = await Promise.all([
+    getAssignableRoles(user.organizationId),
+    getLinkableEmployees(user.organizationId, user.employeeId),
+  ])
 
-  return <UserAccessForm user={user} roles={roles} />
+  return (
+    <UserAccessForm
+      user={user}
+      roles={roles}
+      linkableEmployees={linkableEmployees}
+    />
+  )
 }

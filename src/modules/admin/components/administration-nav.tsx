@@ -2,7 +2,17 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Building2, FileClock, Hash, KeyRound, MapPin, Network, Settings2, SlidersHorizontal } from "lucide-react"
+import {
+  Building2,
+  FileClock,
+  Hash,
+  KeyRound,
+  Mail,
+  MapPin,
+  Network,
+  Settings2,
+  SlidersHorizontal,
+} from "lucide-react"
 
 const items = [
   {
@@ -39,6 +49,11 @@ const items = [
     title: "Domain Settings",
     href: "/administration/settings",
     icon: Settings2,
+  },
+  {
+    title: "System Email",
+    href: "/administration/notifications/email",
+    icon: Mail,
   },
   {
     title: "Audit Trail",

@@ -1,17 +1,30 @@
 import type { Metadata } from "next"
+import { redirect } from "next/navigation"
 
-import { ModulePlaceholder } from "@/src/components/layout/module-placeholder"
+import { LeaveWorkspace } from "@/src/modules/hr/components/leave-workspace"
+import { getLeaveWorkspace } from "@/src/modules/hr/data/get-leave-requests"
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
 
 export const metadata: Metadata = {
   title: "Leave",
 }
 
-export default function LeavePage() {
-  return (
-    <ModulePlaceholder
-      title="Leave"
-      moduleName="HR"
-      description="Leave balances, requests, and approvals will live in this workspace."
-    />
-  )
+export const dynamic = "force-dynamic"
+
+export default async function LeavePage() {
+  const capabilities = await getUserCapabilities()
+
+  if (
+    !capabilities?.canAny(
+      "leave.request",
+      "leave.approve",
+      "leave.manage",
+    )
+  ) {
+    redirect("/")
+  }
+
+  const data = await getLeaveWorkspace()
+
+  return <LeaveWorkspace data={data} />
 }

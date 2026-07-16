@@ -4,6 +4,8 @@ import { headers } from "next/headers"
 import { revalidatePath } from "next/cache"
 
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
+import { syncEmployeeAccessRoles } from "@/src/modules/auth/services/provision-employee-user"
 
 export type StructureFormState = {
   status: "idle" | "success" | "error" | "conflict"
@@ -35,23 +37,19 @@ async function requestMetadata() {
   }
 }
 
-async function getAdministratorId(): Promise<string | null> {
-  const administrator = await prisma.user.findUnique({
-    where: {
-      email: "admin@q-nxus.local",
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  return administrator?.id ?? null
-}
-
 export async function createDepartment(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const name = textValue(formData, "name")
   const code = nullableText(formData, "code")
   const description = nullableText(formData, "description")
@@ -101,7 +99,6 @@ export async function createDepartment(
     }
 
     const metadata = await requestMetadata()
-    const administratorId = await getAdministratorId()
 
     await prisma.$transaction(async (transaction) => {
       const department = await transaction.department.create({
@@ -116,7 +113,7 @@ export async function createDepartment(
 
       await transaction.auditEvent.create({
         data: {
-          userId: administratorId,
+          userId: actor.actor.userId,
           moduleKey: "hr",
           action: "CREATE",
           entityType: "Department",
@@ -154,6 +151,15 @@ export async function updateDepartment(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const id = textValue(formData, "id")
   const submittedUpdatedAt = textValue(formData, "updatedAt")
   const name = textValue(formData, "name")
@@ -214,7 +220,6 @@ export async function updateDepartment(
     }
 
     const metadata = await requestMetadata()
-    const administratorId = await getAdministratorId()
 
     const result = await prisma.$transaction(async (transaction) => {
       const updateResult = await transaction.department.updateMany({
@@ -242,7 +247,7 @@ export async function updateDepartment(
 
       await transaction.auditEvent.create({
         data: {
-          userId: administratorId,
+          userId: actor.actor.userId,
           moduleKey: "hr",
           action: "UPDATE",
           entityType: "Department",
@@ -298,10 +303,20 @@ export async function createPosition(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const departmentId = textValue(formData, "departmentId")
   const title = textValue(formData, "title")
   const code = nullableText(formData, "code")
   const description = nullableText(formData, "description")
+  const systemRoleCode = nullableText(formData, "systemRoleCode")
 
   if (!departmentId || title.length < 2) {
     return {
@@ -350,7 +365,6 @@ export async function createPosition(
     }
 
     const metadata = await requestMetadata()
-    const administratorId = await getAdministratorId()
 
     await prisma.$transaction(async (transaction) => {
       const position = await transaction.position.create({
@@ -359,13 +373,14 @@ export async function createPosition(
           title,
           code,
           description,
+          systemRoleCode,
           isActive: true,
         },
       })
 
       await transaction.auditEvent.create({
         data: {
-          userId: administratorId,
+          userId: actor.actor.userId,
           moduleKey: "hr",
           action: "CREATE",
           entityType: "Position",
@@ -376,6 +391,7 @@ export async function createPosition(
             title: position.title,
             code: position.code,
             description: position.description,
+            systemRoleCode: position.systemRoleCode,
             isActive: position.isActive,
           },
           ipAddress: metadata.ipAddress,
@@ -404,11 +420,21 @@ export async function updatePosition(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
+  const actor = await requireActor("people.manage")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const id = textValue(formData, "id")
   const submittedUpdatedAt = textValue(formData, "updatedAt")
   const title = textValue(formData, "title")
   const code = nullableText(formData, "code")
   const description = nullableText(formData, "description")
+  const systemRoleCode = nullableText(formData, "systemRoleCode")
   const isActive = formData.get("isActive") === "on"
 
   if (!id || !submittedUpdatedAt || title.length < 2) {
@@ -472,7 +498,6 @@ export async function updatePosition(
     }
 
     const metadata = await requestMetadata()
-    const administratorId = await getAdministratorId()
 
     const result = await prisma.$transaction(async (transaction) => {
       const updateResult = await transaction.position.updateMany({
@@ -484,6 +509,7 @@ export async function updatePosition(
           title,
           code,
           description,
+          systemRoleCode,
           isActive,
         },
       })
@@ -500,7 +526,7 @@ export async function updatePosition(
 
       await transaction.auditEvent.create({
         data: {
-          userId: administratorId,
+          userId: actor.actor.userId,
           moduleKey: "hr",
           action: "UPDATE",
           entityType: "Position",
@@ -510,12 +536,14 @@ export async function updatePosition(
             title: current.title,
             code: current.code,
             description: current.description,
+            systemRoleCode: current.systemRoleCode,
             isActive: current.isActive,
           },
           newValues: {
             title: updated.title,
             code: updated.code,
             description: updated.description,
+            systemRoleCode: updated.systemRoleCode,
             isActive: updated.isActive,
           },
           ipAddress: metadata.ipAddress,
@@ -531,6 +559,29 @@ export async function updatePosition(
         status: "conflict",
         message:
           "This position changed while it was being saved. Refresh the page.",
+      }
+    }
+
+    const holders = await prisma.employee.findMany({
+      where: {
+        positionId: id,
+        user: {
+          isNot: null,
+        },
+      },
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    })
+
+    for (const holder of holders) {
+      if (holder.user) {
+        await syncEmployeeAccessRoles(holder.user.id, holder.id)
       }
     }
 

@@ -132,10 +132,85 @@ export type Position = Prisma.PositionModel
  */
 export type Employee = Prisma.EmployeeModel
 /**
+ * Model PositionJobDescription
+ * 
+ */
+export type PositionJobDescription = Prisma.PositionJobDescriptionModel
+/**
+ * Model JobDescriptionCriterion
+ * 
+ */
+export type JobDescriptionCriterion = Prisma.JobDescriptionCriterionModel
+/**
+ * Model EmployeeAssignment
+ * 
+ */
+export type EmployeeAssignment = Prisma.EmployeeAssignmentModel
+/**
+ * Model LeaveType
+ * 
+ */
+export type LeaveType = Prisma.LeaveTypeModel
+/**
+ * Model LeaveEntitlementRule
+ * 
+ */
+export type LeaveEntitlementRule = Prisma.LeaveEntitlementRuleModel
+/**
+ * Model EmployeeLeaveBalance
+ * 
+ */
+export type EmployeeLeaveBalance = Prisma.EmployeeLeaveBalanceModel
+/**
+ * Model LeaveBalanceTransaction
+ * 
+ */
+export type LeaveBalanceTransaction = Prisma.LeaveBalanceTransactionModel
+/**
+ * Model LeaveRequest
+ * 
+ */
+export type LeaveRequest = Prisma.LeaveRequestModel
+/**
+ * Model LeaveRequestDay
+ * 
+ */
+export type LeaveRequestDay = Prisma.LeaveRequestDayModel
+/**
+ * Model LeaveApprovalStep
+ * 
+ */
+export type LeaveApprovalStep = Prisma.LeaveApprovalStepModel
+/**
+ * Model LeaveAttachment
+ * 
+ */
+export type LeaveAttachment = Prisma.LeaveAttachmentModel
+/**
+ * Model PerformanceAppraisal
+ * 
+ */
+export type PerformanceAppraisal = Prisma.PerformanceAppraisalModel
+/**
+ * Model PerformanceAppraisalCriterion
+ * 
+ */
+export type PerformanceAppraisalCriterion = Prisma.PerformanceAppraisalCriterionModel
+/**
  * Model EmploymentContract
  * 
  */
 export type EmploymentContract = Prisma.EmploymentContractModel
+/**
+ * Model AllowanceCategory
+ * 
+ */
+export type AllowanceCategory = Prisma.AllowanceCategoryModel
+/**
+ * Model EmploymentContractAllowance
+ * 
+ */
+export type EmploymentContractAllowance = Prisma.EmploymentContractAllowanceModel
 /**
  * Model PayrollProfile
  * 
@@ -151,6 +226,21 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type NotificationRecipient = Prisma.NotificationRecipientModel
+/**
+ * Model EmailDelivery
+ * 
+ */
+export type EmailDelivery = Prisma.EmailDeliveryModel
+/**
+ * Model EmailDeliveryAttempt
+ * 
+ */
+export type EmailDeliveryAttempt = Prisma.EmailDeliveryAttemptModel
+/**
+ * Model EmailTemplate
+ * 
+ */
+export type EmailTemplate = Prisma.EmailTemplateModel
 /**
  * Model AuditEvent
  * 

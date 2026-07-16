@@ -69,6 +69,7 @@ export default async function RolePage({
         actions={
           <div className="flex flex-wrap gap-2">
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/administration/access" />}
             >
@@ -77,6 +78,7 @@ export default async function RolePage({
             </Button>
 
             <Button
+              nativeButton={false}
               render={
                 <Link
                   href={`/administration/access/roles/${role.id}/edit`}
@@ -259,6 +261,7 @@ export default async function RolePage({
 
       <footer className="flex justify-end border-t border-border pt-5">
         <Button
+          nativeButton={false}
           variant="outline"
           render={
             <Link

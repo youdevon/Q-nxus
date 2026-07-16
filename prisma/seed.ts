@@ -9,6 +9,7 @@ import {
   SettingDataType,
   UserAccountStatus,
 } from "../generated/prisma/client";
+import { hashPassword } from "../src/modules/auth/lib/password";
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -594,6 +595,8 @@ async function seedRolePermissions(): Promise<void> {
 }
 
 async function seedAdministrator(): Promise<void> {
+  const passwordHash = hashPassword("ChangeMe123!");
+
   const administrator = await prisma.user.upsert({
     where: {
       email: "admin@q-nxus.local",
@@ -605,6 +608,7 @@ async function seedAdministrator(): Promise<void> {
       status: UserAccountStatus.ACTIVE,
       isActive: true,
       emailVerifiedAt: new Date(),
+      passwordHash,
     },
     create: {
       id: administratorUserId,
@@ -615,6 +619,7 @@ async function seedAdministrator(): Promise<void> {
       status: UserAccountStatus.ACTIVE,
       isActive: true,
       emailVerifiedAt: new Date(),
+      passwordHash,
     },
   });
 
@@ -694,6 +699,7 @@ async function main(): Promise<void> {
 
   console.log("Q-NXUS platform foundation seeded successfully.");
   console.log("Initial administrator: admin@q-nxus.local");
+  console.log("Initial administrator password: ChangeMe123!");
 }
 
 main()

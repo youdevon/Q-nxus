@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import {
   createEmployee,
   updateEmployee,
@@ -68,10 +69,8 @@ export function EmployeeForm({
   }, [state])
 
   return (
-    <form
-      action={formAction}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
+    <form action={formAction}>
+      <PageShell>
       <PeopleNav />
 
       <PageHeader
@@ -86,17 +85,27 @@ export function EmployeeForm({
             : "Create a workforce profile and assign an employment classification."
         }
         actions={
-          <div className="flex gap-2">
+          <>
             <Button
+              nativeButton={false}
               variant="outline"
-              render={<Link href="/people" />}
+              render={
+                <Link
+                  href={
+                    employee
+                      ? `/people/employees/${employee.id}`
+                      : "/people"
+                  }
+                />
+              }
             >
               <ArrowLeft />
-              Directory
+              {employee ? "Cancel" : "Directory"}
             </Button>
 
             {employee && (
               <Button
+                nativeButton={false}
                 variant="outline"
                 render={
                   <Link
@@ -116,7 +125,7 @@ export function EmployeeForm({
                   ? "Save employee"
                   : "Create employee"}
             </Button>
-          </div>
+          </>
         }
       />
 
@@ -372,9 +381,10 @@ export function EmployeeForm({
         </div>
       </section>
 
+      {!employee && (
       <section>
         <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
-          Organizational assignment
+          Initial organizational assignment
         </h2>
 
         <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
@@ -417,14 +427,7 @@ export function EmployeeForm({
               key={departmentId}
               id="positionId"
               name="positionId"
-              defaultValue={
-                positions.some(
-                  (position) =>
-                    position.id === employee?.positionId,
-                )
-                  ? employee?.positionId ?? ""
-                  : ""
-              }
+              defaultValue=""
               disabled={!departmentId}
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm disabled:opacity-50"
             >
@@ -438,6 +441,7 @@ export function EmployeeForm({
           </div>
         </div>
       </section>
+      )}
 
       <footer className="flex justify-end border-t border-border pt-5">
         <Button type="submit" disabled={pending}>
@@ -449,6 +453,7 @@ export function EmployeeForm({
               : "Create employee"}
         </Button>
       </footer>
+      </PageShell>
     </form>
   )
 }

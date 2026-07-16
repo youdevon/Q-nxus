@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 import { RoleAssignmentStatus } from "@/generated/prisma/client"
 import { prisma } from "@/lib/prisma"
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
 
 export type RoleAssignmentState = {
   status: "idle" | "success" | "error"
@@ -38,6 +39,15 @@ export async function assignUserRole(
   _previousState: RoleAssignmentState,
   formData: FormData,
 ): Promise<RoleAssignmentState> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    return {
+      status: "error",
+      message: actor.message,
+    }
+  }
+
   const userId = textValue(formData, "userId")
   const roleId = textValue(formData, "roleId")
   const reason = nullableText(formData, "reason")
@@ -160,18 +170,9 @@ export async function assignUserRole(
         },
       })
 
-      const administrator = await transaction.user.findUnique({
-        where: {
-          email: "admin@q-nxus.local",
-        },
-        select: {
-          id: true,
-        },
-      })
-
       await transaction.auditEvent.create({
         data: {
-          userId: administrator?.id ?? null,
+          userId: actor.actor.userId,
           moduleKey: "identity",
           action: "ASSIGN_ROLE",
           entityType: "UserRole",
@@ -239,6 +240,12 @@ export async function assignUserRole(
 export async function revokeUserRole(
   formData: FormData,
 ): Promise<void> {
+  const actor = await requireActor("administration.view")
+
+  if (!actor.ok) {
+    throw new Error(actor.message)
+  }
+
   const assignmentId = textValue(formData, "assignmentId")
   const userId = textValue(formData, "userId")
   const reason =
@@ -297,18 +304,9 @@ export async function revokeUserRole(
       },
     })
 
-    const administrator = await transaction.user.findUnique({
-      where: {
-        email: "admin@q-nxus.local",
-      },
-      select: {
-        id: true,
-      },
-    })
-
     await transaction.auditEvent.create({
       data: {
-        userId: administrator?.id ?? null,
+        userId: actor.actor.userId,
         moduleKey: "identity",
         action: "REVOKE_ROLE",
         entityType: "UserRole",

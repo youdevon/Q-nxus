@@ -6,12 +6,14 @@ import {
   BriefcaseBusiness,
   FileText,
   Pencil,
+  UserPlus,
   UsersRound,
 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { PageHeader } from "@/src/components/layout/page-header"
+import { PageShell } from "@/src/components/layout/page-shell"
 import { PeopleNav } from "@/src/modules/hr/components/people-nav"
 import { getPositionProfile } from "@/src/modules/hr/data/get-people-structure"
 
@@ -41,15 +43,16 @@ export default async function PositionPage({
     )
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <PageShell size="lg">
       <PeopleNav />
 
       <PageHeader
         title={position.title}
         description={`${position.department.name} position profile.`}
         actions={
-          <div className="flex flex-wrap gap-2">
+          <>
             <Button
+              nativeButton={false}
               variant="outline"
               render={<Link href="/people/structure" />}
             >
@@ -58,6 +61,7 @@ export default async function PositionPage({
             </Button>
 
             <Button
+              nativeButton={false}
               variant="outline"
               render={
                 <Link
@@ -70,6 +74,20 @@ export default async function PositionPage({
             </Button>
 
             <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link
+                  href={`/people/structure/positions/${position.id}/assignments/new`}
+                />
+              }
+            >
+              <UserPlus />
+              Assign employee
+            </Button>
+
+            <Button
+              nativeButton={false}
               render={
                 <Link
                   href={`/people/structure/positions/${position.id}/edit`}
@@ -79,7 +97,7 @@ export default async function PositionPage({
               <Pencil />
               Edit position
             </Button>
-          </div>
+          </>
         }
       />
 
@@ -165,16 +183,32 @@ export default async function PositionPage({
       </section>
 
       <section>
-        <div className="mb-4 flex items-center gap-2">
-          <UsersRound className="size-4 text-muted-foreground" />
-          <h2 className="text-sm font-semibold tracking-wide uppercase">
-            Assigned employees
-          </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <UsersRound className="size-4 text-muted-foreground" />
+            <h2 className="text-sm font-semibold tracking-wide uppercase">
+              Assigned employees
+            </h2>
+          </div>
+
+          <Button
+            nativeButton={false}
+            size="sm"
+            render={
+              <Link
+                href={`/people/structure/positions/${position.id}/assignments/new`}
+              />
+            }
+          >
+            <UserPlus />
+            Assign employee
+          </Button>
         </div>
 
         {position.employees.length === 0 ? (
           <p className="border-y border-border py-6 text-sm text-muted-foreground">
-            No employees are assigned to this position.
+            No employees are assigned to this position yet.
+            Use Assign employee to place someone here.
           </p>
         ) : (
           <div className="divide-y divide-border border-y border-border">
@@ -207,6 +241,6 @@ export default async function PositionPage({
           </div>
         )}
       </section>
-    </div>
+    </PageShell>
   )
 }
