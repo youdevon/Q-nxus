@@ -1,85 +1,86 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
 import {
   LeaveApprovalStatus,
   LeaveBalanceTransactionType,
   LeaveRequestStatus,
   NotificationSeverity,
-} from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user"
-import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
-import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification"
+  Prisma,
+} from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user";
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
+import { findUsersWithPermission } from "@/src/modules/hr/data/find-users-with-permission";
+import {
+  applyLeaveApprove,
+  applyLeaveRelease,
+} from "@/src/modules/hr/lib/leave-balance-math";
+import {
+  isLeaveAwaitingDecision,
+  resolveLeaveDecisionOutcome,
+} from "@/src/modules/hr/lib/leave-decision-outcome";
+import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
 
 export type LeaveDecisionFormState = {
-  status: "idle" | "error" | "success"
-  message: string
-}
+  status: "idle" | "error" | "success";
+  message: string;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function nullableText(
-  formData: FormData,
-  key: string,
-): string | null {
-  const value = textValue(formData, key)
-  return value.length > 0 ? value : null
+function nullableText(formData: FormData, key: string): string | null {
+  const value = textValue(formData, key);
+  return value.length > 0 ? value : null;
 }
 
-async function requestMetadata() {
-  const requestHeaders = await headers()
-
-  return {
-    ipAddress:
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null,
-    userAgent: requestHeaders.get("user-agent"),
-  }
-}
-
+/**
+ * Decision semantics:
+ * - Assigned pending approver may decide their step.
+ * - `leave.manage` may override any pending step (HR).
+ * - `leave.approve` alone may NOT override others' steps.
+ * - Manager approve (step 1, without leave.manage) advances to
+ *   MANAGER_APPROVED and creates an HR confirmation step.
+ * - HR confirm (step 2) or leave.manage approve finalizes APPROVED.
+ */
 export async function decideLeaveRequest(
   _previousState: LeaveDecisionFormState,
   formData: FormData,
 ): Promise<LeaveDecisionFormState> {
-  const leaveRequestId = textValue(formData, "leaveRequestId")
-  const decision = textValue(formData, "decision")
-  const decisionComment = nullableText(
-    formData,
-    "decisionComment",
-  )
+  const leaveRequestId = textValue(formData, "leaveRequestId");
+  const decision = textValue(formData, "decision");
+  const decisionComment = nullableText(formData, "decisionComment");
 
   if (!leaveRequestId) {
     return {
       status: "error",
       message: "The leave request could not be found.",
-    }
+    };
   }
 
   if (decision !== "APPROVE" && decision !== "REJECT") {
     return {
       status: "error",
       message: "Choose approve or reject.",
-    }
+    };
   }
 
   if (decision === "REJECT" && !decisionComment) {
     return {
       status: "error",
       message: "A comment is required when rejecting leave.",
-    }
+    };
   }
 
-  let user
+  let user;
 
   try {
-    user = await requireCurrentUser()
+    user = await requireCurrentUser();
   } catch (error) {
     return {
       status: "error",
@@ -87,7 +88,7 @@ export async function decideLeaveRequest(
         error instanceof Error
           ? error.message
           : "An active user account is required.",
-    }
+    };
   }
 
   const request = await prisma.leaveRequest.findUnique({
@@ -127,180 +128,240 @@ export async function decideLeaveRequest(
         },
       },
     },
-  })
+  });
 
   if (!request) {
     return {
       status: "error",
       message: "The leave request could not be found.",
-    }
+    };
   }
 
-  if (
-    request.status !== LeaveRequestStatus.SUBMITTED &&
-    request.status !== LeaveRequestStatus.PENDING_APPROVAL
-  ) {
+  if (!isLeaveAwaitingDecision(request.status)) {
     return {
       status: "error",
       message: "This leave request is no longer awaiting a decision.",
-    }
+    };
   }
 
-  const pendingStep =
-    request.approvalSteps.find(
-      (step) => step.approverUserId === user.id,
-    ) ?? null
+  const assignedStep =
+    request.approvalSteps.find((step) => step.approverUserId === user.id) ??
+    null;
 
-  const capabilities = await getUserCapabilities(user.id)
-  const canOverride =
-    capabilities?.canAny("leave.approve", "leave.manage") ??
-    false
+  const capabilities = await getUserCapabilities(user.id);
+  const canManageLeave = capabilities?.can("leave.manage") ?? false;
 
+  // Assigned approver first; HR leave.manage may override unassigned
+  // or another user's pending step. leave.approve alone cannot override.
   const stepToDecide =
-    pendingStep ??
-    (canOverride ? request.approvalSteps[0] ?? null : null)
+    assignedStep ??
+    (canManageLeave ? (request.approvalSteps[0] ?? null) : null);
 
   if (!stepToDecide) {
     return {
       status: "error",
-      message:
-        "You are not the assigned approver for this leave request.",
-    }
+      message: "You are not the assigned approver for this leave request.",
+    };
   }
 
-  const metadata = await requestMetadata()
-  const approved = decision === "APPROVE"
-  const now = new Date()
+  const outcome = resolveLeaveDecisionOutcome({
+    decision,
+    stepNumber: stepToDecide.stepNumber,
+    canManageLeave,
+  });
+
+  const metadata = await getAuditRequestMetadata(formData);
+  const now = new Date();
+  const quantity = request.requestedQuantity.toString();
+  const awaitingStatuses = [
+    LeaveRequestStatus.SUBMITTED,
+    LeaveRequestStatus.PENDING_APPROVAL,
+    LeaveRequestStatus.MANAGER_APPROVED,
+  ] as const;
 
   try {
     await prisma.$transaction(async (transaction) => {
-      await transaction.leaveApprovalStep.update({
+      const stepResult = await transaction.leaveApprovalStep.updateMany({
         where: {
           id: stepToDecide.id,
+          status: LeaveApprovalStatus.PENDING,
         },
         data: {
-          status: approved
-            ? LeaveApprovalStatus.APPROVED
-            : LeaveApprovalStatus.REJECTED,
+          status:
+            decision === "APPROVE"
+              ? LeaveApprovalStatus.APPROVED
+              : LeaveApprovalStatus.REJECTED,
           decidedAt: now,
           decisionComment,
-          ...(pendingStep
+          ...(assignedStep
             ? {}
             : {
                 approverUserId: user.id,
               }),
         },
-      })
+      });
 
-      await transaction.leaveRequest.update({
+      if (stepResult.count !== 1) {
+        throw new Error(
+          "This leave request was already decided by another approver.",
+        );
+      }
+
+      if (outcome.kind === "advance_to_hr") {
+        const requestResult = await transaction.leaveRequest.updateMany({
+          where: {
+            id: request.id,
+            status: {
+              in: [...awaitingStatuses],
+            },
+          },
+          data: {
+            status: LeaveRequestStatus.MANAGER_APPROVED,
+            finalDecisionByUserId: null,
+            finalDecisionComment: decisionComment,
+          },
+        });
+
+        if (requestResult.count !== 1) {
+          throw new Error(
+            "This leave request is no longer awaiting a decision.",
+          );
+        }
+
+        await transaction.leaveApprovalStep.create({
+          data: {
+            leaveRequestId: request.id,
+            stepNumber: stepToDecide.stepNumber + 1,
+            approverUserId: null,
+            approverPositionId: null,
+            status: LeaveApprovalStatus.PENDING,
+          },
+        });
+
+        await transaction.auditEvent.create({
+          data: {
+            userId: user.id,
+            moduleKey: "hr",
+            action: "APPROVE",
+            entityType: "LeaveRequest",
+            entityId: request.id,
+            description: `Manager approved leave request ${request.requestNumber ?? request.id} for ${request.employee.employeeNumber}; awaiting HR confirmation.`,
+            newValues: {
+              decision,
+              decisionComment,
+              status: LeaveRequestStatus.MANAGER_APPROVED,
+              override: !assignedStep,
+            },
+            ipAddress: metadata.ipAddress,
+            userAgent: metadata.userAgent,
+            clientHostName: metadata.clientHostName,
+          },
+        });
+
+        return;
+      }
+
+      const finalizedStatus =
+        outcome.requestStatus === "APPROVED"
+          ? LeaveRequestStatus.APPROVED
+          : LeaveRequestStatus.REJECTED;
+      const approved = outcome.requestStatus === "APPROVED";
+
+      const requestResult = await transaction.leaveRequest.updateMany({
         where: {
           id: request.id,
+          status: {
+            in: [...awaitingStatuses],
+          },
         },
         data: {
-          status: approved
-            ? LeaveRequestStatus.APPROVED
-            : LeaveRequestStatus.REJECTED,
+          status: finalizedStatus,
           approvedAt: approved ? now : null,
           rejectedAt: approved ? null : now,
           finalDecisionByUserId: user.id,
           finalDecisionComment: decisionComment,
         },
-      })
+      });
+
+      if (requestResult.count !== 1) {
+        throw new Error("This leave request is no longer awaiting a decision.");
+      }
 
       if (request.leaveBalanceId) {
-        const balance =
-          await transaction.employeeLeaveBalance.findUnique({
-            where: {
-              id: request.leaveBalanceId,
-            },
-            select: {
-              id: true,
-              reserved: true,
-              taken: true,
-              availableBalance: true,
-            },
-          })
+        const balance = await transaction.employeeLeaveBalance.findUnique({
+          where: {
+            id: request.leaveBalanceId,
+          },
+          select: {
+            id: true,
+            reserved: true,
+            taken: true,
+            availableBalance: true,
+          },
+        });
 
         if (!balance) {
           throw new Error(
             "The leave balance for this request no longer exists.",
-          )
+          );
         }
 
-        if (approved) {
-          const balanceBefore = balance.availableBalance
+        const snapshot = {
+          reserved: balance.reserved.toString(),
+          taken: balance.taken.toString(),
+          availableBalance: balance.availableBalance.toString(),
+        };
 
-          await transaction.employeeLeaveBalance.update({
+        const next =
+          outcome.applyBalance === "approve"
+            ? applyLeaveApprove(snapshot, quantity)
+            : applyLeaveRelease(snapshot, quantity);
+
+        const balanceResult = await transaction.employeeLeaveBalance.updateMany(
+          {
             where: {
               id: balance.id,
+              reserved: balance.reserved,
+              taken: balance.taken,
+              availableBalance: balance.availableBalance,
             },
             data: {
-              reserved: balance.reserved.minus(
-                request.requestedQuantity,
-              ),
-              taken: balance.taken.plus(
-                request.requestedQuantity,
-              ),
+              reserved: new Prisma.Decimal(next.reserved),
+              taken: new Prisma.Decimal(next.taken),
+              availableBalance: new Prisma.Decimal(next.availableBalance),
               lastCalculatedAt: now,
             },
-          })
+          },
+        );
 
-          await transaction.leaveBalanceTransaction.create({
-            data: {
-              employeeId: request.employeeId,
-              contractId: request.contractId,
-              leaveTypeId: request.leaveTypeId,
-              leaveBalanceId: balance.id,
-              transactionType:
-                LeaveBalanceTransactionType.LEAVE_TAKEN,
-              quantity: request.requestedQuantity,
-              balanceBefore,
-              balanceAfter: balanceBefore,
-              effectiveDate: request.startDate,
-              referenceType: "LeaveRequest",
-              referenceId: request.id,
-              description: `Leave taken for approved request ${request.requestNumber ?? request.id}.`,
-              createdByUserId: user.id,
-            },
-          })
-        } else {
-          const balanceBefore = balance.availableBalance
-          const balanceAfter = balanceBefore.plus(
-            request.requestedQuantity,
-          )
-
-          await transaction.employeeLeaveBalance.update({
-            where: {
-              id: balance.id,
-            },
-            data: {
-              reserved: balance.reserved.minus(
-                request.requestedQuantity,
-              ),
-              availableBalance: balanceAfter,
-              lastCalculatedAt: now,
-            },
-          })
-
-          await transaction.leaveBalanceTransaction.create({
-            data: {
-              employeeId: request.employeeId,
-              contractId: request.contractId,
-              leaveTypeId: request.leaveTypeId,
-              leaveBalanceId: balance.id,
-              transactionType:
-                LeaveBalanceTransactionType.REQUEST_RELEASED,
-              quantity: request.requestedQuantity,
-              balanceBefore,
-              balanceAfter,
-              effectiveDate: now,
-              referenceType: "LeaveRequest",
-              referenceId: request.id,
-              description: `Released reserved leave for rejected request ${request.requestNumber ?? request.id}.`,
-              createdByUserId: user.id,
-            },
-          })
+        if (balanceResult.count !== 1) {
+          throw new Error(
+            "Leave balance changed concurrently. Refresh and try again.",
+          );
         }
+
+        await transaction.leaveBalanceTransaction.create({
+          data: {
+            employeeId: request.employeeId,
+            contractId: request.contractId,
+            leaveTypeId: request.leaveTypeId,
+            leaveBalanceId: balance.id,
+            transactionType:
+              outcome.applyBalance === "approve"
+                ? LeaveBalanceTransactionType.LEAVE_TAKEN
+                : LeaveBalanceTransactionType.REQUEST_RELEASED,
+            quantity: request.requestedQuantity,
+            balanceBefore: balance.availableBalance,
+            balanceAfter: new Prisma.Decimal(next.availableBalance),
+            effectiveDate: approved ? request.startDate : now,
+            referenceType: "LeaveRequest",
+            referenceId: request.id,
+            description: approved
+              ? `Leave taken for approved request ${request.requestNumber ?? request.id}.`
+              : `Released reserved leave for rejected request ${request.requestNumber ?? request.id}.`,
+            createdByUserId: user.id,
+          },
+        });
       }
 
       await transaction.auditEvent.create({
@@ -314,24 +375,106 @@ export async function decideLeaveRequest(
           newValues: {
             decision,
             decisionComment,
-            status: approved
-              ? LeaveRequestStatus.APPROVED
-              : LeaveRequestStatus.REJECTED,
+            status: finalizedStatus,
+            override: !assignedStep,
+            hrConfirmation: stepToDecide.stepNumber > 1,
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
         },
-      })
-    })
+      });
+    });
 
-    const employeeUser = request.employee.user
+    if (outcome.kind === "advance_to_hr") {
+      try {
+        const hrUsers = await findUsersWithPermission(
+          request.organizationId,
+          "leave.manage",
+        );
+        const recipients = hrUsers
+          .filter((hrUser) => hrUser.id !== user.id)
+          .map((hrUser) => ({
+            userId: hrUser.id,
+            email: hrUser.email,
+            name: `${hrUser.firstName} ${hrUser.lastName}`,
+            sendEmail: Boolean(hrUser.email),
+          }));
+
+        if (recipients.length > 0) {
+          await createSystemNotification({
+            title: "Leave awaiting HR confirmation",
+            message: `${request.employee.firstName} ${request.employee.lastName}'s ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was approved by their manager and needs HR confirmation.`,
+            severity: NotificationSeverity.INFORMATION,
+            moduleKey: "hr",
+            actionUrl: `/leave/${request.id}`,
+            relatedType: "LeaveRequest",
+            relatedId: request.id,
+            recipients,
+            email: {
+              subject: `HR confirmation · ${request.requestNumber ?? "Leave request"}`,
+              actionLabel: "Review leave request",
+            },
+          });
+        }
+      } catch (notificationError) {
+        console.error(
+          "Leave advanced to HR but notification failed:",
+          notificationError,
+        );
+      }
+
+      const employeeUser = request.employee.user;
+
+      if (employeeUser?.isActive) {
+        try {
+          await createSystemNotification({
+            title: "Leave approved by manager",
+            message: `Your ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was approved by your manager and is awaiting HR confirmation.`,
+            severity: NotificationSeverity.INFORMATION,
+            moduleKey: "hr",
+            actionUrl: `/leave/${request.id}`,
+            relatedType: "LeaveRequest",
+            relatedId: request.id,
+            recipients: [
+              {
+                userId: employeeUser.id,
+                email: employeeUser.email,
+                name: `${employeeUser.firstName} ${employeeUser.lastName}`,
+                sendEmail: Boolean(employeeUser.email),
+              },
+            ],
+            email: {
+              subject: `Manager approved · ${request.requestNumber ?? "Leave request"}`,
+              actionLabel: "View leave request",
+            },
+          });
+        } catch (notificationError) {
+          console.error(
+            "Leave advanced to HR but employee notification failed:",
+            notificationError,
+          );
+        }
+      }
+
+      revalidatePath("/leave");
+      revalidatePath(`/leave/${request.id}`);
+      revalidatePath("/notifications");
+
+      return {
+        status: "success",
+        message:
+          "Leave request approved. It is now awaiting HR confirmation.",
+      };
+    }
+
+    const approved = outcome.requestStatus === "APPROVED";
+    const employeeUser = request.employee.user;
 
     if (employeeUser?.isActive) {
       try {
         await createSystemNotification({
-          title: approved
-            ? "Leave request approved"
-            : "Leave request rejected",
+          title: approved ? "Leave request approved" : "Leave request rejected",
           message: approved
             ? `Your ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was approved.`
             : `Your ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was rejected${decisionComment ? `: ${decisionComment}` : "."}`,
@@ -354,28 +497,30 @@ export async function decideLeaveRequest(
             subject: `${approved ? "Approved" : "Rejected"} · ${request.requestNumber ?? "Leave request"}`,
             actionLabel: "View leave request",
           },
-        })
+        });
       } catch (notificationError) {
         console.error(
           "Leave decision saved but employee notification failed:",
           notificationError,
-        )
+        );
       }
     }
 
-    revalidatePath("/leave")
-    revalidatePath(`/leave/${request.id}`)
-    revalidatePath("/people/leave/balances")
-    revalidatePath("/notifications")
+    revalidatePath("/leave");
+    revalidatePath(`/leave/${request.id}`);
+    revalidatePath("/people/leave/balances");
+    revalidatePath("/notifications");
 
     return {
       status: "success",
       message: approved
-        ? "Leave request approved."
+        ? stepToDecide.stepNumber > 1
+          ? "Leave request confirmed by HR."
+          : "Leave request approved."
         : "Leave request rejected.",
-    }
+    };
   } catch (error) {
-    console.error("Unable to decide leave request:", error)
+    console.error("Unable to decide leave request:", error);
 
     return {
       status: "error",
@@ -383,6 +528,6 @@ export async function decideLeaveRequest(
         error instanceof Error
           ? error.message
           : "The leave decision could not be saved.",
-    }
+    };
   }
 }

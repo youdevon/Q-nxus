@@ -1,60 +1,46 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
 import {
   LeaveApprovalStatus,
   LeaveBalanceTransactionType,
   LeaveRequestStatus,
   NotificationSeverity,
-} from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { requireCurrentEmployeeUser } from "@/src/modules/auth/data/get-current-user"
-import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification"
+  Prisma,
+} from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { requireCurrentEmployeeUser } from "@/src/modules/auth/data/get-current-user";
+import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import {
+  applyLeaveCancelTaken,
+  applyLeaveRelease,
+} from "@/src/modules/hr/lib/leave-balance-math";
 
 export type LeaveLifecycleFormState = {
-  status: "idle" | "error" | "success"
-  message: string
-}
+  status: "idle" | "error" | "success";
+  message: string;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function nullableText(
-  formData: FormData,
-  key: string,
-): string | null {
-  const value = textValue(formData, key)
-  return value.length > 0 ? value : null
+function nullableText(formData: FormData, key: string): string | null {
+  const value = textValue(formData, key);
+  return value.length > 0 ? value : null;
 }
 
 function startOfUtcDay(value: Date): Date {
   return new Date(
-    Date.UTC(
-      value.getUTCFullYear(),
-      value.getUTCMonth(),
-      value.getUTCDate(),
-    ),
-  )
-}
-
-async function requestMetadata() {
-  const requestHeaders = await headers()
-
-  return {
-    ipAddress:
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null,
-    userAgent: requestHeaders.get("user-agent"),
-  }
+    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()),
+  );
 }
 
 async function loadOwnedLeaveRequest(leaveRequestId: string) {
-  const user = await requireCurrentEmployeeUser()
+  const user = await requireCurrentEmployeeUser();
 
   const request = await prisma.leaveRequest.findUnique({
     where: {
@@ -84,28 +70,27 @@ async function loadOwnedLeaveRequest(leaveRequestId: string) {
         },
       },
     },
-  })
+  });
 
   if (!request) {
     return {
       ok: false as const,
       error: "The leave request could not be found.",
-    }
+    };
   }
 
   if (request.employeeId !== user.employeeId) {
     return {
       ok: false as const,
-      error:
-        "Only the employee who owns this request can change it.",
-    }
+      error: "Only the employee who owns this request can change it.",
+    };
   }
 
   return {
     ok: true as const,
     user,
     request,
-  }
+  };
 }
 
 async function notifyApprovers({
@@ -117,19 +102,19 @@ async function notifyApprovers({
   severity,
   recipients,
 }: {
-  requestId: string
-  requestNumber: string | null
-  leaveTypeName: string
-  title: string
-  message: string
-  severity: NotificationSeverity
+  requestId: string;
+  requestNumber: string | null;
+  leaveTypeName: string;
+  title: string;
+  message: string;
+  severity: NotificationSeverity;
   recipients: {
-    id: string
-    email: string
-    firstName: string
-    lastName: string
-    isActive: boolean
-  }[]
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    isActive: boolean;
+  }[];
 }) {
   const uniqueRecipients = [
     ...new Map(
@@ -137,10 +122,10 @@ async function notifyApprovers({
         .filter((recipient) => recipient.isActive)
         .map((recipient) => [recipient.id, recipient]),
     ).values(),
-  ]
+  ];
 
   if (uniqueRecipients.length === 0) {
-    return
+    return;
   }
 
   await createSystemNotification({
@@ -161,27 +146,27 @@ async function notifyApprovers({
       subject: `${title} · ${requestNumber ?? leaveTypeName}`,
       actionLabel: "View leave request",
     },
-  })
+  });
 }
 
 export async function withdrawLeaveRequest(
   _previousState: LeaveLifecycleFormState,
   formData: FormData,
 ): Promise<LeaveLifecycleFormState> {
-  const leaveRequestId = textValue(formData, "leaveRequestId")
-  const comment = nullableText(formData, "comment")
+  const leaveRequestId = textValue(formData, "leaveRequestId");
+  const comment = nullableText(formData, "comment");
 
   if (!leaveRequestId) {
     return {
       status: "error",
       message: "The leave request could not be found.",
-    }
+    };
   }
 
-  let loaded
+  let loaded;
 
   try {
-    loaded = await loadOwnedLeaveRequest(leaveRequestId)
+    loaded = await loadOwnedLeaveRequest(leaveRequestId);
   } catch (error) {
     return {
       status: "error",
@@ -189,44 +174,56 @@ export async function withdrawLeaveRequest(
         error instanceof Error
           ? error.message
           : "An active employee-linked user is required.",
-    }
+    };
   }
 
   if (!loaded.ok) {
     return {
       status: "error",
       message: loaded.error,
-    }
+    };
   }
 
-  const { user, request } = loaded
+  const { user, request } = loaded;
 
   if (
     request.status !== LeaveRequestStatus.SUBMITTED &&
-    request.status !== LeaveRequestStatus.PENDING_APPROVAL
+    request.status !== LeaveRequestStatus.PENDING_APPROVAL &&
+    request.status !== LeaveRequestStatus.MANAGER_APPROVED
   ) {
     return {
       status: "error",
-      message:
-        "Only pending leave requests can be withdrawn.",
-    }
+      message: "Only pending leave requests can be withdrawn.",
+    };
   }
 
-  const metadata = await requestMetadata()
-  const now = new Date()
+  const metadata = await getAuditRequestMetadata(formData);
+  const now = new Date();
+  const quantity = request.requestedQuantity.toString();
 
   try {
     await prisma.$transaction(async (transaction) => {
-      await transaction.leaveRequest.update({
+      const requestResult = await transaction.leaveRequest.updateMany({
         where: {
           id: request.id,
+          status: {
+            in: [
+              LeaveRequestStatus.SUBMITTED,
+              LeaveRequestStatus.PENDING_APPROVAL,
+              LeaveRequestStatus.MANAGER_APPROVED,
+            ],
+          },
         },
         data: {
           status: LeaveRequestStatus.WITHDRAWN,
           withdrawnAt: now,
           finalDecisionComment: comment,
         },
-      })
+      });
+
+      if (requestResult.count !== 1) {
+        throw new Error("Only pending leave requests can be withdrawn.");
+      }
 
       await transaction.leaveApprovalStep.updateMany({
         where: {
@@ -236,47 +233,60 @@ export async function withdrawLeaveRequest(
         data: {
           status: LeaveApprovalStatus.CANCELLED,
           decidedAt: now,
-          decisionComment:
-            comment ?? "Request withdrawn by employee.",
+          decisionComment: comment ?? "Request withdrawn by employee.",
         },
-      })
+      });
 
       if (request.leaveBalanceId) {
-        const balance =
-          await transaction.employeeLeaveBalance.findUnique({
-            where: {
-              id: request.leaveBalanceId,
-            },
-            select: {
-              id: true,
-              reserved: true,
-              availableBalance: true,
-            },
-          })
+        const balance = await transaction.employeeLeaveBalance.findUnique({
+          where: {
+            id: request.leaveBalanceId,
+          },
+          select: {
+            id: true,
+            reserved: true,
+            taken: true,
+            availableBalance: true,
+          },
+        });
 
         if (!balance) {
           throw new Error(
             "The leave balance for this request no longer exists.",
-          )
+          );
         }
 
-        const balanceBefore = balance.availableBalance
-        const balanceAfter = balanceBefore.plus(
-          request.requestedQuantity,
-        )
+        const next = applyLeaveRelease(
+          {
+            reserved: balance.reserved.toString(),
+            taken: balance.taken.toString(),
+            availableBalance: balance.availableBalance.toString(),
+          },
+          quantity,
+        );
 
-        await transaction.employeeLeaveBalance.update({
-          where: {
-            id: balance.id,
+        const balanceResult = await transaction.employeeLeaveBalance.updateMany(
+          {
+            where: {
+              id: balance.id,
+              reserved: balance.reserved,
+              taken: balance.taken,
+              availableBalance: balance.availableBalance,
+            },
+            data: {
+              reserved: new Prisma.Decimal(next.reserved),
+              taken: new Prisma.Decimal(next.taken),
+              availableBalance: new Prisma.Decimal(next.availableBalance),
+              lastCalculatedAt: now,
+            },
           },
-          data: {
-            reserved: balance.reserved.minus(
-              request.requestedQuantity,
-            ),
-            availableBalance: balanceAfter,
-            lastCalculatedAt: now,
-          },
-        })
+        );
+
+        if (balanceResult.count !== 1) {
+          throw new Error(
+            "Leave balance changed concurrently. Refresh and try again.",
+          );
+        }
 
         await transaction.leaveBalanceTransaction.create({
           data: {
@@ -284,18 +294,17 @@ export async function withdrawLeaveRequest(
             contractId: request.contractId,
             leaveTypeId: request.leaveTypeId,
             leaveBalanceId: balance.id,
-            transactionType:
-              LeaveBalanceTransactionType.REQUEST_RELEASED,
+            transactionType: LeaveBalanceTransactionType.REQUEST_RELEASED,
             quantity: request.requestedQuantity,
-            balanceBefore,
-            balanceAfter,
+            balanceBefore: balance.availableBalance,
+            balanceAfter: new Prisma.Decimal(next.availableBalance),
             effectiveDate: now,
             referenceType: "LeaveRequest",
             referenceId: request.id,
             description: `Released reserved leave for withdrawn request ${request.requestNumber ?? request.id}.`,
             createdByUserId: user.id,
           },
-        })
+        });
       }
 
       await transaction.auditEvent.create({
@@ -312,9 +321,10 @@ export async function withdrawLeaveRequest(
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
         },
-      })
-    })
+      });
+    });
 
     try {
       await notifyApprovers({
@@ -326,31 +336,28 @@ export async function withdrawLeaveRequest(
         severity: NotificationSeverity.INFORMATION,
         recipients: request.approvalSteps
           .map((step) => step.approverUser)
-          .filter(
-            (
-              approver,
-            ): approver is NonNullable<typeof approver> =>
-              Boolean(approver),
+          .filter((approver): approver is NonNullable<typeof approver> =>
+            Boolean(approver),
           ),
-      })
+      });
     } catch (notificationError) {
       console.error(
         "Leave request withdrawn but approver notification failed:",
         notificationError,
-      )
+      );
     }
 
-    revalidatePath("/leave")
-    revalidatePath(`/leave/${request.id}`)
-    revalidatePath("/people/leave/balances")
-    revalidatePath("/notifications")
+    revalidatePath("/leave");
+    revalidatePath(`/leave/${request.id}`);
+    revalidatePath("/people/leave/balances");
+    revalidatePath("/notifications");
 
     return {
       status: "success",
       message: "Leave request withdrawn.",
-    }
+    };
   } catch (error) {
-    console.error("Unable to withdraw leave request:", error)
+    console.error("Unable to withdraw leave request:", error);
 
     return {
       status: "error",
@@ -358,7 +365,7 @@ export async function withdrawLeaveRequest(
         error instanceof Error
           ? error.message
           : "The leave request could not be withdrawn.",
-    }
+    };
   }
 }
 
@@ -366,27 +373,27 @@ export async function cancelLeaveRequest(
   _previousState: LeaveLifecycleFormState,
   formData: FormData,
 ): Promise<LeaveLifecycleFormState> {
-  const leaveRequestId = textValue(formData, "leaveRequestId")
-  const comment = nullableText(formData, "comment")
+  const leaveRequestId = textValue(formData, "leaveRequestId");
+  const comment = nullableText(formData, "comment");
 
   if (!leaveRequestId) {
     return {
       status: "error",
       message: "The leave request could not be found.",
-    }
+    };
   }
 
   if (!comment) {
     return {
       status: "error",
       message: "A comment is required when cancelling approved leave.",
-    }
+    };
   }
 
-  let loaded
+  let loaded;
 
   try {
-    loaded = await loadOwnedLeaveRequest(leaveRequestId)
+    loaded = await loadOwnedLeaveRequest(leaveRequestId);
   } catch (error) {
     return {
       status: "error",
@@ -394,88 +401,108 @@ export async function cancelLeaveRequest(
         error instanceof Error
           ? error.message
           : "An active employee-linked user is required.",
-    }
+    };
   }
 
   if (!loaded.ok) {
     return {
       status: "error",
       message: loaded.error,
-    }
+    };
   }
 
-  const { user, request } = loaded
+  const { user, request } = loaded;
 
   if (request.status !== LeaveRequestStatus.APPROVED) {
     return {
       status: "error",
       message: "Only approved leave requests can be cancelled.",
-    }
+    };
   }
 
-  const today = startOfUtcDay(new Date())
-  const leaveStart = startOfUtcDay(request.startDate)
+  const today = startOfUtcDay(new Date());
+  const leaveStart = startOfUtcDay(request.startDate);
 
   if (leaveStart <= today) {
     return {
       status: "error",
       message:
         "Approved leave that has already started cannot be cancelled from this screen.",
-    }
+    };
   }
 
-  const metadata = await requestMetadata()
-  const now = new Date()
+  const metadata = await getAuditRequestMetadata(formData);
+  const now = new Date();
+  const quantity = request.requestedQuantity.toString();
 
   try {
     await prisma.$transaction(async (transaction) => {
-      await transaction.leaveRequest.update({
+      const requestResult = await transaction.leaveRequest.updateMany({
         where: {
           id: request.id,
+          status: LeaveRequestStatus.APPROVED,
         },
         data: {
           status: LeaveRequestStatus.CANCELLED,
           cancelledAt: now,
           finalDecisionComment: comment,
         },
-      })
+      });
+
+      if (requestResult.count !== 1) {
+        throw new Error("Only approved leave requests can be cancelled.");
+      }
 
       if (request.leaveBalanceId) {
-        const balance =
-          await transaction.employeeLeaveBalance.findUnique({
-            where: {
-              id: request.leaveBalanceId,
-            },
-            select: {
-              id: true,
-              taken: true,
-              availableBalance: true,
-            },
-          })
+        const balance = await transaction.employeeLeaveBalance.findUnique({
+          where: {
+            id: request.leaveBalanceId,
+          },
+          select: {
+            id: true,
+            reserved: true,
+            taken: true,
+            availableBalance: true,
+          },
+        });
 
         if (!balance) {
           throw new Error(
             "The leave balance for this request no longer exists.",
-          )
+          );
         }
 
-        const balanceBefore = balance.availableBalance
-        const balanceAfter = balanceBefore.plus(
-          request.requestedQuantity,
-        )
+        const next = applyLeaveCancelTaken(
+          {
+            reserved: balance.reserved.toString(),
+            taken: balance.taken.toString(),
+            availableBalance: balance.availableBalance.toString(),
+          },
+          quantity,
+        );
 
-        await transaction.employeeLeaveBalance.update({
-          where: {
-            id: balance.id,
+        const balanceResult = await transaction.employeeLeaveBalance.updateMany(
+          {
+            where: {
+              id: balance.id,
+              reserved: balance.reserved,
+              taken: balance.taken,
+              availableBalance: balance.availableBalance,
+            },
+            data: {
+              reserved: new Prisma.Decimal(next.reserved),
+              taken: new Prisma.Decimal(next.taken),
+              availableBalance: new Prisma.Decimal(next.availableBalance),
+              lastCalculatedAt: now,
+            },
           },
-          data: {
-            taken: balance.taken.minus(
-              request.requestedQuantity,
-            ),
-            availableBalance: balanceAfter,
-            lastCalculatedAt: now,
-          },
-        })
+        );
+
+        if (balanceResult.count !== 1) {
+          throw new Error(
+            "Leave balance changed concurrently. Refresh and try again.",
+          );
+        }
 
         await transaction.leaveBalanceTransaction.create({
           data: {
@@ -483,18 +510,17 @@ export async function cancelLeaveRequest(
             contractId: request.contractId,
             leaveTypeId: request.leaveTypeId,
             leaveBalanceId: balance.id,
-            transactionType:
-              LeaveBalanceTransactionType.REVERSAL,
+            transactionType: LeaveBalanceTransactionType.REVERSAL,
             quantity: request.requestedQuantity,
-            balanceBefore,
-            balanceAfter,
+            balanceBefore: balance.availableBalance,
+            balanceAfter: new Prisma.Decimal(next.availableBalance),
             effectiveDate: now,
             referenceType: "LeaveRequest",
             referenceId: request.id,
             description: `Reversed taken leave for cancelled request ${request.requestNumber ?? request.id}.`,
             createdByUserId: user.id,
           },
-        })
+        });
       }
 
       await transaction.auditEvent.create({
@@ -511,9 +537,10 @@ export async function cancelLeaveRequest(
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
         },
-      })
-    })
+      });
+    });
 
     try {
       await notifyApprovers({
@@ -525,31 +552,28 @@ export async function cancelLeaveRequest(
         severity: NotificationSeverity.WARNING,
         recipients: request.approvalSteps
           .map((step) => step.approverUser)
-          .filter(
-            (
-              approver,
-            ): approver is NonNullable<typeof approver> =>
-              Boolean(approver),
+          .filter((approver): approver is NonNullable<typeof approver> =>
+            Boolean(approver),
           ),
-      })
+      });
     } catch (notificationError) {
       console.error(
         "Leave request cancelled but approver notification failed:",
         notificationError,
-      )
+      );
     }
 
-    revalidatePath("/leave")
-    revalidatePath(`/leave/${request.id}`)
-    revalidatePath("/people/leave/balances")
-    revalidatePath("/notifications")
+    revalidatePath("/leave");
+    revalidatePath(`/leave/${request.id}`);
+    revalidatePath("/people/leave/balances");
+    revalidatePath("/notifications");
 
     return {
       status: "success",
       message: "Approved leave cancelled.",
-    }
+    };
   } catch (error) {
-    console.error("Unable to cancel leave request:", error)
+    console.error("Unable to cancel leave request:", error);
 
     return {
       status: "error",
@@ -557,6 +581,6 @@ export async function cancelLeaveRequest(
         error instanceof Error
           ? error.message
           : "The leave request could not be cancelled.",
-    }
+    };
   }
 }

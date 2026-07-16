@@ -1,17 +1,12 @@
-import nodemailer, {
-  type Transporter,
-} from "nodemailer"
+import nodemailer, { type Transporter } from "nodemailer";
 
-import {
-  getSmtpConfiguration,
-  validateSmtpConfiguration,
-} from "./smtp-config"
+import { getSmtpConfiguration, validateSmtpConfiguration } from "./smtp-config";
 
-let cachedTransport: Transporter | null = null
-let cachedSignature = ""
+let cachedTransport: Transporter | null = null;
+let cachedSignature = "";
 
 function configurationSignature(): string {
-  const configuration = getSmtpConfiguration()
+  const configuration = getSmtpConfiguration();
 
   return JSON.stringify({
     enabled: configuration.enabled,
@@ -20,26 +15,22 @@ function configurationSignature(): string {
     secure: configuration.secure,
     username: configuration.username,
     fromEmail: configuration.fromEmail,
-  })
+  });
 }
 
 export function getSmtpTransport(): Transporter {
-  const configuration = getSmtpConfiguration()
+  const configuration = getSmtpConfiguration();
 
-  const errors =
-    validateSmtpConfiguration(configuration)
+  const errors = validateSmtpConfiguration(configuration);
 
   if (errors.length > 0) {
-    throw new Error(errors.join(" "))
+    throw new Error(errors.join(" "));
   }
 
-  const signature = configurationSignature()
+  const signature = configurationSignature();
 
-  if (
-    cachedTransport !== null &&
-    signature === cachedSignature
-  ) {
-    return cachedTransport
+  if (cachedTransport !== null && signature === cachedSignature) {
+    return cachedTransport;
   }
 
   const transport = nodemailer.createTransport({
@@ -48,22 +39,21 @@ export function getSmtpTransport(): Transporter {
     secure: configuration.secure,
     pool: true,
     maxConnections: configuration.maxConnections,
-    connectionTimeout:
-      configuration.connectionTimeoutMs,
+    connectionTimeout: configuration.connectionTimeoutMs,
     auth: {
       user: configuration.username,
       pass: configuration.password,
     },
-  })
+  });
 
-  cachedTransport = transport
-  cachedSignature = signature
+  cachedTransport = transport;
+  cachedSignature = signature;
 
-  return transport
+  return transport;
 }
 
 export async function verifySmtpConnection(): Promise<void> {
-  const transport = getSmtpTransport()
+  const transport = getSmtpTransport();
 
-  await transport.verify()
+  await transport.verify();
 }
