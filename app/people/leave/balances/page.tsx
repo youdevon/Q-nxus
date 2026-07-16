@@ -9,9 +9,11 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { ListSearchFilters } from "@/src/components/list-search-filters";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { activeStateBadgeVariant } from "@/src/config/ui-colors";
 import {
   getContractLeaveBalances,
   getLeaveBalanceEmployee,
@@ -111,8 +113,9 @@ function LeaveBalancesTable({
   employee: LeaveBalanceEmployeeMatch;
   balances: ContractLeaveBalanceRecord[];
 }) {
-  const contractCount = new Set(balances.map((balance) => balance.contractId))
-    .size;
+  const contractCount = new Set(
+    balances.map((balance) => balance.contractId),
+  ).size;
 
   const totalAvailable = balances.reduce(
     (total, balance) => total + Number(balance.availableBalance),
@@ -146,10 +149,16 @@ function LeaveBalancesTable({
         <div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <CalendarRange className="size-4" />
-            Contract cycles
+            Leave types
           </div>
 
-          <p className="mt-1 text-2xl font-semibold">{contractCount}</p>
+          <p className="mt-1 text-2xl font-semibold">{balances.length}</p>
+
+          {contractCount > 0 ? (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Current employment contract
+            </p>
+          ) : null}
         </div>
 
         <div>
@@ -165,12 +174,20 @@ function LeaveBalancesTable({
       </section>
 
       <section>
-        <div className="mb-4 flex items-center gap-2">
-          <Clock3 className="size-4 text-muted-foreground" />
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Clock3 className="size-4 text-muted-foreground" />
 
-          <h2 className="text-sm font-semibold tracking-wide uppercase">
-            Contract leave cycles
-          </h2>
+            <h2 className="text-sm font-semibold tracking-wide uppercase">
+              Current contract leave
+            </h2>
+          </div>
+
+          {balances.length > 0 ? (
+            <p className="text-xs text-muted-foreground">
+              Active cycle period highlighted
+            </p>
+          ) : null}
         </div>
 
         {balances.length === 0 ? (
@@ -178,7 +195,8 @@ function LeaveBalancesTable({
             <p className="text-sm font-medium">No leave balances found</p>
 
             <p className="mt-1 text-xs text-muted-foreground">
-              Generate balances from this employee’s employment contracts first.
+              Generate balances from this employee’s current employment contract
+              first. Amended contract versions are not listed here.
             </p>
           </div>
         ) : (
@@ -200,50 +218,84 @@ function LeaveBalancesTable({
               </thead>
 
               <tbody>
-                {balances.map((balance) => (
-                  <tr
-                    key={balance.id}
-                    className="border-b border-border last:border-b-0"
-                  >
-                    <td className="px-3 py-4">
-                      <p className="font-medium">
-                        {formatDate(balance.cycleStart)}
-                        {" —"}
-                        {formatDate(balance.cycleEnd)}
-                      </p>
+                {balances.map((balance) => {
+                  const isCurrentCycle = balance.isCurrentCycle;
 
-                      {balance.contractNumber ? (
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {balance.contractNumber}
-                        </p>
-                      ) : null}
-                    </td>
+                  return (
+                    <tr
+                      key={balance.id}
+                      className={cn(
+                        "border-b border-border last:border-b-0",
+                        isCurrentCycle && "bg-success/8",
+                      )}
+                    >
+                      <td className="px-3 py-4">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p
+                            className={cn(
+                              "font-medium",
+                              isCurrentCycle && "text-success",
+                            )}
+                          >
+                            {formatDate(balance.cycleStart)}
+                            {" — "}
+                            {formatDate(balance.cycleEnd)}
+                          </p>
 
-                    <td className="px-3 py-4">
-                      <div className="flex items-center gap-2">
-                        <span>{balance.leaveTypeName}</span>
+                          <Badge variant={activeStateBadgeVariant(true)}>
+                            Current contract
+                          </Badge>
 
-                        <Badge variant="outline">{balance.leaveTypeCode}</Badge>
-                      </div>
-                    </td>
+                          {isCurrentCycle ? (
+                            <Badge
+                              variant="outline"
+                              className="border-success/30 text-success"
+                            >
+                              Current period
+                            </Badge>
+                          ) : null}
+                        </div>
 
-                    <td className="px-3 py-4 text-right">
-                      {formatQuantity(balance.entitlement)}
-                    </td>
+                        {balance.contractNumber ? (
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {balance.contractNumber}
+                          </p>
+                        ) : null}
+                      </td>
 
-                    <td className="px-3 py-4 text-right">
-                      {formatQuantity(balance.approved)}
-                    </td>
+                      <td className="px-3 py-4">
+                        <div className="flex items-center gap-2">
+                          <span>{balance.leaveTypeName}</span>
 
-                    <td className="px-3 py-4 text-right">
-                      {formatQuantity(balance.taken)}
-                    </td>
+                          <Badge variant="outline">
+                            {balance.leaveTypeCode}
+                          </Badge>
+                        </div>
+                      </td>
 
-                    <td className="px-3 py-4 text-right font-semibold">
-                      {formatQuantity(balance.availableBalance)}
-                    </td>
-                  </tr>
-                ))}
+                      <td className="px-3 py-4 text-right tabular-nums">
+                        {formatQuantity(balance.entitlement)}
+                      </td>
+
+                      <td className="px-3 py-4 text-right tabular-nums">
+                        {formatQuantity(balance.approved)}
+                      </td>
+
+                      <td className="px-3 py-4 text-right tabular-nums">
+                        {formatQuantity(balance.taken)}
+                      </td>
+
+                      <td
+                        className={cn(
+                          "px-3 py-4 text-right font-semibold tabular-nums",
+                          isCurrentCycle && "text-success",
+                        )}
+                      >
+                        {formatQuantity(balance.availableBalance)}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -299,7 +351,9 @@ export default async function LeaveBalancesPage({
 
       <PageHeader
         title="Leave Balances"
-        description="Look up an employee to review leave entitlements and usage by employment contract period."
+        description="Look up an employee to review leave entitlements and usage for their current employment contract. Amended or superseded contract versions are not listed."
+        backHref="/people"
+        backLabel="Employees"
       />
 
       <ListSearchFilters

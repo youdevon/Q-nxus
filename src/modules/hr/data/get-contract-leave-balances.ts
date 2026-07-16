@@ -14,8 +14,15 @@ export type ContractLeaveBalanceRecord = {
   employeeName: string;
   contractId: string;
   contractNumber: string | null;
+  /** Always true here — query is scoped to the current employment contract. */
+  contractIsCurrent: boolean;
   cycleStart: string;
   cycleEnd: string;
+  /**
+   * Today falls within this balance’s cycle window
+   * (inclusive of cycle start/end calendar days).
+   */
+  isCurrentCycle: boolean;
   leaveTypeCode: string;
   leaveTypeName: string;
   entitlement: string;
@@ -200,15 +207,39 @@ function contractLeaveTypeKey(contractId: string, leaveTypeId: string): string {
   return `${contractId}:${leaveTypeId}`;
 }
 
+function utcCalendarDay(value: Date): Date {
+  return new Date(
+    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()),
+  );
+}
+
+function isDateWithinCycle(
+  asOf: Date,
+  cycleStart: Date,
+  cycleEnd: Date,
+): boolean {
+  const day = utcCalendarDay(asOf).getTime();
+  const start = utcCalendarDay(cycleStart).getTime();
+  const end = utcCalendarDay(cycleEnd).getTime();
+
+  return day >= start && day <= end;
+}
+
 export async function getContractLeaveBalances(
   options: GetContractLeaveBalancesOptions,
 ): Promise<ContractLeaveBalanceRecord[]> {
   const asOf = new Date();
 
+  // Only the current employment contract drives leave balance display.
+  // Amended / renewed predecessors are marked `isCurrent: false` + SUPERSEDED
+  // and retain historical balance rows in the DB — hide those from this UI.
   const [balances, approvedRequests] = await Promise.all([
     prisma.employeeLeaveBalance.findMany({
       where: {
         employeeId: options.employeeId,
+        contract: {
+          isCurrent: true,
+        },
       },
       orderBy: [
         {
@@ -245,6 +276,7 @@ export async function getContractLeaveBalances(
         contract: {
           select: {
             contractNumber: true,
+            isCurrent: true,
           },
         },
         leaveType: {
@@ -259,6 +291,9 @@ export async function getContractLeaveBalances(
       where: {
         employeeId: options.employeeId,
         status: LeaveRequestStatus.APPROVED,
+        contract: {
+          isCurrent: true,
+        },
       },
       select: {
         leaveBalanceId: true,
@@ -318,8 +353,14 @@ export async function getContractLeaveBalances(
       employeeName: `${balance.employee.firstName} ${balance.employee.lastName}`,
       contractId: balance.contractId,
       contractNumber: balance.contract.contractNumber,
+      contractIsCurrent: balance.contract.isCurrent,
       cycleStart: balance.cycleStart.toISOString(),
       cycleEnd: balance.cycleEnd.toISOString(),
+      isCurrentCycle: isDateWithinCycle(
+        asOf,
+        balance.cycleStart,
+        balance.cycleEnd,
+      ),
       leaveTypeCode: balance.leaveType.code,
       leaveTypeName: balance.leaveType.name,
       entitlement: balance.entitlement.toString(),
