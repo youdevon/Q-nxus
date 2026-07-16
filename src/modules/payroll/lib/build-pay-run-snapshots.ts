@@ -1,0 +1,116 @@
+import { Prisma } from "@/generated/prisma/client";
+
+import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
+import {
+  buildPayslipSnapshot,
+  extractPayslipSnapshotTotals,
+  sumPayRunTotals,
+  type PayslipSnapshotPayload,
+} from "@/src/modules/payroll/lib/payslip-snapshot";
+
+export type PayRunEmployeeSnapshot = {
+  employeeId: string;
+  currency: string;
+  grossPay: number;
+  totalDeductions: number;
+  netPay: number;
+  baseSalary: number;
+  allowancesTotal: number;
+  monthlyTaxableEarnings: number;
+  employeeNumber: string;
+  employeeName: string;
+  nisNumber: string | null;
+  birNumber: string | null;
+  jobTitle: string | null;
+  departmentName: string | null;
+  payFrequency: string;
+  paymentMethod: string;
+  snapshot: PayslipSnapshotPayload;
+  isReady: boolean;
+  blockingIssues: string[];
+};
+
+export async function buildEmployeePayRunSnapshot(
+  employeeId: string,
+  asOf: Date,
+): Promise<PayRunEmployeeSnapshot | null> {
+  const result = await getEmployeePayslipPreview(employeeId, { asOf });
+
+  if (!result) {
+    return null;
+  }
+
+  const { payslip, meta } = result;
+  const totals = extractPayslipSnapshotTotals(payslip, meta);
+  const snapshot = buildPayslipSnapshot(payslip, meta);
+
+  return {
+    employeeId,
+    ...totals,
+    snapshot,
+    isReady: payslip.readiness.isReady,
+    blockingIssues: payslip.readiness.blockingIssues,
+  };
+}
+
+export function toPayslipCreateData(input: {
+  organizationId: string;
+  payRunId: string;
+  payrollPeriodId: string;
+  row: PayRunEmployeeSnapshot;
+  status: "DRAFT" | "POSTED";
+}): Prisma.PayslipCreateManyInput {
+  return {
+    organizationId: input.organizationId,
+    payRunId: input.payRunId,
+    payrollPeriodId: input.payrollPeriodId,
+    employeeId: input.row.employeeId,
+    status: input.status,
+    currency: input.row.currency,
+    grossPay: new Prisma.Decimal(input.row.grossPay),
+    totalDeductions: new Prisma.Decimal(input.row.totalDeductions),
+    netPay: new Prisma.Decimal(input.row.netPay),
+    baseSalary: new Prisma.Decimal(input.row.baseSalary),
+    allowancesTotal: new Prisma.Decimal(input.row.allowancesTotal),
+    monthlyTaxableEarnings: new Prisma.Decimal(
+      input.row.monthlyTaxableEarnings,
+    ),
+    employeeNumber: input.row.employeeNumber,
+    employeeName: input.row.employeeName,
+    nisNumber: input.row.nisNumber,
+    birNumber: input.row.birNumber,
+    jobTitle: input.row.jobTitle,
+    departmentName: input.row.departmentName,
+    payFrequency: input.row.payFrequency,
+    paymentMethod: input.row.paymentMethod,
+    snapshot: input.row.snapshot as unknown as Prisma.InputJsonValue,
+  };
+}
+
+/** Amount + identity fields refreshed from a recalculated snapshot (exclusion fields untouched). */
+export function toPayslipRecalcUpdateData(
+  row: PayRunEmployeeSnapshot,
+): Prisma.PayslipUpdateInput {
+  return {
+    currency: row.currency,
+    grossPay: new Prisma.Decimal(row.grossPay),
+    totalDeductions: new Prisma.Decimal(row.totalDeductions),
+    netPay: new Prisma.Decimal(row.netPay),
+    baseSalary: new Prisma.Decimal(row.baseSalary),
+    allowancesTotal: new Prisma.Decimal(row.allowancesTotal),
+    monthlyTaxableEarnings: new Prisma.Decimal(row.monthlyTaxableEarnings),
+    employeeNumber: row.employeeNumber,
+    employeeName: row.employeeName,
+    nisNumber: row.nisNumber,
+    birNumber: row.birNumber,
+    jobTitle: row.jobTitle,
+    departmentName: row.departmentName,
+    payFrequency: row.payFrequency,
+    paymentMethod: row.paymentMethod,
+    snapshot: row.snapshot as unknown as Prisma.InputJsonValue,
+  };
+}
+
+export function aggregatePayRunTotals(rows: PayRunEmployeeSnapshot[]) {
+  return sumPayRunTotals(rows);
+}
