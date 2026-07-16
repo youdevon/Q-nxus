@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Organization: 'Organization',
+  OrganizationHoliday: 'OrganizationHoliday',
   ApplicationSetting: 'ApplicationSetting',
   User: 'User',
   Role: 'Role',
@@ -440,7 +441,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveAttachment" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "allowanceCategory" | "employmentContractAllowance" | "payrollProfile" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "emailTemplate" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveAttachment" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "allowanceCategory" | "employmentContractAllowance" | "payrollProfile" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "emailTemplate" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -515,6 +516,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OrganizationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OrganizationCountAggregateOutputType> | number
+        }
+      }
+    }
+    OrganizationHoliday: {
+      payload: Prisma.$OrganizationHolidayPayload<ExtArgs>
+      fields: Prisma.OrganizationHolidayFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OrganizationHolidayFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OrganizationHolidayFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>
+        }
+        findFirst: {
+          args: Prisma.OrganizationHolidayFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OrganizationHolidayFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>
+        }
+        findMany: {
+          args: Prisma.OrganizationHolidayFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>[]
+        }
+        create: {
+          args: Prisma.OrganizationHolidayCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>
+        }
+        createMany: {
+          args: Prisma.OrganizationHolidayCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OrganizationHolidayCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>[]
+        }
+        delete: {
+          args: Prisma.OrganizationHolidayDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>
+        }
+        update: {
+          args: Prisma.OrganizationHolidayUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>
+        }
+        deleteMany: {
+          args: Prisma.OrganizationHolidayDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OrganizationHolidayUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OrganizationHolidayUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>[]
+        }
+        upsert: {
+          args: Prisma.OrganizationHolidayUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationHolidayPayload>
+        }
+        aggregate: {
+          args: Prisma.OrganizationHolidayAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOrganizationHoliday>
+        }
+        groupBy: {
+          args: Prisma.OrganizationHolidayGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationHolidayGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OrganizationHolidayCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationHolidayCountAggregateOutputType> | number
         }
       }
     }
@@ -3542,6 +3617,20 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
+export const OrganizationHolidayScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  holidayDate: 'holidayDate',
+  name: 'name',
+  isRecurring: 'isRecurring',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationHolidayScalarFieldEnum = (typeof OrganizationHolidayScalarFieldEnum)[keyof typeof OrganizationHolidayScalarFieldEnum]
+
+
 export const ApplicationSettingScalarFieldEnum = {
   id: 'id',
   internalCodename: 'internalCodename',
@@ -4135,6 +4224,7 @@ export const EmploymentContractScalarFieldEnum = {
   gratuityTaxRate: 'gratuityTaxRate',
   isCurrent: 'isCurrent',
   signedDate: 'signedDate',
+  collectedAt: 'collectedAt',
   terminationDate: 'terminationDate',
   terminationReason: 'terminationReason',
   documentReference: 'documentReference',
@@ -4299,6 +4389,7 @@ export const AuditEventScalarFieldEnum = {
   newValues: 'newValues',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
+  clientHostName: 'clientHostName',
   correlationId: 'correlationId',
   createdAt: 'createdAt'
 } as const
@@ -4953,6 +5044,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   organization?: Prisma.OrganizationOmit
+  organizationHoliday?: Prisma.OrganizationHolidayOmit
   applicationSetting?: Prisma.ApplicationSettingOmit
   user?: Prisma.UserOmit
   role?: Prisma.RoleOmit

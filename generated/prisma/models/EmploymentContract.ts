@@ -56,6 +56,7 @@ export type EmploymentContractMinAggregateOutputType = {
   gratuityTaxRate: runtime.Decimal | null
   isCurrent: boolean | null
   signedDate: Date | null
+  collectedAt: Date | null
   terminationDate: Date | null
   terminationReason: string | null
   documentReference: string | null
@@ -82,6 +83,7 @@ export type EmploymentContractMaxAggregateOutputType = {
   gratuityTaxRate: runtime.Decimal | null
   isCurrent: boolean | null
   signedDate: Date | null
+  collectedAt: Date | null
   terminationDate: Date | null
   terminationReason: string | null
   documentReference: string | null
@@ -108,6 +110,7 @@ export type EmploymentContractCountAggregateOutputType = {
   gratuityTaxRate: number
   isCurrent: number
   signedDate: number
+  collectedAt: number
   terminationDate: number
   terminationReason: number
   documentReference: number
@@ -148,6 +151,7 @@ export type EmploymentContractMinAggregateInputType = {
   gratuityTaxRate?: true
   isCurrent?: true
   signedDate?: true
+  collectedAt?: true
   terminationDate?: true
   terminationReason?: true
   documentReference?: true
@@ -174,6 +178,7 @@ export type EmploymentContractMaxAggregateInputType = {
   gratuityTaxRate?: true
   isCurrent?: true
   signedDate?: true
+  collectedAt?: true
   terminationDate?: true
   terminationReason?: true
   documentReference?: true
@@ -200,6 +205,7 @@ export type EmploymentContractCountAggregateInputType = {
   gratuityTaxRate?: true
   isCurrent?: true
   signedDate?: true
+  collectedAt?: true
   terminationDate?: true
   terminationReason?: true
   documentReference?: true
@@ -313,6 +319,7 @@ export type EmploymentContractGroupByOutputType = {
   gratuityTaxRate: runtime.Decimal | null
   isCurrent: boolean
   signedDate: Date | null
+  collectedAt: Date | null
   terminationDate: Date | null
   terminationReason: string | null
   documentReference: string | null
@@ -362,6 +369,7 @@ export type EmploymentContractWhereInput = {
   gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
   signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  collectedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
@@ -395,6 +403,7 @@ export type EmploymentContractOrderByWithRelationInput = {
   gratuityTaxRate?: Prisma.SortOrderInput | Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  collectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   documentReference?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -431,6 +440,7 @@ export type EmploymentContractWhereUniqueInput = Prisma.AtLeast<{
   gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
   signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  collectedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
@@ -464,6 +474,7 @@ export type EmploymentContractOrderByWithAggregationInput = {
   gratuityTaxRate?: Prisma.SortOrderInput | Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  collectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   documentReference?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -498,6 +509,7 @@ export type EmploymentContractScalarWhereWithAggregatesInput = {
   gratuityTaxRate?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolWithAggregatesFilter<"EmploymentContract"> | boolean
   signedDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+  collectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
   terminationDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
   terminationReason?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
   documentReference?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
@@ -522,6 +534,7 @@ export type EmploymentContractCreateInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -555,6 +568,7 @@ export type EmploymentContractUncheckedCreateInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -584,6 +598,7 @@ export type EmploymentContractUpdateInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -617,6 +632,7 @@ export type EmploymentContractUncheckedUpdateInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -648,6 +664,7 @@ export type EmploymentContractCreateManyInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -672,6 +689,7 @@ export type EmploymentContractUpdateManyMutationInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -698,6 +716,7 @@ export type EmploymentContractUncheckedUpdateManyInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -744,6 +763,7 @@ export type EmploymentContractCountOrderByAggregateInput = {
   gratuityTaxRate?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrder
+  collectedAt?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   terminationReason?: Prisma.SortOrder
   documentReference?: Prisma.SortOrder
@@ -776,6 +796,7 @@ export type EmploymentContractMaxOrderByAggregateInput = {
   gratuityTaxRate?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrder
+  collectedAt?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   terminationReason?: Prisma.SortOrder
   documentReference?: Prisma.SortOrder
@@ -802,6 +823,7 @@ export type EmploymentContractMinOrderByAggregateInput = {
   gratuityTaxRate?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrder
+  collectedAt?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   terminationReason?: Prisma.SortOrder
   documentReference?: Prisma.SortOrder
@@ -1000,6 +1022,7 @@ export type EmploymentContractCreateWithoutEmployeeInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1031,6 +1054,7 @@ export type EmploymentContractUncheckedCreateWithoutEmployeeInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1091,6 +1115,7 @@ export type EmploymentContractScalarWhereInput = {
   gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
   signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  collectedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
@@ -1115,6 +1140,7 @@ export type EmploymentContractCreateWithoutLeaveBalancesInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1147,6 +1173,7 @@ export type EmploymentContractUncheckedCreateWithoutLeaveBalancesInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1191,6 +1218,7 @@ export type EmploymentContractUpdateWithoutLeaveBalancesInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1223,6 +1251,7 @@ export type EmploymentContractUncheckedUpdateWithoutLeaveBalancesInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1251,6 +1280,7 @@ export type EmploymentContractCreateWithoutLeaveTransactionsInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1283,6 +1313,7 @@ export type EmploymentContractUncheckedCreateWithoutLeaveTransactionsInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1327,6 +1358,7 @@ export type EmploymentContractUpdateWithoutLeaveTransactionsInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1359,6 +1391,7 @@ export type EmploymentContractUncheckedUpdateWithoutLeaveTransactionsInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1387,6 +1420,7 @@ export type EmploymentContractCreateWithoutLeaveRequestsInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1419,6 +1453,7 @@ export type EmploymentContractUncheckedCreateWithoutLeaveRequestsInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1463,6 +1498,7 @@ export type EmploymentContractUpdateWithoutLeaveRequestsInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1495,6 +1531,7 @@ export type EmploymentContractUncheckedUpdateWithoutLeaveRequestsInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1523,6 +1560,7 @@ export type EmploymentContractCreateWithoutAmendmentsInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1555,6 +1593,7 @@ export type EmploymentContractUncheckedCreateWithoutAmendmentsInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1588,6 +1627,7 @@ export type EmploymentContractCreateWithoutSourceContractInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1619,6 +1659,7 @@ export type EmploymentContractUncheckedCreateWithoutSourceContractInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1669,6 +1710,7 @@ export type EmploymentContractUpdateWithoutAmendmentsInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1701,6 +1743,7 @@ export type EmploymentContractUncheckedUpdateWithoutAmendmentsInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1745,6 +1788,7 @@ export type EmploymentContractCreateWithoutAllowancesInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1777,6 +1821,7 @@ export type EmploymentContractUncheckedCreateWithoutAllowancesInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1821,6 +1866,7 @@ export type EmploymentContractUpdateWithoutAllowancesInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1853,6 +1899,7 @@ export type EmploymentContractUncheckedUpdateWithoutAllowancesInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1882,6 +1929,7 @@ export type EmploymentContractCreateManyEmployeeInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -1906,6 +1954,7 @@ export type EmploymentContractUpdateWithoutEmployeeInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1937,6 +1986,7 @@ export type EmploymentContractUncheckedUpdateWithoutEmployeeInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1967,6 +2017,7 @@ export type EmploymentContractUncheckedUpdateManyWithoutEmployeeInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1992,6 +2043,7 @@ export type EmploymentContractCreateManySourceContractInput = {
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
+  collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
@@ -2016,6 +2068,7 @@ export type EmploymentContractUpdateWithoutSourceContractInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2047,6 +2100,7 @@ export type EmploymentContractUncheckedUpdateWithoutSourceContractInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2077,6 +2131,7 @@ export type EmploymentContractUncheckedUpdateManyWithoutSourceContractInput = {
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2170,6 +2225,7 @@ export type EmploymentContractSelect<ExtArgs extends runtime.Types.Extensions.In
   gratuityTaxRate?: boolean
   isCurrent?: boolean
   signedDate?: boolean
+  collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
@@ -2204,6 +2260,7 @@ export type EmploymentContractSelectCreateManyAndReturn<ExtArgs extends runtime.
   gratuityTaxRate?: boolean
   isCurrent?: boolean
   signedDate?: boolean
+  collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
@@ -2232,6 +2289,7 @@ export type EmploymentContractSelectUpdateManyAndReturn<ExtArgs extends runtime.
   gratuityTaxRate?: boolean
   isCurrent?: boolean
   signedDate?: boolean
+  collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
@@ -2260,6 +2318,7 @@ export type EmploymentContractSelectScalar = {
   gratuityTaxRate?: boolean
   isCurrent?: boolean
   signedDate?: boolean
+  collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
@@ -2268,7 +2327,7 @@ export type EmploymentContractSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmploymentContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "sourceContractId" | "contractNumber" | "contractType" | "changeType" | "status" | "startDate" | "endDate" | "jobTitle" | "baseSalary" | "currency" | "gratuityEligible" | "gratuityRate" | "gratuityTaxRate" | "isCurrent" | "signedDate" | "terminationDate" | "terminationReason" | "documentReference" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentContract"]>
+export type EmploymentContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "sourceContractId" | "contractNumber" | "contractType" | "changeType" | "status" | "startDate" | "endDate" | "jobTitle" | "baseSalary" | "currency" | "gratuityEligible" | "gratuityRate" | "gratuityTaxRate" | "isCurrent" | "signedDate" | "collectedAt" | "terminationDate" | "terminationReason" | "documentReference" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentContract"]>
 export type EmploymentContractInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
@@ -2317,6 +2376,7 @@ export type $EmploymentContractPayload<ExtArgs extends runtime.Types.Extensions.
     gratuityTaxRate: runtime.Decimal | null
     isCurrent: boolean
     signedDate: Date | null
+    collectedAt: Date | null
     terminationDate: Date | null
     terminationReason: string | null
     documentReference: string | null
@@ -2770,6 +2830,7 @@ export interface EmploymentContractFieldRefs {
   readonly gratuityTaxRate: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
   readonly isCurrent: Prisma.FieldRef<"EmploymentContract", 'Boolean'>
   readonly signedDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
+  readonly collectedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly terminationDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly terminationReason: Prisma.FieldRef<"EmploymentContract", 'String'>
   readonly documentReference: Prisma.FieldRef<"EmploymentContract", 'String'>

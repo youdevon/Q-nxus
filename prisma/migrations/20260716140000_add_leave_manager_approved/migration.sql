@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "hr"."LeaveRequestStatus" ADD VALUE 'MANAGER_APPROVED' AFTER 'PENDING_APPROVAL';

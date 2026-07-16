@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Organization: 'Organization',
+  OrganizationHoliday: 'OrganizationHoliday',
   ApplicationSetting: 'ApplicationSetting',
   User: 'User',
   Role: 'Role',
@@ -133,6 +134,20 @@ export const OrganizationScalarFieldEnum = {
 } as const
 
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+export const OrganizationHolidayScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  holidayDate: 'holidayDate',
+  name: 'name',
+  isRecurring: 'isRecurring',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationHolidayScalarFieldEnum = (typeof OrganizationHolidayScalarFieldEnum)[keyof typeof OrganizationHolidayScalarFieldEnum]
 
 
 export const ApplicationSettingScalarFieldEnum = {
@@ -728,6 +743,7 @@ export const EmploymentContractScalarFieldEnum = {
   gratuityTaxRate: 'gratuityTaxRate',
   isCurrent: 'isCurrent',
   signedDate: 'signedDate',
+  collectedAt: 'collectedAt',
   terminationDate: 'terminationDate',
   terminationReason: 'terminationReason',
   documentReference: 'documentReference',
@@ -892,6 +908,7 @@ export const AuditEventScalarFieldEnum = {
   newValues: 'newValues',
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
+  clientHostName: 'clientHostName',
   correlationId: 'correlationId',
   createdAt: 'createdAt'
 } as const

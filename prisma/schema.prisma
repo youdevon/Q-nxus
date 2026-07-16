@@ -211,6 +211,7 @@ enum LeaveRequestStatus {
   DRAFT
   SUBMITTED
   PENDING_APPROVAL
+  MANAGER_APPROVED
   APPROVED
   REJECTED
   CANCELLED
@@ -332,12 +333,32 @@ model Organization {
 
   leaveTypes            LeaveType[]
   leaveEntitlementRules LeaveEntitlementRule[]
+  organizationHolidays  OrganizationHoliday[]
 
   leaveRequests LeaveRequest[]
 
   @@index([status])
   @@map("organizations")
   @@schema("core")
+}
+
+model OrganizationHoliday {
+  id             String   @id @default(cuid())
+  organizationId String
+  holidayDate    DateTime @db.Date
+  name           String
+  isRecurring    Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, holidayDate, name])
+  @@index([organizationId, holidayDate])
+  @@index([organizationId, isActive])
+  @@map("organization_holidays")
+  @@schema("hr")
 }
 
 model ApplicationSetting {
@@ -1173,6 +1194,7 @@ model EmploymentContract {
   gratuityTaxRate   Decimal?                 @db.Decimal(5, 2)
   isCurrent         Boolean                  @default(true)
   signedDate        DateTime?
+  collectedAt       DateTime?
   terminationDate   DateTime?
   terminationReason String?
   documentReference String?
@@ -1381,19 +1403,20 @@ model EmailTemplate {
 }
 
 model AuditEvent {
-  id            String   @id @default(cuid())
-  userId        String?
-  moduleKey     String
-  action        String
-  entityType    String
-  entityId      String?
-  description   String?
-  oldValues     Json?
-  newValues     Json?
-  ipAddress     String?
-  userAgent     String?
-  correlationId String?
-  createdAt     DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String?
+  moduleKey      String
+  action         String
+  entityType     String
+  entityId       String?
+  description    String?
+  oldValues      Json?
+  newValues      Json?
+  ipAddress      String?
+  userAgent      String?
+  clientHostName String?
+  correlationId  String?
+  createdAt      DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 

@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "email:process": "npx tsx scripts/process-email-queue.ts",
+    "notify:vacation-forfeiture": "npx tsx scripts/notify-vacation-forfeiture.ts",
+    "seed:access": "npx tsx prisma/seed-access-roles.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -39,6 +45,8 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.23.1",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }

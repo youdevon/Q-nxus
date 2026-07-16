@@ -47,6 +47,11 @@ export { Prisma }
  */
 export type Organization = Prisma.OrganizationModel
 /**
+ * Model OrganizationHoliday
+ * 
+ */
+export type OrganizationHoliday = Prisma.OrganizationHolidayModel
+/**
  * Model ApplicationSetting
  * 
  */

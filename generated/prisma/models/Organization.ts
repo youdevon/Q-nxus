@@ -345,6 +345,7 @@ export type OrganizationWhereInput = {
   allowanceCategories?: Prisma.AllowanceCategoryListRelationFilter
   leaveTypes?: Prisma.LeaveTypeListRelationFilter
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleListRelationFilter
+  organizationHolidays?: Prisma.OrganizationHolidayListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }
 
@@ -381,6 +382,7 @@ export type OrganizationOrderByWithRelationInput = {
   allowanceCategories?: Prisma.AllowanceCategoryOrderByRelationAggregateInput
   leaveTypes?: Prisma.LeaveTypeOrderByRelationAggregateInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleOrderByRelationAggregateInput
+  organizationHolidays?: Prisma.OrganizationHolidayOrderByRelationAggregateInput
   leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
 }
 
@@ -420,6 +422,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   allowanceCategories?: Prisma.AllowanceCategoryListRelationFilter
   leaveTypes?: Prisma.LeaveTypeListRelationFilter
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleListRelationFilter
+  organizationHolidays?: Prisma.OrganizationHolidayListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
 }, "id" | "code">
 
@@ -508,6 +511,7 @@ export type OrganizationCreateInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -544,6 +548,7 @@ export type OrganizationUncheckedCreateInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -580,6 +585,7 @@ export type OrganizationUpdateInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -616,6 +622,7 @@ export type OrganizationUncheckedUpdateInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -801,6 +808,20 @@ export type DateTimeFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type OrganizationCreateNestedOneWithoutOrganizationHolidaysInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutOrganizationHolidaysInput, Prisma.OrganizationUncheckedCreateWithoutOrganizationHolidaysInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutOrganizationHolidaysInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutOrganizationHolidaysNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutOrganizationHolidaysInput, Prisma.OrganizationUncheckedCreateWithoutOrganizationHolidaysInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutOrganizationHolidaysInput
+  upsert?: Prisma.OrganizationUpsertWithoutOrganizationHolidaysInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutOrganizationHolidaysInput, Prisma.OrganizationUpdateWithoutOrganizationHolidaysInput>, Prisma.OrganizationUncheckedUpdateWithoutOrganizationHolidaysInput>
 }
 
 export type OrganizationCreateNestedOneWithoutUsersInput = {
@@ -1003,6 +1024,166 @@ export type OrganizationUpdateOneRequiredWithoutAllowanceCategoriesNestedInput =
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAllowanceCategoriesInput, Prisma.OrganizationUpdateWithoutAllowanceCategoriesInput>, Prisma.OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput>
 }
 
+export type OrganizationCreateWithoutOrganizationHolidaysInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutOrganizationHolidaysInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutOrganizationHolidaysInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutOrganizationHolidaysInput, Prisma.OrganizationUncheckedCreateWithoutOrganizationHolidaysInput>
+}
+
+export type OrganizationUpsertWithoutOrganizationHolidaysInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutOrganizationHolidaysInput, Prisma.OrganizationUncheckedUpdateWithoutOrganizationHolidaysInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutOrganizationHolidaysInput, Prisma.OrganizationUncheckedCreateWithoutOrganizationHolidaysInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutOrganizationHolidaysInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutOrganizationHolidaysInput, Prisma.OrganizationUncheckedUpdateWithoutOrganizationHolidaysInput>
+}
+
+export type OrganizationUpdateWithoutOrganizationHolidaysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutOrganizationHolidaysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
 export type OrganizationCreateWithoutUsersInput = {
   id?: string
   code: string
@@ -1035,6 +1216,7 @@ export type OrganizationCreateWithoutUsersInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1070,6 +1252,7 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1121,6 +1304,7 @@ export type OrganizationUpdateWithoutUsersInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1156,6 +1340,7 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1191,6 +1376,7 @@ export type OrganizationCreateWithoutRolesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1226,6 +1412,7 @@ export type OrganizationUncheckedCreateWithoutRolesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1277,6 +1464,7 @@ export type OrganizationUpdateWithoutRolesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1312,6 +1500,7 @@ export type OrganizationUncheckedUpdateWithoutRolesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1347,6 +1536,7 @@ export type OrganizationCreateWithoutBusinessUnitsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1382,6 +1572,7 @@ export type OrganizationUncheckedCreateWithoutBusinessUnitsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1433,6 +1624,7 @@ export type OrganizationUpdateWithoutBusinessUnitsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1468,6 +1660,7 @@ export type OrganizationUncheckedUpdateWithoutBusinessUnitsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1503,6 +1696,7 @@ export type OrganizationCreateWithoutLocationsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1538,6 +1732,7 @@ export type OrganizationUncheckedCreateWithoutLocationsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1589,6 +1784,7 @@ export type OrganizationUpdateWithoutLocationsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1624,6 +1820,7 @@ export type OrganizationUncheckedUpdateWithoutLocationsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1659,6 +1856,7 @@ export type OrganizationCreateWithoutReferenceDataSetsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1694,6 +1892,7 @@ export type OrganizationUncheckedCreateWithoutReferenceDataSetsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1745,6 +1944,7 @@ export type OrganizationUpdateWithoutReferenceDataSetsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1780,6 +1980,7 @@ export type OrganizationUncheckedUpdateWithoutReferenceDataSetsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1815,6 +2016,7 @@ export type OrganizationCreateWithoutFeatureControlsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1850,6 +2052,7 @@ export type OrganizationUncheckedCreateWithoutFeatureControlsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -1901,6 +2104,7 @@ export type OrganizationUpdateWithoutFeatureControlsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1936,6 +2140,7 @@ export type OrganizationUncheckedUpdateWithoutFeatureControlsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -1971,6 +2176,7 @@ export type OrganizationCreateWithoutDomainSettingsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2006,6 +2212,7 @@ export type OrganizationUncheckedCreateWithoutDomainSettingsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2057,6 +2264,7 @@ export type OrganizationUpdateWithoutDomainSettingsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2092,6 +2300,7 @@ export type OrganizationUncheckedUpdateWithoutDomainSettingsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2127,6 +2336,7 @@ export type OrganizationCreateWithoutNumberingSequencesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2162,6 +2372,7 @@ export type OrganizationUncheckedCreateWithoutNumberingSequencesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2213,6 +2424,7 @@ export type OrganizationUpdateWithoutNumberingSequencesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2248,6 +2460,7 @@ export type OrganizationUncheckedUpdateWithoutNumberingSequencesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2283,6 +2496,7 @@ export type OrganizationCreateWithoutDepartmentsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2318,6 +2532,7 @@ export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2369,6 +2584,7 @@ export type OrganizationUpdateWithoutDepartmentsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2404,6 +2620,7 @@ export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2439,6 +2656,7 @@ export type OrganizationCreateWithoutEmployeesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2474,6 +2692,7 @@ export type OrganizationUncheckedCreateWithoutEmployeesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2525,6 +2744,7 @@ export type OrganizationUpdateWithoutEmployeesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2560,6 +2780,7 @@ export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2595,6 +2816,7 @@ export type OrganizationCreateWithoutLeaveTypesInput = {
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2630,6 +2852,7 @@ export type OrganizationUncheckedCreateWithoutLeaveTypesInput = {
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2681,6 +2904,7 @@ export type OrganizationUpdateWithoutLeaveTypesInput = {
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2716,6 +2940,7 @@ export type OrganizationUncheckedUpdateWithoutLeaveTypesInput = {
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2751,6 +2976,7 @@ export type OrganizationCreateWithoutLeaveEntitlementRulesInput = {
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2786,6 +3012,7 @@ export type OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput = {
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -2837,6 +3064,7 @@ export type OrganizationUpdateWithoutLeaveEntitlementRulesInput = {
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2872,6 +3100,7 @@ export type OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput = {
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -2908,6 +3137,7 @@ export type OrganizationCreateWithoutLeaveRequestsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLeaveRequestsInput = {
@@ -2943,6 +3173,7 @@ export type OrganizationUncheckedCreateWithoutLeaveRequestsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLeaveRequestsInput = {
@@ -2994,6 +3225,7 @@ export type OrganizationUpdateWithoutLeaveRequestsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -3029,6 +3261,7 @@ export type OrganizationUncheckedUpdateWithoutLeaveRequestsInput = {
   allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutAllowanceCategoriesInput = {
@@ -3063,6 +3296,7 @@ export type OrganizationCreateWithoutAllowanceCategoriesInput = {
   numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
 }
 
@@ -3098,6 +3332,7 @@ export type OrganizationUncheckedCreateWithoutAllowanceCategoriesInput = {
   numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
   leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
@@ -3149,6 +3384,7 @@ export type OrganizationUpdateWithoutAllowanceCategoriesInput = {
   numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -3184,6 +3420,7 @@ export type OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput = {
   numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
@@ -3206,6 +3443,7 @@ export type OrganizationCountOutputType = {
   allowanceCategories: number
   leaveTypes: number
   leaveEntitlementRules: number
+  organizationHolidays: number
   leaveRequests: number
 }
 
@@ -3223,6 +3461,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   allowanceCategories?: boolean | OrganizationCountOutputTypeCountAllowanceCategoriesArgs
   leaveTypes?: boolean | OrganizationCountOutputTypeCountLeaveTypesArgs
   leaveEntitlementRules?: boolean | OrganizationCountOutputTypeCountLeaveEntitlementRulesArgs
+  organizationHolidays?: boolean | OrganizationCountOutputTypeCountOrganizationHolidaysArgs
   leaveRequests?: boolean | OrganizationCountOutputTypeCountLeaveRequestsArgs
 }
 
@@ -3330,6 +3569,13 @@ export type OrganizationCountOutputTypeCountLeaveEntitlementRulesArgs<ExtArgs ex
 /**
  * OrganizationCountOutputType without action
  */
+export type OrganizationCountOutputTypeCountOrganizationHolidaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrganizationHolidayWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
 export type OrganizationCountOutputTypeCountLeaveRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.LeaveRequestWhereInput
 }
@@ -3368,6 +3614,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   allowanceCategories?: boolean | Prisma.Organization$allowanceCategoriesArgs<ExtArgs>
   leaveTypes?: boolean | Prisma.Organization$leaveTypesArgs<ExtArgs>
   leaveEntitlementRules?: boolean | Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs>
+  organizationHolidays?: boolean | Prisma.Organization$organizationHolidaysArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.Organization$leaveRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
@@ -3453,6 +3700,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   allowanceCategories?: boolean | Prisma.Organization$allowanceCategoriesArgs<ExtArgs>
   leaveTypes?: boolean | Prisma.Organization$leaveTypesArgs<ExtArgs>
   leaveEntitlementRules?: boolean | Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs>
+  organizationHolidays?: boolean | Prisma.Organization$organizationHolidaysArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.Organization$leaveRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -3475,6 +3723,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     allowanceCategories: Prisma.$AllowanceCategoryPayload<ExtArgs>[]
     leaveTypes: Prisma.$LeaveTypePayload<ExtArgs>[]
     leaveEntitlementRules: Prisma.$LeaveEntitlementRulePayload<ExtArgs>[]
+    organizationHolidays: Prisma.$OrganizationHolidayPayload<ExtArgs>[]
     leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -3904,6 +4153,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   allowanceCategories<T extends Prisma.Organization$allowanceCategoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$allowanceCategoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AllowanceCategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveTypes<T extends Prisma.Organization$leaveTypesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$leaveTypesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveTypePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveEntitlementRules<T extends Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$leaveEntitlementRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveEntitlementRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  organizationHolidays<T extends Prisma.Organization$organizationHolidaysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$organizationHolidaysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrganizationHolidayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveRequests<T extends Prisma.Organization$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4655,6 +4905,30 @@ export type Organization$leaveEntitlementRulesArgs<ExtArgs extends runtime.Types
   take?: number
   skip?: number
   distinct?: Prisma.LeaveEntitlementRuleScalarFieldEnum | Prisma.LeaveEntitlementRuleScalarFieldEnum[]
+}
+
+/**
+ * Organization.organizationHolidays
+ */
+export type Organization$organizationHolidaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrganizationHoliday
+   */
+  select?: Prisma.OrganizationHolidaySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrganizationHoliday
+   */
+  omit?: Prisma.OrganizationHolidayOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationHolidayInclude<ExtArgs> | null
+  where?: Prisma.OrganizationHolidayWhereInput
+  orderBy?: Prisma.OrganizationHolidayOrderByWithRelationInput | Prisma.OrganizationHolidayOrderByWithRelationInput[]
+  cursor?: Prisma.OrganizationHolidayWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrganizationHolidayScalarFieldEnum | Prisma.OrganizationHolidayScalarFieldEnum[]
 }
 
 /**

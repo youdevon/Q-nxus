@@ -39,6 +39,11 @@ const permissions = [
     moduleKey: "administration",
   },
   {
+    code: "administration.manage",
+    name: "Manage administration",
+    moduleKey: "administration",
+  },
+  {
     code: "administration.view_health",
     name: "View system health",
     moduleKey: "administration",
@@ -532,7 +537,7 @@ async function seedRoles(): Promise<void> {
       organizationId,
       code: "HR_ADMINISTRATOR",
       name: "HR Administrator",
-      description: "Administration of People and workforce records.",
+      description: "Administration of Employees and workforce records.",
       isActive: true,
     },
   });
@@ -658,7 +663,7 @@ async function seedModuleStatuses(): Promise<void> {
     ["core", "Core Platform"],
     ["administration", "Administration"],
     ["identity", "Identity and Access"],
-    ["people", "People"],
+    ["people", "Employees"],
     ["payroll", "Payroll"],
     ["notifications", "Notifications"],
     ["audit", "Audit"],

@@ -82,6 +82,86 @@ const permissions = [
     name: "View administration",
     moduleKey: "administration",
   },
+  {
+    code: "administration.manage",
+    name: "Manage administration",
+    moduleKey: "administration",
+  },
+  {
+    code: "administration.manage_organization",
+    name: "Manage organizations",
+    moduleKey: "administration",
+  },
+  {
+    code: "administration.manage_business_unit",
+    name: "Manage business units",
+    moduleKey: "administration",
+  },
+  {
+    code: "administration.manage_location",
+    name: "Manage locations",
+    moduleKey: "administration",
+  },
+  {
+    code: "administration.manage_reference_data",
+    name: "Manage reference data",
+    moduleKey: "administration",
+  },
+  {
+    code: "administration.manage_feature",
+    name: "Manage feature controls",
+    moduleKey: "administration",
+  },
+  {
+    code: "administration.manage_domain_setting",
+    name: "Manage domain settings",
+    moduleKey: "administration",
+  },
+  {
+    code: "administration.manage_sequence",
+    name: "Manage numbering sequences",
+    moduleKey: "administration",
+  },
+  {
+    code: "identity.user.view",
+    name: "View users",
+    moduleKey: "identity",
+  },
+  {
+    code: "identity.user.create",
+    name: "Create users",
+    moduleKey: "identity",
+  },
+  {
+    code: "identity.user.update",
+    name: "Update users",
+    moduleKey: "identity",
+  },
+  {
+    code: "identity.user.suspend",
+    name: "Suspend users",
+    moduleKey: "identity",
+  },
+  {
+    code: "identity.role.view",
+    name: "View roles",
+    moduleKey: "identity",
+  },
+  {
+    code: "identity.role.manage",
+    name: "Manage roles",
+    moduleKey: "identity",
+  },
+  {
+    code: "identity.permission.view",
+    name: "View permissions",
+    moduleKey: "identity",
+  },
+  {
+    code: "audit.view",
+    name: "View audit events",
+    moduleKey: "audit",
+  },
 ] as const
 
 async function main() {
@@ -114,7 +194,7 @@ async function main() {
     update: {
       name: "Employee",
       description:
-        "Self-service access: own profile, leave requests, and notifications.",
+        "Self-service access: own profile, own contracts (read-only), leave requests, and notifications.",
       isActive: true,
     },
     create: {
@@ -122,7 +202,7 @@ async function main() {
       code: "EMPLOYEE",
       name: "Employee",
       description:
-        "Self-service access: own profile, leave requests, and notifications.",
+        "Self-service access: own profile, own contracts (read-only), leave requests, and notifications.",
       isActive: true,
     },
   })
