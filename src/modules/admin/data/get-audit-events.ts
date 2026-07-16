@@ -1,67 +1,68 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
-const PAGE_SIZE = 25
+const PAGE_SIZE = 25;
 
 export type AuditEventListItem = {
-  id: string
-  moduleKey: string
-  action: string
-  entityType: string
-  entityId: string | null
-  description: string | null
-  oldValues: unknown
-  newValues: unknown
-  ipAddress: string | null
-  userAgent: string | null
-  correlationId: string | null
-  createdAt: Date
+  id: string;
+  moduleKey: string;
+  action: string;
+  entityType: string;
+  entityId: string | null;
+  description: string | null;
+  oldValues: unknown;
+  newValues: unknown;
+  ipAddress: string | null;
+  userAgent: string | null;
+  clientHostName: string | null;
+  correlationId: string | null;
+  createdAt: Date;
   user: {
-    id: string
-    email: string
-    firstName: string
-    lastName: string
-  } | null
-}
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  } | null;
+};
 
 export type AuditFilters = {
-  query?: string
-  moduleKey?: string
-  action?: string
-  entityType?: string
-  dateFrom?: string
-  dateTo?: string
-  page?: number
-}
+  query?: string;
+  moduleKey?: string;
+  action?: string;
+  entityType?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  page?: number;
+};
 
 export type AuditTrailData = {
-  events: AuditEventListItem[]
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
+  events: AuditEventListItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
   filters: {
-    modules: string[]
-    actions: string[]
-    entityTypes: string[]
-  }
-}
+    modules: string[];
+    actions: string[];
+    entityTypes: string[];
+  };
+};
 
 function parseStartDate(value?: string): Date | undefined {
   if (!value) {
-    return undefined
+    return undefined;
   }
 
-  const date = new Date(`${value}T00:00:00.000Z`)
-  return Number.isNaN(date.getTime()) ? undefined : date
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
 function parseEndDate(value?: string): Date | undefined {
   if (!value) {
-    return undefined
+    return undefined;
   }
 
-  const date = new Date(`${value}T23:59:59.999Z`)
-  return Number.isNaN(date.getTime()) ? undefined : date
+  const date = new Date(`${value}T23:59:59.999Z`);
+  return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
 export async function getAuditEvents(
@@ -70,11 +71,11 @@ export async function getAuditEvents(
   const page =
     Number.isInteger(filters.page) && Number(filters.page) > 0
       ? Number(filters.page)
-      : 1
+      : 1;
 
-  const query = filters.query?.trim()
-  const dateFrom = parseStartDate(filters.dateFrom)
-  const dateTo = parseEndDate(filters.dateTo)
+  const query = filters.query?.trim();
+  const dateFrom = parseStartDate(filters.dateFrom);
+  const dateTo = parseEndDate(filters.dateTo);
 
   const where = {
     ...(filters.moduleKey
@@ -156,15 +157,9 @@ export async function getAuditEvents(
           ],
         }
       : {}),
-  }
+  };
 
-  const [
-    events,
-    total,
-    modules,
-    actions,
-    entityTypes,
-  ] = await Promise.all([
+  const [events, total, modules, actions, entityTypes] = await Promise.all([
     prisma.auditEvent.findMany({
       where,
       orderBy: {
@@ -183,6 +178,7 @@ export async function getAuditEvents(
         newValues: true,
         ipAddress: true,
         userAgent: true,
+        clientHostName: true,
         correlationId: true,
         createdAt: true,
         user: {
@@ -229,7 +225,7 @@ export async function getAuditEvents(
         entityType: true,
       },
     }),
-  ])
+  ]);
 
   return {
     events,
@@ -242,5 +238,5 @@ export async function getAuditEvents(
       actions: actions.map((item) => item.action),
       entityTypes: entityTypes.map((item) => item.entityType),
     },
-  }
+  };
 }

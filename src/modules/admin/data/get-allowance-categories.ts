@@ -1,17 +1,17 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type AllowanceCategoryAdminRecord = {
-  id: string
-  code: string | null
-  name: string
-  description: string | null
-  isTaxableDefault: boolean
-  includedInGratuityDefault: boolean
-  isActive: boolean
-  contractAllowanceCount: number
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  code: string | null;
+  name: string;
+  description: string | null;
+  isTaxableDefault: boolean;
+  includedInGratuityDefault: boolean;
+  isActive: boolean;
+  contractAllowanceCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export async function getAllowanceCategoryList(): Promise<
   AllowanceCategoryAdminRecord[]
@@ -23,10 +23,10 @@ export async function getAllowanceCategoryList(): Promise<
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   const categories = await prisma.allowanceCategory.findMany({
@@ -57,7 +57,7 @@ export async function getAllowanceCategoryList(): Promise<
         },
       },
     },
-  })
+  });
 
   return categories.map((category) => ({
     id: category.id,
@@ -65,14 +65,12 @@ export async function getAllowanceCategoryList(): Promise<
     name: category.name,
     description: category.description,
     isTaxableDefault: category.isTaxableDefault,
-    includedInGratuityDefault:
-      category.includedInGratuityDefault,
+    includedInGratuityDefault: category.includedInGratuityDefault,
     isActive: category.isActive,
-    contractAllowanceCount:
-      category._count.contractAllowances,
+    contractAllowanceCount: category._count.contractAllowances,
     createdAt: category.createdAt.toISOString(),
     updatedAt: category.updatedAt.toISOString(),
-  }))
+  }));
 }
 
 export async function getAllowanceCategoryById(
@@ -98,10 +96,10 @@ export async function getAllowanceCategoryById(
         },
       },
     },
-  })
+  });
 
   if (!category) {
-    return null
+    return null;
   }
 
   return {
@@ -110,12 +108,10 @@ export async function getAllowanceCategoryById(
     name: category.name,
     description: category.description,
     isTaxableDefault: category.isTaxableDefault,
-    includedInGratuityDefault:
-      category.includedInGratuityDefault,
+    includedInGratuityDefault: category.includedInGratuityDefault,
     isActive: category.isActive,
-    contractAllowanceCount:
-      category._count.contractAllowances,
+    contractAllowanceCount: category._count.contractAllowances,
     createdAt: category.createdAt.toISOString(),
     updatedAt: category.updatedAt.toISOString(),
-  }
+  };
 }

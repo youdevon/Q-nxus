@@ -1,36 +1,32 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { LogIn } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { LogIn } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { appConfig } from "@/src/config/app.config"
-import {
-  login,
-  type LoginFormState,
-} from "@/src/modules/auth/actions/login"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FieldLabel } from "@/src/components/ui/field";
+import { appConfig } from "@/src/config/app.config";
+import { UI_TYPOGRAPHY } from "@/src/config/ui-typography";
+import { login, type LoginFormState } from "@/src/modules/auth/actions/login";
 
 const initialState: LoginFormState = {
   status: "idle",
   message: "",
-}
+};
 
 export function LoginForm() {
-  const searchParams = useSearchParams()
-  const nextPath = searchParams.get("next") ?? "/"
-  const [state, action, pending] = useActionState(
-    login,
-    initialState,
-  )
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next") ?? "/";
+  const [state, action, pending] = useActionState(login, initialState);
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form
@@ -43,9 +39,7 @@ export function LoginForm() {
         <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
           {appConfig.shortName}
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight">
-          {appConfig.displayName}
-        </h1>
+        <h1 className={UI_TYPOGRAPHY.authHero}>{appConfig.displayName}</h1>
         <p className="text-sm text-muted-foreground">
           Sign in to continue to your workspace.
         </p>
@@ -57,11 +51,9 @@ export function LoginForm() {
         </div>
       )}
 
-      <div className="space-y-4 border-y border-border py-6">
+      <div className="space-y-4">
         <div>
-          <label htmlFor="email" className="text-sm font-medium">
-            Email
-          </label>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
             name="email"
@@ -74,12 +66,7 @@ export function LoginForm() {
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="text-sm font-medium"
-          >
-            Password
-          </label>
+          <FieldLabel htmlFor="password">Password</FieldLabel>
           <Input
             id="password"
             name="password"
@@ -96,5 +83,5 @@ export function LoginForm() {
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>
-  )
+  );
 }

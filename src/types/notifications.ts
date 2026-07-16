@@ -1,4 +1,4 @@
-import type { Severity } from "@/src/types/severity"
+import type { Severity } from "@/src/types/severity";
 
 export type NotificationModuleSource =
   | "core"
@@ -6,16 +6,16 @@ export type NotificationModuleSource =
   | "payroll"
   | "admin"
   | "notifications"
-  | "audit"
+  | "audit";
 
 export type AppNotification = {
-  id: string
-  title: string
-  message: string
-  severity: Severity
-  moduleSource: NotificationModuleSource
-  createdAt: string
-  read: boolean
+  id: string;
+  title: string;
+  message: string;
+  severity: Severity;
+  moduleSource: NotificationModuleSource;
+  createdAt: string;
+  read: boolean;
   /** Optional deep link to a related record once modules ship */
-  href?: string
-}
+  href?: string;
+};

@@ -1,24 +1,22 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type DomainSettingRecord = {
-  id: string
-  settingCode: string
-  moduleKey: string
-  name: string
-  description: string | null
-  dataType: string
-  value: unknown
-  isSensitive: boolean
-  status: string
-  effectiveFrom: Date
-  effectiveUntil: Date | null
-  version: number
-  updatedAt: Date
-}
+  id: string;
+  settingCode: string;
+  moduleKey: string;
+  name: string;
+  description: string | null;
+  dataType: string;
+  value: unknown;
+  isSensitive: boolean;
+  status: string;
+  effectiveFrom: Date;
+  effectiveUntil: Date | null;
+  version: number;
+  updatedAt: Date;
+};
 
-export async function getDomainSettings(): Promise<
-  DomainSettingRecord[]
-> {
+export async function getDomainSettings(): Promise<DomainSettingRecord[]> {
   const organization = await prisma.organization.findFirst({
     orderBy: {
       createdAt: "asc",
@@ -26,10 +24,10 @@ export async function getDomainSettings(): Promise<
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   return prisma.domainSetting.findMany({
@@ -59,5 +57,5 @@ export async function getDomainSettings(): Promise<
       version: true,
       updatedAt: true,
     },
-  })
+  });
 }

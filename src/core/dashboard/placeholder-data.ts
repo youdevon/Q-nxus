@@ -1,11 +1,11 @@
-import type { ModuleStatusItem } from "@/src/types/module-status"
+import type { ModuleStatusItem } from "@/src/types/module-status";
 
 export const dashboardMetrics = [
   { label: "Active employees", value: "1,248", hint: "Across all entities" },
   { label: "Open leave requests", value: "17", hint: "Awaiting approval" },
   { label: "Payroll readiness", value: "92%", hint: "July cycle" },
   { label: "Expiring contracts", value: "6", hint: "Next 30 days" },
-] as const
+] as const;
 
 export const upcomingEvents = [
   {
@@ -23,7 +23,7 @@ export const upcomingEvents = [
     when: "Fri · End of day",
     module: "Documents",
   },
-] as const
+] as const;
 
 export const recentActivity = [
   {
@@ -46,7 +46,7 @@ export const recentActivity = [
     detail: "Finance analyst → Senior analyst",
     when: "Yesterday",
   },
-] as const
+] as const;
 
 export const moduleStatuses: ModuleStatusItem[] = [
   {
@@ -61,7 +61,7 @@ export const moduleStatuses: ModuleStatusItem[] = [
     name: "Human Resources",
     module: "hr",
     status: "operational",
-    detail: "People, leave, contracts, and documents",
+    detail: "Employees, leave, contracts, and documents",
   },
   {
     id: "payroll",
@@ -77,4 +77,4 @@ export const moduleStatuses: ModuleStatusItem[] = [
     status: "operational",
     detail: "Tenant settings and access control",
   },
-]
+];

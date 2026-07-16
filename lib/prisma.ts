@@ -17,15 +17,33 @@ const adapter = new PrismaPg({
   connectionString,
 });
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function createPrismaClient() {
+  return new PrismaClient({
     adapter,
     log:
       process.env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
   });
+}
+
+/**
+ * After `prisma generate` adds models, Next.js HMR can keep a stale
+ * PrismaClient on globalThis that is missing new delegates (e.g.
+ * organizationHoliday). Recreate when required accessors are absent.
+ */
+function hasExpectedDelegates(client: PrismaClient): boolean {
+  return (
+    typeof client.organization !== "undefined" &&
+    typeof client.organizationHoliday !== "undefined"
+  );
+}
+
+const cached = globalForPrisma.prisma;
+export const prisma =
+  cached && hasExpectedDelegates(cached)
+    ? cached
+    : createPrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;

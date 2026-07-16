@@ -1,44 +1,45 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import Link from "next/link"
-import { ArrowLeft, Hash, RotateCcw, Save } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import { Hash, RotateCcw, Save } from "lucide-react";
+import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "./administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { activeStateBadgeVariant } from "@/src/config/ui-colors";
+import { AdministrationNav } from "./administration-nav";
 import {
   resetNumberingSequence,
   saveNumberingSequences,
   type NumberingSequenceFormState,
-} from "@/src/modules/admin/actions/manage-numbering-sequences"
-import type { NumberingSequenceRecord } from "@/src/modules/admin/data/get-numbering-sequences"
+} from "@/src/modules/admin/actions/manage-numbering-sequences";
+import type { NumberingSequenceRecord } from "@/src/modules/admin/data/get-numbering-sequences";
 
 type NumberingSequencesFormProps = {
-  sequences: NumberingSequenceRecord[]
-}
+  sequences: NumberingSequenceRecord[];
+};
 
 const initialState: NumberingSequenceFormState = {
   status: "idle",
   message: "",
-}
+};
 
 function formatName(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function previewNext(sequence: NumberingSequenceRecord): string {
   const nextNumber = (BigInt(sequence.currentNumber) + BigInt(1))
     .toString()
-    .padStart(sequence.minimumLength, "0")
+    .padStart(sequence.minimumLength, "0");
 
-  return `${sequence.prefix ?? ""}${nextNumber}${sequence.suffix ?? ""}`
+  return `${sequence.prefix ?? ""}${nextNumber}${sequence.suffix ?? ""}`;
 }
 
 export function NumberingSequencesForm({
@@ -47,21 +48,21 @@ export function NumberingSequencesForm({
   const [state, formAction, isPending] = useActionState(
     saveNumberingSequences,
     initialState,
-  )
+  );
 
   useEffect(() => {
     if (state.status === "success") {
-      toast.success(state.message)
+      toast.success(state.message);
     }
 
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form
@@ -73,24 +74,15 @@ export function NumberingSequencesForm({
       <PageHeader
         title="Numbering Sequences"
         description="Manage prefixes, suffixes, number lengths and reset rules for system-generated references."
+        backHref="/administration/numbering-sequences"
+        backLabel="Numbering"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link href="/administration/numbering-sequences" />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions cancelHref="/administration/numbering-sequences">
             <Button type="submit" disabled={isPending}>
               <Save />
               {isPending ? "Saving…" : "Save sequences"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -99,7 +91,7 @@ export function NumberingSequencesForm({
           role={state.status === "success" ? "status" : "alert"}
           className={
             state.status === "success"
-              ? "border-y border-border py-3 text-sm"
+              ? "text-sm"
               : "border-y border-destructive/40 bg-destructive/5 py-3 text-sm"
           }
         >
@@ -122,18 +114,14 @@ export function NumberingSequencesForm({
         </div>
 
         {sequences.length === 0 ? (
-          <p className="border-y border-border py-8 text-center text-sm text-muted-foreground">
+          <p className="py-8 text-center text-sm text-muted-foreground">
             No numbering sequences are configured.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {sequences.map((sequence) => (
               <article key={sequence.id} className="py-6">
-                <input
-                  type="hidden"
-                  name="sequenceIds"
-                  value={sequence.id}
-                />
+                <input type="hidden" name="sequenceIds" value={sequence.id} />
                 <input
                   type="hidden"
                   name={`version:${sequence.id}`}
@@ -146,13 +134,9 @@ export function NumberingSequencesForm({
                       <h3 className="font-medium">
                         {formatName(sequence.sequenceCode)}
                       </h3>
-                      <Badge variant="outline">
-                        {sequence.sequenceCode}
-                      </Badge>
+                      <Badge variant="outline">{sequence.sequenceCode}</Badge>
                       <Badge
-                        variant={
-                          sequence.isActive ? "default" : "secondary"
-                        }
+                        variant={activeStateBadgeVariant(sequence.isActive)}
                       >
                         {sequence.isActive ? "Active" : "Inactive"}
                       </Badge>
@@ -243,9 +227,7 @@ export function NumberingSequencesForm({
                       <option value="NEVER">Never</option>
                       <option value="MONTHLY">Monthly</option>
                       <option value="ANNUALLY">Annually</option>
-                      <option value="FINANCIAL_YEAR">
-                        Financial year
-                      </option>
+                      <option value="FINANCIAL_YEAR">Financial year</option>
                       <option value="MANUAL">Manual</option>
                     </select>
                   </div>
@@ -280,7 +262,7 @@ export function NumberingSequencesForm({
 
                   <Button
                     type="submit"
-                    variant="outline"
+                    variant="warning"
                     size="sm"
                     formAction={resetNumberingSequence}
                     name="id"
@@ -308,5 +290,5 @@ export function NumberingSequencesForm({
         </Button>
       </footer>
     </form>
-  )
+  );
 }

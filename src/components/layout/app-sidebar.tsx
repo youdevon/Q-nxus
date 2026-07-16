@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { appConfig } from "@/src/config/app.config"
-import { filterNavigationForCapabilities } from "@/src/config/navigation.config"
-import { useAuth } from "@/src/modules/auth/context/auth-provider"
+import { appConfig } from "@/src/config/app.config";
+import { filterNavigationForCapabilities } from "@/src/config/navigation.config";
+import { useAuth } from "@/src/modules/auth/context/auth-provider";
 import {
   Sidebar,
   SidebarContent,
@@ -18,12 +18,12 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function AppSidebar() {
-  const pathname = usePathname()
-  const { canAny } = useAuth()
-  const sections = filterNavigationForCapabilities(canAny)
+  const pathname = usePathname();
+  const { canAny } = useAuth();
+  const sections = filterNavigationForCapabilities(canAny);
 
   return (
     <Sidebar collapsible="icon" variant="sidebar">
@@ -66,8 +66,8 @@ export function AppSidebar() {
                     const isActive =
                       item.href === "/"
                         ? pathname === "/"
-                        : pathname.startsWith(item.href)
-                    const Icon = item.icon
+                        : pathname.startsWith(item.href);
+                    const Icon = item.icon;
 
                     return (
                       <SidebarMenuItem key={item.href}>
@@ -80,7 +80,7 @@ export function AppSidebar() {
                           <span>{item.title}</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
-                    )
+                    );
                   })}
                 </SidebarMenu>
               </SidebarGroupContent>
@@ -91,5 +91,5 @@ export function AppSidebar() {
 
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

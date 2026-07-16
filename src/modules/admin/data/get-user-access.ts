@@ -1,59 +1,60 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type UserRoleAssignment = {
-  id: string
-  roleId: string
-  roleCode: string
-  roleName: string
-  status: string
-  effectiveFrom: Date
-  effectiveUntil: Date | null
-  assignedAt: Date
-  revokedAt: Date | null
-  reason: string | null
-}
+  id: string;
+  roleId: string;
+  roleCode: string;
+  roleName: string;
+  status: string;
+  effectiveFrom: Date;
+  effectiveUntil: Date | null;
+  assignedAt: Date;
+  revokedAt: Date | null;
+  reason: string | null;
+};
 
 export type UserAccessRecord = {
-  id: string
-  organizationId: string
-  email: string
-  firstName: string
-  lastName: string
-  status: string
-  isActive: boolean
-  employeeId: string | null
+  id: string;
+  organizationId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  status: string;
+  isActive: boolean;
+  employeeId: string | null;
   employee: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-    positionTitle: string | null
-  } | null
-  emailVerifiedAt: Date | null
-  lastLoginAt: Date | null
-  failedLoginAttempts: number
-  lockedUntil: Date | null
-  version: number
-  updatedAt: Date
-  assignments: UserRoleAssignment[]
-}
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    positionTitle: string | null;
+  } | null;
+  emailVerifiedAt: Date | null;
+  lastLoginAt: Date | null;
+  failedLoginAttempts: number;
+  lockedUntil: Date | null;
+  mustChangePassword: boolean;
+  version: number;
+  updatedAt: Date;
+  assignments: UserRoleAssignment[];
+};
 
 export type LinkableEmployeeOption = {
-  id: string
-  employeeNumber: string
-  firstName: string
-  lastName: string
-  positionTitle: string | null
-  alreadyLinked: boolean
-}
+  id: string;
+  employeeNumber: string;
+  firstName: string;
+  lastName: string;
+  positionTitle: string | null;
+  alreadyLinked: boolean;
+};
 
 export type AssignableRole = {
-  id: string
-  code: string
-  name: string
-  description: string | null
-  isSystem: boolean
-}
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  isSystem: boolean;
+};
 
 export async function getUserAccess(
   id: string,
@@ -75,6 +76,7 @@ export async function getUserAccess(
       lastLoginAt: true,
       failedLoginAttempts: true,
       lockedUntil: true,
+      mustChangePassword: true,
       version: true,
       updatedAt: true,
       employee: {
@@ -112,10 +114,10 @@ export async function getUserAccess(
         },
       },
     },
-  })
+  });
 
   if (!user) {
-    return null
+    return null;
   }
 
   return {
@@ -140,6 +142,7 @@ export async function getUserAccess(
     lastLoginAt: user.lastLoginAt,
     failedLoginAttempts: user.failedLoginAttempts,
     lockedUntil: user.lockedUntil,
+    mustChangePassword: user.mustChangePassword,
     version: user.version,
     updatedAt: user.updatedAt,
     assignments: user.roles.map((assignment) => ({
@@ -154,7 +157,7 @@ export async function getUserAccess(
       revokedAt: assignment.revokedAt,
       reason: assignment.reason,
     })),
-  }
+  };
 }
 
 export async function getLinkableEmployees(
@@ -202,7 +205,7 @@ export async function getLinkableEmployees(
         },
       },
     },
-  })
+  });
 
   return employees.map((employee) => ({
     id: employee.id,
@@ -211,7 +214,7 @@ export async function getLinkableEmployees(
     lastName: employee.lastName,
     positionTitle: employee.position?.title ?? null,
     alreadyLinked: Boolean(employee.user),
-  }))
+  }));
 }
 
 export async function getAssignableRoles(
@@ -244,5 +247,5 @@ export async function getAssignableRoles(
       description: true,
       isSystem: true,
     },
-  })
+  });
 }

@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react"
+import type { LucideIcon } from "lucide-react";
 import {
   Briefcase,
   CalendarDays,
@@ -10,25 +10,25 @@ import {
   Wallet,
   Bell,
   UserRound,
-} from "lucide-react"
+} from "lucide-react";
 
-export type NavSectionId = "platform" | "modules" | "insights" | "system"
+export type NavSectionId = "platform" | "modules" | "insights" | "system";
 
 export type NavItem = {
-  title: string
-  href: string
-  icon: LucideIcon
-  module?: "core" | "hr" | "payroll" | "admin"
+  title: string;
+  href: string;
+  icon: LucideIcon;
+  module?: "core" | "hr" | "payroll" | "admin";
   /** Permission codes that grant access to this item. Empty = authenticated only. */
-  anyOf?: string[]
-}
+  anyOf?: string[];
+};
 
 export type NavSection = {
-  id: NavSectionId
-  label: string
-  showLabel: boolean
-  items: NavItem[]
-}
+  id: NavSectionId;
+  label: string;
+  showLabel: boolean;
+  items: NavItem[];
+};
 
 /**
  * Sidebar navigation is declared once here so Core owns the chrome
@@ -66,7 +66,7 @@ export const navigationConfig: NavSection[] = [
     showLabel: true,
     items: [
       {
-        title: "People",
+        title: "Employees",
         href: "/people",
         icon: Users,
         module: "hr",
@@ -130,7 +130,7 @@ export const navigationConfig: NavSection[] = [
       },
     ],
   },
-]
+];
 
 export function filterNavigationForCapabilities(
   canAny: (...permissions: string[]) => boolean,
@@ -140,11 +140,11 @@ export function filterNavigationForCapabilities(
       ...section,
       items: section.items.filter((item) => {
         if (!item.anyOf || item.anyOf.length === 0) {
-          return true
+          return true;
         }
 
-        return canAny(...item.anyOf)
+        return canAny(...item.anyOf);
       }),
     }))
-    .filter((section) => section.items.length > 0)
+    .filter((section) => section.items.length > 0);
 }

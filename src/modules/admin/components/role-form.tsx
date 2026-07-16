@@ -1,92 +1,80 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { ArrowLeft, Save, ShieldCheck } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Save, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "./administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { AdministrationNav } from "./administration-nav";
 import {
   saveRole,
   type RoleFormState,
-} from "@/src/modules/admin/actions/save-role"
+} from "@/src/modules/admin/actions/save-role";
 import type {
   PermissionOption,
   RoleRecord,
-} from "@/src/modules/admin/data/get-access-administration"
+} from "@/src/modules/admin/data/get-access-administration";
 
 type RoleFormProps = {
-  role?: RoleRecord | null
-  permissions: PermissionOption[]
-}
+  role?: RoleRecord | null;
+  permissions: PermissionOption[];
+};
 
 const initialState: RoleFormState = {
   status: "idle",
   message: "",
-}
+};
 
-function FieldError({
-  id,
-  message,
-}: {
-  id: string
-  message?: string
-}) {
+function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) {
-    return null
+    return null;
   }
 
   return (
     <p id={id} className="mt-1 text-xs text-destructive">
       {message}
     </p>
-  )
+  );
 }
 
-export function RoleForm({
-  role,
-  permissions,
-}: RoleFormProps) {
-  const router = useRouter()
-  const [state, formAction, isPending] = useActionState(
-    saveRole,
-    initialState,
-  )
+export function RoleForm({ role, permissions }: RoleFormProps) {
+  const router = useRouter();
+  const [state, formAction, isPending] = useActionState(saveRole, initialState);
 
-  const selectedPermissions = new Set(role?.permissionIds ?? [])
+  const selectedPermissions = new Set(role?.permissionIds ?? []);
 
   const groupedPermissions = permissions.reduce<
     Record<string, PermissionOption[]>
   >((groups, permission) => {
-    groups[permission.moduleKey] ??= []
-    groups[permission.moduleKey].push(permission)
-    return groups
-  }, {})
+    groups[permission.moduleKey] ??= [];
+    groups[permission.moduleKey].push(permission);
+    return groups;
+  }, {});
 
   useEffect(() => {
     if (state.status === "success") {
-      toast.success(state.message)
+      toast.success(state.message);
 
       if (state.redirectTo) {
-        router.push(state.redirectTo)
-        router.refresh()
+        router.push(state.redirectTo);
+        router.refresh();
       }
     }
 
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [router, state])
+  }, [router, state]);
 
   return (
     <form
@@ -105,30 +93,25 @@ export function RoleForm({
       <PageHeader
         title={role ? "Edit role" : "New role"}
         description="Configure the role identity and the permissions granted to its members."
+        backHref={
+          role
+            ? `/administration/access/roles/${role.id}`
+            : "/administration/access"
+        }
+        backLabel={role ? "Role" : "Users and roles"}
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={
-                    role
-                      ? `/administration/access/roles/${role.id}`
-                      : "/administration/access"
-                  }
-                />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions
+            cancelHref={
+              role
+                ? `/administration/access/roles/${role.id}`
+                : "/administration/access"
+            }
+          >
             <Button type="submit" disabled={isPending}>
               <Save />
               {isPending ? "Saving…" : "Save role"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -137,7 +120,7 @@ export function RoleForm({
           role={state.status === "success" ? "status" : "alert"}
           className={
             state.status === "success"
-              ? "border-y border-border py-3 text-sm"
+              ? "text-sm"
               : "border-y border-destructive/40 bg-destructive/5 py-3 text-sm"
           }
         >
@@ -151,12 +134,10 @@ export function RoleForm({
           <h2 className="text-sm font-semibold tracking-wide uppercase">
             Role details
           </h2>
-          {role?.isSystem && (
-            <Badge variant="outline">System role</Badge>
-          )}
+          {role?.isSystem && <Badge variant="outline">System role</Badge>}
         </div>
 
-        <div className="grid gap-5 border-y border-border py-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
             <label htmlFor="name" className="text-sm font-medium">
               Role name
@@ -190,10 +171,7 @@ export function RoleForm({
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="description"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="description" className="text-sm font-medium">
               Description
             </label>
             <Textarea
@@ -240,7 +218,7 @@ export function RoleForm({
           </span>
         </div>
 
-        <div className="divide-y divide-border border-y border-border">
+        <div className="divide-y divide-border/70">
           {Object.entries(groupedPermissions).map(
             ([moduleKey, modulePermissions]) => (
               <fieldset key={moduleKey} className="py-5">
@@ -258,9 +236,7 @@ export function RoleForm({
                         type="checkbox"
                         name="permissionIds"
                         value={permission.id}
-                        defaultChecked={selectedPermissions.has(
-                          permission.id,
-                        )}
+                        defaultChecked={selectedPermissions.has(permission.id)}
                         className="mt-0.5 size-4"
                       />
 
@@ -286,5 +262,5 @@ export function RoleForm({
         </div>
       </section>
     </form>
-  )
+  );
 }

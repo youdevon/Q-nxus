@@ -1,18 +1,18 @@
-import type { ReactNode } from "react"
-import { redirect } from "next/navigation"
+import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
 
-import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 
 export default async function AdministrationLayout({
   children,
 }: {
-  children: ReactNode
+  children: ReactNode;
 }) {
-  const capabilities = await getUserCapabilities()
+  const capabilities = await getUserCapabilities();
 
   if (!capabilities?.can("administration.view")) {
-    redirect("/")
+    redirect("/");
   }
 
-  return children
+  return children;
 }

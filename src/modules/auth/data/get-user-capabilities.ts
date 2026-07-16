@@ -1,17 +1,17 @@
-import { prisma } from "@/lib/prisma"
-import { getCurrentUser } from "@/src/modules/auth/data/get-current-user"
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
 export type UserCapabilities = {
-  userId: string
-  employeeId: string | null
-  permissions: string[]
-  roleCodes: string[]
-  isSystemAdmin: boolean
-  isHrAdmin: boolean
-  isEmployeeOnly: boolean
-  can: (permission: string) => boolean
-  canAny: (...permissions: string[]) => boolean
-}
+  userId: string;
+  employeeId: string | null;
+  permissions: string[];
+  roleCodes: string[];
+  isSystemAdmin: boolean;
+  isHrAdmin: boolean;
+  isEmployeeOnly: boolean;
+  can: (permission: string) => boolean;
+  canAny: (...permissions: string[]) => boolean;
+};
 
 export async function getUserCapabilities(
   userId?: string,
@@ -27,10 +27,10 @@ export async function getUserCapabilities(
           isActive: true,
         },
       })
-    : await getCurrentUser()
+    : await getCurrentUser();
 
   if (!current?.isActive) {
-    return null
+    return null;
   }
 
   const assignments = await prisma.userRole.findMany({
@@ -58,11 +58,9 @@ export async function getUserCapabilities(
         },
       },
     },
-  })
+  });
 
-  const roleCodes = [
-    ...new Set(assignments.map((item) => item.role.code)),
-  ]
+  const roleCodes = [...new Set(assignments.map((item) => item.role.code))];
 
   const permissions = [
     ...new Set(
@@ -72,10 +70,10 @@ export async function getUserCapabilities(
           .map((entry) => entry.permission.code),
       ),
     ),
-  ]
+  ];
 
-  const isSystemAdmin = roleCodes.includes("SYSTEM_ADMINISTRATOR")
-  const isHrAdmin = roleCodes.includes("HR_ADMINISTRATOR")
+  const isSystemAdmin = roleCodes.includes("SYSTEM_ADMINISTRATOR");
+  const isHrAdmin = roleCodes.includes("HR_ADMINISTRATOR");
 
   return {
     userId: current.id,
@@ -85,64 +83,51 @@ export async function getUserCapabilities(
     isSystemAdmin,
     isHrAdmin,
     isEmployeeOnly:
-      !isSystemAdmin &&
-      !isHrAdmin &&
-      roleCodes.includes("EMPLOYEE"),
+      !isSystemAdmin && !isHrAdmin && roleCodes.includes("EMPLOYEE"),
     can(permission: string) {
-      return (
-        isSystemAdmin || permissions.includes(permission)
-      )
+      return isSystemAdmin || permissions.includes(permission);
     },
     canAny(...required: string[]) {
       return (
         isSystemAdmin ||
-        required.some((permission) =>
-          permissions.includes(permission),
-        )
-      )
+        required.some((permission) => permissions.includes(permission))
+      );
     },
-  }
+  };
 }
 
 export async function requireCapability(
   ...permissions: string[]
 ): Promise<UserCapabilities> {
-  const capabilities = await getUserCapabilities()
+  const capabilities = await getUserCapabilities();
 
   if (!capabilities) {
-    throw new Error("An active user account is required.")
+    throw new Error("An active user account is required.");
   }
 
-  if (
-    permissions.length > 0 &&
-    !capabilities.canAny(...permissions)
-  ) {
-    throw new Error(
-      "You do not have permission to perform this action.",
-    )
+  if (permissions.length > 0 && !capabilities.canAny(...permissions)) {
+    throw new Error("You do not have permission to perform this action.");
   }
 
-  return capabilities
+  return capabilities;
 }
 
-export async function requireActor(
-  ...permissions: string[]
-): Promise<
+export async function requireActor(...permissions: string[]): Promise<
   | {
-      ok: true
-      actor: UserCapabilities
+      ok: true;
+      actor: UserCapabilities;
     }
   | {
-      ok: false
-      message: string
+      ok: false;
+      message: string;
     }
 > {
   try {
-    const actor = await requireCapability(...permissions)
+    const actor = await requireCapability(...permissions);
     return {
       ok: true,
       actor,
-    }
+    };
   } catch (error) {
     return {
       ok: false,
@@ -150,6 +135,6 @@ export async function requireActor(
         error instanceof Error
           ? error.message
           : "You do not have permission to perform this action.",
-    }
+    };
   }
 }

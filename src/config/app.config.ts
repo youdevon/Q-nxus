@@ -14,6 +14,6 @@ export const appConfig = {
   /** Default browser metadata description */
   description:
     "Modular enterprise platform for human resources, payroll, and operations.",
-} as const
+} as const;
 
-export type AppConfig = typeof appConfig
+export type AppConfig = typeof appConfig;

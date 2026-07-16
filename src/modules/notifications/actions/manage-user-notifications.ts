@@ -1,60 +1,43 @@
-"use server"
+"use server";
 
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { prisma } from "@/lib/prisma"
-import { getCurrentUser } from "@/src/modules/auth/data/get-current-user"
+import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
-function textValue(
-  formData: FormData,
-  key: string,
-): string {
-  const value = formData.get(key)
+function textValue(formData: FormData, key: string): string {
+  const value = formData.get(key);
 
-  return typeof value === "string"
-    ? value.trim()
-    : ""
+  return typeof value === "string" ? value.trim() : "";
 }
 
-async function resolveCurrentUserId(): Promise<
-  string | null
-> {
-  const user = await getCurrentUser()
-  return user?.id ?? null
+async function resolveCurrentUserId(): Promise<string | null> {
+  const user = await getCurrentUser();
+  return user?.id ?? null;
 }
 
-function safeInternalUrl(
-  value: string,
-): string | null {
+function safeInternalUrl(value: string): string | null {
   if (!value.startsWith("/")) {
-    return null
+    return null;
   }
 
   if (value.startsWith("//")) {
-    return null
+    return null;
   }
 
-  return value
+  return value;
 }
 
-export async function markNotificationRead(
-  formData: FormData,
-): Promise<void> {
-  const notificationId = textValue(
-    formData,
-    "recipientId",
-  )
+export async function markNotificationRead(formData: FormData): Promise<void> {
+  const notificationId = textValue(formData, "recipientId");
 
-  const requestedUrl = textValue(
-    formData,
-    "actionUrl",
-  )
+  const requestedUrl = textValue(formData, "actionUrl");
 
-  const userId = await resolveCurrentUserId()
+  const userId = await resolveCurrentUserId();
 
   if (!userId || !notificationId) {
-    return
+    return;
   }
 
   await prisma.notificationRecipient.updateMany({
@@ -66,29 +49,27 @@ export async function markNotificationRead(
       status: "READ",
       readAt: new Date(),
     },
-  })
+  });
 
-  revalidatePath("/notifications")
+  revalidatePath("/notifications");
+  revalidatePath("/", "layout");
 
-  const actionUrl = safeInternalUrl(requestedUrl)
+  const actionUrl = safeInternalUrl(requestedUrl);
 
   if (actionUrl) {
-    redirect(actionUrl)
+    redirect(actionUrl);
   }
 }
 
 export async function markNotificationUnread(
   formData: FormData,
 ): Promise<void> {
-  const notificationId = textValue(
-    formData,
-    "recipientId",
-  )
+  const notificationId = textValue(formData, "recipientId");
 
-  const userId = await resolveCurrentUserId()
+  const userId = await resolveCurrentUserId();
 
   if (!userId || !notificationId) {
-    return
+    return;
   }
 
   await prisma.notificationRecipient.updateMany({
@@ -100,16 +81,17 @@ export async function markNotificationUnread(
       status: "UNREAD",
       readAt: null,
     },
-  })
+  });
 
-  revalidatePath("/notifications")
+  revalidatePath("/notifications");
+  revalidatePath("/", "layout");
 }
 
 export async function markAllNotificationsRead(): Promise<void> {
-  const userId = await resolveCurrentUserId()
+  const userId = await resolveCurrentUserId();
 
   if (!userId) {
-    return
+    return;
   }
 
   await prisma.notificationRecipient.updateMany({
@@ -121,7 +103,33 @@ export async function markAllNotificationsRead(): Promise<void> {
       status: "READ",
       readAt: new Date(),
     },
-  })
+  });
 
-  revalidatePath("/notifications")
+  revalidatePath("/notifications");
+  revalidatePath("/", "layout");
+}
+
+export async function markNotificationReadById(
+  notificationId: string,
+): Promise<void> {
+  const userId = await resolveCurrentUserId();
+  const id = notificationId.trim();
+
+  if (!userId || !id) {
+    return;
+  }
+
+  await prisma.notificationRecipient.updateMany({
+    where: {
+      userId,
+      notificationId: id,
+    },
+    data: {
+      status: "READ",
+      readAt: new Date(),
+    },
+  });
+
+  revalidatePath("/notifications");
+  revalidatePath("/", "layout");
 }

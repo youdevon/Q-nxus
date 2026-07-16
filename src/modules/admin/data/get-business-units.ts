@@ -1,42 +1,42 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type BusinessUnitListItem = {
-  id: string
-  parentId: string | null
-  code: string
-  name: string
-  description: string | null
-  status: string
-  effectiveFrom: Date
-  effectiveUntil: Date | null
-  updatedAt: Date
+  id: string;
+  parentId: string | null;
+  code: string;
+  name: string;
+  description: string | null;
+  status: string;
+  effectiveFrom: Date;
+  effectiveUntil: Date | null;
+  updatedAt: Date;
   parent: {
-    id: string
-    name: string
-    code: string
-  } | null
-  childCount: number
-}
+    id: string;
+    name: string;
+    code: string;
+  } | null;
+  childCount: number;
+};
 
 export type BusinessUnitRecord = {
-  id: string
-  organizationId: string
-  parentId: string | null
-  code: string
-  name: string
-  description: string | null
-  status: string
-  effectiveFrom: Date
-  effectiveUntil: Date | null
-  updatedAt: Date
-}
+  id: string;
+  organizationId: string;
+  parentId: string | null;
+  code: string;
+  name: string;
+  description: string | null;
+  status: string;
+  effectiveFrom: Date;
+  effectiveUntil: Date | null;
+  updatedAt: Date;
+};
 
 export type BusinessUnitOption = {
-  id: string
-  code: string
-  name: string
-  parentId: string | null
-}
+  id: string;
+  code: string;
+  name: string;
+  parentId: string | null;
+};
 
 async function getOrganizationId(): Promise<string | null> {
   const organization = await prisma.organization.findFirst({
@@ -46,16 +46,16 @@ async function getOrganizationId(): Promise<string | null> {
     select: {
       id: true,
     },
-  })
+  });
 
-  return organization?.id ?? null
+  return organization?.id ?? null;
 }
 
 export async function getBusinessUnits(): Promise<BusinessUnitListItem[]> {
-  const organizationId = await getOrganizationId()
+  const organizationId = await getOrganizationId();
 
   if (!organizationId) {
-    return []
+    return [];
   }
 
   const records = await prisma.businessUnit.findMany({
@@ -90,7 +90,7 @@ export async function getBusinessUnits(): Promise<BusinessUnitListItem[]> {
         },
       },
     },
-  })
+  });
 
   return records.map((record) => ({
     id: record.id,
@@ -104,7 +104,7 @@ export async function getBusinessUnits(): Promise<BusinessUnitListItem[]> {
     updatedAt: record.updatedAt,
     parent: record.parent,
     childCount: record._count.children,
-  }))
+  }));
 }
 
 export async function getBusinessUnit(
@@ -126,16 +126,16 @@ export async function getBusinessUnit(
       effectiveUntil: true,
       updatedAt: true,
     },
-  })
+  });
 }
 
 export async function getBusinessUnitOptions(
   excludedId?: string,
 ): Promise<BusinessUnitOption[]> {
-  const organizationId = await getOrganizationId()
+  const organizationId = await getOrganizationId();
 
   if (!organizationId) {
-    return []
+    return [];
   }
 
   return prisma.businessUnit.findMany({
@@ -161,5 +161,5 @@ export async function getBusinessUnitOptions(
       name: true,
       parentId: true,
     },
-  })
+  });
 }

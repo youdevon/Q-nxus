@@ -1,19 +1,15 @@
-import type { ComponentProps, ReactNode } from "react"
-import type { VariantProps } from "class-variance-authority"
-import { cva } from "class-variance-authority"
+import type { ComponentProps, ReactNode } from "react";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
-import { cn } from "@/lib/utils"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 import {
   severityAccentClass,
   severityIconMap,
-} from "@/src/modules/notifications/lib/severity-styles"
-import type { Severity } from "@/src/types/severity"
-import { SEVERITY_LABELS } from "@/src/types/severity"
+} from "@/src/modules/notifications/lib/severity-styles";
+import type { Severity } from "@/src/types/severity";
+import { SEVERITY_LABELS } from "@/src/types/severity";
 
 const pageAlertVariants = cva("border-l-[3px]", {
   variants: {
@@ -33,14 +29,14 @@ const pageAlertVariants = cva("border-l-[3px]", {
   defaultVariants: {
     severity: "information",
   },
-})
+});
 
 type PageAlertProps = ComponentProps<"div"> &
   VariantProps<typeof pageAlertVariants> & {
-    title?: string
-    children: ReactNode
-    severity: Severity
-  }
+    title?: string;
+    children: ReactNode;
+    severity: Severity;
+  };
 
 /**
  * Standard page-level alert reused across HR, Payroll, and future modules.
@@ -53,7 +49,7 @@ export function PageAlert({
   children,
   ...props
 }: PageAlertProps) {
-  const Icon = severityIconMap[severity]
+  const Icon = severityIconMap[severity];
 
   return (
     <Alert
@@ -65,5 +61,5 @@ export function PageAlert({
       <AlertTitle>{title ?? SEVERITY_LABELS[severity]}</AlertTitle>
       <AlertDescription>{children}</AlertDescription>
     </Alert>
-  )
+  );
 }

@@ -1,28 +1,28 @@
 import {
   RoleAssignmentStatus,
   UserAccountStatus,
-} from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { hashPassword } from "@/src/modules/auth/lib/password"
+} from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { hashPassword } from "@/src/modules/auth/lib/password";
 
 const DEFAULT_EMPLOYEE_PASSWORD =
-  process.env.DEFAULT_EMPLOYEE_PASSWORD ?? "ChangeMe123!"
+  process.env.DEFAULT_EMPLOYEE_PASSWORD ?? "ChangeMe123!";
 
 export function buildEmployeeUserEmail(employee: {
-  workEmail: string | null
-  employeeNumber: string
-  firstName: string
-  lastName: string
+  workEmail: string | null;
+  employeeNumber: string;
+  firstName: string;
+  lastName: string;
 }): string {
   if (employee.workEmail?.trim()) {
-    return employee.workEmail.trim().toLowerCase()
+    return employee.workEmail.trim().toLowerCase();
   }
 
   const slug = `${employee.firstName}.${employee.lastName}`
     .toLowerCase()
-    .replace(/[^a-z0-9.]+/g, "")
+    .replace(/[^a-z0-9.]+/g, "");
 
-  return `${slug || employee.employeeNumber.toLowerCase()}@q-nxus.local`
+  return `${slug || employee.employeeNumber.toLowerCase()}@q-nxus.local`;
 }
 
 export async function provisionEmployeeUser(employeeId: string) {
@@ -48,22 +48,22 @@ export async function provisionEmployeeUser(employeeId: string) {
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    throw new Error("The employee record could not be found.")
+    throw new Error("The employee record could not be found.");
   }
 
   if (employee.user) {
-    await syncEmployeeAccessRoles(employee.user.id, employeeId)
+    await syncEmployeeAccessRoles(employee.user.id, employeeId);
     return {
       userId: employee.user.id,
       created: false,
       email: null as string | null,
-    }
+    };
   }
 
-  const email = buildEmployeeUserEmail(employee)
+  const email = buildEmployeeUserEmail(employee);
 
   const existingEmail = await prisma.user.findUnique({
     where: {
@@ -73,15 +73,15 @@ export async function provisionEmployeeUser(employeeId: string) {
       id: true,
       employeeId: true,
     },
-  })
+  });
 
   if (existingEmail?.employeeId && existingEmail.employeeId !== employeeId) {
     throw new Error(
       `Cannot create a user account because ${email} is already linked to another employee.`,
-    )
+    );
   }
 
-  const passwordHash = hashPassword(DEFAULT_EMPLOYEE_PASSWORD)
+  const passwordHash = hashPassword(DEFAULT_EMPLOYEE_PASSWORD);
 
   const user =
     existingEmail && !existingEmail.employeeId
@@ -122,15 +122,15 @@ export async function provisionEmployeeUser(employeeId: string) {
             id: true,
             email: true,
           },
-        })
+        });
 
-  await syncEmployeeAccessRoles(user.id, employeeId)
+  await syncEmployeeAccessRoles(user.id, employeeId);
 
   return {
     userId: user.id,
     created: !existingEmail,
     email: user.email,
-  }
+  };
 }
 
 export async function syncEmployeeAccessRoles(
@@ -160,10 +160,10 @@ export async function syncEmployeeAccessRoles(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return
+    return;
   }
 
   const employeeRole = await prisma.role.findFirst({
@@ -175,7 +175,7 @@ export async function syncEmployeeAccessRoles(
     select: {
       id: true,
     },
-  })
+  });
 
   if (employeeRole) {
     const existing = await prisma.userRole.findFirst({
@@ -187,7 +187,7 @@ export async function syncEmployeeAccessRoles(
       select: {
         id: true,
       },
-    })
+    });
 
     if (!existing) {
       await prisma.userRole.create({
@@ -198,14 +198,13 @@ export async function syncEmployeeAccessRoles(
           effectiveFrom: new Date(),
           reason: "Default employee self-service access.",
         },
-      })
+      });
     }
   }
 
   const isLeaveApprover =
     (employee.position?._count.directReports ?? 0) > 0 ||
-    employee.position?.systemRoleCode?.trim() ===
-      "LEAVE_APPROVER"
+    employee.position?.systemRoleCode?.trim() === "LEAVE_APPROVER";
 
   const leaveApproverRole = await prisma.role.findFirst({
     where: {
@@ -217,7 +216,7 @@ export async function syncEmployeeAccessRoles(
       id: true,
       code: true,
     },
-  })
+  });
 
   if (leaveApproverRole && isLeaveApprover) {
     const existingApprover = await prisma.userRole.findFirst({
@@ -229,7 +228,7 @@ export async function syncEmployeeAccessRoles(
       select: {
         id: true,
       },
-    })
+    });
 
     if (!existingApprover) {
       await prisma.userRole.create({
@@ -238,14 +237,13 @@ export async function syncEmployeeAccessRoles(
           roleId: leaveApproverRole.id,
           status: RoleAssignmentStatus.ACTIVE,
           effectiveFrom: new Date(),
-          reason:
-            "Access granted from position role LEAVE_APPROVER.",
+          reason: "Access granted from position role LEAVE_APPROVER.",
         },
-      })
+      });
     }
   }
 
-  const elevatedCode = employee.position?.systemRoleCode?.trim()
+  const elevatedCode = employee.position?.systemRoleCode?.trim();
   const elevatedRole =
     elevatedCode &&
     elevatedCode !== "EMPLOYEE" &&
@@ -261,7 +259,7 @@ export async function syncEmployeeAccessRoles(
             code: true,
           },
         })
-      : null
+      : null;
 
   if (elevatedRole) {
     const existingElevated = await prisma.userRole.findFirst({
@@ -273,7 +271,7 @@ export async function syncEmployeeAccessRoles(
       select: {
         id: true,
       },
-    })
+    });
 
     if (!existingElevated) {
       await prisma.userRole.create({
@@ -284,21 +282,21 @@ export async function syncEmployeeAccessRoles(
           effectiveFrom: new Date(),
           reason: `Access granted from position role ${elevatedRole.code}.`,
         },
-      })
+      });
     }
   }
 
   const keepRoleIds = [
     elevatedRole?.id,
     isLeaveApprover ? leaveApproverRole?.id : null,
-  ].filter((id): id is string => Boolean(id))
+  ].filter((id): id is string => Boolean(id));
 
   const positionLinkedRoles = await prisma.userRole.findMany({
     where: {
       userId,
       status: RoleAssignmentStatus.ACTIVE,
       reason: {
-        startsWith: "Access granted from position role ",
+        startsWith: "Access granted from position role",
       },
       ...(keepRoleIds.length > 0
         ? {
@@ -311,7 +309,7 @@ export async function syncEmployeeAccessRoles(
     select: {
       id: true,
     },
-  })
+  });
 
   if (positionLinkedRoles.length > 0) {
     await prisma.userRole.updateMany({
@@ -325,6 +323,6 @@ export async function syncEmployeeAccessRoles(
         revokedAt: new Date(),
         effectiveUntil: new Date(),
       },
-    })
+    });
   }
 }

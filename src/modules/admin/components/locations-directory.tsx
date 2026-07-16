@@ -1,17 +1,18 @@
-import Link from "next/link"
-import { MapPin, Plus } from "lucide-react"
+import Link from "next/link";
+import { MapPin, Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PageShell } from "@/src/components/layout/page-shell"
-import { AdministrationNav } from "./administration-nav"
-import type { LocationListItem } from "@/src/modules/admin/data/get-locations"
+import { Badge } from "@/components/ui/badge";
+import { recordStatusBadgeVariant } from "@/src/config/ui-colors";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { AdministrationNav } from "./administration-nav";
+import type { LocationListItem } from "@/src/modules/admin/data/get-locations";
 
 export function LocationsDirectory({
   locations,
 }: {
-  locations: LocationListItem[]
+  locations: LocationListItem[];
 }) {
   return (
     <PageShell size="lg">
@@ -43,17 +44,15 @@ export function LocationsDirectory({
         </div>
 
         {locations.length === 0 ? (
-          <div className="border-y border-border py-10 text-center">
+          <div className="py-10 text-center">
             <MapPin className="mx-auto size-6 text-muted-foreground" />
-            <p className="mt-3 text-sm font-medium">
-              No locations configured
-            </p>
+            <p className="mt-3 text-sm font-medium">No locations configured</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Create the first workplace or operational site.
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto border-y border-border">
+          <div className="overflow-x-auto">
             <table className="w-full min-w-175 text-left text-sm">
               <thead className="border-b border-border text-xs text-muted-foreground">
                 <tr>
@@ -67,11 +66,14 @@ export function LocationsDirectory({
 
               <tbody className="divide-y divide-border">
                 {locations.map((location) => (
-                  <tr key={location.id} className="hover:bg-muted/30">
+                  <tr
+                    key={location.id}
+                    className="relative hover:bg-muted/30 focus-within:bg-muted/30"
+                  >
                     <td className="px-3 py-3">
                       <Link
                         href={`/administration/locations/${location.id}`}
-                        className="font-medium hover:underline"
+                        className="font-medium after:absolute after:inset-0 hover:underline focus-visible:outline-none"
                       >
                         {location.name}
                       </Link>
@@ -84,15 +86,13 @@ export function LocationsDirectory({
                       {location.locationType
                         .replaceAll("_", " ")
                         .toLowerCase()
-                        .replace(/\b\w/g, (letter) =>
-                          letter.toUpperCase(),
-                        )}
+                        .replace(/\b\w/g, (letter) => letter.toUpperCase())}
                     </td>
 
                     <td className="px-3 py-3 text-muted-foreground">
                       {[location.city, location.region]
                         .filter(Boolean)
-                        .join(", ") || "—"}
+                        .join(",") || "—"}
                     </td>
 
                     <td className="px-3 py-3 text-muted-foreground">
@@ -101,11 +101,7 @@ export function LocationsDirectory({
 
                     <td className="px-3 py-3">
                       <Badge
-                        variant={
-                          location.status === "ACTIVE"
-                            ? "default"
-                            : "secondary"
-                        }
+                        variant={recordStatusBadgeVariant(location.status)}
                       >
                         {location.status}
                       </Badge>
@@ -118,5 +114,5 @@ export function LocationsDirectory({
         )}
       </section>
     </PageShell>
-  )
+  );
 }

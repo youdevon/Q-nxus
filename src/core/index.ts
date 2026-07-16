@@ -1,1 +1,1 @@
-export { appConfig } from "@/src/config/app.config"
+export { appConfig } from "@/src/config/app.config";

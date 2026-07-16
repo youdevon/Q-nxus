@@ -1,21 +1,21 @@
-import type { Metadata } from "next"
-import { Suspense } from "react"
-import { redirect } from "next/navigation"
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import { ChangePasswordForm } from "@/src/modules/auth/components/change-password-form"
-import { getCurrentUser } from "@/src/modules/auth/data/get-current-user"
+import { ChangePasswordForm } from "@/src/modules/auth/components/change-password-form";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
 export const metadata: Metadata = {
   title: "Change password",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function ChangePasswordPage() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login")
+    redirect("/login");
   }
 
   return (
@@ -31,5 +31,5 @@ export default async function ChangePasswordPage() {
         </Suspense>
       </div>
     </div>
-  )
+  );
 }

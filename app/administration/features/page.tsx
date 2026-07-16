@@ -1,41 +1,36 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import {
-  CalendarDays,
-  Pencil,
-  SlidersHorizontal,
-} from "lucide-react"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { CalendarDays, Pencil, SlidersHorizontal } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
-import { getFeatureControls } from "@/src/modules/admin/data/get-feature-controls"
+import { Badge } from "@/components/ui/badge";
+import { activeStateBadgeVariant } from "@/src/config/ui-colors";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
+import { getFeatureControls } from "@/src/modules/admin/data/get-feature-controls";
 
 export const metadata: Metadata = {
   title: "Feature Controls",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .replaceAll("-", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function dateOnly(value: Date | null): string {
-  return value ? value.toISOString().slice(0, 10) : "No end date"
+  return value ? value.toISOString().slice(0, 10) : "No end date";
 }
 
 export default async function FeaturesPage() {
-  const features = await getFeatureControls()
+  const features = await getFeatureControls();
 
-  const enabledCount = features.filter(
-    (feature) => feature.isEnabled,
-  ).length
+  const enabledCount = features.filter((feature) => feature.isEnabled).length;
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -55,29 +50,19 @@ export default async function FeaturesPage() {
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-3">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-3">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Total features
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {features.length}
-          </p>
+          <p className="text-xs text-muted-foreground">Total features</p>
+          <p className="mt-1 text-2xl font-semibold">{features.length}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Enabled
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {enabledCount}
-          </p>
+          <p className="text-xs text-muted-foreground">Enabled</p>
+          <p className="mt-1 text-2xl font-semibold">{enabledCount}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Disabled
-          </p>
+          <p className="text-xs text-muted-foreground">Disabled</p>
           <p className="mt-1 text-2xl font-semibold">
             {features.length - enabledCount}
           </p>
@@ -93,11 +78,11 @@ export default async function FeaturesPage() {
         </div>
 
         {features.length === 0 ? (
-          <p className="border-y border-border py-8 text-center text-sm text-muted-foreground">
+          <p className="py-8 text-center text-sm text-muted-foreground">
             No feature controls are configured.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {features.map((feature) => (
               <article
                 key={feature.id}
@@ -109,16 +94,8 @@ export default async function FeaturesPage() {
                       {label(feature.featureCode)}
                     </h3>
 
-                    <Badge
-                      variant={
-                        feature.isEnabled
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {feature.isEnabled
-                        ? "Enabled"
-                        : "Disabled"}
+                    <Badge variant={activeStateBadgeVariant(feature.isEnabled)}>
+                      {feature.isEnabled ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
 
@@ -127,15 +104,12 @@ export default async function FeaturesPage() {
                   </p>
 
                   <p className="mt-3 text-sm text-muted-foreground">
-                    {feature.reason ||
-                      "No administrative reason recorded."}
+                    {feature.reason || "No administrative reason recorded."}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Status
-                  </p>
+                  <p className="text-xs text-muted-foreground">Status</p>
                   <p className="mt-1 text-sm font-medium">
                     {label(feature.status)}
                   </p>
@@ -174,5 +148,5 @@ export default async function FeaturesPage() {
         </Button>
       </footer>
     </div>
-  )
+  );
 }

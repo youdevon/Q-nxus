@@ -1,54 +1,45 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useActionState, useEffect } from "react"
-import {
-  ArrowLeft,
-  Save,
-  WalletCards,
-} from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import { Save, WalletCards } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
 import {
   createAllowanceCategory,
   updateAllowanceCategory,
   type AllowanceCategoryFormState,
-} from "@/src/modules/admin/actions/manage-allowance-category"
-import type { AllowanceCategoryAdminRecord } from "@/src/modules/admin/data/get-allowance-categories"
-import { AdministrationNav } from "./administration-nav"
+} from "@/src/modules/admin/actions/manage-allowance-category";
+import type { AllowanceCategoryAdminRecord } from "@/src/modules/admin/data/get-allowance-categories";
+import { AdministrationNav } from "./administration-nav";
 
 const initialState: AllowanceCategoryFormState = {
   status: "idle",
   message: "",
-}
+};
 
 export function AllowanceCategoryForm({
   category,
 }: {
-  category?: AllowanceCategoryAdminRecord | null
+  category?: AllowanceCategoryAdminRecord | null;
 }) {
-  const action = category
-    ? updateAllowanceCategory
-    : createAllowanceCategory
+  const action = category ? updateAllowanceCategory : createAllowanceCategory;
 
-  const [state, formAction, pending] = useActionState(
-    action,
-    initialState,
-  )
+  const [state, formAction, pending] = useActionState(action, initialState);
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form
@@ -59,50 +50,33 @@ export function AllowanceCategoryForm({
 
       {category && (
         <>
-          <input
-            type="hidden"
-            name="id"
-            value={category.id}
-          />
-          <input
-            type="hidden"
-            name="updatedAt"
-            value={category.updatedAt}
-          />
+          <input type="hidden" name="id" value={category.id} />
+          <input type="hidden" name="updatedAt" value={category.updatedAt} />
         </>
       )}
 
       <PageHeader
-        title={
-          category
-            ? "Edit Allowance Category"
-            : "New Allowance Category"
-        }
+        title={category ? "Edit Allowance Category" : "New Allowance Category"}
         description="Configure allowance defaults used during employment contract entry."
+        backHref={
+          category
+            ? `/administration/allowances/${category.id}`
+            : "/administration/allowances"
+        }
+        backLabel={category ? "Category" : "Allowances"}
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={
-                    category
-                      ? `/administration/allowances/${category.id}`
-                      : "/administration/allowances"
-                  }
-                />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions
+            cancelHref={
+              category
+                ? `/administration/allowances/${category.id}`
+                : "/administration/allowances"
+            }
+          >
             <Button type="submit" disabled={pending}>
               <Save />
               {pending ? "Saving…" : "Save category"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -123,12 +97,9 @@ export function AllowanceCategoryForm({
           </h2>
         </div>
 
-        <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="name"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="name" className="text-sm font-medium">
               Category name
             </label>
             <Input
@@ -141,10 +112,7 @@ export function AllowanceCategoryForm({
           </div>
 
           <div>
-            <label
-              htmlFor="code"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="code" className="text-sm font-medium">
               Code
             </label>
             <Input
@@ -157,10 +125,7 @@ export function AllowanceCategoryForm({
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="description"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="description" className="text-sm font-medium">
               Description
             </label>
             <Textarea
@@ -176,9 +141,7 @@ export function AllowanceCategoryForm({
             <input
               type="checkbox"
               name="isTaxableDefault"
-              defaultChecked={
-                category?.isTaxableDefault ?? true
-              }
+              defaultChecked={category?.isTaxableDefault ?? true}
               className="mt-0.5 size-4"
             />
             <span>
@@ -186,8 +149,7 @@ export function AllowanceCategoryForm({
                 Taxable by default
               </span>
               <span className="mt-1 block text-xs text-muted-foreground">
-                New contract allowance lines will inherit this
-                setting.
+                New contract allowance lines will inherit this setting.
               </span>
             </span>
           </label>
@@ -196,10 +158,7 @@ export function AllowanceCategoryForm({
             <input
               type="checkbox"
               name="includedInGratuityDefault"
-              defaultChecked={
-                category?.includedInGratuityDefault ??
-                false
-              }
+              defaultChecked={category?.includedInGratuityDefault ?? false}
               className="mt-0.5 size-4"
             />
             <span>
@@ -207,8 +166,8 @@ export function AllowanceCategoryForm({
                 Include in gratuity by default
               </span>
               <span className="mt-1 block text-xs text-muted-foreground">
-                Include this allowance when estimating
-                gratuity-eligible earnings.
+                Include this allowance when estimating gratuity-eligible
+                earnings.
               </span>
             </span>
           </label>
@@ -225,13 +184,13 @@ export function AllowanceCategoryForm({
                 Category is active
               </span>
               <span className="mt-1 block text-xs text-muted-foreground">
-                Inactive categories remain on historical
-                contracts but cannot be selected for new ones.
+                Inactive categories remain on historical contracts but cannot be
+                selected for new ones.
               </span>
             </span>
           </label>
         </div>
       </section>
     </form>
-  )
+  );
 }

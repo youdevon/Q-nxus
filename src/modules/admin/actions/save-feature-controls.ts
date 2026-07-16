@@ -1,81 +1,80 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
-import { ConfigurationStatus } from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
+import { ConfigurationStatus } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
 export type FeatureControlsFormState = {
-  status: "idle" | "success" | "error" | "conflict"
-  message: string
-}
+  status: "idle" | "success" | "error" | "conflict";
+  message: string;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function parseDate(value: string): Date | null {
   if (!value) {
-    return null
+    return null;
   }
 
-  const parsed = new Date(`${value}T00:00:00.000Z`)
-  return Number.isNaN(parsed.getTime()) ? null : parsed
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
 export async function saveFeatureControls(
   _previousState: FeatureControlsFormState,
   formData: FormData,
 ): Promise<FeatureControlsFormState> {
-  const actor = await requireActor("administration.view")
+  const actor = await requireActor(
+    "administration.manage",
+    "administration.manage_feature",
+  );
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
   const featureIds = formData
     .getAll("featureIds")
-    .filter((value): value is string => typeof value === "string")
+    .filter((value): value is string => typeof value === "string");
 
   if (featureIds.length === 0) {
     return {
       status: "error",
       message: "No feature-control records were submitted.",
-    }
+    };
   }
 
   try {
-    const requestHeaders = await headers()
-    const ipAddress =
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null
-    const userAgent = requestHeaders.get("user-agent")
+    const { ipAddress, userAgent, clientHostName } =
+      await getAuditRequestMetadata(formData);
 
     const result = await prisma.$transaction(async (transaction) => {
       for (const featureId of featureIds) {
         const submittedUpdatedAt = textValue(
           formData,
           `updatedAt:${featureId}`,
-        )
+        );
 
         const current = await transaction.featureControl.findUnique({
           where: {
             id: featureId,
           },
-        })
+        });
 
         if (!current) {
           return {
             outcome: "missing" as const,
             featureId,
-          }
+          };
         }
 
         if (
@@ -85,37 +84,28 @@ export async function saveFeatureControls(
           return {
             outcome: "conflict" as const,
             featureId,
-          }
+          };
         }
 
-        const isEnabled =
-          formData.get(`enabled:${featureId}`) === "on"
+        const isEnabled = formData.get(`enabled:${featureId}`) === "on";
 
-        const statusValue = textValue(
-          formData,
-          `status:${featureId}`,
-        )
+        const statusValue = textValue(formData, `status:${featureId}`);
 
         const effectiveFrom =
-          parseDate(
-            textValue(formData, `effectiveFrom:${featureId}`),
-          ) ?? current.effectiveFrom
+          parseDate(textValue(formData, `effectiveFrom:${featureId}`)) ??
+          current.effectiveFrom;
 
         const effectiveUntil = parseDate(
           textValue(formData, `effectiveUntil:${featureId}`),
-        )
+        );
 
-        const reason =
-          textValue(formData, `reason:${featureId}`) || null
+        const reason = textValue(formData, `reason:${featureId}`) || null;
 
-        if (
-          effectiveUntil &&
-          effectiveUntil < effectiveFrom
-        ) {
+        if (effectiveUntil && effectiveUntil < effectiveFrom) {
           return {
             outcome: "invalid-date" as const,
             featureId,
-          }
+          };
         }
 
         if (
@@ -126,46 +116,43 @@ export async function saveFeatureControls(
           return {
             outcome: "invalid-status" as const,
             featureId,
-          }
+          };
         }
 
-        const updateResult =
-          await transaction.featureControl.updateMany({
-            where: {
-              id: featureId,
-              updatedAt: current.updatedAt,
-            },
-            data: {
-              isEnabled,
-              status: statusValue as ConfigurationStatus,
-              effectiveFrom,
-              effectiveUntil,
-              reason,
-            },
-          })
+        const updateResult = await transaction.featureControl.updateMany({
+          where: {
+            id: featureId,
+            updatedAt: current.updatedAt,
+          },
+          data: {
+            isEnabled,
+            status: statusValue as ConfigurationStatus,
+            effectiveFrom,
+            effectiveUntil,
+            reason,
+          },
+        });
 
         if (updateResult.count !== 1) {
           return {
             outcome: "conflict" as const,
             featureId,
-          }
+          };
         }
 
-        const updated =
-          await transaction.featureControl.findUniqueOrThrow({
-            where: {
-              id: featureId,
-            },
-          })
+        const updated = await transaction.featureControl.findUniqueOrThrow({
+          where: {
+            id: featureId,
+          },
+        });
 
         const changed =
           current.isEnabled !== updated.isEnabled ||
           current.status !== updated.status ||
-          current.effectiveFrom.getTime() !==
-            updated.effectiveFrom.getTime() ||
+          current.effectiveFrom.getTime() !== updated.effectiveFrom.getTime() ||
           current.effectiveUntil?.getTime() !==
             updated.effectiveUntil?.getTime() ||
-          current.reason !== updated.reason
+          current.reason !== updated.reason;
 
         if (changed) {
           await transaction.auditEvent.create({
@@ -194,22 +181,22 @@ export async function saveFeatureControls(
               },
               ipAddress,
               userAgent,
+              clientHostName,
             },
-          })
+          });
         }
       }
 
       return {
         outcome: "updated" as const,
-      }
-    })
+      };
+    });
 
     if (result.outcome === "missing") {
       return {
         status: "error",
-        message:
-          "A feature-control record no longer exists. Refresh the page.",
-      }
+        message: "A feature-control record no longer exists. Refresh the page.",
+      };
     }
 
     if (result.outcome === "conflict") {
@@ -217,7 +204,7 @@ export async function saveFeatureControls(
         status: "conflict",
         message:
           "A feature control was updated elsewhere. Refresh the page before saving again.",
-      }
+      };
     }
 
     if (result.outcome === "invalid-date") {
@@ -225,31 +212,31 @@ export async function saveFeatureControls(
         status: "error",
         message:
           "An effective-until date cannot be before its effective-from date.",
-      }
+      };
     }
 
     if (result.outcome === "invalid-status") {
       return {
         status: "error",
         message: "An invalid feature-control status was submitted.",
-      }
+      };
     }
 
-    revalidatePath("/")
-    revalidatePath("/administration")
-    revalidatePath("/administration/features")
+    revalidatePath("/");
+    revalidatePath("/administration");
+    revalidatePath("/administration/features");
 
     return {
       status: "success",
       message: "Feature controls saved successfully.",
-    }
+    };
   } catch (error: unknown) {
-    console.error("Unable to save feature controls:", error)
+    console.error("Unable to save feature controls:", error);
 
     return {
       status: "error",
       message:
         "Feature controls could not be saved. Check the server log and try again.",
-    }
+    };
   }
 }

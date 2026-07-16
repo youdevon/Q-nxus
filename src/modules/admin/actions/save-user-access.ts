@@ -1,78 +1,78 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
-import { UserAccountStatus } from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
+import { UserAccountStatus } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
 export type UserAccessFormState = {
-  status: "idle" | "success" | "error" | "conflict"
-  message: string
-  errors?: Record<string, string>
-}
+  status: "idle" | "success" | "error" | "conflict";
+  message: string;
+  errors?: Record<string, string>;
+};
 
-const validStatuses = new Set<string>(
-  Object.values(UserAccountStatus),
-)
+const validStatuses = new Set<string>(Object.values(UserAccountStatus));
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
 export async function saveUserAccess(
   _previousState: UserAccessFormState,
   formData: FormData,
 ): Promise<UserAccessFormState> {
-  const actor = await requireActor("administration.view")
+  const actor = await requireActor(
+    "administration.manage",
+    "identity.user.update",
+  );
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const id = textValue(formData, "id")
-  const submittedVersion = Number(textValue(formData, "version"))
+  const id = textValue(formData, "id");
+  const submittedVersion = Number(textValue(formData, "version"));
 
-  const firstName = textValue(formData, "firstName")
-  const lastName = textValue(formData, "lastName")
-  const email = textValue(formData, "email").toLowerCase()
-  const status = textValue(formData, "status")
-  const isActive = formData.get("isActive") === "on"
-  const employeeIdValue = textValue(formData, "employeeId")
-  const employeeId =
-    employeeIdValue.length > 0 ? employeeIdValue : null
+  const firstName = textValue(formData, "firstName");
+  const lastName = textValue(formData, "lastName");
+  const email = textValue(formData, "email").toLowerCase();
+  const status = textValue(formData, "status");
+  const isActive = formData.get("isActive") === "on";
+  const employeeIdValue = textValue(formData, "employeeId");
+  const employeeId = employeeIdValue.length > 0 ? employeeIdValue : null;
 
-  const errors: Record<string, string> = {}
+  const errors: Record<string, string> = {};
 
   if (!id) {
-    errors.id = "The user could not be identified."
+    errors.id = "The user could not be identified.";
   }
 
   if (!Number.isInteger(submittedVersion) || submittedVersion < 1) {
-    errors.version = "The user record version is invalid."
+    errors.version = "The user record version is invalid.";
   }
 
   if (!firstName) {
-    errors.firstName = "First name is required."
+    errors.firstName = "First name is required.";
   }
 
   if (!lastName) {
-    errors.lastName = "Last name is required."
+    errors.lastName = "Last name is required.";
   }
 
   if (!email) {
-    errors.email = "Email address is required."
+    errors.email = "Email address is required.";
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = "Enter a valid email address."
+    errors.email = "Enter a valid email address.";
   }
 
   if (!validStatuses.has(status)) {
-    errors.status = "Select a valid account status."
+    errors.status = "Select a valid account status.";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -80,34 +80,30 @@ export async function saveUserAccess(
       status: "error",
       message: "Review the highlighted fields and try again.",
       errors,
-    }
+    };
   }
 
   try {
-    const requestHeaders = await headers()
-    const ipAddress =
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null
-    const userAgent = requestHeaders.get("user-agent")
+    const { ipAddress, userAgent, clientHostName } =
+      await getAuditRequestMetadata(formData);
 
     const result = await prisma.$transaction(async (transaction) => {
       const current = await transaction.user.findUnique({
         where: {
           id,
         },
-      })
+      });
 
       if (!current) {
         return {
           outcome: "missing" as const,
-        }
+        };
       }
 
       if (current.version !== submittedVersion) {
         return {
           outcome: "conflict" as const,
-        }
+        };
       }
 
       const duplicateEmail = await transaction.user.findFirst({
@@ -120,12 +116,12 @@ export async function saveUserAccess(
         select: {
           id: true,
         },
-      })
+      });
 
       if (duplicateEmail) {
         return {
           outcome: "duplicate-email" as const,
-        }
+        };
       }
 
       if (employeeId) {
@@ -143,18 +139,18 @@ export async function saveUserAccess(
               },
             },
           },
-        })
+        });
 
         if (!employee) {
           return {
             outcome: "invalid-employee" as const,
-          }
+          };
         }
 
         if (employee.user && employee.user.id !== id) {
           return {
             outcome: "employee-linked" as const,
-          }
+          };
         }
       }
 
@@ -171,34 +167,32 @@ export async function saveUserAccess(
           isActive,
           employeeId,
           lockedUntil:
-            status === UserAccountStatus.LOCKED
-              ? current.lockedUntil
-              : null,
+            status === UserAccountStatus.LOCKED ? current.lockedUntil : null,
           failedLoginAttempts:
             status === UserAccountStatus.ACTIVE
               ? 0
               : current.failedLoginAttempts,
           archivedAt:
             status === UserAccountStatus.ARCHIVED
-              ? current.archivedAt ?? new Date()
+              ? (current.archivedAt ?? new Date())
               : null,
           version: {
             increment: 1,
           },
         },
-      })
+      });
 
       if (updateResult.count !== 1) {
         return {
           outcome: "conflict" as const,
-        }
+        };
       }
 
       const updated = await transaction.user.findUniqueOrThrow({
         where: {
           id,
         },
-      })
+      });
 
       await transaction.auditEvent.create({
         data: {
@@ -232,19 +226,20 @@ export async function saveUserAccess(
           },
           ipAddress,
           userAgent,
+          clientHostName,
         },
-      })
+      });
 
       return {
         outcome: "updated" as const,
-      }
-    })
+      };
+    });
 
     if (result.outcome === "missing") {
       return {
         status: "error",
         message: "The user account no longer exists.",
-      }
+      };
     }
 
     if (result.outcome === "conflict") {
@@ -252,7 +247,7 @@ export async function saveUserAccess(
         status: "conflict",
         message:
           "This user account was updated elsewhere. Refresh the page before saving again.",
-      }
+      };
     }
 
     if (result.outcome === "duplicate-email") {
@@ -262,7 +257,7 @@ export async function saveUserAccess(
         errors: {
           email: "Enter a different email address.",
         },
-      }
+      };
     }
 
     if (result.outcome === "invalid-employee") {
@@ -272,35 +267,34 @@ export async function saveUserAccess(
         errors: {
           employeeId: "Select a valid employee.",
         },
-      }
+      };
     }
 
     if (result.outcome === "employee-linked") {
       return {
         status: "error",
-        message:
-          "That employee is already linked to another user account.",
+        message: "That employee is already linked to another user account.",
         errors: {
           employeeId: "Choose a different employee.",
         },
-      }
+      };
     }
 
-    revalidatePath("/administration/access")
-    revalidatePath(`/administration/access/users/${id}`)
-    revalidatePath("/leave")
+    revalidatePath("/administration/access");
+    revalidatePath(`/administration/access/users/${id}`);
+    revalidatePath("/leave");
 
     return {
       status: "success",
       message: "User account saved successfully.",
-    }
+    };
   } catch (error: unknown) {
-    console.error("Unable to save user account:", error)
+    console.error("Unable to save user account:", error);
 
     return {
       status: "error",
       message:
         "The user account could not be saved. Check the server log and try again.",
-    }
+    };
   }
 }

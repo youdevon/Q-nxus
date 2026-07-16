@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { AppHeader } from "@/src/components/layout/app-header"
-import { AppSidebar } from "@/src/components/layout/app-sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { AppHeader } from "@/src/components/layout/app-header";
+import { AppSidebar } from "@/src/components/layout/app-sidebar";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -18,5 +18,5 @@ export function AppShell({ children }: { children: ReactNode }) {
         </SidebarInset>
       </SidebarProvider>
     </TooltipProvider>
-  )
+  );
 }

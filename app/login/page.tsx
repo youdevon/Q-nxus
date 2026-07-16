@@ -1,22 +1,22 @@
-import type { Metadata } from "next"
-import { Suspense } from "react"
-import { redirect } from "next/navigation"
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
-import { appConfig } from "@/src/config/app.config"
-import { LoginForm } from "@/src/modules/auth/components/login-form"
-import { getCurrentUser } from "@/src/modules/auth/data/get-current-user"
+import { appConfig } from "@/src/config/app.config";
+import { LoginForm } from "@/src/modules/auth/components/login-form";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
 export const metadata: Metadata = {
   title: "Sign in",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function LoginPage() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser();
 
   if (user?.isActive) {
-    redirect("/")
+    redirect("/");
   }
 
   return (
@@ -36,5 +36,5 @@ export default async function LoginPage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

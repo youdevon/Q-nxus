@@ -1,16 +1,16 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
 
-import { DomainSettingsForm } from "@/src/modules/admin/components/domain-settings-form"
-import { getDomainSettings } from "@/src/modules/admin/data/get-domain-settings"
+import { DomainSettingsForm } from "@/src/modules/admin/components/domain-settings-form";
+import { getDomainSettings } from "@/src/modules/admin/data/get-domain-settings";
 
 export const metadata: Metadata = {
   title: "Edit Domain Settings",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function EditDomainSettingsPage() {
-  const settings = await getDomainSettings()
+  const settings = await getDomainSettings();
 
-  return <DomainSettingsForm settings={settings} />
+  return <DomainSettingsForm settings={settings} />;
 }

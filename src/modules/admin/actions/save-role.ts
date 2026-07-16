@@ -1,51 +1,51 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
+import { prisma } from "@/lib/prisma";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
 export type RoleFormState = {
-  status: "idle" | "success" | "error" | "conflict"
-  message: string
-  errors?: Record<string, string>
-  redirectTo?: string
-}
+  status: "idle" | "success" | "error" | "conflict";
+  message: string;
+  errors?: Record<string, string>;
+  redirectTo?: string;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function nullableText(
-  formData: FormData,
-  key: string,
-): string | null {
-  const value = textValue(formData, key)
-  return value.length > 0 ? value : null
+function nullableText(formData: FormData, key: string): string | null {
+  const value = textValue(formData, key);
+  return value.length > 0 ? value : null;
 }
 
 export async function saveRole(
   _previousState: RoleFormState,
   formData: FormData,
 ): Promise<RoleFormState> {
-  const actor = await requireActor("administration.view")
+  const actor = await requireActor(
+    "administration.manage",
+    "identity.role.manage",
+  );
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const id = textValue(formData, "id")
-  const submittedUpdatedAt = textValue(formData, "updatedAt")
+  const id = textValue(formData, "id");
+  const submittedUpdatedAt = textValue(formData, "updatedAt");
 
-  const code = textValue(formData, "code").toUpperCase()
-  const name = textValue(formData, "name")
-  const description = nullableText(formData, "description")
-  const isActive = formData.get("isActive") === "on"
+  const code = textValue(formData, "code").toUpperCase();
+  const name = textValue(formData, "name");
+  const description = nullableText(formData, "description");
+  const isActive = formData.get("isActive") === "on";
 
   const permissionIds = Array.from(
     new Set(
@@ -55,26 +55,24 @@ export async function saveRole(
         .map((value) => value.trim())
         .filter(Boolean),
     ),
-  )
+  );
 
-  const errors: Record<string, string> = {}
+  const errors: Record<string, string> = {};
 
   if (!code) {
-    errors.code = "Role code is required."
+    errors.code = "Role code is required.";
   } else if (!/^[A-Z0-9_.-]{2,50}$/.test(code)) {
-    errors.code =
-      "Use 2–50 letters, numbers, periods, hyphens or underscores."
+    errors.code = "Use 2–50 letters, numbers, periods, hyphens or underscores.";
   }
 
   if (!name) {
-    errors.name = "Role name is required."
+    errors.name = "Role name is required.";
   } else if (name.length > 120) {
-    errors.name = "Role name must not exceed 120 characters."
+    errors.name = "Role name must not exceed 120 characters.";
   }
 
   if (description && description.length > 1000) {
-    errors.description =
-      "Description must not exceed 1,000 characters."
+    errors.description = "Description must not exceed 1,000 characters.";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -82,7 +80,7 @@ export async function saveRole(
       status: "error",
       message: "Review the highlighted fields and try again.",
       errors,
-    }
+    };
   }
 
   try {
@@ -93,13 +91,13 @@ export async function saveRole(
       select: {
         id: true,
       },
-    })
+    });
 
     if (!organization) {
       return {
         status: "error",
         message: "No Organization is configured.",
-      }
+      };
     }
 
     const validPermissions = await prisma.permission.findMany({
@@ -113,22 +111,17 @@ export async function saveRole(
         id: true,
         code: true,
       },
-    })
+    });
 
     if (validPermissions.length !== permissionIds.length) {
       return {
         status: "error",
-        message:
-          "One or more selected permissions are no longer available.",
-      }
+        message: "One or more selected permissions are no longer available.",
+      };
     }
 
-    const requestHeaders = await headers()
-    const ipAddress =
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null
-    const userAgent = requestHeaders.get("user-agent")
+    const { ipAddress, userAgent, clientHostName } =
+      await getAuditRequestMetadata(formData);
 
     const result = await prisma.$transaction(async (transaction) => {
       const duplicate = await transaction.role.findFirst({
@@ -146,12 +139,12 @@ export async function saveRole(
         select: {
           id: true,
         },
-      })
+      });
 
       if (duplicate) {
         return {
           outcome: "duplicate" as const,
-        }
+        };
       }
 
       if (!id) {
@@ -164,7 +157,7 @@ export async function saveRole(
             isSystem: false,
             isActive,
           },
-        })
+        });
 
         if (validPermissions.length > 0) {
           await transaction.rolePermission.createMany({
@@ -172,7 +165,7 @@ export async function saveRole(
               roleId: created.id,
               permissionId: permission.id,
             })),
-          })
+          });
         }
 
         await transaction.auditEvent.create({
@@ -195,13 +188,14 @@ export async function saveRole(
             },
             ipAddress,
             userAgent,
+            clientHostName,
           },
-        })
+        });
 
         return {
           outcome: "created" as const,
           id: created.id,
-        }
+        };
       }
 
       const current = await transaction.role.findUnique({
@@ -219,12 +213,12 @@ export async function saveRole(
             },
           },
         },
-      })
+      });
 
       if (!current) {
         return {
           outcome: "missing" as const,
-        }
+        };
       }
 
       if (
@@ -233,7 +227,7 @@ export async function saveRole(
       ) {
         return {
           outcome: "conflict" as const,
-        }
+        };
       }
 
       if (
@@ -242,7 +236,7 @@ export async function saveRole(
       ) {
         return {
           outcome: "forbidden" as const,
-        }
+        };
       }
 
       const updateResult = await transaction.role.updateMany({
@@ -256,19 +250,19 @@ export async function saveRole(
           description,
           isActive,
         },
-      })
+      });
 
       if (updateResult.count !== 1) {
         return {
           outcome: "conflict" as const,
-        }
+        };
       }
 
       await transaction.rolePermission.deleteMany({
         where: {
           roleId: id,
         },
-      })
+      });
 
       if (validPermissions.length > 0) {
         await transaction.rolePermission.createMany({
@@ -276,14 +270,14 @@ export async function saveRole(
             roleId: id,
             permissionId: permission.id,
           })),
-        })
+        });
       }
 
       const updated = await transaction.role.findUniqueOrThrow({
         where: {
           id,
         },
-      })
+      });
 
       await transaction.auditEvent.create({
         data: {
@@ -309,20 +303,19 @@ export async function saveRole(
             description: updated.description,
             isSystem: updated.isSystem,
             isActive: updated.isActive,
-            permissions: validPermissions.map(
-              (permission) => permission.code,
-            ),
+            permissions: validPermissions.map((permission) => permission.code),
           },
           ipAddress,
           userAgent,
+          clientHostName,
         },
-      })
+      });
 
       return {
         outcome: "updated" as const,
         id: updated.id,
-      }
-    })
+      };
+    });
 
     if (result.outcome === "duplicate") {
       return {
@@ -331,22 +324,21 @@ export async function saveRole(
         errors: {
           code: "Choose a different role code.",
         },
-      }
+      };
     }
 
     if (result.outcome === "missing") {
       return {
         status: "error",
         message: "The role no longer exists.",
-      }
+      };
     }
 
     if (result.outcome === "forbidden") {
       return {
         status: "error",
-        message:
-          "This role does not belong to the current Organization.",
-      }
+        message: "This role does not belong to the current Organization.",
+      };
     }
 
     if (result.outcome === "conflict") {
@@ -354,11 +346,11 @@ export async function saveRole(
         status: "conflict",
         message:
           "This role was updated elsewhere. Refresh the page before saving again.",
-      }
+      };
     }
 
-    revalidatePath("/administration/access")
-    revalidatePath(`/administration/access/roles/${result.id}`)
+    revalidatePath("/administration/access");
+    revalidatePath(`/administration/access/roles/${result.id}`);
 
     return {
       status: "success",
@@ -367,14 +359,14 @@ export async function saveRole(
           ? "Role created successfully."
           : "Role updated successfully.",
       redirectTo: "/administration/access",
-    }
+    };
   } catch (error: unknown) {
-    console.error("Unable to save role:", error)
+    console.error("Unable to save role:", error);
 
     return {
       status: "error",
       message:
         "The role could not be saved. Check the server log and try again.",
-    }
+    };
   }
 }

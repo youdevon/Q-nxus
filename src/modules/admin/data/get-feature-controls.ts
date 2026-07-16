@@ -1,15 +1,15 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type FeatureControlRecord = {
-  id: string
-  featureCode: string
-  isEnabled: boolean
-  status: string
-  effectiveFrom: Date
-  effectiveUntil: Date | null
-  reason: string | null
-  updatedAt: Date
-}
+  id: string;
+  featureCode: string;
+  isEnabled: boolean;
+  status: string;
+  effectiveFrom: Date;
+  effectiveUntil: Date | null;
+  reason: string | null;
+  updatedAt: Date;
+};
 
 export async function getFeatureControls(): Promise<FeatureControlRecord[]> {
   const organization = await prisma.organization.findFirst({
@@ -19,10 +19,10 @@ export async function getFeatureControls(): Promise<FeatureControlRecord[]> {
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   return prisma.featureControl.findMany({
@@ -42,5 +42,5 @@ export async function getFeatureControls(): Promise<FeatureControlRecord[]> {
       reason: true,
       updatedAt: true,
     },
-  })
+  });
 }

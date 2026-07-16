@@ -1,41 +1,40 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { KeyRound } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { KeyRound } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { appConfig } from "@/src/config/app.config"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FieldError, FieldHint, FieldLabel } from "@/src/components/ui/field";
+import { appConfig } from "@/src/config/app.config";
+import { UI_TYPOGRAPHY } from "@/src/config/ui-typography";
 import {
   changePassword,
   type ChangePasswordFormState,
-} from "@/src/modules/auth/actions/change-password"
-import { logout } from "@/src/modules/auth/actions/login"
+} from "@/src/modules/auth/actions/change-password";
+import { logout } from "@/src/modules/auth/actions/login";
 
 const initialState: ChangePasswordFormState = {
   status: "idle",
   message: "",
-}
+};
 
-export function ChangePasswordForm({
-  forced = false,
-}: {
-  forced?: boolean
-}) {
-  const searchParams = useSearchParams()
-  const nextPath = searchParams.get("next") ?? "/"
-  const [state, action, pending] = useActionState(
-    changePassword,
-    initialState,
-  )
+export function ChangePasswordForm({ forced = false }: { forced?: boolean }) {
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next") ?? "/";
+  const [state, action, pending] = useActionState(changePassword, initialState);
 
   useEffect(() => {
     if (state.status === "error" && state.message) {
-      toast.error(state.message)
+      toast.error(state.message);
     }
-  }, [state])
+  }, [state]);
+
+  const cancelHref =
+    nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/";
 
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-6">
@@ -46,7 +45,7 @@ export function ChangePasswordForm({
           <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
             {appConfig.shortName}
           </p>
-          <h1 className="text-3xl font-semibold tracking-tight">
+          <h1 className={UI_TYPOGRAPHY.authHero}>
             {forced ? "Set a new password" : "Change password"}
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -62,14 +61,9 @@ export function ChangePasswordForm({
           </div>
         )}
 
-        <div className="space-y-4 border-y border-border py-6">
+        <div className="space-y-4">
           <div>
-            <label
-              htmlFor="currentPassword"
-              className="text-sm font-medium"
-            >
-              Current password
-            </label>
+            <FieldLabel htmlFor="currentPassword">Current password</FieldLabel>
             <Input
               id="currentPassword"
               name="currentPassword"
@@ -79,19 +73,12 @@ export function ChangePasswordForm({
               className="mt-2"
             />
             {state.fieldErrors?.currentPassword && (
-              <p className="mt-2 text-xs text-destructive">
-                {state.fieldErrors.currentPassword}
-              </p>
+              <FieldError>{state.fieldErrors.currentPassword}</FieldError>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="newPassword"
-              className="text-sm font-medium"
-            >
-              New password
-            </label>
+            <FieldLabel htmlFor="newPassword">New password</FieldLabel>
             <Input
               id="newPassword"
               name="newPassword"
@@ -102,23 +89,16 @@ export function ChangePasswordForm({
               className="mt-2"
             />
             {state.fieldErrors?.newPassword ? (
-              <p className="mt-2 text-xs text-destructive">
-                {state.fieldErrors.newPassword}
-              </p>
+              <FieldError>{state.fieldErrors.newPassword}</FieldError>
             ) : (
-              <p className="mt-2 text-xs text-muted-foreground">
-                At least 8 characters.
-              </p>
+              <FieldHint>At least 8 characters.</FieldHint>
             )}
           </div>
 
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="text-sm font-medium"
-            >
+            <FieldLabel htmlFor="confirmPassword">
               Confirm new password
-            </label>
+            </FieldLabel>
             <Input
               id="confirmPassword"
               name="confirmPassword"
@@ -129,9 +109,7 @@ export function ChangePasswordForm({
               className="mt-2"
             />
             {state.fieldErrors?.confirmPassword && (
-              <p className="mt-2 text-xs text-destructive">
-                {state.fieldErrors.confirmPassword}
-              </p>
+              <FieldError>{state.fieldErrors.confirmPassword}</FieldError>
             )}
           </div>
         </div>
@@ -142,7 +120,7 @@ export function ChangePasswordForm({
         </Button>
       </form>
 
-      {forced && (
+      {forced ? (
         <form action={logout} className="text-center">
           <Button
             type="submit"
@@ -152,7 +130,17 @@ export function ChangePasswordForm({
             Sign out
           </Button>
         </form>
+      ) : (
+        <div className="text-center">
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href={cancelHref} />}
+          >
+            Cancel
+          </Button>
+        </div>
       )}
     </div>
-  )
+  );
 }

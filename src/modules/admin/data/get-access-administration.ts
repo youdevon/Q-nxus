@@ -1,47 +1,47 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type AccessUserListItem = {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  status: string
-  isActive: boolean
-  lastLoginAt: Date | null
-  roleCount: number
-}
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  status: string;
+  isActive: boolean;
+  lastLoginAt: Date | null;
+  roleCount: number;
+};
 
 export type AccessRoleListItem = {
-  id: string
-  code: string
-  name: string
-  description: string | null
-  isSystem: boolean
-  isActive: boolean
-  updatedAt: Date
-  permissionCount: number
-  userCount: number
-}
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  isSystem: boolean;
+  isActive: boolean;
+  updatedAt: Date;
+  permissionCount: number;
+  userCount: number;
+};
 
 export type PermissionOption = {
-  id: string
-  code: string
-  name: string
-  description: string | null
-  moduleKey: string
-}
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  moduleKey: string;
+};
 
 export type RoleRecord = {
-  id: string
-  organizationId: string | null
-  code: string
-  name: string
-  description: string | null
-  isSystem: boolean
-  isActive: boolean
-  updatedAt: Date
-  permissionIds: string[]
-}
+  id: string;
+  organizationId: string | null;
+  code: string;
+  name: string;
+  description: string | null;
+  isSystem: boolean;
+  isActive: boolean;
+  updatedAt: Date;
+  permissionIds: string[];
+};
 
 async function getOrganizationId(): Promise<string | null> {
   const organization = await prisma.organization.findFirst({
@@ -51,24 +51,24 @@ async function getOrganizationId(): Promise<string | null> {
     select: {
       id: true,
     },
-  })
+  });
 
-  return organization?.id ?? null
+  return organization?.id ?? null;
 }
 
 export async function getAccessAdministration(): Promise<{
-  users: AccessUserListItem[]
-  roles: AccessRoleListItem[]
-  permissionCount: number
+  users: AccessUserListItem[];
+  roles: AccessRoleListItem[];
+  permissionCount: number;
 }> {
-  const organizationId = await getOrganizationId()
+  const organizationId = await getOrganizationId();
 
   if (!organizationId) {
     return {
       users: [],
       roles: [],
       permissionCount: 0,
-    }
+    };
   }
 
   const [users, roles, permissionCount] = await Promise.all([
@@ -141,7 +141,7 @@ export async function getAccessAdministration(): Promise<{
         isActive: true,
       },
     }),
-  ])
+  ]);
 
   return {
     users: users.map((user) => ({
@@ -168,7 +168,7 @@ export async function getAccessAdministration(): Promise<{
     })),
 
     permissionCount,
-  }
+  };
 }
 
 export async function getRole(id: string): Promise<RoleRecord | null> {
@@ -191,10 +191,10 @@ export async function getRole(id: string): Promise<RoleRecord | null> {
         },
       },
     },
-  })
+  });
 
   if (!role) {
-    return null
+    return null;
   }
 
   return {
@@ -209,12 +209,10 @@ export async function getRole(id: string): Promise<RoleRecord | null> {
     permissionIds: role.permissions.map(
       (permission) => permission.permissionId,
     ),
-  }
+  };
 }
 
-export async function getPermissionOptions(): Promise<
-  PermissionOption[]
-> {
+export async function getPermissionOptions(): Promise<PermissionOption[]> {
   return prisma.permission.findMany({
     where: {
       isActive: true,
@@ -234,39 +232,39 @@ export async function getPermissionOptions(): Promise<
       description: true,
       moduleKey: true,
     },
-  })
+  });
 }
 
 export type RoleProfileRecord = {
-  id: string
-  organizationId: string | null
-  code: string
-  name: string
-  description: string | null
-  isSystem: boolean
-  isActive: boolean
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  organizationId: string | null;
+  code: string;
+  name: string;
+  description: string | null;
+  isSystem: boolean;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
   permissions: {
-    id: string
-    code: string
-    name: string
-    description: string | null
-    moduleKey: string
-  }[]
+    id: string;
+    code: string;
+    name: string;
+    description: string | null;
+    moduleKey: string;
+  }[];
   assignments: {
-    id: string
-    status: string
-    effectiveFrom: Date
-    effectiveUntil: Date | null
+    id: string;
+    status: string;
+    effectiveFrom: Date;
+    effectiveUntil: Date | null;
     user: {
-      id: string
-      firstName: string
-      lastName: string
-      email: string
-    }
-  }[]
-}
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
+  }[];
+};
 
 export async function getRoleProfile(
   id: string,
@@ -323,10 +321,10 @@ export async function getRoleProfile(
         },
       },
     },
-  })
+  });
 
   if (!role) {
-    return null
+    return null;
   }
 
   return {
@@ -339,9 +337,7 @@ export async function getRoleProfile(
     isActive: role.isActive,
     createdAt: role.createdAt,
     updatedAt: role.updatedAt,
-    permissions: role.permissions.map(
-      (assignment) => assignment.permission,
-    ),
+    permissions: role.permissions.map((assignment) => assignment.permission),
     assignments: role.users,
-  }
+  };
 }

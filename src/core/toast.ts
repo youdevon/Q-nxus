@@ -1,4 +1,4 @@
-import { toast as sonnerToast } from "sonner"
+import { toast as sonnerToast } from "sonner";
 
 /**
  * Single entry point for transient toasts.
@@ -20,6 +20,6 @@ export const toast = {
     }),
   dismiss: sonnerToast.dismiss,
   message: sonnerToast,
-}
+};
 
-export { sonnerToast }
+export { sonnerToast };

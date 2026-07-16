@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react"
-import { useTheme } from "@wrksz/themes/client"
+import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
+import { useTheme } from "@wrksz/themes/client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 const themes = [
   { value: "light", label: "Light", icon: SunIcon },
   { value: "dark", label: "Dark", icon: MoonIcon },
   { value: "system", label: "System", icon: MonitorIcon },
-] as const
+] as const;
 
 export function ThemeSwitcher() {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -48,5 +48,5 @@ export function ThemeSwitcher() {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

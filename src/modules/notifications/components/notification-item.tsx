@@ -1,41 +1,42 @@
-"use client"
+"use client";
 
-import Link from "next/link"
+import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import {
-  formatModuleSourceLabel,
-  formatRelativeTime,
-} from "@/src/lib/format"
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { notificationSeverityBadgeVariant } from "@/src/config/ui-colors";
+import { formatModuleSourceLabel, formatRelativeTime } from "@/src/lib/format";
 import {
   severityAccentClass,
   severityIconMap,
-} from "@/src/modules/notifications/lib/severity-styles"
-import type { AppNotification } from "@/src/types/notifications"
+} from "@/src/modules/notifications/lib/severity-styles";
+import type { AppNotification } from "@/src/types/notifications";
 
 type NotificationItemProps = {
-  notification: AppNotification
-  onSelect?: (notification: AppNotification) => void
-}
+  notification: AppNotification;
+  onSelect?: (notification: AppNotification) => void;
+  /** When false, renders preview content only (parent handles interaction). */
+  interactive?: boolean;
+};
 
 export function NotificationItem({
   notification,
   onSelect,
+  interactive = true,
 }: NotificationItemProps) {
-  const Icon = severityIconMap[notification.severity]
+  const Icon = severityIconMap[notification.severity];
   const content = (
     <div
       className={cn(
         "flex gap-3 px-3 py-2.5 transition-colors",
         !notification.read && "bg-sky-500/6",
-        notification.href && "hover:bg-muted/70"
+        interactive && notification.href && "hover:bg-muted/70",
       )}
     >
       <div
         className={cn(
           "mt-0.5 shrink-0",
-          severityAccentClass[notification.severity]
+          severityAccentClass[notification.severity],
         )}
       >
         <Icon className="size-4" />
@@ -45,7 +46,7 @@ export function NotificationItem({
           <p
             className={cn(
               "min-w-0 flex-1 text-sm leading-snug",
-              notification.read ? "font-normal" : "font-semibold"
+              notification.read ? "font-normal" : "font-semibold",
             )}
           >
             {notification.title}
@@ -61,6 +62,12 @@ export function NotificationItem({
           {notification.message}
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-2">
+          <Badge
+            variant={notificationSeverityBadgeVariant(notification.severity)}
+            className="h-5 rounded-md font-normal capitalize"
+          >
+            {notification.severity}
+          </Badge>
           <Badge variant="outline" className="h-5 rounded-md font-normal">
             {formatModuleSourceLabel(notification.moduleSource)}
           </Badge>
@@ -70,7 +77,11 @@ export function NotificationItem({
         </div>
       </div>
     </div>
-  )
+  );
+
+  if (!interactive) {
+    return content;
+  }
 
   if (notification.href) {
     return (
@@ -81,7 +92,7 @@ export function NotificationItem({
       >
         {content}
       </Link>
-    )
+    );
   }
 
   return (
@@ -92,5 +103,5 @@ export function NotificationItem({
     >
       {content}
     </button>
-  )
+  );
 }

@@ -1,39 +1,39 @@
-"use server"
+"use server";
 
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { UserAccountStatus } from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { verifyPassword } from "@/src/modules/auth/lib/password"
+import { UserAccountStatus } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { verifyPassword } from "@/src/modules/auth/lib/password";
 import {
   clearSessionCookie,
   setSessionCookie,
-} from "@/src/modules/auth/lib/session-cookie"
+} from "@/src/modules/auth/lib/session-cookie";
 
 export type LoginFormState = {
-  status: "idle" | "error"
-  message: string
-}
+  status: "idle" | "error";
+  message: string;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
 export async function login(
   _previousState: LoginFormState,
   formData: FormData,
 ): Promise<LoginFormState> {
-  const email = textValue(formData, "email").toLowerCase()
-  const password = textValue(formData, "password")
-  const nextPath = textValue(formData, "next") || "/"
+  const email = textValue(formData, "email").toLowerCase();
+  const password = textValue(formData, "password");
+  const nextPath = textValue(formData, "next") || "/";
 
   if (!email || !password) {
     return {
       status: "error",
       message: "Enter your email and password.",
-    }
+    };
   }
 
   const user = await prisma.user.findUnique({
@@ -50,24 +50,20 @@ export async function login(
       failedLoginAttempts: true,
       mustChangePassword: true,
     },
-  })
+  });
 
   if (!user || !user.passwordHash) {
     return {
       status: "error",
       message: "Invalid email or password.",
-    }
+    };
   }
 
-  if (
-    user.lockedUntil &&
-    user.lockedUntil.getTime() > Date.now()
-  ) {
+  if (user.lockedUntil && user.lockedUntil.getTime() > Date.now()) {
     return {
       status: "error",
-      message:
-        "This account is temporarily locked. Try again later.",
-    }
+      message: "This account is temporarily locked. Try again later.",
+    };
   }
 
   if (
@@ -79,14 +75,14 @@ export async function login(
     return {
       status: "error",
       message: "This account is not allowed to sign in.",
-    }
+    };
   }
 
-  const valid = verifyPassword(password, user.passwordHash)
+  const valid = verifyPassword(password, user.passwordHash);
 
   if (!valid) {
-    const failedLoginAttempts = user.failedLoginAttempts + 1
-    const lockAccount = failedLoginAttempts >= 5
+    const failedLoginAttempts = user.failedLoginAttempts + 1;
+    const lockAccount = failedLoginAttempts >= 5;
 
     await prisma.user.update({
       where: {
@@ -94,18 +90,16 @@ export async function login(
       },
       data: {
         failedLoginAttempts,
-        lockedUntil: lockAccount
-          ? new Date(Date.now() + 15 * 60 * 1000)
-          : null,
+        lockedUntil: lockAccount ? new Date(Date.now() + 15 * 60 * 1000) : null,
       },
-    })
+    });
 
     return {
       status: "error",
       message: lockAccount
         ? "Too many failed attempts. The account is locked for 15 minutes."
         : "Invalid email or password.",
-    }
+    };
   }
 
   await prisma.user.update({
@@ -118,30 +112,26 @@ export async function login(
       lastLoginAt: new Date(),
       status: UserAccountStatus.ACTIVE,
     },
-  })
+  });
 
   await setSessionCookie(user.id, {
     mustChangePassword: user.mustChangePassword,
-  })
+  });
 
-  revalidatePath("/", "layout")
+  revalidatePath("/", "layout");
 
   const safeNext =
-    nextPath.startsWith("/") && !nextPath.startsWith("//")
-      ? nextPath
-      : "/"
+    nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/";
 
   if (user.mustChangePassword) {
-    redirect(
-      `/account/change-password?next=${encodeURIComponent(safeNext)}`,
-    )
+    redirect(`/account/change-password?next=${encodeURIComponent(safeNext)}`);
   }
 
-  redirect(safeNext)
+  redirect(safeNext);
 }
 
 export async function logout() {
-  await clearSessionCookie()
-  revalidatePath("/", "layout")
-  redirect("/login")
+  await clearSessionCookie();
+  revalidatePath("/", "layout");
+  redirect("/login");
 }

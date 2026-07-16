@@ -1,90 +1,79 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   CalendarDays,
   KeyRound,
   Mail,
   Pencil,
   ShieldCheck,
   UserRound,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
-import { getUserAccess } from "@/src/modules/admin/data/get-user-access"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import {
+  activeStateBadgeVariant,
+  recordStatusBadgeVariant,
+} from "@/src/config/ui-colors";
+import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
+import { getUserAccess } from "@/src/modules/admin/data/get-user-access";
 
 export const metadata: Metadata = {
   title: "User Account",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 type UserAccountPageProps = {
   params: Promise<{
-    id: string
-  }>
-}
+    id: string;
+  }>;
+};
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function dateTime(value: Date | null): string {
   if (!value) {
-    return "Not recorded"
+    return "Not recorded";
   }
 
-  return value
-    .toISOString()
-    .replace("T", " ")
-    .slice(0, 19)
+  return value.toISOString().replace("T", " ").slice(0, 19);
 }
 
 function dateOnly(value: Date | null): string {
-  return value ? value.toISOString().slice(0, 10) : "Open-ended"
+  return value ? value.toISOString().slice(0, 10) : "Open-ended";
 }
 
-function Detail({
-  labelText,
-  value,
-}: {
-  labelText: string
-  value: string
-}) {
+function Detail({ labelText, value }: { labelText: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-muted-foreground">
-        {labelText}
-      </p>
-      <p className="mt-1 whitespace-pre-wrap text-sm font-medium">
-        {value}
-      </p>
+      <p className="text-xs text-muted-foreground">{labelText}</p>
+      <p className="mt-1 whitespace-pre-wrap text-sm font-medium">{value}</p>
     </div>
-  )
+  );
 }
 
 export default async function UserAccountPage({
   params,
 }: UserAccountPageProps) {
-  const { id } = await params
-  const user = await getUserAccess(id)
+  const { id } = await params;
+  const user = await getUserAccess(id);
 
   if (!user) {
-    notFound()
+    notFound();
   }
 
   const activeAssignments = user.assignments.filter(
     (assignment) =>
-      assignment.status === "ACTIVE" ||
-      assignment.status === "PENDING",
-  )
+      assignment.status === "ACTIVE" || assignment.status === "PENDING",
+  );
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -93,23 +82,27 @@ export default async function UserAccountPage({
       <PageHeader
         title={`${user.firstName} ${user.lastName}`}
         description="User account, security status and role assignments."
+        backHref="/administration/access"
+        backLabel="Users and roles"
         actions={
           <div className="flex flex-wrap gap-2">
             <Button
               nativeButton={false}
               variant="outline"
-              render={<Link href="/administration/access" />}
+              render={
+                <Link
+                  href={`/administration/access/users/${user.id}/edit#reset-password`}
+                />
+              }
             >
-              <ArrowLeft />
-              Users and roles
+              <KeyRound />
+              Reset password
             </Button>
 
             <Button
               nativeButton={false}
               render={
-                <Link
-                  href={`/administration/access/users/${user.id}/edit`}
-                />
+                <Link href={`/administration/access/users/${user.id}/edit`} />
               }
             >
               <Pencil />
@@ -119,7 +112,7 @@ export default async function UserAccountPage({
         }
       />
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex size-14 items-center justify-center border border-border">
@@ -127,12 +120,10 @@ export default async function UserAccountPage({
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {user.firstName} {user.lastName}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {user.email}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
             </div>
           </div>
 
@@ -140,20 +131,18 @@ export default async function UserAccountPage({
             <Badge
               variant={
                 user.status === "ACTIVE" && user.isActive
-                  ? "default"
-                  : "secondary"
+                  ? "success"
+                  : recordStatusBadgeVariant(user.status)
               }
             >
               {label(user.status)}
             </Badge>
 
-            <Badge variant="outline">
+            <Badge variant={activeStateBadgeVariant(user.isActive)}>
               {user.isActive ? "Enabled" : "Disabled"}
             </Badge>
 
-            <Badge variant="outline">
-              Version {user.version}
-            </Badge>
+            <Badge variant="outline">Version {user.version}</Badge>
           </div>
         </div>
       </section>
@@ -166,23 +155,11 @@ export default async function UserAccountPage({
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
-          <Detail
-            labelText="First name"
-            value={user.firstName}
-          />
-          <Detail
-            labelText="Last name"
-            value={user.lastName}
-          />
-          <Detail
-            labelText="Email address"
-            value={user.email}
-          />
-          <Detail
-            labelText="Account status"
-            value={label(user.status)}
-          />
+        <div className="grid gap-6 md:grid-cols-2">
+          <Detail labelText="First name" value={user.firstName} />
+          <Detail labelText="Last name" value={user.lastName} />
+          <Detail labelText="Email address" value={user.email} />
+          <Detail labelText="Account status" value={label(user.status)} />
           <Detail
             labelText="Account enabled"
             value={user.isActive ? "Yes" : "No"}
@@ -202,23 +179,18 @@ export default async function UserAccountPage({
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
-          <Detail
-            labelText="Last login"
-            value={dateTime(user.lastLoginAt)}
-          />
+        <div className="grid gap-6 md:grid-cols-2">
+          <Detail labelText="Last login" value={dateTime(user.lastLoginAt)} />
           <Detail
             labelText="Failed login attempts"
             value={String(user.failedLoginAttempts)}
           />
+          <Detail labelText="Locked until" value={dateTime(user.lockedUntil)} />
           <Detail
-            labelText="Locked until"
-            value={dateTime(user.lockedUntil)}
+            labelText="Must change password"
+            value={user.mustChangePassword ? "Yes" : "No"}
           />
-          <Detail
-            labelText="Last updated"
-            value={dateTime(user.updatedAt)}
-          />
+          <Detail labelText="Last updated" value={dateTime(user.updatedAt)} />
         </div>
       </section>
 
@@ -237,38 +209,33 @@ export default async function UserAccountPage({
         </div>
 
         {user.assignments.length === 0 ? (
-          <p className="border-y border-border py-6 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No role assignments exist for this user.
           </p>
         ) : (
-          <div className="overflow-x-auto border-y border-border">
+          <div className="overflow-x-auto">
             <table className="w-full min-w-200 text-left text-sm">
               <thead className="border-b border-border text-xs text-muted-foreground">
                 <tr>
                   <th className="px-3 py-3 font-medium">Role</th>
                   <th className="px-3 py-3 font-medium">Status</th>
-                  <th className="px-3 py-3 font-medium">
-                    Effective from
-                  </th>
-                  <th className="px-3 py-3 font-medium">
-                    Effective until
-                  </th>
-                  <th className="px-3 py-3 font-medium">
-                    Assigned
-                  </th>
-                  <th className="px-3 py-3 font-medium">
-                    Reason
-                  </th>
+                  <th className="px-3 py-3 font-medium">Effective from</th>
+                  <th className="px-3 py-3 font-medium">Effective until</th>
+                  <th className="px-3 py-3 font-medium">Assigned</th>
+                  <th className="px-3 py-3 font-medium">Reason</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-border">
                 {user.assignments.map((assignment) => (
-                  <tr key={assignment.id}>
+                  <tr
+                    key={assignment.id}
+                    className="relative hover:bg-muted/30 focus-within:bg-muted/30"
+                  >
                     <td className="px-3 py-3">
                       <Link
                         href={`/administration/access/roles/${assignment.roleId}`}
-                        className="font-medium hover:underline"
+                        className="font-medium after:absolute after:inset-0 hover:underline focus-visible:outline-none"
                       >
                         {assignment.roleName}
                       </Link>
@@ -279,11 +246,7 @@ export default async function UserAccountPage({
 
                     <td className="px-3 py-3">
                       <Badge
-                        variant={
-                          assignment.status === "ACTIVE"
-                            ? "default"
-                            : "secondary"
-                        }
+                        variant={recordStatusBadgeVariant(assignment.status)}
                       >
                         {label(assignment.status)}
                       </Badge>
@@ -315,17 +278,14 @@ export default async function UserAccountPage({
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
         <p className="flex items-center gap-2 text-xs text-muted-foreground">
           <CalendarDays className="size-3.5" />
-          Role assignment and revocation controls are available only
-          after selecting Edit.
+          Role assignment and revocation controls are available only after
+          selecting Edit.
         </p>
 
         <Button
           nativeButton={false}
-          variant="outline"
           render={
-            <Link
-              href={`/administration/access/users/${user.id}/edit`}
-            />
+            <Link href={`/administration/access/users/${user.id}/edit`} />
           }
         >
           <Pencil />
@@ -333,5 +293,5 @@ export default async function UserAccountPage({
         </Button>
       </footer>
     </div>
-  )
+  );
 }

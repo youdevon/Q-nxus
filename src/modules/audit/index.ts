@@ -2,4 +2,4 @@
 export const auditModule = {
   id: "audit",
   name: "Audit",
-} as const
+} as const;

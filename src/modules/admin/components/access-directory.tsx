@@ -1,25 +1,25 @@
-import Link from "next/link"
-import {
-  KeyRound,
-  Plus,
-  ShieldCheck,
-  UserRound,
-} from "lucide-react"
+import Link from "next/link";
+import { KeyRound, Plus, ShieldCheck, UserRound } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "./administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import {
+  activeStateBadgeVariant,
+  recordStatusBadgeVariant,
+} from "@/src/config/ui-colors";
+import { AdministrationNav } from "./administration-nav";
 import type {
   AccessRoleListItem,
   AccessUserListItem,
-} from "@/src/modules/admin/data/get-access-administration"
+} from "@/src/modules/admin/data/get-access-administration";
 
 type AccessDirectoryProps = {
-  users: AccessUserListItem[]
-  roles: AccessRoleListItem[]
-  permissionCount: number
-}
+  users: AccessUserListItem[];
+  roles: AccessRoleListItem[];
+  permissionCount: number;
+};
 
 export function AccessDirectory({
   users,
@@ -28,12 +28,12 @@ export function AccessDirectory({
 }: AccessDirectoryProps) {
   const activeUsers = users.filter(
     (user) => user.isActive && user.status === "ACTIVE",
-  ).length
+  ).length;
 
-  const activeRoles = roles.filter((role) => role.isActive).length
+  const activeRoles = roles.filter((role) => role.isActive).length;
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <PageShell size="lg">
       <AdministrationNav />
 
       <PageHeader
@@ -58,11 +58,9 @@ export function AccessDirectory({
           Access summary
         </h2>
 
-        <div className="grid grid-cols-2 gap-x-8 gap-y-5 border-y border-border py-5 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-5 md:grid-cols-4">
           <div>
-            <p className="text-xs text-muted-foreground">
-              User accounts
-            </p>
+            <p className="text-xs text-muted-foreground">User accounts</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {users.length}
             </p>
@@ -72,9 +70,7 @@ export function AccessDirectory({
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Security roles
-            </p>
+            <p className="text-xs text-muted-foreground">Security roles</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {roles.length}
             </p>
@@ -84,9 +80,7 @@ export function AccessDirectory({
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Permissions
-            </p>
+            <p className="text-xs text-muted-foreground">Permissions</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {permissionCount}
             </p>
@@ -96,9 +90,7 @@ export function AccessDirectory({
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              System roles
-            </p>
+            <p className="text-xs text-muted-foreground">System roles</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {roles.filter((role) => role.isSystem).length}
             </p>
@@ -123,22 +115,18 @@ export function AccessDirectory({
         </div>
 
         {roles.length === 0 ? (
-          <div className="border-y border-border py-10 text-center">
+          <div className="py-10 text-center">
             <ShieldCheck className="mx-auto size-6 text-muted-foreground" />
-            <p className="mt-3 text-sm font-medium">
-              No roles configured
-            </p>
+            <p className="mt-3 text-sm font-medium">No roles configured</p>
           </div>
         ) : (
-          <div className="overflow-x-auto border-y border-border">
+          <div className="overflow-x-auto">
             <table className="w-full min-w-175 text-left text-sm">
               <thead className="border-b border-border text-xs text-muted-foreground">
                 <tr>
                   <th className="px-3 py-3 font-medium">Role</th>
                   <th className="px-3 py-3 font-medium">Type</th>
-                  <th className="px-3 py-3 font-medium">
-                    Permissions
-                  </th>
+                  <th className="px-3 py-3 font-medium">Permissions</th>
                   <th className="px-3 py-3 font-medium">Users</th>
                   <th className="px-3 py-3 font-medium">Status</th>
                 </tr>
@@ -146,11 +134,14 @@ export function AccessDirectory({
 
               <tbody className="divide-y divide-border">
                 {roles.map((role) => (
-                  <tr key={role.id} className="hover:bg-muted/30">
+                  <tr
+                    key={role.id}
+                    className="relative hover:bg-muted/30 focus-within:bg-muted/30"
+                  >
                     <td className="px-3 py-3">
                       <Link
                         href={`/administration/access/roles/${role.id}`}
-                        className="font-medium hover:underline"
+                        className="font-medium after:absolute after:inset-0 hover:underline focus-visible:outline-none"
                       >
                         {role.name}
                       </Link>
@@ -174,16 +165,10 @@ export function AccessDirectory({
                       {role.permissionCount}
                     </td>
 
-                    <td className="px-3 py-3 tabular-nums">
-                      {role.userCount}
-                    </td>
+                    <td className="px-3 py-3 tabular-nums">{role.userCount}</td>
 
                     <td className="px-3 py-3">
-                      <Badge
-                        variant={
-                          role.isActive ? "default" : "secondary"
-                        }
-                      >
+                      <Badge variant={activeStateBadgeVariant(role.isActive)}>
                         {role.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </td>
@@ -209,14 +194,14 @@ export function AccessDirectory({
         </div>
 
         {users.length === 0 ? (
-          <div className="border-y border-border py-10 text-center">
+          <div className="py-10 text-center">
             <UserRound className="mx-auto size-6 text-muted-foreground" />
             <p className="mt-3 text-sm font-medium">
               No user accounts configured
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto border-y border-border">
+          <div className="overflow-x-auto">
             <table className="w-full min-w-175 text-left text-sm">
               <thead className="border-b border-border text-xs text-muted-foreground">
                 <tr>
@@ -224,19 +209,20 @@ export function AccessDirectory({
                   <th className="px-3 py-3 font-medium">Email</th>
                   <th className="px-3 py-3 font-medium">Roles</th>
                   <th className="px-3 py-3 font-medium">Status</th>
-                  <th className="px-3 py-3 font-medium">
-                    Last login
-                  </th>
+                  <th className="px-3 py-3 font-medium">Last login</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y divide-border">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-muted/30">
+                  <tr
+                    key={user.id}
+                    className="relative hover:bg-muted/30 focus-within:bg-muted/30"
+                  >
                     <td className="px-3 py-3 font-medium">
                       <Link
                         href={`/administration/access/users/${user.id}`}
-                        className="hover:underline"
+                        className="after:absolute after:inset-0 hover:underline focus-visible:outline-none"
                       >
                         {user.firstName} {user.lastName}
                       </Link>
@@ -249,19 +235,16 @@ export function AccessDirectory({
                     <td className="px-3 py-3">
                       <span className="inline-flex items-center gap-1.5">
                         <KeyRound className="size-3.5 text-muted-foreground" />
-                        <span className="tabular-nums">
-                          {user.roleCount}
-                        </span>
+                        <span className="tabular-nums">{user.roleCount}</span>
                       </span>
                     </td>
 
                     <td className="px-3 py-3">
                       <Badge
                         variant={
-                          user.isActive &&
-                          user.status === "ACTIVE"
-                            ? "default"
-                            : "secondary"
+                          user.isActive && user.status === "ACTIVE"
+                            ? "success"
+                            : recordStatusBadgeVariant(user.status)
                         }
                       >
                         {user.status}
@@ -283,6 +266,6 @@ export function AccessDirectory({
           </div>
         )}
       </section>
-    </div>
-  )
+    </PageShell>
+  );
 }

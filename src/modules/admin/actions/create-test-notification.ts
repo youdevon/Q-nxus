@@ -1,16 +1,16 @@
-"use server"
+"use server";
 
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
-import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification"
+import { prisma } from "@/lib/prisma";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
 
 export async function createTestNotification(): Promise<void> {
-  const actor = await requireActor("administration.view")
+  const actor = await requireActor("administration.manage");
   if (!actor.ok) {
-    throw new Error(actor.message)
+    throw new Error(actor.message);
   }
 
   const user = await prisma.user.findUnique({
@@ -23,10 +23,10 @@ export async function createTestNotification(): Promise<void> {
       firstName: true,
       lastName: true,
     },
-  })
+  });
 
   if (!user) {
-    return
+    return;
   }
 
   await createSystemNotification({
@@ -47,16 +47,15 @@ export async function createTestNotification(): Promise<void> {
     ],
     email: {
       subject: "Q-NXUS notification test",
-      textBody:
-        "The Q-NXUS notification and SMTP service is working.",
+      textBody: "The Q-NXUS notification and SMTP service is working.",
       bodyHtml:
         "<p>The Q-NXUS notification and SMTP service is working.</p><p>Future leave requests, approval tasks and workflow alerts can use this shared service.</p>",
       actionLabel: "Open notifications",
       priority: "NORMAL",
     },
-  })
+  });
 
-  revalidatePath("/notifications")
+  revalidatePath("/notifications");
 
-  redirect("/notifications")
+  redirect("/notifications");
 }

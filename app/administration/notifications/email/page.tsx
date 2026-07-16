@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
 import {
   AlertTriangle,
   Bell,
@@ -6,34 +6,33 @@ import {
   Mail,
   RefreshCw,
   Server,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { createTestNotification } from "@/src/modules/admin/actions/create-test-notification"
-import { processSystemEmailQueue } from "@/src/modules/admin/actions/manage-system-email"
-import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
-import { SystemEmailTestForm } from "@/src/modules/admin/components/system-email-test-form"
-import { getEmailAdministrationData } from "@/src/modules/admin/data/get-email-administration"
+import { Badge } from "@/components/ui/badge";
+import { activeStateBadgeVariant } from "@/src/config/ui-colors";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { createTestNotification } from "@/src/modules/admin/actions/create-test-notification";
+import { processSystemEmailQueue } from "@/src/modules/admin/actions/manage-system-email";
+import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
+import { SystemEmailTestForm } from "@/src/modules/admin/components/system-email-test-form";
+import { getEmailAdministrationData } from "@/src/modules/admin/data/get-email-administration";
 
 export const metadata: Metadata = {
   title: "System Email",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) =>
-      character.toUpperCase(),
-    )
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export default async function SystemEmailPage() {
-  const data = await getEmailAdministrationData()
+  const data = await getEmailAdministrationData();
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -52,50 +51,32 @@ export default async function SystemEmailPage() {
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-5">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-5">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Pending
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {data.totals.pending}
-          </p>
+          <p className="text-xs text-muted-foreground">Pending</p>
+          <p className="mt-1 text-2xl font-semibold">{data.totals.pending}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Processing
-          </p>
+          <p className="text-xs text-muted-foreground">Processing</p>
           <p className="mt-1 text-2xl font-semibold">
             {data.totals.processing}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Sent
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {data.totals.sent}
-          </p>
+          <p className="text-xs text-muted-foreground">Sent</p>
+          <p className="mt-1 text-2xl font-semibold">{data.totals.sent}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Failed
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {data.totals.failed}
-          </p>
+          <p className="text-xs text-muted-foreground">Failed</p>
+          <p className="mt-1 text-2xl font-semibold">{data.totals.failed}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Cancelled
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {data.totals.cancelled}
-          </p>
+          <p className="text-xs text-muted-foreground">Cancelled</p>
+          <p className="mt-1 text-2xl font-semibold">{data.totals.cancelled}</p>
         </div>
       </section>
 
@@ -107,45 +88,28 @@ export default async function SystemEmailPage() {
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           <div>
-            <p className="text-xs text-muted-foreground">
-              Delivery
-            </p>
+            <p className="text-xs text-muted-foreground">Delivery</p>
             <div className="mt-2">
-              <Badge
-                variant={
-                  data.smtp.enabled
-                    ? "default"
-                    : "secondary"
-                }
-              >
-                {data.smtp.enabled
-                  ? "Enabled"
-                  : "Disabled"}
+              <Badge variant={activeStateBadgeVariant(data.smtp.enabled)}>
+                {data.smtp.enabled ? "Enabled" : "Disabled"}
               </Badge>
             </div>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              SMTP server
-            </p>
+            <p className="text-xs text-muted-foreground">SMTP server</p>
             <p className="mt-1 text-sm font-medium">
               {data.smtp.host || "Not configured"}
-              {data.smtp.host
-                ? `:${data.smtp.port}`
-                : ""}
+              {data.smtp.host ? `:${data.smtp.port}` : ""}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Sender
-            </p>
+            <p className="text-xs text-muted-foreground">Sender</p>
             <p className="mt-1 text-sm font-medium">
-              {data.smtp.fromEmail ||
-                "Not configured"}
+              {data.smtp.fromEmail || "Not configured"}
             </p>
           </div>
         </div>
@@ -158,11 +122,9 @@ export default async function SystemEmailPage() {
             </div>
 
             <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-              {data.smtp.configurationErrors.map(
-                (error) => (
-                  <p key={error}>{error}</p>
-                ),
-              )}
+              {data.smtp.configurationErrors.map((error) => (
+                <p key={error}>{error}</p>
+              ))}
             </div>
           </div>
         )}
@@ -176,7 +138,7 @@ export default async function SystemEmailPage() {
           </h2>
         </div>
 
-        <div className="border-y border-border py-6">
+        <div>
           <form action={createTestNotification}>
             <Button type="submit" variant="outline">
               <Bell />
@@ -194,7 +156,7 @@ export default async function SystemEmailPage() {
           </h2>
         </div>
 
-        <div className="border-y border-border py-6">
+        <div>
           <SystemEmailTestForm />
         </div>
       </section>
@@ -208,11 +170,11 @@ export default async function SystemEmailPage() {
         </div>
 
         {data.recent.length === 0 ? (
-          <p className="border-y border-border py-10 text-center text-sm text-muted-foreground">
+          <p className="py-10 text-center text-sm text-muted-foreground">
             No system emails have been queued.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {data.recent.map((delivery) => (
               <article
                 key={delivery.id}
@@ -220,16 +182,14 @@ export default async function SystemEmailPage() {
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium">
-                      {delivery.subject}
-                    </p>
+                    <p className="font-medium">{delivery.subject}</p>
 
                     <Badge
                       variant={
                         delivery.status === "SENT"
-                          ? "default"
+                          ? "success"
                           : delivery.status === "FAILED"
-                            ? "secondary"
+                            ? "destructive"
                             : "outline"
                       }
                     >
@@ -252,9 +212,7 @@ export default async function SystemEmailPage() {
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Attempts
-                  </p>
+                  <p className="text-xs text-muted-foreground">Attempts</p>
                   <p className="mt-1 text-sm font-medium">
                     {delivery.attemptCount} /{" "}
                     {delivery.maximumAttempts}
@@ -262,13 +220,9 @@ export default async function SystemEmailPage() {
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Created
-                  </p>
+                  <p className="text-xs text-muted-foreground">Created</p>
                   <p className="mt-1 text-sm font-medium">
-                    {new Date(
-                      delivery.createdAt,
-                    ).toLocaleString()}
+                    {new Date(delivery.createdAt).toLocaleString()}
                   </p>
                 </div>
               </article>
@@ -277,5 +231,5 @@ export default async function SystemEmailPage() {
         )}
       </section>
     </div>
-  )
+  );
 }

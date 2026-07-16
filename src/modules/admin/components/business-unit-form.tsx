@@ -1,85 +1,79 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { ArrowLeft, Save } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Save } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "./administration-nav"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { AdministrationNav } from "./administration-nav";
 import {
   saveBusinessUnit,
   type BusinessUnitFormState,
-} from "@/src/modules/admin/actions/save-business-unit"
+} from "@/src/modules/admin/actions/save-business-unit";
 import type {
   BusinessUnitOption,
   BusinessUnitRecord,
-} from "@/src/modules/admin/data/get-business-units"
+} from "@/src/modules/admin/data/get-business-units";
 
 type BusinessUnitFormProps = {
-  businessUnit?: BusinessUnitRecord | null
-  parentOptions: BusinessUnitOption[]
-}
+  businessUnit?: BusinessUnitRecord | null;
+  parentOptions: BusinessUnitOption[];
+};
 
 const initialState: BusinessUnitFormState = {
   status: "idle",
   message: "",
-}
+};
 
 function dateValue(value: Date | null | undefined): string {
-  return value ? value.toISOString().slice(0, 10) : ""
+  return value ? value.toISOString().slice(0, 10) : "";
 }
 
-function FieldError({
-  id,
-  message,
-}: {
-  id: string
-  message?: string
-}) {
+function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) {
-    return null
+    return null;
   }
 
   return (
     <p id={id} className="mt-1 text-xs text-destructive">
       {message}
     </p>
-  )
+  );
 }
 
 export function BusinessUnitForm({
   businessUnit,
   parentOptions,
 }: BusinessUnitFormProps) {
-  const router = useRouter()
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     saveBusinessUnit,
     initialState,
-  )
+  );
 
   useEffect(() => {
     if (state.status === "success") {
-      toast.success(state.message)
+      toast.success(state.message);
 
       if (state.redirectTo) {
-        router.push(state.redirectTo)
-        router.refresh()
+        router.push(state.redirectTo);
+        router.refresh();
       }
     }
 
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [router, state])
+  }, [router, state]);
 
   return (
     <form
@@ -98,22 +92,25 @@ export function BusinessUnitForm({
       <PageHeader
         title={businessUnit ? "Edit Business Unit" : "New Business Unit"}
         description="Manage operational groupings, reporting hierarchy and effective status."
+        backHref={
+          businessUnit
+            ? `/administration/business-units/${businessUnit.id}`
+            : "/administration/business-units"
+        }
+        backLabel={businessUnit ? "Business unit" : "Business units"}
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href={businessUnit ? `/administration/business-units/${businessUnit.id}` : "/administration/business-units"} />}
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions
+            cancelHref={
+              businessUnit
+                ? `/administration/business-units/${businessUnit.id}`
+                : "/administration/business-units"
+            }
+          >
             <Button type="submit" disabled={isPending}>
               <Save />
               {isPending ? "Saving…" : "Save Business Unit"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -122,7 +119,7 @@ export function BusinessUnitForm({
           role={state.status === "success" ? "status" : "alert"}
           className={
             state.status === "success"
-              ? "border-y border-border py-3 text-sm"
+              ? "text-sm"
               : "border-y border-destructive/40 bg-destructive/5 py-3 text-sm"
           }
         >
@@ -135,7 +132,7 @@ export function BusinessUnitForm({
           Business Unit details
         </h2>
 
-        <div className="grid gap-5 border-y border-border py-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
             <label htmlFor="name" className="text-sm font-medium">
               Business Unit name
@@ -183,10 +180,7 @@ export function BusinessUnitForm({
                 </option>
               ))}
             </select>
-            <FieldError
-              id="parent-error"
-              message={state.errors?.parentId}
-            />
+            <FieldError id="parent-error" message={state.errors?.parentId} />
           </div>
 
           <div>
@@ -230,7 +224,7 @@ export function BusinessUnitForm({
           Effective period
         </h2>
 
-        <div className="grid gap-5 border-y border-border py-5 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
             <label htmlFor="effectiveFrom" className="text-sm font-medium">
               Effective from
@@ -271,5 +265,5 @@ export function BusinessUnitForm({
         </div>
       </section>
     </form>
-  )
+  );
 }

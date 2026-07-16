@@ -1,76 +1,68 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import {
-  EyeOff,
-  Pencil,
-  Settings2,
-} from "lucide-react"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { EyeOff, Pencil, Settings2 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { recordStatusBadgeVariant } from "@/src/config/ui-colors";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
 import {
   getDomainSettings,
   type DomainSettingRecord,
-} from "@/src/modules/admin/data/get-domain-settings"
+} from "@/src/modules/admin/data/get-domain-settings";
 
 export const metadata: Metadata = {
   title: "Domain Settings",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function settingValue(
-  setting: DomainSettingRecord,
-): string {
+function settingValue(setting: DomainSettingRecord): string {
   if (setting.isSensitive) {
-    return "Sensitive value hidden"
+    return "Sensitive value hidden";
   }
 
-  if (
-    setting.value === null ||
-    typeof setting.value === "undefined"
-  ) {
-    return "Not configured"
+  if (setting.value === null || typeof setting.value === "undefined") {
+    return "Not configured";
   }
 
   if (setting.dataType === "BOOLEAN") {
-    return setting.value === true ? "Enabled" : "Disabled"
+    return setting.value === true ? "Enabled" : "Disabled";
   }
 
   if (setting.dataType === "JSON") {
-    return JSON.stringify(setting.value, null, 2)
+    return JSON.stringify(setting.value, null, 2);
   }
 
-  return String(setting.value)
+  return String(setting.value);
 }
 
 export default async function DomainSettingsPage() {
-  const settings = await getDomainSettings()
+  const settings = await getDomainSettings();
 
   const groupedSettings = settings.reduce<
     Record<string, DomainSettingRecord[]>
   >((groups, setting) => {
-    groups[setting.moduleKey] ??= []
-    groups[setting.moduleKey].push(setting)
-    return groups
-  }, {})
+    groups[setting.moduleKey] ??= [];
+    groups[setting.moduleKey].push(setting);
+    return groups;
+  }, {});
 
   const activeCount = settings.filter(
     (setting) => setting.status === "ACTIVE",
-  ).length
+  ).length;
 
   const sensitiveCount = settings.filter(
     (setting) => setting.isSensitive,
-  ).length
+  ).length;
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -90,38 +82,24 @@ export default async function DomainSettingsPage() {
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Total settings
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {settings.length}
-          </p>
+          <p className="text-xs text-muted-foreground">Total settings</p>
+          <p className="mt-1 text-2xl font-semibold">{settings.length}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Active
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {activeCount}
-          </p>
+          <p className="text-xs text-muted-foreground">Active</p>
+          <p className="mt-1 text-2xl font-semibold">{activeCount}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Sensitive
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {sensitiveCount}
-          </p>
+          <p className="text-xs text-muted-foreground">Sensitive</p>
+          <p className="mt-1 text-2xl font-semibold">{sensitiveCount}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Modules
-          </p>
+          <p className="text-xs text-muted-foreground">Modules</p>
           <p className="mt-1 text-2xl font-semibold">
             {Object.keys(groupedSettings).length}
           </p>
@@ -129,7 +107,7 @@ export default async function DomainSettingsPage() {
       </section>
 
       {settings.length === 0 ? (
-        <p className="border-y border-border py-8 text-center text-sm text-muted-foreground">
+        <p className="py-8 text-center text-sm text-muted-foreground">
           No domain settings are configured.
         </p>
       ) : (
@@ -144,7 +122,7 @@ export default async function DomainSettingsPage() {
                   </h2>
                 </div>
 
-                <div className="divide-y divide-border border-y border-border">
+                <div className="divide-y divide-border/70">
                   {moduleSettings.map((setting) => (
                     <article
                       key={setting.id}
@@ -152,20 +130,14 @@ export default async function DomainSettingsPage() {
                     >
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="font-medium">
-                            {setting.name}
-                          </h3>
+                          <h3 className="font-medium">{setting.name}</h3>
 
                           <Badge variant="outline">
                             {label(setting.dataType)}
                           </Badge>
 
                           <Badge
-                            variant={
-                              setting.status === "ACTIVE"
-                                ? "default"
-                                : "secondary"
-                            }
+                            variant={recordStatusBadgeVariant(setting.status)}
                           >
                             {label(setting.status)}
                           </Badge>
@@ -189,9 +161,7 @@ export default async function DomainSettingsPage() {
                         )}
 
                         <div className="mt-4">
-                          <p className="text-xs text-muted-foreground">
-                            Value
-                          </p>
+                          <p className="text-xs text-muted-foreground">Value</p>
 
                           <pre className="mt-1 whitespace-pre-wrap break-words font-sans text-sm font-medium">
                             {settingValue(setting)}
@@ -204,22 +174,17 @@ export default async function DomainSettingsPage() {
                           Effective period
                         </p>
                         <p className="mt-1 text-sm font-medium">
-                          {setting.effectiveFrom
-                            .toISOString()
-                            .slice(0, 10)}
+                          {setting.effectiveFrom.toISOString().slice(0, 10)}
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">
                           to{" "}
-                          {setting.effectiveUntil
-                            ?.toISOString()
-                            .slice(0, 10) ?? "No end date"}
+                          {setting.effectiveUntil?.toISOString().slice(0, 10) ??
+                            "No end date"}
                         </p>
                       </div>
 
                       <div>
-                        <p className="text-xs text-muted-foreground">
-                          Version
-                        </p>
+                        <p className="text-xs text-muted-foreground">Version</p>
                         <p className="mt-1 text-sm font-medium">
                           {setting.version}
                         </p>
@@ -245,8 +210,8 @@ export default async function DomainSettingsPage() {
 
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
         <p className="text-xs text-muted-foreground">
-          Sensitive values are hidden and settings remain read-only
-          until Edit is selected.
+          Sensitive values are hidden and settings remain read-only until Edit
+          is selected.
         </p>
 
         <Button
@@ -259,5 +224,5 @@ export default async function DomainSettingsPage() {
         </Button>
       </footer>
     </div>
-  )
+  );
 }

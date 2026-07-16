@@ -1,9 +1,7 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import Link from "next/link"
+import { useActionState, useEffect } from "react";
 import {
-  ArrowLeft,
   Braces,
   Calendar,
   CalendarClock,
@@ -11,86 +9,80 @@ import {
   Save,
   Settings2,
   ToggleLeft,
-} from "lucide-react"
-import { toast } from "sonner"
+} from "lucide-react";
+import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "./administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { AdministrationNav } from "./administration-nav";
 import {
   saveDomainSettings,
   type DomainSettingsFormState,
-} from "@/src/modules/admin/actions/save-domain-settings"
-import type { DomainSettingRecord } from "@/src/modules/admin/data/get-domain-settings"
+} from "@/src/modules/admin/actions/save-domain-settings";
+import type { DomainSettingRecord } from "@/src/modules/admin/data/get-domain-settings";
 
 type DomainSettingsFormProps = {
-  settings: DomainSettingRecord[]
-}
+  settings: DomainSettingRecord[];
+};
 
 const initialState: DomainSettingsFormState = {
   status: "idle",
   message: "",
-}
+};
 
 function dateValue(value: Date | null): string {
-  return value ? value.toISOString().slice(0, 10) : ""
+  return value ? value.toISOString().slice(0, 10) : "";
 }
 
 function settingValue(setting: DomainSettingRecord): string {
   if (setting.dataType === "JSON") {
-    return JSON.stringify(setting.value, null, 2)
+    return JSON.stringify(setting.value, null, 2);
   }
 
   if (setting.dataType === "DATE") {
-    return String(setting.value).slice(0, 10)
+    return String(setting.value).slice(0, 10);
   }
 
   if (setting.dataType === "DATETIME") {
-    const value = String(setting.value)
-    const parsed = new Date(value)
+    const value = String(setting.value);
+    const parsed = new Date(value);
 
     if (Number.isNaN(parsed.getTime())) {
-      return ""
+      return "";
     }
 
-    return parsed.toISOString().slice(0, 16)
+    return parsed.toISOString().slice(0, 16);
   }
 
-  if (
-    setting.value === null ||
-    typeof setting.value === "undefined"
-  ) {
-    return ""
+  if (setting.value === null || typeof setting.value === "undefined") {
+    return "";
   }
 
-  return String(setting.value)
+  return String(setting.value);
 }
 
 function dataTypeIcon(dataType: string) {
   switch (dataType) {
     case "BOOLEAN":
-      return ToggleLeft
+      return ToggleLeft;
     case "DATE":
-      return Calendar
+      return Calendar;
     case "DATETIME":
-      return CalendarClock
+      return CalendarClock;
     case "JSON":
-      return Braces
+      return Braces;
     default:
-      return Settings2
+      return Settings2;
   }
 }
 
-function SettingValueInput({
-  setting,
-}: {
-  setting: DomainSettingRecord
-}) {
-  const name = `value:${setting.id}`
-  const value = settingValue(setting)
+function SettingValueInput({ setting }: { setting: DomainSettingRecord }) {
+  const name = `value:${setting.id}`;
+  const value = settingValue(setting);
 
   if (setting.dataType === "BOOLEAN") {
     return (
@@ -103,15 +95,13 @@ function SettingValueInput({
         />
 
         <span>
-          <span className="block text-sm font-medium">
-            Enabled
-          </span>
+          <span className="block text-sm font-medium">Enabled</span>
           <span className="mt-0.5 block text-xs text-muted-foreground">
             Turn this setting on or off.
           </span>
         </span>
       </label>
-    )
+    );
   }
 
   if (setting.dataType === "JSON") {
@@ -123,7 +113,7 @@ function SettingValueInput({
         spellCheck={false}
         className="mt-2 font-mono text-xs"
       />
-    )
+    );
   }
 
   if (setting.dataType === "INTEGER") {
@@ -135,7 +125,7 @@ function SettingValueInput({
         defaultValue={value}
         className="mt-2"
       />
-    )
+    );
   }
 
   if (setting.dataType === "DECIMAL") {
@@ -147,18 +137,13 @@ function SettingValueInput({
         defaultValue={value}
         className="mt-2"
       />
-    )
+    );
   }
 
   if (setting.dataType === "DATE") {
     return (
-      <Input
-        name={name}
-        type="date"
-        defaultValue={value}
-        className="mt-2"
-      />
-    )
+      <Input name={name} type="date" defaultValue={value} className="mt-2" />
+    );
   }
 
   if (setting.dataType === "DATETIME") {
@@ -169,7 +154,7 @@ function SettingValueInput({
         defaultValue={value}
         className="mt-2"
       />
-    )
+    );
   }
 
   return (
@@ -180,38 +165,36 @@ function SettingValueInput({
       autoComplete="off"
       className="mt-2"
     />
-  )
+  );
 }
 
-export function DomainSettingsForm({
-  settings,
-}: DomainSettingsFormProps) {
+export function DomainSettingsForm({ settings }: DomainSettingsFormProps) {
   const [state, formAction, isPending] = useActionState(
     saveDomainSettings,
     initialState,
-  )
+  );
 
   useEffect(() => {
     if (state.status === "success") {
-      toast.success(state.message)
+      toast.success(state.message);
     }
 
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
   const groupedSettings = settings.reduce<
     Record<string, DomainSettingRecord[]>
   >((groups, setting) => {
-    groups[setting.moduleKey] ??= []
-    groups[setting.moduleKey].push(setting)
-    return groups
-  }, {})
+    groups[setting.moduleKey] ??= [];
+    groups[setting.moduleKey].push(setting);
+    return groups;
+  }, {});
 
   return (
     <form
@@ -223,22 +206,15 @@ export function DomainSettingsForm({
       <PageHeader
         title="Domain Settings"
         description="Manage shared Organization and module configuration values, effective dates and operational status."
+        backHref="/administration/settings"
+        backLabel="Settings"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href="/administration/settings" />}
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions cancelHref="/administration/settings">
             <Button type="submit" disabled={isPending}>
               <Save />
               {isPending ? "Saving…" : "Save settings"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -247,7 +223,7 @@ export function DomainSettingsForm({
           role={state.status === "success" ? "status" : "alert"}
           className={
             state.status === "success"
-              ? "border-y border-border py-3 text-sm"
+              ? "text-sm"
               : "border-y border-destructive/40 bg-destructive/5 py-3 text-sm"
           }
         >
@@ -263,55 +239,39 @@ export function DomainSettingsForm({
           Settings summary
         </h2>
 
-        <div className="grid grid-cols-2 gap-x-8 border-y border-border py-5 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-8 md:grid-cols-4">
           <div>
-            <p className="text-xs text-muted-foreground">
-              Total settings
-            </p>
+            <p className="text-xs text-muted-foreground">Total settings</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {settings.length}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Modules
-            </p>
+            <p className="text-xs text-muted-foreground">Modules</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {Object.keys(groupedSettings).length}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Active
-            </p>
+            <p className="text-xs text-muted-foreground">Active</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
-              {
-                settings.filter(
-                  (setting) => setting.status === "ACTIVE",
-                ).length
-              }
+              {settings.filter((setting) => setting.status === "ACTIVE").length}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Sensitive
-            </p>
+            <p className="text-xs text-muted-foreground">Sensitive</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
-              {
-                settings.filter(
-                  (setting) => setting.isSensitive,
-                ).length
-              }
+              {settings.filter((setting) => setting.isSensitive).length}
             </p>
           </div>
         </div>
       </section>
 
       {settings.length === 0 ? (
-        <p className="border-y border-border py-10 text-center text-sm text-muted-foreground">
+        <p className="py-10 text-center text-sm text-muted-foreground">
           No domain settings are configured.
         </p>
       ) : (
@@ -330,9 +290,9 @@ export function DomainSettingsForm({
                   </span>
                 </div>
 
-                <div className="divide-y divide-border border-y border-border">
+                <div className="divide-y divide-border/70">
                   {moduleSettings.map((setting) => {
-                    const Icon = dataTypeIcon(setting.dataType)
+                    const Icon = dataTypeIcon(setting.dataType);
 
                     return (
                       <article
@@ -354,13 +314,9 @@ export function DomainSettingsForm({
                           <div className="flex flex-wrap items-center gap-2">
                             <Icon className="size-4 text-muted-foreground" />
 
-                            <h3 className="font-medium">
-                              {setting.name}
-                            </h3>
+                            <h3 className="font-medium">{setting.name}</h3>
 
-                            <Badge variant="outline">
-                              {setting.dataType}
-                            </Badge>
+                            <Badge variant="outline">{setting.dataType}</Badge>
 
                             {setting.isSensitive && (
                               <Badge variant="secondary">
@@ -381,9 +337,7 @@ export function DomainSettingsForm({
                           )}
 
                           <div className="mt-4">
-                            <label className="text-sm font-medium">
-                              Value
-                            </label>
+                            <label className="text-sm font-medium">Value</label>
                             <SettingValueInput setting={setting} />
                           </div>
 
@@ -408,12 +362,8 @@ export function DomainSettingsForm({
                           >
                             <option value="DRAFT">Draft</option>
                             <option value="ACTIVE">Active</option>
-                            <option value="INACTIVE">
-                              Inactive
-                            </option>
-                            <option value="ARCHIVED">
-                              Archived
-                            </option>
+                            <option value="INACTIVE">Inactive</option>
+                            <option value="ARCHIVED">Archived</option>
                           </select>
                         </div>
 
@@ -429,9 +379,7 @@ export function DomainSettingsForm({
                             id={`effectiveFrom:${setting.id}`}
                             name={`effectiveFrom:${setting.id}`}
                             type="date"
-                            defaultValue={dateValue(
-                              setting.effectiveFrom,
-                            )}
+                            defaultValue={dateValue(setting.effectiveFrom)}
                             className="mt-2"
                           />
                         </div>
@@ -448,14 +396,12 @@ export function DomainSettingsForm({
                             id={`effectiveUntil:${setting.id}`}
                             name={`effectiveUntil:${setting.id}`}
                             type="date"
-                            defaultValue={dateValue(
-                              setting.effectiveUntil,
-                            )}
+                            defaultValue={dateValue(setting.effectiveUntil)}
                             className="mt-2"
                           />
                         </div>
                       </article>
-                    )
+                    );
                   })}
                 </div>
               </section>
@@ -471,5 +417,5 @@ export function DomainSettingsForm({
         </Button>
       </footer>
     </form>
-  )
+  );
 }

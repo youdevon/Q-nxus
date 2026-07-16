@@ -1,48 +1,48 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type AdministrationDashboardData = {
   organization: {
-    id: string
-    code: string
-    name: string
-    shortName: string | null
-    legalName: string | null
-    status: string
-    defaultTimeZone: string
-    defaultCurrency: string
-    defaultLanguage: string
-  } | null
+    id: string;
+    code: string;
+    name: string;
+    shortName: string | null;
+    legalName: string | null;
+    status: string;
+    defaultTimeZone: string;
+    defaultCurrency: string;
+    defaultLanguage: string;
+  } | null;
   counts: {
-    users: number
-    activeUsers: number
-    roles: number
-    locations: number
-    businessUnits: number
-    permissions: number
-    enabledFeatures: number
-    totalFeatures: number
-  }
+    users: number;
+    activeUsers: number;
+    roles: number;
+    locations: number;
+    businessUnits: number;
+    permissions: number;
+    enabledFeatures: number;
+    totalFeatures: number;
+  };
   moduleStatuses: Array<{
-    id: string
-    moduleKey: string
-    moduleName: string
-    health: string
-    message: string | null
-    checkedAt: Date
-  }>
+    id: string;
+    moduleKey: string;
+    moduleName: string;
+    health: string;
+    message: string | null;
+    checkedAt: Date;
+  }>;
   features: Array<{
-    id: string
-    featureCode: string
-    isEnabled: boolean
-    status: string
-  }>
+    id: string;
+    featureCode: string;
+    isEnabled: boolean;
+    status: string;
+  }>;
   readiness: Array<{
-    key: string
-    label: string
-    ready: boolean
-    detail: string
-  }>
-}
+    key: string;
+    label: string;
+    ready: boolean;
+    detail: string;
+  }>;
+};
 
 export async function getAdministrationDashboard(): Promise<AdministrationDashboardData> {
   const organization = await prisma.organization.findFirst({
@@ -60,7 +60,7 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
       defaultCurrency: true,
       defaultLanguage: true,
     },
-  })
+  });
 
   if (!organization) {
     return {
@@ -85,7 +85,7 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
           detail: "No Organization has been configured.",
         },
       ],
-    }
+    };
   }
 
   const [
@@ -185,7 +185,7 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
       },
     }),
     prisma.applicationSetting.count(),
-  ])
+  ]);
 
   const readiness = [
     {
@@ -251,7 +251,7 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
           ? "Application identity settings are available."
           : "Application settings have not been created.",
     },
-  ]
+  ];
 
   return {
     organization,
@@ -268,5 +268,5 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
     moduleStatuses,
     features,
     readiness,
-  }
+  };
 }

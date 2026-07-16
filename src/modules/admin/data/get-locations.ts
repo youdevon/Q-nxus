@@ -1,31 +1,31 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type LocationListItem = {
-  id: string
-  code: string
-  name: string
-  locationType: string
-  city: string | null
-  region: string | null
-  countryCode: string
-  timeZone: string
-  status: string
-  effectiveFrom: Date
-  effectiveUntil: Date | null
-  updatedAt: Date
-}
+  id: string;
+  code: string;
+  name: string;
+  locationType: string;
+  city: string | null;
+  region: string | null;
+  countryCode: string;
+  timeZone: string;
+  status: string;
+  effectiveFrom: Date;
+  effectiveUntil: Date | null;
+  updatedAt: Date;
+};
 
 export type LocationRecord = LocationListItem & {
-  organizationId: string
-  addressLine1: string | null
-  addressLine2: string | null
-  postalCode: string | null
-}
+  organizationId: string;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  postalCode: string | null;
+};
 
 export type LocationTypeOption = {
-  code: string
-  label: string
-}
+  code: string;
+  label: string;
+};
 
 export async function getLocations(): Promise<LocationListItem[]> {
   const organization = await prisma.organization.findFirst({
@@ -35,10 +35,10 @@ export async function getLocations(): Promise<LocationListItem[]> {
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   return prisma.location.findMany({
@@ -67,12 +67,10 @@ export async function getLocations(): Promise<LocationListItem[]> {
       effectiveUntil: true,
       updatedAt: true,
     },
-  })
+  });
 }
 
-export async function getLocation(
-  id: string,
-): Promise<LocationRecord | null> {
+export async function getLocation(id: string): Promise<LocationRecord | null> {
   return prisma.location.findUnique({
     where: {
       id,
@@ -95,7 +93,7 @@ export async function getLocation(
       effectiveUntil: true,
       updatedAt: true,
     },
-  })
+  });
 }
 
 export async function getLocationTypes(): Promise<LocationTypeOption[]> {
@@ -106,10 +104,10 @@ export async function getLocationTypes(): Promise<LocationTypeOption[]> {
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   const dataSet = await prisma.referenceDataSet.findFirst({
@@ -144,7 +142,7 @@ export async function getLocationTypes(): Promise<LocationTypeOption[]> {
         },
       },
     },
-  })
+  });
 
-  return dataSet?.values ?? []
+  return dataSet?.values ?? [];
 }

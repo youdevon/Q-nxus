@@ -1,40 +1,40 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   Building2,
   CalendarDays,
   Clock3,
   MapPin,
   Pencil,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { prisma } from "@/lib/prisma"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PageShell } from "@/src/components/layout/page-shell"
-import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { recordStatusBadgeVariant } from "@/src/config/ui-colors";
+import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
 
 export const metadata: Metadata = {
   title: "Location",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 type LocationPageProps = {
   params: Promise<{
-    id: string
-  }>
-}
+    id: string;
+  }>;
+};
 
 function Detail({
   label,
   value,
 }: {
-  label: string
-  value: string | null | undefined
+  label: string;
+  value: string | null | undefined;
 }) {
   return (
     <div>
@@ -43,20 +43,18 @@ function Detail({
         {value?.trim() || "Not provided"}
       </p>
     </div>
-  )
+  );
 }
 
 function formatStatus(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-export default async function LocationPage({
-  params,
-}: LocationPageProps) {
-  const { id } = await params
+export default async function LocationPage({ params }: LocationPageProps) {
+  const { id } = await params;
 
   const location = await prisma.location.findUnique({
     where: {
@@ -69,10 +67,10 @@ export default async function LocationPage({
         },
       },
     },
-  })
+  });
 
   if (!location) {
-    notFound()
+    notFound();
   }
 
   const fullAddress = [
@@ -84,7 +82,7 @@ export default async function LocationPage({
     location.countryCode,
   ]
     .filter(Boolean)
-    .join(", ")
+    .join(",");
 
   return (
     <PageShell>
@@ -93,33 +91,22 @@ export default async function LocationPage({
       <PageHeader
         title={location.name}
         description="Location profile and regional configuration."
+        backHref="/administration/locations"
+        backLabel="Locations"
         actions={
-          <>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href="/administration/locations" />}
-            >
-              <ArrowLeft />
-              Locations
-            </Button>
-
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href={`/administration/locations/${location.id}/edit`}
-                />
-              }
-            >
-              <Pencil />
-              Edit location
-            </Button>
-          </>
+          <Button
+            nativeButton={false}
+            render={
+              <Link href={`/administration/locations/${location.id}/edit`} />
+            }
+          >
+            <Pencil />
+            Edit location
+          </Button>
         }
       />
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex size-14 shrink-0 items-center justify-center border border-border">
@@ -127,7 +114,7 @@ export default async function LocationPage({
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {location.name}
               </h2>
 
@@ -141,13 +128,7 @@ export default async function LocationPage({
             </div>
           </div>
 
-          <Badge
-            variant={
-              location.status === "ACTIVE"
-                ? "default"
-                : "secondary"
-            }
-          >
+          <Badge variant={recordStatusBadgeVariant(location.status)}>
             {formatStatus(location.status)}
           </Badge>
         </div>
@@ -161,18 +142,12 @@ export default async function LocationPage({
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail label="Location name" value={location.name} />
           <Detail label="Location code" value={location.code} />
           <Detail label="Location type" value={location.locationType} />
-          <Detail
-            label="Organization"
-            value={location.organization.name}
-          />
-          <Detail
-            label="Status"
-            value={formatStatus(location.status)}
-          />
+          <Detail label="Organization" value={location.organization.name} />
+          <Detail label="Status" value={formatStatus(location.status)} />
           <Detail label="Time zone" value={location.timeZone} />
         </div>
       </section>
@@ -185,26 +160,14 @@ export default async function LocationPage({
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail label="Full address" value={fullAddress} />
-          <Detail
-            label="Address line 1"
-            value={location.addressLine1}
-          />
-          <Detail
-            label="Address line 2"
-            value={location.addressLine2}
-          />
+          <Detail label="Address line 1" value={location.addressLine1} />
+          <Detail label="Address line 2" value={location.addressLine2} />
           <Detail label="City" value={location.city} />
           <Detail label="Region" value={location.region} />
-          <Detail
-            label="Postal code"
-            value={location.postalCode}
-          />
-          <Detail
-            label="Country code"
-            value={location.countryCode}
-          />
+          <Detail label="Postal code" value={location.postalCode} />
+          <Detail label="Country code" value={location.countryCode} />
         </div>
       </section>
 
@@ -216,20 +179,17 @@ export default async function LocationPage({
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail
             label="Effective from"
-            value={location.effectiveFrom
-              .toISOString()
-              .slice(0, 10)}
+            value={location.effectiveFrom.toISOString().slice(0, 10)}
           />
 
           <Detail
             label="Effective until"
             value={
-              location.effectiveUntil
-                ?.toISOString()
-                .slice(0, 10) ?? "No end date"
+              location.effectiveUntil?.toISOString().slice(0, 10) ??
+              "No end date"
             }
           />
 
@@ -259,11 +219,8 @@ export default async function LocationPage({
 
         <Button
           nativeButton={false}
-          variant="outline"
           render={
-            <Link
-              href={`/administration/locations/${location.id}/edit`}
-            />
+            <Link href={`/administration/locations/${location.id}/edit`} />
           }
         >
           <Pencil />
@@ -271,5 +228,5 @@ export default async function LocationPage({
         </Button>
       </footer>
     </PageShell>
-  )
+  );
 }

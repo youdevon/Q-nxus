@@ -1,53 +1,49 @@
-"use server"
+"use server";
 
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { prisma } from "@/lib/prisma"
-import {
-  hashPassword,
-  verifyPassword,
-} from "@/src/modules/auth/lib/password"
-import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user"
-import { setSessionCookie } from "@/src/modules/auth/lib/session-cookie"
+import { prisma } from "@/lib/prisma";
+import { hashPassword, verifyPassword } from "@/src/modules/auth/lib/password";
+import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user";
+import { setSessionCookie } from "@/src/modules/auth/lib/session-cookie";
 
 export type ChangePasswordFormState = {
-  status: "idle" | "error" | "success"
-  message: string
-  fieldErrors?: Record<string, string>
-}
+  status: "idle" | "error" | "success";
+  message: string;
+  fieldErrors?: Record<string, string>;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value : "";
 }
 
 export async function changePassword(
   _previousState: ChangePasswordFormState,
   formData: FormData,
 ): Promise<ChangePasswordFormState> {
-  const user = await requireCurrentUser()
+  const user = await requireCurrentUser();
 
-  const currentPassword = textValue(formData, "currentPassword")
-  const newPassword = textValue(formData, "newPassword")
-  const confirmPassword = textValue(formData, "confirmPassword")
-  const nextPath = textValue(formData, "next").trim() || "/"
+  const currentPassword = textValue(formData, "currentPassword");
+  const newPassword = textValue(formData, "newPassword");
+  const confirmPassword = textValue(formData, "confirmPassword");
+  const nextPath = textValue(formData, "next").trim() || "/";
+  const mode = textValue(formData, "mode");
+  const inPlace = mode === "inplace";
 
-  const fieldErrors: Record<string, string> = {}
+  const fieldErrors: Record<string, string> = {};
 
   if (!currentPassword) {
-    fieldErrors.currentPassword =
-      "Enter your current password."
+    fieldErrors.currentPassword = "Enter your current password.";
   }
 
   if (newPassword.length < 8) {
-    fieldErrors.newPassword =
-      "New password must be at least 8 characters."
+    fieldErrors.newPassword = "New password must be at least 8 characters.";
   }
 
   if (newPassword !== confirmPassword) {
-    fieldErrors.confirmPassword =
-      "New password and confirmation do not match."
+    fieldErrors.confirmPassword = "New password and confirmation do not match.";
   }
 
   if (
@@ -56,7 +52,7 @@ export async function changePassword(
     newPassword === currentPassword
   ) {
     fieldErrors.newPassword =
-      "Choose a password that is different from your current one."
+      "Choose a password that is different from your current one.";
   }
 
   if (Object.keys(fieldErrors).length > 0) {
@@ -64,7 +60,7 @@ export async function changePassword(
       status: "error",
       message: "Review the highlighted password fields.",
       fieldErrors,
-    }
+    };
   }
 
   const account = await prisma.user.findUnique({
@@ -76,13 +72,13 @@ export async function changePassword(
       passwordHash: true,
       mustChangePassword: true,
     },
-  })
+  });
 
   if (!account?.passwordHash) {
     return {
       status: "error",
       message: "This account cannot change its password.",
-    }
+    };
   }
 
   if (!verifyPassword(currentPassword, account.passwordHash)) {
@@ -92,7 +88,7 @@ export async function changePassword(
       fieldErrors: {
         currentPassword: "Current password is incorrect.",
       },
-    }
+    };
   }
 
   await prisma.user.update({
@@ -105,17 +101,22 @@ export async function changePassword(
       failedLoginAttempts: 0,
       lockedUntil: null,
     },
-  })
+  });
 
   await setSessionCookie(account.id, {
     mustChangePassword: false,
-  })
-  revalidatePath("/", "layout")
+  });
+  revalidatePath("/", "layout");
+
+  if (inPlace) {
+    return {
+      status: "success",
+      message: "Your password has been updated.",
+    };
+  }
 
   const safeNext =
-    nextPath.startsWith("/") && !nextPath.startsWith("//")
-      ? nextPath
-      : "/"
+    nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/";
 
-  redirect(safeNext)
+  redirect(safeNext);
 }

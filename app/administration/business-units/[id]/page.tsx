@@ -1,45 +1,45 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   CalendarDays,
   Network,
   Pencil,
   UsersRound,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { prisma } from "@/lib/prisma"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { recordStatusBadgeVariant } from "@/src/config/ui-colors";
+import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
 
 export const metadata: Metadata = {
   title: "Business Unit",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 type BusinessUnitPageProps = {
   params: Promise<{
-    id: string
-  }>
-}
+    id: string;
+  }>;
+};
 
 function formatStatus(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function Detail({
   label,
   value,
 }: {
-  label: string
-  value: string | null | undefined
+  label: string;
+  value: string | null | undefined;
 }) {
   return (
     <div>
@@ -48,13 +48,13 @@ function Detail({
         {value?.trim() || "Not provided"}
       </p>
     </div>
-  )
+  );
 }
 
 export default async function BusinessUnitPage({
   params,
 }: BusinessUnitPageProps) {
-  const { id } = await params
+  const { id } = await params;
 
   const businessUnit = await prisma.businessUnit.findUnique({
     where: {
@@ -94,10 +94,10 @@ export default async function BusinessUnitPage({
         },
       },
     },
-  })
+  });
 
   if (!businessUnit) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -107,35 +107,24 @@ export default async function BusinessUnitPage({
       <PageHeader
         title={businessUnit.name}
         description="Business unit profile and hierarchy information."
+        backHref="/administration/business-units"
+        backLabel="Business units"
         actions={
-          <div className="flex flex-wrap gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link href="/administration/business-units" />
-              }
-            >
-              <ArrowLeft />
-              Business units
-            </Button>
-
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href={`/administration/business-units/${businessUnit.id}/edit`}
-                />
-              }
-            >
-              <Pencil />
-              Edit business unit
-            </Button>
-          </div>
+          <Button
+            nativeButton={false}
+            render={
+              <Link
+                href={`/administration/business-units/${businessUnit.id}/edit`}
+              />
+            }
+          >
+            <Pencil />
+            Edit business unit
+          </Button>
         }
       />
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex size-14 shrink-0 items-center justify-center border border-border">
@@ -143,7 +132,7 @@ export default async function BusinessUnitPage({
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {businessUnit.name}
               </h2>
 
@@ -157,13 +146,7 @@ export default async function BusinessUnitPage({
             </div>
           </div>
 
-          <Badge
-            variant={
-              businessUnit.status === "ACTIVE"
-                ? "default"
-                : "secondary"
-            }
-          >
+          <Badge variant={recordStatusBadgeVariant(businessUnit.status)}>
             {formatStatus(businessUnit.status)}
           </Badge>
         </div>
@@ -177,17 +160,11 @@ export default async function BusinessUnitPage({
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail label="Business unit name" value={businessUnit.name} />
           <Detail label="Business unit code" value={businessUnit.code} />
-          <Detail
-            label="Organization"
-            value={businessUnit.organization.name}
-          />
-          <Detail
-            label="Status"
-            value={formatStatus(businessUnit.status)}
-          />
+          <Detail label="Organization" value={businessUnit.organization.name} />
+          <Detail label="Status" value={formatStatus(businessUnit.status)} />
           <Detail
             label="Parent business unit"
             value={
@@ -196,10 +173,7 @@ export default async function BusinessUnitPage({
                 : "Top-level business unit"
             }
           />
-          <Detail
-            label="Description"
-            value={businessUnit.description}
-          />
+          <Detail label="Description" value={businessUnit.description} />
         </div>
       </section>
 
@@ -212,11 +186,11 @@ export default async function BusinessUnitPage({
         </div>
 
         {businessUnit.children.length === 0 ? (
-          <p className="border-y border-border py-6 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             This business unit has no child units.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {businessUnit.children.map((child) => (
               <Link
                 key={child.id}
@@ -224,21 +198,13 @@ export default async function BusinessUnitPage({
                 className="flex items-center justify-between gap-4 py-4 hover:bg-muted/20"
               >
                 <div>
-                  <p className="text-sm font-medium">
-                    {child.name}
-                  </p>
+                  <p className="text-sm font-medium">{child.name}</p>
                   <p className="mt-1 font-mono text-xs text-muted-foreground">
                     {child.code}
                   </p>
                 </div>
 
-                <Badge
-                  variant={
-                    child.status === "ACTIVE"
-                      ? "default"
-                      : "secondary"
-                  }
-                >
+                <Badge variant={recordStatusBadgeVariant(child.status)}>
                   {formatStatus(child.status)}
                 </Badge>
               </Link>
@@ -255,20 +221,17 @@ export default async function BusinessUnitPage({
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail
             label="Effective from"
-            value={businessUnit.effectiveFrom
-              .toISOString()
-              .slice(0, 10)}
+            value={businessUnit.effectiveFrom.toISOString().slice(0, 10)}
           />
 
           <Detail
             label="Effective until"
             value={
-              businessUnit.effectiveUntil
-                ?.toISOString()
-                .slice(0, 10) ?? "No end date"
+              businessUnit.effectiveUntil?.toISOString().slice(0, 10) ??
+              "No end date"
             }
           />
 
@@ -297,7 +260,6 @@ export default async function BusinessUnitPage({
 
         <Button
           nativeButton={false}
-          variant="outline"
           render={
             <Link
               href={`/administration/business-units/${businessUnit.id}/edit`}
@@ -309,5 +271,5 @@ export default async function BusinessUnitPage({
         </Button>
       </footer>
     </div>
-  )
+  );
 }

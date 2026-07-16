@@ -1,42 +1,39 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import { Send } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import { Send } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   sendSystemTestEmail,
   type SystemEmailActionState,
-} from "@/src/modules/admin/actions/manage-system-email"
+} from "@/src/modules/admin/actions/manage-system-email";
 
 const initialState: SystemEmailActionState = {
   status: "idle",
   message: "",
-}
+};
 
 export function SystemEmailTestForm() {
   const [state, action, pending] = useActionState(
     sendSystemTestEmail,
     initialState,
-  )
+  );
 
   useEffect(() => {
     if (state.status === "success") {
-      toast.success(state.message)
+      toast.success(state.message);
     }
 
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
-    <form
-      action={action}
-      className="flex flex-col gap-3 md:flex-row"
-    >
+    <form action={action} className="flex flex-col gap-3 md:flex-row">
       <Input
         name="recipientEmail"
         type="email"
@@ -49,5 +46,5 @@ export function SystemEmailTestForm() {
         {pending ? "Testing…" : "Send test email"}
       </Button>
     </form>
-  )
+  );
 }

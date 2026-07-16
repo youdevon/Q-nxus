@@ -1,0 +1,287 @@
+export function formatAuditLabel(value: string): string {
+  return value
+    .replaceAll(/[_-]+/g, "")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\s+/g, "")
+    .trim()
+    .toLowerCase()
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+const MODULE_LABELS: Record<string, string> = {
+  core: "Core",
+  hr: "HR",
+  payroll: "Payroll",
+  admin: "Admin",
+  administration: "Administration",
+  identity: "Identity",
+  notifications: "Notifications",
+  audit: "Audit",
+};
+
+const ACTION_LABELS: Record<string, string> = {
+  CREATE: "Created",
+  UPDATE: "Updated",
+  DELETE: "Deleted",
+  ASSIGN_ROLE: "Assigned role",
+  REVOKE_ROLE: "Revoked role",
+  RESET: "Reset",
+  APPROVE: "Approved",
+  REJECT: "Rejected",
+  SUBMIT: "Submitted",
+  REVIEW: "Reviewed",
+  ACKNOWLEDGE: "Acknowledged",
+  COMPLETE: "Completed",
+  CANCEL: "Cancelled",
+  CLOSE: "Closed",
+};
+
+const ENTITY_LABELS: Record<string, string> = {
+  Employee: "Employee",
+  EmploymentContract: "Employment contract",
+  EmployeeAssignment: "Employee assignment",
+  LeaveRequest: "Leave request",
+  LeaveType: "Leave type",
+  PerformanceAppraisal: "Performance appraisal",
+  Position: "Position",
+  Department: "Department",
+  Organization: "Organization",
+  BusinessUnit: "Business unit",
+  Location: "Location",
+  User: "User",
+  UserRole: "User role",
+  Role: "Role",
+  NumberingSequence: "Numbering sequence",
+  AllowanceCategory: "Allowance category",
+  FeatureFlag: "Feature flag",
+  ApplicationSetting: "Application setting",
+  DomainSetting: "Domain setting",
+  JobDescription: "Job description",
+  PositionJobDescription: "Job description",
+};
+
+const FIELD_LABELS: Record<string, string> = {
+  firstName: "First name",
+  lastName: "Last name",
+  middleName: "Middle name",
+  email: "Email",
+  phone: "Phone",
+  status: "Status",
+  isActive: "Active",
+  employmentType: "Employment type",
+  employmentStatus: "Employment status",
+  hireDate: "Hire date",
+  terminationDate: "Termination date",
+  employeeNumber: "Employee number",
+  departmentId: "Department",
+  positionId: "Position",
+  businessUnitId: "Business unit",
+  locationId: "Location",
+  roleId: "Role",
+  roleCode: "Role code",
+  userId: "User",
+  code: "Code",
+  name: "Name",
+  shortName: "Short name",
+  legalName: "Legal name",
+  website: "Website",
+  description: "Description",
+  defaultTimeZone: "Default time zone",
+  defaultCurrency: "Default currency",
+  defaultLanguage: "Default language",
+  dateFormat: "Date format",
+  firstDayOfWeek: "First day of week",
+  version: "Version",
+  effectiveFrom: "Effective from",
+  effectiveUntil: "Effective until",
+  reason: "Reason",
+  startDate: "Start date",
+  endDate: "End date",
+  baseSalary: "Base salary",
+  currency: "Currency",
+  sequenceCode: "Sequence code",
+  prefix: "Prefix",
+  nextNumber: "Next number",
+  padding: "Padding",
+  resetFrequency: "Reset frequency",
+  reportingToPositionId: "Reports to",
+  systemRoleCode: "System role",
+};
+
+export function formatAuditModule(moduleKey: string): string {
+  return MODULE_LABELS[moduleKey] ?? formatAuditLabel(moduleKey);
+}
+
+export function formatAuditAction(action: string): string {
+  return ACTION_LABELS[action] ?? formatAuditLabel(action);
+}
+
+export function formatAuditEntityType(entityType: string): string {
+  return ENTITY_LABELS[entityType] ?? formatAuditLabel(entityType);
+}
+
+export function formatAuditFieldLabel(field: string): string {
+  return FIELD_LABELS[field] ?? formatAuditLabel(field);
+}
+
+export function formatAuditHeadline(
+  action: string,
+  entityType: string,
+): string {
+  const actionLabel = formatAuditAction(action);
+  const entityLabel = formatAuditEntityType(entityType).toLowerCase();
+
+  if (
+    actionLabel.endsWith("ed") ||
+    actionLabel.endsWith("d") ||
+    actionLabel.includes("")
+  ) {
+    return `${actionLabel} ${entityLabel}`;
+  }
+
+  return `${actionLabel} ${entityLabel}`;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export function formatAuditDisplayValue(value: unknown): string {
+  if (value === null || typeof value === "undefined") {
+    return "—";
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? String(value) : "—";
+  }
+
+  if (typeof value === "string") {
+    if (!value) {
+      return "—";
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}T/.test(value)) {
+      const date = new Date(value);
+      if (!Number.isNaN(date.getTime())) {
+        return formatAuditDateTime(date);
+      }
+    }
+
+    if (/^[A-Z][A-Z0-9_]*$/.test(value) && value.includes("_")) {
+      return formatAuditLabel(value);
+    }
+
+    return value;
+  }
+
+  if (value instanceof Date) {
+    return formatAuditDateTime(value);
+  }
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return "None";
+    }
+
+    return value.map((item) => formatAuditDisplayValue(item)).join(",");
+  }
+
+  if (isPlainObject(value)) {
+    return JSON.stringify(value);
+  }
+
+  return String(value);
+}
+
+export function formatAuditDateTime(date: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+}
+
+/**
+ * Friendly device / browser label derived from a user-agent string.
+ */
+export function formatDeviceLabelFromUserAgent(
+  userAgent: string | null | undefined,
+): string | null {
+  if (!userAgent) {
+    return null;
+  }
+
+  const ua = userAgent;
+
+  let os = "Unknown OS";
+  if (/Windows NT/i.test(ua)) os = "Windows";
+  else if (/Mac OS X|Macintosh/i.test(ua)) os = "macOS";
+  else if (/Android/i.test(ua)) os = "Android";
+  else if (/iPhone|iPad|iPod/i.test(ua)) os = "iOS";
+  else if (/Linux/i.test(ua)) os = "Linux";
+  else if (/CrOS/i.test(ua)) os = "Chrome OS";
+
+  let browser = "Unknown browser";
+  if (/Edg\//i.test(ua)) browser = "Edge";
+  else if (/Chrome\//i.test(ua) && !/Chromium/i.test(ua)) browser = "Chrome";
+  else if (/Firefox\//i.test(ua)) browser = "Firefox";
+  else if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) browser = "Safari";
+  else if (/OPR\//i.test(ua) || /Opera/i.test(ua)) browser = "Opera";
+
+  return `${os} · ${browser}`;
+}
+
+export function formatWorkstationLabel(options: {
+  clientHostName?: string | null;
+  userAgent?: string | null;
+}): string | null {
+  const host = options.clientHostName?.trim();
+  const device = formatDeviceLabelFromUserAgent(options.userAgent);
+
+  if (host && device) {
+    return `${host} (${device})`;
+  }
+
+  return host || device || null;
+}
+
+export type AuditChangeRow = {
+  field: string;
+  label: string;
+  before: string;
+  after: string;
+  changed: boolean;
+};
+
+export function buildAuditChangeRows(
+  oldValues: unknown,
+  newValues: unknown,
+): AuditChangeRow[] {
+  const oldObject = isPlainObject(oldValues) ? oldValues : {};
+  const newObject = isPlainObject(newValues) ? newValues : {};
+  const keys = Array.from(
+    new Set([...Object.keys(oldObject), ...Object.keys(newObject)]),
+  ).sort((a, b) => a.localeCompare(b));
+
+  return keys.map((field) => {
+    const beforeRaw = oldObject[field];
+    const afterRaw = newObject[field];
+    const before = formatAuditDisplayValue(beforeRaw);
+    const after = formatAuditDisplayValue(afterRaw);
+
+    return {
+      field,
+      label: formatAuditFieldLabel(field),
+      before,
+      after,
+      changed: JSON.stringify(beforeRaw) !== JSON.stringify(afterRaw),
+    };
+  });
+}

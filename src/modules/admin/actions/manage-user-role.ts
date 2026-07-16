@@ -1,84 +1,76 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
-import { RoleAssignmentStatus } from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
+import { RoleAssignmentStatus } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
 export type RoleAssignmentState = {
-  status: "idle" | "success" | "error"
-  message: string
-  errors?: Record<string, string>
-}
+  status: "idle" | "success" | "error";
+  message: string;
+  errors?: Record<string, string>;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function nullableText(
-  formData: FormData,
-  key: string,
-): string | null {
-  const value = textValue(formData, key)
-  return value.length > 0 ? value : null
+function nullableText(formData: FormData, key: string): string | null {
+  const value = textValue(formData, key);
+  return value.length > 0 ? value : null;
 }
 
 function parseDate(value: string): Date | null {
   if (!value) {
-    return null
+    return null;
   }
 
-  const date = new Date(`${value}T00:00:00.000Z`)
-  return Number.isNaN(date.getTime()) ? null : date
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 export async function assignUserRole(
   _previousState: RoleAssignmentState,
   formData: FormData,
 ): Promise<RoleAssignmentState> {
-  const actor = await requireActor("administration.view")
+  const actor = await requireActor(
+    "administration.manage",
+    "identity.user.update",
+    "identity.role.manage",
+  );
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const userId = textValue(formData, "userId")
-  const roleId = textValue(formData, "roleId")
-  const reason = nullableText(formData, "reason")
-  const effectiveFrom = parseDate(
-    textValue(formData, "effectiveFrom"),
-  )
-  const effectiveUntil = parseDate(
-    textValue(formData, "effectiveUntil"),
-  )
+  const userId = textValue(formData, "userId");
+  const roleId = textValue(formData, "roleId");
+  const reason = nullableText(formData, "reason");
+  const effectiveFrom = parseDate(textValue(formData, "effectiveFrom"));
+  const effectiveUntil = parseDate(textValue(formData, "effectiveUntil"));
 
-  const errors: Record<string, string> = {}
+  const errors: Record<string, string> = {};
 
   if (!userId) {
-    errors.userId = "The user could not be identified."
+    errors.userId = "The user could not be identified.";
   }
 
   if (!roleId) {
-    errors.roleId = "Select a role."
+    errors.roleId = "Select a role.";
   }
 
   if (!effectiveFrom) {
-    errors.effectiveFrom = "Enter a valid effective-from date."
+    errors.effectiveFrom = "Enter a valid effective-from date.";
   }
 
-  if (
-    effectiveFrom &&
-    effectiveUntil &&
-    effectiveUntil < effectiveFrom
-  ) {
-    errors.effectiveUntil =
-      "Effective-until cannot be before effective-from."
+  if (effectiveFrom && effectiveUntil && effectiveUntil < effectiveFrom) {
+    errors.effectiveUntil = "Effective-until cannot be before effective-from.";
   }
 
   if (Object.keys(errors).length > 0) {
@@ -86,16 +78,12 @@ export async function assignUserRole(
       status: "error",
       message: "Review the role assignment details.",
       errors,
-    }
+    };
   }
 
   try {
-    const requestHeaders = await headers()
-    const ipAddress =
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null
-    const userAgent = requestHeaders.get("user-agent")
+    const { ipAddress, userAgent, clientHostName } =
+      await getAuditRequestMetadata(formData);
 
     const result = await prisma.$transaction(async (transaction) => {
       const user = await transaction.user.findUnique({
@@ -108,12 +96,12 @@ export async function assignUserRole(
           firstName: true,
           lastName: true,
         },
-      })
+      });
 
       if (!user) {
         return {
           outcome: "missing-user" as const,
-        }
+        };
       }
 
       const role = await transaction.role.findFirst({
@@ -129,12 +117,12 @@ export async function assignUserRole(
             },
           ],
         },
-      })
+      });
 
       if (!role) {
         return {
           outcome: "invalid-role" as const,
-        }
+        };
       }
 
       const duplicate = await transaction.userRole.findFirst({
@@ -142,21 +130,18 @@ export async function assignUserRole(
           userId,
           roleId,
           status: {
-            in: [
-              RoleAssignmentStatus.PENDING,
-              RoleAssignmentStatus.ACTIVE,
-            ],
+            in: [RoleAssignmentStatus.PENDING, RoleAssignmentStatus.ACTIVE],
           },
         },
         select: {
           id: true,
         },
-      })
+      });
 
       if (duplicate) {
         return {
           outcome: "duplicate" as const,
-        }
+        };
       }
 
       const assignment = await transaction.userRole.create({
@@ -168,7 +153,7 @@ export async function assignUserRole(
           effectiveUntil,
           reason,
         },
-      })
+      });
 
       await transaction.auditEvent.create({
         data: {
@@ -189,26 +174,27 @@ export async function assignUserRole(
           },
           ipAddress,
           userAgent,
+          clientHostName,
         },
-      })
+      });
 
       return {
         outcome: "assigned" as const,
-      }
-    })
+      };
+    });
 
     if (result.outcome === "missing-user") {
       return {
         status: "error",
         message: "The user account no longer exists.",
-      }
+      };
     }
 
     if (result.outcome === "invalid-role") {
       return {
         status: "error",
         message: "The selected role is unavailable.",
-      }
+      };
     }
 
     if (result.outcome === "duplicate") {
@@ -216,52 +202,49 @@ export async function assignUserRole(
         status: "error",
         message:
           "This user already has an active or pending assignment for that role.",
-      }
+      };
     }
 
-    revalidatePath("/administration/access")
-    revalidatePath(`/administration/access/users/${userId}`)
+    revalidatePath("/administration/access");
+    revalidatePath(`/administration/access/users/${userId}`);
 
     return {
       status: "success",
       message: "Role assigned successfully.",
-    }
+    };
   } catch (error: unknown) {
-    console.error("Unable to assign role:", error)
+    console.error("Unable to assign role:", error);
 
     return {
       status: "error",
       message:
         "The role could not be assigned. Check the server log and try again.",
-    }
+    };
   }
 }
 
-export async function revokeUserRole(
-  formData: FormData,
-): Promise<void> {
-  const actor = await requireActor("administration.view")
+export async function revokeUserRole(formData: FormData): Promise<void> {
+  const actor = await requireActor(
+    "administration.manage",
+    "identity.user.update",
+    "identity.role.manage",
+  );
 
   if (!actor.ok) {
-    throw new Error(actor.message)
+    throw new Error(actor.message);
   }
 
-  const assignmentId = textValue(formData, "assignmentId")
-  const userId = textValue(formData, "userId")
+  const assignmentId = textValue(formData, "assignmentId");
+  const userId = textValue(formData, "userId");
   const reason =
-    nullableText(formData, "revocationReason") ??
-    "Revoked by administrator."
+    nullableText(formData, "revocationReason") ?? "Revoked by administrator.";
 
   if (!assignmentId || !userId) {
-    return
+    return;
   }
 
-  const requestHeaders = await headers()
-  const ipAddress =
-    requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    requestHeaders.get("x-real-ip") ??
-    null
-  const userAgent = requestHeaders.get("user-agent")
+  const { ipAddress, userAgent, clientHostName } =
+    await getAuditRequestMetadata(formData);
 
   await prisma.$transaction(async (transaction) => {
     const current = await transaction.userRole.findUnique({
@@ -282,14 +265,14 @@ export async function revokeUserRole(
           },
         },
       },
-    })
+    });
 
     if (
       !current ||
       current.userId !== userId ||
       current.status === RoleAssignmentStatus.REVOKED
     ) {
-      return
+      return;
     }
 
     const updated = await transaction.userRole.update({
@@ -302,7 +285,7 @@ export async function revokeUserRole(
         effectiveUntil: current.effectiveUntil ?? new Date(),
         reason,
       },
-    })
+    });
 
     await transaction.auditEvent.create({
       data: {
@@ -326,10 +309,11 @@ export async function revokeUserRole(
         },
         ipAddress,
         userAgent,
+        clientHostName,
       },
-    })
-  })
+    });
+  });
 
-  revalidatePath("/administration/access")
-  revalidatePath(`/administration/access/users/${userId}`)
+  revalidatePath("/administration/access");
+  revalidatePath(`/administration/access/users/${userId}`);
 }

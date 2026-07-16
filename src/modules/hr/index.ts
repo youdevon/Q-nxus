@@ -2,4 +2,4 @@
 export const hrModule = {
   id: "hr",
   name: "Human Resources",
-} as const
+} as const;

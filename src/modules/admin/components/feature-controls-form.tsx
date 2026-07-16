@@ -1,66 +1,63 @@
-"use client"
+"use client";
 
-import { useActionState, useEffect } from "react"
-import Link from "next/link"
-import { ArrowLeft, Save, SlidersHorizontal } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect } from "react";
+import { Save, SlidersHorizontal } from "lucide-react";
+import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "./administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { activeStateBadgeVariant } from "@/src/config/ui-colors";
+import { AdministrationNav } from "./administration-nav";
 import {
   saveFeatureControls,
   type FeatureControlsFormState,
-} from "@/src/modules/admin/actions/save-feature-controls"
-import type { FeatureControlRecord } from "@/src/modules/admin/data/get-feature-controls"
+} from "@/src/modules/admin/actions/save-feature-controls";
+import type { FeatureControlRecord } from "@/src/modules/admin/data/get-feature-controls";
 
 type FeatureControlsFormProps = {
-  features: FeatureControlRecord[]
-}
+  features: FeatureControlRecord[];
+};
 
 const initialState: FeatureControlsFormState = {
   status: "idle",
   message: "",
-}
+};
 
 function formatFeatureName(value: string): string {
   return value
     .replaceAll("_", " ")
     .replaceAll("-", " ")
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function dateValue(value: Date | null): string {
-  return value ? value.toISOString().slice(0, 10) : ""
+  return value ? value.toISOString().slice(0, 10) : "";
 }
 
-export function FeatureControlsForm({
-  features,
-}: FeatureControlsFormProps) {
+export function FeatureControlsForm({ features }: FeatureControlsFormProps) {
   const [state, formAction, isPending] = useActionState(
     saveFeatureControls,
     initialState,
-  )
+  );
 
   useEffect(() => {
     if (state.status === "success") {
-      toast.success(state.message)
+      toast.success(state.message);
     }
 
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
-  const enabledCount = features.filter(
-    (feature) => feature.isEnabled,
-  ).length
+  const enabledCount = features.filter((feature) => feature.isEnabled).length;
 
   return (
     <form
@@ -72,22 +69,15 @@ export function FeatureControlsForm({
       <PageHeader
         title="Feature Controls"
         description="Enable or disable Organization features and manage their operational status and effective period."
+        backHref="/administration/features"
+        backLabel="Features"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href="/administration/features" />}
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions cancelHref="/administration/features">
             <Button type="submit" disabled={isPending}>
               <Save />
               {isPending ? "Saving…" : "Save feature controls"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -99,29 +89,23 @@ export function FeatureControlsForm({
           Feature summary
         </h2>
 
-        <div className="grid grid-cols-2 gap-x-8 border-y border-border py-5 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-8 md:grid-cols-3">
           <div>
-            <p className="text-xs text-muted-foreground">
-              Total features
-            </p>
+            <p className="text-xs text-muted-foreground">Total features</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {features.length}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Enabled
-            </p>
+            <p className="text-xs text-muted-foreground">Enabled</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {enabledCount}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Disabled
-            </p>
+            <p className="text-xs text-muted-foreground">Disabled</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {features.length - enabledCount}
             </p>
@@ -134,7 +118,7 @@ export function FeatureControlsForm({
           role={state.status === "success" ? "status" : "alert"}
           className={
             state.status === "success"
-              ? "border-y border-border py-3 text-sm"
+              ? "text-sm"
               : "border-y border-destructive/40 bg-destructive/5 py-3 text-sm"
           }
         >
@@ -154,21 +138,17 @@ export function FeatureControlsForm({
         </div>
 
         {features.length === 0 ? (
-          <p className="border-y border-border py-8 text-center text-sm text-muted-foreground">
+          <p className="py-8 text-center text-sm text-muted-foreground">
             No feature controls are configured.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {features.map((feature) => (
               <article
                 key={feature.id}
                 className="grid gap-5 py-5 lg:grid-cols-[1fr_10rem_11rem_11rem]"
               >
-                <input
-                  type="hidden"
-                  name="featureIds"
-                  value={feature.id}
-                />
+                <input type="hidden" name="featureIds" value={feature.id} />
                 <input
                   type="hidden"
                   name={`updatedAt:${feature.id}`}
@@ -181,11 +161,7 @@ export function FeatureControlsForm({
                       {formatFeatureName(feature.featureCode)}
                     </h3>
 
-                    <Badge
-                      variant={
-                        feature.isEnabled ? "default" : "secondary"
-                      }
-                    >
+                    <Badge variant={activeStateBadgeVariant(feature.isEnabled)}>
                       {feature.isEnabled ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
@@ -207,8 +183,7 @@ export function FeatureControlsForm({
                         Feature enabled
                       </span>
                       <span className="mt-0.5 block text-xs text-muted-foreground">
-                        Allows the Organization to use this platform
-                        capability.
+                        Allows the Organization to use this platform capability.
                       </span>
                     </span>
                   </label>
@@ -294,5 +269,5 @@ export function FeatureControlsForm({
         </Button>
       </footer>
     </form>
-  )
+  );
 }

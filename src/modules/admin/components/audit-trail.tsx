@@ -1,84 +1,190 @@
-import Link from "next/link"
+import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
   FileClock,
-  Search,
+  Monitor,
   ShieldCheck,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { AdministrationNav } from "./administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  ListSearchFilters,
+  type ActiveFilterChip,
+} from "@/src/components/list-search-filters";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { SectionHeading } from "@/src/components/ui/section-heading";
+import {
+  buildAuditChangeRows,
+  formatAuditAction,
+  formatAuditDateTime,
+  formatAuditEntityType,
+  formatAuditHeadline,
+  formatAuditModule,
+  formatWorkstationLabel,
+} from "@/src/lib/audit-display";
+import { buildListFilterUrl } from "@/src/lib/list-filter-url";
+import { AdministrationNav } from "./administration-nav";
 import type {
   AuditFilters,
   AuditTrailData,
-} from "@/src/modules/admin/data/get-audit-events"
+} from "@/src/modules/admin/data/get-audit-events";
 
 type AuditTrailProps = {
-  data: AuditTrailData
-  currentFilters: AuditFilters
-}
+  data: AuditTrailData;
+  currentFilters: AuditFilters;
+};
 
-function formatValue(value: unknown): string {
-  if (value === null || typeof value === "undefined") {
-    return "No data"
-  }
-
-  return JSON.stringify(value, null, 2)
-}
-
-function formatLabel(value: string): string {
-  return value
-    .replaceAll("_", " ")
-    .replace(/([a-z])([A-Z])/g, "$1 $2")
-    .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
-}
-
-function buildPageUrl(
-  filters: AuditFilters,
-  page: number,
-): string {
-  const params = new URLSearchParams()
-
-  if (filters.query) {
-    params.set("query", filters.query)
-  }
+function buildFilterChips(filters: AuditFilters): ActiveFilterChip[] {
+  const chips: ActiveFilterChip[] = [];
 
   if (filters.moduleKey) {
-    params.set("moduleKey", filters.moduleKey)
+    chips.push({
+      key: "moduleKey",
+      value: filters.moduleKey,
+      label: `Module: ${formatAuditModule(filters.moduleKey)}`,
+    });
   }
 
   if (filters.action) {
-    params.set("action", filters.action)
+    chips.push({
+      key: "action",
+      value: filters.action,
+      label: `Action: ${formatAuditAction(filters.action)}`,
+    });
   }
 
   if (filters.entityType) {
-    params.set("entityType", filters.entityType)
+    chips.push({
+      key: "entityType",
+      value: filters.entityType,
+      label: `Entity: ${formatAuditEntityType(filters.entityType)}`,
+    });
   }
 
   if (filters.dateFrom) {
-    params.set("dateFrom", filters.dateFrom)
+    chips.push({
+      key: "dateFrom",
+      value: filters.dateFrom,
+      label: `From: ${filters.dateFrom}`,
+    });
   }
 
   if (filters.dateTo) {
-    params.set("dateTo", filters.dateTo)
+    chips.push({
+      key: "dateTo",
+      value: filters.dateTo,
+      label: `To: ${filters.dateTo}`,
+    });
   }
 
-  params.set("page", String(page))
-
-  return `/administration/audit?${params.toString()}`
+  return chips;
 }
 
-export function AuditTrail({
-  data,
-  currentFilters,
-}: AuditTrailProps) {
+function ActorLine({
+  user,
+}: {
+  user: AuditTrailData["events"][number]["user"];
+}) {
+  if (!user) {
+    return (
+      <p className="mt-1 text-sm text-muted-foreground">
+        System or unknown user
+      </p>
+    );
+  }
+
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+    <p className="mt-1 text-sm text-muted-foreground">
+      <span className="font-medium text-foreground">
+        {user.firstName} {user.lastName}
+      </span>
+      <span className="text-muted-foreground"> · {user.email}</span>
+    </p>
+  );
+}
+
+function ChangeSummary({
+  oldValues,
+  newValues,
+}: {
+  oldValues: unknown;
+  newValues: unknown;
+}) {
+  const rows = buildAuditChangeRows(oldValues, newValues);
+  const changed = rows.filter((row) => row.changed);
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const summaryRows = changed.length > 0 ? changed : rows;
+
+  return (
+    <details className="mt-4 border-t border-border pt-4">
+      <summary className="cursor-pointer text-sm font-medium">
+        {changed.length > 0
+          ? `${changed.length} change${changed.length === 1 ? "" : "s"} recorded`
+          : "View recorded values"}
+      </summary>
+
+      <div className="mt-4 overflow-x-auto">
+        <table className="w-full min-w-[28rem] text-left text-sm">
+          <thead>
+            <tr className="border-b border-border text-xs tracking-wide text-muted-foreground uppercase">
+              <th className="py-2 pr-4 font-medium">Field</th>
+              <th className="py-2 pr-4 font-medium">Previous</th>
+              <th className="py-2 font-medium">New</th>
+            </tr>
+          </thead>
+          <tbody>
+            {summaryRows.map((row) => (
+              <tr
+                key={row.field}
+                className="border-b border-border/70 align-top"
+              >
+                <td className="py-2.5 pr-4 font-medium">{row.label}</td>
+                <td className="py-2.5 pr-4 text-muted-foreground">
+                  {row.before}
+                </td>
+                <td className="py-2.5">{row.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <details className="mt-4">
+        <summary className="cursor-pointer text-xs text-muted-foreground">
+          Technical JSON
+        </summary>
+        <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          <pre className="max-h-64 overflow-auto border border-border bg-muted/30 p-3 text-[11px] leading-relaxed">
+            {JSON.stringify(oldValues ?? null, null, 2)}
+          </pre>
+          <pre className="max-h-64 overflow-auto border border-border bg-muted/30 p-3 text-[11px] leading-relaxed">
+            {JSON.stringify(newValues ?? null, null, 2)}
+          </pre>
+        </div>
+      </details>
+    </details>
+  );
+}
+
+export function AuditTrail({ data, currentFilters }: AuditTrailProps) {
+  const filterValues = {
+    query: currentFilters.query,
+    moduleKey: currentFilters.moduleKey,
+    action: currentFilters.action,
+    entityType: currentFilters.entityType,
+    dateFrom: currentFilters.dateFrom,
+    dateTo: currentFilters.dateTo,
+  };
+
+  return (
+    <PageShell size="lg">
       <AdministrationNav />
 
       <PageHeader
@@ -87,45 +193,34 @@ export function AuditTrail({
       />
 
       <section aria-labelledby="audit-summary-heading">
-        <h2
-          id="audit-summary-heading"
-          className="mb-3 text-sm font-semibold tracking-wide uppercase"
-        >
+        <SectionHeading id="audit-summary-heading" className="mb-3">
           Audit summary
-        </h2>
+        </SectionHeading>
 
-        <div className="grid grid-cols-2 gap-x-8 gap-y-5 border-y border-border py-5 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-5 md:grid-cols-4">
           <div>
-            <p className="text-xs text-muted-foreground">
-              Matching events
-            </p>
+            <p className="text-xs text-muted-foreground">Matching events</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {data.total}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Modules recorded
-            </p>
+            <p className="text-xs text-muted-foreground">Modules recorded</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {data.filters.modules.length}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Action types
-            </p>
+            <p className="text-xs text-muted-foreground">Action types</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {data.filters.actions.length}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Current page
-            </p>
+            <p className="text-xs text-muted-foreground">Current page</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums">
               {data.page}/{data.totalPages}
             </p>
@@ -133,150 +228,62 @@ export function AuditTrail({
         </div>
       </section>
 
-      <section aria-labelledby="audit-filters-heading">
-        <div className="mb-3 flex items-center gap-2">
-          <Search className="size-4 text-muted-foreground" />
-          <h2
-            id="audit-filters-heading"
-            className="text-sm font-semibold tracking-wide uppercase"
-          >
-            Filters
-          </h2>
-        </div>
-
-        <form
-          method="get"
-          className="grid gap-4 border-y border-border py-5 md:grid-cols-2 lg:grid-cols-3"
-        >
-          <div className="lg:col-span-3">
-            <label htmlFor="query" className="text-sm font-medium">
-              Search
-            </label>
-            <Input
-              id="query"
-              name="query"
-              defaultValue={currentFilters.query ?? ""}
-              placeholder="Description, action, entity, user or record ID"
-              className="mt-2"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="moduleKey"
-              className="text-sm font-medium"
-            >
-              Module
-            </label>
-            <select
-              id="moduleKey"
-              name="moduleKey"
-              defaultValue={currentFilters.moduleKey ?? ""}
-              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-            >
-              <option value="">All modules</option>
-              {data.filters.modules.map((moduleKey) => (
-                <option key={moduleKey} value={moduleKey}>
-                  {formatLabel(moduleKey)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="action" className="text-sm font-medium">
-              Action
-            </label>
-            <select
-              id="action"
-              name="action"
-              defaultValue={currentFilters.action ?? ""}
-              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-            >
-              <option value="">All actions</option>
-              {data.filters.actions.map((action) => (
-                <option key={action} value={action}>
-                  {formatLabel(action)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label
-              htmlFor="entityType"
-              className="text-sm font-medium"
-            >
-              Entity type
-            </label>
-            <select
-              id="entityType"
-              name="entityType"
-              defaultValue={currentFilters.entityType ?? ""}
-              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-            >
-              <option value="">All entity types</option>
-              {data.filters.entityTypes.map((entityType) => (
-                <option key={entityType} value={entityType}>
-                  {formatLabel(entityType)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="dateFrom" className="text-sm font-medium">
-              Date from
-            </label>
-            <Input
-              id="dateFrom"
-              name="dateFrom"
-              type="date"
-              defaultValue={currentFilters.dateFrom ?? ""}
-              className="mt-2"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="dateTo" className="text-sm font-medium">
-              Date to
-            </label>
-            <Input
-              id="dateTo"
-              name="dateTo"
-              type="date"
-              defaultValue={currentFilters.dateTo ?? ""}
-              className="mt-2"
-            />
-          </div>
-
-          <div className="flex items-end gap-2">
-            <Button type="submit">
-              <Search />
-              Apply filters
-            </Button>
-
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href="/administration/audit" />}
-            >
-              Clear
-            </Button>
-          </div>
-        </form>
-      </section>
+      <ListSearchFilters
+        basePath="/administration/audit"
+        clearHref="/administration/audit"
+        searchPlaceholder="Description, action, entity, user or record ID"
+        searchValue={currentFilters.query ?? ""}
+        values={filterValues}
+        chips={buildFilterChips(currentFilters)}
+        fields={[
+          {
+            type: "checkbox",
+            name: "moduleKey",
+            label: "Module",
+            options: data.filters.modules.map((moduleKey) => ({
+              value: moduleKey,
+              label: formatAuditModule(moduleKey),
+            })),
+            multi: false,
+          },
+          {
+            type: "checkbox",
+            name: "action",
+            label: "Action",
+            options: data.filters.actions.map((action) => ({
+              value: action,
+              label: formatAuditAction(action),
+            })),
+            multi: false,
+          },
+          {
+            type: "checkbox",
+            name: "entityType",
+            label: "Entity type",
+            options: data.filters.entityTypes.map((entityType) => ({
+              value: entityType,
+              label: formatAuditEntityType(entityType),
+            })),
+            multi: false,
+          },
+          {
+            type: "date",
+            name: "dateFrom",
+            label: "Date from",
+          },
+          {
+            type: "date",
+            name: "dateTo",
+            label: "Date to",
+          },
+        ]}
+      />
 
       <section aria-labelledby="audit-events-heading">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <FileClock className="size-4 text-muted-foreground" />
-            <h2
-              id="audit-events-heading"
-              className="text-sm font-semibold tracking-wide uppercase"
-            >
-              Events
-            </h2>
+            <SectionHeading id="audit-events-heading">Events</SectionHeading>
           </div>
 
           <span className="text-xs text-muted-foreground">
@@ -285,95 +292,77 @@ export function AuditTrail({
         </div>
 
         {data.events.length === 0 ? (
-          <div className="border-y border-border py-10 text-center">
+          <div className="py-10 text-center">
             <ShieldCheck className="mx-auto size-6 text-muted-foreground" />
-            <p className="mt-3 text-sm font-medium">
-              No audit events found
-            </p>
+            <p className="mt-3 text-sm font-medium">No audit events found</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Adjust the filters or perform an administrative action.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
-            {data.events.map((event) => (
-              <article key={event.id} className="py-5">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="outline">
-                        {formatLabel(event.action)}
-                      </Badge>
+          <div className="divide-y divide-border/70">
+            {data.events.map((event) => {
+              const workstation = formatWorkstationLabel({
+                clientHostName: event.clientHostName,
+                userAgent: event.userAgent,
+              });
+              const headline =
+                event.description?.trim() ||
+                formatAuditHeadline(event.action, event.entityType);
 
-                      <Badge variant="secondary">
-                        {formatLabel(event.entityType)}
-                      </Badge>
+              return (
+                <article key={event.id} className="py-5">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant="outline">
+                          {formatAuditAction(event.action)}
+                        </Badge>
+                        <Badge variant="secondary">
+                          {formatAuditEntityType(event.entityType)}
+                        </Badge>
+                        <Badge variant="outline">
+                          {formatAuditModule(event.moduleKey)}
+                        </Badge>
+                      </div>
 
-                      <Badge variant="outline">
-                        {formatLabel(event.moduleKey)}
-                      </Badge>
-                    </div>
-
-                    <p className="mt-3 text-sm font-medium">
-                      {event.description ?? "Audit event"}
-                    </p>
-
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {event.user
-                        ? `${event.user.firstName} ${event.user.lastName} · ${event.user.email}`
-                        : "System or unknown user"}
-                    </p>
-
-                    {event.entityId && (
-                      <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-                        Entity ID: {event.entityId}
+                      <p className="mt-3 text-base font-medium tracking-tight">
+                        {headline}
                       </p>
-                    )}
-                  </div>
 
-                  <div className="shrink-0 text-xs text-muted-foreground">
-                    <p>
-                      {event.createdAt
-                        .toISOString()
-                        .replace("T", " ")
-                        .slice(0, 19)}
-                    </p>
-                    {event.ipAddress && (
-                      <p className="mt-1">IP: {event.ipAddress}</p>
-                    )}
-                  </div>
-                </div>
+                      <ActorLine user={event.user} />
 
-                {(event.oldValues !== null ||
-                  event.newValues !== null) && (
-                  <details className="mt-4 border-t border-border pt-4">
-                    <summary className="cursor-pointer text-sm font-medium">
-                      View recorded changes
-                    </summary>
-
-                    <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                      <div>
-                        <p className="mb-2 text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-                          Previous values
+                      {event.entityId && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Record{" "}
+                          <span className="font-mono">{event.entityId}</span>
                         </p>
-                        <pre className="max-h-96 overflow-auto border border-border bg-muted/30 p-3 text-xs">
-                          {formatValue(event.oldValues)}
-                        </pre>
-                      </div>
-
-                      <div>
-                        <p className="mb-2 text-xs font-semibold tracking-wide uppercase text-muted-foreground">
-                          New values
-                        </p>
-                        <pre className="max-h-96 overflow-auto border border-border bg-muted/30 p-3 text-xs">
-                          {formatValue(event.newValues)}
-                        </pre>
-                      </div>
+                      )}
                     </div>
-                  </details>
-                )}
-              </article>
-            ))}
+
+                    <div className="shrink-0 space-y-1 text-xs text-muted-foreground lg:text-right">
+                      <p className="text-sm text-foreground">
+                        {formatAuditDateTime(event.createdAt)}
+                      </p>
+                      {event.ipAddress && <p>IP {event.ipAddress}</p>}
+                      {workstation && (
+                        <p className="inline-flex items-center gap-1.5 lg:justify-end">
+                          <Monitor className="size-3.5 shrink-0" />
+                          <span>{workstation}</span>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {(event.oldValues !== null || event.newValues !== null) && (
+                    <ChangeSummary
+                      oldValues={event.oldValues}
+                      newValues={event.newValues}
+                    />
+                  )}
+                </article>
+              );
+            })}
           </div>
         )}
       </section>
@@ -391,9 +380,10 @@ export function AuditTrail({
             render={
               data.page > 1 ? (
                 <Link
-                  href={buildPageUrl(
-                    currentFilters,
-                    data.page - 1,
+                  href={buildListFilterUrl(
+                    "/administration/audit",
+                    filterValues,
+                    { page: data.page - 1 },
                   )}
                 />
               ) : (
@@ -412,9 +402,10 @@ export function AuditTrail({
             render={
               data.page < data.totalPages ? (
                 <Link
-                  href={buildPageUrl(
-                    currentFilters,
-                    data.page + 1,
+                  href={buildListFilterUrl(
+                    "/administration/audit",
+                    filterValues,
+                    { page: data.page + 1 },
                   )}
                 />
               ) : (
@@ -427,6 +418,6 @@ export function AuditTrail({
           </Button>
         </div>
       </footer>
-    </div>
-  )
+    </PageShell>
+  );
 }

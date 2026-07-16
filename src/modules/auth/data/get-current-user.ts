@@ -1,8 +1,9 @@
-import { prisma } from "@/lib/prisma"
-import { readSessionUserId } from "@/src/modules/auth/lib/session-cookie"
+import { prisma } from "@/lib/prisma";
+import { readSessionUserId } from "@/src/modules/auth/lib/session-cookie";
 
 const currentUserSelect = {
   id: true,
+  organizationId: true,
   employeeId: true,
   email: true,
   firstName: true,
@@ -18,22 +19,22 @@ const currentUserSelect = {
       lastName: true,
     },
   },
-} as const
+} as const;
 
 export type CurrentUser = NonNullable<
   Awaited<ReturnType<typeof getCurrentUser>>
->
+>;
 
 export type CurrentEmployeeUser = CurrentUser & {
-  employeeId: string
-  employee: NonNullable<CurrentUser["employee"]>
-}
+  employeeId: string;
+  employee: NonNullable<CurrentUser["employee"]>;
+};
 
 export async function getCurrentUser() {
-  const userId = await readSessionUserId()
+  const userId = await readSessionUserId();
 
   if (!userId) {
-    return null
+    return null;
   }
 
   return prisma.user.findUnique({
@@ -41,33 +42,29 @@ export async function getCurrentUser() {
       id: userId,
     },
     select: currentUserSelect,
-  })
+  });
 }
 
 export async function requireCurrentUser() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser();
 
   if (!user?.isActive) {
-    throw new Error(
-      "An active user account is required.",
-    )
+    throw new Error("An active user account is required.");
   }
 
-  return user
+  return user;
 }
 
 export async function requireCurrentEmployeeUser(): Promise<CurrentEmployeeUser> {
-  const user = await requireCurrentUser()
+  const user = await requireCurrentUser();
 
   if (!user.employeeId || !user.employee) {
-    throw new Error(
-      "Your user account is not linked to an employee record.",
-    )
+    throw new Error("Your user account is not linked to an employee record.");
   }
 
   return {
     ...user,
     employeeId: user.employeeId,
     employee: user.employee,
-  }
+  };
 }

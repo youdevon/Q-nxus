@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 import {
   AlertCircle,
   Bell,
@@ -9,68 +9,60 @@ import {
   Info,
   MailOpen,
   TriangleAlert,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
 import {
   markAllNotificationsRead,
   markNotificationRead,
   markNotificationUnread,
-} from "@/src/modules/notifications/actions/manage-user-notifications"
-import type { UserNotificationInbox } from "@/src/modules/notifications/data/get-user-notifications"
+} from "@/src/modules/notifications/actions/manage-user-notifications";
+import type { UserNotificationInbox } from "@/src/modules/notifications/data/get-user-notifications";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) =>
-      character.toUpperCase(),
-    )
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 function severityIcon(severity: string) {
   if (severity === "SUCCESS") {
-    return <CheckCircle2 className="size-5" />
+    return <CheckCircle2 className="size-5" />;
   }
 
   if (severity === "WARNING") {
-    return <TriangleAlert className="size-5" />
+    return <TriangleAlert className="size-5" />;
   }
 
   if (severity === "ERROR") {
-    return <AlertCircle className="size-5" />
+    return <AlertCircle className="size-5" />;
   }
 
   if (severity === "CRITICAL") {
-    return <CircleAlert className="size-5" />
+    return <CircleAlert className="size-5" />;
   }
 
-  return <Info className="size-5" />
+  return <Info className="size-5" />;
 }
 
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("en-TT", {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(new Date(value))
+  }).format(new Date(value));
 }
 
-export function NotificationInbox({
-  data,
-}: {
-  data: UserNotificationInbox
-}) {
+export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
   const unread = data.notifications.filter(
-    (notification) =>
-      notification.status === "UNREAD",
-  )
+    (notification) => notification.status === "UNREAD",
+  );
 
   const read = data.notifications.filter(
-    (notification) =>
-      notification.status !== "UNREAD",
-  )
+    (notification) => notification.status !== "UNREAD",
+  );
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -89,32 +81,22 @@ export function NotificationInbox({
         }
       />
 
-      <section className="grid gap-8 border-y border-border py-5 md:grid-cols-3">
+      <section className="grid gap-8 md:grid-cols-3">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Unread
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {data.unreadCount}
-          </p>
+          <p className="text-xs text-muted-foreground">Unread</p>
+          <p className="mt-1 text-2xl font-semibold">{data.unreadCount}</p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Total notifications
-          </p>
+          <p className="text-xs text-muted-foreground">Total notifications</p>
           <p className="mt-1 text-2xl font-semibold">
             {data.notifications.length}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            User
-          </p>
-          <p className="mt-1 text-sm font-medium">
-            {data.user.email}
-          </p>
+          <p className="text-xs text-muted-foreground">User</p>
+          <p className="mt-1 text-sm font-medium">{data.user.email}</p>
         </div>
       </section>
 
@@ -127,20 +109,17 @@ export function NotificationInbox({
         </div>
 
         {unread.length === 0 ? (
-          <div className="border-y border-border py-12 text-center">
+          <div className="py-12 text-center">
             <BellOff className="mx-auto size-7 text-muted-foreground" />
 
-            <p className="mt-3 text-sm font-medium">
-              No unread notifications
-            </p>
+            <p className="mt-3 text-sm font-medium">No unread notifications</p>
 
             <p className="mt-1 text-xs text-muted-foreground">
-              New alerts and approval requests will appear
-              here.
+              New alerts and approval requests will appear here.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {unread.map((notification) => (
               <article
                 key={notification.recipientId}
@@ -152,13 +131,9 @@ export function NotificationInbox({
 
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium">
-                      {notification.title}
-                    </p>
+                    <p className="font-medium">{notification.title}</p>
 
-                    <Badge variant="default">
-                      Unread
-                    </Badge>
+                    <Badge variant="default">Unread</Badge>
 
                     <Badge variant="outline">
                       {label(notification.moduleKey)}
@@ -189,9 +164,7 @@ export function NotificationInbox({
 
                   <Button type="submit">
                     <MailOpen />
-                    {notification.actionUrl
-                      ? "Open"
-                      : "Mark read"}
+                    {notification.actionUrl ? "Open" : "Mark read"}
                   </Button>
                 </form>
               </article>
@@ -210,11 +183,11 @@ export function NotificationInbox({
         </div>
 
         {read.length === 0 ? (
-          <p className="border-y border-border py-10 text-center text-sm text-muted-foreground">
+          <p className="py-10 text-center text-sm text-muted-foreground">
             No earlier notifications.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {read.map((notification) => (
               <article
                 key={notification.recipientId}
@@ -234,9 +207,7 @@ export function NotificationInbox({
                         {notification.title}
                       </Link>
                     ) : (
-                      <p className="font-medium">
-                        {notification.title}
-                      </p>
+                      <p className="font-medium">{notification.title}</p>
                     )}
 
                     <Badge variant="outline">
@@ -260,10 +231,7 @@ export function NotificationInbox({
                     value={notification.recipientId}
                   />
 
-                  <Button
-                    type="submit"
-                    variant="outline"
-                  >
+                  <Button type="submit" variant="outline">
                     <Bell />
                     Mark unread
                   </Button>
@@ -274,5 +242,5 @@ export function NotificationInbox({
         )}
       </section>
     </div>
-  )
+  );
 }

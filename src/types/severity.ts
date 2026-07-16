@@ -4,7 +4,7 @@ export type Severity =
   | "information"
   | "warning"
   | "error"
-  | "critical"
+  | "critical";
 
 export const SEVERITY_LABELS: Record<Severity, string> = {
   success: "Success",
@@ -12,4 +12,4 @@ export const SEVERITY_LABELS: Record<Severity, string> = {
   warning: "Warning",
   error: "Error",
   critical: "Critical",
-}
+};

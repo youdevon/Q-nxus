@@ -1,18 +1,18 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type NumberingSequenceRecord = {
-  id: string
-  sequenceCode: string
-  prefix: string | null
-  suffix: string | null
-  currentNumber: string
-  minimumLength: number
-  resetFrequency: string
-  lastResetAt: Date | null
-  isActive: boolean
-  version: number
-  updatedAt: Date
-}
+  id: string;
+  sequenceCode: string;
+  prefix: string | null;
+  suffix: string | null;
+  currentNumber: string;
+  minimumLength: number;
+  resetFrequency: string;
+  lastResetAt: Date | null;
+  isActive: boolean;
+  version: number;
+  updatedAt: Date;
+};
 
 export async function getNumberingSequences(): Promise<
   NumberingSequenceRecord[]
@@ -24,10 +24,10 @@ export async function getNumberingSequences(): Promise<
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   const sequences = await prisma.numberingSequence.findMany({
@@ -50,10 +50,10 @@ export async function getNumberingSequences(): Promise<
       version: true,
       updatedAt: true,
     },
-  })
+  });
 
   return sequences.map((sequence) => ({
     ...sequence,
     currentNumber: sequence.currentNumber.toString(),
-  }))
+  }));
 }
