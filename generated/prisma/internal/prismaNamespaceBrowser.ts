@@ -87,6 +87,15 @@ export const ModelName = {
   AllowanceCategory: 'AllowanceCategory',
   EmploymentContractAllowance: 'EmploymentContractAllowance',
   PayrollProfile: 'PayrollProfile',
+  PayrollBankAccount: 'PayrollBankAccount',
+  StatutoryRate: 'StatutoryRate',
+  NisEarningsClass: 'NisEarningsClass',
+  PayeTaxConfig: 'PayeTaxConfig',
+  PayeTaxBracket: 'PayeTaxBracket',
+  HealthSurchargeConfig: 'HealthSurchargeConfig',
+  PayrollPeriod: 'PayrollPeriod',
+  PayRun: 'PayRun',
+  Payslip: 'Payslip',
   Notification: 'Notification',
   NotificationRecipient: 'NotificationRecipient',
   EmailDelivery: 'EmailDelivery',
@@ -428,6 +437,7 @@ export const EmployeeScalarFieldEnum = {
   workEmail: 'workEmail',
   personalEmail: 'personalEmail',
   phone: 'phone',
+  dateOfBirth: 'dateOfBirth',
   employmentStatus: 'employmentStatus',
   employmentType: 'employmentType',
   hireDate: 'hireDate',
@@ -790,16 +800,196 @@ export type EmploymentContractAllowanceScalarFieldEnum = (typeof EmploymentContr
 export const PayrollProfileScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
+  payFrequency: 'payFrequency',
   paymentMethod: 'paymentMethod',
-  bankName: 'bankName',
-  bankAccountNo: 'bankAccountNo',
-  taxIdentifier: 'taxIdentifier',
+  nisNumber: 'nisNumber',
+  birNumber: 'birNumber',
+  notes: 'notes',
   isPayrollReady: 'isPayrollReady',
+  td1OtherApprovedAnnual: 'td1OtherApprovedAnnual',
+  pensionOnlyIncome: 'pensionOnlyIncome',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type PayrollProfileScalarFieldEnum = (typeof PayrollProfileScalarFieldEnum)[keyof typeof PayrollProfileScalarFieldEnum]
+
+
+export const PayrollBankAccountScalarFieldEnum = {
+  id: 'id',
+  payrollProfileId: 'payrollProfileId',
+  bankName: 'bankName',
+  branchName: 'branchName',
+  accountNumber: 'accountNumber',
+  accountName: 'accountName',
+  amount: 'amount',
+  isPrimary: 'isPrimary',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayrollBankAccountScalarFieldEnum = (typeof PayrollBankAccountScalarFieldEnum)[keyof typeof PayrollBankAccountScalarFieldEnum]
+
+
+export const StatutoryRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  rateType: 'rateType',
+  ratePercent: 'ratePercent',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StatutoryRateScalarFieldEnum = (typeof StatutoryRateScalarFieldEnum)[keyof typeof StatutoryRateScalarFieldEnum]
+
+
+export const NisEarningsClassScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  classCode: 'classCode',
+  monthlyMin: 'monthlyMin',
+  monthlyMax: 'monthlyMax',
+  employeeWeeklyAmount: 'employeeWeeklyAmount',
+  employerWeeklyAmount: 'employerWeeklyAmount',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NisEarningsClassScalarFieldEnum = (typeof NisEarningsClassScalarFieldEnum)[keyof typeof NisEarningsClassScalarFieldEnum]
+
+
+export const PayeTaxConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  personalAllowanceAnnual: 'personalAllowanceAnnual',
+  nisDeductiblePortion: 'nisDeductiblePortion',
+  approvedDeductionCapAnnual: 'approvedDeductionCapAnnual',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayeTaxConfigScalarFieldEnum = (typeof PayeTaxConfigScalarFieldEnum)[keyof typeof PayeTaxConfigScalarFieldEnum]
+
+
+export const PayeTaxBracketScalarFieldEnum = {
+  id: 'id',
+  payeTaxConfigId: 'payeTaxConfigId',
+  upToAmount: 'upToAmount',
+  ratePercent: 'ratePercent',
+  sortOrder: 'sortOrder'
+} as const
+
+export type PayeTaxBracketScalarFieldEnum = (typeof PayeTaxBracketScalarFieldEnum)[keyof typeof PayeTaxBracketScalarFieldEnum]
+
+
+export const HealthSurchargeConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  higherWeeklyAmount: 'higherWeeklyAmount',
+  lowerWeeklyAmount: 'lowerWeeklyAmount',
+  weeklyEarningsThreshold: 'weeklyEarningsThreshold',
+  monthlyEarningsThreshold: 'monthlyEarningsThreshold',
+  underAgeExempt: 'underAgeExempt',
+  seniorAgeExempt: 'seniorAgeExempt',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HealthSurchargeConfigScalarFieldEnum = (typeof HealthSurchargeConfigScalarFieldEnum)[keyof typeof HealthSurchargeConfigScalarFieldEnum]
+
+
+export const PayrollPeriodScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  year: 'year',
+  month: 'month',
+  frequency: 'frequency',
+  periodKey: 'periodKey',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  status: 'status',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayrollPeriodScalarFieldEnum = (typeof PayrollPeriodScalarFieldEnum)[keyof typeof PayrollPeriodScalarFieldEnum]
+
+
+export const PayRunScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  payrollPeriodId: 'payrollPeriodId',
+  runNumber: 'runNumber',
+  status: 'status',
+  runKind: 'runKind',
+  sourcePayRunId: 'sourcePayRunId',
+  currency: 'currency',
+  employeeCount: 'employeeCount',
+  totalGross: 'totalGross',
+  totalDeductions: 'totalDeductions',
+  totalNet: 'totalNet',
+  notes: 'notes',
+  postedAt: 'postedAt',
+  postedById: 'postedById',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayRunScalarFieldEnum = (typeof PayRunScalarFieldEnum)[keyof typeof PayRunScalarFieldEnum]
+
+
+export const PayslipScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  payRunId: 'payRunId',
+  payrollPeriodId: 'payrollPeriodId',
+  employeeId: 'employeeId',
+  status: 'status',
+  currency: 'currency',
+  grossPay: 'grossPay',
+  totalDeductions: 'totalDeductions',
+  netPay: 'netPay',
+  baseSalary: 'baseSalary',
+  allowancesTotal: 'allowancesTotal',
+  monthlyTaxableEarnings: 'monthlyTaxableEarnings',
+  employeeNumber: 'employeeNumber',
+  employeeName: 'employeeName',
+  nisNumber: 'nisNumber',
+  birNumber: 'birNumber',
+  jobTitle: 'jobTitle',
+  departmentName: 'departmentName',
+  payFrequency: 'payFrequency',
+  paymentMethod: 'paymentMethod',
+  snapshot: 'snapshot',
+  excludedAt: 'excludedAt',
+  excludedByUserId: 'excludedByUserId',
+  exclusionReason: 'exclusionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayslipScalarFieldEnum = (typeof PayslipScalarFieldEnum)[keyof typeof PayslipScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

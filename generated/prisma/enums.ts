@@ -324,3 +324,66 @@ export const NotificationReadStatus = {
 } as const
 
 export type NotificationReadStatus = (typeof NotificationReadStatus)[keyof typeof NotificationReadStatus]
+
+
+export const PayFrequency = {
+  MONTHLY: 'MONTHLY',
+  FORTNIGHTLY: 'FORTNIGHTLY',
+  WEEKLY: 'WEEKLY',
+  BIWEEKLY: 'BIWEEKLY',
+  SEMI_MONTHLY: 'SEMI_MONTHLY'
+} as const
+
+export type PayFrequency = (typeof PayFrequency)[keyof typeof PayFrequency]
+
+
+export const PayrollPaymentMethod = {
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CHEQUE: 'CHEQUE',
+  CASH: 'CASH'
+} as const
+
+export type PayrollPaymentMethod = (typeof PayrollPaymentMethod)[keyof typeof PayrollPaymentMethod]
+
+
+export const StatutoryRateType = {
+  NIS_EMPLOYEE: 'NIS_EMPLOYEE',
+  NIS_EMPLOYER: 'NIS_EMPLOYER',
+  PAYE: 'PAYE'
+} as const
+
+export type StatutoryRateType = (typeof StatutoryRateType)[keyof typeof StatutoryRateType]
+
+
+export const PayrollPeriodStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type PayrollPeriodStatus = (typeof PayrollPeriodStatus)[keyof typeof PayrollPeriodStatus]
+
+
+export const PayRunStatus = {
+  DRAFT: 'DRAFT',
+  POSTED: 'POSTED'
+} as const
+
+export type PayRunStatus = (typeof PayRunStatus)[keyof typeof PayRunStatus]
+
+
+export const PayRunKind = {
+  REGULAR: 'REGULAR',
+  CORRECTION: 'CORRECTION',
+  OFF_CYCLE: 'OFF_CYCLE'
+} as const
+
+export type PayRunKind = (typeof PayRunKind)[keyof typeof PayRunKind]
+
+
+export const PayslipRecordStatus = {
+  DRAFT: 'DRAFT',
+  EXCLUDED: 'EXCLUDED',
+  POSTED: 'POSTED'
+} as const
+
+export type PayslipRecordStatus = (typeof PayslipRecordStatus)[keyof typeof PayslipRecordStatus]

@@ -1,4 +1,4 @@
-/** Payroll module boundary — compensation runs and pay artifacts land here. */
+/** Payroll module — master data, pay runs, posted payslips, T&T statutory calcs. */
 export const payrollModule = {
   id: "payroll",
   name: "Payroll",

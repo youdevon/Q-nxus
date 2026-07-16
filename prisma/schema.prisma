@@ -337,6 +337,14 @@ model Organization {
 
   leaveRequests LeaveRequest[]
 
+  statutoryRates           StatutoryRate[]
+  nisEarningsClasses       NisEarningsClass[]
+  payeTaxConfigs           PayeTaxConfig[]
+  healthSurchargeConfigs   HealthSurchargeConfig[]
+  payrollPeriods           PayrollPeriod[]
+  payRuns                  PayRun[]
+  payslips                 Payslip[]
+
   @@index([status])
   @@map("organizations")
   @@schema("core")
@@ -732,6 +740,8 @@ model Employee {
   workEmail        String?
   personalEmail    String?
   phone            String?
+  /// Used for Health Surcharge age exemptions (<16 / ≥60).
+  dateOfBirth      DateTime?        @db.Date
   employmentStatus EmploymentStatus @default(ACTIVE)
   employmentType   EmploymentType
   hireDate         DateTime
@@ -747,6 +757,7 @@ model Employee {
   assignments    EmployeeAssignment[]
   appraisals     PerformanceAppraisal[]
   payrollProfile PayrollProfile?
+  payslips       Payslip[]
 
   leaveBalances     EmployeeLeaveBalance[]
   leaveTransactions LeaveBalanceTransaction[]
@@ -1264,20 +1275,339 @@ model EmploymentContractAllowance {
   @@schema("hr")
 }
 
-model PayrollProfile {
-  id             String   @id @default(cuid())
-  employeeId     String   @unique
-  paymentMethod  String?
-  bankName       String?
-  bankAccountNo  String?
-  taxIdentifier  String?
-  isPayrollReady Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+enum PayFrequency {
+  MONTHLY
+  FORTNIGHTLY
+  WEEKLY
+  BIWEEKLY
+  SEMI_MONTHLY
 
-  employee Employee @relation(fields: [employeeId], references: [id])
+  @@schema("payroll")
+}
+
+enum PayrollPaymentMethod {
+  BANK_TRANSFER
+  CHEQUE
+  CASH
+
+  @@schema("payroll")
+}
+
+enum StatutoryRateType {
+  NIS_EMPLOYEE
+  NIS_EMPLOYER
+  PAYE
+
+  @@schema("payroll")
+}
+
+model PayrollProfile {
+  id             String               @id @default(cuid())
+  employeeId     String               @unique
+  payFrequency   PayFrequency         @default(MONTHLY)
+  paymentMethod  PayrollPaymentMethod @default(BANK_TRANSFER)
+  nisNumber      String?
+  birNumber      String?
+  notes          String?
+  isPayrollReady Boolean              @default(false)
+  /// TD1: other approved deductions (pension, annuity, tax-savings, etc.) annual TTD.
+  td1OtherApprovedAnnual Decimal?     @db.Decimal(14, 2)
+  /// Health Surcharge: pension as only income source (exempt when true).
+  pensionOnlyIncome      Boolean      @default(false)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  employee     Employee             @relation(fields: [employeeId], references: [id])
+  bankAccounts PayrollBankAccount[]
 
   @@map("payroll_profiles")
+  @@schema("payroll")
+}
+
+model PayrollBankAccount {
+  id               String   @id @default(cuid())
+  payrollProfileId String
+  bankName         String
+  branchName       String?
+  accountNumber    String
+  accountName      String?
+  /// Fixed amount for secondary accounts. Null on the primary/remainder account.
+  amount           Decimal? @db.Decimal(14, 2)
+  isPrimary        Boolean  @default(false)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  payrollProfile PayrollProfile @relation(fields: [payrollProfileId], references: [id], onDelete: Cascade)
+
+  @@index([payrollProfileId])
+  @@map("payroll_bank_accounts")
+  @@schema("payroll")
+}
+
+model StatutoryRate {
+  id             String            @id @default(cuid())
+  organizationId String
+  rateType       StatutoryRateType
+  ratePercent    Decimal           @db.Decimal(7, 4)
+  effectiveFrom  DateTime          @db.Date
+  effectiveTo    DateTime?         @db.Date
+  notes          String?
+  isActive       Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, rateType, effectiveFrom])
+  @@index([organizationId, isActive])
+  @@map("statutory_rates")
+  @@schema("payroll")
+}
+
+/// Trinidad & Tobago NIS earnings-class bands (fixed weekly employee/employer amounts).
+model NisEarningsClass {
+  id                   String    @id @default(cuid())
+  organizationId       String
+  /// Roman numeral class code, e.g. I–XVI.
+  classCode            String
+  /// Lower bound of monthly insurable earnings (inclusive).
+  monthlyMin           Decimal   @db.Decimal(14, 2)
+  /// Upper bound of monthly insurable earnings (inclusive). Null = no cap (Class XVI).
+  monthlyMax           Decimal?  @db.Decimal(14, 2)
+  employeeWeeklyAmount Decimal   @db.Decimal(10, 2)
+  employerWeeklyAmount Decimal   @db.Decimal(10, 2)
+  effectiveFrom        DateTime  @db.Date
+  effectiveTo          DateTime? @db.Date
+  /// Optional label for the schedule, e.g. "2026".
+  versionLabel         String?
+  isActive             Boolean   @default(true)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, classCode, effectiveFrom])
+  @@index([organizationId, effectiveFrom])
+  @@index([organizationId, isActive])
+  @@map("nis_earnings_classes")
+  @@schema("payroll")
+}
+
+/// Trinidad & Tobago PAYE (income tax) parameters — annual brackets, not flat monthly %.
+model PayeTaxConfig {
+  id                         String    @id @default(cuid())
+  organizationId             String
+  /// Resident personal allowance (annual), e.g. 90,000.
+  personalAllowanceAnnual    Decimal   @db.Decimal(14, 2)
+  /// Portion of employee NIS deductible for PAYE, e.g. 0.70.
+  nisDeductiblePortion       Decimal   @db.Decimal(5, 4)
+  /// Cap on pension/annuity/tax-savings + allowable NIS portion (annual), e.g. 60,000.
+  approvedDeductionCapAnnual Decimal   @db.Decimal(14, 2)
+  effectiveFrom              DateTime  @db.Date
+  effectiveTo                DateTime? @db.Date
+  versionLabel               String?
+  isActive                   Boolean   @default(true)
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  brackets     PayeTaxBracket[]
+
+  @@unique([organizationId, effectiveFrom])
+  @@index([organizationId, isActive])
+  @@map("paye_tax_configs")
+  @@schema("payroll")
+}
+
+model PayeTaxBracket {
+  id             String  @id @default(cuid())
+  payeTaxConfigId String
+  /// Upper bound of chargeable income for this band (inclusive). Null = open-ended.
+  upToAmount     Decimal? @db.Decimal(14, 2)
+  ratePercent    Decimal  @db.Decimal(7, 4)
+  sortOrder      Int      @default(0)
+
+  config PayeTaxConfig @relation(fields: [payeTaxConfigId], references: [id], onDelete: Cascade)
+
+  @@index([payeTaxConfigId, sortOrder])
+  @@map("paye_tax_brackets")
+  @@schema("payroll")
+}
+
+/// Trinidad & Tobago Health Surcharge — fixed weekly amounts by earnings tier.
+model HealthSurchargeConfig {
+  id                        String    @id @default(cuid())
+  organizationId            String
+  /// Weekly amount when earnings exceed the threshold (e.g. 8.25).
+  higherWeeklyAmount        Decimal   @db.Decimal(10, 2)
+  /// Weekly amount at or below the threshold (e.g. 4.80).
+  lowerWeeklyAmount         Decimal   @db.Decimal(10, 2)
+  /// Weekly earnings above this amount use the higher rate (e.g. 109).
+  weeklyEarningsThreshold   Decimal   @db.Decimal(14, 2)
+  /// Monthly earnings above this amount use the higher rate (e.g. 469.99).
+  monthlyEarningsThreshold  Decimal   @db.Decimal(14, 2)
+  /// Under this age: exempt (e.g. 16).
+  underAgeExempt            Int       @default(16)
+  /// Age at or above: exempt (e.g. 60).
+  seniorAgeExempt           Int       @default(60)
+  effectiveFrom             DateTime  @db.Date
+  effectiveTo               DateTime? @db.Date
+  versionLabel              String?
+  isActive                  Boolean   @default(true)
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, effectiveFrom])
+  @@index([organizationId, isActive])
+  @@map("health_surcharge_configs")
+  @@schema("payroll")
+}
+
+enum PayrollPeriodStatus {
+  OPEN
+  CLOSED
+
+  @@schema("payroll")
+}
+
+enum PayRunStatus {
+  DRAFT
+  POSTED
+
+  @@schema("payroll")
+}
+
+enum PayRunKind {
+  REGULAR
+  CORRECTION
+  OFF_CYCLE
+
+  @@schema("payroll")
+}
+
+enum PayslipRecordStatus {
+  DRAFT
+  EXCLUDED
+  POSTED
+
+  @@schema("payroll")
+}
+
+/// Calendar span for which employees are paid (e.g. July 2026 monthly).
+model PayrollPeriod {
+  id             String              @id @default(cuid())
+  organizationId String
+  name           String
+  year           Int
+  /// 1–12 for monthly periods; null reserved for non-monthly frequencies.
+  month          Int?
+  frequency      PayFrequency        @default(MONTHLY)
+  /// Stable key within frequency, e.g. "2026-07" for monthly.
+  periodKey      String
+  periodStart    DateTime            @db.Date
+  periodEnd      DateTime            @db.Date
+  status         PayrollPeriodStatus @default(OPEN)
+  notes          String?
+  createdById    String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payRuns      PayRun[]
+  payslips     Payslip[]
+
+  @@unique([organizationId, periodKey, frequency])
+  @@index([organizationId, year, month])
+  @@index([organizationId, status])
+  @@map("payroll_periods")
+  @@schema("payroll")
+}
+
+/// Processing event for a payroll period — draft calc then posted freeze.
+/// REGULAR is the primary monthly run. CORRECTION / OFF_CYCLE are additional
+/// runs on the same period after a posted regular (never rewrite the original).
+model PayRun {
+  id              String       @id @default(cuid())
+  organizationId  String
+  payrollPeriodId String
+  runNumber       String
+  status          PayRunStatus @default(DRAFT)
+  runKind         PayRunKind   @default(REGULAR)
+  /// Optional link to the posted run this correction/off-cycle adjusts.
+  sourcePayRunId  String?
+  currency        String       @default("TTD")
+  employeeCount   Int          @default(0)
+  totalGross      Decimal      @default(0) @db.Decimal(14, 2)
+  totalDeductions Decimal      @default(0) @db.Decimal(14, 2)
+  totalNet        Decimal      @default(0) @db.Decimal(14, 2)
+  notes           String?
+  postedAt        DateTime?
+  postedById      String?
+  createdById     String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payrollPeriod PayrollPeriod @relation(fields: [payrollPeriodId], references: [id], onDelete: Cascade)
+  sourcePayRun  PayRun?       @relation("PayRunSource", fields: [sourcePayRunId], references: [id], onDelete: SetNull)
+  derivedRuns   PayRun[]      @relation("PayRunSource")
+  payslips      Payslip[]
+
+  @@unique([organizationId, runNumber])
+  @@index([payrollPeriodId])
+  @@index([organizationId, status])
+  @@index([organizationId, runKind])
+  @@index([sourcePayRunId])
+  @@map("pay_runs")
+  @@schema("payroll")
+}
+
+/// Employee result for a pay run. Posted rows store an immutable snapshot.
+model Payslip {
+  id                     String              @id @default(cuid())
+  organizationId         String
+  payRunId               String
+  payrollPeriodId        String
+  employeeId             String
+  status                 PayslipRecordStatus @default(DRAFT)
+  currency               String
+  grossPay               Decimal             @db.Decimal(14, 2)
+  totalDeductions        Decimal             @db.Decimal(14, 2)
+  netPay                 Decimal             @db.Decimal(14, 2)
+  baseSalary             Decimal             @db.Decimal(14, 2)
+  allowancesTotal        Decimal             @db.Decimal(14, 2)
+  monthlyTaxableEarnings Decimal             @db.Decimal(14, 2)
+  employeeNumber         String
+  employeeName           String
+  nisNumber              String?
+  birNumber              String?
+  jobTitle               String?
+  departmentName         String?
+  payFrequency           String
+  paymentMethod          String
+  /// Frozen PayslipPreview + document meta — authoritative once POSTED.
+  snapshot               Json
+  /// Manual exclusion from a draft pay run (reason required). Cleared on re-include.
+  excludedAt             DateTime?
+  excludedByUserId       String?
+  exclusionReason        String?
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+
+  organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payRun        PayRun        @relation(fields: [payRunId], references: [id], onDelete: Cascade)
+  payrollPeriod PayrollPeriod @relation(fields: [payrollPeriodId], references: [id], onDelete: Cascade)
+  employee      Employee      @relation(fields: [employeeId], references: [id])
+
+  @@unique([payRunId, employeeId])
+  @@index([organizationId, employeeId, status])
+  @@index([payrollPeriodId])
+  @@index([employeeId, status, createdAt])
+  @@index([payRunId, status])
+  @@map("payslips")
   @@schema("payroll")
 }
 

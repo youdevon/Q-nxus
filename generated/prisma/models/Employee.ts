@@ -37,6 +37,7 @@ export type EmployeeMinAggregateOutputType = {
   workEmail: string | null
   personalEmail: string | null
   phone: string | null
+  dateOfBirth: Date | null
   employmentStatus: $Enums.EmploymentStatus | null
   employmentType: $Enums.EmploymentType | null
   hireDate: Date | null
@@ -59,6 +60,7 @@ export type EmployeeMaxAggregateOutputType = {
   workEmail: string | null
   personalEmail: string | null
   phone: string | null
+  dateOfBirth: Date | null
   employmentStatus: $Enums.EmploymentStatus | null
   employmentType: $Enums.EmploymentType | null
   hireDate: Date | null
@@ -81,6 +83,7 @@ export type EmployeeCountAggregateOutputType = {
   workEmail: number
   personalEmail: number
   phone: number
+  dateOfBirth: number
   employmentStatus: number
   employmentType: number
   hireDate: number
@@ -105,6 +108,7 @@ export type EmployeeMinAggregateInputType = {
   workEmail?: true
   personalEmail?: true
   phone?: true
+  dateOfBirth?: true
   employmentStatus?: true
   employmentType?: true
   hireDate?: true
@@ -127,6 +131,7 @@ export type EmployeeMaxAggregateInputType = {
   workEmail?: true
   personalEmail?: true
   phone?: true
+  dateOfBirth?: true
   employmentStatus?: true
   employmentType?: true
   hireDate?: true
@@ -149,6 +154,7 @@ export type EmployeeCountAggregateInputType = {
   workEmail?: true
   personalEmail?: true
   phone?: true
+  dateOfBirth?: true
   employmentStatus?: true
   employmentType?: true
   hireDate?: true
@@ -244,6 +250,7 @@ export type EmployeeGroupByOutputType = {
   workEmail: string | null
   personalEmail: string | null
   phone: string | null
+  dateOfBirth: Date | null
   employmentStatus: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date
@@ -287,6 +294,7 @@ export type EmployeeWhereInput = {
   workEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   personalEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFilter<"Employee"> | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFilter<"Employee"> | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -301,6 +309,7 @@ export type EmployeeWhereInput = {
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
   appraisals?: Prisma.PerformanceAppraisalListRelationFilter
   payrollProfile?: Prisma.XOR<Prisma.PayrollProfileNullableScalarRelationFilter, Prisma.PayrollProfileWhereInput> | null
+  payslips?: Prisma.PayslipListRelationFilter
   leaveBalances?: Prisma.EmployeeLeaveBalanceListRelationFilter
   leaveTransactions?: Prisma.LeaveBalanceTransactionListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
@@ -320,6 +329,7 @@ export type EmployeeOrderByWithRelationInput = {
   workEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   personalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   hireDate?: Prisma.SortOrder
@@ -334,6 +344,7 @@ export type EmployeeOrderByWithRelationInput = {
   assignments?: Prisma.EmployeeAssignmentOrderByRelationAggregateInput
   appraisals?: Prisma.PerformanceAppraisalOrderByRelationAggregateInput
   payrollProfile?: Prisma.PayrollProfileOrderByWithRelationInput
+  payslips?: Prisma.PayslipOrderByRelationAggregateInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceOrderByRelationAggregateInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionOrderByRelationAggregateInput
   leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
@@ -357,6 +368,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   workEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   personalEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFilter<"Employee"> | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFilter<"Employee"> | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -371,6 +383,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
   appraisals?: Prisma.PerformanceAppraisalListRelationFilter
   payrollProfile?: Prisma.XOR<Prisma.PayrollProfileNullableScalarRelationFilter, Prisma.PayrollProfileWhereInput> | null
+  payslips?: Prisma.PayslipListRelationFilter
   leaveBalances?: Prisma.EmployeeLeaveBalanceListRelationFilter
   leaveTransactions?: Prisma.LeaveBalanceTransactionListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
@@ -390,6 +403,7 @@ export type EmployeeOrderByWithAggregationInput = {
   workEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   personalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   hireDate?: Prisma.SortOrder
@@ -418,6 +432,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   workEmail?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   personalEmail?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusWithAggregatesFilter<"Employee"> | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeWithAggregatesFilter<"Employee"> | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
@@ -437,6 +452,7 @@ export type EmployeeCreateInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -451,6 +467,7 @@ export type EmployeeCreateInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -470,6 +487,7 @@ export type EmployeeUncheckedCreateInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -481,6 +499,7 @@ export type EmployeeUncheckedCreateInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -497,6 +516,7 @@ export type EmployeeUpdateInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -511,6 +531,7 @@ export type EmployeeUpdateInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -530,6 +551,7 @@ export type EmployeeUncheckedUpdateInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -541,6 +563,7 @@ export type EmployeeUncheckedUpdateInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -560,6 +583,7 @@ export type EmployeeCreateManyInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -579,6 +603,7 @@ export type EmployeeUpdateManyMutationInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -601,6 +626,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -643,6 +669,7 @@ export type EmployeeCountOrderByAggregateInput = {
   workEmail?: Prisma.SortOrder
   personalEmail?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   hireDate?: Prisma.SortOrder
@@ -665,6 +692,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   workEmail?: Prisma.SortOrder
   personalEmail?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   hireDate?: Prisma.SortOrder
@@ -687,6 +715,7 @@ export type EmployeeMinOrderByAggregateInput = {
   workEmail?: Prisma.SortOrder
   personalEmail?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  dateOfBirth?: Prisma.SortOrder
   employmentStatus?: Prisma.SortOrder
   employmentType?: Prisma.SortOrder
   hireDate?: Prisma.SortOrder
@@ -949,6 +978,20 @@ export type EmployeeUpdateOneRequiredWithoutPayrollProfileNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPayrollProfileInput, Prisma.EmployeeUpdateWithoutPayrollProfileInput>, Prisma.EmployeeUncheckedUpdateWithoutPayrollProfileInput>
 }
 
+export type EmployeeCreateNestedOneWithoutPayslipsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayslipsInput, Prisma.EmployeeUncheckedCreateWithoutPayslipsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayslipsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutPayslipsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayslipsInput, Prisma.EmployeeUncheckedCreateWithoutPayslipsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayslipsInput
+  upsert?: Prisma.EmployeeUpsertWithoutPayslipsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPayslipsInput, Prisma.EmployeeUpdateWithoutPayslipsInput>, Prisma.EmployeeUncheckedUpdateWithoutPayslipsInput>
+}
+
 export type EmployeeCreateWithoutOrganizationInput = {
   id?: string
   employeeNumber: string
@@ -959,6 +1002,7 @@ export type EmployeeCreateWithoutOrganizationInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -972,6 +1016,7 @@ export type EmployeeCreateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -990,6 +1035,7 @@ export type EmployeeUncheckedCreateWithoutOrganizationInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1001,6 +1047,7 @@ export type EmployeeUncheckedCreateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1049,6 +1096,7 @@ export type EmployeeScalarWhereInput = {
   workEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   personalEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
+  dateOfBirth?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFilter<"Employee"> | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFilter<"Employee"> | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -1068,6 +1116,7 @@ export type EmployeeCreateWithoutUserInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1082,6 +1131,7 @@ export type EmployeeCreateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -1100,6 +1150,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1111,6 +1162,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1142,6 +1194,7 @@ export type EmployeeUpdateWithoutUserInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1156,6 +1209,7 @@ export type EmployeeUpdateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -1174,6 +1228,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1185,6 +1240,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1200,6 +1256,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1213,6 +1270,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -1231,6 +1289,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1242,6 +1301,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1284,6 +1344,7 @@ export type EmployeeCreateWithoutPositionInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1297,6 +1358,7 @@ export type EmployeeCreateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -1315,6 +1377,7 @@ export type EmployeeUncheckedCreateWithoutPositionInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1326,6 +1389,7 @@ export type EmployeeUncheckedCreateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1368,6 +1432,7 @@ export type EmployeeCreateWithoutAssignmentsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1381,6 +1446,7 @@ export type EmployeeCreateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -1400,6 +1466,7 @@ export type EmployeeUncheckedCreateWithoutAssignmentsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1410,6 +1477,7 @@ export type EmployeeUncheckedCreateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1442,6 +1510,7 @@ export type EmployeeUpdateWithoutAssignmentsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1455,6 +1524,7 @@ export type EmployeeUpdateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -1474,6 +1544,7 @@ export type EmployeeUncheckedUpdateWithoutAssignmentsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1484,6 +1555,7 @@ export type EmployeeUncheckedUpdateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1500,6 +1572,7 @@ export type EmployeeCreateWithoutLeaveBalancesInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1514,6 +1587,7 @@ export type EmployeeCreateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
@@ -1532,6 +1606,7 @@ export type EmployeeUncheckedCreateWithoutLeaveBalancesInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1543,6 +1618,7 @@ export type EmployeeUncheckedCreateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
@@ -1574,6 +1650,7 @@ export type EmployeeUpdateWithoutLeaveBalancesInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1588,6 +1665,7 @@ export type EmployeeUpdateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
@@ -1606,6 +1684,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveBalancesInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1617,6 +1696,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
@@ -1632,6 +1712,7 @@ export type EmployeeCreateWithoutLeaveTransactionsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1646,6 +1727,7 @@ export type EmployeeCreateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
@@ -1664,6 +1746,7 @@ export type EmployeeUncheckedCreateWithoutLeaveTransactionsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1675,6 +1758,7 @@ export type EmployeeUncheckedCreateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
@@ -1706,6 +1790,7 @@ export type EmployeeUpdateWithoutLeaveTransactionsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1720,6 +1805,7 @@ export type EmployeeUpdateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
@@ -1738,6 +1824,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveTransactionsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1749,6 +1836,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
@@ -1764,6 +1852,7 @@ export type EmployeeCreateWithoutLeaveRequestsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1778,6 +1867,7 @@ export type EmployeeCreateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
@@ -1796,6 +1886,7 @@ export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1807,6 +1898,7 @@ export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
@@ -1838,6 +1930,7 @@ export type EmployeeUpdateWithoutLeaveRequestsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1852,6 +1945,7 @@ export type EmployeeUpdateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
@@ -1870,6 +1964,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1881,6 +1976,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
@@ -1896,6 +1992,7 @@ export type EmployeeCreateWithoutAppraisalsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1909,6 +2006,7 @@ export type EmployeeCreateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -1928,6 +2026,7 @@ export type EmployeeUncheckedCreateWithoutAppraisalsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -1938,6 +2037,7 @@ export type EmployeeUncheckedCreateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1970,6 +2070,7 @@ export type EmployeeUpdateWithoutAppraisalsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1983,6 +2084,7 @@ export type EmployeeUpdateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -2002,6 +2104,7 @@ export type EmployeeUncheckedUpdateWithoutAppraisalsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2012,6 +2115,7 @@ export type EmployeeUncheckedUpdateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2028,6 +2132,7 @@ export type EmployeeCreateWithoutContractsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -2041,6 +2146,7 @@ export type EmployeeCreateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -2060,6 +2166,7 @@ export type EmployeeUncheckedCreateWithoutContractsInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -2070,6 +2177,7 @@ export type EmployeeUncheckedCreateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2102,6 +2210,7 @@ export type EmployeeUpdateWithoutContractsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2115,6 +2224,7 @@ export type EmployeeUpdateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -2134,6 +2244,7 @@ export type EmployeeUncheckedUpdateWithoutContractsInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2144,6 +2255,7 @@ export type EmployeeUncheckedUpdateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2160,6 +2272,7 @@ export type EmployeeCreateWithoutPayrollProfileInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -2173,6 +2286,7 @@ export type EmployeeCreateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
@@ -2192,6 +2306,7 @@ export type EmployeeUncheckedCreateWithoutPayrollProfileInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -2202,6 +2317,7 @@ export type EmployeeUncheckedCreateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2234,6 +2350,7 @@ export type EmployeeUpdateWithoutPayrollProfileInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2247,6 +2364,7 @@ export type EmployeeUpdateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -2266,6 +2384,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollProfileInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2276,6 +2395,147 @@ export type EmployeeUncheckedUpdateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutPayslipsInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  dateOfBirth?: Date | string | null
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutPayslipsInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  dateOfBirth?: Date | string | null
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutPayslipsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPayslipsInput, Prisma.EmployeeUncheckedCreateWithoutPayslipsInput>
+}
+
+export type EmployeeUpsertWithoutPayslipsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutPayslipsInput, Prisma.EmployeeUncheckedUpdateWithoutPayslipsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPayslipsInput, Prisma.EmployeeUncheckedCreateWithoutPayslipsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutPayslipsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutPayslipsInput, Prisma.EmployeeUncheckedUpdateWithoutPayslipsInput>
+}
+
+export type EmployeeUpdateWithoutPayslipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutPayslipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2294,6 +2554,7 @@ export type EmployeeCreateManyOrganizationInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -2313,6 +2574,7 @@ export type EmployeeUpdateWithoutOrganizationInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2326,6 +2588,7 @@ export type EmployeeUpdateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -2344,6 +2607,7 @@ export type EmployeeUncheckedUpdateWithoutOrganizationInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2355,6 +2619,7 @@ export type EmployeeUncheckedUpdateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2373,6 +2638,7 @@ export type EmployeeUncheckedUpdateManyWithoutOrganizationInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2394,6 +2660,7 @@ export type EmployeeCreateManyDepartmentInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -2413,6 +2680,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2426,6 +2694,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -2444,6 +2713,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2455,6 +2725,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2473,6 +2744,7 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2494,6 +2766,7 @@ export type EmployeeCreateManyPositionInput = {
   workEmail?: string | null
   personalEmail?: string | null
   phone?: string | null
+  dateOfBirth?: Date | string | null
   employmentStatus?: $Enums.EmploymentStatus
   employmentType: $Enums.EmploymentType
   hireDate: Date | string
@@ -2513,6 +2786,7 @@ export type EmployeeUpdateWithoutPositionInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2526,6 +2800,7 @@ export type EmployeeUpdateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
@@ -2544,6 +2819,7 @@ export type EmployeeUncheckedUpdateWithoutPositionInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2555,6 +2831,7 @@ export type EmployeeUncheckedUpdateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2573,6 +2850,7 @@ export type EmployeeUncheckedUpdateManyWithoutPositionInput = {
   workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
   employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2591,6 +2869,7 @@ export type EmployeeCountOutputType = {
   contracts: number
   assignments: number
   appraisals: number
+  payslips: number
   leaveBalances: number
   leaveTransactions: number
   leaveRequests: number
@@ -2600,6 +2879,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   contracts?: boolean | EmployeeCountOutputTypeCountContractsArgs
   assignments?: boolean | EmployeeCountOutputTypeCountAssignmentsArgs
   appraisals?: boolean | EmployeeCountOutputTypeCountAppraisalsArgs
+  payslips?: boolean | EmployeeCountOutputTypeCountPayslipsArgs
   leaveBalances?: boolean | EmployeeCountOutputTypeCountLeaveBalancesArgs
   leaveTransactions?: boolean | EmployeeCountOutputTypeCountLeaveTransactionsArgs
   leaveRequests?: boolean | EmployeeCountOutputTypeCountLeaveRequestsArgs
@@ -2639,6 +2919,13 @@ export type EmployeeCountOutputTypeCountAppraisalsArgs<ExtArgs extends runtime.T
 /**
  * EmployeeCountOutputType without action
  */
+export type EmployeeCountOutputTypeCountPayslipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PayslipWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
 export type EmployeeCountOutputTypeCountLeaveBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmployeeLeaveBalanceWhereInput
 }
@@ -2671,6 +2958,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   workEmail?: boolean
   personalEmail?: boolean
   phone?: boolean
+  dateOfBirth?: boolean
   employmentStatus?: boolean
   employmentType?: boolean
   hireDate?: boolean
@@ -2685,6 +2973,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   assignments?: boolean | Prisma.Employee$assignmentsArgs<ExtArgs>
   appraisals?: boolean | Prisma.Employee$appraisalsArgs<ExtArgs>
   payrollProfile?: boolean | Prisma.Employee$payrollProfileArgs<ExtArgs>
+  payslips?: boolean | Prisma.Employee$payslipsArgs<ExtArgs>
   leaveBalances?: boolean | Prisma.Employee$leaveBalancesArgs<ExtArgs>
   leaveTransactions?: boolean | Prisma.Employee$leaveTransactionsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.Employee$leaveRequestsArgs<ExtArgs>
@@ -2705,6 +2994,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   workEmail?: boolean
   personalEmail?: boolean
   phone?: boolean
+  dateOfBirth?: boolean
   employmentStatus?: boolean
   employmentType?: boolean
   hireDate?: boolean
@@ -2730,6 +3020,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   workEmail?: boolean
   personalEmail?: boolean
   phone?: boolean
+  dateOfBirth?: boolean
   employmentStatus?: boolean
   employmentType?: boolean
   hireDate?: boolean
@@ -2755,6 +3046,7 @@ export type EmployeeSelectScalar = {
   workEmail?: boolean
   personalEmail?: boolean
   phone?: boolean
+  dateOfBirth?: boolean
   employmentStatus?: boolean
   employmentType?: boolean
   hireDate?: boolean
@@ -2764,7 +3056,7 @@ export type EmployeeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "departmentId" | "positionId" | "employeeNumber" | "firstName" | "middleName" | "lastName" | "preferredName" | "workEmail" | "personalEmail" | "phone" | "employmentStatus" | "employmentType" | "hireDate" | "terminationDate" | "isArchived" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "departmentId" | "positionId" | "employeeNumber" | "firstName" | "middleName" | "lastName" | "preferredName" | "workEmail" | "personalEmail" | "phone" | "dateOfBirth" | "employmentStatus" | "employmentType" | "hireDate" | "terminationDate" | "isArchived" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -2773,6 +3065,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   assignments?: boolean | Prisma.Employee$assignmentsArgs<ExtArgs>
   appraisals?: boolean | Prisma.Employee$appraisalsArgs<ExtArgs>
   payrollProfile?: boolean | Prisma.Employee$payrollProfileArgs<ExtArgs>
+  payslips?: boolean | Prisma.Employee$payslipsArgs<ExtArgs>
   leaveBalances?: boolean | Prisma.Employee$leaveBalancesArgs<ExtArgs>
   leaveTransactions?: boolean | Prisma.Employee$leaveTransactionsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.Employee$leaveRequestsArgs<ExtArgs>
@@ -2800,6 +3093,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     assignments: Prisma.$EmployeeAssignmentPayload<ExtArgs>[]
     appraisals: Prisma.$PerformanceAppraisalPayload<ExtArgs>[]
     payrollProfile: Prisma.$PayrollProfilePayload<ExtArgs> | null
+    payslips: Prisma.$PayslipPayload<ExtArgs>[]
     leaveBalances: Prisma.$EmployeeLeaveBalancePayload<ExtArgs>[]
     leaveTransactions: Prisma.$LeaveBalanceTransactionPayload<ExtArgs>[]
     leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
@@ -2818,6 +3112,10 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     workEmail: string | null
     personalEmail: string | null
     phone: string | null
+    /**
+     * Used for Health Surcharge age exemptions (<16 / ≥60).
+     */
+    dateOfBirth: Date | null
     employmentStatus: $Enums.EmploymentStatus
     employmentType: $Enums.EmploymentType
     hireDate: Date
@@ -3226,6 +3524,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   assignments<T extends Prisma.Employee$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   appraisals<T extends Prisma.Employee$appraisalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$appraisalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PerformanceAppraisalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollProfile<T extends Prisma.Employee$payrollProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollProfileArgs<ExtArgs>>): Prisma.Prisma__PayrollProfileClient<runtime.Types.Result.GetResult<Prisma.$PayrollProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  payslips<T extends Prisma.Employee$payslipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payslipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayslipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveBalances<T extends Prisma.Employee$leaveBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$leaveBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeLeaveBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveTransactions<T extends Prisma.Employee$leaveTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$leaveTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveBalanceTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveRequests<T extends Prisma.Employee$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3271,6 +3570,7 @@ export interface EmployeeFieldRefs {
   readonly workEmail: Prisma.FieldRef<"Employee", 'String'>
   readonly personalEmail: Prisma.FieldRef<"Employee", 'String'>
   readonly phone: Prisma.FieldRef<"Employee", 'String'>
+  readonly dateOfBirth: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly employmentStatus: Prisma.FieldRef<"Employee", 'EmploymentStatus'>
   readonly employmentType: Prisma.FieldRef<"Employee", 'EmploymentType'>
   readonly hireDate: Prisma.FieldRef<"Employee", 'DateTime'>
@@ -3805,6 +4105,30 @@ export type Employee$payrollProfileArgs<ExtArgs extends runtime.Types.Extensions
    */
   include?: Prisma.PayrollProfileInclude<ExtArgs> | null
   where?: Prisma.PayrollProfileWhereInput
+}
+
+/**
+ * Employee.payslips
+ */
+export type Employee$payslipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payslip
+   */
+  select?: Prisma.PayslipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payslip
+   */
+  omit?: Prisma.PayslipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PayslipInclude<ExtArgs> | null
+  where?: Prisma.PayslipWhereInput
+  orderBy?: Prisma.PayslipOrderByWithRelationInput | Prisma.PayslipOrderByWithRelationInput[]
+  cursor?: Prisma.PayslipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PayslipScalarFieldEnum | Prisma.PayslipScalarFieldEnum[]
 }
 
 /**

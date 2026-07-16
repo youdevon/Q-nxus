@@ -73,6 +73,11 @@ const permissions = [
     moduleKey: "payroll",
   },
   {
+    code: "payroll.manage",
+    name: "Manage payroll setup, statutory rates, and pay runs",
+    moduleKey: "payroll",
+  },
+  {
     code: "documents.view",
     name: "View documents",
     moduleKey: "documents",
@@ -279,6 +284,8 @@ async function main() {
     "leave.manage",
     "contracts.view",
     "contracts.manage",
+    "payroll.view",
+    "payroll.manage",
     "reports.view",
     "documents.view",
   ]

@@ -222,6 +222,53 @@ export type EmploymentContractAllowance = Prisma.EmploymentContractAllowanceMode
  */
 export type PayrollProfile = Prisma.PayrollProfileModel
 /**
+ * Model PayrollBankAccount
+ * 
+ */
+export type PayrollBankAccount = Prisma.PayrollBankAccountModel
+/**
+ * Model StatutoryRate
+ * 
+ */
+export type StatutoryRate = Prisma.StatutoryRateModel
+/**
+ * Model NisEarningsClass
+ * Trinidad & Tobago NIS earnings-class bands (fixed weekly employee/employer amounts).
+ */
+export type NisEarningsClass = Prisma.NisEarningsClassModel
+/**
+ * Model PayeTaxConfig
+ * Trinidad & Tobago PAYE (income tax) parameters — annual brackets, not flat monthly %.
+ */
+export type PayeTaxConfig = Prisma.PayeTaxConfigModel
+/**
+ * Model PayeTaxBracket
+ * 
+ */
+export type PayeTaxBracket = Prisma.PayeTaxBracketModel
+/**
+ * Model HealthSurchargeConfig
+ * Trinidad & Tobago Health Surcharge — fixed weekly amounts by earnings tier.
+ */
+export type HealthSurchargeConfig = Prisma.HealthSurchargeConfigModel
+/**
+ * Model PayrollPeriod
+ * Calendar span for which employees are paid (e.g. July 2026 monthly).
+ */
+export type PayrollPeriod = Prisma.PayrollPeriodModel
+/**
+ * Model PayRun
+ * Processing event for a payroll period — draft calc then posted freeze.
+ * REGULAR is the primary monthly run. CORRECTION / OFF_CYCLE are additional
+ * runs on the same period after a posted regular (never rewrite the original).
+ */
+export type PayRun = Prisma.PayRunModel
+/**
+ * Model Payslip
+ * Employee result for a pay run. Posted rows store an immutable snapshot.
+ */
+export type Payslip = Prisma.PayslipModel
+/**
  * Model Notification
  * 
  */
