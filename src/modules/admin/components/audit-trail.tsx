@@ -190,6 +190,8 @@ export function AuditTrail({ data, currentFilters }: AuditTrailProps) {
       <PageHeader
         title="Audit Trail"
         description="Review immutable records of administrative and system activity across Q-NXUS."
+        backHref="/administration"
+        backLabel="Administration"
       />
 
       <section aria-labelledby="audit-summary-heading">

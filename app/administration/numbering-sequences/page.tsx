@@ -45,6 +45,8 @@ export default async function NumberingSequencesPage() {
       <PageHeader
         title="Numbering Sequences"
         description="Current prefixes, number lengths, reset rules and reference previews."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <Button
             nativeButton={false}

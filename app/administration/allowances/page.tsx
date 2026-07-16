@@ -25,6 +25,8 @@ export default async function AllowanceCategoriesPage() {
       <PageHeader
         title="Allowance Categories"
         description="Manage the allowance categories available during employment contract entry."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <Button
             nativeButton={false}

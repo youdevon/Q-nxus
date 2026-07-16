@@ -123,11 +123,11 @@ export function JobDescriptionForm({
             : "New Job Description"
         }
         description={`${position.title} · ${position.department.name}`}
-        backHref={`/people/structure/positions/${position.id}`}
-        backLabel="Position"
+        backHref={`/people/structure/positions/${position.id}/job-descriptions`}
+        backLabel="Versions"
         actions={
           <FormPageActions
-            cancelHref={`/people/structure/positions/${position.id}`}
+            cancelHref={`/people/structure/positions/${position.id}/job-descriptions`}
           >
             <Button type="submit" disabled={pending || readOnly}>
               <Save />

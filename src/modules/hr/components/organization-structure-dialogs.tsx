@@ -164,6 +164,7 @@ export function DepartmentStructureDialog({
 
         {open ? (
           <DepartmentDialogForm
+            key={department?.id ?? "new-department"}
             department={department}
             onSuccess={(entityId) => {
               onSuccess?.(entityId);
@@ -376,6 +377,7 @@ export function PositionStructureDialog({
 
         {open ? (
           <PositionDialogForm
+            key={position?.id ?? `new-position-${defaultDepartmentId ?? "none"}`}
             departments={departments}
             defaultDepartmentId={defaultDepartmentId}
             position={position}

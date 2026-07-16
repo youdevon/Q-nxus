@@ -24,6 +24,8 @@ export default async function OrganizationHolidaysPage() {
       <PageHeader
         title="Organization Holidays"
         description="Public holidays reduce working-day counts when employees request leave."
+        backHref="/people"
+        backLabel="Employees"
       />
       <OrganizationHolidaysWorkspace holidays={holidays} />
     </PageShell>

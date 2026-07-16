@@ -39,6 +39,8 @@ export default async function FeaturesPage() {
       <PageHeader
         title="Feature Controls"
         description="Current feature availability, operating status and effective periods."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <Button
             nativeButton={false}

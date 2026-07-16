@@ -6,9 +6,11 @@ import {
   ChevronDown,
   ChevronRight,
   Network,
+  Pencil,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { DepartmentRecord } from "@/src/modules/hr/data/get-people-structure";
 import type { OrganizationSelection } from "@/src/modules/hr/lib/organization-chart-view";
 
@@ -16,12 +18,16 @@ type OrganizationStructureTreeProps = {
   departments: DepartmentRecord[];
   selection: OrganizationSelection;
   onSelect: (selection: OrganizationSelection) => void;
+  canManage?: boolean;
+  onEditDepartment?: (department: DepartmentRecord) => void;
 };
 
 export function OrganizationStructureTree({
   departments,
   selection,
   onSelect,
+  canManage = false,
+  onEditDepartment,
 }: OrganizationStructureTreeProps) {
   const expandedDepartmentIds = new Set<string>();
 
@@ -133,6 +139,23 @@ export function OrganizationStructureTree({
                       </span>
                     </span>
                   </button>
+
+                  {canManage && onEditDepartment ? (
+                    <div className="flex items-center pr-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`Edit ${department.name}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onEditDepartment(department);
+                        }}
+                      >
+                        <Pencil />
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
 
                 {isExpanded && (

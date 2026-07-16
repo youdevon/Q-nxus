@@ -41,6 +41,8 @@ export default async function SystemEmailPage() {
       <PageHeader
         title="System Email"
         description="SMTP configuration, delivery queue and system-wide notification email status."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <form action={processSystemEmailQueue}>
             <Button type="submit" variant="outline">

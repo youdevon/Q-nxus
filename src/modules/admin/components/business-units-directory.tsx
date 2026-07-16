@@ -20,6 +20,8 @@ export function BusinessUnitsDirectory({
       <PageHeader
         title="Business Units"
         description="Manage operational divisions, reporting relationships and effective organizational structures."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <Button
             nativeButton={false}

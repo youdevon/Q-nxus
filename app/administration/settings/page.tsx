@@ -71,6 +71,8 @@ export default async function DomainSettingsPage() {
       <PageHeader
         title="Domain Settings"
         description="Current business, security and module configuration values."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <Button
             nativeButton={false}

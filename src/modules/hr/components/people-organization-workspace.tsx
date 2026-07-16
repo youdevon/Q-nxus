@@ -319,6 +319,7 @@ export function PeopleOrganizationWorkspace({
   function openEditDepartment(department: DepartmentRecord) {
     setEditingDepartment(department);
     setDepartmentDialogOpen(true);
+    updateSelection({ type: "department", departmentId: department.id });
   }
 
   function openNewPosition(departmentId?: string) {
@@ -372,6 +373,8 @@ export function PeopleOrganizationWorkspace({
       <PageHeader
         title="Organization"
         description="Create departments and positions, and set who reports where — all in one place."
+        backHref="/people"
+        backLabel="Employees"
         actions={
           <>
             <PageActionsStart>
@@ -456,6 +459,8 @@ export function PeopleOrganizationWorkspace({
             departments={departments}
             selection={selection}
             onSelect={updateSelection}
+            canManage={canManage}
+            onEditDepartment={openEditDepartment}
           />
         </aside>
 
@@ -492,10 +497,13 @@ export function PeopleOrganizationWorkspace({
                 ) : (
                   <ul className="mt-4 divide-y divide-border border border-border">
                     {departments.map((department) => (
-                      <li key={department.id}>
+                      <li
+                        key={department.id}
+                        className="flex items-stretch"
+                      >
                         <button
                           type="button"
-                          className="flex w-full items-start gap-2 px-3 py-3 text-left transition-colors hover:bg-muted/20"
+                          className="flex min-w-0 flex-1 items-start gap-2 px-3 py-3 text-left transition-colors hover:bg-muted/20"
                           onClick={() =>
                             updateSelection({
                               type: "department",
@@ -513,9 +521,26 @@ export function PeopleOrganizationWorkspace({
                               {" "}
                               position
                               {department.positions.length === 1 ? "" : "s"}
+                              {department.code
+                                ? ` · ${department.code}`
+                                : ""}
                             </span>
                           </span>
                         </button>
+
+                        {canManage ? (
+                          <div className="flex items-center pr-2">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label={`Edit ${department.name}`}
+                              onClick={() => openEditDepartment(department)}
+                            >
+                              <Pencil />
+                            </Button>
+                          </div>
+                        ) : null}
                       </li>
                     ))}
                   </ul>
@@ -721,15 +746,30 @@ export function PeopleOrganizationWorkspace({
                 </div>
 
                 {canManage ? (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={openEditPosition}
-                  >
-                    <Pencil />
-                    Edit position
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedDepartment ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          openEditDepartment(selectedDepartment)
+                        }
+                      >
+                        <Building2 />
+                        Edit department
+                      </Button>
+                    ) : null}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={openEditPosition}
+                    >
+                      <Pencil />
+                      Edit position
+                    </Button>
+                  </div>
                 ) : null}
               </div>
 
@@ -778,7 +818,12 @@ export function PeopleOrganizationWorkspace({
         <>
           <DepartmentStructureDialog
             open={departmentDialogOpen}
-            onOpenChange={setDepartmentDialogOpen}
+            onOpenChange={(open) => {
+              setDepartmentDialogOpen(open);
+              if (!open) {
+                setEditingDepartment(null);
+              }
+            }}
             department={editingDepartment}
             onSuccess={(entityId) =>
               handleStructureSaved("department", entityId)
@@ -787,7 +832,12 @@ export function PeopleOrganizationWorkspace({
 
           <PositionStructureDialog
             open={positionDialogOpen}
-            onOpenChange={setPositionDialogOpen}
+            onOpenChange={(open) => {
+              setPositionDialogOpen(open);
+              if (!open) {
+                setEditingPosition(null);
+              }
+            }}
             departments={departments}
             defaultDepartmentId={positionDialogDepartmentId}
             position={editingPosition}

@@ -281,6 +281,7 @@ export async function updateDepartment(
     return {
       status: "success",
       message: "Department updated successfully.",
+      entityId: id,
     };
   } catch (error: unknown) {
     console.error("Unable to update department:", error);

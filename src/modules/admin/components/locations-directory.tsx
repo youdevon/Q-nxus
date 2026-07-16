@@ -21,6 +21,8 @@ export function LocationsDirectory({
       <PageHeader
         title="Locations"
         description="Manage offices, branches, warehouses, remote workplaces and operational sites."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <Button
             nativeButton={false}

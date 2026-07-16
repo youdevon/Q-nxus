@@ -28,6 +28,8 @@ export default async function LeaveTypesPage() {
       <PageHeader
         title="Leave Types"
         description="Configure the leave categories, balance requirements and supporting-document rules used throughout Q-NXUS."
+        backHref="/people"
+        backLabel="Employees"
         actions={
           <Button
             nativeButton={false}

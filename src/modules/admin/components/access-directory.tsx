@@ -39,6 +39,8 @@ export function AccessDirectory({
       <PageHeader
         title="Users and Roles"
         description="Manage platform accounts, security roles and permission assignments."
+        backHref="/administration"
+        backLabel="Administration"
         actions={
           <Button
             nativeButton={false}
