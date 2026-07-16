@@ -1,85 +1,57 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { redirect } from "next/navigation"
-import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
-import {
-  EmploymentStatus,
-  EmploymentType,
-} from "@/generated/prisma/client"
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
-import { provisionEmployeeUser } from "@/src/modules/auth/services/provision-employee-user"
+import { EmploymentStatus, EmploymentType } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { provisionEmployeeUser } from "@/src/modules/auth/services/provision-employee-user";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
 export type EmployeeFormState = {
-  status: "idle" | "error" | "conflict"
-  message: string
-  fieldErrors?: Record<string, string>
-}
+  status: "idle" | "error" | "conflict";
+  message: string;
+  fieldErrors?: Record<string, string>;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function nullableText(
-  formData: FormData,
-  key: string,
-): string | null {
-  const value = textValue(formData, key)
-  return value.length > 0 ? value : null
+function nullableText(formData: FormData, key: string): string | null {
+  const value = textValue(formData, key);
+  return value.length > 0 ? value : null;
 }
 
 function parseDate(value: string): Date | null {
   if (!value) {
-    return null
+    return null;
   }
 
-  const date = new Date(`${value}T00:00:00.000Z`)
-  return Number.isNaN(date.getTime()) ? null : date
-}
-
-async function requestMetadata() {
-  const requestHeaders = await headers()
-
-  return {
-    ipAddress:
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null,
-    userAgent: requestHeaders.get("user-agent"),
-  }
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function validateEmployee(formData: FormData) {
-  const firstName = textValue(formData, "firstName")
-  const lastName = textValue(formData, "lastName")
-  const employmentTypeValue = textValue(
-    formData,
-    "employmentType",
-  )
-  const employmentStatusValue = textValue(
-    formData,
-    "employmentStatus",
-  )
-  const hireDate = parseDate(textValue(formData, "hireDate"))
-  const terminationDate = parseDate(
-    textValue(formData, "terminationDate"),
-  )
-  const workEmail = nullableText(formData, "workEmail")
-  const personalEmail = nullableText(formData, "personalEmail")
+  const firstName = textValue(formData, "firstName");
+  const lastName = textValue(formData, "lastName");
+  const employmentTypeValue = textValue(formData, "employmentType");
+  const employmentStatusValue = textValue(formData, "employmentStatus");
+  const hireDate = parseDate(textValue(formData, "hireDate"));
+  const terminationDate = parseDate(textValue(formData, "terminationDate"));
+  const workEmail = nullableText(formData, "workEmail");
+  const personalEmail = nullableText(formData, "personalEmail");
 
-  const fieldErrors: Record<string, string> = {}
+  const fieldErrors: Record<string, string> = {};
 
   if (firstName.length < 2) {
-    fieldErrors.firstName =
-      "First name must contain at least two characters."
+    fieldErrors.firstName = "First name must contain at least two characters.";
   }
 
   if (lastName.length < 2) {
-    fieldErrors.lastName =
-      "Last name must contain at least two characters."
+    fieldErrors.lastName = "Last name must contain at least two characters.";
   }
 
   if (
@@ -87,8 +59,7 @@ function validateEmployee(formData: FormData) {
       employmentTypeValue as EmploymentType,
     )
   ) {
-    fieldErrors.employmentType =
-      "Select a valid employment type."
+    fieldErrors.employmentType = "Select a valid employment type.";
   }
 
   if (
@@ -96,32 +67,26 @@ function validateEmployee(formData: FormData) {
       employmentStatusValue as EmploymentStatus,
     )
   ) {
-    fieldErrors.employmentStatus =
-      "Select a valid employment status."
+    fieldErrors.employmentStatus = "Select a valid employment status.";
   }
 
   if (!hireDate) {
-    fieldErrors.hireDate = "Enter a valid hire date."
+    fieldErrors.hireDate = "Enter a valid hire date.";
   }
 
-  if (
-    terminationDate &&
-    hireDate &&
-    terminationDate < hireDate
-  ) {
+  if (terminationDate && hireDate && terminationDate < hireDate) {
     fieldErrors.terminationDate =
-      "Termination date cannot be before the hire date."
+      "Termination date cannot be before the hire date.";
   }
 
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (workEmail && !emailPattern.test(workEmail)) {
-    fieldErrors.workEmail = "Enter a valid work email address."
+    fieldErrors.workEmail = "Enter a valid work email address.";
   }
 
   if (personalEmail && !emailPattern.test(personalEmail)) {
-    fieldErrors.personalEmail =
-      "Enter a valid personal email address."
+    fieldErrors.personalEmail = "Enter a valid personal email address.";
   }
 
   return {
@@ -135,16 +100,14 @@ function validateEmployee(formData: FormData) {
       workEmail,
       personalEmail,
       phone: nullableText(formData, "phone"),
-      employmentType:
-        employmentTypeValue as EmploymentType,
-      employmentStatus:
-        employmentStatusValue as EmploymentStatus,
+      employmentType: employmentTypeValue as EmploymentType,
+      employmentStatus: employmentStatusValue as EmploymentStatus,
       hireDate,
       terminationDate,
       departmentId: nullableText(formData, "departmentId"),
       positionId: nullableText(formData, "positionId"),
     },
-  }
+  };
 }
 
 async function validateStructureSelection(
@@ -153,11 +116,11 @@ async function validateStructureSelection(
   positionId: string | null,
 ): Promise<string | null> {
   if (positionId && !departmentId) {
-    return "A department must be selected for the position."
+    return "A department must be selected for the position.";
   }
 
   if (!departmentId) {
-    return null
+    return null;
   }
 
   const department = await prisma.department.findFirst({
@@ -169,10 +132,10 @@ async function validateStructureSelection(
     select: {
       id: true,
     },
-  })
+  });
 
   if (!department) {
-    return "The selected department is invalid or inactive."
+    return "The selected department is invalid or inactive.";
   }
 
   if (positionId) {
@@ -185,37 +148,37 @@ async function validateStructureSelection(
       select: {
         id: true,
       },
-    })
+    });
 
     if (!position) {
-      return "The selected position does not belong to the department."
+      return "The selected position does not belong to the department.";
     }
   }
 
-  return null
+  return null;
 }
 
 export async function createEmployee(
   _previousState: EmployeeFormState,
   formData: FormData,
 ): Promise<EmployeeFormState> {
-  const actor = await requireActor("people.manage")
+  const actor = await requireActor("people.manage");
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const validation = validateEmployee(formData)
+  const validation = validateEmployee(formData);
 
   if (!validation.valid) {
     return {
       status: "error",
       message: "Review the highlighted employee information.",
       fieldErrors: validation.fieldErrors,
-    }
+    };
   }
 
   const organization = await prisma.organization.findFirst({
@@ -225,184 +188,171 @@ export async function createEmployee(
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
     return {
       status: "error",
       message: "No organization is configured.",
-    }
+    };
   }
 
   const structureError = await validateStructureSelection(
     organization.id,
     validation.values.departmentId,
     validation.values.positionId,
-  )
+  );
 
   if (structureError) {
     return {
       status: "error",
       message: structureError,
-    }
+    };
   }
 
   try {
-    const metadata = await requestMetadata()
+    const metadata = await getAuditRequestMetadata(formData);
 
-    const employee = await prisma.$transaction(
-      async (transaction) => {
-        const sequence =
-          await transaction.numberingSequence.findFirst({
-            where: {
-              organizationId: organization.id,
-              sequenceCode: "EMPLOYEE",
-              isActive: true,
-            },
-          })
+    const employee = await prisma.$transaction(async (transaction) => {
+      const sequence = await transaction.numberingSequence.findFirst({
+        where: {
+          organizationId: organization.id,
+          sequenceCode: "EMPLOYEE",
+          isActive: true,
+        },
+      });
 
-        if (!sequence) {
-          throw new Error(
-            "The EMPLOYEE numbering sequence is not configured.",
-          )
+      if (!sequence) {
+        throw new Error("The EMPLOYEE numbering sequence is not configured.");
+      }
+
+      const updatedSequence = await transaction.numberingSequence.update({
+        where: {
+          id: sequence.id,
+        },
+        data: {
+          currentNumber: {
+            increment: 1,
+          },
+          version: {
+            increment: 1,
+          },
+        },
+      });
+
+      const numberPart = updatedSequence.currentNumber
+        .toString()
+        .padStart(updatedSequence.minimumLength, "0");
+
+      const employeeNumber = `${updatedSequence.prefix ?? ""}${numberPart}${updatedSequence.suffix ?? ""}`;
+
+      const created = await transaction.employee.create({
+        data: {
+          organizationId: organization.id,
+          employeeNumber,
+          firstName: validation.values.firstName,
+          middleName: validation.values.middleName,
+          lastName: validation.values.lastName,
+          preferredName: validation.values.preferredName,
+          workEmail: validation.values.workEmail,
+          personalEmail: validation.values.personalEmail,
+          phone: validation.values.phone,
+          employmentStatus: validation.values.employmentStatus,
+          employmentType: validation.values.employmentType,
+          hireDate: validation.values.hireDate!,
+          terminationDate: validation.values.terminationDate,
+          departmentId: validation.values.departmentId,
+          positionId: validation.values.positionId,
+        },
+      });
+
+      if (created.departmentId) {
+        let jobDescriptionId: string | null = null;
+
+        if (created.positionId) {
+          const currentJobDescription =
+            await transaction.positionJobDescription.findFirst({
+              where: {
+                positionId: created.positionId,
+                isCurrent: true,
+                status: "ACTIVE",
+              },
+              orderBy: {
+                versionNumber: "desc",
+              },
+              select: {
+                id: true,
+              },
+            });
+
+          jobDescriptionId = currentJobDescription?.id ?? null;
         }
 
-        const updatedSequence =
-          await transaction.numberingSequence.update({
-            where: {
-              id: sequence.id,
-            },
-            data: {
-              currentNumber: {
-                increment: 1,
-              },
-              version: {
-                increment: 1,
-              },
-            },
-          })
-
-        const numberPart =
-          updatedSequence.currentNumber
-            .toString()
-            .padStart(updatedSequence.minimumLength, "0")
-
-        const employeeNumber = `${updatedSequence.prefix ?? ""}${numberPart}${updatedSequence.suffix ?? ""}`
-
-        const created = await transaction.employee.create({
+        await transaction.employeeAssignment.create({
           data: {
-            organizationId: organization.id,
-            employeeNumber,
-            firstName: validation.values.firstName,
-            middleName: validation.values.middleName,
-            lastName: validation.values.lastName,
-            preferredName: validation.values.preferredName,
-            workEmail: validation.values.workEmail,
-            personalEmail: validation.values.personalEmail,
-            phone: validation.values.phone,
-            employmentStatus:
-              validation.values.employmentStatus,
-            employmentType:
-              validation.values.employmentType,
-            hireDate: validation.values.hireDate!,
-            terminationDate:
-              validation.values.terminationDate,
-            departmentId: validation.values.departmentId,
-            positionId: validation.values.positionId,
+            employeeId: created.id,
+            departmentId: created.departmentId,
+            positionId: created.positionId,
+            jobDescriptionId,
+            assignmentType: "INITIAL_APPOINTMENT",
+            startDate: created.hireDate,
+            isCurrent: true,
+            isActing: false,
+            reason: "Initial organizational assignment.",
           },
-        })
+        });
+      }
 
-        if (created.departmentId) {
-          let jobDescriptionId: string | null = null
-
-          if (created.positionId) {
-            const currentJobDescription =
-              await transaction.positionJobDescription.findFirst({
-                where: {
-                  positionId: created.positionId,
-                  isCurrent: true,
-                  status: "ACTIVE",
-                },
-                orderBy: {
-                  versionNumber: "desc",
-                },
-                select: {
-                  id: true,
-                },
-              })
-
-            jobDescriptionId =
-              currentJobDescription?.id ?? null
-          }
-
-          await transaction.employeeAssignment.create({
-            data: {
-              employeeId: created.id,
-              departmentId: created.departmentId,
-              positionId: created.positionId,
-              jobDescriptionId,
-              assignmentType: "INITIAL_APPOINTMENT",
-              startDate: created.hireDate,
-              isCurrent: true,
-              isActing: false,
-              reason: "Initial organizational assignment.",
-            },
-          })
-        }
-
-        await transaction.auditEvent.create({
-          data: {
-            userId: actor.actor.userId,
-            moduleKey: "hr",
-            action: "CREATE",
-            entityType: "Employee",
-            entityId: created.id,
-            description: `Created employee ${created.employeeNumber} — ${created.firstName} ${created.lastName}.`,
-            newValues: {
-              employeeNumber: created.employeeNumber,
-              firstName: created.firstName,
-              middleName: created.middleName,
-              lastName: created.lastName,
-              preferredName: created.preferredName,
-              workEmail: created.workEmail,
-              personalEmail: created.personalEmail,
-              phone: created.phone,
-              employmentStatus: created.employmentStatus,
-              employmentType: created.employmentType,
-              hireDate: created.hireDate,
-              terminationDate: created.terminationDate,
-              departmentId: created.departmentId,
-              positionId: created.positionId,
-            },
-            ipAddress: metadata.ipAddress,
-            userAgent: metadata.userAgent,
+      await transaction.auditEvent.create({
+        data: {
+          userId: actor.actor.userId,
+          moduleKey: "hr",
+          action: "CREATE",
+          entityType: "Employee",
+          entityId: created.id,
+          description: `Created employee ${created.employeeNumber} — ${created.firstName} ${created.lastName}.`,
+          newValues: {
+            employeeNumber: created.employeeNumber,
+            firstName: created.firstName,
+            middleName: created.middleName,
+            lastName: created.lastName,
+            preferredName: created.preferredName,
+            workEmail: created.workEmail,
+            personalEmail: created.personalEmail,
+            phone: created.phone,
+            employmentStatus: created.employmentStatus,
+            employmentType: created.employmentType,
+            hireDate: created.hireDate,
+            terminationDate: created.terminationDate,
+            departmentId: created.departmentId,
+            positionId: created.positionId,
           },
-        })
+          ipAddress: metadata.ipAddress,
+          userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
+        },
+      });
 
-        return created
-      },
-    )
+      return created;
+    });
 
     try {
-      await provisionEmployeeUser(employee.id)
+      await provisionEmployeeUser(employee.id);
     } catch (provisionError: unknown) {
       console.error(
         "Employee created but user account provisioning failed:",
         provisionError,
-      )
+      );
     }
 
-    revalidatePath("/people")
-    redirect(`/people/employees/${employee.id}`)
+    revalidatePath("/people");
+    redirect(`/people/employees/${employee.id}`);
   } catch (error: unknown) {
-    if (
-      error instanceof Error &&
-      error.message === "NEXT_REDIRECT"
-    ) {
-      throw error
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+      throw error;
     }
 
-    console.error("Unable to create employee:", error)
+    console.error("Unable to create employee:", error);
 
     return {
       status: "error",
@@ -410,11 +360,10 @@ export async function createEmployee(
         error instanceof Error &&
         error.message.includes("EMPLOYEE numbering sequence")
           ? error.message
-          : error instanceof Error &&
-              error.message.includes("user account")
+          : error instanceof Error && error.message.includes("user account")
             ? error.message
             : "The employee record could not be created.",
-    }
+    };
   }
 }
 
@@ -422,27 +371,24 @@ export async function updateEmployee(
   _previousState: EmployeeFormState,
   formData: FormData,
 ): Promise<EmployeeFormState> {
-  const actor = await requireActor("people.manage")
+  const actor = await requireActor("people.manage");
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const id = textValue(formData, "id")
-  const submittedUpdatedAt = textValue(
-    formData,
-    "updatedAt",
-  )
-  const validation = validateEmployee(formData)
+  const id = textValue(formData, "id");
+  const submittedUpdatedAt = textValue(formData, "updatedAt");
+  const validation = validateEmployee(formData);
 
   if (!id || !submittedUpdatedAt) {
     return {
       status: "error",
       message: "The employee record is incomplete.",
-    }
+    };
   }
 
   if (!validation.valid) {
@@ -450,146 +396,130 @@ export async function updateEmployee(
       status: "error",
       message: "Review the highlighted employee information.",
       fieldErrors: validation.fieldErrors,
-    }
+    };
   }
 
   const current = await prisma.employee.findUnique({
     where: {
       id,
     },
-  })
+  });
 
   if (!current) {
     return {
       status: "error",
       message: "The employee record no longer exists.",
-    }
+    };
   }
 
   if (current.updatedAt.toISOString() !== submittedUpdatedAt) {
     return {
       status: "conflict",
-      message:
-        "This employee was updated elsewhere. Refresh before saving.",
-    }
+      message: "This employee was updated elsewhere. Refresh before saving.",
+    };
   }
 
   try {
-    const metadata = await requestMetadata()
+    const metadata = await getAuditRequestMetadata(formData);
 
-    const result = await prisma.$transaction(
-      async (transaction) => {
-        const updateResult =
-          await transaction.employee.updateMany({
-            where: {
-              id,
-              updatedAt: current.updatedAt,
-            },
-            data: {
-              firstName: validation.values.firstName,
-              middleName: validation.values.middleName,
-              lastName: validation.values.lastName,
-              preferredName:
-                validation.values.preferredName,
-              workEmail: validation.values.workEmail,
-              personalEmail:
-                validation.values.personalEmail,
-              phone: validation.values.phone,
-              employmentStatus:
-                validation.values.employmentStatus,
-              employmentType:
-                validation.values.employmentType,
-              hireDate: validation.values.hireDate!,
-              terminationDate:
-                validation.values.terminationDate,
-            },
-          })
+    const result = await prisma.$transaction(async (transaction) => {
+      const updateResult = await transaction.employee.updateMany({
+        where: {
+          id,
+          updatedAt: current.updatedAt,
+        },
+        data: {
+          firstName: validation.values.firstName,
+          middleName: validation.values.middleName,
+          lastName: validation.values.lastName,
+          preferredName: validation.values.preferredName,
+          workEmail: validation.values.workEmail,
+          personalEmail: validation.values.personalEmail,
+          phone: validation.values.phone,
+          employmentStatus: validation.values.employmentStatus,
+          employmentType: validation.values.employmentType,
+          hireDate: validation.values.hireDate!,
+          terminationDate: validation.values.terminationDate,
+        },
+      });
 
-        if (updateResult.count !== 1) {
-          return false
-        }
+      if (updateResult.count !== 1) {
+        return false;
+      }
 
-        const updated =
-          await transaction.employee.findUniqueOrThrow({
-            where: {
-              id,
-            },
-          })
+      const updated = await transaction.employee.findUniqueOrThrow({
+        where: {
+          id,
+        },
+      });
 
-        await transaction.auditEvent.create({
-          data: {
-            userId: actor.actor.userId,
-            moduleKey: "hr",
-            action: "UPDATE",
-            entityType: "Employee",
-            entityId: updated.id,
-            description: `Updated employee ${updated.employeeNumber} — ${updated.firstName} ${updated.lastName}.`,
-            oldValues: {
-              firstName: current.firstName,
-              middleName: current.middleName,
-              lastName: current.lastName,
-              preferredName: current.preferredName,
-              workEmail: current.workEmail,
-              personalEmail: current.personalEmail,
-              phone: current.phone,
-              employmentStatus:
-                current.employmentStatus,
-              employmentType: current.employmentType,
-              hireDate: current.hireDate,
-              terminationDate: current.terminationDate,
-              departmentId: current.departmentId,
-              positionId: current.positionId,
-            },
-            newValues: {
-              firstName: updated.firstName,
-              middleName: updated.middleName,
-              lastName: updated.lastName,
-              preferredName: updated.preferredName,
-              workEmail: updated.workEmail,
-              personalEmail: updated.personalEmail,
-              phone: updated.phone,
-              employmentStatus:
-                updated.employmentStatus,
-              employmentType: updated.employmentType,
-              hireDate: updated.hireDate,
-              terminationDate:
-                updated.terminationDate,
-              departmentId: updated.departmentId,
-              positionId: updated.positionId,
-            },
-            ipAddress: metadata.ipAddress,
-            userAgent: metadata.userAgent,
+      await transaction.auditEvent.create({
+        data: {
+          userId: actor.actor.userId,
+          moduleKey: "hr",
+          action: "UPDATE",
+          entityType: "Employee",
+          entityId: updated.id,
+          description: `Updated employee ${updated.employeeNumber} — ${updated.firstName} ${updated.lastName}.`,
+          oldValues: {
+            firstName: current.firstName,
+            middleName: current.middleName,
+            lastName: current.lastName,
+            preferredName: current.preferredName,
+            workEmail: current.workEmail,
+            personalEmail: current.personalEmail,
+            phone: current.phone,
+            employmentStatus: current.employmentStatus,
+            employmentType: current.employmentType,
+            hireDate: current.hireDate,
+            terminationDate: current.terminationDate,
+            departmentId: current.departmentId,
+            positionId: current.positionId,
           },
-        })
+          newValues: {
+            firstName: updated.firstName,
+            middleName: updated.middleName,
+            lastName: updated.lastName,
+            preferredName: updated.preferredName,
+            workEmail: updated.workEmail,
+            personalEmail: updated.personalEmail,
+            phone: updated.phone,
+            employmentStatus: updated.employmentStatus,
+            employmentType: updated.employmentType,
+            hireDate: updated.hireDate,
+            terminationDate: updated.terminationDate,
+            departmentId: updated.departmentId,
+            positionId: updated.positionId,
+          },
+          ipAddress: metadata.ipAddress,
+          userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
+        },
+      });
 
-        return true
-      },
-    )
+      return true;
+    });
 
     if (!result) {
       return {
         status: "conflict",
-        message:
-          "This employee changed while being saved. Refresh the page.",
-      }
+        message: "This employee changed while being saved. Refresh the page.",
+      };
     }
 
-    revalidatePath("/people")
-    revalidatePath(`/people/employees/${id}`)
-    redirect(`/people/employees/${id}`)
+    revalidatePath("/people");
+    revalidatePath(`/people/employees/${id}`);
+    redirect(`/people/employees/${id}`);
   } catch (error: unknown) {
-    if (
-      error instanceof Error &&
-      error.message === "NEXT_REDIRECT"
-    ) {
-      throw error
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+      throw error;
     }
 
-    console.error("Unable to update employee:", error)
+    console.error("Unable to update employee:", error);
 
     return {
       status: "error",
       message: "The employee record could not be updated.",
-    }
+    };
   }
 }

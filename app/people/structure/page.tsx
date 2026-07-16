@@ -1,27 +1,70 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { redirect } from "next/navigation"
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { PeopleStructureWorkspace } from "@/src/modules/hr/components/people-structure-workspace"
-import { getPeopleStructure } from "@/src/modules/hr/data/get-people-structure"
-import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
+import { PeopleOrganizationWorkspace } from "@/src/modules/hr/components/people-organization-workspace";
+import { getOrganizationChart } from "@/src/modules/hr/data/get-organization-chart";
+import { getPeopleStructure } from "@/src/modules/hr/data/get-people-structure";
+import { requirePeopleDirectoryAccess } from "@/src/modules/hr/data/require-people-access";
+import type { OrganizationSelection } from "@/src/modules/hr/lib/organization-chart-view";
 
 export const metadata: Metadata = {
-  title: "People Structure",
-}
+  title: "Organization",
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-export default async function PeopleStructurePage() {
-  const capabilities = await getUserCapabilities()
+type SearchParams = Promise<{
+  department?: string;
+  position?: string;
+}>;
 
-  if (!capabilities?.can("people.manage")) {
-    redirect("/people")
+function parseSearchSelection(params: {
+  department?: string;
+  position?: string;
+}): OrganizationSelection | undefined {
+  if (params.position) {
+    return {
+      type: "position",
+      positionId: params.position,
+    };
   }
 
-  const departments = await getPeopleStructure()
+  if (params.department) {
+    return {
+      type: "department",
+      departmentId: params.department,
+    };
+  }
+
+  return undefined;
+}
+
+export default async function PeopleStructurePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const capabilities = await requirePeopleDirectoryAccess();
+
+  const [departments, chartData] = await Promise.all([
+    getPeopleStructure(),
+    getOrganizationChart(),
+  ]);
+
+  if (!chartData) {
+    notFound();
+  }
+
+  const params = await searchParams;
+  const initialSelection = parseSearchSelection(params);
+  const canManage = capabilities.can("people.manage");
 
   return (
-    <PeopleStructureWorkspace departments={departments} />
-  )
+    <PeopleOrganizationWorkspace
+      departments={departments}
+      chartData={chartData}
+      canManage={canManage}
+      initialSelection={initialSelection}
+    />
+  );
 }

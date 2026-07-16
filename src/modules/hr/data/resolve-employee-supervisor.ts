@@ -1,60 +1,60 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type ResolvedEmployeeSupervisor = {
-  employeeId: string
-  assignmentId: string | null
-  employeePositionId: string
-  employeePositionTitle: string
-  supervisorPositionId: string
-  supervisorPositionTitle: string
-  supervisorEmployeeId: string | null
-  supervisorEmployeeName: string | null
-  supervisorEmployeeNumber: string | null
-  supervisorUserId: string | null
-  supervisorUserEmail: string | null
-  supervisorUserName: string | null
-  isActingSupervisor: boolean
+  employeeId: string;
+  assignmentId: string | null;
+  employeePositionId: string;
+  employeePositionTitle: string;
+  supervisorPositionId: string;
+  supervisorPositionTitle: string;
+  supervisorEmployeeId: string | null;
+  supervisorEmployeeName: string | null;
+  supervisorEmployeeNumber: string | null;
+  supervisorUserId: string | null;
+  supervisorUserEmail: string | null;
+  supervisorUserName: string | null;
+  isActingSupervisor: boolean;
   resolutionIssue:
     | null
     | "NO_POSITION"
     | "NO_REPORTING_LINE"
     | "SUPERVISOR_POSITION_VACANT"
-    | "SUPERVISOR_USER_MISSING"
-}
+    | "SUPERVISOR_USER_MISSING";
+};
 
 type SupervisorHolder = {
-  isActing: boolean
+  isActing: boolean;
   employee: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
     user: {
-      id: string
-      email: string
-      firstName: string
-      lastName: string
-      isActive: boolean
-    } | null
-  }
-}
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      isActive: boolean;
+    } | null;
+  };
+};
 
 function pickSupervisorHolder(
   holders: SupervisorHolder[],
 ): SupervisorHolder | null {
   if (holders.length === 0) {
-    return null
+    return null;
   }
 
   const withActiveUser = holders.find(
     (holder) => holder.employee.user?.isActive,
-  )
+  );
 
   if (withActiveUser) {
-    return withActiveUser
+    return withActiveUser;
   }
 
-  return holders[0] ?? null
+  return holders[0] ?? null;
 }
 
 export async function resolveEmployeeSupervisor(
@@ -201,11 +201,7 @@ export async function resolveEmployeeSupervisor(
                     where: {
                       isArchived: false,
                       employmentStatus: {
-                        in: [
-                          "ACTIVE",
-                          "ON_LEAVE",
-                          "SUSPENDED",
-                        ],
+                        in: ["ACTIVE", "ON_LEAVE", "SUSPENDED"],
                       },
                     },
                     select: {
@@ -231,15 +227,14 @@ export async function resolveEmployeeSupervisor(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
-  const assignment = employee.assignments[0] ?? null
-  const employeePosition =
-    assignment?.position ?? employee.position
+  const assignment = employee.assignments[0] ?? null;
+  const employeePosition = assignment?.position ?? employee.position;
 
   if (!employeePosition) {
     return {
@@ -257,11 +252,10 @@ export async function resolveEmployeeSupervisor(
       supervisorUserName: null,
       isActingSupervisor: false,
       resolutionIssue: "NO_POSITION",
-    }
+    };
   }
 
-  const supervisorPosition =
-    employeePosition.reportsToPosition
+  const supervisorPosition = employeePosition.reportsToPosition;
 
   if (!supervisorPosition) {
     return {
@@ -279,33 +273,31 @@ export async function resolveEmployeeSupervisor(
       supervisorUserName: null,
       isActingSupervisor: false,
       resolutionIssue: "NO_REPORTING_LINE",
-    }
+    };
   }
 
   const assignmentHolders: SupervisorHolder[] =
     supervisorPosition.assignments.map((item) => ({
       isActing: item.isActing,
       employee: item.employee,
-    }))
+    }));
 
-  const employeeHolders: SupervisorHolder[] =
-    supervisorPosition.employees
-      .filter(
-        (holder) =>
-          !assignmentHolders.some(
-            (assigned) =>
-              assigned.employee.id === holder.id,
-          ),
-      )
-      .map((holder) => ({
-        isActing: false,
-        employee: holder,
-      }))
+  const employeeHolders: SupervisorHolder[] = supervisorPosition.employees
+    .filter(
+      (holder) =>
+        !assignmentHolders.some(
+          (assigned) => assigned.employee.id === holder.id,
+        ),
+    )
+    .map((holder) => ({
+      isActing: false,
+      employee: holder,
+    }));
 
   const holder = pickSupervisorHolder([
     ...assignmentHolders,
     ...employeeHolders,
-  ])
+  ]);
 
   if (!holder) {
     return {
@@ -323,12 +315,12 @@ export async function resolveEmployeeSupervisor(
       supervisorUserName: null,
       isActingSupervisor: false,
       resolutionIssue: "SUPERVISOR_POSITION_VACANT",
-    }
+    };
   }
 
   const supervisorUser = holder.employee.user?.isActive
     ? holder.employee.user
-    : null
+    : null;
 
   return {
     employeeId,
@@ -346,29 +338,27 @@ export async function resolveEmployeeSupervisor(
       ? `${supervisorUser.firstName} ${supervisorUser.lastName}`
       : null,
     isActingSupervisor: holder.isActing,
-    resolutionIssue: supervisorUser
-      ? null
-      : "SUPERVISOR_USER_MISSING",
-  }
+    resolutionIssue: supervisorUser ? null : "SUPERVISOR_USER_MISSING",
+  };
 }
 
 export function describeSupervisorResolutionIssue(
   supervisor: ResolvedEmployeeSupervisor | null,
 ): string {
   if (!supervisor) {
-    return "A supervisor could not be resolved for your current assignment."
+    return "A supervisor could not be resolved for your current assignment.";
   }
 
   switch (supervisor.resolutionIssue) {
     case "NO_POSITION":
-      return "You must be assigned to a position before leave can be submitted."
+      return "You must be assigned to a position before leave can be submitted.";
     case "NO_REPORTING_LINE":
-      return `Your position (${supervisor.employeePositionTitle}) has no reporting line. Set who it reports to under People → Structure → position reporting.`
+      return `Your position (${supervisor.employeePositionTitle}) has no reporting line. Set who it reports to under Employees → Organization → position reporting.`;
     case "SUPERVISOR_POSITION_VACANT":
-      return `Your reporting line points to ${supervisor.supervisorPositionTitle}, but that position has no assigned employee.`
+      return `Your reporting line points to ${supervisor.supervisorPositionTitle}, but that position has no assigned employee.`;
     case "SUPERVISOR_USER_MISSING":
-      return `Your supervisor is ${supervisor.supervisorEmployeeName} (${supervisor.supervisorPositionTitle}), but they do not have a linked user account. Link a user under Administration → Access so leave can be approved.`
+      return `Your supervisor is ${supervisor.supervisorEmployeeName} (${supervisor.supervisorPositionTitle}), but they do not have a linked user account. Link a user under Administration → Access so leave can be approved.`;
     default:
-      return "A supervisor with a linked user account is required before leave can be submitted."
+      return "A supervisor with a linked user account is required before leave can be submitted.";
   }
 }

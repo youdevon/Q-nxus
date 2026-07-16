@@ -1,34 +1,20 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
-import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
+import { prisma } from "@/lib/prisma";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 
 export type PositionReportingFormState = {
-  status: "idle" | "error" | "conflict"
-  message: string
-}
+  status: "idle" | "success" | "error" | "conflict";
+  message: string;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
-}
-
-async function requestMetadata() {
-  const requestHeaders = await headers()
-
-  return {
-    ipAddress:
-      requestHeaders.get("x-forwarded-for")
-        ?.split(",")[0]
-        ?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null,
-    userAgent: requestHeaders.get("user-agent"),
-  }
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
 async function wouldCreateCircularHierarchy(
@@ -36,25 +22,25 @@ async function wouldCreateCircularHierarchy(
   proposedManagerId: string,
 ): Promise<boolean> {
   if (positionId === proposedManagerId) {
-    return true
+    return true;
   }
 
-  const visited = new Set<string>()
-  let currentId: string | null = proposedManagerId
+  const visited = new Set<string>();
+  let currentId: string | null = proposedManagerId;
 
   while (currentId) {
     if (currentId === positionId) {
-      return true
+      return true;
     }
 
     if (visited.has(currentId)) {
-      return true
+      return true;
     }
 
-    visited.add(currentId)
+    visited.add(currentId);
 
     const current: {
-      reportsToPositionId: string | null
+      reportsToPositionId: string | null;
     } | null = await prisma.position.findUnique({
       where: {
         id: currentId,
@@ -62,51 +48,42 @@ async function wouldCreateCircularHierarchy(
       select: {
         reportsToPositionId: true,
       },
-    })
+    });
 
-    currentId = current?.reportsToPositionId ?? null
+    currentId = current?.reportsToPositionId ?? null;
   }
 
-  return false
+  return false;
 }
 
 export async function updatePositionReporting(
   _previousState: PositionReportingFormState,
   formData: FormData,
 ): Promise<PositionReportingFormState> {
-  const actor = await requireActor("people.manage")
+  const actor = await requireActor("people.manage");
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const positionId = textValue(
-    formData,
-    "positionId",
-  )
+  const positionId = textValue(formData, "positionId");
 
-  const submittedUpdatedAt = textValue(
-    formData,
-    "updatedAt",
-  )
+  const submittedUpdatedAt = textValue(formData, "updatedAt");
 
-  const managerValue = textValue(
-    formData,
-    "reportsToPositionId",
-  )
+  const managerValue = textValue(formData, "reportsToPositionId");
 
-  const reportsToPositionId =
-    managerValue.length > 0 ? managerValue : null
+  const returnTo = textValue(formData, "returnTo");
+
+  const reportsToPositionId = managerValue.length > 0 ? managerValue : null;
 
   if (!positionId || !submittedUpdatedAt) {
     return {
       status: "error",
-      message:
-        "The position reporting information is incomplete.",
-    }
+      message: "The position reporting information is incomplete.",
+    };
   }
 
   const position = await prisma.position.findUnique({
@@ -126,42 +103,37 @@ export async function updatePositionReporting(
         },
       },
     },
-  })
+  });
 
   if (!position) {
     return {
       status: "error",
       message: "The position no longer exists.",
-    }
+    };
   }
 
-  if (
-    position.updatedAt.toISOString() !==
-    submittedUpdatedAt
-  ) {
+  if (position.updatedAt.toISOString() !== submittedUpdatedAt) {
     return {
       status: "conflict",
-      message:
-        "The position changed elsewhere. Refresh before saving.",
-    }
+      message: "The position changed elsewhere. Refresh before saving.",
+    };
   }
 
-  let managerTitle: string | null = null
+  let managerTitle: string | null = null;
 
   if (reportsToPositionId) {
-    const proposedManager =
-      await prisma.position.findUnique({
-        where: {
-          id: reportsToPositionId,
-        },
-        include: {
-          department: {
-            select: {
-              organizationId: true,
-            },
+    const proposedManager = await prisma.position.findUnique({
+      where: {
+        id: reportsToPositionId,
+      },
+      include: {
+        department: {
+          select: {
+            organizationId: true,
           },
         },
-      })
+      },
+    });
 
     if (
       !proposedManager ||
@@ -170,112 +142,101 @@ export async function updatePositionReporting(
     ) {
       return {
         status: "error",
-        message:
-          "The selected reporting position is invalid.",
-      }
+        message: "The selected reporting position is invalid.",
+      };
     }
 
-    const circular =
-      await wouldCreateCircularHierarchy(
-        positionId,
-        reportsToPositionId,
-      )
+    const circular = await wouldCreateCircularHierarchy(
+      positionId,
+      reportsToPositionId,
+    );
 
     if (circular) {
       return {
         status: "error",
         message:
           "This reporting relationship would create a circular organizational structure.",
-      }
+      };
     }
 
-    managerTitle = proposedManager.title
+    managerTitle = proposedManager.title;
   }
 
-  const metadata = await requestMetadata()
+  const metadata = await getAuditRequestMetadata(formData);
 
   try {
-    const saved = await prisma.$transaction(
-      async (transaction) => {
-        const updateResult =
-          await transaction.position.updateMany({
-            where: {
-              id: positionId,
-              updatedAt: position.updatedAt,
-            },
-            data: {
-              reportsToPositionId,
-            },
-          })
+    const saved = await prisma.$transaction(async (transaction) => {
+      const updateResult = await transaction.position.updateMany({
+        where: {
+          id: positionId,
+          updatedAt: position.updatedAt,
+        },
+        data: {
+          reportsToPositionId,
+        },
+      });
 
-        if (updateResult.count !== 1) {
-          return false
-        }
+      if (updateResult.count !== 1) {
+        return false;
+      }
 
-        await transaction.auditEvent.create({
-          data: {
-            userId: actor.actor.userId,
-            moduleKey: "hr",
-            action: "UPDATE",
-            entityType: "PositionReporting",
-            entityId: positionId,
-            description: `Updated reporting relationship for ${position.title}.`,
-            oldValues: {
-              reportsToPositionId:
-                position.reportsToPositionId,
-              reportsToPositionTitle:
-                position.reportsToPosition?.title ??
-                null,
-            },
-            newValues: {
-              reportsToPositionId,
-              reportsToPositionTitle:
-                managerTitle,
-            },
-            ipAddress: metadata.ipAddress,
-            userAgent: metadata.userAgent,
+      await transaction.auditEvent.create({
+        data: {
+          userId: actor.actor.userId,
+          moduleKey: "hr",
+          action: "UPDATE",
+          entityType: "PositionReporting",
+          entityId: positionId,
+          description: `Updated reporting relationship for ${position.title}.`,
+          oldValues: {
+            reportsToPositionId: position.reportsToPositionId,
+            reportsToPositionTitle: position.reportsToPosition?.title ?? null,
           },
-        })
+          newValues: {
+            reportsToPositionId,
+            reportsToPositionTitle: managerTitle,
+          },
+          ipAddress: metadata.ipAddress,
+          userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
+        },
+      });
 
-        return true
-      },
-    )
+      return true;
+    });
 
     if (!saved) {
       return {
         status: "conflict",
-        message:
-          "The position changed while being saved.",
-      }
+        message: "The position changed while being saved.",
+      };
     }
 
-    revalidatePath("/people/structure")
-    revalidatePath("/people/structure/chart")
-    revalidatePath(
-      `/people/structure/positions/${positionId}`,
-    )
-    revalidatePath(
-      `/people/structure/positions/${positionId}/reporting`,
-    )
+    revalidatePath("/people/structure");
+    revalidatePath("/people/structure/chart");
+    revalidatePath(`/people/structure/positions/${positionId}`);
+    revalidatePath(`/people/structure/positions/${positionId}/reporting`);
+    revalidatePath("/administration/organization");
+    revalidatePath("/administration/organization/reporting");
 
-    redirect("/people/structure/chart")
+    if (returnTo) {
+      redirect(returnTo);
+    }
+
+    return {
+      status: "success",
+      message: "Reporting relationship updated successfully.",
+    };
   } catch (error: unknown) {
-    if (
-      error instanceof Error &&
-      error.message === "NEXT_REDIRECT"
-    ) {
-      throw error
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+      throw error;
     }
 
-    console.error(
-      "Unable to update position reporting:",
-      error,
-    )
+    console.error("Unable to update position reporting:", error);
 
     return {
       status: "error",
-      message:
-        "The reporting relationship could not be updated.",
-    }
+      message: "The reporting relationship could not be updated.",
+    };
   }
 }

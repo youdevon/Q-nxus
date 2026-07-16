@@ -1,53 +1,48 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type OrganizationChartPosition = {
-  id: string
-  title: string
-  code: string | null
-  description: string | null
-  departmentId: string
-  departmentName: string
-  reportsToPositionId: string | null
-  isActive: boolean
+  id: string;
+  title: string;
+  code: string | null;
+  description: string | null;
+  departmentId: string;
+  departmentName: string;
+  reportsToPositionId: string | null;
+  isActive: boolean;
   holders: {
-    assignmentId: string
-    employeeId: string
-    employeeNumber: string
-    employeeName: string
-    preferredName: string | null
-    isActing: boolean
-    assignmentType: string
-    startDate: string
-  }[]
-  directReports: OrganizationChartPosition[]
-}
+    assignmentId: string;
+    employeeId: string;
+    employeeNumber: string;
+    employeeName: string;
+    preferredName: string | null;
+    isActing: boolean;
+    assignmentType: string;
+    startDate: string;
+  }[];
+  directReports: OrganizationChartPosition[];
+};
 
 export type OrganizationChartData = {
   organization: {
-    id: string
-    name: string
-  }
-  rootPositions: OrganizationChartPosition[]
-  unassignedPositions: OrganizationChartPosition[]
+    id: string;
+    name: string;
+  };
+  rootPositions: OrganizationChartPosition[];
+  unassignedPositions: OrganizationChartPosition[];
   totals: {
-    departments: number
-    positions: number
-    occupiedPositions: number
-    vacantPositions: number
-    actingAssignments: number
-  }
-}
+    departments: number;
+    positions: number;
+    occupiedPositions: number;
+    vacantPositions: number;
+    actingAssignments: number;
+  };
+};
 
-type FlatPosition = Omit<
-  OrganizationChartPosition,
-  "directReports"
-> & {
-  directReports: OrganizationChartPosition[]
-}
+type FlatPosition = Omit<OrganizationChartPosition, "directReports"> & {
+  directReports: OrganizationChartPosition[];
+};
 
-export async function getOrganizationChart(): Promise<
-  OrganizationChartData | null
-> {
+export async function getOrganizationChart(): Promise<OrganizationChartData | null> {
   const organization = await prisma.organization.findFirst({
     orderBy: {
       createdAt: "asc",
@@ -115,14 +110,14 @@ export async function getOrganizationChart(): Promise<
         },
       },
     },
-  })
+  });
 
   if (!organization) {
-    return null
+    return null;
   }
 
-  const flatPositions: FlatPosition[] =
-    organization.departments.flatMap((department) =>
+  const flatPositions: FlatPosition[] = organization.departments.flatMap(
+    (department) =>
       department.positions.map((position) => ({
         id: position.id,
         title: position.title,
@@ -130,76 +125,59 @@ export async function getOrganizationChart(): Promise<
         description: position.description,
         departmentId: position.departmentId,
         departmentName: department.name,
-        reportsToPositionId:
-          position.reportsToPositionId,
+        reportsToPositionId: position.reportsToPositionId,
         isActive: position.isActive,
-        holders: position.assignments.map(
-          (assignment) => ({
-            assignmentId: assignment.id,
-            employeeId: assignment.employee.id,
-            employeeNumber:
-              assignment.employee.employeeNumber,
-            employeeName: `${assignment.employee.firstName} ${assignment.employee.lastName}`,
-            preferredName:
-              assignment.employee.preferredName,
-            isActing: assignment.isActing,
-            assignmentType:
-              assignment.assignmentType,
-            startDate: assignment.startDate
-              .toISOString()
-              .slice(0, 10),
-          }),
-        ),
+        holders: position.assignments.map((assignment) => ({
+          assignmentId: assignment.id,
+          employeeId: assignment.employee.id,
+          employeeNumber: assignment.employee.employeeNumber,
+          employeeName: `${assignment.employee.firstName} ${assignment.employee.lastName}`,
+          preferredName: assignment.employee.preferredName,
+          isActing: assignment.isActing,
+          assignmentType: assignment.assignmentType,
+          startDate: assignment.startDate.toISOString().slice(0, 10),
+        })),
         directReports: [],
       })),
-    )
+  );
 
   const positionMap = new Map(
-    flatPositions.map((position) => [
-      position.id,
-      position,
-    ]),
-  )
+    flatPositions.map((position) => [position.id, position]),
+  );
 
-  const rootPositions: OrganizationChartPosition[] = []
-  const unassignedPositions: OrganizationChartPosition[] = []
+  const rootPositions: OrganizationChartPosition[] = [];
+  const unassignedPositions: OrganizationChartPosition[] = [];
 
   for (const position of flatPositions) {
     if (!position.reportsToPositionId) {
-      rootPositions.push(position)
-      continue
+      rootPositions.push(position);
+      continue;
     }
 
-    const parent = positionMap.get(
-      position.reportsToPositionId,
-    )
+    const parent = positionMap.get(position.reportsToPositionId);
 
     if (!parent) {
-      unassignedPositions.push(position)
-      continue
+      unassignedPositions.push(position);
+      continue;
     }
 
-    parent.directReports.push(position)
+    parent.directReports.push(position);
   }
 
-  function sortHierarchy(
-    positions: OrganizationChartPosition[],
-  ) {
-    positions.sort((left, right) =>
-      left.title.localeCompare(right.title),
-    )
+  function sortHierarchy(positions: OrganizationChartPosition[]) {
+    positions.sort((left, right) => left.title.localeCompare(right.title));
 
     for (const position of positions) {
-      sortHierarchy(position.directReports)
+      sortHierarchy(position.directReports);
     }
   }
 
-  sortHierarchy(rootPositions)
-  sortHierarchy(unassignedPositions)
+  sortHierarchy(rootPositions);
+  sortHierarchy(unassignedPositions);
 
   const occupiedPositions = flatPositions.filter(
     (position) => position.holders.length > 0,
-  ).length
+  ).length;
 
   return {
     organization: {
@@ -212,38 +190,34 @@ export async function getOrganizationChart(): Promise<
       departments: organization.departments.length,
       positions: flatPositions.length,
       occupiedPositions,
-      vacantPositions:
-        flatPositions.length - occupiedPositions,
+      vacantPositions: flatPositions.length - occupiedPositions,
       actingAssignments: flatPositions.reduce(
         (total, position) =>
-          total +
-          position.holders.filter(
-            (holder) => holder.isActing,
-          ).length,
+          total + position.holders.filter((holder) => holder.isActing).length,
         0,
       ),
     },
-  }
+  };
 }
 
 export type PositionReportingEditorData = {
   position: {
-    id: string
-    title: string
-    code: string | null
-    departmentId: string
-    departmentName: string
-    reportsToPositionId: string | null
-    updatedAt: string
-  }
+    id: string;
+    title: string;
+    code: string | null;
+    departmentId: string;
+    departmentName: string;
+    reportsToPositionId: string | null;
+    updatedAt: string;
+  };
   availableManagers: {
-    id: string
-    title: string
-    code: string | null
-    departmentName: string
-    currentHolderNames: string[]
-  }[]
-}
+    id: string;
+    title: string;
+    code: string | null;
+    departmentName: string;
+    currentHolderNames: string[];
+  }[];
+};
 
 async function collectDescendantPositionIds(
   positionId: string,
@@ -253,46 +227,38 @@ async function collectDescendantPositionIds(
       id: true,
       reportsToPositionId: true,
     },
-  })
+  });
 
-  const childrenByParent = new Map<string, string[]>()
+  const childrenByParent = new Map<string, string[]>();
 
   for (const position of positions) {
     if (!position.reportsToPositionId) {
-      continue
+      continue;
     }
 
-    const children =
-      childrenByParent.get(
-        position.reportsToPositionId,
-      ) ?? []
+    const children = childrenByParent.get(position.reportsToPositionId) ?? [];
 
-    children.push(position.id)
+    children.push(position.id);
 
-    childrenByParent.set(
-      position.reportsToPositionId,
-      children,
-    )
+    childrenByParent.set(position.reportsToPositionId, children);
   }
 
-  const descendants = new Set<string>()
-  const queue = [...(childrenByParent.get(positionId) ?? [])]
+  const descendants = new Set<string>();
+  const queue = [...(childrenByParent.get(positionId) ?? [])];
 
   while (queue.length > 0) {
-    const current = queue.shift()!
+    const current = queue.shift()!;
 
     if (descendants.has(current)) {
-      continue
+      continue;
     }
 
-    descendants.add(current)
+    descendants.add(current);
 
-    queue.push(
-      ...(childrenByParent.get(current) ?? []),
-    )
+    queue.push(...(childrenByParent.get(current) ?? []));
   }
 
-  return descendants
+  return descendants;
 }
 
 export async function getPositionReportingEditorData(
@@ -316,25 +282,20 @@ export async function getPositionReportingEditorData(
         },
       },
     },
-  })
+  });
 
   if (!position) {
-    return null
+    return null;
   }
 
-  const descendantIds =
-    await collectDescendantPositionIds(position.id)
+  const descendantIds = await collectDescendantPositionIds(position.id);
 
-  const excludedIds = new Set([
-    position.id,
-    ...descendantIds,
-  ])
+  const excludedIds = new Set([position.id, ...descendantIds]);
 
   const managers = await prisma.position.findMany({
     where: {
       department: {
-        organizationId:
-          position.department.organizationId,
+        organizationId: position.department.organizationId,
       },
       isActive: true,
       id: {
@@ -374,7 +335,7 @@ export async function getPositionReportingEditorData(
         },
       },
     },
-  })
+  });
 
   return {
     position: {
@@ -383,8 +344,7 @@ export async function getPositionReportingEditorData(
       code: position.code,
       departmentId: position.departmentId,
       departmentName: position.department.name,
-      reportsToPositionId:
-        position.reportsToPositionId,
+      reportsToPositionId: position.reportsToPositionId,
       updatedAt: position.updatedAt.toISOString(),
     },
     availableManagers: managers.map((manager) => ({
@@ -397,5 +357,5 @@ export async function getPositionReportingEditorData(
           `${assignment.employee.firstName} ${assignment.employee.lastName}`,
       ),
     })),
-  }
+  };
 }

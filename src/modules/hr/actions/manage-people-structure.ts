@@ -1,64 +1,50 @@
-"use server"
+"use server";
 
-import { headers } from "next/headers"
-import { revalidatePath } from "next/cache"
+import { revalidatePath } from "next/cache";
 
-import { prisma } from "@/lib/prisma"
-import { requireActor } from "@/src/modules/auth/data/get-user-capabilities"
-import { syncEmployeeAccessRoles } from "@/src/modules/auth/services/provision-employee-user"
+import { prisma } from "@/lib/prisma";
+import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { syncEmployeeAccessRoles } from "@/src/modules/auth/services/provision-employee-user";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
 export type StructureFormState = {
-  status: "idle" | "success" | "error" | "conflict"
-  message: string
-}
+  status: "idle" | "success" | "error" | "conflict";
+  message: string;
+  entityId?: string;
+};
 
 function textValue(formData: FormData, key: string): string {
-  const value = formData.get(key)
-  return typeof value === "string" ? value.trim() : ""
+  const value = formData.get(key);
+  return typeof value === "string" ? value.trim() : "";
 }
 
-function nullableText(
-  formData: FormData,
-  key: string,
-): string | null {
-  const value = textValue(formData, key)
-  return value.length > 0 ? value : null
-}
-
-async function requestMetadata() {
-  const requestHeaders = await headers()
-
-  return {
-    ipAddress:
-      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      requestHeaders.get("x-real-ip") ??
-      null,
-    userAgent: requestHeaders.get("user-agent"),
-  }
+function nullableText(formData: FormData, key: string): string | null {
+  const value = textValue(formData, key);
+  return value.length > 0 ? value : null;
 }
 
 export async function createDepartment(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
-  const actor = await requireActor("people.manage")
+  const actor = await requireActor("people.manage");
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const name = textValue(formData, "name")
-  const code = nullableText(formData, "code")
-  const description = nullableText(formData, "description")
+  const name = textValue(formData, "name");
+  const code = nullableText(formData, "code");
+  const description = nullableText(formData, "description");
 
   if (name.length < 2) {
     return {
       status: "error",
       message: "Department name must contain at least two characters.",
-    }
+    };
   }
 
   try {
@@ -69,13 +55,13 @@ export async function createDepartment(
       select: {
         id: true,
       },
-    })
+    });
 
     if (!organization) {
       return {
         status: "error",
         message: "No organization is configured.",
-      }
+      };
     }
 
     const duplicate = await prisma.department.findFirst({
@@ -89,18 +75,18 @@ export async function createDepartment(
       select: {
         id: true,
       },
-    })
+    });
 
     if (duplicate) {
       return {
         status: "error",
         message: "A department with this name already exists.",
-      }
+      };
     }
 
-    const metadata = await requestMetadata()
+    const metadata = await getAuditRequestMetadata(formData);
 
-    await prisma.$transaction(async (transaction) => {
+    const departmentId = await prisma.$transaction(async (transaction) => {
       const department = await transaction.department.create({
         data: {
           organizationId: organization.id,
@@ -109,7 +95,7 @@ export async function createDepartment(
           description,
           isActive: true,
         },
-      })
+      });
 
       await transaction.auditEvent.create({
         data: {
@@ -127,23 +113,28 @@ export async function createDepartment(
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
         },
-      })
-    })
+      });
 
-    revalidatePath("/people/structure")
+      return department.id;
+    });
+
+    revalidatePath("/people/structure");
+    revalidatePath("/people/structure/chart");
 
     return {
       status: "success",
       message: "Department created successfully.",
-    }
+      entityId: departmentId,
+    };
   } catch (error: unknown) {
-    console.error("Unable to create department:", error)
+    console.error("Unable to create department:", error);
 
     return {
       status: "error",
       message: "The department could not be created.",
-    }
+    };
   }
 }
 
@@ -151,27 +142,27 @@ export async function updateDepartment(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
-  const actor = await requireActor("people.manage")
+  const actor = await requireActor("people.manage");
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const id = textValue(formData, "id")
-  const submittedUpdatedAt = textValue(formData, "updatedAt")
-  const name = textValue(formData, "name")
-  const code = nullableText(formData, "code")
-  const description = nullableText(formData, "description")
-  const isActive = formData.get("isActive") === "on"
+  const id = textValue(formData, "id");
+  const submittedUpdatedAt = textValue(formData, "updatedAt");
+  const name = textValue(formData, "name");
+  const code = nullableText(formData, "code");
+  const description = nullableText(formData, "description");
+  const isActive = formData.get("isActive") === "on";
 
   if (!id || !submittedUpdatedAt || name.length < 2) {
     return {
       status: "error",
       message: "The department information is incomplete.",
-    }
+    };
   }
 
   try {
@@ -179,13 +170,13 @@ export async function updateDepartment(
       where: {
         id,
       },
-    })
+    });
 
     if (!current) {
       return {
         status: "error",
         message: "The department no longer exists.",
-      }
+      };
     }
 
     if (current.updatedAt.toISOString() !== submittedUpdatedAt) {
@@ -193,7 +184,7 @@ export async function updateDepartment(
         status: "conflict",
         message:
           "This department was updated elsewhere. Refresh the page before saving.",
-      }
+      };
     }
 
     const duplicate = await prisma.department.findFirst({
@@ -210,16 +201,16 @@ export async function updateDepartment(
       select: {
         id: true,
       },
-    })
+    });
 
     if (duplicate) {
       return {
         status: "error",
         message: "A department with this name already exists.",
-      }
+      };
     }
 
-    const metadata = await requestMetadata()
+    const metadata = await getAuditRequestMetadata(formData);
 
     const result = await prisma.$transaction(async (transaction) => {
       const updateResult = await transaction.department.updateMany({
@@ -233,17 +224,17 @@ export async function updateDepartment(
           description,
           isActive,
         },
-      })
+      });
 
       if (updateResult.count !== 1) {
-        return false
+        return false;
       }
 
       const updated = await transaction.department.findUniqueOrThrow({
         where: {
           id,
         },
-      })
+      });
 
       await transaction.auditEvent.create({
         data: {
@@ -267,35 +258,37 @@ export async function updateDepartment(
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
         },
-      })
+      });
 
-      return true
-    })
+      return true;
+    });
 
     if (!result) {
       return {
         status: "conflict",
         message:
           "This department changed while it was being saved. Refresh the page.",
-      }
+      };
     }
 
-    revalidatePath("/people/structure")
-    revalidatePath(`/people/structure/departments/${id}`)
-    revalidatePath(`/people/structure/departments/${id}/edit`)
+    revalidatePath("/people/structure");
+    revalidatePath("/people/structure/chart");
+    revalidatePath(`/people/structure/departments/${id}`);
+    revalidatePath(`/people/structure/departments/${id}/edit`);
 
     return {
       status: "success",
       message: "Department updated successfully.",
-    }
+    };
   } catch (error: unknown) {
-    console.error("Unable to update department:", error)
+    console.error("Unable to update department:", error);
 
     return {
       status: "error",
       message: "The department could not be updated.",
-    }
+    };
   }
 }
 
@@ -303,26 +296,26 @@ export async function createPosition(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
-  const actor = await requireActor("people.manage")
+  const actor = await requireActor("people.manage");
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const departmentId = textValue(formData, "departmentId")
-  const title = textValue(formData, "title")
-  const code = nullableText(formData, "code")
-  const description = nullableText(formData, "description")
-  const systemRoleCode = nullableText(formData, "systemRoleCode")
+  const departmentId = textValue(formData, "departmentId");
+  const title = textValue(formData, "title");
+  const code = nullableText(formData, "code");
+  const description = nullableText(formData, "description");
+  const systemRoleCode = nullableText(formData, "systemRoleCode");
 
   if (!departmentId || title.length < 2) {
     return {
       status: "error",
       message: "Select a department and enter a valid position title.",
-    }
+    };
   }
 
   try {
@@ -334,13 +327,13 @@ export async function createPosition(
         id: true,
         name: true,
       },
-    })
+    });
 
     if (!department) {
       return {
         status: "error",
         message: "The selected department no longer exists.",
-      }
+      };
     }
 
     const duplicate = await prisma.position.findFirst({
@@ -354,19 +347,18 @@ export async function createPosition(
       select: {
         id: true,
       },
-    })
+    });
 
     if (duplicate) {
       return {
         status: "error",
-        message:
-          "A position with this title already exists in the department.",
-      }
+        message: "A position with this title already exists in the department.",
+      };
     }
 
-    const metadata = await requestMetadata()
+    const metadata = await getAuditRequestMetadata(formData);
 
-    await prisma.$transaction(async (transaction) => {
+    const positionId = await prisma.$transaction(async (transaction) => {
       const position = await transaction.position.create({
         data: {
           departmentId,
@@ -376,7 +368,7 @@ export async function createPosition(
           systemRoleCode,
           isActive: true,
         },
-      })
+      });
 
       await transaction.auditEvent.create({
         data: {
@@ -396,23 +388,28 @@ export async function createPosition(
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
         },
-      })
-    })
+      });
 
-    revalidatePath("/people/structure")
+      return position.id;
+    });
+
+    revalidatePath("/people/structure");
+    revalidatePath("/people/structure/chart");
 
     return {
       status: "success",
       message: "Position created successfully.",
-    }
+      entityId: positionId,
+    };
   } catch (error: unknown) {
-    console.error("Unable to create position:", error)
+    console.error("Unable to create position:", error);
 
     return {
       status: "error",
       message: "The position could not be created.",
-    }
+    };
   }
 }
 
@@ -420,28 +417,28 @@ export async function updatePosition(
   _previousState: StructureFormState,
   formData: FormData,
 ): Promise<StructureFormState> {
-  const actor = await requireActor("people.manage")
+  const actor = await requireActor("people.manage");
 
   if (!actor.ok) {
     return {
       status: "error",
       message: actor.message,
-    }
+    };
   }
 
-  const id = textValue(formData, "id")
-  const submittedUpdatedAt = textValue(formData, "updatedAt")
-  const title = textValue(formData, "title")
-  const code = nullableText(formData, "code")
-  const description = nullableText(formData, "description")
-  const systemRoleCode = nullableText(formData, "systemRoleCode")
-  const isActive = formData.get("isActive") === "on"
+  const id = textValue(formData, "id");
+  const submittedUpdatedAt = textValue(formData, "updatedAt");
+  const title = textValue(formData, "title");
+  const code = nullableText(formData, "code");
+  const description = nullableText(formData, "description");
+  const systemRoleCode = nullableText(formData, "systemRoleCode");
+  const isActive = formData.get("isActive") === "on";
 
   if (!id || !submittedUpdatedAt || title.length < 2) {
     return {
       status: "error",
       message: "The position information is incomplete.",
-    }
+    };
   }
 
   try {
@@ -456,13 +453,13 @@ export async function updatePosition(
           },
         },
       },
-    })
+    });
 
     if (!current) {
       return {
         status: "error",
         message: "The position no longer exists.",
-      }
+      };
     }
 
     if (current.updatedAt.toISOString() !== submittedUpdatedAt) {
@@ -470,7 +467,7 @@ export async function updatePosition(
         status: "conflict",
         message:
           "This position was updated elsewhere. Refresh the page before saving.",
-      }
+      };
     }
 
     const duplicate = await prisma.position.findFirst({
@@ -487,17 +484,16 @@ export async function updatePosition(
       select: {
         id: true,
       },
-    })
+    });
 
     if (duplicate) {
       return {
         status: "error",
-        message:
-          "A position with this title already exists in the department.",
-      }
+        message: "A position with this title already exists in the department.",
+      };
     }
 
-    const metadata = await requestMetadata()
+    const metadata = await getAuditRequestMetadata(formData);
 
     const result = await prisma.$transaction(async (transaction) => {
       const updateResult = await transaction.position.updateMany({
@@ -512,17 +508,17 @@ export async function updatePosition(
           systemRoleCode,
           isActive,
         },
-      })
+      });
 
       if (updateResult.count !== 1) {
-        return false
+        return false;
       }
 
       const updated = await transaction.position.findUniqueOrThrow({
         where: {
           id,
         },
-      })
+      });
 
       await transaction.auditEvent.create({
         data: {
@@ -548,18 +544,19 @@ export async function updatePosition(
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
+          clientHostName: metadata.clientHostName,
         },
-      })
+      });
 
-      return true
-    })
+      return true;
+    });
 
     if (!result) {
       return {
         status: "conflict",
         message:
           "This position changed while it was being saved. Refresh the page.",
-      }
+      };
     }
 
     const holders = await prisma.employee.findMany({
@@ -577,28 +574,29 @@ export async function updatePosition(
           },
         },
       },
-    })
+    });
 
     for (const holder of holders) {
       if (holder.user) {
-        await syncEmployeeAccessRoles(holder.user.id, holder.id)
+        await syncEmployeeAccessRoles(holder.user.id, holder.id);
       }
     }
 
-    revalidatePath("/people/structure")
-    revalidatePath(`/people/structure/positions/${id}`)
-    revalidatePath(`/people/structure/positions/${id}/edit`)
+    revalidatePath("/people/structure");
+    revalidatePath("/people/structure/chart");
+    revalidatePath(`/people/structure/positions/${id}`);
+    revalidatePath(`/people/structure/positions/${id}/edit`);
 
     return {
       status: "success",
       message: "Position updated successfully.",
-    }
+    };
   } catch (error: unknown) {
-    console.error("Unable to update position:", error)
+    console.error("Unable to update position:", error);
 
     return {
       status: "error",
       message: "The position could not be updated.",
-    }
+    };
   }
 }

@@ -1,24 +1,24 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type OrganizationProfile = {
-  id: string
-  code: string
-  name: string
-  shortName: string | null
-  legalName: string | null
-  email: string | null
-  phone: string | null
-  website: string | null
-  status: string
-  defaultTimeZone: string
-  defaultCurrency: string
-  defaultLanguage: string
-  dateFormat: string
-  firstDayOfWeek: number
-  version: number
-  isActive: boolean
-  updatedAt: Date
-}
+  id: string;
+  code: string;
+  name: string;
+  shortName: string | null;
+  legalName: string | null;
+  email: string | null;
+  phone: string | null;
+  website: string | null;
+  status: string;
+  defaultTimeZone: string;
+  defaultCurrency: string;
+  defaultLanguage: string;
+  dateFormat: string;
+  firstDayOfWeek: number;
+  version: number;
+  isActive: boolean;
+  updatedAt: Date;
+};
 
 export async function getOrganizationProfile(): Promise<OrganizationProfile | null> {
   return prisma.organization.findFirst({
@@ -44,5 +44,5 @@ export async function getOrganizationProfile(): Promise<OrganizationProfile | nu
       isActive: true,
       updatedAt: true,
     },
-  })
+  });
 }

@@ -1,33 +1,33 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type EmployeeFormDepartment = {
-  id: string
-  name: string
+  id: string;
+  name: string;
   positions: {
-    id: string
-    title: string
-  }[]
-}
+    id: string;
+    title: string;
+  }[];
+};
 
 export type EmployeeFormRecord = {
-  id: string
-  employeeNumber: string
-  firstName: string
-  middleName: string | null
-  lastName: string
-  preferredName: string | null
-  workEmail: string | null
-  personalEmail: string | null
-  phone: string | null
-  employmentStatus: string
-  employmentType: string
-  hireDate: string
-  terminationDate: string | null
-  departmentId: string | null
-  positionId: string | null
-  isArchived: boolean
-  updatedAt: string
-}
+  id: string;
+  employeeNumber: string;
+  firstName: string;
+  middleName: string | null;
+  lastName: string;
+  preferredName: string | null;
+  workEmail: string | null;
+  personalEmail: string | null;
+  phone: string | null;
+  employmentStatus: string;
+  employmentType: string;
+  hireDate: string;
+  terminationDate: string | null;
+  departmentId: string | null;
+  positionId: string | null;
+  isArchived: boolean;
+  updatedAt: string;
+};
 
 export async function getEmployeeFormOptions(): Promise<
   EmployeeFormDepartment[]
@@ -39,10 +39,10 @@ export async function getEmployeeFormOptions(): Promise<
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   return prisma.department.findMany({
@@ -69,7 +69,7 @@ export async function getEmployeeFormOptions(): Promise<
         },
       },
     },
-  })
+  });
 }
 
 export async function getEmployeeById(
@@ -98,10 +98,10 @@ export async function getEmployeeById(
       isArchived: true,
       updatedAt: true,
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
   return {
@@ -112,31 +112,31 @@ export async function getEmployeeById(
     terminationDate:
       employee.terminationDate?.toISOString().slice(0, 10) ?? null,
     updatedAt: employee.updatedAt.toISOString(),
-  }
+  };
 }
 
 export type EmployeeProfileRecord = EmployeeFormRecord & {
   department: {
-    id: string
-    name: string
-    code: string | null
-  } | null
+    id: string;
+    name: string;
+    code: string | null;
+  } | null;
   position: {
-    id: string
-    title: string
-    code: string | null
-    description: string | null
-  } | null
+    id: string;
+    title: string;
+    code: string | null;
+    description: string | null;
+  } | null;
   currentContract: {
-    id: string
-    jobTitle: string
-    startDate: string
-    endDate: string | null
-    baseSalary: string
-    currency: string
-  } | null
-  contractCount: number
-}
+    id: string;
+    jobTitle: string;
+    startDate: string;
+    endDate: string | null;
+    baseSalary: string;
+    currency: string;
+  } | null;
+  contractCount: number;
+};
 
 export async function getEmployeeProfile(
   id: string,
@@ -193,15 +193,14 @@ export async function getEmployeeProfile(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
   const currentContract =
-    employee.contracts.find((contract) => contract.isCurrent) ??
-    null
+    employee.contracts.find((contract) => contract.isCurrent) ?? null;
 
   return {
     id: employee.id,
@@ -228,16 +227,12 @@ export async function getEmployeeProfile(
       ? {
           id: currentContract.id,
           jobTitle: currentContract.jobTitle,
-          startDate: currentContract.startDate
-            .toISOString()
-            .slice(0, 10),
-          endDate:
-            currentContract.endDate?.toISOString().slice(0, 10) ??
-            null,
+          startDate: currentContract.startDate.toISOString().slice(0, 10),
+          endDate: currentContract.endDate?.toISOString().slice(0, 10) ?? null,
           baseSalary: currentContract.baseSalary.toString(),
           currency: currentContract.currency,
         }
       : null,
     contractCount: employee.contracts.length,
-  }
+  };
 }

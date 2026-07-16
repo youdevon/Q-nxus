@@ -1,63 +1,65 @@
-import { prisma } from "@/lib/prisma"
-import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity"
+import { prisma } from "@/lib/prisma";
+import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity";
 
 export type EmploymentContractListRecord = {
-  id: string
-  contractNumber: string | null
-  contractType: string
-  changeType: string
-  status: string
-  startDate: string
-  endDate: string | null
-  jobTitle: string
-  baseSalary: string
-  currency: string
-  gratuityEligible: boolean
-  gratuityRate: string | null
-  gratuityTaxRate: string | null
-  isCurrent: boolean
-  signedDate: string | null
-  terminationDate: string | null
-  documentReference: string | null
-  notes: string | null
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  contractNumber: string | null;
+  contractType: string;
+  changeType: string;
+  status: string;
+  startDate: string;
+  endDate: string | null;
+  jobTitle: string;
+  baseSalary: string;
+  currency: string;
+  gratuityEligible: boolean;
+  gratuityRate: string | null;
+  gratuityTaxRate: string | null;
+  isCurrent: boolean;
+  signedDate: string | null;
+  collectedAt: string | null;
+  terminationDate: string | null;
+  documentReference: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type EmployeeContractHistory = {
   employee: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-    employmentType: string
-    departmentName: string | null
-    positionTitle: string | null
-  }
-  contracts: EmploymentContractListRecord[]
-}
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    employmentType: string;
+    departmentName: string | null;
+    positionTitle: string | null;
+  };
+  contracts: EmploymentContractListRecord[];
+};
 
 function mapContract(contract: {
-  id: string
-  contractNumber: string | null
-  contractType: string
-  changeType: string
-  status: string
-  startDate: Date
-  endDate: Date | null
-  jobTitle: string
-  baseSalary: { toString(): string }
-  currency: string
-  gratuityEligible: boolean
-  gratuityRate: { toString(): string } | null
-  gratuityTaxRate: { toString(): string } | null
-  isCurrent: boolean
-  signedDate: Date | null
-  terminationDate: Date | null
-  documentReference: string | null
-  notes: string | null
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  contractNumber: string | null;
+  contractType: string;
+  changeType: string;
+  status: string;
+  startDate: Date;
+  endDate: Date | null;
+  jobTitle: string;
+  baseSalary: { toString(): string };
+  currency: string;
+  gratuityEligible: boolean;
+  gratuityRate: { toString(): string } | null;
+  gratuityTaxRate: { toString(): string } | null;
+  isCurrent: boolean;
+  signedDate: Date | null;
+  collectedAt: Date | null;
+  terminationDate: Date | null;
+  documentReference: string | null;
+  notes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }): EmploymentContractListRecord {
   return {
     id: contract.id,
@@ -66,26 +68,23 @@ function mapContract(contract: {
     changeType: contract.changeType,
     status: contract.status,
     startDate: contract.startDate.toISOString().slice(0, 10),
-    endDate:
-      contract.endDate?.toISOString().slice(0, 10) ?? null,
+    endDate: contract.endDate?.toISOString().slice(0, 10) ?? null,
     jobTitle: contract.jobTitle,
     baseSalary: contract.baseSalary.toString(),
     currency: contract.currency,
     gratuityEligible: contract.gratuityEligible,
     gratuityRate: contract.gratuityRate?.toString() ?? null,
-    gratuityTaxRate:
-      contract.gratuityTaxRate?.toString() ?? null,
+    gratuityTaxRate: contract.gratuityTaxRate?.toString() ?? null,
     isCurrent: contract.isCurrent,
-    signedDate:
-      contract.signedDate?.toISOString().slice(0, 10) ?? null,
+    signedDate: contract.signedDate?.toISOString().slice(0, 10) ?? null,
+    collectedAt: contract.collectedAt?.toISOString() ?? null,
     terminationDate:
-      contract.terminationDate?.toISOString().slice(0, 10) ??
-      null,
+      contract.terminationDate?.toISOString().slice(0, 10) ?? null,
     documentReference: contract.documentReference,
     notes: contract.notes,
     createdAt: contract.createdAt.toISOString(),
     updatedAt: contract.updatedAt.toISOString(),
-  }
+  };
 }
 
 export async function getEmployeeContractHistory(
@@ -139,6 +138,7 @@ export async function getEmployeeContractHistory(
           gratuityTaxRate: true,
           isCurrent: true,
           signedDate: true,
+          collectedAt: true,
           terminationDate: true,
           documentReference: true,
           notes: true,
@@ -147,10 +147,10 @@ export async function getEmployeeContractHistory(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
   return {
@@ -164,42 +164,61 @@ export async function getEmployeeContractHistory(
       positionTitle: employee.position?.title ?? null,
     },
     contracts: employee.contracts.map(mapContract),
-  }
+  };
 }
 
-export type EmploymentContractProfile =
-  EmploymentContractListRecord & {
-    employee: {
-      id: string
-      employeeNumber: string
-      firstName: string
-      lastName: string
-    }
-    sourceContract: {
-      id: string
-      contractNumber: string | null
-      startDate: string
-      endDate: string | null
-    } | null
-    amendments: {
-      id: string
-      contractNumber: string | null
-      changeType: string
-      status: string
-      startDate: string
-    }[]
-    terminationReason: string | null
-    allowances: {
-      id: string
-      categoryId: string
-      categoryName: string
-      amount: string
-      frequency: string
-      isTaxable: boolean
-      includedInGratuity: boolean
-      notes: string | null
-    }[]
-  }
+export type EmploymentContractProfile = EmploymentContractListRecord & {
+  employee: {
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+  };
+  sourceContract: {
+    id: string;
+    contractNumber: string | null;
+    changeType: string;
+    status: string;
+    jobTitle: string;
+    startDate: string;
+    endDate: string | null;
+    collectedAt: string | null;
+    baseSalary: string;
+    currency: string;
+  } | null;
+  previousVersions: {
+    id: string;
+    contractNumber: string | null;
+    changeType: string;
+    status: string;
+    jobTitle: string;
+    startDate: string;
+    endDate: string | null;
+    collectedAt: string | null;
+    baseSalary: string;
+    currency: string;
+    isCurrent: boolean;
+  }[];
+  amendments: {
+    id: string;
+    contractNumber: string | null;
+    changeType: string;
+    status: string;
+    startDate: string;
+  }[];
+  amendedAfterCollection: boolean;
+  terminationReason: string | null;
+  allowances: {
+    id: string;
+    categoryId: string;
+    categoryName: string;
+    amount: string;
+    frequency: string;
+    isTaxable: boolean;
+    includedInGratuity: boolean;
+    notes: string | null;
+  }[];
+};
 
 export async function getEmploymentContractProfile(
   employeeId: string,
@@ -226,6 +245,7 @@ export async function getEmploymentContractProfile(
       gratuityTaxRate: true,
       isCurrent: true,
       signedDate: true,
+      collectedAt: true,
       terminationDate: true,
       terminationReason: true,
       documentReference: true,
@@ -244,8 +264,15 @@ export async function getEmploymentContractProfile(
         select: {
           id: true,
           contractNumber: true,
+          changeType: true,
+          status: true,
+          jobTitle: true,
           startDate: true,
           endDate: true,
+          collectedAt: true,
+          baseSalary: true,
+          currency: true,
+          sourceContractId: true,
         },
       },
       allowances: {
@@ -282,16 +309,71 @@ export async function getEmploymentContractProfile(
         },
       },
     },
-  })
+  });
 
   if (!contract) {
-    return null
+    return null;
   }
+
+  const previousVersions: EmploymentContractProfile["previousVersions"] = [];
+
+  let walkId = contract.sourceContract?.id ?? null;
+
+  while (walkId) {
+    const previous = await prisma.employmentContract.findFirst({
+      where: {
+        id: walkId,
+        employeeId,
+      },
+      select: {
+        id: true,
+        contractNumber: true,
+        changeType: true,
+        status: true,
+        jobTitle: true,
+        startDate: true,
+        endDate: true,
+        collectedAt: true,
+        baseSalary: true,
+        currency: true,
+        isCurrent: true,
+        sourceContractId: true,
+      },
+    });
+
+    if (!previous) {
+      break;
+    }
+
+    previousVersions.push({
+      id: previous.id,
+      contractNumber: previous.contractNumber,
+      changeType: previous.changeType,
+      status: previous.status,
+      jobTitle: previous.jobTitle,
+      startDate: previous.startDate.toISOString().slice(0, 10),
+      endDate: previous.endDate?.toISOString().slice(0, 10) ?? null,
+      collectedAt: previous.collectedAt?.toISOString() ?? null,
+      baseSalary: previous.baseSalary.toString(),
+      currency: previous.currency,
+      isCurrent: previous.isCurrent,
+    });
+
+    walkId = previous.sourceContractId;
+  }
+
+  const amendedAfterCollection =
+    Boolean(contract.sourceContract?.collectedAt) &&
+    ["AMENDMENT", "SALARY_ADJUSTMENT", "POSITION_CHANGE", "EXTENSION"].includes(
+      contract.changeType,
+    );
 
   return {
     ...mapContract(contract),
     employee: contract.employee,
     terminationReason: contract.terminationReason,
+    amendedAfterCollection,
+    previousVersions,
     allowances: contract.allowances.map((allowance) => ({
       id: allowance.id,
       categoryId: allowance.categoryId,
@@ -299,22 +381,25 @@ export async function getEmploymentContractProfile(
       amount: allowance.amount.toString(),
       frequency: allowance.frequency,
       isTaxable: allowance.isTaxable,
-      includedInGratuity:
-        allowance.includedInGratuity,
+      includedInGratuity: allowance.includedInGratuity,
       notes: allowance.notes,
     })),
     sourceContract: contract.sourceContract
       ? {
           id: contract.sourceContract.id,
-          contractNumber:
-            contract.sourceContract.contractNumber,
+          contractNumber: contract.sourceContract.contractNumber,
+          changeType: contract.sourceContract.changeType,
+          status: contract.sourceContract.status,
+          jobTitle: contract.sourceContract.jobTitle,
           startDate: contract.sourceContract.startDate
             .toISOString()
             .slice(0, 10),
           endDate:
-            contract.sourceContract.endDate
-              ?.toISOString()
-              .slice(0, 10) ?? null,
+            contract.sourceContract.endDate?.toISOString().slice(0, 10) ?? null,
+          collectedAt:
+            contract.sourceContract.collectedAt?.toISOString() ?? null,
+          baseSalary: contract.sourceContract.baseSalary.toString(),
+          currency: contract.sourceContract.currency,
         }
       : null,
     amendments: contract.amendments.map((amendment) => ({
@@ -322,84 +407,80 @@ export async function getEmploymentContractProfile(
       contractNumber: amendment.contractNumber,
       changeType: amendment.changeType,
       status: amendment.status,
-      startDate: amendment.startDate
-        .toISOString()
-        .slice(0, 10),
+      startDate: amendment.startDate.toISOString().slice(0, 10),
     })),
-  }
+  };
 }
 
 export type ContractMonitoringRecord = {
-  id: string
-  employeeId: string
-  employeeNumber: string
-  employeeName: string
-  contractNumber: string | null
-  jobTitle: string
-  contractType: string
-  status: string
-  startDate: string
-  endDate: string | null
-  baseSalary: string
-  currency: string
-  isCurrent: boolean
-  daysUntilExpiry: number | null
+  id: string;
+  employeeId: string;
+  employeeNumber: string;
+  employeeName: string;
+  contractNumber: string | null;
+  jobTitle: string;
+  contractType: string;
+  status: string;
+  startDate: string;
+  endDate: string | null;
+  baseSalary: string;
+  currency: string;
+  isCurrent: boolean;
+  daysUntilExpiry: number | null;
   expiryCategory:
     | "EXPIRED"
     | "WITHIN_30_DAYS"
     | "WITHIN_60_DAYS"
     | "WITHIN_90_DAYS"
     | "LATER"
-    | "NO_END_DATE"
-  gratuityEligible: boolean
-  estimatedGrossEarnings: string | null
-  estimatedGrossGratuity: string | null
-  estimatedTax: string | null
-  estimatedNetGratuity: string | null
-}
+    | "NO_END_DATE";
+  gratuityEligible: boolean;
+  estimatedGrossEarnings: string | null;
+  estimatedGrossGratuity: string | null;
+  estimatedTax: string | null;
+  estimatedNetGratuity: string | null;
+};
 
 export type ContractMonitoringDashboard = {
-  contracts: ContractMonitoringRecord[]
+  contracts: ContractMonitoringRecord[];
   summary: {
-    active: number
-    expiringWithin30Days: number
-    expiringWithin60Days: number
-    expiringWithin90Days: number
-    expired: number
-    missingEndDate: number
-    estimatedNetGratuityExposure: string
-  }
-}
+    active: number;
+    expiringWithin30Days: number;
+    expiringWithin60Days: number;
+    expiringWithin90Days: number;
+    expired: number;
+    missingEndDate: number;
+    estimatedNetGratuityExposure: string;
+  };
+};
 
 function contractExpiryCategory(
   daysUntilExpiry: number | null,
 ): ContractMonitoringRecord["expiryCategory"] {
   if (daysUntilExpiry === null) {
-    return "NO_END_DATE"
+    return "NO_END_DATE";
   }
 
   if (daysUntilExpiry < 0) {
-    return "EXPIRED"
+    return "EXPIRED";
   }
 
   if (daysUntilExpiry <= 30) {
-    return "WITHIN_30_DAYS"
+    return "WITHIN_30_DAYS";
   }
 
   if (daysUntilExpiry <= 60) {
-    return "WITHIN_60_DAYS"
+    return "WITHIN_60_DAYS";
   }
 
   if (daysUntilExpiry <= 90) {
-    return "WITHIN_90_DAYS"
+    return "WITHIN_90_DAYS";
   }
 
-  return "LATER"
+  return "LATER";
 }
 
-export async function getContractMonitoringDashboard(): Promise<
-  ContractMonitoringDashboard
-> {
+export async function getContractMonitoringDashboard(): Promise<ContractMonitoringDashboard> {
   const organization = await prisma.organization.findFirst({
     orderBy: {
       createdAt: "asc",
@@ -407,7 +488,7 @@ export async function getContractMonitoringDashboard(): Promise<
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
     return {
@@ -421,7 +502,7 @@ export async function getContractMonitoringDashboard(): Promise<
         missingEndDate: 0,
         estimatedNetGratuityExposure: "0.00",
       },
-    }
+    };
   }
 
   const contracts = await prisma.employmentContract.findMany({
@@ -471,28 +552,27 @@ export async function getContractMonitoringDashboard(): Promise<
         },
       },
     },
-  })
+  });
 
-  const today = new Date()
-  today.setUTCHours(0, 0, 0, 0)
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
 
   const records = contracts.map((contract) => {
-    let daysUntilExpiry: number | null = null
+    let daysUntilExpiry: number | null = null;
 
     if (contract.endDate) {
-      const endDate = new Date(contract.endDate)
-      endDate.setUTCHours(0, 0, 0, 0)
+      const endDate = new Date(contract.endDate);
+      endDate.setUTCHours(0, 0, 0, 0);
 
       daysUntilExpiry = Math.ceil(
-        (endDate.getTime() - today.getTime()) /
-          (1000 * 60 * 60 * 24),
-      )
+        (endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      );
     }
 
-    let estimatedGrossEarnings: number | null = null
-    let estimatedGrossGratuity: number | null = null
-    let estimatedTax: number | null = null
-    let estimatedNetGratuity: number | null = null
+    let estimatedGrossEarnings: number | null = null;
+    let estimatedGrossGratuity: number | null = null;
+    let estimatedTax: number | null = null;
+    let estimatedNetGratuity: number | null = null;
 
     if (
       contract.gratuityEligible &&
@@ -503,22 +583,19 @@ export async function getContractMonitoringDashboard(): Promise<
         startDate: contract.startDate,
         endDate: contract.endDate,
         baseSalary: contract.baseSalary.toString(),
-        allowances: contract.allowances.map(
-          (allowance) => ({
-            amount: allowance.amount.toString(),
-            frequency: allowance.frequency,
-            includedInGratuity: allowance.includedInGratuity,
-          }),
-        ),
+        allowances: contract.allowances.map((allowance) => ({
+          amount: allowance.amount.toString(),
+          frequency: allowance.frequency,
+          includedInGratuity: allowance.includedInGratuity,
+        })),
         gratuityRate: contract.gratuityRate.toString(),
-        gratuityTaxRate:
-          contract.gratuityTaxRate?.toString() ?? 0,
-      })
+        gratuityTaxRate: contract.gratuityTaxRate?.toString() ?? 0,
+      });
 
-      estimatedGrossEarnings = estimate.estimatedGrossEarnings
-      estimatedGrossGratuity = estimate.estimatedGrossGratuity
-      estimatedTax = estimate.estimatedTax
-      estimatedNetGratuity = estimate.estimatedNetGratuity
+      estimatedGrossEarnings = estimate.estimatedGrossEarnings;
+      estimatedGrossGratuity = estimate.estimatedGrossGratuity;
+      estimatedTax = estimate.estimatedTax;
+      estimatedNetGratuity = estimate.estimatedNetGratuity;
     }
 
     return {
@@ -530,80 +607,61 @@ export async function getContractMonitoringDashboard(): Promise<
       jobTitle: contract.jobTitle,
       contractType: contract.contractType,
       status: contract.status,
-      startDate: contract.startDate
-        .toISOString()
-        .slice(0, 10),
-      endDate:
-        contract.endDate?.toISOString().slice(0, 10) ?? null,
+      startDate: contract.startDate.toISOString().slice(0, 10),
+      endDate: contract.endDate?.toISOString().slice(0, 10) ?? null,
       baseSalary: contract.baseSalary.toString(),
       currency: contract.currency,
       isCurrent: contract.isCurrent,
       daysUntilExpiry,
-      expiryCategory:
-        contractExpiryCategory(daysUntilExpiry),
+      expiryCategory: contractExpiryCategory(daysUntilExpiry),
       gratuityEligible: contract.gratuityEligible,
-      estimatedGrossEarnings:
-        estimatedGrossEarnings?.toFixed(2) ?? null,
-      estimatedGrossGratuity:
-        estimatedGrossGratuity?.toFixed(2) ?? null,
+      estimatedGrossEarnings: estimatedGrossEarnings?.toFixed(2) ?? null,
+      estimatedGrossGratuity: estimatedGrossGratuity?.toFixed(2) ?? null,
       estimatedTax: estimatedTax?.toFixed(2) ?? null,
-      estimatedNetGratuity:
-        estimatedNetGratuity?.toFixed(2) ?? null,
-    } satisfies ContractMonitoringRecord
-  })
+      estimatedNetGratuity: estimatedNetGratuity?.toFixed(2) ?? null,
+    } satisfies ContractMonitoringRecord;
+  });
 
-  const currentRecords = records.filter(
-    (contract) => contract.isCurrent,
-  )
+  const currentRecords = records.filter((contract) => contract.isCurrent);
 
-  const estimatedNetGratuityExposure =
-    currentRecords.reduce(
-      (total, contract) =>
-        total +
-        Number(contract.estimatedNetGratuity ?? 0),
-      0,
-    )
+  const estimatedNetGratuityExposure = currentRecords.reduce(
+    (total, contract) => total + Number(contract.estimatedNetGratuity ?? 0),
+    0,
+  );
 
   return {
     contracts: records,
     summary: {
-      active: currentRecords.filter(
-        (contract) => contract.status === "ACTIVE",
-      ).length,
+      active: currentRecords.filter((contract) => contract.status === "ACTIVE")
+        .length,
       expiringWithin30Days: currentRecords.filter(
-        (contract) =>
-          contract.expiryCategory === "WITHIN_30_DAYS",
+        (contract) => contract.expiryCategory === "WITHIN_30_DAYS",
       ).length,
       expiringWithin60Days: currentRecords.filter(
-        (contract) =>
-          contract.expiryCategory === "WITHIN_60_DAYS",
+        (contract) => contract.expiryCategory === "WITHIN_60_DAYS",
       ).length,
       expiringWithin90Days: currentRecords.filter(
-        (contract) =>
-          contract.expiryCategory === "WITHIN_90_DAYS",
+        (contract) => contract.expiryCategory === "WITHIN_90_DAYS",
       ).length,
       expired: currentRecords.filter(
-        (contract) =>
-          contract.expiryCategory === "EXPIRED",
+        (contract) => contract.expiryCategory === "EXPIRED",
       ).length,
       missingEndDate: currentRecords.filter(
-        (contract) =>
-          contract.expiryCategory === "NO_END_DATE",
+        (contract) => contract.expiryCategory === "NO_END_DATE",
       ).length,
-      estimatedNetGratuityExposure:
-        estimatedNetGratuityExposure.toFixed(2),
+      estimatedNetGratuityExposure: estimatedNetGratuityExposure.toFixed(2),
     },
-  }
+  };
 }
 
 export type AllowanceCategoryRecord = {
-  id: string
-  code: string | null
-  name: string
-  description: string | null
-  isTaxableDefault: boolean
-  includedInGratuityDefault: boolean
-}
+  id: string;
+  code: string | null;
+  name: string;
+  description: string | null;
+  isTaxableDefault: boolean;
+  includedInGratuityDefault: boolean;
+};
 
 export async function getAllowanceCategories(): Promise<
   AllowanceCategoryRecord[]
@@ -615,10 +673,10 @@ export async function getAllowanceCategories(): Promise<
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   return prisma.allowanceCategory.findMany({
@@ -637,124 +695,108 @@ export async function getAllowanceCategories(): Promise<
       isTaxableDefault: true,
       includedInGratuityDefault: true,
     },
-  })
+  });
 }
 
 export type ContractCompensationSummary = {
-  monthlyBaseSalary: string
-  monthlyRecurringAllowances: string
-  annualRecurringAllowances: string
-  oneTimeAllowances: string
-  monthlyGrossCompensation: string
-  annualGrossCompensation: string
-  taxableAllowanceAnnualTotal: string
-  nonTaxableAllowanceAnnualTotal: string
-  gratuityEligibleAnnualEarnings: string
-  contractMonths: string | null
-  estimatedGrossEarnings: string | null
-  estimatedGrossGratuity: string | null
-  estimatedTax: string | null
-  estimatedNetGratuity: string | null
-}
+  monthlyBaseSalary: string;
+  monthlyRecurringAllowances: string;
+  annualRecurringAllowances: string;
+  oneTimeAllowances: string;
+  monthlyGrossCompensation: string;
+  annualGrossCompensation: string;
+  taxableAllowanceAnnualTotal: string;
+  nonTaxableAllowanceAnnualTotal: string;
+  gratuityEligibleAnnualEarnings: string;
+  contractMonths: string | null;
+  estimatedGrossEarnings: string | null;
+  estimatedGrossGratuity: string | null;
+  estimatedTax: string | null;
+  estimatedNetGratuity: string | null;
+};
 
-function annualizeAllowance(
-  amount: number,
-  frequency: string,
-): number {
+function annualizeAllowance(amount: number, frequency: string): number {
   switch (frequency) {
     case "WEEKLY":
-      return amount * 52
+      return amount * 52;
     case "BIWEEKLY":
-      return amount * 26
+      return amount * 26;
     case "PER_PAY_PERIOD":
-      return amount * 12
+      return amount * 12;
     case "ANNUAL":
-      return amount
+      return amount;
     case "ONE_TIME":
-      return 0
+      return 0;
     default:
-      return amount * 12
+      return amount * 12;
   }
 }
 
-export function calculateContractCompensation(
-  contract: {
-    baseSalary: string
-    startDate: string
-    endDate: string | null
-    gratuityEligible: boolean
-    gratuityRate: string | null
-    gratuityTaxRate: string | null
-    allowances: {
-      amount: string
-      frequency: string
-      isTaxable: boolean
-      includedInGratuity: boolean
-    }[]
-  },
-): ContractCompensationSummary {
-  const monthlyBaseSalary = Number(contract.baseSalary)
+export function calculateContractCompensation(contract: {
+  baseSalary: string;
+  startDate: string;
+  endDate: string | null;
+  gratuityEligible: boolean;
+  gratuityRate: string | null;
+  gratuityTaxRate: string | null;
+  allowances: {
+    amount: string;
+    frequency: string;
+    isTaxable: boolean;
+    includedInGratuity: boolean;
+  }[];
+}): ContractCompensationSummary {
+  const monthlyBaseSalary = Number(contract.baseSalary);
 
-  let annualRecurringAllowances = 0
-  let oneTimeAllowances = 0
-  let taxableAllowanceAnnualTotal = 0
-  let nonTaxableAllowanceAnnualTotal = 0
-  let gratuityEligibleAllowanceAnnualTotal = 0
+  let annualRecurringAllowances = 0;
+  let oneTimeAllowances = 0;
+  let taxableAllowanceAnnualTotal = 0;
+  let nonTaxableAllowanceAnnualTotal = 0;
+  let gratuityEligibleAllowanceAnnualTotal = 0;
 
   for (const allowance of contract.allowances) {
-    const amount = Number(allowance.amount)
+    const amount = Number(allowance.amount);
 
     if (allowance.frequency === "ONE_TIME") {
-      oneTimeAllowances += amount
-      continue
+      oneTimeAllowances += amount;
+      continue;
     }
 
-    const annualValue = annualizeAllowance(
-      amount,
-      allowance.frequency,
-    )
+    const annualValue = annualizeAllowance(amount, allowance.frequency);
 
-    annualRecurringAllowances += annualValue
+    annualRecurringAllowances += annualValue;
 
     if (allowance.isTaxable) {
-      taxableAllowanceAnnualTotal += annualValue
+      taxableAllowanceAnnualTotal += annualValue;
     } else {
-      nonTaxableAllowanceAnnualTotal += annualValue
+      nonTaxableAllowanceAnnualTotal += annualValue;
     }
 
     if (allowance.includedInGratuity) {
-      gratuityEligibleAllowanceAnnualTotal += annualValue
+      gratuityEligibleAllowanceAnnualTotal += annualValue;
     }
   }
 
-  const monthlyRecurringAllowances =
-    annualRecurringAllowances / 12
+  const monthlyRecurringAllowances = annualRecurringAllowances / 12;
 
   const monthlyGrossCompensation =
-    monthlyBaseSalary + monthlyRecurringAllowances
+    monthlyBaseSalary + monthlyRecurringAllowances;
 
-  const annualBaseSalary = monthlyBaseSalary * 12
+  const annualBaseSalary = monthlyBaseSalary * 12;
 
   const annualGrossCompensation =
-    annualBaseSalary +
-    annualRecurringAllowances +
-    oneTimeAllowances
+    annualBaseSalary + annualRecurringAllowances + oneTimeAllowances;
 
   const gratuityEligibleAnnualEarnings =
-    annualBaseSalary +
-    gratuityEligibleAllowanceAnnualTotal
+    annualBaseSalary + gratuityEligibleAllowanceAnnualTotal;
 
-  let contractMonths: string | null = null
-  let estimatedGrossEarnings: string | null = null
-  let estimatedGrossGratuity: string | null = null
-  let estimatedTax: string | null = null
-  let estimatedNetGratuity: string | null = null
+  let contractMonths: string | null = null;
+  let estimatedGrossEarnings: string | null = null;
+  let estimatedGrossGratuity: string | null = null;
+  let estimatedTax: string | null = null;
+  let estimatedNetGratuity: string | null = null;
 
-  if (
-    contract.gratuityEligible &&
-    contract.endDate &&
-    contract.gratuityRate
-  ) {
+  if (contract.gratuityEligible && contract.endDate && contract.gratuityRate) {
     const estimate = calculateContractGratuityEstimate({
       startDate: new Date(`${contract.startDate}T00:00:00.000Z`),
       endDate: new Date(`${contract.endDate}T00:00:00.000Z`),
@@ -762,39 +804,29 @@ export function calculateContractCompensation(
       allowances: contract.allowances,
       gratuityRate: contract.gratuityRate,
       gratuityTaxRate: contract.gratuityTaxRate,
-    })
+    });
 
-    contractMonths = String(estimate.contractMonths)
-    estimatedGrossEarnings =
-      estimate.estimatedGrossEarnings.toFixed(2)
-    estimatedGrossGratuity =
-      estimate.estimatedGrossGratuity.toFixed(2)
-    estimatedTax = estimate.estimatedTax.toFixed(2)
-    estimatedNetGratuity =
-      estimate.estimatedNetGratuity.toFixed(2)
+    contractMonths = String(estimate.contractMonths);
+    estimatedGrossEarnings = estimate.estimatedGrossEarnings.toFixed(2);
+    estimatedGrossGratuity = estimate.estimatedGrossGratuity.toFixed(2);
+    estimatedTax = estimate.estimatedTax.toFixed(2);
+    estimatedNetGratuity = estimate.estimatedNetGratuity.toFixed(2);
   }
 
   return {
     monthlyBaseSalary: monthlyBaseSalary.toFixed(2),
-    monthlyRecurringAllowances:
-      monthlyRecurringAllowances.toFixed(2),
-    annualRecurringAllowances:
-      annualRecurringAllowances.toFixed(2),
+    monthlyRecurringAllowances: monthlyRecurringAllowances.toFixed(2),
+    annualRecurringAllowances: annualRecurringAllowances.toFixed(2),
     oneTimeAllowances: oneTimeAllowances.toFixed(2),
-    monthlyGrossCompensation:
-      monthlyGrossCompensation.toFixed(2),
-    annualGrossCompensation:
-      annualGrossCompensation.toFixed(2),
-    taxableAllowanceAnnualTotal:
-      taxableAllowanceAnnualTotal.toFixed(2),
-    nonTaxableAllowanceAnnualTotal:
-      nonTaxableAllowanceAnnualTotal.toFixed(2),
-    gratuityEligibleAnnualEarnings:
-      gratuityEligibleAnnualEarnings.toFixed(2),
+    monthlyGrossCompensation: monthlyGrossCompensation.toFixed(2),
+    annualGrossCompensation: annualGrossCompensation.toFixed(2),
+    taxableAllowanceAnnualTotal: taxableAllowanceAnnualTotal.toFixed(2),
+    nonTaxableAllowanceAnnualTotal: nonTaxableAllowanceAnnualTotal.toFixed(2),
+    gratuityEligibleAnnualEarnings: gratuityEligibleAnnualEarnings.toFixed(2),
     contractMonths,
     estimatedGrossEarnings,
     estimatedGrossGratuity,
     estimatedTax,
     estimatedNetGratuity,
-  }
+  };
 }

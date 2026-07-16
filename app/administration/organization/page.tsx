@@ -1,34 +1,42 @@
-import Link from "next/link"
-import type { Metadata } from "next"
+import Link from "next/link";
+import type { Metadata } from "next";
 import {
   Building2,
   CalendarDays,
   Clock3,
   Globe2,
   Mail,
+  Network,
   Pencil,
-  Phone,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { prisma } from "@/lib/prisma"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PageShell } from "@/src/components/layout/page-shell"
-import { AdministrationNav } from "@/src/modules/admin/components/administration-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
+import { PageHeader } from "@/src/components/layout/page-header";
+import {
+  PageActionsEnd,
+  PageActionsStart,
+} from "@/src/components/layout/page-actions";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { employmentStatusBadgeVariant } from "@/src/config/ui-colors";
+import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
+import { OrganizationReportingLinesSection } from "@/src/modules/admin/components/organization-reporting-lines-section";
+import { getOrganizationReportingLines } from "@/src/modules/admin/data/get-organization-reporting-lines";
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 
 export const metadata: Metadata = {
   title: "Organization",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function Detail({
   label,
   value,
 }: {
-  label: string
-  value: string | null | undefined
+  label: string;
+  value: string | null | undefined;
 }) {
   return (
     <div>
@@ -37,22 +45,28 @@ function Detail({
         {value?.trim() || "Not provided"}
       </p>
     </div>
-  )
+  );
 }
 
 function formatStatus(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export default async function OrganizationPage() {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-  })
+  const [organization, reportingLines, capabilities] = await Promise.all([
+    prisma.organization.findFirst({
+      orderBy: {
+        createdAt: "asc",
+      },
+    }),
+    getOrganizationReportingLines(),
+    getUserCapabilities(),
+  ]);
+
+  const canManageReporting = Boolean(capabilities?.can("people.manage"));
 
   if (!organization) {
     return (
@@ -64,7 +78,7 @@ export default async function OrganizationPage() {
           description="No organization profile has been configured."
         />
       </PageShell>
-    )
+    );
   }
 
   return (
@@ -73,21 +87,44 @@ export default async function OrganizationPage() {
 
       <PageHeader
         title={organization.name}
-        description="Organization identity, contact information and regional defaults."
+        description="Organization identity, contact information, and regional defaults. Day-to-day departments, positions, and reporting live under People → Organization."
         actions={
-          <Button
-            nativeButton={false}
-            render={
-              <Link href="/administration/organization/edit" />
-            }
-          >
-            <Pencil />
-            Edit organization
-          </Button>
+          <>
+            <PageActionsStart>
+              <Button
+                nativeButton={false}
+                variant="outline"
+                render={<Link href="/people/structure" />}
+              >
+                <Network />
+                People Organization
+              </Button>
+              {canManageReporting ? (
+                <Button
+                  nativeButton={false}
+                  variant="outline"
+                  render={
+                    <Link href="/administration/organization/reporting" />
+                  }
+                >
+                  Bulk reporting
+                </Button>
+              ) : null}
+            </PageActionsStart>
+            <PageActionsEnd>
+              <Button
+                nativeButton={false}
+                render={<Link href="/administration/organization/edit" />}
+              >
+                <Pencil />
+                Edit organization
+              </Button>
+            </PageActionsEnd>
+          </>
         }
       />
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex size-14 shrink-0 items-center justify-center border border-border">
@@ -95,7 +132,7 @@ export default async function OrganizationPage() {
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {organization.name}
               </h2>
 
@@ -112,19 +149,11 @@ export default async function OrganizationPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Badge
-              variant={
-                organization.status === "ACTIVE"
-                  ? "default"
-                  : "secondary"
-              }
-            >
+            <Badge variant={employmentStatusBadgeVariant(organization.status)}>
               {formatStatus(organization.status)}
             </Badge>
 
-            <Badge variant="outline">
-              Version {organization.version}
-            </Badge>
+            <Badge variant="outline">Version {organization.version}</Badge>
           </div>
         </div>
       </section>
@@ -137,7 +166,7 @@ export default async function OrganizationPage() {
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail label="Organization name" value={organization.name} />
           <Detail label="Short name" value={organization.shortName} />
           <Detail label="Legal name" value={organization.legalName} />
@@ -161,7 +190,7 @@ export default async function OrganizationPage() {
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail label="Email" value={organization.email} />
           <Detail label="Telephone" value={organization.phone} />
           <Detail label="Website" value={organization.website} />
@@ -176,29 +205,24 @@ export default async function OrganizationPage() {
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
-          <Detail
-            label="Time zone"
-            value={organization.defaultTimeZone}
-          />
-          <Detail
-            label="Currency"
-            value={organization.defaultCurrency}
-          />
-          <Detail
-            label="Language"
-            value={organization.defaultLanguage}
-          />
-          <Detail
-            label="Date format"
-            value={organization.dateFormat}
-          />
+        <div className="grid gap-6 md:grid-cols-2">
+          <Detail label="Time zone" value={organization.defaultTimeZone} />
+          <Detail label="Currency" value={organization.defaultCurrency} />
+          <Detail label="Language" value={organization.defaultLanguage} />
+          <Detail label="Date format" value={organization.dateFormat} />
           <Detail
             label="First day of week"
             value={String(organization.firstDayOfWeek)}
           />
         </div>
       </section>
+
+      {reportingLines ? (
+        <OrganizationReportingLinesSection
+          data={reportingLines}
+          canManage={canManageReporting}
+        />
+      ) : null}
 
       <section>
         <div className="mb-4 flex items-center gap-2">
@@ -208,7 +232,7 @@ export default async function OrganizationPage() {
           </h2>
         </div>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail
             label="Created"
             value={organization.createdAt
@@ -245,17 +269,35 @@ export default async function OrganizationPage() {
           Existing records open in read-only mode.
         </p>
 
-        <Button
-          nativeButton={false}
-          variant="outline"
-          render={
-            <Link href="/administration/organization/edit" />
-          }
-        >
-          <Pencil />
-          Edit organization
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/people/structure" />}
+          >
+            <Network />
+            People Organization
+          </Button>
+
+          {canManageReporting ? (
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={<Link href="/administration/organization/reporting" />}
+            >
+              Bulk reporting
+            </Button>
+          ) : null}
+
+          <Button
+            nativeButton={false}
+            render={<Link href="/administration/organization/edit" />}
+          >
+            <Pencil />
+            Edit organization
+          </Button>
+        </div>
       </footer>
     </PageShell>
-  )
+  );
 }

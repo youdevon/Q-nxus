@@ -1,39 +1,40 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import { ArrowLeft, BriefcaseBusiness } from "lucide-react"
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { BriefcaseBusiness } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
-import { getEmployeeCurrentJobDescription } from "@/src/modules/hr/data/get-job-descriptions"
+import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { getEmployeeCurrentJobDescription } from "@/src/modules/hr/data/get-job-descriptions";
+import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Employee Job Description",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export default async function EmployeeJobDescriptionPage({
   params,
 }: {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }) {
-  const { id } = await params
-  const data = await getEmployeeCurrentJobDescription(id)
+  await requirePeopleManageAccess();
+
+  const { id } = await params;
+  const data = await getEmployeeCurrentJobDescription(id);
 
   if (!data) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -43,52 +44,39 @@ export default async function EmployeeJobDescriptionPage({
       <PageHeader
         title="Job Description"
         description={`${data.employee.firstName} ${data.employee.lastName} · ${data.employee.employeeNumber}`}
-        actions={
-          <Button
-            nativeButton={false}
-            variant="outline"
-            render={<Link href={`/people/employees/${id}`} />}
-          >
-            <ArrowLeft />
-            Employee profile
-          </Button>
-        }
+        backHref={`/people/employees/${id}`}
+        backLabel="Employee"
       />
 
       {!data.position ? (
-        <div className="border-y border-border py-12 text-center">
+        <div className="py-12 text-center">
           <BriefcaseBusiness className="mx-auto size-7 text-muted-foreground" />
-          <p className="mt-3 text-sm font-medium">
-            No position assigned
-          </p>
+          <p className="mt-3 text-sm font-medium">No position assigned</p>
           <p className="mt-1 text-xs text-muted-foreground">
             Assign a position before accessing a job description.
           </p>
         </div>
       ) : !data.jobDescription ? (
-        <div className="border-y border-border py-12 text-center">
+        <div className="py-12 text-center">
           <BriefcaseBusiness className="mx-auto size-7 text-muted-foreground" />
-          <p className="mt-3 text-sm font-medium">
-            No active job description
-          </p>
+          <p className="mt-3 text-sm font-medium">No active job description</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            The assigned position does not yet have an active job-description version.
+            The assigned position does not yet have an active job-description
+            version.
           </p>
         </div>
       ) : (
         <>
-          <section className="border-y border-border py-6">
+          <section>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {data.jobDescription.title}
               </h2>
               <Badge variant="outline">
                 Version {data.jobDescription.versionNumber}
               </Badge>
               {data.position.code && (
-                <Badge variant="secondary">
-                  {data.position.code}
-                </Badge>
+                <Badge variant="secondary">{data.position.code}</Badge>
               )}
             </div>
 
@@ -106,7 +94,7 @@ export default async function EmployeeJobDescriptionPage({
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
                 Summary
               </h2>
-              <p className="whitespace-pre-wrap border-y border-border py-5 text-sm">
+              <p className="whitespace-pre-wrap text-sm">
                 {data.jobDescription.summary}
               </p>
             </section>
@@ -117,7 +105,7 @@ export default async function EmployeeJobDescriptionPage({
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
                 Position purpose
               </h2>
-              <p className="whitespace-pre-wrap border-y border-border py-5 text-sm">
+              <p className="whitespace-pre-wrap text-sm">
                 {data.jobDescription.positionPurpose}
               </p>
             </section>
@@ -127,11 +115,9 @@ export default async function EmployeeJobDescriptionPage({
             <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
               Reporting relationship
             </h2>
-            <div className="grid gap-5 border-y border-border py-5 md:grid-cols-2">
+            <div className="grid gap-5 md:grid-cols-2">
               <div>
-                <p className="text-xs text-muted-foreground">
-                  Reports to
-                </p>
+                <p className="text-xs text-muted-foreground">Reports to</p>
                 <p className="mt-1 text-sm font-medium">
                   {data.jobDescription.reportsTo ?? "Not specified"}
                 </p>
@@ -154,20 +140,16 @@ export default async function EmployeeJobDescriptionPage({
               Duties and performance criteria
             </h2>
 
-            <div className="divide-y divide-border border-y border-border">
+            <div className="divide-y divide-border/70">
               {data.jobDescription.criteria.map((criterion) => (
                 <article key={criterion.id} className="py-5">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant="outline">
                       {label(criterion.criterionType)}
                     </Badge>
-                    <h3 className="font-medium">
-                      {criterion.title}
-                    </h3>
+                    <h3 className="font-medium">{criterion.title}</h3>
                     {Number(criterion.weight) > 0 && (
-                      <Badge variant="secondary">
-                        {criterion.weight}%
-                      </Badge>
+                      <Badge variant="secondary">{criterion.weight}%</Badge>
                     )}
                   </div>
 
@@ -192,9 +174,8 @@ export default async function EmployeeJobDescriptionPage({
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
                 Qualifications
               </h2>
-              <p className="whitespace-pre-wrap border-y border-border py-5 text-sm">
-                {data.jobDescription.qualifications ??
-                  "Not specified"}
+              <p className="whitespace-pre-wrap text-sm">
+                {data.jobDescription.qualifications ?? "Not specified"}
               </p>
             </div>
 
@@ -202,14 +183,13 @@ export default async function EmployeeJobDescriptionPage({
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
                 Required experience
               </h2>
-              <p className="whitespace-pre-wrap border-y border-border py-5 text-sm">
-                {data.jobDescription.requiredExperience ??
-                  "Not specified"}
+              <p className="whitespace-pre-wrap text-sm">
+                {data.jobDescription.requiredExperience ?? "Not specified"}
               </p>
             </div>
           </section>
         </>
       )}
     </div>
-  )
+  );
 }

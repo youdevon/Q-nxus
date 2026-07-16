@@ -1,44 +1,43 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import {
-  ArrowLeft,
-  BriefcaseBusiness,
-  Plus,
-} from "lucide-react"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { BriefcaseBusiness, Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PageShell } from "@/src/components/layout/page-shell"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
-import { getEmployeeAssignmentHistory } from "@/src/modules/hr/data/get-employee-assignments"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { getEmployeeAssignmentHistory } from "@/src/modules/hr/data/get-employee-assignments";
+import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Assignment History",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export default async function EmployeeAssignmentsPage({
   params,
 }: {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }) {
-  const { id } = await params
-  const data = await getEmployeeAssignmentHistory(id)
+  await requirePeopleManageAccess();
+
+  const { id } = await params;
+  const data = await getEmployeeAssignmentHistory(id);
 
   if (!data) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -48,68 +47,45 @@ export default async function EmployeeAssignmentsPage({
       <PageHeader
         title="Assignment History"
         description={`${data.employee.firstName} ${data.employee.lastName} · ${data.employee.employeeNumber}`}
+        backHref={`/people/employees/${data.employee.id}`}
+        backLabel="Employee"
         actions={
-          <>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${data.employee.id}`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Employee profile
-            </Button>
-
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href={`/people/employees/${data.employee.id}/assignments/new`}
-                />
-              }
-            >
-              <Plus />
-              Assign to position
-            </Button>
-          </>
+          <Button
+            nativeButton={false}
+            render={
+              <Link
+                href={`/people/employees/${data.employee.id}/assignments/new`}
+              />
+            }
+          >
+            <Plus />
+            Assign to position
+          </Button>
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-3">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-3">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Assignment records
-          </p>
+          <p className="text-xs text-muted-foreground">Assignment records</p>
           <p className="mt-1 text-2xl font-semibold">
             {data.assignments.length}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Current assignment
-          </p>
+          <p className="text-xs text-muted-foreground">Current assignment</p>
           <p className="mt-1 text-sm font-medium">
-            {data.assignments.find(
-              (assignment) => assignment.isCurrent,
-            )?.position?.title ??
-              data.assignments.find(
-                (assignment) => assignment.isCurrent,
-              )?.department.name ??
+            {data.assignments.find((assignment) => assignment.isCurrent)
+              ?.position?.title ??
+              data.assignments.find((assignment) => assignment.isCurrent)
+                ?.department.name ??
               "Not recorded"}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Hire date
-          </p>
-          <p className="mt-1 text-sm font-medium">
-            {data.employee.hireDate}
-          </p>
+          <p className="text-xs text-muted-foreground">Hire date</p>
+          <p className="mt-1 text-sm font-medium">{data.employee.hireDate}</p>
         </div>
       </section>
 
@@ -122,7 +98,7 @@ export default async function EmployeeAssignmentsPage({
         </div>
 
         {data.assignments.length === 0 ? (
-          <div className="border-y border-border py-10 text-center">
+          <div className="py-10 text-center">
             <p className="text-sm font-medium">
               No assignment history recorded
             </p>
@@ -131,32 +107,24 @@ export default async function EmployeeAssignmentsPage({
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {data.assignments.map((assignment) => (
-              <article
-                key={assignment.id}
-                className="py-6"
-              >
+              <article key={assignment.id} className="py-6">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-medium">
-                        {assignment.position?.title ??
-                          "Department assignment"}
+                        {assignment.position?.title ?? "Department assignment"}
                       </h3>
 
                       <Badge variant="outline">
                         {label(assignment.assignmentType)}
                       </Badge>
 
-                      {assignment.isCurrent && (
-                        <Badge>Current</Badge>
-                      )}
+                      {assignment.isCurrent && <Badge>Current</Badge>}
 
                       {assignment.isActing && (
-                        <Badge variant="secondary">
-                          Acting
-                        </Badge>
+                        <Badge variant="secondary">Acting</Badge>
                       )}
                     </div>
 
@@ -176,9 +144,7 @@ export default async function EmployeeAssignmentsPage({
                     )}
 
                     {assignment.reason && (
-                      <p className="mt-3 text-sm">
-                        {assignment.reason}
-                      </p>
+                      <p className="mt-3 text-sm">{assignment.reason}</p>
                     )}
                   </div>
 
@@ -205,5 +171,5 @@ export default async function EmployeeAssignmentsPage({
         )}
       </section>
     </PageShell>
-  )
+  );
 }

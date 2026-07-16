@@ -1,75 +1,62 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useActionState, useEffect, useState } from "react"
-import {
-  ArrowLeft,
-  ClipboardCheck,
-  Save,
-} from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect, useState } from "react";
+import { ClipboardCheck, Save } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
 import {
   createPerformanceAppraisal,
   type PerformanceAppraisalFormState,
-} from "@/src/modules/hr/actions/create-performance-appraisal"
-import type { AppraisalCreationData } from "@/src/modules/hr/data/get-performance-appraisals"
-import { PeopleNav } from "./people-nav"
+} from "@/src/modules/hr/actions/create-performance-appraisal";
+import type { AppraisalCreationData } from "@/src/modules/hr/data/get-performance-appraisals";
+import { PeopleNav } from "./people-nav";
 
 const initialState: PerformanceAppraisalFormState = {
   status: "idle",
   message: "",
-}
+};
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) =>
-      character.toUpperCase(),
-    )
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export function PerformanceAppraisalForm({
   data,
 }: {
-  data: AppraisalCreationData
+  data: AppraisalCreationData;
 }) {
   const [state, action, pending] = useActionState(
     createPerformanceAppraisal,
     initialState,
-  )
+  );
 
   const initialAssignment =
     data.assignments.find(
-      (assignment) =>
-        assignment.isCurrent &&
-        assignment.jobDescription,
-    ) ??
-    data.assignments.find(
-      (assignment) => assignment.jobDescription,
-    )
+      (assignment) => assignment.isCurrent && assignment.jobDescription,
+    ) ?? data.assignments.find((assignment) => assignment.jobDescription);
 
-  const [assignmentId, setAssignmentId] = useState(
-    initialAssignment?.id ?? "",
-  )
+  const [assignmentId, setAssignmentId] = useState(initialAssignment?.id ?? "");
 
   const selectedAssignment = data.assignments.find(
     (assignment) => assignment.id === assignmentId,
-  )
+  );
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form
@@ -78,35 +65,22 @@ export function PerformanceAppraisalForm({
     >
       <PeopleNav />
 
-      <input
-        type="hidden"
-        name="employeeId"
-        value={data.employee.id}
-      />
+      <input type="hidden" name="employeeId" value={data.employee.id} />
 
       <PageHeader
         title="New Performance Appraisal"
         description={`${data.employee.firstName} ${data.employee.lastName} · ${data.employee.employeeNumber}`}
+        backHref={`/people/employees/${data.employee.id}/appraisals`}
+        backLabel="Appraisals"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${data.employee.id}/appraisals`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions
+            cancelHref={`/people/employees/${data.employee.id}/appraisals`}
+          >
             <Button type="submit" disabled={pending}>
               <Save />
               {pending ? "Creating…" : "Create appraisal"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -127,12 +101,9 @@ export function PerformanceAppraisalForm({
           </h2>
         </div>
 
-        <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="title"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="title" className="text-sm font-medium">
               Appraisal title
             </label>
             <Input
@@ -145,10 +116,7 @@ export function PerformanceAppraisalForm({
           </div>
 
           <div>
-            <label
-              htmlFor="appraisalNumber"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="appraisalNumber" className="text-sm font-medium">
               Appraisal reference
             </label>
             <Input
@@ -159,10 +127,7 @@ export function PerformanceAppraisalForm({
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="assignmentId"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="assignmentId" className="text-sm font-medium">
               Assignment being appraised
             </label>
 
@@ -170,15 +135,11 @@ export function PerformanceAppraisalForm({
               id="assignmentId"
               name="assignmentId"
               value={assignmentId}
-              onChange={(event) =>
-                setAssignmentId(event.target.value)
-              }
+              onChange={(event) => setAssignmentId(event.target.value)}
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
-              <option value="">
-                Select an assignment
-              </option>
+              <option value="">Select an assignment</option>
 
               {data.assignments.map((assignment) => (
                 <option
@@ -186,21 +147,18 @@ export function PerformanceAppraisalForm({
                   value={assignment.id}
                   disabled={!assignment.jobDescription}
                 >
-                  {assignment.positionTitle ??
-                    assignment.departmentName}
-                  {" · "}
+                  {assignment.positionTitle ?? assignment.departmentName}
+                  {" ·"}
                   {assignment.startDate} to{" "}
                   {assignment.endDate ?? "Present"}
-                  {!assignment.jobDescription
-                    ? " · No job description"
-                    : ""}
+                  {!assignment.jobDescription ? " · No job description" : ""}
                 </option>
               ))}
             </select>
           </div>
 
           {selectedAssignment && (
-            <div className="border-y border-border py-4 md:col-span-2">
+            <div className="md:col-span-2">
               <p className="text-sm font-medium">
                 {selectedAssignment.positionTitle ??
                   selectedAssignment.departmentName}
@@ -208,64 +166,46 @@ export function PerformanceAppraisalForm({
 
               <p className="mt-1 text-xs text-muted-foreground">
                 {label(selectedAssignment.assignmentType)}
-                {" · "}
+                {" ·"}
                 {selectedAssignment.departmentName}
               </p>
 
               {selectedAssignment.jobDescription ? (
                 <p className="mt-2 text-xs text-muted-foreground">
                   Job description version{" "}
-                  {
-                    selectedAssignment.jobDescription
-                      .versionNumber
-                  }
-                  {" · "}
-                  {
-                    selectedAssignment.jobDescription
-                      .criteriaCount
-                  }{" "}
+                  {selectedAssignment.jobDescription.versionNumber}
+                  {" ·"}
+                  {selectedAssignment.jobDescription.criteriaCount}
+                  {" "}
                   criteria
-                  {" · "}
-                  {
-                    selectedAssignment.jobDescription
-                      .totalWeight
-                  }
-                  % total weight
+                  {" ·"}
+                  {selectedAssignment.jobDescription.totalWeight}% total weight
                 </p>
               ) : (
                 <p className="mt-2 text-xs text-destructive">
-                  This assignment cannot be appraised until a
-                  job description is linked.
+                  This assignment cannot be appraised until a job description is
+                  linked.
                 </p>
               )}
             </div>
           )}
 
           <div>
-            <label
-              htmlFor="periodStart"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="periodStart" className="text-sm font-medium">
               Period start
             </label>
             <Input
               id="periodStart"
               name="periodStart"
               type="date"
-              min={
-                selectedAssignment?.startDate ??
-                data.employee.hireDate
-              }
+              min={selectedAssignment?.startDate ?? data.employee.hireDate}
               className="mt-2"
               required
             />
           </div>
 
           <div>
-            <label
-              htmlFor="periodEnd"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="periodEnd" className="text-sm font-medium">
               Period end
             </label>
             <Input
@@ -279,10 +219,7 @@ export function PerformanceAppraisalForm({
           </div>
 
           <div>
-            <label
-              htmlFor="reviewDueDate"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="reviewDueDate" className="text-sm font-medium">
               Review due date
             </label>
             <Input
@@ -294,10 +231,7 @@ export function PerformanceAppraisalForm({
           </div>
 
           <div>
-            <label
-              htmlFor="ratingScale"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="ratingScale" className="text-sm font-medium">
               Rating scale
             </label>
 
@@ -308,23 +242,14 @@ export function PerformanceAppraisalForm({
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
-              <option value="ONE_TO_FIVE">
-                1 to 5
-              </option>
-              <option value="ONE_TO_TEN">
-                1 to 10
-              </option>
-              <option value="PERCENTAGE">
-                Percentage
-              </option>
+              <option value="ONE_TO_FIVE">1 to 5</option>
+              <option value="ONE_TO_TEN">1 to 10</option>
+              <option value="PERCENTAGE">Percentage</option>
             </select>
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="supervisorUserId"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="supervisorUserId" className="text-sm font-medium">
               Appraising supervisor
             </label>
 
@@ -334,15 +259,10 @@ export function PerformanceAppraisalForm({
               defaultValue=""
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
             >
-              <option value="">
-                Assign later
-              </option>
+              <option value="">Assign later</option>
 
               {data.supervisors.map((supervisor) => (
-                <option
-                  key={supervisor.id}
-                  value={supervisor.id}
-                >
+                <option key={supervisor.id} value={supervisor.id}>
                   {supervisor.name} · {supervisor.email}
                 </option>
               ))}
@@ -351,5 +271,5 @@ export function PerformanceAppraisalForm({
         </div>
       </section>
     </form>
-  )
+  );
 }

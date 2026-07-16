@@ -1,54 +1,34 @@
-import Link from "next/link"
-import {
-  CheckCircle2,
-  Copy,
-  FileText,
-  Plus,
-  RotateCcw,
-} from "lucide-react"
+import Link from "next/link";
+import { CheckCircle2, Copy, FileText, Plus, RotateCcw } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { jobDescriptionStatusBadgeVariant } from "@/src/config/ui-colors";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { SectionHeading } from "@/src/components/ui/section-heading";
 import {
   activateJobDescription,
   cloneJobDescription,
   retireJobDescription,
-} from "@/src/modules/hr/actions/save-job-description"
-import type { JobDescriptionLifecycleData } from "@/src/modules/hr/data/get-job-descriptions"
-import { PeopleNav } from "./people-nav"
+} from "@/src/modules/hr/actions/save-job-description";
+import type { JobDescriptionLifecycleData } from "@/src/modules/hr/data/get-job-descriptions";
+import { PeopleNav } from "./people-nav";
 
 type JobDescriptionLifecycleProps = {
-  data: JobDescriptionLifecycleData
-}
+  data: JobDescriptionLifecycleData;
+};
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
-}
-
-function statusVariant(
-  status: string,
-): "default" | "secondary" | "outline" {
-  if (status === "ACTIVE") {
-    return "default"
-  }
-
-  if (status === "DRAFT") {
-    return "outline"
-  }
-
-  return "secondary"
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export function JobDescriptionLifecycle({
   data,
 }: JobDescriptionLifecycleProps) {
-  const currentVersion = data.versions.find(
-    (version) => version.isCurrent,
-  )
+  const currentVersion = data.versions.find((version) => version.isCurrent);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -57,69 +37,48 @@ export function JobDescriptionLifecycle({
       <PageHeader
         title="Job Description Versions"
         description={`${data.position.title} · ${data.position.department.name}`}
+        backHref={`/people/structure/positions/${data.position.id}`}
+        backLabel="Position"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href="/people/structure" />}
-            >
-              Structure
-            </Button>
-
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href={`/people/structure/positions/${data.position.id}/job-descriptions/new`}
-                />
-              }
-            >
-              <Plus />
-              New version
-            </Button>
-          </div>
+          <Button
+            nativeButton={false}
+            render={
+              <Link
+                href={`/people/structure/positions/${data.position.id}/job-descriptions/new`}
+              />
+            }
+          >
+            <Plus />
+            New version
+          </Button>
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Versions
-          </p>
+          <p className="text-xs text-muted-foreground">Versions</p>
+          <p className="mt-1 text-2xl font-semibold">{data.versions.length}</p>
+        </div>
+
+        <div>
+          <p className="text-xs text-muted-foreground">Current version</p>
           <p className="mt-1 text-2xl font-semibold">
-            {data.versions.length}
+            {currentVersion ? `v${currentVersion.versionNumber}` : "—"}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Current version
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {currentVersion
-              ? `v${currentVersion.versionNumber}`
-              : "—"}
-          </p>
-        </div>
-
-        <div>
-          <p className="text-xs text-muted-foreground">
-            Draft versions
-          </p>
+          <p className="text-xs text-muted-foreground">Draft versions</p>
           <p className="mt-1 text-2xl font-semibold">
             {
-              data.versions.filter(
-                (version) => version.status === "DRAFT",
-              ).length
+              data.versions.filter((version) => version.status === "DRAFT")
+                .length
             }
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Position code
-          </p>
+          <p className="text-xs text-muted-foreground">Position code</p>
           <p className="mt-1 font-mono text-lg font-semibold">
             {data.position.code ?? "—"}
           </p>
@@ -127,7 +86,7 @@ export function JobDescriptionLifecycle({
       </section>
 
       {data.versions.length === 0 ? (
-        <div className="border-y border-border py-12 text-center">
+        <div className="py-12 text-center">
           <FileText className="mx-auto size-7 text-muted-foreground" />
           <p className="mt-3 text-sm font-medium">
             No job descriptions created
@@ -140,16 +99,13 @@ export function JobDescriptionLifecycle({
         <section>
           <div className="mb-3 flex items-center gap-2">
             <FileText className="size-4 text-muted-foreground" />
-            <h2 className="text-sm font-semibold tracking-wide uppercase">
-              Version history
-            </h2>
+            <SectionHeading>Version history</SectionHeading>
           </div>
 
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {data.versions.map((version) => {
-              const editable = version.status === "DRAFT"
-              const weightComplete =
-                version.totalAppraisalWeight === 100
+              const editable = version.status === "DRAFT";
+              const weightComplete = version.totalAppraisalWeight === 100;
 
               return (
                 <article key={version.id} className="py-6">
@@ -160,7 +116,11 @@ export function JobDescriptionLifecycle({
                           Version {version.versionNumber}
                         </h3>
 
-                        <Badge variant={statusVariant(version.status)}>
+                        <Badge
+                          variant={jobDescriptionStatusBadgeVariant(
+                            version.status,
+                          )}
+                        >
                           {label(version.status)}
                         </Badge>
 
@@ -172,11 +132,7 @@ export function JobDescriptionLifecycle({
                         )}
 
                         <Badge
-                          variant={
-                            weightComplete
-                              ? "outline"
-                              : "secondary"
-                          }
+                          variant={weightComplete ? "outline" : "secondary"}
                         >
                           Appraisal weight{" "}
                           {version.totalAppraisalWeight}%
@@ -199,13 +155,12 @@ export function JobDescriptionLifecycle({
                         {version.criterionCount === 1 ? "" : "s"}
                       </p>
 
-                      {!weightComplete &&
-                        version.totalAppraisalWeight > 0 && (
-                          <p className="mt-2 text-xs text-muted-foreground">
-                            Appraisal criteria should normally total
-                            100% before activation.
-                          </p>
-                        )}
+                      {!weightComplete && version.totalAppraisalWeight > 0 && (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          Appraisal criteria should normally total 100% before
+                          activation.
+                        </p>
+                      )}
                     </div>
 
                     <div className="flex flex-wrap gap-2">
@@ -222,60 +177,22 @@ export function JobDescriptionLifecycle({
                       </Button>
 
                       <form action={cloneJobDescription}>
-                        <input
-                          type="hidden"
-                          name="id"
-                          value={version.id}
-                        />
+                        <input type="hidden" name="id" value={version.id} />
                         <input
                           type="hidden"
                           name="positionId"
                           value={data.position.id}
                         />
 
-                        <Button
-                          type="submit"
-                          variant="outline"
-                        >
+                        <Button type="submit" variant="outline">
                           <Copy />
                           Copy as new version
                         </Button>
                       </form>
 
-                      {!version.isCurrent &&
-                        version.status === "DRAFT" && (
-                          <form action={activateJobDescription}>
-                            <input
-                              type="hidden"
-                              name="id"
-                              value={version.id}
-                            />
-                            <input
-                              type="hidden"
-                              name="positionId"
-                              value={data.position.id}
-                            />
-
-                            <Button
-                              type="submit"
-                              disabled={
-                                version.totalAppraisalWeight >
-                                100
-                              }
-                            >
-                              <CheckCircle2 />
-                              Activate
-                            </Button>
-                          </form>
-                        )}
-
-                      {version.isCurrent && (
-                        <form action={retireJobDescription}>
-                          <input
-                            type="hidden"
-                            name="id"
-                            value={version.id}
-                          />
+                      {!version.isCurrent && version.status === "DRAFT" && (
+                        <form action={activateJobDescription}>
+                          <input type="hidden" name="id" value={version.id} />
                           <input
                             type="hidden"
                             name="positionId"
@@ -284,8 +201,24 @@ export function JobDescriptionLifecycle({
 
                           <Button
                             type="submit"
-                            variant="outline"
+                            disabled={version.totalAppraisalWeight > 100}
                           >
+                            <CheckCircle2 />
+                            Activate
+                          </Button>
+                        </form>
+                      )}
+
+                      {version.isCurrent && (
+                        <form action={retireJobDescription}>
+                          <input type="hidden" name="id" value={version.id} />
+                          <input
+                            type="hidden"
+                            name="positionId"
+                            value={data.position.id}
+                          />
+
+                          <Button type="submit" variant="destructive">
                             <RotateCcw />
                             Retire
                           </Button>
@@ -294,11 +227,11 @@ export function JobDescriptionLifecycle({
                     </div>
                   </div>
                 </article>
-              )
+              );
             })}
           </div>
         </section>
       )}
     </div>
-  )
+  );
 }

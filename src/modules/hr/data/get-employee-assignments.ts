@@ -1,48 +1,48 @@
-import { prisma } from "@/lib/prisma"
-import type { EmployeeFormDepartment } from "./get-employee-form-data"
-import { getEmployeeFormOptions } from "./get-employee-form-data"
+import { prisma } from "@/lib/prisma";
+import type { EmployeeFormDepartment } from "./get-employee-form-data";
+import { getEmployeeFormOptions } from "./get-employee-form-data";
 
 export type EmployeeAssignmentRecord = {
-  id: string
-  assignmentType: string
-  startDate: string
-  endDate: string | null
-  isCurrent: boolean
-  isActing: boolean
-  referenceNumber: string | null
-  reason: string | null
-  notes: string | null
-  createdAt: string
+  id: string;
+  assignmentType: string;
+  startDate: string;
+  endDate: string | null;
+  isCurrent: boolean;
+  isActing: boolean;
+  referenceNumber: string | null;
+  reason: string | null;
+  notes: string | null;
+  createdAt: string;
   department: {
-    id: string
-    name: string
-    code: string | null
-  }
+    id: string;
+    name: string;
+    code: string | null;
+  };
   position: {
-    id: string
-    title: string
-    code: string | null
-  } | null
+    id: string;
+    title: string;
+    code: string | null;
+  } | null;
   jobDescription: {
-    id: string
-    versionNumber: number
-    title: string
-  } | null
-}
+    id: string;
+    versionNumber: number;
+    title: string;
+  } | null;
+};
 
 export type EmployeeAssignmentHistory = {
   employee: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-    hireDate: string
-    updatedAt: string
-    departmentId: string | null
-    positionId: string | null
-  }
-  assignments: EmployeeAssignmentRecord[]
-}
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    hireDate: string;
+    updatedAt: string;
+    departmentId: string | null;
+    positionId: string | null;
+  };
+  assignments: EmployeeAssignmentRecord[];
+};
 
 export async function getEmployeeAssignmentHistory(
   employeeId: string,
@@ -104,10 +104,10 @@ export async function getEmployeeAssignmentHistory(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
   return {
@@ -125,8 +125,7 @@ export async function getEmployeeAssignmentHistory(
       id: assignment.id,
       assignmentType: assignment.assignmentType,
       startDate: assignment.startDate.toISOString().slice(0, 10),
-      endDate:
-        assignment.endDate?.toISOString().slice(0, 10) ?? null,
+      endDate: assignment.endDate?.toISOString().slice(0, 10) ?? null,
       isCurrent: assignment.isCurrent,
       isActing: assignment.isActing,
       referenceNumber: assignment.referenceNumber,
@@ -137,47 +136,45 @@ export async function getEmployeeAssignmentHistory(
       position: assignment.position,
       jobDescription: assignment.jobDescription,
     })),
-  }
+  };
 }
 
-export async function getAssignmentFormData(
-  employeeId: string,
-): Promise<{
-  history: EmployeeAssignmentHistory | null
-  departments: EmployeeFormDepartment[]
+export async function getAssignmentFormData(employeeId: string): Promise<{
+  history: EmployeeAssignmentHistory | null;
+  departments: EmployeeFormDepartment[];
 }> {
   const [history, departments] = await Promise.all([
     getEmployeeAssignmentHistory(employeeId),
     getEmployeeFormOptions(),
-  ])
+  ]);
 
   return {
     history,
     departments,
-  }
+  };
 }
 
 export type PositionAssignmentEmployeeOption = {
-  id: string
-  employeeNumber: string
-  firstName: string
-  lastName: string
-  hireDate: string
-  updatedAt: string
-  departmentName: string | null
-  positionTitle: string | null
-}
+  id: string;
+  employeeNumber: string;
+  firstName: string;
+  lastName: string;
+  hireDate: string;
+  updatedAt: string;
+  departmentName: string | null;
+  positionTitle: string | null;
+};
 
 export type PositionAssignmentFormData = {
   position: {
-    id: string
-    title: string
-    code: string | null
-    departmentId: string
-    departmentName: string
-  }
-  employees: PositionAssignmentEmployeeOption[]
-}
+    id: string;
+    title: string;
+    code: string | null;
+    departmentId: string;
+    departmentName: string;
+  };
+  employees: PositionAssignmentEmployeeOption[];
+};
 
 export async function getPositionAssignmentFormData(
   positionId: string,
@@ -199,10 +196,10 @@ export async function getPositionAssignmentFormData(
         },
       },
     },
-  })
+  });
 
   if (!position || !position.isActive) {
-    return null
+    return null;
   }
 
   const employees = await prisma.employee.findMany({
@@ -249,7 +246,7 @@ export async function getPositionAssignmentFormData(
         },
       },
     },
-  })
+  });
 
   return {
     position: {
@@ -269,5 +266,5 @@ export async function getPositionAssignmentFormData(
       departmentName: employee.department?.name ?? null,
       positionTitle: employee.position?.title ?? null,
     })),
-  }
+  };
 }

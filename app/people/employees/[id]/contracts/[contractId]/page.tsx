@@ -1,100 +1,99 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import {
-  ArrowLeft,
-  FilePenLine,
-  FileSignature,
-} from "lucide-react"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { FilePenLine, FileSignature, RefreshCw } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { formatMoney } from "@/src/lib/format"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
+import { Badge } from "@/components/ui/badge";
+import { activeStateBadgeVariant } from "@/src/config/ui-colors";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { formatMoney } from "@/src/lib/format";
+import { ContractVersionHistoryTabs } from "@/src/modules/hr/components/contract-version-history-tabs";
+import { MarkContractCollectedButton } from "@/src/modules/hr/components/mark-contract-collected-button";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 import {
   calculateContractCompensation,
   getEmploymentContractProfile,
-} from "@/src/modules/hr/data/get-employment-contracts"
+} from "@/src/modules/hr/data/get-employment-contracts";
+import { resolveEmployeeContractAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Employment Contract",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function Detail({
-  labelText,
-  value,
-}: {
-  labelText: string
-  value: string
-}) {
+function Detail({ labelText, value }: { labelText: string; value: string }) {
   return (
     <div>
-      <p className="text-xs text-muted-foreground">
-        {labelText}
-      </p>
-      <p className="mt-1 whitespace-pre-wrap text-sm font-medium">
-        {value}
-      </p>
+      <p className="text-xs text-muted-foreground">{labelText}</p>
+      <p className="mt-1 whitespace-pre-wrap text-sm font-medium">{value}</p>
     </div>
-  )
+  );
+}
+
+function formatCollectedDisplay(value: string | null): string {
+  if (!value) {
+    return "Not collected";
+  }
+
+  return value.slice(0, 10);
 }
 
 export default async function EmploymentContractPage({
   params,
 }: {
   params: Promise<{
-    id: string
-    contractId: string
-  }>
+    id: string;
+    contractId: string;
+  }>;
 }) {
-  const { id, contractId } = await params
-  const contract = await getEmploymentContractProfile(
-    id,
-    contractId,
-  )
+  const { id, contractId } = await params;
+  const access = await resolveEmployeeContractAccess(id);
+  const contract = await getEmploymentContractProfile(id, contractId);
 
   if (!contract) {
-    notFound()
+    notFound();
   }
 
-  const compensation =
-    calculateContractCompensation(contract)
+  const compensation = calculateContractCompensation(contract);
+  const historyHref = `/people/employees/${id}/contracts`;
+  const isCollected = Boolean(contract.collectedAt);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
-      <PeopleNav />
+      {access.showPeopleNav ? <PeopleNav /> : null}
 
       <PageHeader
         title={contract.jobTitle}
-        description={`Employment contract · ${contract.employee.employeeNumber}`}
+        description={
+          access.isSelfService
+            ? `Your employment contract · ${contract.employee.employeeNumber}`
+            : `Employment contract · ${contract.employee.employeeNumber}`
+        }
+        backHref={historyHref}
+        backLabel={access.isSelfService ? "My contracts" : "Contracts"}
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${id}/contracts`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Contract history
-            </Button>
+          access.canManage ? (
+          <div className="flex flex-wrap gap-2">
+            {contract.isCurrent && !isCollected ? (
+              <MarkContractCollectedButton
+                employeeId={id}
+                contractId={contract.id}
+              />
+            ) : null}
 
-            {contract.isCurrent && (
+            {contract.isCurrent ? (
               <Button
                 nativeButton={false}
+                variant="outline"
                 render={
                   <Link
                     href={`/people/employees/${id}/contracts/${contract.id}/amend`}
@@ -102,14 +101,32 @@ export default async function EmploymentContractPage({
                 }
               >
                 <FilePenLine />
-                Renew or amend
+                Amend
               </Button>
-            )}
+            ) : null}
+
+            {contract.isCurrent ||
+            contract.status === "TERMINATED" ||
+            contract.status === "EXPIRED" ||
+            contract.status === "CANCELLED" ? (
+              <Button
+                nativeButton={false}
+                render={
+                  <Link
+                    href={`/people/employees/${id}/contracts/${contract.id}/renew`}
+                  />
+                }
+              >
+                <RefreshCw />
+                Renew
+              </Button>
+            ) : null}
           </div>
+          ) : undefined
         }
       />
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
             <div className="flex size-14 items-center justify-center border border-border">
@@ -117,58 +134,64 @@ export default async function EmploymentContractPage({
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {contract.jobTitle}
               </h2>
               <p className="mt-1 font-mono text-xs text-muted-foreground">
-                {contract.contractNumber ??
-                  "No contract number"}
+                {contract.contractNumber ?? "No contract number"}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                {contract.employee.firstName}{" "}
+                {contract.employee.firstName}
+                {" "}
                 {contract.employee.lastName}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <Badge
-              variant={
-                contract.isCurrent
-                  ? "default"
-                  : "secondary"
-              }
-            >
-              {contract.isCurrent
-                ? "Current"
-                : label(contract.status)}
+          <div className="flex flex-wrap justify-end gap-2">
+            <Badge variant={activeStateBadgeVariant(contract.isCurrent)}>
+              {contract.isCurrent ? "Current" : label(contract.status)}
             </Badge>
 
-            <Badge variant="outline">
-              {label(contract.contractType)}
-            </Badge>
+            <Badge variant="outline">{label(contract.contractType)}</Badge>
+
+            {isCollected ? (
+              <Badge variant="secondary">Collected</Badge>
+            ) : (
+              <Badge variant="outline">Not collected</Badge>
+            )}
+
+            {contract.amendedAfterCollection ? (
+              <Badge variant="destructive">Amended after collection</Badge>
+            ) : null}
           </div>
         </div>
       </section>
+
+      {contract.amendedAfterCollection ? (
+        <div className="border-y border-amber-500/40 bg-amber-500/5 py-3 text-sm text-amber-900 dark:text-amber-200">
+          The employee already collected the previous version of this contract.
+          This record is an amendment after that collection.
+        </div>
+      ) : null}
+
+      <ContractVersionHistoryTabs
+        employeeId={id}
+        previousVersions={contract.previousVersions}
+      />
 
       <section>
         <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
           Contract information
         </h2>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <Detail
             labelText="Contract action"
             value={label(contract.changeType)}
           />
-          <Detail
-            labelText="Job title"
-            value={contract.jobTitle}
-          />
-          <Detail
-            labelText="Start date"
-            value={contract.startDate}
-          />
+          <Detail labelText="Job title" value={contract.jobTitle} />
+          <Detail labelText="Start date" value={contract.startDate} />
           <Detail
             labelText="End date"
             value={contract.endDate ?? "No end date"}
@@ -178,6 +201,10 @@ export default async function EmploymentContractPage({
             value={contract.signedDate ?? "Not recorded"}
           />
           <Detail
+            labelText="Collected"
+            value={formatCollectedDisplay(contract.collectedAt)}
+          />
+          <Detail
             labelText="Base salary"
             value={formatMoney(contract.baseSalary, {
               currency: contract.currency,
@@ -185,9 +212,7 @@ export default async function EmploymentContractPage({
           />
           <Detail
             labelText="Document reference"
-            value={
-              contract.documentReference ?? "Not recorded"
-            }
+            value={contract.documentReference ?? "Not recorded"}
           />
           <Detail
             labelText="Notes"
@@ -201,7 +226,7 @@ export default async function EmploymentContractPage({
           Compensation Summary
         </h2>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Detail
             labelText="Monthly base salary"
             value={formatMoney(compensation.monthlyBaseSalary, {
@@ -211,34 +236,30 @@ export default async function EmploymentContractPage({
 
           <Detail
             labelText="Monthly recurring allowances"
-            value={formatMoney(
-              compensation.monthlyRecurringAllowances,
-              { currency: contract.currency },
-            )}
+            value={formatMoney(compensation.monthlyRecurringAllowances, {
+              currency: contract.currency,
+            })}
           />
 
           <Detail
             labelText="Monthly gross compensation"
-            value={formatMoney(
-              compensation.monthlyGrossCompensation,
-              { currency: contract.currency },
-            )}
+            value={formatMoney(compensation.monthlyGrossCompensation, {
+              currency: contract.currency,
+            })}
           />
 
           <Detail
             labelText="Annual gross compensation"
-            value={formatMoney(
-              compensation.annualGrossCompensation,
-              { currency: contract.currency },
-            )}
+            value={formatMoney(compensation.annualGrossCompensation, {
+              currency: contract.currency,
+            })}
           />
 
           <Detail
             labelText="Annual recurring allowances"
-            value={formatMoney(
-              compensation.annualRecurringAllowances,
-              { currency: contract.currency },
-            )}
+            value={formatMoney(compensation.annualRecurringAllowances, {
+              currency: contract.currency,
+            })}
           />
 
           <Detail
@@ -250,18 +271,16 @@ export default async function EmploymentContractPage({
 
           <Detail
             labelText="Annual taxable allowances"
-            value={formatMoney(
-              compensation.taxableAllowanceAnnualTotal,
-              { currency: contract.currency },
-            )}
+            value={formatMoney(compensation.taxableAllowanceAnnualTotal, {
+              currency: contract.currency,
+            })}
           />
 
           <Detail
             labelText="Gratuity-eligible annual earnings"
-            value={formatMoney(
-              compensation.gratuityEligibleAnnualEarnings,
-              { currency: contract.currency },
-            )}
+            value={formatMoney(compensation.gratuityEligibleAnnualEarnings, {
+              currency: contract.currency,
+            })}
           />
         </div>
       </section>
@@ -272,11 +291,11 @@ export default async function EmploymentContractPage({
         </h2>
 
         {contract.allowances.length === 0 ? (
-          <p className="border-y border-border py-6 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No allowances are recorded for this contract.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {contract.allowances.map((allowance) => (
               <div
                 key={allowance.id}
@@ -292,9 +311,7 @@ export default async function EmploymentContractPage({
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Amount
-                  </p>
+                  <p className="text-xs text-muted-foreground">Amount</p>
                   <p className="mt-1 text-sm font-medium">
                     {formatMoney(allowance.amount, {
                       currency: contract.currency,
@@ -303,26 +320,20 @@ export default async function EmploymentContractPage({
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Frequency
-                  </p>
+                  <p className="text-xs text-muted-foreground">Frequency</p>
                   <p className="mt-1 text-sm font-medium">
                     {label(allowance.frequency)}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Taxable
-                  </p>
+                  <p className="text-xs text-muted-foreground">Taxable</p>
                   <p className="mt-1 text-sm font-medium">
                     {allowance.isTaxable ? "Yes" : "No"}
                   </p>
                   <p className="mt-2 text-xs text-muted-foreground">
                     Gratuity:{" "}
-                    {allowance.includedInGratuity
-                      ? "Included"
-                      : "Excluded"}
+                    {allowance.includedInGratuity ? "Included" : "Excluded"}
                   </p>
                 </div>
               </div>
@@ -336,12 +347,10 @@ export default async function EmploymentContractPage({
           Gratuity
         </h2>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-3">
           <Detail
             labelText="Eligible"
-            value={
-              contract.gratuityEligible ? "Yes" : "No"
-            }
+            value={contract.gratuityEligible ? "Yes" : "No"}
           />
           <Detail
             labelText="Gratuity rate"
@@ -367,10 +376,9 @@ export default async function EmploymentContractPage({
             labelText="Eligible earnings (period)"
             value={
               compensation.estimatedGrossEarnings
-                ? formatMoney(
-                    compensation.estimatedGrossEarnings,
-                    { currency: contract.currency },
-                  )
+                ? formatMoney(compensation.estimatedGrossEarnings, {
+                    currency: contract.currency,
+                  })
                 : "Not applicable"
             }
           />
@@ -378,10 +386,9 @@ export default async function EmploymentContractPage({
             labelText="Estimated gross gratuity"
             value={
               compensation.estimatedGrossGratuity
-                ? formatMoney(
-                    compensation.estimatedGrossGratuity,
-                    { currency: contract.currency },
-                  )
+                ? formatMoney(compensation.estimatedGrossGratuity, {
+                    currency: contract.currency,
+                  })
                 : "Not applicable"
             }
           />
@@ -399,22 +406,20 @@ export default async function EmploymentContractPage({
             labelText="Estimated net gratuity"
             value={
               compensation.estimatedNetGratuity
-                ? formatMoney(
-                    compensation.estimatedNetGratuity,
-                    { currency: contract.currency },
-                  )
+                ? formatMoney(compensation.estimatedNetGratuity, {
+                    currency: contract.currency,
+                  })
                 : "Not applicable"
             }
           />
           <Detail
             labelText="Annual eligible earnings base"
-            value={formatMoney(
-              compensation.gratuityEligibleAnnualEarnings,
-              { currency: contract.currency },
-            )}
+            value={formatMoney(compensation.gratuityEligibleAnnualEarnings, {
+              currency: contract.currency,
+            })}
           />
         </div>
       </section>
     </div>
-  )
+  );
 }

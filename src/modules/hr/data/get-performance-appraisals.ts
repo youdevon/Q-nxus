@@ -1,33 +1,33 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type PerformanceAppraisalListRecord = {
-  id: string
-  appraisalNumber: string | null
-  title: string
-  periodStart: string
-  periodEnd: string
-  reviewDueDate: string | null
-  status: string
-  ratingScale: string
-  overallScore: string | null
-  maximumScore: string
-  criterionCount: number
-  supervisorName: string | null
-  createdAt: string
-  updatedAt: string
-}
+  id: string;
+  appraisalNumber: string | null;
+  title: string;
+  periodStart: string;
+  periodEnd: string;
+  reviewDueDate: string | null;
+  status: string;
+  ratingScale: string;
+  overallScore: string | null;
+  maximumScore: string;
+  criterionCount: number;
+  supervisorName: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type EmployeeAppraisalHistory = {
   employee: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-    departmentName: string | null
-    positionTitle: string | null
-  }
-  appraisals: PerformanceAppraisalListRecord[]
-}
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    departmentName: string | null;
+    positionTitle: string | null;
+  };
+  appraisals: PerformanceAppraisalListRecord[];
+};
 
 export async function getEmployeeAppraisalHistory(
   employeeId: string,
@@ -87,10 +87,10 @@ export async function getEmployeeAppraisalHistory(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
   return {
@@ -106,20 +106,13 @@ export async function getEmployeeAppraisalHistory(
       id: appraisal.id,
       appraisalNumber: appraisal.appraisalNumber,
       title: appraisal.title,
-      periodStart: appraisal.periodStart
-        .toISOString()
-        .slice(0, 10),
-      periodEnd: appraisal.periodEnd
-        .toISOString()
-        .slice(0, 10),
+      periodStart: appraisal.periodStart.toISOString().slice(0, 10),
+      periodEnd: appraisal.periodEnd.toISOString().slice(0, 10),
       reviewDueDate:
-        appraisal.reviewDueDate
-          ?.toISOString()
-          .slice(0, 10) ?? null,
+        appraisal.reviewDueDate?.toISOString().slice(0, 10) ?? null,
       status: appraisal.status,
       ratingScale: appraisal.ratingScale,
-      overallScore:
-        appraisal.overallScore?.toString() ?? null,
+      overallScore: appraisal.overallScore?.toString() ?? null,
       maximumScore: appraisal.maximumScore.toString(),
       criterionCount: appraisal._count.criteria,
       supervisorName: appraisal.supervisor
@@ -128,39 +121,39 @@ export async function getEmployeeAppraisalHistory(
       createdAt: appraisal.createdAt.toISOString(),
       updatedAt: appraisal.updatedAt.toISOString(),
     })),
-  }
+  };
 }
 
 export type AppraisalCreationData = {
   employee: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-    hireDate: string
-  }
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    hireDate: string;
+  };
   assignments: {
-    id: string
-    assignmentType: string
-    startDate: string
-    endDate: string | null
-    isCurrent: boolean
-    departmentName: string
-    positionTitle: string | null
+    id: string;
+    assignmentType: string;
+    startDate: string;
+    endDate: string | null;
+    isCurrent: boolean;
+    departmentName: string;
+    positionTitle: string | null;
     jobDescription: {
-      id: string
-      versionNumber: number
-      title: string
-      criteriaCount: number
-      totalWeight: string
-    } | null
-  }[]
+      id: string;
+      versionNumber: number;
+      title: string;
+      criteriaCount: number;
+      totalWeight: string;
+    } | null;
+  }[];
   supervisors: {
-    id: string
-    name: string
-    email: string
-  }[]
-}
+    id: string;
+    name: string;
+    email: string;
+  }[];
+};
 
 export async function getAppraisalCreationData(
   employeeId: string,
@@ -219,10 +212,10 @@ export async function getAppraisalCreationData(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
   const supervisors = await prisma.user.findMany({
@@ -244,7 +237,7 @@ export async function getAppraisalCreationData(
       lastName: true,
       email: true,
     },
-  })
+  });
 
   return {
     employee: {
@@ -257,31 +250,20 @@ export async function getAppraisalCreationData(
     assignments: employee.assignments.map((assignment) => ({
       id: assignment.id,
       assignmentType: assignment.assignmentType,
-      startDate: assignment.startDate
-        .toISOString()
-        .slice(0, 10),
-      endDate:
-        assignment.endDate?.toISOString().slice(0, 10) ??
-        null,
+      startDate: assignment.startDate.toISOString().slice(0, 10),
+      endDate: assignment.endDate?.toISOString().slice(0, 10) ?? null,
       isCurrent: assignment.isCurrent,
       departmentName: assignment.department.name,
       positionTitle: assignment.position?.title ?? null,
       jobDescription: assignment.jobDescription
         ? {
             id: assignment.jobDescription.id,
-            versionNumber:
-              assignment.jobDescription.versionNumber,
+            versionNumber: assignment.jobDescription.versionNumber,
             title: assignment.jobDescription.title,
-            criteriaCount:
-              assignment.jobDescription.criteria.length,
-            totalWeight:
-              assignment.jobDescription.criteria
-                .reduce(
-                  (total, criterion) =>
-                    total + Number(criterion.weight),
-                  0,
-                )
-                .toFixed(2),
+            criteriaCount: assignment.jobDescription.criteria.length,
+            totalWeight: assignment.jobDescription.criteria
+              .reduce((total, criterion) => total + Number(criterion.weight), 0)
+              .toFixed(2),
           }
         : null,
     })),
@@ -290,65 +272,65 @@ export async function getAppraisalCreationData(
       name: `${supervisor.firstName} ${supervisor.lastName}`,
       email: supervisor.email,
     })),
-  }
+  };
 }
 
 export type PerformanceAppraisalProfile = {
-  id: string
-  appraisalNumber: string | null
-  title: string
-  periodStart: string
-  periodEnd: string
-  reviewDueDate: string | null
-  status: string
-  ratingScale: string
-  overallScore: string | null
-  maximumScore: string
-  employeeComments: string | null
-  supervisorComments: string | null
-  developmentPlan: string | null
-  createdAt: string
-  updatedAt: string
+  id: string;
+  appraisalNumber: string | null;
+  title: string;
+  periodStart: string;
+  periodEnd: string;
+  reviewDueDate: string | null;
+  status: string;
+  ratingScale: string;
+  overallScore: string | null;
+  maximumScore: string;
+  employeeComments: string | null;
+  supervisorComments: string | null;
+  developmentPlan: string | null;
+  createdAt: string;
+  updatedAt: string;
   employee: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-  }
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+  };
   assignment: {
-    id: string
-    assignmentType: string
-    departmentName: string
-    positionTitle: string | null
-  } | null
+    id: string;
+    assignmentType: string;
+    departmentName: string;
+    positionTitle: string | null;
+  } | null;
   jobDescription: {
-    id: string
-    versionNumber: number
-    title: string
-  } | null
+    id: string;
+    versionNumber: number;
+    title: string;
+  } | null;
   supervisor: {
-    id: string
-    name: string
-    email: string
-  } | null
+    id: string;
+    name: string;
+    email: string;
+  } | null;
   criteria: {
-    id: string
-    sourceCriterionId: string | null
-    criterionType: string
-    title: string
-    description: string | null
-    measurement: string | null
-    weight: string
-    sortOrder: number
-    employeeRating: string | null
-    supervisorRating: string | null
-    finalRating: string | null
-    weightedScore: string | null
-    employeeComments: string | null
-    supervisorComments: string | null
-    evidence: string | null
-  }[]
-}
+    id: string;
+    sourceCriterionId: string | null;
+    criterionType: string;
+    title: string;
+    description: string | null;
+    measurement: string | null;
+    weight: string;
+    sortOrder: number;
+    employeeRating: string | null;
+    supervisorRating: string | null;
+    finalRating: string | null;
+    weightedScore: string | null;
+    employeeComments: string | null;
+    supervisorComments: string | null;
+    evidence: string | null;
+  }[];
+};
 
 export async function getPerformanceAppraisalProfile(
   employeeId: string,
@@ -442,26 +424,19 @@ export async function getPerformanceAppraisalProfile(
         },
       },
     },
-  })
+  });
 
   if (!appraisal) {
-    return null
+    return null;
   }
 
   return {
     id: appraisal.id,
     appraisalNumber: appraisal.appraisalNumber,
     title: appraisal.title,
-    periodStart: appraisal.periodStart
-      .toISOString()
-      .slice(0, 10),
-    periodEnd: appraisal.periodEnd
-      .toISOString()
-      .slice(0, 10),
-    reviewDueDate:
-      appraisal.reviewDueDate
-        ?.toISOString()
-        .slice(0, 10) ?? null,
+    periodStart: appraisal.periodStart.toISOString().slice(0, 10),
+    periodEnd: appraisal.periodEnd.toISOString().slice(0, 10),
+    reviewDueDate: appraisal.reviewDueDate?.toISOString().slice(0, 10) ?? null,
     status: appraisal.status,
     ratingScale: appraisal.ratingScale,
     overallScore: appraisal.overallScore?.toString() ?? null,
@@ -476,10 +451,8 @@ export async function getPerformanceAppraisalProfile(
       ? {
           id: appraisal.assignment.id,
           assignmentType: appraisal.assignment.assignmentType,
-          departmentName:
-            appraisal.assignment.department.name,
-          positionTitle:
-            appraisal.assignment.position?.title ?? null,
+          departmentName: appraisal.assignment.department.name,
+          positionTitle: appraisal.assignment.position?.title ?? null,
         }
       : null,
     jobDescription: appraisal.jobDescription,
@@ -494,13 +467,10 @@ export async function getPerformanceAppraisalProfile(
       ...criterion,
       criterionType: criterion.criterionType,
       weight: criterion.weight.toString(),
-      employeeRating:
-        criterion.employeeRating?.toString() ?? null,
-      supervisorRating:
-        criterion.supervisorRating?.toString() ?? null,
+      employeeRating: criterion.employeeRating?.toString() ?? null,
+      supervisorRating: criterion.supervisorRating?.toString() ?? null,
       finalRating: criterion.finalRating?.toString() ?? null,
-      weightedScore:
-        criterion.weightedScore?.toString() ?? null,
+      weightedScore: criterion.weightedScore?.toString() ?? null,
     })),
-  }
+  };
 }

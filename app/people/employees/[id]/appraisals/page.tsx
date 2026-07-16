@@ -1,45 +1,42 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import {
-  ArrowLeft,
-  ClipboardCheck,
-  Plus,
-} from "lucide-react"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { ClipboardCheck, Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
-import { getEmployeeAppraisalHistory } from "@/src/modules/hr/data/get-performance-appraisals"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { getEmployeeAppraisalHistory } from "@/src/modules/hr/data/get-performance-appraisals";
+import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Performance Appraisals",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) =>
-      character.toUpperCase(),
-    )
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export default async function EmployeeAppraisalsPage({
   params,
 }: {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }) {
-  const { id } = await params
-  const history = await getEmployeeAppraisalHistory(id)
+  await requirePeopleManageAccess();
+
+  const { id } = await params;
+  const history = await getEmployeeAppraisalHistory(id);
 
   if (!history) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -49,86 +46,62 @@ export default async function EmployeeAppraisalsPage({
       <PageHeader
         title="Performance Appraisals"
         description={`${history.employee.firstName} ${history.employee.lastName} · ${history.employee.employeeNumber}`}
+        backHref={`/people/employees/${history.employee.id}`}
+        backLabel="Employee"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${history.employee.id}`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Employee profile
-            </Button>
-
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href={`/people/employees/${history.employee.id}/appraisals/new`}
-                />
-              }
-            >
-              <Plus />
-              New appraisal
-            </Button>
-          </div>
+          <Button
+            nativeButton={false}
+            render={
+              <Link
+                href={`/people/employees/${history.employee.id}/appraisals/new`}
+              />
+            }
+          >
+            <Plus />
+            New appraisal
+          </Button>
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Appraisals
-          </p>
+          <p className="text-xs text-muted-foreground">Appraisals</p>
           <p className="mt-1 text-2xl font-semibold">
             {history.appraisals.length}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Draft
-          </p>
+          <p className="text-xs text-muted-foreground">Draft</p>
           <p className="mt-1 text-2xl font-semibold">
             {
               history.appraisals.filter(
-                (appraisal) =>
-                  appraisal.status === "DRAFT",
+                (appraisal) => appraisal.status === "DRAFT",
               ).length
             }
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            In progress
-          </p>
+          <p className="text-xs text-muted-foreground">In progress</p>
           <p className="mt-1 text-2xl font-semibold">
             {
               history.appraisals.filter(
                 (appraisal) =>
                   appraisal.status === "IN_PROGRESS" ||
                   appraisal.status === "SUBMITTED" ||
-                  appraisal.status ===
-                    "SUPERVISOR_REVIEWED",
+                  appraisal.status === "SUPERVISOR_REVIEWED",
               ).length
             }
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Completed
-          </p>
+          <p className="text-xs text-muted-foreground">Completed</p>
           <p className="mt-1 text-2xl font-semibold">
             {
               history.appraisals.filter(
-                (appraisal) =>
-                  appraisal.status === "COMPLETED",
+                (appraisal) => appraisal.status === "COMPLETED",
               ).length
             }
           </p>
@@ -144,11 +117,11 @@ export default async function EmployeeAppraisalsPage({
         </div>
 
         {history.appraisals.length === 0 ? (
-          <p className="border-y border-border py-10 text-center text-sm text-muted-foreground">
+          <p className="py-10 text-center text-sm text-muted-foreground">
             No performance appraisals have been created.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {history.appraisals.map((appraisal) => (
               <Link
                 key={appraisal.id}
@@ -157,16 +130,14 @@ export default async function EmployeeAppraisalsPage({
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium">
-                      {appraisal.title}
-                    </p>
+                    <p className="font-medium">{appraisal.title}</p>
 
                     <Badge
                       variant={
                         appraisal.status === "COMPLETED"
-                          ? "default"
+                          ? "success"
                           : appraisal.status === "DRAFT"
-                            ? "outline"
+                            ? "warning"
                             : "secondary"
                       }
                     >
@@ -175,21 +146,17 @@ export default async function EmployeeAppraisalsPage({
                   </div>
 
                   <p className="mt-1 font-mono text-xs text-muted-foreground">
-                    {appraisal.appraisalNumber ??
-                      "No reference number"}
+                    {appraisal.appraisalNumber ?? "No reference number"}
                   </p>
 
                   <p className="mt-2 text-xs text-muted-foreground">
                     Supervisor:{" "}
-                    {appraisal.supervisorName ??
-                      "Not assigned"}
+                    {appraisal.supervisorName ?? "Not assigned"}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Period
-                  </p>
+                  <p className="text-xs text-muted-foreground">Period</p>
                   <p className="mt-1 text-sm font-medium">
                     {appraisal.periodStart}
                   </p>
@@ -199,18 +166,14 @@ export default async function EmployeeAppraisalsPage({
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Criteria
-                  </p>
+                  <p className="text-xs text-muted-foreground">Criteria</p>
                   <p className="mt-1 text-sm font-medium">
                     {appraisal.criterionCount}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Score
-                  </p>
+                  <p className="text-xs text-muted-foreground">Score</p>
                   <p className="mt-1 text-sm font-medium">
                     {appraisal.overallScore
                       ? `${appraisal.overallScore} / 100`
@@ -223,5 +186,5 @@ export default async function EmployeeAppraisalsPage({
         )}
       </section>
     </div>
-  )
+  );
 }

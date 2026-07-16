@@ -1,39 +1,42 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   BriefcaseBusiness,
   Building2,
   Pencil,
   UsersRound,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PageShell } from "@/src/components/layout/page-shell"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
-import { getDepartmentProfile } from "@/src/modules/hr/data/get-people-structure"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { activeStateBadgeVariant } from "@/src/config/ui-colors";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { getDepartmentProfile } from "@/src/modules/hr/data/get-people-structure";
+import { requirePeopleDirectoryAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Department",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function DepartmentPage({
   params,
 }: {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }) {
-  const { id } = await params
-  const department = await getDepartmentProfile(id)
+  await requirePeopleDirectoryAccess();
+
+  const { id } = await params;
+  const department = await getDepartmentProfile(id);
 
   if (!department) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -43,33 +46,24 @@ export default async function DepartmentPage({
       <PageHeader
         title={department.name}
         description="Department profile, positions and assigned employees."
+        backHref="/people/structure"
+        backLabel="Organization"
         actions={
-          <>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href="/people/structure" />}
-            >
-              <ArrowLeft />
-              Structure
-            </Button>
-
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href={`/people/structure/departments/${department.id}/edit`}
-                />
-              }
-            >
-              <Pencil />
-              Edit department
-            </Button>
-          </>
+          <Button
+            nativeButton={false}
+            render={
+              <Link
+                href={`/people/structure/departments/${department.id}/edit`}
+              />
+            }
+          >
+            <Pencil />
+            Edit department
+          </Button>
         }
       />
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
             <div className="flex size-14 items-center justify-center border border-border">
@@ -77,29 +71,20 @@ export default async function DepartmentPage({
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {department.name}
               </h2>
               <p className="mt-1 font-mono text-xs text-muted-foreground">
                 {department.code || "No code"}
               </p>
               <p className="mt-3 max-w-3xl text-sm text-muted-foreground">
-                {department.description ||
-                  "No description provided."}
+                {department.description || "No description provided."}
               </p>
             </div>
           </div>
 
-          <Badge
-            variant={
-              department.isActive
-                ? "default"
-                : "secondary"
-            }
-          >
-            {department.isActive
-              ? "Active"
-              : "Inactive"}
+          <Badge variant={activeStateBadgeVariant(department.isActive)}>
+            {department.isActive ? "Active" : "Inactive"}
           </Badge>
         </div>
       </section>
@@ -113,11 +98,11 @@ export default async function DepartmentPage({
         </div>
 
         {department.positions.length === 0 ? (
-          <p className="border-y border-border py-6 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No positions are assigned to this department.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {department.positions.map((position) => (
               <Link
                 key={position.id}
@@ -125,20 +110,15 @@ export default async function DepartmentPage({
                 className="flex items-center justify-between gap-4 py-4 hover:bg-muted/20"
               >
                 <div>
-                  <p className="text-sm font-medium">
-                    {position.title}
-                  </p>
+                  <p className="text-sm font-medium">{position.title}</p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {position.description ||
-                      "No description provided."}
+                    {position.description || "No description provided."}
                   </p>
                 </div>
 
                 <span className="text-xs text-muted-foreground">
                   {position.employeeCount} employee
-                  {position.employeeCount === 1
-                    ? ""
-                    : "s"}
+                  {position.employeeCount === 1 ? "" : "s"}
                 </span>
               </Link>
             ))}
@@ -155,11 +135,11 @@ export default async function DepartmentPage({
         </div>
 
         {department.employees.length === 0 ? (
-          <p className="border-y border-border py-6 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No employees are assigned to this department.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {department.employees.map((employee) => (
               <Link
                 key={employee.id}
@@ -184,5 +164,5 @@ export default async function DepartmentPage({
         )}
       </section>
     </PageShell>
-  )
+  );
 }

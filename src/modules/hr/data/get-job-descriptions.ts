@@ -1,47 +1,47 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type JobDescriptionCriterionRecord = {
-  id: string
-  criterionType: string
-  title: string
-  description: string | null
-  measurement: string | null
-  weight: string
-  sortOrder: number
-  isActive: boolean
-}
+  id: string;
+  criterionType: string;
+  title: string;
+  description: string | null;
+  measurement: string | null;
+  weight: string;
+  sortOrder: number;
+  isActive: boolean;
+};
 
 export type JobDescriptionRecord = {
-  id: string
-  positionId: string
-  versionNumber: number
-  title: string
-  summary: string | null
-  positionPurpose: string | null
-  reportsTo: string | null
-  supervisoryResponsibility: string | null
-  qualifications: string | null
-  requiredExperience: string | null
-  status: string
-  effectiveFrom: string
-  effectiveUntil: string | null
-  isCurrent: boolean
-  updatedAt: string
-  criteria: JobDescriptionCriterionRecord[]
-}
+  id: string;
+  positionId: string;
+  versionNumber: number;
+  title: string;
+  summary: string | null;
+  positionPurpose: string | null;
+  reportsTo: string | null;
+  supervisoryResponsibility: string | null;
+  qualifications: string | null;
+  requiredExperience: string | null;
+  status: string;
+  effectiveFrom: string;
+  effectiveUntil: string | null;
+  isCurrent: boolean;
+  updatedAt: string;
+  criteria: JobDescriptionCriterionRecord[];
+};
 
 export type PositionJobDescriptionData = {
   position: {
-    id: string
-    title: string
-    code: string | null
+    id: string;
+    title: string;
+    code: string | null;
     department: {
-      id: string
-      name: string
-    }
-  }
-  jobDescriptions: JobDescriptionRecord[]
-}
+      id: string;
+      name: string;
+    };
+  };
+  jobDescriptions: JobDescriptionRecord[];
+};
 
 export async function getPositionJobDescriptions(
   positionId: string,
@@ -103,10 +103,10 @@ export async function getPositionJobDescriptions(
         },
       },
     },
-  })
+  });
 
   if (!position) {
-    return null
+    return null;
   }
 
   return {
@@ -119,11 +119,8 @@ export async function getPositionJobDescriptions(
     jobDescriptions: position.jobDescriptions.map((item) => ({
       ...item,
       status: item.status,
-      effectiveFrom: item.effectiveFrom
-        .toISOString()
-        .slice(0, 10),
-      effectiveUntil:
-        item.effectiveUntil?.toISOString().slice(0, 10) ?? null,
+      effectiveFrom: item.effectiveFrom.toISOString().slice(0, 10),
+      effectiveUntil: item.effectiveUntil?.toISOString().slice(0, 10) ?? null,
       updatedAt: item.updatedAt.toISOString(),
       criteria: item.criteria.map((criterion) => ({
         ...criterion,
@@ -131,39 +128,37 @@ export async function getPositionJobDescriptions(
         weight: criterion.weight.toString(),
       })),
     })),
-  }
+  };
 }
 
 export async function getJobDescriptionById(
   positionId: string,
   jobDescriptionId: string,
 ): Promise<{
-  position: PositionJobDescriptionData["position"]
-  jobDescription: JobDescriptionRecord
+  position: PositionJobDescriptionData["position"];
+  jobDescription: JobDescriptionRecord;
 } | null> {
-  const data = await getPositionJobDescriptions(positionId)
+  const data = await getPositionJobDescriptions(positionId);
 
   if (!data) {
-    return null
+    return null;
   }
 
   const jobDescription = data.jobDescriptions.find(
     (item) => item.id === jobDescriptionId,
-  )
+  );
 
   if (!jobDescription) {
-    return null
+    return null;
   }
 
   return {
     position: data.position,
     jobDescription,
-  }
+  };
 }
 
-export async function getEmployeeCurrentJobDescription(
-  employeeId: string,
-) {
+export async function getEmployeeCurrentJobDescription(employeeId: string) {
   const employee = await prisma.employee.findUnique({
     where: {
       id: employeeId,
@@ -231,14 +226,13 @@ export async function getEmployeeCurrentJobDescription(
         },
       },
     },
-  })
+  });
 
   if (!employee) {
-    return null
+    return null;
   }
 
-  const jobDescription =
-    employee.position?.jobDescriptions[0] ?? null
+  const jobDescription = employee.position?.jobDescriptions[0] ?? null;
 
   return {
     employee: {
@@ -262,9 +256,7 @@ export async function getEmployeeCurrentJobDescription(
             .toISOString()
             .slice(0, 10),
           effectiveUntil:
-            jobDescription.effectiveUntil
-              ?.toISOString()
-              .slice(0, 10) ?? null,
+            jobDescription.effectiveUntil?.toISOString().slice(0, 10) ?? null,
           criteria: jobDescription.criteria.map((criterion) => ({
             ...criterion,
             criterionType: criterion.criterionType,
@@ -272,27 +264,26 @@ export async function getEmployeeCurrentJobDescription(
           })),
         }
       : null,
-  }
+  };
 }
-
 
 export type JobDescriptionLifecycleItem = {
-  id: string
-  versionNumber: number
-  title: string
-  status: string
-  isCurrent: boolean
-  effectiveFrom: string
-  effectiveUntil: string | null
-  updatedAt: string
-  criterionCount: number
-  totalAppraisalWeight: number
-}
+  id: string;
+  versionNumber: number;
+  title: string;
+  status: string;
+  isCurrent: boolean;
+  effectiveFrom: string;
+  effectiveUntil: string | null;
+  updatedAt: string;
+  criterionCount: number;
+  totalAppraisalWeight: number;
+};
 
 export type JobDescriptionLifecycleData = {
-  position: PositionJobDescriptionData["position"]
-  versions: JobDescriptionLifecycleItem[]
-}
+  position: PositionJobDescriptionData["position"];
+  versions: JobDescriptionLifecycleItem[];
+};
 
 export async function getJobDescriptionLifecycle(
   positionId: string,
@@ -334,10 +325,10 @@ export async function getJobDescriptionLifecycle(
         },
       },
     },
-  })
+  });
 
   if (!position) {
-    return null
+    return null;
   }
 
   const weightedTypes = new Set([
@@ -345,7 +336,7 @@ export async function getJobDescriptionLifecycle(
     "KEY_PERFORMANCE_INDICATOR",
     "TECHNICAL_COMPETENCY",
     "BEHAVIOURAL_COMPETENCY",
-  ])
+  ]);
 
   return {
     position: {
@@ -360,25 +351,20 @@ export async function getJobDescriptionLifecycle(
       title: version.title,
       status: version.status,
       isCurrent: version.isCurrent,
-      effectiveFrom: version.effectiveFrom
-        .toISOString()
-        .slice(0, 10),
+      effectiveFrom: version.effectiveFrom.toISOString().slice(0, 10),
       effectiveUntil:
-        version.effectiveUntil?.toISOString().slice(0, 10) ??
-        null,
+        version.effectiveUntil?.toISOString().slice(0, 10) ?? null,
       updatedAt: version.updatedAt.toISOString(),
       criterionCount: version.criteria.length,
       totalAppraisalWeight: version.criteria
         .filter(
           (criterion) =>
-            criterion.isActive &&
-            weightedTypes.has(criterion.criterionType),
+            criterion.isActive && weightedTypes.has(criterion.criterionType),
         )
         .reduce(
-          (total, criterion) =>
-            total + Number(criterion.weight.toString()),
+          (total, criterion) => total + Number(criterion.weight.toString()),
           0,
         ),
     })),
-  }
+  };
 }

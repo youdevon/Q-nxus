@@ -1,85 +1,264 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useActionState, useEffect, useMemo, useState } from "react"
-import { ArrowLeft, FileSignature, Save } from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect, useMemo, useState } from "react";
+import { FileSignature, Save } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { formatMoney } from "@/src/lib/format"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { FieldError, FieldHint, FieldLabel } from "@/src/components/ui/field";
+import {
+  calculateContractEndDate,
+  earliestRenewalStartDate,
+  inferContractPeriod,
+  type ContractPeriodOption,
+  type ContractPeriodYears,
+} from "@/src/lib/contract-dates";
+import { formatMoney } from "@/src/lib/format";
 import {
   createEmploymentContract,
   type EmploymentContractFormState,
-} from "@/src/modules/hr/actions/create-employment-contract"
+} from "@/src/modules/hr/actions/create-employment-contract";
+import type { ContractLeaveEntitlementDefault } from "@/src/modules/hr/data/get-contract-leave-entitlement-defaults";
 import type {
   EmployeeContractHistory,
   EmploymentContractProfile,
   AllowanceCategoryRecord,
-} from "@/src/modules/hr/data/get-employment-contracts"
-import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity"
+} from "@/src/modules/hr/data/get-employment-contracts";
+import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity";
+import { calculateContractLeaveEntitlementDays } from "@/src/modules/hr/lib/contract-leave-entitlement";
 import {
   ContractAllowanceEditor,
   type ContractAllowanceInput,
-} from "./contract-allowance-editor"
-import { PeopleNav } from "./people-nav"
+} from "./contract-allowance-editor";
+import { PeopleNav } from "./people-nav";
 
 const initialState: EmploymentContractFormState = {
   status: "idle",
   message: "",
+};
+
+export type EmploymentContractFormMode = "create" | "amend" | "renew";
+
+function resolveInitialPeriod(
+  startDate: string,
+  endDate: string,
+): ContractPeriodOption {
+  if (!startDate || !endDate) {
+    return 1;
+  }
+
+  return inferContractPeriod(startDate, endDate);
+}
+
+function resolveRenewalDefaults(sourceContract: EmploymentContractProfile): {
+  startDate: string;
+  endDate: string;
+  period: ContractPeriodOption;
+} {
+  const startDate =
+    earliestRenewalStartDate({
+      endDate: sourceContract.endDate,
+      terminationDate: sourceContract.terminationDate,
+      status: sourceContract.status,
+    }) ?? "";
+
+  const period: ContractPeriodOption = 1;
+  const endDate = startDate
+    ? (calculateContractEndDate(startDate, 1) ?? "")
+    : "";
+
+  return { startDate, endDate, period };
+}
+
+function formatLeaveDays(value: number): string {
+  if (Number.isInteger(value)) {
+    return String(value);
+  }
+
+  return String(Number(value.toFixed(2)));
+}
+
+function previewLeaveDays(
+  rule: ContractLeaveEntitlementDefault | undefined,
+  startDate: string,
+  endDate: string,
+): string {
+  if (!rule || !startDate || !endDate) {
+    return "";
+  }
+
+  try {
+    return formatLeaveDays(
+      calculateContractLeaveEntitlementDays({
+        annualEntitlement: rule.annualEntitlement,
+        contractStart: new Date(`${startDate}T00:00:00.000Z`),
+        contractEnd: new Date(`${endDate}T00:00:00.000Z`),
+        prorate: rule.prorateFirstYear,
+      }),
+    );
+  } catch {
+    return "";
+  }
 }
 
 export function EmploymentContractForm({
   history,
   sourceContract,
   allowanceCategories,
+  leaveEntitlementDefaults = [],
+  mode = "create",
 }: {
-  history: EmployeeContractHistory
-  sourceContract?: EmploymentContractProfile | null
-  allowanceCategories: AllowanceCategoryRecord[]
+  history: EmployeeContractHistory;
+  sourceContract?: EmploymentContractProfile | null;
+  allowanceCategories: AllowanceCategoryRecord[];
+  leaveEntitlementDefaults?: ContractLeaveEntitlementDefault[];
+  mode?: EmploymentContractFormMode;
 }) {
+  const resolvedMode: EmploymentContractFormMode =
+    mode === "create" && sourceContract ? "amend" : mode;
+
+  const isAmendment = resolvedMode === "amend";
+  const isRenewal = resolvedMode === "renew";
+  const isFollowOn = isAmendment || isRenewal;
+
+  const renewalDefaults =
+    isRenewal && sourceContract ? resolveRenewalDefaults(sourceContract) : null;
+
   const [state, action, pending] = useActionState(
     createEmploymentContract,
     initialState,
-  )
+  );
 
   const [gratuityEligible, setGratuityEligible] = useState(
     sourceContract?.gratuityEligible ?? false,
-  )
+  );
   const [startDate, setStartDate] = useState(
-    sourceContract?.startDate ?? "",
-  )
+    renewalDefaults?.startDate ?? sourceContract?.startDate ?? "",
+  );
   const [endDate, setEndDate] = useState(
-    sourceContract?.endDate ?? "",
-  )
+    renewalDefaults?.endDate ?? sourceContract?.endDate ?? "",
+  );
+  const [contractPeriod, setContractPeriod] = useState<ContractPeriodOption>(
+    () => {
+      if (renewalDefaults) {
+        return renewalDefaults.period;
+      }
+
+      return resolveInitialPeriod(
+        sourceContract?.startDate ?? "",
+        sourceContract?.endDate ?? "",
+      );
+    },
+  );
   const [baseSalary, setBaseSalary] = useState(
     sourceContract?.baseSalary ?? "",
-  )
+  );
   const [gratuityRate, setGratuityRate] = useState(
     sourceContract?.gratuityRate ?? "20",
-  )
+  );
   const [gratuityTaxRate, setGratuityTaxRate] = useState(
     sourceContract?.gratuityTaxRate ?? "25",
-  )
+  );
 
-  const [allowances, setAllowances] = useState<
-    ContractAllowanceInput[]
-  >(
+  const [allowances, setAllowances] = useState<ContractAllowanceInput[]>(
     sourceContract?.allowances.map((allowance) => ({
       rowId: allowance.id,
       categoryId: allowance.categoryId,
       customCategoryName: "",
       amount: allowance.amount,
-      frequency:
-        allowance.frequency as ContractAllowanceInput["frequency"],
+      frequency: allowance.frequency as ContractAllowanceInput["frequency"],
       isTaxable: allowance.isTaxable,
-      includedInGratuity:
-        allowance.includedInGratuity,
+      includedInGratuity: allowance.includedInGratuity,
       notes: allowance.notes ?? "",
     })) ?? [],
-  )
+  );
+
+  const vacationRule = leaveEntitlementDefaults.find(
+    (rule) => rule.leaveTypeCode === "VAC",
+  );
+  const sickRule = leaveEntitlementDefaults.find(
+    (rule) => rule.leaveTypeCode === "SICK",
+  );
+
+  const initialStart =
+    renewalDefaults?.startDate ?? sourceContract?.startDate ?? "";
+  const initialEnd = renewalDefaults?.endDate ?? sourceContract?.endDate ?? "";
+
+  const [vacationLeaveDays, setVacationLeaveDays] = useState(() =>
+    previewLeaveDays(vacationRule, initialStart, initialEnd),
+  );
+  const [sickLeaveDays, setSickLeaveDays] = useState(() =>
+    previewLeaveDays(sickRule, initialStart, initialEnd),
+  );
+  const [vacationLeaveTouched, setVacationLeaveTouched] = useState(false);
+  const [sickLeaveTouched, setSickLeaveTouched] = useState(false);
+
+  const isCustomPeriod = contractPeriod === "custom";
+  const sourceWasCollected = Boolean(sourceContract?.collectedAt);
+
+  function syncLeaveDayDefaults(nextStartDate: string, nextEndDate: string) {
+    if (!vacationLeaveTouched) {
+      setVacationLeaveDays(
+        previewLeaveDays(vacationRule, nextStartDate, nextEndDate),
+      );
+    }
+
+    if (!sickLeaveTouched) {
+      setSickLeaveDays(previewLeaveDays(sickRule, nextStartDate, nextEndDate));
+    }
+  }
+
+  function handleStartDateChange(value: string) {
+    setStartDate(value);
+
+    if (contractPeriod === "custom" || !value) {
+      syncLeaveDayDefaults(value, endDate);
+      return;
+    }
+
+    const calculated = calculateContractEndDate(
+      value,
+      contractPeriod as ContractPeriodYears,
+    );
+
+    if (calculated) {
+      setEndDate(calculated);
+      syncLeaveDayDefaults(value, calculated);
+      return;
+    }
+
+    syncLeaveDayDefaults(value, endDate);
+  }
+
+  function handleContractPeriodChange(value: string) {
+    const period =
+      value === "custom" ? "custom" : (Number(value) as ContractPeriodYears);
+
+    setContractPeriod(period);
+
+    if (period === "custom" || !startDate) {
+      return;
+    }
+
+    const calculated = calculateContractEndDate(
+      startDate,
+      period as ContractPeriodYears,
+    );
+
+    if (calculated) {
+      setEndDate(calculated);
+      syncLeaveDayDefaults(startDate, calculated);
+    }
+  }
+
+  function handleEndDateChange(value: string) {
+    setEndDate(value);
+    syncLeaveDayDefaults(startDate, value);
+  }
 
   const gratuityEstimate = useMemo(() => {
     if (
@@ -89,7 +268,7 @@ export function EmploymentContractForm({
       !baseSalary ||
       !gratuityRate
     ) {
-      return null
+      return null;
     }
 
     try {
@@ -100,9 +279,9 @@ export function EmploymentContractForm({
         allowances,
         gratuityRate,
         gratuityTaxRate,
-      })
+      });
     } catch {
-      return null
+      return null;
     }
   }, [
     gratuityEligible,
@@ -112,21 +291,43 @@ export function EmploymentContractForm({
     allowances,
     gratuityRate,
     gratuityTaxRate,
-  ])
+  ]);
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
-  const employee = history.employee
-  const isAmendment = Boolean(sourceContract)
-  const currency = sourceContract?.currency ?? "TTD"
+  const employee = history.employee;
+  const currency = sourceContract?.currency ?? "TTD";
+  const lockedChangeType = isRenewal
+    ? "RENEWAL"
+    : isAmendment
+      ? "AMENDMENT"
+      : null;
+
+  const pageTitle = isRenewal
+    ? "Renew Employment Contract"
+    : isAmendment
+      ? "Amend Employment Contract"
+      : "New Employment Contract";
+
+  const cancelHref = sourceContract
+    ? `/people/employees/${employee.id}/contracts/${sourceContract.id}`
+    : `/people/employees/${employee.id}/contracts`;
+
+  const earliestRenewal = sourceContract
+    ? earliestRenewalStartDate({
+        endDate: sourceContract.endDate,
+        terminationDate: sourceContract.terminationDate,
+        status: sourceContract.status,
+      })
+    : null;
 
   return (
     <form
@@ -135,11 +336,7 @@ export function EmploymentContractForm({
     >
       <PeopleNav />
 
-      <input
-        type="hidden"
-        name="employeeId"
-        value={employee.id}
-      />
+      <input type="hidden" name="employeeId" value={employee.id} />
 
       {sourceContract && (
         <input
@@ -149,37 +346,28 @@ export function EmploymentContractForm({
         />
       )}
 
-      <PageHeader
-        title={
-          isAmendment
-            ? "Amend Employment Contract"
-            : "New Employment Contract"
-        }
-        description={`${employee.firstName} ${employee.lastName} · ${employee.employeeNumber}`}
-        actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={
-                    sourceContract
-                      ? `/people/employees/${employee.id}/contracts/${sourceContract.id}`
-                      : `/people/employees/${employee.id}/contracts`
-                  }
-                />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
+      {lockedChangeType ? (
+        <input type="hidden" name="changeType" value={lockedChangeType} />
+      ) : null}
 
+      <PageHeader
+        title={pageTitle}
+        description={`${employee.firstName} ${employee.lastName} · ${employee.employeeNumber}`}
+        backHref={cancelHref}
+        backLabel="Contracts"
+        actions={
+          <FormPageActions cancelHref={cancelHref}>
             <Button type="submit" disabled={pending}>
               <Save />
-              {pending ? "Saving…" : "Save contract"}
+              {pending
+                ? "Saving…"
+                : isRenewal
+                  ? "Save renewal"
+                  : isAmendment
+                    ? "Save amendment"
+                    : "Save contract"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -188,6 +376,22 @@ export function EmploymentContractForm({
           {state.message}
         </div>
       )}
+
+      {isAmendment && sourceWasCollected ? (
+        <div className="border-y border-amber-500/40 bg-amber-500/5 py-3 text-sm text-amber-900 dark:text-amber-200">
+          The employee already collected the previous version of this contract.
+          This amendment creates a new version after collection.
+        </div>
+      ) : null}
+
+      {isRenewal && earliestRenewal ? (
+        <div className="text-sm text-muted-foreground">
+          Renewal dates must not overlap the previous contract. Earliest allowed
+          start date:{" "}
+          <span className="font-medium text-foreground">{earliestRenewal}</span>
+          .
+        </div>
+      ) : null}
 
       <ContractAllowanceEditor
         categories={allowanceCategories}
@@ -203,12 +407,9 @@ export function EmploymentContractForm({
           </h2>
         </div>
 
-        <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="contractNumber"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="contractNumber" className="text-sm font-medium">
               Contract number
             </label>
             <Input
@@ -220,18 +421,13 @@ export function EmploymentContractForm({
           </div>
 
           <div>
-            <label
-              htmlFor="contractType"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="contractType" className="text-sm font-medium">
               Contract type
             </label>
             <select
               id="contractType"
               name="contractType"
-              defaultValue={
-                sourceContract?.contractType ?? "FIXED_TERM"
-              }
+              defaultValue={sourceContract?.contractType ?? "FIXED_TERM"}
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
@@ -247,54 +443,45 @@ export function EmploymentContractForm({
             </select>
           </div>
 
-          <div>
-            <label
-              htmlFor="changeType"
-              className="text-sm font-medium"
-            >
-              Contract action
-            </label>
-            <select
-              id="changeType"
-              name="changeType"
-              defaultValue={
-                isAmendment ? "AMENDMENT" : "INITIAL"
-              }
-              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-              required
-            >
-              {!isAmendment && (
-                <option value="INITIAL">
-                  Initial contract
-                </option>
-              )}
-              <option value="RENEWAL">Renewal</option>
-              <option value="EXTENSION">Extension</option>
-              <option value="AMENDMENT">Amendment</option>
-              <option value="SALARY_ADJUSTMENT">
-                Salary adjustment
-              </option>
-              <option value="POSITION_CHANGE">
-                Position change
-              </option>
-              <option value="OTHER">Other</option>
-            </select>
-          </div>
+          {!lockedChangeType ? (
+            <div>
+              <label htmlFor="changeType" className="text-sm font-medium">
+                Contract action
+              </label>
+              <select
+                id="changeType"
+                name="changeType"
+                defaultValue="INITIAL"
+                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+                required
+              >
+                <option value="INITIAL">Initial contract</option>
+                <option value="RENEWAL">Renewal</option>
+                <option value="EXTENSION">Extension</option>
+                <option value="AMENDMENT">Amendment</option>
+                <option value="SALARY_ADJUSTMENT">Salary adjustment</option>
+                <option value="POSITION_CHANGE">Position change</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+          ) : (
+            <div>
+              <p className="text-sm font-medium">Contract action</p>
+              <p className="mt-2 text-sm">
+                {isRenewal ? "Renewal" : "Amendment"}
+              </p>
+            </div>
+          )}
 
           <div>
-            <label
-              htmlFor="jobTitle"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="jobTitle" className="text-sm font-medium">
               Contract job title
             </label>
             <Input
               id="jobTitle"
               name="jobTitle"
               defaultValue={
-                sourceContract?.jobTitle ??
-                employee.positionTitle ??
-                ""
+                sourceContract?.jobTitle ?? employee.positionTitle ?? ""
               }
               className="mt-2"
               required
@@ -302,10 +489,7 @@ export function EmploymentContractForm({
           </div>
 
           <div>
-            <label
-              htmlFor="startDate"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="startDate" className="text-sm font-medium">
               Start date
             </label>
             <Input
@@ -314,18 +498,42 @@ export function EmploymentContractForm({
               type="date"
               className="mt-2"
               value={startDate}
-              onChange={(event) =>
-                setStartDate(event.target.value)
-              }
+              min={isRenewal && earliestRenewal ? earliestRenewal : undefined}
+              onChange={(event) => handleStartDateChange(event.target.value)}
               required
             />
+            {state.fieldErrors?.startDate ? (
+              <FieldError>{state.fieldErrors.startDate}</FieldError>
+            ) : null}
           </div>
 
           <div>
-            <label
-              htmlFor="endDate"
-              className="text-sm font-medium"
+            <label htmlFor="contractPeriod" className="text-sm font-medium">
+              Contract period
+            </label>
+            <select
+              id="contractPeriod"
+              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+              value={
+                contractPeriod === "custom" ? "custom" : String(contractPeriod)
+              }
+              onChange={(event) =>
+                handleContractPeriodChange(event.target.value)
+              }
             >
+              <option value="1">1 year</option>
+              <option value="2">2 years</option>
+              <option value="3">3 years</option>
+              <option value="custom">Custom</option>
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">
+              End date is set to the day before the period anniversary of the
+              start date.
+            </p>
+          </div>
+
+          <div>
+            <label htmlFor="endDate" className="text-sm font-medium">
               End date
             </label>
             <Input
@@ -334,22 +542,81 @@ export function EmploymentContractForm({
               type="date"
               className="mt-2"
               value={endDate}
-              onChange={(event) =>
-                setEndDate(event.target.value)
-              }
+              onChange={(event) => handleEndDateChange(event.target.value)}
+              readOnly={!isCustomPeriod}
               required
             />
-            <p className="mt-1 text-xs text-muted-foreground">
-              Required for leave balances and gratuity
-              estimates.
-            </p>
+            {state.fieldErrors?.endDate ? (
+              <FieldError>{state.fieldErrors.endDate}</FieldError>
+            ) : (
+              <p className="mt-1 text-xs text-muted-foreground">
+                {isCustomPeriod
+                  ? "Required for leave balances and gratuity estimates."
+                  : "Auto-calculated from the start date and period. Choose Custom to edit."}
+              </p>
+            )}
           </div>
 
           <div>
-            <label
-              htmlFor="signedDate"
-              className="text-sm font-medium"
-            >
+            <FieldLabel htmlFor="vacationLeaveDays">
+              Vacation leave (days)
+            </FieldLabel>
+            <Input
+              id="vacationLeaveDays"
+              name="vacationLeaveDays"
+              type="number"
+              min="0"
+              step="0.01"
+              className="mt-2"
+              value={vacationLeaveDays}
+              onChange={(event) => {
+                setVacationLeaveTouched(true);
+                setVacationLeaveDays(event.target.value);
+              }}
+            />
+            {state.fieldErrors?.vacationLeaveDays ? (
+              <FieldError>{state.fieldErrors.vacationLeaveDays}</FieldError>
+            ) : (
+              <FieldHint>
+                {vacationRule
+                  ? `For this contract period${
+                      startDate && endDate ? ` (${startDate} → ${endDate})` : ""
+                    }. Prefills from ${vacationRule.leaveTypeName} rules (${vacationRule.annualEntitlement} days/year${vacationRule.prorateFirstYear ? ", prorated" : ""}). You can override.`
+                  : "No active vacation entitlement rule found. Enter days for this contract, or leave blank."}
+              </FieldHint>
+            )}
+          </div>
+
+          <div>
+            <FieldLabel htmlFor="sickLeaveDays">Sick leave (days)</FieldLabel>
+            <Input
+              id="sickLeaveDays"
+              name="sickLeaveDays"
+              type="number"
+              min="0"
+              step="0.01"
+              className="mt-2"
+              value={sickLeaveDays}
+              onChange={(event) => {
+                setSickLeaveTouched(true);
+                setSickLeaveDays(event.target.value);
+              }}
+            />
+            {state.fieldErrors?.sickLeaveDays ? (
+              <FieldError>{state.fieldErrors.sickLeaveDays}</FieldError>
+            ) : (
+              <FieldHint>
+                {sickRule
+                  ? `For this contract period${
+                      startDate && endDate ? ` (${startDate} → ${endDate})` : ""
+                    }. Prefills from ${sickRule.leaveTypeName} rules (${sickRule.annualEntitlement} days/year${sickRule.prorateFirstYear ? ", prorated" : ""}). You can override.`
+                  : "No active sick entitlement rule found. Enter days for this contract, or leave blank."}
+              </FieldHint>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="signedDate" className="text-sm font-medium">
               Signed date
             </label>
             <Input
@@ -361,10 +628,7 @@ export function EmploymentContractForm({
           </div>
 
           <div>
-            <label
-              htmlFor="documentReference"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="documentReference" className="text-sm font-medium">
               Document reference
             </label>
             <Input
@@ -376,10 +640,7 @@ export function EmploymentContractForm({
           </div>
 
           <div>
-            <label
-              htmlFor="baseSalary"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="baseSalary" className="text-sm font-medium">
               Base salary
             </label>
             <Input
@@ -389,19 +650,14 @@ export function EmploymentContractForm({
               min="0"
               step="0.01"
               value={baseSalary}
-              onChange={(event) =>
-                setBaseSalary(event.target.value)
-              }
+              onChange={(event) => setBaseSalary(event.target.value)}
               className="mt-2"
               required
             />
           </div>
 
           <div>
-            <label
-              htmlFor="currency"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="currency" className="text-sm font-medium">
               Currency
             </label>
             <Input
@@ -419,24 +675,18 @@ export function EmploymentContractForm({
               type="checkbox"
               name="gratuityEligible"
               checked={gratuityEligible}
-              onChange={(event) =>
-                setGratuityEligible(event.target.checked)
-              }
+              onChange={(event) => setGratuityEligible(event.target.checked)}
               className="size-4"
             />
             <span className="text-sm font-medium">
-              Employee is eligible for gratuity under this
-              contract
+              Employee is eligible for gratuity under this contract
             </span>
           </label>
 
           {gratuityEligible && (
             <>
               <div>
-                <label
-                  htmlFor="gratuityRate"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="gratuityRate" className="text-sm font-medium">
                   Gratuity rate
                 </label>
                 <Input
@@ -447,15 +697,13 @@ export function EmploymentContractForm({
                   max="100"
                   step="0.01"
                   value={gratuityRate}
-                  onChange={(event) =>
-                    setGratuityRate(event.target.value)
-                  }
+                  onChange={(event) => setGratuityRate(event.target.value)}
                   className="mt-2"
                   required
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Percentage of eligible contract earnings
-                  (base salary + gratuity-included allowances).
+                  Percentage of eligible contract earnings (base salary +
+                  gratuity-included allowances).
                 </p>
               </div>
 
@@ -474,18 +722,14 @@ export function EmploymentContractForm({
                   max="100"
                   step="0.01"
                   value={gratuityTaxRate}
-                  onChange={(event) =>
-                    setGratuityTaxRate(event.target.value)
-                  }
+                  onChange={(event) => setGratuityTaxRate(event.target.value)}
                   className="mt-2"
                   required
                 />
               </div>
 
               <div className="md:col-span-2 border-t border-border pt-5">
-                <p className="text-sm font-medium">
-                  Estimated gratuity
-                </p>
+                <p className="text-sm font-medium">Estimated gratuity</p>
                 {gratuityEstimate ? (
                   <div className="mt-3 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                     <div>
@@ -501,10 +745,9 @@ export function EmploymentContractForm({
                         Eligible earnings
                       </p>
                       <p className="mt-1 text-sm font-semibold">
-                        {formatMoney(
-                          gratuityEstimate.estimatedGrossEarnings,
-                          { currency },
-                        )}
+                        {formatMoney(gratuityEstimate.estimatedGrossEarnings, {
+                          currency,
+                        })}
                       </p>
                     </div>
                     <div>
@@ -512,10 +755,9 @@ export function EmploymentContractForm({
                         Gross gratuity
                       </p>
                       <p className="mt-1 text-sm font-semibold">
-                        {formatMoney(
-                          gratuityEstimate.estimatedGrossGratuity,
-                          { currency },
-                        )}
+                        {formatMoney(gratuityEstimate.estimatedGrossGratuity, {
+                          currency,
+                        })}
                       </p>
                     </div>
                     <div>
@@ -523,18 +765,16 @@ export function EmploymentContractForm({
                         Net gratuity
                       </p>
                       <p className="mt-1 text-sm font-semibold">
-                        {formatMoney(
-                          gratuityEstimate.estimatedNetGratuity,
-                          { currency },
-                        )}
+                        {formatMoney(gratuityEstimate.estimatedNetGratuity, {
+                          currency,
+                        })}
                       </p>
                     </div>
                   </div>
                 ) : (
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Enter start date, end date, salary, and
-                    rates to preview the estimate. Mark
-                    allowances as included in gratuity to add
+                    Enter start date, end date, salary, and rates to preview the
+                    estimate. Mark allowances as included in gratuity to add
                     them to the base.
                   </p>
                 )}
@@ -543,16 +783,13 @@ export function EmploymentContractForm({
           )}
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="notes"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="notes" className="text-sm font-medium">
               Notes
             </label>
             <Textarea
               id="notes"
               name="notes"
-              defaultValue={sourceContract?.notes ?? ""}
+              defaultValue={isFollowOn ? (sourceContract?.notes ?? "") : ""}
               rows={4}
               className="mt-2"
             />
@@ -560,5 +797,5 @@ export function EmploymentContractForm({
         </div>
       </section>
     </form>
-  )
+  );
 }

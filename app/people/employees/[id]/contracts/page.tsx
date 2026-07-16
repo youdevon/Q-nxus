@@ -1,73 +1,62 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import {
-  ArrowLeft,
-  FileSignature,
-  Plus,
-} from "lucide-react"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PageShell } from "@/src/components/layout/page-shell"
-import { formatMoney } from "@/src/lib/format"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
-import { getEmployeeContractHistory } from "@/src/modules/hr/data/get-employment-contracts"
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { EmployeeContractHistoryPanel } from "@/src/modules/hr/components/employee-contract-history-panel";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { getEmployeeContractHistory } from "@/src/modules/hr/data/get-employment-contracts";
+import { resolveEmployeeContractAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Employment Contracts",
-}
+};
 
-export const dynamic = "force-dynamic"
-
-function label(value: string): string {
-  return value
-    .replaceAll("_", " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (character) => character.toUpperCase())
-}
+export const dynamic = "force-dynamic";
 
 export default async function EmployeeContractsPage({
   params,
 }: {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }) {
-  const { id } = await params
-  const history = await getEmployeeContractHistory(id)
+  const { id } = await params;
+  const access = await resolveEmployeeContractAccess(id);
+  const history = await getEmployeeContractHistory(id);
 
   if (!history) {
-    notFound()
+    notFound();
   }
 
   const currentContract = history.contracts.find(
     (contract) => contract.isCurrent,
-  )
+  );
+  const previousCount = history.contracts.filter(
+    (contract) => !contract.isCurrent,
+  ).length;
+  const profileHref = access.isSelfService
+    ? "/me"
+    : `/people/employees/${history.employee.id}`;
 
   return (
     <PageShell size="lg">
-      <PeopleNav />
+      {access.showPeopleNav ? <PeopleNav /> : null}
 
       <PageHeader
-        title="Employment Contracts"
-        description={`${history.employee.firstName} ${history.employee.lastName} · ${history.employee.employeeNumber}`}
+        title={access.isSelfService ? "My Contracts" : "Employment Contracts"}
+        description={
+          access.isSelfService
+            ? `Your employment contracts · ${history.employee.employeeNumber}`
+            : `${history.employee.firstName} ${history.employee.lastName} · ${history.employee.employeeNumber}`
+        }
+        backHref={profileHref}
+        backLabel={access.isSelfService ? "My profile" : "Employee"}
         actions={
-          <>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${history.employee.id}`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Employee profile
-            </Button>
-
+          access.canManage ? (
             <Button
               nativeButton={false}
               render={
@@ -79,115 +68,35 @@ export default async function EmployeeContractsPage({
               <Plus />
               New contract
             </Button>
-          </>
+          ) : undefined
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-3">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-3">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Contract records
-          </p>
-          <p className="mt-1 text-2xl font-semibold">
-            {history.contracts.length}
-          </p>
-        </div>
-
-        <div>
-          <p className="text-xs text-muted-foreground">
-            Current contract
-          </p>
+          <p className="text-xs text-muted-foreground">Current contract</p>
           <p className="mt-1 text-sm font-medium">
             {currentContract?.jobTitle ?? "None"}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Current end date
-          </p>
+          <p className="text-xs text-muted-foreground">Current end date</p>
           <p className="mt-1 text-sm font-medium">
             {currentContract?.endDate ?? "No end date"}
           </p>
         </div>
-      </section>
 
-      <section>
-        <div className="mb-4 flex items-center gap-2">
-          <FileSignature className="size-4 text-muted-foreground" />
-          <h2 className="text-sm font-semibold tracking-wide uppercase">
-            Contract history
-          </h2>
+        <div>
+          <p className="text-xs text-muted-foreground">Previous versions</p>
+          <p className="mt-1 text-2xl font-semibold">{previousCount}</p>
         </div>
-
-        {history.contracts.length === 0 ? (
-          <p className="border-y border-border py-10 text-center text-sm text-muted-foreground">
-            No employment contracts have been recorded.
-          </p>
-        ) : (
-          <div className="divide-y divide-border border-y border-border">
-            {history.contracts.map((contract) => (
-              <Link
-                key={contract.id}
-                href={`/people/employees/${history.employee.id}/contracts/${contract.id}`}
-                className="grid gap-5 py-5 hover:bg-muted/20 md:grid-cols-[1fr_11rem_11rem]"
-              >
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium">
-                      {contract.jobTitle}
-                    </p>
-
-                    <Badge
-                      variant={
-                        contract.isCurrent
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {contract.isCurrent
-                        ? "Current"
-                        : label(contract.status)}
-                    </Badge>
-
-                    <Badge variant="outline">
-                      {label(contract.changeType)}
-                    </Badge>
-                  </div>
-
-                  <p className="mt-1 font-mono text-xs text-muted-foreground">
-                    {contract.contractNumber ??
-                      "No contract number"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    Period
-                  </p>
-                  <p className="mt-1 text-sm font-medium">
-                    {contract.startDate}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    to {contract.endDate ?? "No end date"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    Base salary
-                  </p>
-                  <p className="mt-1 text-sm font-medium">
-                    {formatMoney(contract.baseSalary, {
-                      currency: contract.currency,
-                    })}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
       </section>
+
+      <EmployeeContractHistoryPanel
+        employeeId={history.employee.id}
+        contracts={history.contracts}
+      />
     </PageShell>
-  )
+  );
 }

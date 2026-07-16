@@ -1,75 +1,61 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import {
-  useActionState,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
-import {
-  ArrowLeft,
-  BriefcaseBusiness,
-  Save,
-} from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect, useMemo, useState } from "react";
+import { BriefcaseBusiness, Save } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
 import {
   createEmployeeAssignment,
   type EmployeeAssignmentFormState,
-} from "@/src/modules/hr/actions/create-employee-assignment"
-import type {
-  EmployeeAssignmentHistory,
-} from "@/src/modules/hr/data/get-employee-assignments"
-import type { EmployeeFormDepartment } from "@/src/modules/hr/data/get-employee-form-data"
-import { PeopleNav } from "./people-nav"
+} from "@/src/modules/hr/actions/create-employee-assignment";
+import type { EmployeeAssignmentHistory } from "@/src/modules/hr/data/get-employee-assignments";
+import type { EmployeeFormDepartment } from "@/src/modules/hr/data/get-employee-form-data";
+import { PeopleNav } from "./people-nav";
 
 const initialState: EmployeeAssignmentFormState = {
   status: "idle",
   message: "",
-}
+};
 
 export function EmployeeAssignmentForm({
   history,
   departments,
 }: {
-  history: EmployeeAssignmentHistory
-  departments: EmployeeFormDepartment[]
+  history: EmployeeAssignmentHistory;
+  departments: EmployeeFormDepartment[];
 }) {
   const [state, action, pending] = useActionState(
     createEmployeeAssignment,
     initialState,
-  )
+  );
 
   const [departmentId, setDepartmentId] = useState(
     history.employee.departmentId ?? "",
-  )
+  );
 
   const positions = useMemo(
     () =>
-      departments.find(
-        (department) => department.id === departmentId,
-      )?.positions ?? [],
+      departments.find((department) => department.id === departmentId)
+        ?.positions ?? [],
     [departmentId, departments],
-  )
+  );
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
-  const hasCurrentPosition = Boolean(
-    history.employee.positionId,
-  )
+  const hasCurrentPosition = Boolean(history.employee.positionId);
 
   return (
     <form
@@ -78,11 +64,7 @@ export function EmployeeAssignmentForm({
     >
       <PeopleNav />
 
-      <input
-        type="hidden"
-        name="employeeId"
-        value={history.employee.id}
-      />
+      <input type="hidden" name="employeeId" value={history.employee.id} />
 
       <input
         type="hidden"
@@ -97,27 +79,14 @@ export function EmployeeAssignmentForm({
       />
 
       <PageHeader
-        title={
-          hasCurrentPosition
-            ? "Change Assignment"
-            : "Assign to Position"
-        }
+        title={hasCurrentPosition ? "Change Assignment" : "Assign to Position"}
         description={`${history.employee.firstName} ${history.employee.lastName} · ${history.employee.employeeNumber}`}
+        backHref={`/people/employees/${history.employee.id}`}
+        backLabel="Employee"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${history.employee.id}`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions
+            cancelHref={`/people/employees/${history.employee.id}`}
+          >
             <Button type="submit" disabled={pending}>
               <Save />
               {pending
@@ -126,7 +95,7 @@ export function EmployeeAssignmentForm({
                   ? "Save assignment"
                   : "Assign to position"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -144,12 +113,9 @@ export function EmployeeAssignmentForm({
           </h2>
         </div>
 
-        <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="assignmentType"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="assignmentType" className="text-sm font-medium">
               Assignment type
             </label>
 
@@ -157,29 +123,19 @@ export function EmployeeAssignmentForm({
               id="assignmentType"
               name="assignmentType"
               defaultValue={
-                hasCurrentPosition
-                  ? "TRANSFER"
-                  : "INITIAL_APPOINTMENT"
+                hasCurrentPosition ? "TRANSFER" : "INITIAL_APPOINTMENT"
               }
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
-              <option value="INITIAL_APPOINTMENT">
-                Initial appointment
-              </option>
+              <option value="INITIAL_APPOINTMENT">Initial appointment</option>
               <option value="TRANSFER">Transfer</option>
               <option value="PROMOTION">Promotion</option>
               <option value="DEMOTION">Demotion</option>
-              <option value="ACTING_APPOINTMENT">
-                Acting appointment
-              </option>
-              <option value="TEMPORARY_ASSIGNMENT">
-                Temporary assignment
-              </option>
+              <option value="ACTING_APPOINTMENT">Acting appointment</option>
+              <option value="TEMPORARY_ASSIGNMENT">Temporary assignment</option>
               <option value="SECONDMENT">Secondment</option>
-              <option value="REASSIGNMENT">
-                Reassignment
-              </option>
+              <option value="REASSIGNMENT">Reassignment</option>
               <option value="RETURN_TO_SUBSTANTIVE">
                 Return to substantive
               </option>
@@ -188,10 +144,7 @@ export function EmployeeAssignmentForm({
           </div>
 
           <div>
-            <label
-              htmlFor="startDate"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="startDate" className="text-sm font-medium">
               Effective date
             </label>
 
@@ -206,10 +159,7 @@ export function EmployeeAssignmentForm({
           </div>
 
           <div>
-            <label
-              htmlFor="departmentId"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="departmentId" className="text-sm font-medium">
               Department
             </label>
 
@@ -217,18 +167,13 @@ export function EmployeeAssignmentForm({
               id="departmentId"
               name="departmentId"
               value={departmentId}
-              onChange={(event) =>
-                setDepartmentId(event.target.value)
-              }
+              onChange={(event) => setDepartmentId(event.target.value)}
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
               <option value="">Select department</option>
               {departments.map((department) => (
-                <option
-                  key={department.id}
-                  value={department.id}
-                >
+                <option key={department.id} value={department.id}>
                   {department.name}
                 </option>
               ))}
@@ -236,10 +181,7 @@ export function EmployeeAssignmentForm({
           </div>
 
           <div>
-            <label
-              htmlFor="positionId"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="positionId" className="text-sm font-medium">
               Position
             </label>
 
@@ -249,10 +191,9 @@ export function EmployeeAssignmentForm({
               name="positionId"
               defaultValue={
                 positions.some(
-                  (position) =>
-                    position.id === history.employee.positionId,
+                  (position) => position.id === history.employee.positionId,
                 )
-                  ? history.employee.positionId ?? ""
+                  ? (history.employee.positionId ?? "")
                   : ""
               }
               disabled={!departmentId}
@@ -260,10 +201,7 @@ export function EmployeeAssignmentForm({
             >
               <option value="">No position</option>
               {positions.map((position) => (
-                <option
-                  key={position.id}
-                  value={position.id}
-                >
+                <option key={position.id} value={position.id}>
                   {position.title}
                 </option>
               ))}
@@ -271,10 +209,7 @@ export function EmployeeAssignmentForm({
           </div>
 
           <div>
-            <label
-              htmlFor="referenceNumber"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="referenceNumber" className="text-sm font-medium">
               Reference number
             </label>
 
@@ -287,21 +222,12 @@ export function EmployeeAssignmentForm({
           </div>
 
           <label className="flex items-center gap-3 pt-8">
-            <input
-              type="checkbox"
-              name="isActing"
-              className="size-4"
-            />
-            <span className="text-sm font-medium">
-              Acting assignment
-            </span>
+            <input type="checkbox" name="isActing" className="size-4" />
+            <span className="text-sm font-medium">Acting assignment</span>
           </label>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="reason"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="reason" className="text-sm font-medium">
               Reason
             </label>
 
@@ -315,22 +241,14 @@ export function EmployeeAssignmentForm({
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="notes"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="notes" className="text-sm font-medium">
               Notes
             </label>
 
-            <Textarea
-              id="notes"
-              name="notes"
-              rows={3}
-              className="mt-2"
-            />
+            <Textarea id="notes" name="notes" rows={3} className="mt-2" />
           </div>
         </div>
       </section>
     </form>
-  )
+  );
 }

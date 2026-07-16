@@ -1,111 +1,86 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useActionState, useEffect, useMemo, useState } from "react"
-import {
-  ArrowLeft,
-  Calculator,
-  Save,
-} from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect, useMemo, useState } from "react";
+import { Calculator, Save } from "lucide-react";
+import { toast } from "sonner";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
 import {
   savePerformanceAppraisalRatings,
   type PerformanceAppraisalRatingState,
-} from "@/src/modules/hr/actions/manage-performance-appraisal"
-import type { PerformanceAppraisalProfile } from "@/src/modules/hr/data/get-performance-appraisals"
-import { PeopleNav } from "./people-nav"
+} from "@/src/modules/hr/actions/manage-performance-appraisal";
+import type { PerformanceAppraisalProfile } from "@/src/modules/hr/data/get-performance-appraisals";
+import { PeopleNav } from "./people-nav";
 
 const initialState: PerformanceAppraisalRatingState = {
   status: "idle",
   message: "",
-}
+};
 
 type CriterionRow = {
-  id: string
-  employeeRating: string
-  supervisorRating: string
-  finalRating: string
-  employeeComments: string
-  supervisorComments: string
-  evidence: string
-}
+  id: string;
+  employeeRating: string;
+  supervisorRating: string;
+  finalRating: string;
+  employeeComments: string;
+  supervisorComments: string;
+  evidence: string;
+};
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) =>
-      character.toUpperCase(),
-    )
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export function PerformanceAppraisalRatingForm({
   appraisal,
 }: {
-  appraisal: PerformanceAppraisalProfile
+  appraisal: PerformanceAppraisalProfile;
 }) {
   const [state, action, pending] = useActionState(
     savePerformanceAppraisalRatings,
     initialState,
-  )
+  );
 
-  const maximumScore = Number(appraisal.maximumScore)
+  const maximumScore = Number(appraisal.maximumScore);
 
   const [rows, setRows] = useState<CriterionRow[]>(
     appraisal.criteria.map((criterion) => ({
       id: criterion.id,
       employeeRating: criterion.employeeRating ?? "",
-      supervisorRating:
-        criterion.supervisorRating ?? "",
+      supervisorRating: criterion.supervisorRating ?? "",
       finalRating: criterion.finalRating ?? "",
-      employeeComments:
-        criterion.employeeComments ?? "",
-      supervisorComments:
-        criterion.supervisorComments ?? "",
+      employeeComments: criterion.employeeComments ?? "",
+      supervisorComments: criterion.supervisorComments ?? "",
       evidence: criterion.evidence ?? "",
     })),
-  )
+  );
 
   const criterionById = useMemo(
     () =>
-      new Map(
-        appraisal.criteria.map((criterion) => [
-          criterion.id,
-          criterion,
-        ]),
-      ),
+      new Map(appraisal.criteria.map((criterion) => [criterion.id, criterion])),
     [appraisal.criteria],
-  )
+  );
 
   const estimatedScore = rows.reduce((total, row) => {
-    const criterion = criterionById.get(row.id)
-    const rating = Number(row.finalRating)
+    const criterion = criterionById.get(row.id);
+    const rating = Number(row.finalRating);
 
-    if (
-      !criterion ||
-      !row.finalRating ||
-      !Number.isFinite(rating)
-    ) {
-      return total
+    if (!criterion || !row.finalRating || !Number.isFinite(rating)) {
+      return total;
     }
 
-    return (
-      total +
-      (rating / maximumScore) *
-        Number(criterion.weight)
-    )
-  }, 0)
+    return total + (rating / maximumScore) * Number(criterion.weight);
+  }, 0);
 
-  function updateRow(
-    id: string,
-    changes: Partial<CriterionRow>,
-  ) {
+  function updateRow(id: string, changes: Partial<CriterionRow>) {
     setRows((current) =>
       current.map((row) =>
         row.id === id
@@ -115,18 +90,18 @@ export function PerformanceAppraisalRatingForm({
             }
           : row,
       ),
-    )
+    );
   }
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form
@@ -135,53 +110,28 @@ export function PerformanceAppraisalRatingForm({
     >
       <PeopleNav />
 
-      <input
-        type="hidden"
-        name="employeeId"
-        value={appraisal.employee.id}
-      />
+      <input type="hidden" name="employeeId" value={appraisal.employee.id} />
 
-      <input
-        type="hidden"
-        name="appraisalId"
-        value={appraisal.id}
-      />
+      <input type="hidden" name="appraisalId" value={appraisal.id} />
 
-      <input
-        type="hidden"
-        name="updatedAt"
-        value={appraisal.updatedAt}
-      />
+      <input type="hidden" name="updatedAt" value={appraisal.updatedAt} />
 
-      <input
-        type="hidden"
-        name="criteriaJson"
-        value={JSON.stringify(rows)}
-      />
+      <input type="hidden" name="criteriaJson" value={JSON.stringify(rows)} />
 
       <PageHeader
         title="Enter Appraisal Ratings"
         description={`${appraisal.employee.firstName} ${appraisal.employee.lastName} · ${appraisal.title}`}
+        backHref={`/people/employees/${appraisal.employee.id}/appraisals/${appraisal.id}`}
+        backLabel="Appraisal"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${appraisal.employee.id}/appraisals/${appraisal.id}`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
+          <FormPageActions
+            cancelHref={`/people/employees/${appraisal.employee.id}/appraisals/${appraisal.id}`}
+          >
             <Button type="submit" disabled={pending}>
               <Save />
               {pending ? "Saving…" : "Save ratings"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -194,35 +144,25 @@ export function PerformanceAppraisalRatingForm({
         </div>
       )}
 
-      <section className="grid gap-6 border-y border-border py-6 md:grid-cols-4">
+      <section className="grid gap-6 md:grid-cols-4">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Rating scale
-          </p>
+          <p className="text-xs text-muted-foreground">Rating scale</p>
           <p className="mt-1 text-sm font-medium">
             0 to {appraisal.maximumScore}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Criteria
-          </p>
+          <p className="text-xs text-muted-foreground">Criteria</p>
           <p className="mt-1 text-sm font-medium">
             {appraisal.criteria.length}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Rated criteria
-          </p>
+          <p className="text-xs text-muted-foreground">Rated criteria</p>
           <p className="mt-1 text-sm font-medium">
-            {
-              rows.filter(
-                (row) => row.finalRating.trim().length > 0,
-              ).length
-            }
+            {rows.filter((row) => row.finalRating.trim().length > 0).length}
           </p>
         </div>
 
@@ -242,26 +182,19 @@ export function PerformanceAppraisalRatingForm({
           Rating criteria
         </h2>
 
-        <div className="divide-y divide-border border-y border-border">
+        <div className="divide-y divide-border/70">
           {appraisal.criteria.map((criterion, index) => {
-            const row = rows.find(
-              (item) => item.id === criterion.id,
-            )!
+            const row = rows.find((item) => item.id === criterion.id)!;
 
-            const finalRating = Number(row.finalRating)
+            const finalRating = Number(row.finalRating);
 
             const weightedScore =
-              row.finalRating &&
-              Number.isFinite(finalRating)
-                ? (finalRating / maximumScore) *
-                  Number(criterion.weight)
-                : null
+              row.finalRating && Number.isFinite(finalRating)
+                ? (finalRating / maximumScore) * Number(criterion.weight)
+                : null;
 
             return (
-              <article
-                key={criterion.id}
-                className="space-y-6 py-7"
-              >
+              <article key={criterion.id} className="space-y-6 py-7">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="max-w-3xl">
                     <div className="flex flex-wrap items-center gap-2">
@@ -279,8 +212,7 @@ export function PerformanceAppraisalRatingForm({
                     </div>
 
                     <p className="mt-2 text-sm text-muted-foreground">
-                      {criterion.description ??
-                        "No description provided."}
+                      {criterion.description ?? "No description provided."}
                     </p>
 
                     {criterion.measurement && (
@@ -316,8 +248,7 @@ export function PerformanceAppraisalRatingForm({
                       value={row.employeeRating}
                       onChange={(event) =>
                         updateRow(criterion.id, {
-                          employeeRating:
-                            event.target.value,
+                          employeeRating: event.target.value,
                         })
                       }
                       className="mt-2"
@@ -336,8 +267,7 @@ export function PerformanceAppraisalRatingForm({
                       value={row.supervisorRating}
                       onChange={(event) =>
                         updateRow(criterion.id, {
-                          supervisorRating:
-                            event.target.value,
+                          supervisorRating: event.target.value,
                         })
                       }
                       className="mt-2"
@@ -356,8 +286,7 @@ export function PerformanceAppraisalRatingForm({
                       value={row.finalRating}
                       onChange={(event) =>
                         updateRow(criterion.id, {
-                          finalRating:
-                            event.target.value,
+                          finalRating: event.target.value,
                         })
                       }
                       className="mt-2"
@@ -373,8 +302,7 @@ export function PerformanceAppraisalRatingForm({
                       value={row.employeeComments}
                       onChange={(event) =>
                         updateRow(criterion.id, {
-                          employeeComments:
-                            event.target.value,
+                          employeeComments: event.target.value,
                         })
                       }
                       className="mt-2"
@@ -390,8 +318,7 @@ export function PerformanceAppraisalRatingForm({
                       value={row.supervisorComments}
                       onChange={(event) =>
                         updateRow(criterion.id, {
-                          supervisorComments:
-                            event.target.value,
+                          supervisorComments: event.target.value,
                         })
                       }
                       className="mt-2"
@@ -407,8 +334,7 @@ export function PerformanceAppraisalRatingForm({
                       value={row.evidence}
                       onChange={(event) =>
                         updateRow(criterion.id, {
-                          evidence:
-                            event.target.value,
+                          evidence: event.target.value,
                         })
                       }
                       className="mt-2"
@@ -416,7 +342,7 @@ export function PerformanceAppraisalRatingForm({
                   </div>
                 </div>
               </article>
-            )
+            );
           })}
         </div>
       </section>
@@ -426,62 +352,47 @@ export function PerformanceAppraisalRatingForm({
           Overall comments
         </h2>
 
-        <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="employeeComments"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="employeeComments" className="text-sm font-medium">
               Employee’s overall comments
             </label>
             <Textarea
               id="employeeComments"
               name="employeeComments"
               rows={5}
-              defaultValue={
-                appraisal.employeeComments ?? ""
-              }
+              defaultValue={appraisal.employeeComments ?? ""}
               className="mt-2"
             />
           </div>
 
           <div>
-            <label
-              htmlFor="supervisorComments"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="supervisorComments" className="text-sm font-medium">
               Supervisor’s overall comments
             </label>
             <Textarea
               id="supervisorComments"
               name="supervisorComments"
               rows={5}
-              defaultValue={
-                appraisal.supervisorComments ?? ""
-              }
+              defaultValue={appraisal.supervisorComments ?? ""}
               className="mt-2"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="developmentPlan"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="developmentPlan" className="text-sm font-medium">
               Development plan
             </label>
             <Textarea
               id="developmentPlan"
               name="developmentPlan"
               rows={5}
-              defaultValue={
-                appraisal.developmentPlan ?? ""
-              }
+              defaultValue={appraisal.developmentPlan ?? ""}
               className="mt-2"
             />
           </div>
         </div>
       </section>
     </form>
-  )
+  );
 }

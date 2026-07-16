@@ -1,61 +1,43 @@
-import type { Metadata } from "next"
-import { notFound, redirect } from "next/navigation"
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { EmployeeProfile } from "@/src/modules/hr/components/employee-profile"
-import { getEmployeeProfile } from "@/src/modules/hr/data/get-employee-form-data"
-import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities"
+import { EmployeeProfile } from "@/src/modules/hr/components/employee-profile";
+import { getEmployeeProfile } from "@/src/modules/hr/data/get-employee-form-data";
+import { getSelfServiceProfileExtras } from "@/src/modules/hr/data/get-self-service-profile-extras";
+import { resolveEmployeeProfileAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Employee Profile",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 type EmployeePageProps = {
   params: Promise<{
-    id: string
-  }>
-}
+    id: string;
+  }>;
+};
 
-export default async function EmployeePage({
-  params,
-}: EmployeePageProps) {
-  const { id } = await params
-  const capabilities = await getUserCapabilities()
+export default async function EmployeePage({ params }: EmployeePageProps) {
+  const { id } = await params;
+  const access = await resolveEmployeeProfileAccess(id);
 
-  if (!capabilities) {
-    redirect("/login")
-  }
-
-  const isOwnProfile = capabilities.employeeId === id
-  const canManagePeople = capabilities.canAny(
-    "people.directory.view",
-    "people.manage",
-  )
-
-  if (!isOwnProfile && !canManagePeople) {
-    notFound()
-  }
-
-  if (
-    isOwnProfile &&
-    !canManagePeople &&
-    !capabilities.can("people.profile.view_own")
-  ) {
-    notFound()
-  }
-
-  const employee = await getEmployeeProfile(id)
+  const [employee, extras] = await Promise.all([
+    getEmployeeProfile(id),
+    getSelfServiceProfileExtras(id),
+  ]);
 
   if (!employee) {
-    notFound()
+    notFound();
   }
 
   return (
     <EmployeeProfile
       employee={employee}
-      canManage={capabilities.can("people.manage")}
-      isOwnProfile={isOwnProfile}
+      canManage={access.canManage}
+      showPeopleNav={access.showPeopleNav}
+      isOwnProfile={access.isOwnProfile}
+      supervisor={extras.supervisor}
     />
-  )
+  );
 }

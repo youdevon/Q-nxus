@@ -1,51 +1,47 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useActionState, useEffect, useState } from "react"
-import {
-  ArrowLeft,
-  CircleStop,
-} from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect, useState } from "react";
+import { CircleStop } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { FormPageActions } from "@/src/components/layout/page-actions";
 import {
   closeEmploymentContract,
   type CloseContractFormState,
-} from "@/src/modules/hr/actions/close-employment-contract"
-import type { EmploymentContractProfile } from "@/src/modules/hr/data/get-employment-contracts"
-import { PeopleNav } from "./people-nav"
+} from "@/src/modules/hr/actions/close-employment-contract";
+import type { EmploymentContractProfile } from "@/src/modules/hr/data/get-employment-contracts";
+import { PeopleNav } from "./people-nav";
 
 const initialState: CloseContractFormState = {
   status: "idle",
   message: "",
-}
+};
 
 export function CloseEmploymentContractForm({
   contract,
 }: {
-  contract: EmploymentContractProfile
+  contract: EmploymentContractProfile;
 }) {
   const [state, action, pending] = useActionState(
     closeEmploymentContract,
     initialState,
-  )
+  );
 
-  const [updateEmployeeStatus, setUpdateEmployeeStatus] =
-    useState(false)
+  const [updateEmployeeStatus, setUpdateEmployeeStatus] = useState(false);
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form
@@ -54,51 +50,26 @@ export function CloseEmploymentContractForm({
     >
       <PeopleNav />
 
-      <input
-        type="hidden"
-        name="employeeId"
-        value={contract.employee.id}
-      />
+      <input type="hidden" name="employeeId" value={contract.employee.id} />
 
-      <input
-        type="hidden"
-        name="contractId"
-        value={contract.id}
-      />
+      <input type="hidden" name="contractId" value={contract.id} />
 
-      <input
-        type="hidden"
-        name="updatedAt"
-        value={contract.updatedAt}
-      />
+      <input type="hidden" name="updatedAt" value={contract.updatedAt} />
 
       <PageHeader
         title="Close Employment Contract"
         description={`${contract.employee.firstName} ${contract.employee.lastName} · ${contract.employee.employeeNumber}`}
+        backHref={`/people/employees/${contract.employee.id}/contracts/${contract.id}`}
+        backLabel="Contract"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/employees/${contract.employee.id}/contracts/${contract.id}`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Cancel
-            </Button>
-
-            <Button
-              type="submit"
-              variant="destructive"
-              disabled={pending}
-            >
+          <FormPageActions
+            cancelHref={`/people/employees/${contract.employee.id}/contracts/${contract.id}`}
+          >
+            <Button type="submit" variant="destructive" disabled={pending}>
               <CircleStop />
               {pending ? "Closing…" : "Close contract"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -116,12 +87,9 @@ export function CloseEmploymentContractForm({
           Closure information
         </h2>
 
-        <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <div>
-            <label
-              htmlFor="closureStatus"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="closureStatus" className="text-sm font-medium">
               Closure type
             </label>
 
@@ -132,23 +100,14 @@ export function CloseEmploymentContractForm({
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
-              <option value="EXPIRED">
-                Contract completed or expired
-              </option>
-              <option value="TERMINATED">
-                Contract terminated
-              </option>
-              <option value="CANCELLED">
-                Contract cancelled
-              </option>
+              <option value="EXPIRED">Contract completed or expired</option>
+              <option value="TERMINATED">Contract terminated</option>
+              <option value="CANCELLED">Contract cancelled</option>
             </select>
           </div>
 
           <div>
-            <label
-              htmlFor="effectiveDate"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="effectiveDate" className="text-sm font-medium">
               Effective date
             </label>
 
@@ -164,28 +123,20 @@ export function CloseEmploymentContractForm({
           </div>
 
           <div>
-            <label
-              htmlFor="documentReference"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="documentReference" className="text-sm font-medium">
               Document reference
             </label>
 
             <Input
               id="documentReference"
               name="documentReference"
-              defaultValue={
-                contract.documentReference ?? ""
-              }
+              defaultValue={contract.documentReference ?? ""}
               className="mt-2"
             />
           </div>
 
           <div className="md:col-span-2">
-            <label
-              htmlFor="terminationReason"
-              className="text-sm font-medium"
-            >
+            <label htmlFor="terminationReason" className="text-sm font-medium">
               Closure or termination reason
             </label>
 
@@ -203,9 +154,7 @@ export function CloseEmploymentContractForm({
               name="updateEmployeeStatus"
               checked={updateEmployeeStatus}
               onChange={(event) =>
-                setUpdateEmployeeStatus(
-                  event.target.checked,
-                )
+                setUpdateEmployeeStatus(event.target.checked)
               }
               className="size-4"
             />
@@ -217,10 +166,7 @@ export function CloseEmploymentContractForm({
 
           {updateEmployeeStatus && (
             <div>
-              <label
-                htmlFor="employeeStatus"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="employeeStatus" className="text-sm font-medium">
                 New employee status
               </label>
 
@@ -232,9 +178,7 @@ export function CloseEmploymentContractForm({
                 required
               >
                 <option value="INACTIVE">Inactive</option>
-                <option value="TERMINATED">
-                  Terminated
-                </option>
+                <option value="TERMINATED">Terminated</option>
                 <option value="RETIRED">Retired</option>
                 <option value="ON_LEAVE">On leave</option>
               </select>
@@ -250,13 +194,13 @@ export function CloseEmploymentContractForm({
             />
 
             <span className="text-sm">
-              I confirm that this contract should be closed.
-              This record will remain in the employee’s contract
-              history and will no longer be marked as current.
+              I confirm that this contract should be closed. This record will
+              remain in the employee’s contract history and will no longer be
+              marked as current.
             </span>
           </label>
         </div>
       </section>
     </form>
-  )
+  );
 }

@@ -1,27 +1,27 @@
-import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma";
 
 export type DepartmentRecord = {
-  id: string
-  name: string
-  code: string | null
-  description: string | null
-  isActive: boolean
-  updatedAt: string
-  employeeCount: number
+  id: string;
+  name: string;
+  code: string | null;
+  description: string | null;
+  isActive: boolean;
+  updatedAt: string;
+  employeeCount: number;
   positions: {
-    id: string
-    title: string
-    code: string | null
-    description: string | null
-    isActive: boolean
-    updatedAt: string
-    employeeCount: number
-  }[]
-}
+    id: string;
+    title: string;
+    code: string | null;
+    description: string | null;
+    systemRoleCode: string | null;
+    reportsToPositionId: string | null;
+    isActive: boolean;
+    updatedAt: string;
+    employeeCount: number;
+  }[];
+};
 
-export async function getPeopleStructure(): Promise<
-  DepartmentRecord[]
-> {
+export async function getPeopleStructure(): Promise<DepartmentRecord[]> {
   const organization = await prisma.organization.findFirst({
     orderBy: {
       createdAt: "asc",
@@ -29,10 +29,10 @@ export async function getPeopleStructure(): Promise<
     select: {
       id: true,
     },
-  })
+  });
 
   if (!organization) {
-    return []
+    return [];
   }
 
   const departments = await prisma.department.findMany({
@@ -63,6 +63,8 @@ export async function getPeopleStructure(): Promise<
           title: true,
           code: true,
           description: true,
+          systemRoleCode: true,
+          reportsToPositionId: true,
           isActive: true,
           updatedAt: true,
           _count: {
@@ -73,7 +75,7 @@ export async function getPeopleStructure(): Promise<
         },
       },
     },
-  })
+  });
 
   return departments.map((department) => ({
     id: department.id,
@@ -88,38 +90,40 @@ export async function getPeopleStructure(): Promise<
       title: position.title,
       code: position.code,
       description: position.description,
+      systemRoleCode: position.systemRoleCode,
+      reportsToPositionId: position.reportsToPositionId,
       isActive: position.isActive,
       updatedAt: position.updatedAt.toISOString(),
       employeeCount: position._count.employees,
     })),
-  }))
+  }));
 }
 
 export type DepartmentProfileRecord = {
-  id: string
-  name: string
-  code: string | null
-  description: string | null
-  isActive: boolean
-  createdAt: string
-  updatedAt: string
+  id: string;
+  name: string;
+  code: string | null;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
   positions: {
-    id: string
-    title: string
-    code: string | null
-    description: string | null
-    isActive: boolean
-    employeeCount: number
-  }[]
+    id: string;
+    title: string;
+    code: string | null;
+    description: string | null;
+    isActive: boolean;
+    employeeCount: number;
+  }[];
   employees: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-    employmentStatus: string
-    positionTitle: string | null
-  }[]
-}
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    employmentStatus: string;
+    positionTitle: string | null;
+  }[];
+};
 
 export async function getDepartmentProfile(
   id: string,
@@ -176,10 +180,10 @@ export async function getDepartmentProfile(
         },
       },
     },
-  })
+  });
 
   if (!department) {
-    return null
+    return null;
   }
 
   return {
@@ -206,39 +210,39 @@ export async function getDepartmentProfile(
       employmentStatus: employee.employmentStatus,
       positionTitle: employee.position?.title ?? null,
     })),
-  }
+  };
 }
 
 export type PositionProfileRecord = {
-  id: string
-  title: string
-  code: string | null
-  description: string | null
-  systemRoleCode: string | null
-  isActive: boolean
-  createdAt: string
-  updatedAt: string
+  id: string;
+  title: string;
+  code: string | null;
+  description: string | null;
+  systemRoleCode: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
   department: {
-    id: string
-    name: string
-    code: string | null
-  }
+    id: string;
+    name: string;
+    code: string | null;
+  };
   employees: {
-    id: string
-    employeeNumber: string
-    firstName: string
-    lastName: string
-    employmentStatus: string
-  }[]
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    employmentStatus: string;
+  }[];
   jobDescriptions: {
-    id: string
-    versionNumber: number
-    title: string
-    status: string
-    isCurrent: boolean
-    effectiveFrom: string
-  }[]
-}
+    id: string;
+    versionNumber: number;
+    title: string;
+    status: string;
+    isCurrent: boolean;
+    effectiveFrom: string;
+  }[];
+};
 
 export async function getPositionProfile(
   id: string,
@@ -294,10 +298,10 @@ export async function getPositionProfile(
         },
       },
     },
-  })
+  });
 
   if (!position) {
-    return null
+    return null;
   }
 
   return {
@@ -311,17 +315,13 @@ export async function getPositionProfile(
     updatedAt: position.updatedAt.toISOString(),
     department: position.department,
     employees: position.employees,
-    jobDescriptions: position.jobDescriptions.map(
-      (jobDescription) => ({
-        id: jobDescription.id,
-        versionNumber: jobDescription.versionNumber,
-        title: jobDescription.title,
-        status: jobDescription.status,
-        isCurrent: jobDescription.isCurrent,
-        effectiveFrom: jobDescription.effectiveFrom
-          .toISOString()
-          .slice(0, 10),
-      }),
-    ),
-  }
+    jobDescriptions: position.jobDescriptions.map((jobDescription) => ({
+      id: jobDescription.id,
+      versionNumber: jobDescription.versionNumber,
+      title: jobDescription.title,
+      status: jobDescription.status,
+      isCurrent: jobDescription.isCurrent,
+      effectiveFrom: jobDescription.effectiveFrom.toISOString().slice(0, 10),
+    })),
+  };
 }

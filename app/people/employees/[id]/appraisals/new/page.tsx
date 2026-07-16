@@ -1,28 +1,31 @@
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { PerformanceAppraisalForm } from "@/src/modules/hr/components/performance-appraisal-form"
-import { getAppraisalCreationData } from "@/src/modules/hr/data/get-performance-appraisals"
+import { PerformanceAppraisalForm } from "@/src/modules/hr/components/performance-appraisal-form";
+import { getAppraisalCreationData } from "@/src/modules/hr/data/get-performance-appraisals";
+import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "New Performance Appraisal",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function NewPerformanceAppraisalPage({
   params,
 }: {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }) {
-  const { id } = await params
-  const data = await getAppraisalCreationData(id)
+  await requirePeopleManageAccess();
+
+  const { id } = await params;
+  const data = await getAppraisalCreationData(id);
 
   if (!data) {
-    notFound()
+    notFound();
   }
 
-  return <PerformanceAppraisalForm data={data} />
+  return <PerformanceAppraisalForm data={data} />;
 }

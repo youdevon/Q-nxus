@@ -1,8 +1,7 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   CheckCircle2,
   ClipboardCheck,
   Pencil,
@@ -10,59 +9,55 @@ import {
   ShieldCheck,
   UserCheck,
   XCircle,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 import {
   acknowledgePerformanceAppraisal,
   cancelPerformanceAppraisal,
   completePerformanceAppraisal,
   reviewPerformanceAppraisal,
   submitPerformanceAppraisal,
-} from "@/src/modules/hr/actions/manage-performance-appraisal"
-import { getPerformanceAppraisalProfile } from "@/src/modules/hr/data/get-performance-appraisals"
+} from "@/src/modules/hr/actions/manage-performance-appraisal";
+import { getPerformanceAppraisalProfile } from "@/src/modules/hr/data/get-performance-appraisals";
+import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Performance Appraisal",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 function label(value: string): string {
   return value
     .replaceAll("_", " ")
     .toLowerCase()
-    .replace(/\b\w/g, (character) =>
-      character.toUpperCase(),
-    )
+    .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
 export default async function PerformanceAppraisalPage({
   params,
 }: {
   params: Promise<{
-    id: string
-    appraisalId: string
-  }>
+    id: string;
+    appraisalId: string;
+  }>;
 }) {
-  const { id, appraisalId } = await params
+  await requirePeopleManageAccess();
 
-  const appraisal =
-    await getPerformanceAppraisalProfile(
-      id,
-      appraisalId,
-    )
+  const { id, appraisalId } = await params;
+
+  const appraisal = await getPerformanceAppraisalProfile(id, appraisalId);
 
   if (!appraisal) {
-    notFound()
+    notFound();
   }
 
   const editable =
-    appraisal.status === "DRAFT" ||
-    appraisal.status === "IN_PROGRESS"
+    appraisal.status === "DRAFT" || appraisal.status === "IN_PROGRESS";
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -71,35 +66,22 @@ export default async function PerformanceAppraisalPage({
       <PageHeader
         title={appraisal.title}
         description={`${appraisal.employee.firstName} ${appraisal.employee.lastName} · ${appraisal.employee.employeeNumber}`}
+        backHref={`/people/employees/${id}/appraisals`}
+        backLabel="Appraisals"
         actions={
-          <div className="flex gap-2">
+          editable ? (
             <Button
               nativeButton={false}
-              variant="outline"
               render={
                 <Link
-                  href={`/people/employees/${id}/appraisals`}
+                  href={`/people/employees/${id}/appraisals/${appraisal.id}/edit`}
                 />
               }
             >
-              <ArrowLeft />
-              Appraisal history
+              <Pencil />
+              Enter ratings
             </Button>
-
-            {editable && (
-              <Button
-                nativeButton={false}
-                render={
-                  <Link
-                    href={`/people/employees/${id}/appraisals/${appraisal.id}/edit`}
-                  />
-                }
-              >
-                <Pencil />
-                Enter ratings
-              </Button>
-            )}
-          </div>
+          ) : undefined
         }
       />
 
@@ -108,7 +90,7 @@ export default async function PerformanceAppraisalPage({
           Appraisal Workflow
         </h2>
 
-        <div className="flex flex-wrap gap-2 border-y border-border py-5">
+        <div className="flex flex-wrap gap-2">
           {(appraisal.status === "DRAFT" ||
             appraisal.status === "IN_PROGRESS") && (
             <form action={submitPerformanceAppraisal}>
@@ -117,11 +99,7 @@ export default async function PerformanceAppraisalPage({
                 name="employeeId"
                 value={appraisal.employee.id}
               />
-              <input
-                type="hidden"
-                name="appraisalId"
-                value={appraisal.id}
-              />
+              <input type="hidden" name="appraisalId" value={appraisal.id} />
 
               <Button type="submit">
                 <Send />
@@ -137,11 +115,7 @@ export default async function PerformanceAppraisalPage({
                 name="employeeId"
                 value={appraisal.employee.id}
               />
-              <input
-                type="hidden"
-                name="appraisalId"
-                value={appraisal.id}
-              />
+              <input type="hidden" name="appraisalId" value={appraisal.id} />
 
               <Button type="submit">
                 <ShieldCheck />
@@ -150,19 +124,14 @@ export default async function PerformanceAppraisalPage({
             </form>
           )}
 
-          {appraisal.status ===
-            "SUPERVISOR_REVIEWED" && (
+          {appraisal.status === "SUPERVISOR_REVIEWED" && (
             <form action={acknowledgePerformanceAppraisal}>
               <input
                 type="hidden"
                 name="employeeId"
                 value={appraisal.employee.id}
               />
-              <input
-                type="hidden"
-                name="appraisalId"
-                value={appraisal.id}
-              />
+              <input type="hidden" name="appraisalId" value={appraisal.id} />
 
               <Button type="submit">
                 <UserCheck />
@@ -171,19 +140,14 @@ export default async function PerformanceAppraisalPage({
             </form>
           )}
 
-          {appraisal.status ===
-            "EMPLOYEE_ACKNOWLEDGED" && (
+          {appraisal.status === "EMPLOYEE_ACKNOWLEDGED" && (
             <form action={completePerformanceAppraisal}>
               <input
                 type="hidden"
                 name="employeeId"
                 value={appraisal.employee.id}
               />
-              <input
-                type="hidden"
-                name="appraisalId"
-                value={appraisal.id}
-              />
+              <input type="hidden" name="appraisalId" value={appraisal.id} />
 
               <Button type="submit">
                 <CheckCircle2 />
@@ -201,16 +165,9 @@ export default async function PerformanceAppraisalPage({
                 name="employeeId"
                 value={appraisal.employee.id}
               />
-              <input
-                type="hidden"
-                name="appraisalId"
-                value={appraisal.id}
-              />
+              <input type="hidden" name="appraisalId" value={appraisal.id} />
 
-              <Button
-                type="submit"
-                variant="destructive"
-              >
+              <Button type="submit" variant="destructive">
                 <XCircle />
                 Cancel appraisal
               </Button>
@@ -219,7 +176,7 @@ export default async function PerformanceAppraisalPage({
         </div>
       </section>
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex items-start justify-between gap-5">
           <div className="flex items-start gap-4">
             <div className="flex size-14 items-center justify-center border border-border">
@@ -227,12 +184,11 @@ export default async function PerformanceAppraisalPage({
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {appraisal.title}
               </h2>
               <p className="mt-1 font-mono text-xs text-muted-foreground">
-                {appraisal.appraisalNumber ??
-                  "No appraisal reference"}
+                {appraisal.appraisalNumber ?? "No appraisal reference"}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
                 {appraisal.periodStart} to{" "}
@@ -244,9 +200,9 @@ export default async function PerformanceAppraisalPage({
           <Badge
             variant={
               appraisal.status === "COMPLETED"
-                ? "default"
+                ? "success"
                 : appraisal.status === "DRAFT"
-                  ? "outline"
+                  ? "warning"
                   : "secondary"
             }
           >
@@ -255,11 +211,9 @@ export default async function PerformanceAppraisalPage({
         </div>
       </section>
 
-      <section className="grid gap-6 border-y border-border py-6 md:grid-cols-2 lg:grid-cols-4">
+      <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Assignment
-          </p>
+          <p className="text-xs text-muted-foreground">Assignment</p>
           <p className="mt-1 text-sm font-medium">
             {appraisal.assignment?.positionTitle ??
               appraisal.assignment?.departmentName ??
@@ -268,9 +222,7 @@ export default async function PerformanceAppraisalPage({
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Job description
-          </p>
+          <p className="text-xs text-muted-foreground">Job description</p>
           <p className="mt-1 text-sm font-medium">
             {appraisal.jobDescription
               ? `Version ${appraisal.jobDescription.versionNumber}`
@@ -279,19 +231,14 @@ export default async function PerformanceAppraisalPage({
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Supervisor
-          </p>
+          <p className="text-xs text-muted-foreground">Supervisor</p>
           <p className="mt-1 text-sm font-medium">
-            {appraisal.supervisor?.name ??
-              "Not assigned"}
+            {appraisal.supervisor?.name ?? "Not assigned"}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Overall score
-          </p>
+          <p className="text-xs text-muted-foreground">Overall score</p>
           <p className="mt-1 text-sm font-medium">
             {appraisal.overallScore
               ? `${appraisal.overallScore} / 100`
@@ -305,7 +252,7 @@ export default async function PerformanceAppraisalPage({
           Appraisal criteria
         </h2>
 
-        <div className="divide-y divide-border border-y border-border">
+        <div className="divide-y divide-border/70">
           {appraisal.criteria.map((criterion) => (
             <article
               key={criterion.id}
@@ -313,17 +260,14 @@ export default async function PerformanceAppraisalPage({
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-medium">
-                    {criterion.title}
-                  </p>
+                  <p className="font-medium">{criterion.title}</p>
                   <Badge variant="outline">
                     {label(criterion.criterionType)}
                   </Badge>
                 </div>
 
                 <p className="mt-2 text-sm text-muted-foreground">
-                  {criterion.description ??
-                    "No description provided."}
+                  {criterion.description ?? "No description provided."}
                 </p>
 
                 {criterion.measurement && (
@@ -354,31 +298,21 @@ export default async function PerformanceAppraisalPage({
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground">
-                  Weight
-                </p>
+                <p className="text-xs text-muted-foreground">Weight</p>
+                <p className="mt-1 text-sm font-medium">{criterion.weight}%</p>
+              </div>
+
+              <div>
+                <p className="text-xs text-muted-foreground">Final rating</p>
                 <p className="mt-1 text-sm font-medium">
-                  {criterion.weight}%
+                  {criterion.finalRating ?? "Not rated"}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs text-muted-foreground">
-                  Final rating
-                </p>
+                <p className="text-xs text-muted-foreground">Weighted score</p>
                 <p className="mt-1 text-sm font-medium">
-                  {criterion.finalRating ??
-                    "Not rated"}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted-foreground">
-                  Weighted score
-                </p>
-                <p className="mt-1 text-sm font-medium">
-                  {criterion.weightedScore ??
-                    "Not calculated"}
+                  {criterion.weightedScore ?? "Not calculated"}
                 </p>
               </div>
             </article>
@@ -391,21 +325,16 @@ export default async function PerformanceAppraisalPage({
           Overall Comments and Development
         </h2>
 
-        <div className="grid gap-6 border-y border-border py-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           <div>
-            <p className="text-xs text-muted-foreground">
-              Employee comments
-            </p>
+            <p className="text-xs text-muted-foreground">Employee comments</p>
             <p className="mt-2 whitespace-pre-wrap text-sm">
-              {appraisal.employeeComments ||
-                "No employee comments recorded."}
+              {appraisal.employeeComments || "No employee comments recorded."}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">
-              Supervisor comments
-            </p>
+            <p className="text-xs text-muted-foreground">Supervisor comments</p>
             <p className="mt-2 whitespace-pre-wrap text-sm">
               {appraisal.supervisorComments ||
                 "No supervisor comments recorded."}
@@ -413,16 +342,13 @@ export default async function PerformanceAppraisalPage({
           </div>
 
           <div className="md:col-span-2">
-            <p className="text-xs text-muted-foreground">
-              Development plan
-            </p>
+            <p className="text-xs text-muted-foreground">Development plan</p>
             <p className="mt-2 whitespace-pre-wrap text-sm">
-              {appraisal.developmentPlan ||
-                "No development plan recorded."}
+              {appraisal.developmentPlan || "No development plan recorded."}
             </p>
           </div>
         </div>
       </section>
     </div>
-  )
+  );
 }

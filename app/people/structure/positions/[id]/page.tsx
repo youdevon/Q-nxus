@@ -1,46 +1,53 @@
-import Link from "next/link"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import {
-  ArrowLeft,
   BriefcaseBusiness,
   FileText,
+  Network,
   Pencil,
   UserPlus,
   UsersRound,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { PageHeader } from "@/src/components/layout/page-header"
-import { PageShell } from "@/src/components/layout/page-shell"
-import { PeopleNav } from "@/src/modules/hr/components/people-nav"
-import { getPositionProfile } from "@/src/modules/hr/data/get-people-structure"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import {
+  activeStateBadgeVariant,
+  employmentStatusBadgeVariant,
+} from "@/src/config/ui-colors";
+import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { getPositionProfile } from "@/src/modules/hr/data/get-people-structure";
+import { requirePeopleDirectoryAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
   title: "Position",
-}
+};
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function PositionPage({
   params,
 }: {
   params: Promise<{
-    id: string
-  }>
+    id: string;
+  }>;
 }) {
-  const { id } = await params
-  const position = await getPositionProfile(id)
+  const capabilities = await requirePeopleDirectoryAccess();
+  const canManage = capabilities.can("people.manage");
+
+  const { id } = await params;
+  const position = await getPositionProfile(id);
 
   if (!position) {
-    notFound()
+    notFound();
   }
 
-  const currentJobDescription =
-    position.jobDescriptions.find(
-      (jobDescription) => jobDescription.isCurrent,
-    )
+  const currentJobDescription = position.jobDescriptions.find(
+    (jobDescription) => jobDescription.isCurrent,
+  );
 
   return (
     <PageShell size="lg">
@@ -49,17 +56,10 @@ export default async function PositionPage({
       <PageHeader
         title={position.title}
         description={`${position.department.name} position profile.`}
+        backHref="/people/structure"
+        backLabel="Organization"
         actions={
           <>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={<Link href="/people/structure" />}
-            >
-              <ArrowLeft />
-              Structure
-            </Button>
-
             <Button
               nativeButton={false}
               variant="outline"
@@ -73,35 +73,54 @@ export default async function PositionPage({
               Job descriptions
             </Button>
 
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/structure/positions/${position.id}/assignments/new`}
-                />
-              }
-            >
-              <UserPlus />
-              Assign employee
-            </Button>
+            {canManage ? (
+              <Button
+                nativeButton={false}
+                variant="outline"
+                render={
+                  <Link
+                    href={`/people/structure/positions/${position.id}/reporting`}
+                  />
+                }
+              >
+                <Network />
+                Edit reporting line
+              </Button>
+            ) : null}
 
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href={`/people/structure/positions/${position.id}/edit`}
-                />
-              }
-            >
-              <Pencil />
-              Edit position
-            </Button>
+            {canManage ? (
+              <Button
+                nativeButton={false}
+                variant="outline"
+                render={
+                  <Link
+                    href={`/people/structure/positions/${position.id}/assignments/new`}
+                  />
+                }
+              >
+                <UserPlus />
+                Assign employee
+              </Button>
+            ) : null}
+
+            {canManage ? (
+              <Button
+                nativeButton={false}
+                render={
+                  <Link
+                    href={`/people/structure/positions/${position.id}/edit`}
+                  />
+                }
+              >
+                <Pencil />
+                Edit position
+              </Button>
+            ) : null}
           </>
         }
       />
 
-      <section className="border-y border-border py-6">
+      <section>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4">
             <div className="flex size-14 items-center justify-center border border-border">
@@ -109,7 +128,7 @@ export default async function PositionPage({
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {position.title}
               </h2>
               <p className="mt-1 font-mono text-xs text-muted-foreground">
@@ -119,31 +138,20 @@ export default async function PositionPage({
                 {position.department.name}
               </p>
               <p className="mt-3 max-w-3xl text-sm text-muted-foreground">
-                {position.description ||
-                  "No description provided."}
+                {position.description || "No description provided."}
               </p>
             </div>
           </div>
 
-          <Badge
-            variant={
-              position.isActive
-                ? "default"
-                : "secondary"
-            }
-          >
-            {position.isActive
-              ? "Active"
-              : "Inactive"}
+          <Badge variant={activeStateBadgeVariant(position.isActive)}>
+            {position.isActive ? "Active" : "Inactive"}
           </Badge>
         </div>
       </section>
 
-      <section className="grid grid-cols-2 gap-8 border-y border-border py-5 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <div>
-          <p className="text-xs text-muted-foreground">
-            Employees assigned
-          </p>
+          <p className="text-xs text-muted-foreground">Employees assigned</p>
           <p className="mt-1 text-2xl font-semibold">
             {position.employees.length}
           </p>
@@ -159,9 +167,7 @@ export default async function PositionPage({
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Current version
-          </p>
+          <p className="text-xs text-muted-foreground">Current version</p>
           <p className="mt-1 text-sm font-medium">
             {currentJobDescription
               ? `v${currentJobDescription.versionNumber}`
@@ -170,9 +176,7 @@ export default async function PositionPage({
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">
-            Department
-          </p>
+          <p className="text-xs text-muted-foreground">Department</p>
           <Link
             href={`/people/structure/departments/${position.department.id}`}
             className="mt-1 block text-sm font-medium hover:underline"
@@ -191,27 +195,29 @@ export default async function PositionPage({
             </h2>
           </div>
 
-          <Button
-            nativeButton={false}
-            size="sm"
-            render={
-              <Link
-                href={`/people/structure/positions/${position.id}/assignments/new`}
-              />
-            }
-          >
-            <UserPlus />
-            Assign employee
-          </Button>
+          {canManage ? (
+            <Button
+              nativeButton={false}
+              size="sm"
+              render={
+                <Link
+                  href={`/people/structure/positions/${position.id}/assignments/new`}
+                />
+              }
+            >
+              <UserPlus />
+              Assign employee
+            </Button>
+          ) : null}
         </div>
 
         {position.employees.length === 0 ? (
-          <p className="border-y border-border py-6 text-sm text-muted-foreground">
-            No employees are assigned to this position yet.
-            Use Assign employee to place someone here.
+          <p className="text-sm text-muted-foreground">
+            No employees are assigned to this position yet. Use Assign employee
+            to place someone here.
           </p>
         ) : (
-          <div className="divide-y divide-border border-y border-border">
+          <div className="divide-y divide-border/70">
             {position.employees.map((employee) => (
               <Link
                 key={employee.id}
@@ -228,11 +234,9 @@ export default async function PositionPage({
                 </div>
 
                 <Badge
-                  variant={
-                    employee.employmentStatus === "ACTIVE"
-                      ? "default"
-                      : "secondary"
-                  }
+                  variant={employmentStatusBadgeVariant(
+                    employee.employmentStatus,
+                  )}
                 >
                   {employee.employmentStatus}
                 </Badge>
@@ -242,5 +246,5 @@ export default async function PositionPage({
         )}
       </section>
     </PageShell>
-  )
+  );
 }

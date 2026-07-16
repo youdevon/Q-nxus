@@ -1,57 +1,51 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useActionState, useEffect, useState } from "react"
-import {
-  ArrowLeft,
-  BriefcaseBusiness,
-  Save,
-} from "lucide-react"
-import { toast } from "sonner"
+import { useActionState, useEffect, useState } from "react";
+import { BriefcaseBusiness, Save } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { PageHeader } from "@/src/components/layout/page-header"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageHeader } from "@/src/components/layout/page-header";
 import {
   createEmployeeAssignment,
   type EmployeeAssignmentFormState,
-} from "@/src/modules/hr/actions/create-employee-assignment"
-import type { PositionAssignmentFormData } from "@/src/modules/hr/data/get-employee-assignments"
-import { PeopleNav } from "./people-nav"
+} from "@/src/modules/hr/actions/create-employee-assignment";
+import type { PositionAssignmentFormData } from "@/src/modules/hr/data/get-employee-assignments";
+import { PeopleNav } from "./people-nav";
 
 const initialState: EmployeeAssignmentFormState = {
   status: "idle",
   message: "",
-}
+};
 
 export function PositionAssignmentForm({
   data,
 }: {
-  data: PositionAssignmentFormData
+  data: PositionAssignmentFormData;
 }) {
   const [state, action, pending] = useActionState(
     createEmployeeAssignment,
     initialState,
-  )
+  );
 
-  const [employeeId, setEmployeeId] = useState(
-    data.employees[0]?.id ?? "",
-  )
+  const [employeeId, setEmployeeId] = useState(data.employees[0]?.id ?? "");
 
   const selectedEmployee = data.employees.find(
     (employee) => employee.id === employeeId,
-  )
+  );
 
   useEffect(() => {
     if (state.status === "error") {
-      toast.error(state.message)
+      toast.error(state.message);
     }
 
     if (state.status === "conflict") {
-      toast.warning(state.message)
+      toast.warning(state.message);
     }
-  }, [state])
+  }, [state]);
 
   return (
     <form
@@ -65,16 +59,8 @@ export function PositionAssignmentForm({
         name="departmentId"
         value={data.position.departmentId}
       />
-      <input
-        type="hidden"
-        name="positionId"
-        value={data.position.id}
-      />
-      <input
-        type="hidden"
-        name="employeeId"
-        value={employeeId}
-      />
+      <input type="hidden" name="positionId" value={data.position.id} />
+      <input type="hidden" name="employeeId" value={employeeId} />
       <input
         type="hidden"
         name="employeeUpdatedAt"
@@ -89,21 +75,12 @@ export function PositionAssignmentForm({
       <PageHeader
         title="Assign Employee"
         description={`${data.position.title} · ${data.position.departmentName}`}
+        backHref={`/people/structure/positions/${data.position.id}`}
+        backLabel="Position"
         actions={
-          <div className="flex gap-2">
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/people/structure/positions/${data.position.id}`}
-                />
-              }
-            >
-              <ArrowLeft />
-              Back to position
-            </Button>
-
+          <FormPageActions
+            cancelHref={`/people/structure/positions/${data.position.id}`}
+          >
             <Button
               type="submit"
               disabled={pending || data.employees.length === 0}
@@ -111,7 +88,7 @@ export function PositionAssignmentForm({
               <Save />
               {pending ? "Saving…" : "Assign employee"}
             </Button>
-          </div>
+          </FormPageActions>
         }
       />
 
@@ -122,13 +99,11 @@ export function PositionAssignmentForm({
       )}
 
       {data.employees.length === 0 ? (
-        <div className="border-y border-border py-12 text-center">
-          <p className="text-sm font-medium">
-            No assignable employees
-          </p>
+        <div className="py-12 text-center">
+          <p className="text-sm font-medium">No assignable employees</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            All active employees are already on this position,
-            or there are no active employees to assign.
+            All active employees are already on this position, or there are no
+            active employees to assign.
           </p>
         </div>
       ) : (
@@ -140,44 +115,30 @@ export function PositionAssignmentForm({
             </h2>
           </div>
 
-          <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
+          <div className="grid gap-5 md:grid-cols-2">
             <div className="md:col-span-2">
-              <p className="text-xs text-muted-foreground">
-                Position
-              </p>
-              <p className="mt-1 text-sm font-medium">
-                {data.position.title}
-              </p>
+              <p className="text-xs text-muted-foreground">Position</p>
+              <p className="mt-1 text-sm font-medium">{data.position.title}</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {data.position.departmentName}
-                {data.position.code
-                  ? ` · ${data.position.code}`
-                  : ""}
+                {data.position.code ? ` · ${data.position.code}` : ""}
               </p>
             </div>
 
             <div className="md:col-span-2">
-              <label
-                htmlFor="employeeSelect"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="employeeSelect" className="text-sm font-medium">
                 Employee
               </label>
 
               <select
                 id="employeeSelect"
                 value={employeeId}
-                onChange={(event) =>
-                  setEmployeeId(event.target.value)
-                }
+                onChange={(event) => setEmployeeId(event.target.value)}
                 className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
                 required
               >
                 {data.employees.map((employee) => (
-                  <option
-                    key={employee.id}
-                    value={employee.id}
-                  >
+                  <option key={employee.id} value={employee.id}>
                     {employee.lastName}, {employee.firstName} ·{" "}
                     {employee.employeeNumber}
                     {employee.positionTitle
@@ -197,10 +158,7 @@ export function PositionAssignmentForm({
             </div>
 
             <div>
-              <label
-                htmlFor="assignmentType"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="assignmentType" className="text-sm font-medium">
                 Assignment type
               </label>
 
@@ -211,22 +169,16 @@ export function PositionAssignmentForm({
                 className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
                 required
               >
-                <option value="INITIAL_APPOINTMENT">
-                  Initial appointment
-                </option>
+                <option value="INITIAL_APPOINTMENT">Initial appointment</option>
                 <option value="TRANSFER">Transfer</option>
                 <option value="PROMOTION">Promotion</option>
                 <option value="DEMOTION">Demotion</option>
-                <option value="ACTING_APPOINTMENT">
-                  Acting appointment
-                </option>
+                <option value="ACTING_APPOINTMENT">Acting appointment</option>
                 <option value="TEMPORARY_ASSIGNMENT">
                   Temporary assignment
                 </option>
                 <option value="SECONDMENT">Secondment</option>
-                <option value="REASSIGNMENT">
-                  Reassignment
-                </option>
+                <option value="REASSIGNMENT">Reassignment</option>
                 <option value="RETURN_TO_SUBSTANTIVE">
                   Return to substantive
                 </option>
@@ -235,10 +187,7 @@ export function PositionAssignmentForm({
             </div>
 
             <div>
-              <label
-                htmlFor="startDate"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="startDate" className="text-sm font-medium">
                 Effective date
               </label>
 
@@ -253,10 +202,7 @@ export function PositionAssignmentForm({
             </div>
 
             <div>
-              <label
-                htmlFor="referenceNumber"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="referenceNumber" className="text-sm font-medium">
                 Reference number
               </label>
 
@@ -269,21 +215,12 @@ export function PositionAssignmentForm({
             </div>
 
             <label className="flex items-center gap-3 pt-8">
-              <input
-                type="checkbox"
-                name="isActing"
-                className="size-4"
-              />
-              <span className="text-sm font-medium">
-                Acting assignment
-              </span>
+              <input type="checkbox" name="isActing" className="size-4" />
+              <span className="text-sm font-medium">Acting assignment</span>
             </label>
 
             <div className="md:col-span-2">
-              <label
-                htmlFor="reason"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="reason" className="text-sm font-medium">
                 Reason
               </label>
 
@@ -297,23 +234,15 @@ export function PositionAssignmentForm({
             </div>
 
             <div className="md:col-span-2">
-              <label
-                htmlFor="notes"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="notes" className="text-sm font-medium">
                 Notes
               </label>
 
-              <Textarea
-                id="notes"
-                name="notes"
-                rows={3}
-                className="mt-2"
-              />
+              <Textarea id="notes" name="notes" rows={3} className="mt-2" />
             </div>
           </div>
         </section>
       )}
     </form>
-  )
+  );
 }
