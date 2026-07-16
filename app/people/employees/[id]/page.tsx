@@ -35,6 +35,7 @@ export default async function EmployeePage({ params }: EmployeePageProps) {
     <EmployeeProfile
       employee={employee}
       canManage={access.canManage}
+      canManagePayroll={access.capabilities.can("payroll.manage")}
       showPeopleNav={access.showPeopleNav}
       isOwnProfile={access.isOwnProfile}
       supervisor={extras.supervisor}

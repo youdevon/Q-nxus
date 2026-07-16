@@ -41,6 +41,8 @@ function validateEmployee(formData: FormData) {
   const employmentStatusValue = textValue(formData, "employmentStatus");
   const hireDate = parseDate(textValue(formData, "hireDate"));
   const terminationDate = parseDate(textValue(formData, "terminationDate"));
+  const dateOfBirthValue = textValue(formData, "dateOfBirth");
+  const dateOfBirth = parseDate(dateOfBirthValue);
   const workEmail = nullableText(formData, "workEmail");
   const personalEmail = nullableText(formData, "personalEmail");
 
@@ -74,6 +76,14 @@ function validateEmployee(formData: FormData) {
     fieldErrors.hireDate = "Enter a valid hire date.";
   }
 
+  if (dateOfBirthValue && !dateOfBirth) {
+    fieldErrors.dateOfBirth = "Enter a valid date of birth.";
+  }
+
+  if (dateOfBirth && dateOfBirth > new Date()) {
+    fieldErrors.dateOfBirth = "Date of birth cannot be in the future.";
+  }
+
   if (terminationDate && hireDate && terminationDate < hireDate) {
     fieldErrors.terminationDate =
       "Termination date cannot be before the hire date.";
@@ -100,6 +110,7 @@ function validateEmployee(formData: FormData) {
       workEmail,
       personalEmail,
       phone: nullableText(formData, "phone"),
+      dateOfBirth,
       employmentType: employmentTypeValue as EmploymentType,
       employmentStatus: employmentStatusValue as EmploymentStatus,
       hireDate,
@@ -257,6 +268,7 @@ export async function createEmployee(
           workEmail: validation.values.workEmail,
           personalEmail: validation.values.personalEmail,
           phone: validation.values.phone,
+          dateOfBirth: validation.values.dateOfBirth,
           employmentStatus: validation.values.employmentStatus,
           employmentType: validation.values.employmentType,
           hireDate: validation.values.hireDate!,
@@ -320,6 +332,7 @@ export async function createEmployee(
             workEmail: created.workEmail,
             personalEmail: created.personalEmail,
             phone: created.phone,
+            dateOfBirth: created.dateOfBirth,
             employmentStatus: created.employmentStatus,
             employmentType: created.employmentType,
             hireDate: created.hireDate,
@@ -436,6 +449,7 @@ export async function updateEmployee(
           workEmail: validation.values.workEmail,
           personalEmail: validation.values.personalEmail,
           phone: validation.values.phone,
+          dateOfBirth: validation.values.dateOfBirth,
           employmentStatus: validation.values.employmentStatus,
           employmentType: validation.values.employmentType,
           hireDate: validation.values.hireDate!,
@@ -469,6 +483,7 @@ export async function updateEmployee(
             workEmail: current.workEmail,
             personalEmail: current.personalEmail,
             phone: current.phone,
+            dateOfBirth: current.dateOfBirth,
             employmentStatus: current.employmentStatus,
             employmentType: current.employmentType,
             hireDate: current.hireDate,
@@ -484,6 +499,7 @@ export async function updateEmployee(
             workEmail: updated.workEmail,
             personalEmail: updated.personalEmail,
             phone: updated.phone,
+            dateOfBirth: updated.dateOfBirth,
             employmentStatus: updated.employmentStatus,
             employmentType: updated.employmentType,
             hireDate: updated.hireDate,

@@ -19,6 +19,7 @@ export type EmployeeFormRecord = {
   workEmail: string | null;
   personalEmail: string | null;
   phone: string | null;
+  dateOfBirth: string | null;
   employmentStatus: string;
   employmentType: string;
   hireDate: string;
@@ -89,6 +90,7 @@ export async function getEmployeeById(
       workEmail: true,
       personalEmail: true,
       phone: true,
+      dateOfBirth: true,
       employmentStatus: true,
       employmentType: true,
       hireDate: true,
@@ -108,6 +110,7 @@ export async function getEmployeeById(
     ...employee,
     employmentStatus: employee.employmentStatus,
     employmentType: employee.employmentType,
+    dateOfBirth: employee.dateOfBirth?.toISOString().slice(0, 10) ?? null,
     hireDate: employee.hireDate.toISOString().slice(0, 10),
     terminationDate:
       employee.terminationDate?.toISOString().slice(0, 10) ?? null,
@@ -155,6 +158,7 @@ export async function getEmployeeProfile(
       workEmail: true,
       personalEmail: true,
       phone: true,
+      dateOfBirth: true,
       employmentStatus: true,
       employmentType: true,
       hireDate: true,
@@ -212,6 +216,7 @@ export async function getEmployeeProfile(
     workEmail: employee.workEmail,
     personalEmail: employee.personalEmail,
     phone: employee.phone,
+    dateOfBirth: employee.dateOfBirth?.toISOString().slice(0, 10) ?? null,
     employmentStatus: employee.employmentStatus,
     employmentType: employee.employmentType,
     hireDate: employee.hireDate.toISOString().slice(0, 10),

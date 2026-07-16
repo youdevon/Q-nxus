@@ -10,6 +10,7 @@ import {
   Pencil,
   UserPlus,
   UserRound,
+  Wallet,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,8 @@ type EmployeeProfileProps = {
   employee: EmployeeProfileRecord;
   /** HR manage actions (edit, assignments, contracts admin). */
   canManage?: boolean;
+  /** Payroll setup link (payroll.manage). */
+  canManagePayroll?: boolean;
   /** Employees module sub-nav (directory, structure, leave config). */
   showPeopleNav?: boolean;
   /** Viewing the signed-in user's record. */
@@ -44,6 +47,9 @@ type EmployeeProfileProps = {
   isSelfService?: boolean;
   /** Show leave CTAs when the user can request leave. */
   canRequestLeave?: boolean;
+  mostRecentPayslipHref?: string;
+  mostRecentPayslipPeriodLabel?: string;
+  mostRecentPayslipIsPosted?: boolean;
   supervisor?: SelfServiceSupervisorSummary | null;
   leaveBalances?: SelfServiceLeaveBalanceSummary[];
   vacationForfeitureWarning?: SelfServiceVacationForfeitureWarning | null;
@@ -94,10 +100,14 @@ function formatSupervisorValue(
 export function EmployeeProfile({
   employee,
   canManage = false,
+  canManagePayroll = false,
   showPeopleNav = false,
   isOwnProfile = false,
   isSelfService = false,
   canRequestLeave = false,
+  mostRecentPayslipHref,
+  mostRecentPayslipPeriodLabel,
+  mostRecentPayslipIsPosted = false,
   supervisor = null,
   leaveBalances = [],
   vacationForfeitureWarning = null,
@@ -190,6 +200,19 @@ export function EmployeeProfile({
                   <History />
                   Assignment history
                 </Button>
+
+                {canManagePayroll ? (
+                  <Button
+                    nativeButton={false}
+                    variant="outline"
+                    render={
+                      <Link href={`/people/employees/${employee.id}/payroll`} />
+                    }
+                  >
+                    <Wallet />
+                    Payroll setup
+                  </Button>
+                ) : null}
               </PageActionsStart>
 
               <PageActionsEnd>
@@ -268,6 +291,11 @@ export function EmployeeProfile({
           <Detail
             labelText="Preferred name"
             value={displayValue(employee.preferredName)}
+          />
+
+          <Detail
+            labelText="Date of birth"
+            value={displayValue(employee.dateOfBirth)}
           />
 
           <Detail
@@ -426,6 +454,41 @@ export function EmployeeProfile({
           </p>
         )}
       </section>
+
+      {isSelfService && mostRecentPayslipHref ? (
+        <section>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Wallet className="size-4 text-muted-foreground" />
+              <SectionHeading>Payroll</SectionHeading>
+            </div>
+
+            <Button
+              nativeButton={false}
+              size="sm"
+              variant="outline"
+              render={<Link href={mostRecentPayslipHref} />}
+            >
+              <FileText />
+              View most recent payslip
+            </Button>
+          </div>
+
+          <div className="rounded-lg border border-border/70 bg-muted/20 px-4 py-3">
+            <p className="text-sm font-medium">
+              Most recent payslip
+              {mostRecentPayslipPeriodLabel
+                ? ` · ${mostRecentPayslipPeriodLabel}`
+                : ""}
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {mostRecentPayslipIsPosted
+                ? "Opens your last posted payslip from payroll. Use print to save a copy."
+                : "No posted payslip yet — opens a live preview for the previous month. Official history appears after payroll posts a run."}
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       {isSelfService ? (
         <section>

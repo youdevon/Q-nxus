@@ -219,6 +219,24 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
             </div>
 
             <div>
+              <label htmlFor="dateOfBirth" className="text-sm font-medium">
+                Date of birth
+              </label>
+              <Input
+                id="dateOfBirth"
+                name="dateOfBirth"
+                type="date"
+                defaultValue={employee?.dateOfBirth ?? ""}
+                className="mt-2"
+              />
+              {state.fieldErrors?.dateOfBirth && (
+                <p className="mt-1 text-xs text-destructive">
+                  {state.fieldErrors.dateOfBirth}
+                </p>
+              )}
+            </div>
+
+            <div>
               <label htmlFor="phone" className="text-sm font-medium">
                 Phone
               </label>
