@@ -77,7 +77,7 @@ export const navigationConfig: NavSection[] = [
         href: "/payroll",
         icon: Wallet,
         module: "payroll",
-        anyOf: ["payroll.view"],
+        anyOf: ["payroll.view", "payroll.setup", "payroll.manage"],
       },
       {
         title: "Leave",

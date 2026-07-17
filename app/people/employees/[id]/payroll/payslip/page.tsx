@@ -56,7 +56,7 @@ export default async function EmployeePayslipPage({
 
   const fromPayroll = from === "payroll";
   const fromSalaries = from === "salaries";
-  const canManage = capabilities.can("payroll.manage");
+  const canManage = capabilities.canAny("payroll.setup", "payroll.manage");
   const setupHref = `/people/employees/${payslip.employee.id}/payroll`;
   const backHref = fromSalaries
     ? "/payroll/salaries"

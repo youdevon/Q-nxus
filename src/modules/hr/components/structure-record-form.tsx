@@ -23,6 +23,7 @@ import type {
   PositionProfileRecord,
 } from "@/src/modules/hr/data/get-people-structure";
 import { PeopleNav } from "./people-nav";
+import { POSITION_SYSTEM_ROLE_OPTIONS } from "@/src/modules/auth/lib/position-system-roles";
 
 const initialState: StructureFormState = {
   status: "idle",
@@ -289,11 +290,11 @@ export function PositionRecordForm({
                 className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               >
                 <option value="">Employee self-service only</option>
-                <option value="LEAVE_APPROVER">Leave Approver</option>
-                <option value="HR_ADMINISTRATOR">HR Administrator</option>
-                <option value="SYSTEM_ADMINISTRATOR">
-                  System Administrator
-                </option>
+                {POSITION_SYSTEM_ROLE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
               <p className="mt-2 text-xs text-muted-foreground">
                 Holders of this position receive the selected elevated access in

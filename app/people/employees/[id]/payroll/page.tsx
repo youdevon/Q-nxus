@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { PayrollProfileForm } from "@/src/modules/payroll/components/payroll-profile-form";
 import { getEmployeePayrollSetup } from "@/src/modules/payroll/data/get-employee-payroll-setup";
-import { requirePayrollManageAccess } from "@/src/modules/payroll/data/require-payroll-access";
+import { requirePayrollSetupAccess } from "@/src/modules/payroll/data/require-payroll-access";
 
 export const metadata: Metadata = {
   title: "Payroll Setup",
@@ -20,7 +20,7 @@ type EmployeePayrollPageProps = {
 export default async function EmployeePayrollPage({
   params,
 }: EmployeePayrollPageProps) {
-  await requirePayrollManageAccess();
+  await requirePayrollSetupAccess();
 
   const { id } = await params;
   const setup = await getEmployeePayrollSetup(id);

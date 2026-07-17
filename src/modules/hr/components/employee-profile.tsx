@@ -37,7 +37,7 @@ type EmployeeProfileProps = {
   employee: EmployeeProfileRecord;
   /** HR manage actions (edit, assignments, contracts admin). */
   canManage?: boolean;
-  /** Payroll setup link (payroll.manage). */
+  /** Payroll setup link (payroll.setup or payroll.manage). */
   canManagePayroll?: boolean;
   /** Employees module sub-nav (directory, structure, leave config). */
   showPeopleNav?: boolean;

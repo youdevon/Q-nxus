@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  canManagePayrollRuns,
   canPerformAdminMutation,
+  canSetupPayroll,
+  canViewPayroll,
   hasAnyCapability,
   hasCapability,
 } from "@/src/modules/auth/lib/capability-check";
@@ -58,5 +61,15 @@ describe("capability checks", () => {
         ["identity.role.manage"],
       ),
     ).toBe(true);
+  });
+
+  it("splits payroll view, setup, and manage", () => {
+    expect(canViewPayroll(["payroll.view"])).toBe(true);
+    expect(canViewPayroll(["payroll.setup"])).toBe(true);
+    expect(canSetupPayroll(["payroll.view"])).toBe(false);
+    expect(canSetupPayroll(["payroll.setup"])).toBe(true);
+    expect(canSetupPayroll(["payroll.manage"])).toBe(true);
+    expect(canManagePayrollRuns(["payroll.setup"])).toBe(false);
+    expect(canManagePayrollRuns(["payroll.manage"])).toBe(true);
   });
 });

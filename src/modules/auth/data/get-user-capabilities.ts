@@ -73,7 +73,19 @@ export async function getUserCapabilities(
   ];
 
   const isSystemAdmin = roleCodes.includes("SYSTEM_ADMINISTRATOR");
-  const isHrAdmin = roleCodes.includes("HR_ADMINISTRATOR");
+  const isHrAdmin =
+    roleCodes.includes("HR_ADMINISTRATOR") ||
+    roleCodes.includes("HR_PAYROLL_ADMINISTRATOR");
+  const staffRoleCodes = new Set([
+    "SYSTEM_ADMINISTRATOR",
+    "HR_ADMINISTRATOR",
+    "HR_PAYROLL_ADMINISTRATOR",
+    "HR_CLERK",
+    "HR_LEAVE_OFFICER",
+    "PAYROLL_CLERK",
+    "PAYROLL_OFFICER",
+    "LEAVE_APPROVER",
+  ]);
 
   return {
     userId: current.id,
@@ -83,7 +95,8 @@ export async function getUserCapabilities(
     isSystemAdmin,
     isHrAdmin,
     isEmployeeOnly:
-      !isSystemAdmin && !isHrAdmin && roleCodes.includes("EMPLOYEE"),
+      !roleCodes.some((code) => staffRoleCodes.has(code)) &&
+      roleCodes.includes("EMPLOYEE"),
     can(permission: string) {
       return isSystemAdmin || permissions.includes(permission);
     },

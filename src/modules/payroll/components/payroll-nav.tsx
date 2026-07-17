@@ -11,30 +11,32 @@ import {
 
 import { useAuth } from "@/src/modules/auth/context/auth-provider";
 
+const payrollAccess = ["payroll.view", "payroll.setup", "payroll.manage"] as const;
+
 const items = [
   {
     title: "Readiness",
     href: "/payroll",
     icon: Users,
-    anyOf: ["payroll.view", "payroll.manage"],
+    anyOf: payrollAccess,
   },
   {
     title: "Runs",
     href: "/payroll/runs",
     icon: CalendarRange,
-    anyOf: ["payroll.view", "payroll.manage"],
+    anyOf: payrollAccess,
   },
   {
     title: "Salaries",
     href: "/payroll/salaries",
     icon: CircleDollarSign,
-    anyOf: ["payroll.view", "payroll.manage"],
+    anyOf: payrollAccess,
   },
   {
     title: "Settings",
     href: "/payroll/settings",
     icon: Landmark,
-    anyOf: ["payroll.view", "payroll.manage"],
+    anyOf: payrollAccess,
   },
 ];
 

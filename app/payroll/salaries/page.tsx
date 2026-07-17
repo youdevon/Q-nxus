@@ -30,7 +30,7 @@ export default async function PayrollSalariesPage({
     <PayrollSalariesDirectory
       data={data}
       filters={filters}
-      canManage={capabilities.can("payroll.manage")}
+      canManage={capabilities.canAny("payroll.setup", "payroll.manage")}
     />
   );
 }

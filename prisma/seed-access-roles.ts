@@ -3,6 +3,17 @@ import { PrismaPg } from "@prisma/adapter-pg"
 
 import { PrismaClient } from "../generated/prisma/client"
 
+/**
+ * Synchronizes permission catalog and role templates.
+ *
+ * Run after pulling access-model changes:
+ *   npm run seed:access
+ *
+ * Then assign roles in Administration → Access (or via position
+ * systemRoleCode). Existing HR_ADMINISTRATOR grants that previously
+ * included payroll are revoked on re-seed.
+ */
+
 const connectionString = process.env.DATABASE_URL
 
 if (!connectionString) {
@@ -49,7 +60,7 @@ const permissions = [
   },
   {
     code: "leave.manage",
-    name: "Manage leave configuration",
+    name: "Manage leave configuration and HR leave confirmation",
     moduleKey: "leave",
   },
   {
@@ -73,8 +84,13 @@ const permissions = [
     moduleKey: "payroll",
   },
   {
+    code: "payroll.setup",
+    name: "Edit employee payroll profiles and readiness setup",
+    moduleKey: "payroll",
+  },
+  {
     code: "payroll.manage",
-    name: "Manage payroll setup, statutory rates, and pay runs",
+    name: "Manage pay runs, posting, and statutory payroll settings",
     moduleKey: "payroll",
   },
   {
@@ -169,6 +185,197 @@ const permissions = [
   },
 ] as const
 
+const selfServicePermissionCodes = [
+  "notification.view_own",
+  "people.profile.view_own",
+  "leave.request",
+] as const
+
+type RoleTemplate = {
+  code: string
+  name: string
+  description: string
+  permissionCodes: readonly string[]
+}
+
+const roleTemplates: RoleTemplate[] = [
+  {
+    code: "EMPLOYEE",
+    name: "Employee",
+    description:
+      "Self-service: own profile, own leave requests, own payslip via /me. No org-wide HR or payroll directories.",
+    permissionCodes: selfServicePermissionCodes,
+  },
+  {
+    code: "LEAVE_APPROVER",
+    name: "Leave Approver",
+    description:
+      "Approve leave for direct reports (reporting-officer path). Often assigned via position systemRoleCode.",
+    permissionCodes: [...selfServicePermissionCodes, "leave.approve"],
+  },
+  {
+    code: "HR_CLERK",
+    name: "HR Clerk",
+    description:
+      "Create and edit people and contracts. Cannot approve leave or manage leave configuration.",
+    permissionCodes: [
+      ...selfServicePermissionCodes,
+      "people.directory.view",
+      "people.manage",
+      "contracts.view",
+      "contracts.manage",
+      "documents.view",
+    ],
+  },
+  {
+    code: "HR_LEAVE_OFFICER",
+    name: "HR Leave Officer",
+    description:
+      "Leave configuration, HR leave confirmation, and leave approvals. Does not manage people records.",
+    permissionCodes: [
+      ...selfServicePermissionCodes,
+      "people.directory.view",
+      "leave.approve",
+      "leave.manage",
+    ],
+  },
+  {
+    code: "HR_ADMINISTRATOR",
+    name: "HR Administrator",
+    description:
+      "Full HR: people, leave, contracts, and structure. Does not include the payroll module.",
+    permissionCodes: [
+      ...selfServicePermissionCodes,
+      "people.directory.view",
+      "people.manage",
+      "leave.approve",
+      "leave.manage",
+      "contracts.view",
+      "contracts.manage",
+      "reports.view",
+      "documents.view",
+    ],
+  },
+  {
+    code: "PAYROLL_CLERK",
+    name: "Payroll Clerk",
+    description:
+      "View payroll and edit employee payroll profiles / readiness. Cannot post pay runs or change statutory settings.",
+    permissionCodes: [
+      ...selfServicePermissionCodes,
+      "people.directory.view",
+      "payroll.view",
+      "payroll.setup",
+    ],
+  },
+  {
+    code: "PAYROLL_OFFICER",
+    name: "Payroll Officer",
+    description:
+      "Full payroll operations: profiles, statutory settings, pay runs, and posting. No full HR people admin.",
+    permissionCodes: [
+      ...selfServicePermissionCodes,
+      "people.directory.view",
+      "payroll.view",
+      "payroll.setup",
+      "payroll.manage",
+    ],
+  },
+  {
+    code: "HR_PAYROLL_ADMINISTRATOR",
+    name: "HR & Payroll Administrator",
+    description:
+      "Combined HR Administrator and Payroll Officer access.",
+    permissionCodes: [
+      ...selfServicePermissionCodes,
+      "people.directory.view",
+      "people.manage",
+      "leave.approve",
+      "leave.manage",
+      "contracts.view",
+      "contracts.manage",
+      "reports.view",
+      "documents.view",
+      "payroll.view",
+      "payroll.setup",
+      "payroll.manage",
+    ],
+  },
+]
+
+async function upsertRole(template: RoleTemplate) {
+  return prisma.role.upsert({
+    where: {
+      organizationId_code: {
+        organizationId,
+        code: template.code,
+      },
+    },
+    update: {
+      name: template.name,
+      description: template.description,
+      isActive: true,
+    },
+    create: {
+      organizationId,
+      code: template.code,
+      name: template.name,
+      description: template.description,
+      isActive: true,
+    },
+  })
+}
+
+/** Grant listed permissions and remove any extras for this role. */
+async function syncRolePermissions(
+  roleId: string,
+  codes: readonly string[],
+) {
+  const desired = await prisma.permission.findMany({
+    where: {
+      code: { in: [...codes] },
+      isActive: true,
+    },
+    select: { id: true, code: true },
+  })
+
+  const desiredIds = new Set(desired.map((permission) => permission.id))
+
+  for (const permission of desired) {
+    await prisma.rolePermission.upsert({
+      where: {
+        roleId_permissionId: {
+          roleId,
+          permissionId: permission.id,
+        },
+      },
+      update: {},
+      create: {
+        roleId,
+        permissionId: permission.id,
+      },
+    })
+  }
+
+  const existing = await prisma.rolePermission.findMany({
+    where: { roleId },
+    select: { permissionId: true },
+  })
+
+  const staleIds = existing
+    .map((entry) => entry.permissionId)
+    .filter((permissionId) => !desiredIds.has(permissionId))
+
+  if (staleIds.length > 0) {
+    await prisma.rolePermission.deleteMany({
+      where: {
+        roleId,
+        permissionId: { in: staleIds },
+      },
+    })
+  }
+}
+
 async function main() {
   for (const permission of permissions) {
     await prisma.permission.upsert({
@@ -189,72 +396,10 @@ async function main() {
     })
   }
 
-  const employeeRole = await prisma.role.upsert({
-    where: {
-      organizationId_code: {
-        organizationId,
-        code: "EMPLOYEE",
-      },
-    },
-    update: {
-      name: "Employee",
-      description:
-        "Self-service access: own profile, own contracts (read-only), leave requests, and notifications.",
-      isActive: true,
-    },
-    create: {
-      organizationId,
-      code: "EMPLOYEE",
-      name: "Employee",
-      description:
-        "Self-service access: own profile, own contracts (read-only), leave requests, and notifications.",
-      isActive: true,
-    },
-  })
-
-  const hrRole = await prisma.role.upsert({
-    where: {
-      organizationId_code: {
-        organizationId,
-        code: "HR_ADMINISTRATOR",
-      },
-    },
-    update: {
-      name: "HR Administrator",
-      description: "Manage people, leave, contracts, and structure.",
-      isActive: true,
-    },
-    create: {
-      organizationId,
-      code: "HR_ADMINISTRATOR",
-      name: "HR Administrator",
-      description: "Manage people, leave, contracts, and structure.",
-      isActive: true,
-    },
-  })
-
-  const leaveApproverRole = await prisma.role.upsert({
-    where: {
-      organizationId_code: {
-        organizationId,
-        code: "LEAVE_APPROVER",
-      },
-    },
-    update: {
-      name: "Leave Approver",
-      description:
-        "Approve leave for direct reports. Assigned automatically to positions with reporting subordinates.",
-      isActive: true,
-    },
-    create: {
-      organizationId,
-      code: "LEAVE_APPROVER",
-      name: "Leave Approver",
-      description:
-        "Approve leave for direct reports. Assigned automatically to positions with reporting subordinates.",
-      isActive: true,
-    },
-  })
+  for (const template of roleTemplates) {
+    const role = await upsertRole(template)
+    await syncRolePermissions(role.id, template.permissionCodes)
+  }
 
   const adminRole = await prisma.role.findUniqueOrThrow({
     where: {
@@ -264,69 +409,6 @@ async function main() {
       },
     },
   })
-
-  const employeePermissionCodes = [
-    "notification.view_own",
-    "people.profile.view_own",
-    "leave.request",
-  ]
-
-  const leaveApproverPermissionCodes = [
-    ...employeePermissionCodes,
-    "leave.approve",
-  ]
-
-  const hrPermissionCodes = [
-    ...employeePermissionCodes,
-    "people.directory.view",
-    "people.manage",
-    "leave.approve",
-    "leave.manage",
-    "contracts.view",
-    "contracts.manage",
-    "payroll.view",
-    "payroll.manage",
-    "reports.view",
-    "documents.view",
-  ]
-
-  async function grant(
-    roleId: string,
-    codes: string[],
-  ) {
-    for (const code of codes) {
-      const permission = await prisma.permission.findUnique({
-        where: {
-          code,
-        },
-        select: {
-          id: true,
-        },
-      })
-
-      if (!permission) {
-        continue
-      }
-
-      await prisma.rolePermission.upsert({
-        where: {
-          roleId_permissionId: {
-            roleId,
-            permissionId: permission.id,
-          },
-        },
-        update: {},
-        create: {
-          roleId,
-          permissionId: permission.id,
-        },
-      })
-    }
-  }
-
-  await grant(employeeRole.id, employeePermissionCodes)
-  await grant(leaveApproverRole.id, leaveApproverPermissionCodes)
-  await grant(hrRole.id, hrPermissionCodes)
 
   const allPermissions = await prisma.permission.findMany({
     where: {
@@ -353,7 +435,10 @@ async function main() {
     })
   }
 
-  console.log("Access roles and permissions synchronized.")
+  console.log(
+    "Access roles and permissions synchronized.",
+    `Templates: ${roleTemplates.map((role) => role.code).join(", ")}, SYSTEM_ADMINISTRATOR.`,
+  )
 }
 
 main()

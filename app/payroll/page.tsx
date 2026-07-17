@@ -17,7 +17,7 @@ export default async function PayrollPage() {
   return (
     <PayrollReadinessDirectory
       data={data}
-      canManage={capabilities.can("payroll.manage")}
+      canManage={capabilities.canAny("payroll.setup", "payroll.manage")}
     />
   );
 }

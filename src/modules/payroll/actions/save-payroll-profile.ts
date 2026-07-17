@@ -147,7 +147,7 @@ export async function savePayrollProfile(
   _previousState: PayrollProfileFormState,
   formData: FormData,
 ): Promise<PayrollProfileFormState> {
-  const actor = await requireActor("payroll.manage");
+  const actor = await requireActor("payroll.setup", "payroll.manage");
 
   if (!actor.ok) {
     return {
