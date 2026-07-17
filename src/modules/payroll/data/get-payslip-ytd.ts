@@ -5,16 +5,46 @@ import {
   type PayslipYtdTotals,
   yearFromPeriodKey,
 } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
+import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
+
+function lineAmount(payslip: PayslipPreview, label: string): number {
+  return payslip.deductions
+    .filter((line) => line.label === label)
+    .reduce((sum, line) => sum + line.amount, 0);
+}
+
+export function payslipPreviewToYtdContribution(
+  payslip: PayslipPreview,
+): PayslipYtdContribution {
+  return {
+    grossPay: payslip.grossPay,
+    totalDeductions: payslip.totalDeductions,
+    netPay: payslip.netPay,
+    paye: lineAmount(payslip, "PAYE (income tax)"),
+    nisEmployee: lineAmount(payslip, "NIS (employee)"),
+    healthSurcharge: lineAmount(payslip, "Health Surcharge"),
+  };
+}
 
 function toContribution(row: {
   grossPay: { toString(): string };
   totalDeductions: { toString(): string };
   netPay: { toString(): string };
+  snapshot?: unknown;
 }): PayslipYtdContribution {
+  const snapshot = parsePayslipSnapshot(row.snapshot);
+  if (snapshot) {
+    return payslipPreviewToYtdContribution(snapshot.payslip);
+  }
+
   return {
     grossPay: Number(row.grossPay.toString()),
     totalDeductions: Number(row.totalDeductions.toString()),
     netPay: Number(row.netPay.toString()),
+    paye: 0,
+    nisEmployee: 0,
+    healthSurcharge: 0,
   };
 }
 
@@ -47,6 +77,7 @@ export async function getPostedPayslipYtd(input: {
       grossPay: true,
       totalDeductions: true,
       netPay: true,
+      snapshot: true,
       createdAt: true,
       payrollPeriod: {
         select: { periodEnd: true },
@@ -115,6 +146,7 @@ export async function getPreviewPayslipYtd(input: {
       grossPay: true,
       totalDeductions: true,
       netPay: true,
+      snapshot: true,
     },
   });
 

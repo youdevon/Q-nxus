@@ -1,6 +1,9 @@
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
-import { getPreviewPayslipYtd } from "@/src/modules/payroll/data/get-payslip-ytd";
+import {
+  getPreviewPayslipYtd,
+  payslipPreviewToYtdContribution,
+} from "@/src/modules/payroll/data/get-payslip-ytd";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import {
@@ -68,11 +71,7 @@ export async function getReadyPayslipBatch(options?: {
     const ytd = await getPreviewPayslipYtd({
       employeeId: row.employeeId,
       periodKey,
-      current: {
-        grossPay: result.payslip.grossPay,
-        totalDeductions: result.payslip.totalDeductions,
-        netPay: result.payslip.netPay,
-      },
+      current: payslipPreviewToYtdContribution(result.payslip),
     });
 
     documents.push({

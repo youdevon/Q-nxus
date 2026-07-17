@@ -21,7 +21,7 @@ export type PayrollPayElement = {
   amount: string;
   currency: string;
   frequency: string;
-  source: "CONTRACT_SALARY" | "CONTRACT_ALLOWANCE";
+  source: "CONTRACT_SALARY" | "CONTRACT_ALLOWANCE" | "VARIABLE_EARNING";
   isTaxable: boolean;
 };
 
@@ -62,6 +62,7 @@ export type EmployeePayrollSetup = {
     currency: string;
     startDate: string;
     endDate: string | null;
+    terminationDate: string | null;
   } | null;
   payElements: PayrollPayElement[];
   readiness: PayrollReadinessResult;

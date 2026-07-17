@@ -46,6 +46,21 @@ function isPayslipLineItem(value: unknown): boolean {
   );
 }
 
+function isPayslipBankLine(value: unknown): boolean {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.bankName === "string" &&
+    (value.accountNumber === undefined ||
+      typeof value.accountNumber === "string") &&
+    typeof value.accountNumberMasked === "string" &&
+    typeof value.amount === "number" &&
+    (value.kind === "FIXED" || value.kind === "REMAINDER")
+  );
+}
+
 function isPayslipPreview(value: unknown): value is PayslipPreview {
   if (!isRecord(value)) {
     return false;
@@ -72,7 +87,12 @@ function isPayslipPreview(value: unknown): value is PayslipPreview {
     !Array.isArray(value.earnings) ||
     !Array.isArray(value.deductions) ||
     !value.earnings.every(isPayslipLineItem) ||
-    !value.deductions.every(isPayslipLineItem)
+    !value.deductions.every(isPayslipLineItem) ||
+    !(
+      value.bankDistribution === null ||
+      (Array.isArray(value.bankDistribution) &&
+        value.bankDistribution.every(isPayslipBankLine))
+    )
   ) {
     return false;
   }

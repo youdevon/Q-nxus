@@ -11,6 +11,11 @@ import {
   assemblePayslipPreview,
   type PayslipPreview,
 } from "@/src/modules/payroll/lib/payslip-preview";
+import {
+  calculateCalendarOverlapDays,
+  calculateCalendarProration,
+  prorateMoney,
+} from "@/src/modules/payroll/lib/payroll-period-adjustments";
 
 export type { PayslipPreview };
 
@@ -32,7 +37,22 @@ export type EmployeePayslipPreviewResult = {
  */
 export async function getEmployeePayslipPreview(
   employeeId: string,
-  options?: { asOf?: Date },
+  options?: {
+    asOf?: Date;
+    periodStart?: Date;
+    periodEnd?: Date;
+    variableEarnings?: Array<{
+      label: string;
+      amount: number;
+      isTaxable: boolean;
+      detail?: string;
+    }>;
+    variableDeductions?: Array<{
+      label: string;
+      amount: number;
+      detail?: string;
+    }>;
+  },
 ): Promise<EmployeePayslipPreviewResult | null> {
   const setup = await getEmployeePayrollSetup(employeeId);
 
@@ -49,12 +69,64 @@ export async function getEmployeePayslipPreview(
       prisma.employee.findUnique({
         where: { id: employeeId },
         select: {
+          hireDate: true,
+          terminationDate: true,
           department: {
             select: { name: true },
+          },
+          leaveRequests: {
+            where: {
+              status: "APPROVED",
+              leaveType: { isPaid: false },
+              startDate: { lte: options?.periodEnd ?? options?.asOf },
+              endDate: { gte: options?.periodStart ?? options?.asOf },
+            },
+            select: {
+              startDate: true,
+              endDate: true,
+              leaveType: { select: { name: true } },
+            },
           },
         },
       }),
     ]);
+
+  const asOf = options?.asOf ?? new Date();
+  const periodStart =
+    options?.periodStart ??
+    new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth(), 1, 12));
+  const periodEnd =
+    options?.periodEnd ??
+    new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth() + 1, 0, 12));
+  const proration = calculateCalendarProration({
+    periodStart,
+    periodEnd,
+    employeeHireDate: employeeExtras?.hireDate,
+    employeeTerminationDate: employeeExtras?.terminationDate,
+    contractStartDate: setup.currentContract?.startDate,
+    contractEndDate: setup.currentContract?.endDate,
+    contractTerminationDate: setup.currentContract?.terminationDate,
+  });
+
+  const monthlyBaseSalary = setup.payElements
+    .filter((element) => element.source === "CONTRACT_SALARY")
+    .reduce((sum, element) => sum + Number(element.amount), 0);
+  const unpaidLeaveDeductions =
+    employeeExtras?.leaveRequests.map((request) => {
+      const days = calculateCalendarOverlapDays({
+        periodStart,
+        periodEnd,
+        startDate: request.startDate,
+        endDate: request.endDate,
+      });
+      const dailyRate =
+        proration.periodDays > 0 ? monthlyBaseSalary / proration.periodDays : 0;
+      return {
+        label: `Unpaid leave — ${request.leaveType.name}`,
+        amount: Math.round(days * dailyRate * 100) / 100,
+        detail: `${days} calendar day${days === 1 ? "" : "s"} overlapping period`,
+      };
+    }) ?? [];
 
   const payslip = assemblePayslipPreview({
     employee: {
@@ -71,14 +143,34 @@ export async function getEmployeePayslipPreview(
       "TTD",
     payFrequency: setup.profile?.payFrequency ?? "MONTHLY",
     paymentMethod: setup.profile?.paymentMethod ?? "BANK_TRANSFER",
-    asOf: options?.asOf,
+    asOf,
+    periodStart,
+    periodEnd,
     earnings: setup.payElements.map((element) => ({
       label: element.label,
-      amount: Number(element.amount),
+      amount:
+        element.source === "CONTRACT_SALARY" ||
+        element.source === "CONTRACT_ALLOWANCE"
+          ? prorateMoney(Number(element.amount), proration.factor)
+          : Number(element.amount),
       frequency: element.frequency,
       isTaxable: element.isTaxable,
       source: element.source,
-    })),
+      detail: proration.detail ?? undefined,
+    })).concat(
+      (options?.variableEarnings ?? []).map((line) => ({
+        label: line.label,
+        amount: line.amount,
+        frequency: "Monthly",
+        isTaxable: line.isTaxable,
+        source: "VARIABLE_EARNING" as const,
+        detail: line.detail,
+      })),
+    ),
+    deductions: [
+      ...unpaidLeaveDeductions,
+      ...(options?.variableDeductions ?? []),
+    ],
     bankAccounts: setup.bankAccounts.map((account) => ({
       bankName: account.bankName,
       accountNumber: account.accountNumber,

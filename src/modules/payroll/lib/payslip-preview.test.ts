@@ -10,6 +10,8 @@ import {
   formatPayslipPeriodLabel,
   getPreviousPayslipPeriod,
   maskAccountNumber,
+  notesForPayslipDisplay,
+  PAYSLIP_PREVIEW_CAVEAT_NOTES,
   payslipPeriodToAsOfDate,
   toMonthlyPeriodAmount,
 } from "./payslip-preview";
@@ -95,12 +97,14 @@ describe("applyFixedBankAllocations", () => {
     expect(lines).toEqual([
       {
         bankName: "Secondary Bank",
+        accountNumber: "999988887777",
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
       },
       {
         bankName: "Primary Bank",
+        accountNumber: "111122223333",
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
@@ -160,12 +164,14 @@ describe("distributeNetToBanks", () => {
     expect(lines).toEqual([
       {
         bankName: "Secondary Bank",
+        accountNumber: "999988887777",
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
       },
       {
         bankName: "Primary Bank",
+        accountNumber: "111122223333",
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
@@ -174,8 +180,32 @@ describe("distributeNetToBanks", () => {
   });
 });
 
+describe("notesForPayslipDisplay", () => {
+  it("keeps preview caveats for live previews", () => {
+    const notes = [
+      ...PAYSLIP_PREVIEW_CAVEAT_NOTES,
+      "NIS: earnings below Class I floor — no employee contribution.",
+    ];
+
+    expect(notesForPayslipDisplay(notes, false)).toEqual(notes);
+  });
+
+  it("strips preview caveats from posted slips but keeps factual notes", () => {
+    const notes = [
+      ...PAYSLIP_PREVIEW_CAVEAT_NOTES,
+      "NIS: earnings below Class I floor — no employee contribution.",
+      "Health Surcharge exempt (age).",
+    ];
+
+    expect(notesForPayslipDisplay(notes, true)).toEqual([
+      "NIS: earnings below Class I floor — no employee contribution.",
+      "Health Surcharge exempt (age).",
+    ]);
+  });
+});
+
 describe("assemblePayslipPreview", () => {
-  it("computes TTD 30,000 monthly stub: NIS 734.50, PAYE 5,496.46, Health 35.75", () => {
+  it("computes TTD 30,000 monthly stub: NIS 734.50, PAYE 5,496.46, Health by contribution weeks", () => {
     const preview = assemblePayslipPreview({
       employee: {
         id: "emp-1",
@@ -232,9 +262,10 @@ describe("assemblePayslipPreview", () => {
     expect(preview.nis?.employerMonthly).toBe(1_469);
 
     expect(preview.paye?.monthlyPaye).toBe(5_496.46);
-    expect(preview.health?.averageMonthlyAmount).toBe(35.75);
+    expect(preview.health?.periodAmount).toBe(33);
+    expect(preview.health?.weeksInPeriod).toBe(4);
 
-    const statutoryTotal = 734.5 + 5_496.46 + 35.75;
+    const statutoryTotal = 734.5 + 5_496.46 + 33;
 
     expect(preview.totalDeductions).toBe(statutoryTotal + 500);
     expect(preview.netPay).toBe(
@@ -266,12 +297,14 @@ describe("assemblePayslipPreview", () => {
     expect(preview.bankDistribution).toEqual([
       {
         bankName: "Unit Trust",
+        accountNumber: "99887766",
         accountNumberMasked: "••••7766",
         amount: 500,
         kind: "FIXED",
       },
       {
         bankName: "Republic Bank",
+        accountNumber: "1234567890",
         accountNumberMasked: "••••7890",
         amount: preview.netPay,
         kind: "REMAINDER",
@@ -414,5 +447,56 @@ describe("assemblePayslipPreview", () => {
     expect(preview.monthlyTaxableEarnings).toBe(28_000);
     expect(preview.paye?.annualTaxableIncome).toBe(336_000);
     expect(preview.paye?.monthlyPaye).toBe(4_996.46);
+  });
+
+  it("includes taxable variable earnings and variable deductions", () => {
+    const preview = assemblePayslipPreview({
+      employee: {
+        id: "emp-4",
+        employeeNumber: "E-400",
+        displayName: "Taylor Variable",
+        dateOfBirth: "1985-06-01",
+      },
+      currency: "TTD",
+      payFrequency: "MONTHLY",
+      paymentMethod: "CHEQUE",
+      asOf: new Date("2026-07-16T12:00:00.000Z"),
+      earnings: [
+        {
+          label: "Base salary",
+          amount: 10_000,
+          frequency: "Monthly",
+          isTaxable: true,
+          source: "CONTRACT_SALARY",
+        },
+        {
+          label: "Overtime",
+          amount: 1_500,
+          frequency: "Monthly",
+          isTaxable: true,
+          source: "VARIABLE_EARNING",
+          detail: "overtime",
+        },
+      ],
+      deductions: [
+        {
+          label: "Correction deduction",
+          amount: 250,
+          detail: "manual adjustment",
+        },
+      ],
+      bankAccounts: [],
+      readiness: { isReady: true, blockingIssues: [] },
+      nisClasses: TT_NIS_2026_CLASSES,
+      payeConfig: TT_PAYE_2026_CONFIG,
+      healthConfig: TT_HEALTH_SURCHARGE_2026,
+    });
+
+    expect(preview.grossPay).toBe(11_500);
+    expect(preview.monthlyTaxableEarnings).toBe(11_500);
+    expect(preview.earnings.map((line) => line.label)).toContain("Overtime");
+    expect(preview.deductions.map((line) => line.label)).toContain(
+      "Correction deduction",
+    );
   });
 });

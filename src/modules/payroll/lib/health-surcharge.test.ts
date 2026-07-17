@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   ageInFullYears,
+  countHealthContributionWeeks,
   computeHealthSurcharge,
   TT_HEALTH_SURCHARGE_2026,
 } from "./health-surcharge";
@@ -18,7 +19,22 @@ describe("ageInFullYears", () => {
 });
 
 describe("computeHealthSurcharge", () => {
-  it("uses higher tier for TTD 30,000/month → 8.25/week, avg monthly 35.75", () => {
+  it("counts contribution weeks from Mondays in the period", () => {
+    expect(
+      countHealthContributionWeeks(
+        new Date("2026-07-01T12:00:00.000Z"),
+        new Date("2026-07-31T12:00:00.000Z"),
+      ),
+    ).toBe(4);
+    expect(
+      countHealthContributionWeeks(
+        new Date("2026-06-01T12:00:00.000Z"),
+        new Date("2026-06-30T12:00:00.000Z"),
+      ),
+    ).toBe(5);
+  });
+
+  it("uses higher tier for TTD 30,000/month at 8.25/week", () => {
     const result = computeHealthSurcharge({
       config: TT_HEALTH_SURCHARGE_2026,
       monthlyEarnings: 30_000,
@@ -29,6 +45,7 @@ describe("computeHealthSurcharge", () => {
     expect(result.annualAmount).toBe(429);
     expect(result.averageMonthlyAmount).toBe(35.75);
     expect(result.periodAmount).toBe(8.25);
+    expect(result.weeksInPeriod).toBe(1);
     expect(
       computeHealthSurcharge({
         config: TT_HEALTH_SURCHARGE_2026,

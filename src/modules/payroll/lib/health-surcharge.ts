@@ -45,9 +45,11 @@ export type HealthSurchargeResult = {
   exemptionReason: "UNDER_AGE" | "SENIOR" | "PENSION_ONLY" | null;
   weeklyAmount: number;
   annualAmount: number;
-  /** Average monthly = weekly × 52 / 12. */
+  /** Legacy reference only: average monthly = weekly x 52 / 12. */
   averageMonthlyAmount: number;
-  /** Amount for a specific number of weeks in a pay period. */
+  /** Trinidad contribution weeks in the pay period (Mondays in period). */
+  weeksInPeriod: number;
+  /** Amount for the contribution weeks in the pay period. */
   periodAmount: number;
   tier: "HIGHER" | "LOWER" | "EXEMPT";
 };
@@ -76,6 +78,45 @@ export function ageInFullYears(
   return age;
 }
 
+function startOfUtcDay(date: Date): Date {
+  return new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12),
+  );
+}
+
+/**
+ * Trinidad-style monthly Health Surcharge contribution weeks.
+ *
+ * The pay period is charged for each Monday in the calendar period, producing
+ * the expected 4-week / 5-week month behavior instead of a 52/12 average.
+ */
+export function countHealthContributionWeeks(
+  periodStart: Date,
+  periodEnd: Date,
+): number {
+  const start = startOfUtcDay(periodStart);
+  const end = startOfUtcDay(periodEnd);
+
+  if (start.getTime() > end.getTime()) {
+    return 0;
+  }
+
+  const firstMonday = new Date(start);
+  const daysUntilMonday = (8 - firstMonday.getUTCDay()) % 7;
+  firstMonday.setUTCDate(firstMonday.getUTCDate() + daysUntilMonday);
+
+  let weeks = 0;
+  for (
+    const cursor = firstMonday;
+    cursor.getTime() <= end.getTime();
+    cursor.setUTCDate(cursor.getUTCDate() + 7)
+  ) {
+    weeks += 1;
+  }
+
+  return weeks;
+}
+
 /**
  * Fixed weekly Health Surcharge by earnings tier, with age / pension exemptions.
  *
@@ -92,7 +133,7 @@ export function computeHealthSurcharge(input: {
   weeksInPeriod?: number;
   asOf?: Date;
 }): HealthSurchargeResult {
-  const weeksInPeriod = input.weeksInPeriod ?? 1;
+  const weeksInPeriod = Math.max(0, input.weeksInPeriod ?? 1);
   const asOf = input.asOf ?? new Date();
 
   let ageYears = input.ageYears ?? null;
@@ -108,6 +149,7 @@ export function computeHealthSurcharge(input: {
       weeklyAmount: 0,
       annualAmount: 0,
       averageMonthlyAmount: 0,
+      weeksInPeriod,
       periodAmount: 0,
       tier: "EXEMPT",
     };
@@ -120,6 +162,7 @@ export function computeHealthSurcharge(input: {
       weeklyAmount: 0,
       annualAmount: 0,
       averageMonthlyAmount: 0,
+      weeksInPeriod,
       periodAmount: 0,
       tier: "EXEMPT",
     };
@@ -132,6 +175,7 @@ export function computeHealthSurcharge(input: {
       weeklyAmount: 0,
       annualAmount: 0,
       averageMonthlyAmount: 0,
+      weeksInPeriod,
       periodAmount: 0,
       tier: "EXEMPT",
     };
@@ -162,6 +206,7 @@ export function computeHealthSurcharge(input: {
     weeklyAmount,
     annualAmount,
     averageMonthlyAmount,
+    weeksInPeriod,
     periodAmount,
     tier: useHigher ? "HIGHER" : "LOWER",
   };

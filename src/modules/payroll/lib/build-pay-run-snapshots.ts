@@ -33,8 +33,49 @@ export type PayRunEmployeeSnapshot = {
 export async function buildEmployeePayRunSnapshot(
   employeeId: string,
   asOf: Date,
+  options?: {
+    periodStart?: Date;
+    periodEnd?: Date;
+    lineItems?: Array<{
+      lineType: "EARNING" | "DEDUCTION";
+      code: string;
+      label: string;
+      amount: { toString(): string } | number;
+      isTaxable: boolean;
+      notes?: string | null;
+    }>;
+  },
 ): Promise<PayRunEmployeeSnapshot | null> {
-  const result = await getEmployeePayslipPreview(employeeId, { asOf });
+  const result = await getEmployeePayslipPreview(employeeId, {
+    asOf,
+    periodStart: options?.periodStart,
+    periodEnd: options?.periodEnd,
+    variableEarnings: options?.lineItems
+      ?.filter((line) => line.lineType === "EARNING")
+      .map((line) => ({
+        label: line.label,
+        amount: Number(line.amount.toString()),
+        isTaxable: line.isTaxable,
+        detail: [
+          line.code.replaceAll("_", " ").toLowerCase(),
+          line.notes ?? "",
+        ]
+          .filter(Boolean)
+          .join(" · "),
+      })),
+    variableDeductions: options?.lineItems
+      ?.filter((line) => line.lineType === "DEDUCTION")
+      .map((line) => ({
+        label: line.label,
+        amount: Number(line.amount.toString()),
+        detail: [
+          line.code.replaceAll("_", " ").toLowerCase(),
+          line.notes ?? "",
+        ]
+          .filter(Boolean)
+          .join(" · "),
+      })),
+  });
 
   if (!result) {
     return null;

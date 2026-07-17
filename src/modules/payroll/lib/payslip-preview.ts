@@ -9,6 +9,7 @@
 
 import type { HealthSurchargeResult } from "@/src/modules/payroll/lib/health-surcharge";
 import {
+  countHealthContributionWeeks,
   computeHealthSurcharge,
   type HealthSurchargeConfigInput,
 } from "@/src/modules/payroll/lib/health-surcharge";
@@ -36,6 +37,7 @@ export type PayslipLineItem = {
 
 export type PayslipBankLine = {
   bankName: string;
+  accountNumber?: string;
   accountNumberMasked: string;
   amount: number;
   kind: "FIXED" | "REMAINDER";
@@ -47,7 +49,15 @@ export type PayslipEarningInput = {
   amount: number;
   frequency: string;
   isTaxable: boolean;
-  source: "CONTRACT_SALARY" | "CONTRACT_ALLOWANCE";
+  source: "CONTRACT_SALARY" | "CONTRACT_ALLOWANCE" | "VARIABLE_EARNING";
+  detail?: string;
+};
+
+export type PayslipDeductionInput = {
+  label: string;
+  amount: number;
+  isTaxable?: boolean;
+  detail?: string;
 };
 
 export type PayslipBankAccountInput = {
@@ -71,7 +81,10 @@ export type AssemblePayslipPreviewInput = {
   paymentMethod: "BANK_TRANSFER" | "CHEQUE" | "CASH";
   /** Period reference date (defaults to today). Used for period label + Health age. */
   asOf?: Date;
+  periodStart?: Date;
+  periodEnd?: Date;
   earnings: PayslipEarningInput[];
+  deductions?: PayslipDeductionInput[];
   bankAccounts: PayslipBankAccountInput[];
   readiness: PayrollReadinessResult;
   td1OtherApprovedAnnual?: number;
@@ -115,6 +128,31 @@ export type PayslipPreview = {
 };
 
 const PAYSLIP_PERIOD_PATTERN = /^(\d{4})-(0[1-9]|1[0-2])$/;
+
+/** Caveats that apply only to live / draft previews — never show on posted slips. */
+export const PAYSLIP_PREVIEW_CAVEAT_NOTES = [
+  "Preview only — not a posted pay run.",
+  "Allowances remain visible in gross pay but are excluded from statutory deductions unless entered as taxable run line items.",
+  "Base salary and recurring allowances are pro-rated by calendar days worked when hire, termination, or contract dates fall inside the period.",
+  "Health Surcharge uses contribution weeks (Mondays) in the pay period, not a 52/12 monthly average.",
+] as const;
+
+const PREVIEW_CAVEAT_NOTE_SET = new Set<string>(PAYSLIP_PREVIEW_CAVEAT_NOTES);
+
+/**
+ * Notes shown under the payslip footer. Posted slips drop preview caveats
+ * (snapshots may still contain them from when the run was drafted).
+ */
+export function notesForPayslipDisplay(
+  notes: string[],
+  isOfficial: boolean,
+): string[] {
+  if (!isOfficial) {
+    return notes;
+  }
+
+  return notes.filter((note) => !PREVIEW_CAVEAT_NOTE_SET.has(note));
+}
 
 function roundMoney(value: number): number {
   return Math.round(value * 100) / 100;
@@ -209,6 +247,18 @@ function periodLabel(asOf: Date): string {
   }).format(asOf);
 }
 
+function periodStartFromAsOf(asOf: Date): Date {
+  return new Date(
+    Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth(), 1, 12, 0, 0),
+  );
+}
+
+function periodEndFromAsOf(asOf: Date): Date {
+  return new Date(
+    Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth() + 1, 0, 12, 0, 0),
+  );
+}
+
 export function formatPayslipPeriodLabel(
   period: string | null | undefined,
 ): string | null {
@@ -279,6 +329,7 @@ export function applyFixedBankAllocations(input: {
 
     lines.push({
       bankName: account.bankName,
+      accountNumber: account.accountNumber,
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: paidAmount,
       kind: "FIXED",
@@ -296,6 +347,7 @@ export function applyFixedBankAllocations(input: {
 
   lines.push({
     bankName: primary.bankName,
+    accountNumber: primary.accountNumber,
     accountNumberMasked: maskAccountNumber(primary.accountNumber),
     amount: primaryRemainder,
     kind: "REMAINDER",
@@ -323,13 +375,11 @@ export function assemblePayslipPreview(
   input: AssemblePayslipPreviewInput,
 ): PayslipPreview {
   const asOf = input.asOf ?? new Date();
+  const periodStart = input.periodStart ?? periodStartFromAsOf(asOf);
+  const periodEnd = input.periodEnd ?? periodEndFromAsOf(asOf);
   const asOfIso = asOf.toISOString().slice(0, 10);
   const warnings: string[] = [...input.readiness.blockingIssues];
-  const notes: string[] = [
-    "Preview only — not a posted pay run.",
-    "Phase 1 taxable pay uses current contract base salary only; allowances remain visible in gross pay but are excluded from statutory deductions.",
-    "Overtime, bonuses, and commissions are deferred from this preview.",
-  ];
+  const notes: string[] = [...PAYSLIP_PREVIEW_CAVEAT_NOTES];
 
   const earnings: PayslipLineItem[] = [];
   let baseSalary = 0;
@@ -350,9 +400,10 @@ export function assemblePayslipPreview(
     earnings.push({
       label: element.label,
       amount: periodAmount,
-      detail:
-        element.source === "CONTRACT_ALLOWANCE" &&
-        element.frequency.toUpperCase() !== "MONTHLY"
+      detail: element.detail
+        ? element.detail
+        : element.source === "CONTRACT_ALLOWANCE" &&
+            element.frequency.toUpperCase() !== "MONTHLY"
           ? `${frequencyLabel(element.frequency)} → monthly equivalent`
           : element.isTaxable
             ? undefined
@@ -365,8 +416,17 @@ export function assemblePayslipPreview(
       monthlyTaxableEarnings = roundMoney(
         monthlyTaxableEarnings + periodAmount,
       );
-    } else {
+    } else if (element.source === "CONTRACT_ALLOWANCE") {
       allowancesTotal = roundMoney(allowancesTotal + periodAmount);
+      if (element.isTaxable) {
+        monthlyTaxableEarnings = roundMoney(
+          monthlyTaxableEarnings + periodAmount,
+        );
+      }
+    } else if (element.isTaxable) {
+      monthlyTaxableEarnings = roundMoney(
+        monthlyTaxableEarnings + periodAmount,
+      );
     }
   }
 
@@ -402,8 +462,7 @@ export function assemblePayslipPreview(
         dateOfBirth: input.employee.dateOfBirth,
         pensionOnlyIncome: input.pensionOnlyIncome ?? false,
         asOf,
-        // Monthly average uses weeksInPeriod=1 for weekly; we use averageMonthlyAmount.
-        weeksInPeriod: 1,
+        weeksInPeriod: countHealthContributionWeeks(periodStart, periodEnd),
       });
 
       if (!input.employee.dateOfBirth) {
@@ -441,13 +500,24 @@ export function assemblePayslipPreview(
   if (health && !health.exempt) {
     deductions.push({
       label: "Health Surcharge",
-      amount: health.averageMonthlyAmount,
-      detail: `${health.weeklyAmount.toFixed(2)}/wk · ${health.tier.toLowerCase()} tier · monthly average`,
+      amount: health.periodAmount,
+      detail: `${health.weeklyAmount.toFixed(2)}/wk · ${health.weeksInPeriod} contribution week${health.weeksInPeriod === 1 ? "" : "s"} · ${health.tier.toLowerCase()} tier`,
     });
   } else if (health?.exempt) {
     notes.push(
       `Health Surcharge exempt (${(health.exemptionReason ?? "unknown").replaceAll("_", " ").toLowerCase()}).`,
     );
+  }
+
+  for (const deduction of input.deductions ?? []) {
+    if (deduction.amount === 0 || !Number.isFinite(deduction.amount)) {
+      continue;
+    }
+    deductions.push({
+      label: deduction.label,
+      amount: roundMoney(deduction.amount),
+      detail: deduction.detail,
+    });
   }
 
   const statutoryDeductionsTotal = roundMoney(

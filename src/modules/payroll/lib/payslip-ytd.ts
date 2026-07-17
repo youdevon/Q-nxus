@@ -12,6 +12,9 @@ export type PayslipYtdContribution = {
   grossPay: number;
   totalDeductions: number;
   netPay: number;
+  paye: number;
+  nisEmployee: number;
+  healthSurcharge: number;
 };
 
 export type PayslipYtdTotals = {
@@ -20,6 +23,9 @@ export type PayslipYtdTotals = {
   grossPay: number;
   totalDeductions: number;
   netPay: number;
+  paye: number;
+  nisEmployee: number;
+  healthSurcharge: number;
 };
 
 function roundMoney(value: number): number {
@@ -33,6 +39,9 @@ export function emptyPayslipYtd(year: number): PayslipYtdTotals {
     grossPay: 0,
     totalDeductions: 0,
     netPay: 0,
+    paye: 0,
+    nisEmployee: 0,
+    healthSurcharge: 0,
   };
 }
 
@@ -53,9 +62,19 @@ export function assemblePayslipYtd(input: {
       acc.grossPay += row.grossPay;
       acc.totalDeductions += row.totalDeductions;
       acc.netPay += row.netPay;
+      acc.paye += row.paye;
+      acc.nisEmployee += row.nisEmployee;
+      acc.healthSurcharge += row.healthSurcharge;
       return acc;
     },
-    { grossPay: 0, totalDeductions: 0, netPay: 0 },
+    {
+      grossPay: 0,
+      totalDeductions: 0,
+      netPay: 0,
+      paye: 0,
+      nisEmployee: 0,
+      healthSurcharge: 0,
+    },
   );
 
   return {
@@ -64,6 +83,9 @@ export function assemblePayslipYtd(input: {
     grossPay: roundMoney(totals.grossPay),
     totalDeductions: roundMoney(totals.totalDeductions),
     netPay: roundMoney(totals.netPay),
+    paye: roundMoney(totals.paye),
+    nisEmployee: roundMoney(totals.nisEmployee),
+    healthSurcharge: roundMoney(totals.healthSurcharge),
   };
 }
 

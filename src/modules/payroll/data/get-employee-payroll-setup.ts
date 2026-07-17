@@ -90,6 +90,7 @@ export async function getEmployeePayrollSetup(
           currency: true,
           startDate: true,
           endDate: true,
+          terminationDate: true,
           allowances: {
             select: {
               amount: true,
@@ -254,6 +255,8 @@ export async function getEmployeePayrollSetup(
           currency: contract.currency,
           startDate: contract.startDate.toISOString().slice(0, 10),
           endDate: contract.endDate?.toISOString().slice(0, 10) ?? null,
+          terminationDate:
+            contract.terminationDate?.toISOString().slice(0, 10) ?? null,
         }
       : null,
     payElements,
