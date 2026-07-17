@@ -50,3 +50,11 @@ Admin UI still has Process queue for email. Vacation alerts also run opportunist
 - Background email cron / worker (CLI + admin UI exist; use scripts above)
 - Reports pack / Documents / Payroll
 - Middleware default-deny for all authenticated routes
+
+## Payroll backlog defaults — 2026-07-16
+
+- Mid-month joiners/leavers use calendar-day proration: worked days in the payroll period divided by total calendar days in the period. The effective worked window is the later of employee hire date / contract start and the earlier of employee termination / contract end / contract termination.
+- Approved unpaid leave where `LeaveType.isPaid = false` is deducted at base salary daily rate times overlapping calendar days in the pay period.
+- Overtime, bonuses, commissions, and correction earnings are taxable by default. Allowances remain non-taxable unless entered as taxable run line items.
+- Health Surcharge uses contribution weeks counted as Mondays in the pay period, producing 4- or 5-week months instead of a 52/12 monthly average.
+- No PDF library is currently installed. Posted payslips use the existing printable HTML pages plus queued email notifications with links; batch printable HTML remains available from posted runs.
