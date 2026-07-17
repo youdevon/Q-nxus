@@ -3,7 +3,10 @@ import { notFound, redirect } from "next/navigation";
 
 import { PayslipPreviewView } from "@/src/modules/payroll/components/payslip-preview";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
-import { getMostRecentPostedPayslip } from "@/src/modules/payroll/data/get-pay-runs";
+import {
+  getMostRecentPostedPayslip,
+  getStoredPayslip,
+} from "@/src/modules/payroll/data/get-pay-runs";
 import {
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
@@ -25,6 +28,7 @@ type MyPayslipPageProps = {
   searchParams: Promise<{
     period?: string;
     preview?: string;
+    payslipId?: string;
   }>;
 };
 
@@ -40,7 +44,36 @@ export default async function MyPayslipPage({
     redirect("/");
   }
 
-  const { period, preview } = await searchParams;
+  const { period, preview, payslipId } = await searchParams;
+
+  // A specific posted payslip from the employee's own history.
+  if (payslipId && preview !== "1") {
+    const posted = await getStoredPayslip(payslipId);
+
+    if (
+      !posted ||
+      !posted.isPosted ||
+      posted.payslip.employee.id !== capabilities.employeeId
+    ) {
+      notFound();
+    }
+
+    return (
+      <PayslipPreviewView
+        payslip={posted.payslip}
+        meta={posted.meta}
+        ytd={posted.ytd}
+        backHref="/me/payslips"
+        backLabel="Payslip history"
+        printHref={`/me/payslip/print?payslipId=${posted.id}`}
+        printLabel="Print payslip"
+        title="Posted payslip"
+        description={`${posted.periodName} · ${posted.runNumber} · posted`}
+        isOfficial
+      />
+    );
+  }
+
   const forcePreview = preview === "1" || Boolean(period);
 
   if (!forcePreview) {

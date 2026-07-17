@@ -50,6 +50,8 @@ type EmployeeProfileProps = {
   mostRecentPayslipHref?: string;
   mostRecentPayslipPeriodLabel?: string;
   mostRecentPayslipIsPosted?: boolean;
+  payslipHistoryHref?: string;
+  payslipHistoryCount?: number;
   supervisor?: SelfServiceSupervisorSummary | null;
   leaveBalances?: SelfServiceLeaveBalanceSummary[];
   vacationForfeitureWarning?: SelfServiceVacationForfeitureWarning | null;
@@ -108,6 +110,8 @@ export function EmployeeProfile({
   mostRecentPayslipHref,
   mostRecentPayslipPeriodLabel,
   mostRecentPayslipIsPosted = false,
+  payslipHistoryHref,
+  payslipHistoryCount = 0,
   supervisor = null,
   leaveBalances = [],
   vacationForfeitureWarning = null,
@@ -463,15 +467,28 @@ export function EmployeeProfile({
               <SectionHeading>Payroll</SectionHeading>
             </div>
 
-            <Button
-              nativeButton={false}
-              size="sm"
-              variant="outline"
-              render={<Link href={mostRecentPayslipHref} />}
-            >
-              <FileText />
-              View most recent payslip
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              {payslipHistoryHref && payslipHistoryCount > 0 ? (
+                <Button
+                  nativeButton={false}
+                  size="sm"
+                  variant="outline"
+                  render={<Link href={payslipHistoryHref} />}
+                >
+                  <History />
+                  Payslip history
+                </Button>
+              ) : null}
+              <Button
+                nativeButton={false}
+                size="sm"
+                variant="outline"
+                render={<Link href={mostRecentPayslipHref} />}
+              >
+                <FileText />
+                View most recent payslip
+              </Button>
+            </div>
           </div>
 
           <div className="rounded-lg border border-border/70 bg-muted/20 px-4 py-3">

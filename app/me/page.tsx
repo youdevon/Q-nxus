@@ -64,6 +64,8 @@ export default async function MyProfilePage() {
       mostRecentPayslipHref={mostRecentPayslipHref}
       mostRecentPayslipPeriodLabel={mostRecentPayslipPeriodLabel}
       mostRecentPayslipIsPosted={Boolean(postedPayslip)}
+      payslipHistoryHref="/me/payslips"
+      payslipHistoryCount={postedPayslip ? 1 : 0}
       supervisor={extras.supervisor}
       leaveBalances={extras.leaveBalances}
       vacationForfeitureWarning={extras.vacationForfeitureWarning}
