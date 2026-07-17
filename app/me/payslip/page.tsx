@@ -4,7 +4,10 @@ import { notFound, redirect } from "next/navigation";
 import { PayslipPreviewView } from "@/src/modules/payroll/components/payslip-preview";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { getMostRecentPostedPayslip } from "@/src/modules/payroll/data/get-pay-runs";
-import { getPreviewPayslipYtd } from "@/src/modules/payroll/data/get-payslip-ytd";
+import {
+  getPreviewPayslipYtd,
+  payslipPreviewToYtdContribution,
+} from "@/src/modules/payroll/data/get-payslip-ytd";
 import { requireAuthenticatedCapabilities } from "@/src/modules/hr/data/require-people-access";
 import {
   getPreviousPayslipPeriod,
@@ -77,11 +80,7 @@ export default async function MyPayslipPage({
   const ytd = await getPreviewPayslipYtd({
     employeeId: capabilities.employeeId,
     periodKey: resolvedPeriodKey,
-    current: {
-      grossPay: payslip.grossPay,
-      totalDeductions: payslip.totalDeductions,
-      netPay: payslip.netPay,
-    },
+    current: payslipPreviewToYtdContribution(payslip),
   });
 
   const printParams = new URLSearchParams();

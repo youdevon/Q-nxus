@@ -3,7 +3,10 @@ import { notFound } from "next/navigation";
 
 import { PayslipPrintView } from "@/src/modules/payroll/components/payslip-print-view";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
-import { getPreviewPayslipYtd } from "@/src/modules/payroll/data/get-payslip-ytd";
+import {
+  getPreviewPayslipYtd,
+  payslipPreviewToYtdContribution,
+} from "@/src/modules/payroll/data/get-payslip-ytd";
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
 import { payslipPeriodToAsOfDate } from "@/src/modules/payroll/lib/payslip-preview";
 import { periodKeyFromAsOf } from "@/src/modules/payroll/lib/payslip-ytd";
@@ -45,11 +48,7 @@ export default async function EmployeePayslipPrintPage({
     ? await getPreviewPayslipYtd({
         employeeId: id,
         periodKey: resolvedPeriodKey,
-        current: {
-          grossPay: payslip.grossPay,
-          totalDeductions: payslip.totalDeductions,
-          netPay: payslip.netPay,
-        },
+        current: payslipPreviewToYtdContribution(payslip),
       })
     : null;
 
