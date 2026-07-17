@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BarChart3,
   CalendarRange,
   CircleDollarSign,
   Landmark,
@@ -30,6 +31,12 @@ const items = [
     title: "Salaries",
     href: "/payroll/salaries",
     icon: CircleDollarSign,
+    anyOf: payrollAccess,
+  },
+  {
+    title: "Reports",
+    href: "/payroll/reports",
+    icon: BarChart3,
     anyOf: payrollAccess,
   },
   {
