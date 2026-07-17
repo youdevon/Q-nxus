@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   CircleCheck,
+  FileDown,
   FileText,
   Lock,
   Plus,
@@ -611,6 +612,17 @@ function PayslipRow({
               <Printer />
               Print
             </Button>
+            {isPosted ? (
+              <Button
+                nativeButton={false}
+                size="sm"
+                variant="outline"
+                render={<Link href={`${slip.viewHref}/pdf`} />}
+              >
+                <FileDown />
+                PDF
+              </Button>
+            ) : null}
             {canManage && !isPosted ? (
               <ExcludePayslipControls runId={runId} slip={slip} />
             ) : null}
@@ -686,6 +698,14 @@ export function PayRunDetailView({
                 >
                   <Printer />
                   Batch print
+                </Button>
+                <Button
+                  nativeButton={false}
+                  variant="outline"
+                  render={<Link href={`/payroll/runs/${run.id}/pdf`} />}
+                >
+                  <FileDown />
+                  Download all PDFs
                 </Button>
                 <Button
                   nativeButton={false}
