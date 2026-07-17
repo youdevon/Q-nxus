@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/src/lib/format";
-import { getPostedPayslipYtd } from "@/src/modules/payroll/data/get-payslip-ytd";
+import {
+  getPostedPayslipYtd,
+  payslipPreviewToYtdContribution,
+} from "@/src/modules/payroll/data/get-payslip-ytd";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { isPayslipIncludedInRun } from "@/src/modules/payroll/lib/pay-run-membership";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
@@ -42,6 +45,15 @@ export type PayRunPayslipRow = {
   exclusionReason: string | null;
   excludedAt: string | null;
   excludedByName: string | null;
+  lineItems: Array<{
+    id: string;
+    lineType: "EARNING" | "DEDUCTION";
+    code: string;
+    label: string;
+    amount: string;
+    isTaxable: boolean;
+    notes: string | null;
+  }>;
   viewHref: string;
   printHref: string;
 };
@@ -127,6 +139,11 @@ export async function getPayRunDetail(
       },
       payslips: {
         orderBy: [{ employeeName: "asc" }],
+        include: {
+          lineItems: {
+            orderBy: [{ createdAt: "asc" }],
+          },
+        },
       },
     },
   });
@@ -207,6 +224,15 @@ export async function getPayRunDetail(
         excludedByName: slip.excludedByUserId
           ? (excluderNameById.get(slip.excludedByUserId) ?? null)
           : null,
+        lineItems: slip.lineItems.map((line) => ({
+          id: line.id,
+          lineType: line.lineType,
+          code: line.code,
+          label: line.label,
+          amount: decimalLabel(line.amount, slip.currency),
+          isTaxable: line.isTaxable,
+          notes: line.notes,
+        })),
         viewHref: `/payroll/runs/${run.id}/payslips/${slip.id}`,
         printHref: `/payroll/runs/${run.id}/payslips/${slip.id}/print`,
       };
@@ -290,11 +316,7 @@ export async function getStoredPayslip(
         periodEnd: row.payrollPeriod.periodEnd,
         postedAt: row.payRun.postedAt,
         createdAt: row.createdAt,
-        current: {
-          grossPay: Number(row.grossPay.toString()),
-          totalDeductions: Number(row.totalDeductions.toString()),
-          netPay: Number(row.netPay.toString()),
-        },
+        current: payslipPreviewToYtdContribution(snapshot.payslip),
       })
     : null;
 
@@ -362,11 +384,7 @@ export async function getPayRunBatchPrint(
             periodEnd: run.payrollPeriod.periodEnd,
             postedAt: run.postedAt,
             createdAt: slip.createdAt,
-            current: {
-              grossPay: Number(slip.grossPay.toString()),
-              totalDeductions: Number(slip.totalDeductions.toString()),
-              netPay: Number(slip.netPay.toString()),
-            },
+            current: payslipPreviewToYtdContribution(snapshot.payslip),
           })
         : null;
 
@@ -441,11 +459,7 @@ export async function getMostRecentPostedPayslip(
     periodEnd: row.payrollPeriod.periodEnd,
     postedAt: row.payRun.postedAt,
     createdAt: row.createdAt,
-    current: {
-      grossPay: Number(row.grossPay.toString()),
-      totalDeductions: Number(row.totalDeductions.toString()),
-      netPay: Number(row.netPay.toString()),
-    },
+    current: payslipPreviewToYtdContribution(snapshot.payslip),
   });
 
   return {

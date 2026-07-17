@@ -6,6 +6,7 @@ import {
   CircleCheck,
   FileText,
   Lock,
+  Plus,
   Printer,
   RefreshCw,
   Trash2,
@@ -32,7 +33,10 @@ import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import {
+  addPayrollLineItem,
   deleteDraftPayRun,
+  deletePayrollLineItem,
+  emailPostedPayslips,
   excludePayslipFromPayRun,
   postPayRun,
   recalculateDraftPayRun,
@@ -170,6 +174,32 @@ function DeleteDraftPayRunButton({
   );
 }
 
+function EmailPayslipsButton({ payRunId }: { payRunId: string }) {
+  const [state, formAction, pending] = useActionState(
+    emailPostedPayslips,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    }
+  }, [state]);
+
+  return (
+    <form action={formAction}>
+      <input type="hidden" name="payRunId" value={payRunId} />
+      <Button type="submit" variant="outline" disabled={pending}>
+        <FileText />
+        {pending ? "Queueing…" : "Email payslips"}
+      </Button>
+    </form>
+  );
+}
+
 function ExcludePayslipControls({
   runId,
   slip,
@@ -285,6 +315,177 @@ function ReincludePayslipButton({
   );
 }
 
+function RemoveLineItemButton({
+  payRunId,
+  lineItemId,
+}: {
+  payRunId: string;
+  lineItemId: string;
+}) {
+  const [state, formAction, pending] = useActionState(
+    deletePayrollLineItem,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    }
+  }, [state]);
+
+  return (
+    <form action={formAction}>
+      <input type="hidden" name="payRunId" value={payRunId} />
+      <input type="hidden" name="lineItemId" value={lineItemId} />
+      <Button type="submit" size="sm" variant="ghost" disabled={pending}>
+        <Trash2 />
+        Remove
+      </Button>
+    </form>
+  );
+}
+
+function PayrollLineItemsEditor({
+  runId,
+  slip,
+  canManage,
+  isPosted,
+}: {
+  runId: string;
+  slip: PayRunPayslipRow;
+  canManage: boolean;
+  isPosted: boolean;
+}) {
+  const [state, formAction, pending] = useActionState(
+    addPayrollLineItem,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    }
+  }, [state]);
+
+  if (slip.lineItems.length === 0 && (isPosted || !canManage)) {
+    return null;
+  }
+
+  return (
+    <div className="mt-3 space-y-3 rounded-lg border border-border/70 bg-muted/15 p-3 md:col-span-full">
+      {slip.lineItems.length > 0 ? (
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Run line items
+          </p>
+          {slip.lineItems.map((line) => (
+            <div
+              key={line.id}
+              className="flex flex-wrap items-center justify-between gap-2 text-xs"
+            >
+              <div>
+                <span className="font-medium text-foreground">
+                  {line.label}
+                </span>{" "}
+                <span className="text-muted-foreground">
+                  {line.lineType.toLowerCase()} · {line.amount}
+                  {line.isTaxable ? " · taxable" : ""}
+                  {line.notes ? ` · ${line.notes}` : ""}
+                </span>
+              </div>
+              {canManage && !isPosted ? (
+                <RemoveLineItemButton payRunId={runId} lineItemId={line.id} />
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {canManage && !isPosted ? (
+        <form action={formAction} className="grid gap-2 md:grid-cols-6">
+          <input type="hidden" name="payRunId" value={runId} />
+          <input type="hidden" name="payslipId" value={slip.id} />
+          <label className="grid gap-1 text-xs">
+            <span className="text-muted-foreground">Type</span>
+            <select
+              name="lineType"
+              className="h-9 rounded-md border border-input bg-background px-2"
+              defaultValue="EARNING"
+            >
+              <option value="EARNING">Earning</option>
+              <option value="DEDUCTION">Deduction</option>
+            </select>
+          </label>
+          <label className="grid gap-1 text-xs">
+            <span className="text-muted-foreground">Code</span>
+            <select
+              name="code"
+              className="h-9 rounded-md border border-input bg-background px-2"
+              defaultValue={
+                runId && slip.lineItems.length > 0
+                  ? "OTHER_EARNING"
+                  : "OVERTIME"
+              }
+            >
+              <option value="CORRECTION_EARNING">Correction earning</option>
+              <option value="CORRECTION_DEDUCTION">Correction deduction</option>
+              <option value="OVERTIME">Overtime</option>
+              <option value="BONUS">Bonus</option>
+              <option value="COMMISSION">Commission</option>
+              <option value="OTHER_EARNING">Other earning</option>
+              <option value="OTHER_DEDUCTION">Other deduction</option>
+            </select>
+          </label>
+          <label className="grid gap-1 text-xs md:col-span-2">
+            <span className="text-muted-foreground">Label</span>
+            <input
+              name="label"
+              className="h-9 rounded-md border border-input bg-background px-2"
+              placeholder="e.g. July overtime"
+              required
+            />
+          </label>
+          <label className="grid gap-1 text-xs">
+            <span className="text-muted-foreground">Amount</span>
+            <input
+              name="amount"
+              type="number"
+              step="0.01"
+              className="h-9 rounded-md border border-input bg-background px-2"
+              placeholder="0.00"
+              required
+            />
+          </label>
+          <label className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+            <input name="isTaxable" type="checkbox" defaultChecked />
+            Taxable earning
+          </label>
+          <label className="grid gap-1 text-xs md:col-span-5">
+            <span className="text-muted-foreground">Notes</span>
+            <input
+              name="notes"
+              className="h-9 rounded-md border border-input bg-background px-2"
+              placeholder="Optional audit note"
+            />
+          </label>
+          <div className="flex items-end">
+            <Button type="submit" size="sm" disabled={pending}>
+              <Plus />
+              {pending ? "Adding…" : "Add line"}
+            </Button>
+          </div>
+        </form>
+      ) : null}
+    </div>
+  );
+}
+
 function PayslipRow({
   runId,
   slip,
@@ -374,6 +575,14 @@ function PayslipRow({
           <ReincludePayslipButton runId={runId} slip={slip} />
         ) : null}
       </div>
+      {!slip.isExcluded ? (
+        <PayrollLineItemsEditor
+          runId={runId}
+          slip={slip}
+          canManage={canManage}
+          isPosted={isPosted}
+        />
+      ) : null}
     </div>
   );
 }
@@ -431,16 +640,35 @@ export function PayRunDetailView({
                   <Printer />
                   Batch print
                 </Button>
+                <Button
+                  nativeButton={false}
+                  variant="outline"
+                  render={<Link href={`/payroll/runs/${run.id}/bank-export`} />}
+                >
+                  <FileText />
+                  Bank CSV
+                </Button>
+                {canManage ? <EmailPayslipsButton payRunId={run.id} /> : null}
                 {canManage ? (
-                  <Button
-                    nativeButton={false}
-                    variant="outline"
-                    render={
-                      <Link href={`/payroll/runs/${run.id}/supplemental`} />
-                    }
-                  >
-                    Correction / off-cycle
-                  </Button>
+                  <>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={<Link href={`/payroll/runs/${run.id}/gl-export`} />}
+                    >
+                      <FileText />
+                      GL CSV
+                    </Button>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={
+                        <Link href={`/payroll/runs/${run.id}/supplemental`} />
+                      }
+                    >
+                      Correction / off-cycle
+                    </Button>
+                  </>
                 ) : null}
               </>
             ) : null}
@@ -588,6 +816,18 @@ export function PayRunDetailView({
               />
             ))}
           </div>
+        </section>
+      ) : null}
+
+      {isPosted ? (
+        <section className="mt-10 rounded-lg border border-border/70 bg-muted/15 p-4 text-xs text-muted-foreground">
+          <p className="font-medium text-foreground">GL export mapping</p>
+          <p className="mt-1">
+            5000 Salary expense (debit gross), 5050 Employer NIS expense
+            (debit employer NIS), 2100 Net payroll payable, 2110 PAYE payable,
+            2120 NIS payable, 2130 Health surcharge payable. This is a default
+            chart-of-accounts stub for review before import.
+          </p>
         </section>
       ) : null}
     </PageShell>

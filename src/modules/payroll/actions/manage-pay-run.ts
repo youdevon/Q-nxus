@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { queueEmail } from "@/src/modules/notifications/services/email-queue";
 import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
 import { buildMonthlyPeriodBounds } from "@/src/modules/payroll/lib/pay-period";
 import {
@@ -46,6 +47,47 @@ function nullableText(formData: FormData, key: string): string | null {
 
 function decimalNumber(value: { toString(): string }): number {
   return Number(value.toString());
+}
+
+function moneyValue(formData: FormData, key: string): number | null {
+  const raw = textValue(formData, key).replaceAll(",", "");
+  if (!raw) {
+    return null;
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) ? Math.round(value * 100) / 100 : null;
+}
+
+function normalizeLineItemCode(
+  value: string,
+  lineType: "EARNING" | "DEDUCTION",
+):
+  | "CORRECTION_EARNING"
+  | "CORRECTION_DEDUCTION"
+  | "OVERTIME"
+  | "BONUS"
+  | "COMMISSION"
+  | "OTHER_EARNING"
+  | "OTHER_DEDUCTION" {
+  const normalized = value.toUpperCase();
+  const earningCodes = new Set([
+    "CORRECTION_EARNING",
+    "OVERTIME",
+    "BONUS",
+    "COMMISSION",
+    "OTHER_EARNING",
+  ]);
+  const deductionCodes = new Set(["CORRECTION_DEDUCTION", "OTHER_DEDUCTION"]);
+
+  if (lineType === "EARNING" && earningCodes.has(normalized)) {
+    return normalized as "CORRECTION_EARNING";
+  }
+
+  if (lineType === "DEDUCTION" && deductionCodes.has(normalized)) {
+    return normalized as "CORRECTION_DEDUCTION";
+  }
+
+  return lineType === "EARNING" ? "OTHER_EARNING" : "OTHER_DEDUCTION";
 }
 
 function payRunTotalsFromMembership(
@@ -145,6 +187,8 @@ async function allocatePayRunNumber(
 
 async function collectReadyEmployeeSnapshots(
   asOf: Date,
+  periodStart?: Date,
+  periodEnd?: Date,
 ): Promise<
   | { ok: true; rows: PayRunEmployeeSnapshot[] }
   | { ok: false; message: string }
@@ -164,7 +208,10 @@ async function collectReadyEmployeeSnapshots(
   const notReadyAtCalc: string[] = [];
 
   for (const row of readyRows) {
-    const snapshot = await buildEmployeePayRunSnapshot(row.employeeId, asOf);
+    const snapshot = await buildEmployeePayRunSnapshot(row.employeeId, asOf, {
+      periodStart,
+      periodEnd,
+    });
 
     if (!snapshot) {
       notReadyAtCalc.push(
@@ -252,7 +299,11 @@ export async function createMonthlyPayPeriod(
     };
   }
 
-  const collected = await collectReadyEmployeeSnapshots(bounds.asOf);
+  const collected = await collectReadyEmployeeSnapshots(
+    bounds.asOf,
+    bounds.periodStart,
+    bounds.periodEnd,
+  );
 
   if (!collected.ok) {
     return { status: "error", message: collected.message };
@@ -409,6 +460,7 @@ export async function createSupplementalPayRun(
           id: true,
           name: true,
           periodKey: true,
+          periodStart: true,
           periodEnd: true,
           status: true,
         },
@@ -454,6 +506,10 @@ export async function createSupplementalPayRun(
     const snapshot = await buildEmployeePayRunSnapshot(
       employeeId,
       source.payrollPeriod.periodEnd,
+      {
+        periodStart: source.payrollPeriod.periodStart,
+        periodEnd: source.payrollPeriod.periodEnd,
+      },
     );
 
     if (!snapshot || !snapshot.isReady) {
@@ -838,6 +894,318 @@ export async function reincludePayslipInPayRun(
   };
 }
 
+async function recalculateDraftPayslipWithLineItems(input: {
+  payRunId: string;
+  payslipId: string;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  const payRun = await prisma.payRun.findUnique({
+    where: { id: input.payRunId },
+    include: {
+      payrollPeriod: {
+        select: { periodStart: true, periodEnd: true },
+      },
+      payslips: {
+        select: {
+          id: true,
+          status: true,
+          employeeId: true,
+          grossPay: true,
+          totalDeductions: true,
+          netPay: true,
+          lineItems: {
+            select: {
+              lineType: true,
+              code: true,
+              label: true,
+              amount: true,
+              isTaxable: true,
+              notes: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!payRun || payRun.status !== "DRAFT") {
+    return { ok: false, message: "Only draft pay runs can be updated." };
+  }
+
+  const payslip = payRun.payslips.find((row) => row.id === input.payslipId);
+
+  if (!payslip || payslip.status !== "DRAFT") {
+    return { ok: false, message: "Only included draft payslips can be updated." };
+  }
+
+  const snapshot = await buildEmployeePayRunSnapshot(
+    payslip.employeeId,
+    payRun.payrollPeriod.periodEnd,
+    {
+      periodStart: payRun.payrollPeriod.periodStart,
+      periodEnd: payRun.payrollPeriod.periodEnd,
+      lineItems: payslip.lineItems,
+    },
+  );
+
+  if (!snapshot || !snapshot.isReady) {
+    return {
+      ok: false,
+      message:
+        snapshot?.blockingIssues.join(" ") ||
+        "Could not calculate payslip snapshot.",
+    };
+  }
+
+  await prisma.$transaction(async (transaction) => {
+    await transaction.payslip.update({
+      where: { id: payslip.id },
+      data: toPayslipRecalcUpdateData(snapshot),
+    });
+
+    const amountRows = payRun.payslips.map((row) =>
+      row.id === payslip.id
+        ? {
+            status: row.status,
+            grossPay: snapshot.grossPay,
+            totalDeductions: snapshot.totalDeductions,
+            netPay: snapshot.netPay,
+          }
+        : {
+            status: row.status,
+            grossPay: decimalNumber(row.grossPay),
+            totalDeductions: decimalNumber(row.totalDeductions),
+            netPay: decimalNumber(row.netPay),
+          },
+    );
+    const totals = aggregateIncludedPayRunTotals(amountRows);
+
+    await transaction.payRun.update({
+      where: { id: payRun.id },
+      data: {
+        employeeCount: totals.employeeCount,
+        totalGross: new Prisma.Decimal(totals.totalGross),
+        totalDeductions: new Prisma.Decimal(totals.totalDeductions),
+        totalNet: new Prisma.Decimal(totals.totalNet),
+      },
+    });
+  });
+
+  return { ok: true };
+}
+
+export async function addPayrollLineItem(
+  _previousState: PayRunFormState,
+  formData: FormData,
+): Promise<PayRunFormState> {
+  const actor = await requireActor("payroll.manage");
+
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const payRunId = textValue(formData, "payRunId");
+  const payslipId = textValue(formData, "payslipId");
+  const lineTypeRaw = textValue(formData, "lineType").toUpperCase();
+  const amount = moneyValue(formData, "amount");
+  const label = textValue(formData, "label");
+  const notes = nullableText(formData, "notes");
+  const fieldErrors: Record<string, string> = {};
+
+  if (!payRunId || !payslipId) {
+    fieldErrors.payRunId = "Pay run and payslip are required.";
+  }
+  if (lineTypeRaw !== "EARNING" && lineTypeRaw !== "DEDUCTION") {
+    fieldErrors.lineType = "Choose earning or deduction.";
+  }
+  if (!label) {
+    fieldErrors.label = "Label is required.";
+  }
+  if (amount == null || amount === 0) {
+    fieldErrors.amount = "Enter a non-zero amount.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0 || amount == null) {
+    return {
+      status: "error",
+      message: "Review the payroll line item.",
+      fieldErrors,
+    };
+  }
+
+  const lineType = lineTypeRaw as "EARNING" | "DEDUCTION";
+  const code = normalizeLineItemCode(textValue(formData, "code"), lineType);
+  const isTaxable =
+    lineType === "EARNING" ? textValue(formData, "isTaxable") === "on" : false;
+  const payRun = await prisma.payRun.findUnique({
+    where: { id: payRunId },
+    include: {
+      payslips: {
+        where: { id: payslipId },
+        select: { id: true, employeeId: true, employeeName: true, status: true },
+      },
+    },
+  });
+
+  if (!payRun || payRun.status !== "DRAFT" || payRun.payslips.length === 0) {
+    return {
+      status: "error",
+      message: "Line items can only be added to included draft payslips.",
+    };
+  }
+
+  const payslip = payRun.payslips[0];
+  if (payslip.status !== "DRAFT") {
+    return {
+      status: "error",
+      message: "Line items can only be added to included draft payslips.",
+    };
+  }
+
+  const metadata = await getAuditRequestMetadata(formData);
+  let lineItemId = "";
+
+  try {
+    const line = await prisma.payrollLineItem.create({
+      data: {
+        organizationId: payRun.organizationId,
+        payRunId: payRun.id,
+        payslipId: payslip.id,
+        employeeId: payslip.employeeId,
+        lineType,
+        code,
+        label,
+        amount: new Prisma.Decimal(amount),
+        isTaxable,
+        notes,
+        createdById: actor.actor.userId,
+      },
+    });
+    lineItemId = line.id;
+
+    const recalculated = await recalculateDraftPayslipWithLineItems({
+      payRunId: payRun.id,
+      payslipId: payslip.id,
+    });
+
+    if (!recalculated.ok) {
+      await prisma.payrollLineItem.delete({ where: { id: line.id } });
+      return { status: "error", message: recalculated.message };
+    }
+
+    await prisma.auditEvent.create({
+      data: {
+        userId: actor.actor.userId,
+        moduleKey: "payroll",
+        action: "CREATE",
+        entityType: "PayrollLineItem",
+        entityId: line.id,
+        description: `Added ${lineType.toLowerCase()} line ${label} (${amount.toFixed(2)}) for ${payslip.employeeName} on draft pay run ${payRun.runNumber}.`,
+        newValues: { payRunId: payRun.id, payslipId: payslip.id, lineType, code, label, amount, isTaxable },
+        ipAddress: metadata.ipAddress,
+        userAgent: metadata.userAgent,
+        clientHostName: metadata.clientHostName,
+      },
+    });
+  } catch (error) {
+    console.error("addPayrollLineItem failed:", error);
+    if (lineItemId) {
+      await prisma.payrollLineItem.deleteMany({ where: { id: lineItemId } });
+    }
+    return {
+      status: "error",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Could not add the payroll line item.",
+    };
+  }
+
+  revalidatePayRunPaths(payRun.id);
+  return { status: "success", message: "Payroll line item added." };
+}
+
+export async function deletePayrollLineItem(
+  _previousState: PayRunFormState,
+  formData: FormData,
+): Promise<PayRunFormState> {
+  const actor = await requireActor("payroll.manage");
+
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const payRunId = textValue(formData, "payRunId");
+  const lineItemId = textValue(formData, "lineItemId");
+
+  if (!payRunId || !lineItemId) {
+    return { status: "error", message: "Pay run and line item are required." };
+  }
+
+  const line = await prisma.payrollLineItem.findUnique({
+    where: { id: lineItemId },
+    include: {
+      payRun: { select: { id: true, runNumber: true, status: true } },
+      payslip: { select: { id: true, employeeName: true } },
+    },
+  });
+
+  if (!line || line.payRunId !== payRunId || line.payRun.status !== "DRAFT") {
+    return {
+      status: "error",
+      message: "Line items can only be removed from draft pay runs.",
+    };
+  }
+
+  const metadata = await getAuditRequestMetadata(formData);
+
+  try {
+    await prisma.payrollLineItem.delete({ where: { id: line.id } });
+    const recalculated = await recalculateDraftPayslipWithLineItems({
+      payRunId: line.payRunId,
+      payslipId: line.payslipId,
+    });
+
+    if (!recalculated.ok) {
+      return { status: "error", message: recalculated.message };
+    }
+
+    await prisma.auditEvent.create({
+      data: {
+        userId: actor.actor.userId,
+        moduleKey: "payroll",
+        action: "DELETE",
+        entityType: "PayrollLineItem",
+        entityId: line.id,
+        description: `Removed payroll line ${line.label} from ${line.payslip.employeeName} on draft pay run ${line.payRun.runNumber}.`,
+        oldValues: {
+          payRunId: line.payRunId,
+          payslipId: line.payslipId,
+          lineType: line.lineType,
+          code: line.code,
+          label: line.label,
+          amount: line.amount.toString(),
+          isTaxable: line.isTaxable,
+        },
+        ipAddress: metadata.ipAddress,
+        userAgent: metadata.userAgent,
+        clientHostName: metadata.clientHostName,
+      },
+    });
+  } catch (error) {
+    console.error("deletePayrollLineItem failed:", error);
+    return {
+      status: "error",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Could not remove the payroll line item.",
+    };
+  }
+
+  revalidatePayRunPaths(line.payRunId);
+  return { status: "success", message: "Payroll line item removed." };
+}
+
 export async function recalculateDraftPayRun(
   _previousState: PayRunFormState,
   formData: FormData,
@@ -861,6 +1229,7 @@ export async function recalculateDraftPayRun(
         select: {
           id: true,
           name: true,
+          periodStart: true,
           periodEnd: true,
         },
       },
@@ -877,6 +1246,16 @@ export async function recalculateDraftPayRun(
           grossPay: true,
           totalDeductions: true,
           netPay: true,
+          lineItems: {
+            select: {
+              lineType: true,
+              code: true,
+              label: true,
+              amount: true,
+              isTaxable: true,
+              notes: true,
+            },
+          },
         },
       },
     },
@@ -909,7 +1288,11 @@ export async function recalculateDraftPayRun(
   const notReadyAtCalc: string[] = [];
 
   for (const slip of included) {
-    const snapshot = await buildEmployeePayRunSnapshot(slip.employeeId, asOf);
+    const snapshot = await buildEmployeePayRunSnapshot(slip.employeeId, asOf, {
+      periodStart: payRun.payrollPeriod.periodStart,
+      periodEnd: payRun.payrollPeriod.periodEnd,
+      lineItems: slip.lineItems,
+    });
 
     if (!snapshot) {
       notReadyAtCalc.push(
@@ -1192,6 +1575,94 @@ export async function postPayRun(
 
   revalidatePayRunPaths(payRun.id);
   redirect(`/payroll/runs/${payRun.id}`);
+}
+
+export async function emailPostedPayslips(
+  _previousState: PayRunFormState,
+  formData: FormData,
+): Promise<PayRunFormState> {
+  const actor = await requireActor("payroll.manage");
+
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const payRunId = textValue(formData, "payRunId");
+
+  if (!payRunId) {
+    return { status: "error", message: "Pay run is required." };
+  }
+
+  const payRun = await prisma.payRun.findUnique({
+    where: { id: payRunId },
+    include: {
+      payrollPeriod: { select: { name: true } },
+      payslips: {
+        where: { status: "POSTED" },
+        include: {
+          employee: {
+            select: {
+              firstName: true,
+              lastName: true,
+              workEmail: true,
+              personalEmail: true,
+              user: { select: { id: true, email: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!payRun || payRun.status !== "POSTED") {
+    return {
+      status: "error",
+      message: "Payslip emails can only be queued for posted pay runs.",
+    };
+  }
+
+  let queued = 0;
+  let skipped = 0;
+
+  for (const slip of payRun.payslips) {
+    const email =
+      slip.employee.workEmail ??
+      slip.employee.personalEmail ??
+      slip.employee.user?.email ??
+      null;
+
+    if (!email) {
+      skipped += 1;
+      continue;
+    }
+
+    const employeeName =
+      `${slip.employee.firstName} ${slip.employee.lastName}`.trim() ||
+      slip.employeeName;
+    const url = `/payroll/runs/${payRun.id}/payslips/${slip.id}/print`;
+
+    await queueEmail({
+      templateKey: "payroll.payslip.posted",
+      moduleKey: "payroll",
+      relatedType: "Payslip",
+      relatedId: slip.id,
+      recipientUserId: slip.employee.user?.id ?? null,
+      recipientEmail: email,
+      recipientName: employeeName,
+      subject: `Payslip available: ${payRun.payrollPeriod.name}`,
+      textBody: `Your payslip for ${payRun.payrollPeriod.name} is available: ${url}`,
+      htmlBody: `<p>Your payslip for ${payRun.payrollPeriod.name} is available.</p><p><a href="${url}">Open printable payslip</a></p>`,
+    });
+    queued += 1;
+  }
+
+  revalidatePayRunPaths(payRun.id);
+  return {
+    status: "success",
+    message: `Queued ${queued} payslip email${queued === 1 ? "" : "s"}${
+      skipped > 0 ? `; skipped ${skipped} without email.` : "."
+    }`,
+  };
 }
 
 export async function deleteDraftPayRun(
