@@ -90,6 +90,17 @@ export type PayRunDetail = {
   notes: string | null;
   postedAt: string | null;
   createdAt: string;
+  createdByName: string | null;
+  postedByName: string | null;
+  /** Most recent recalculation of this run (from the audit trail). */
+  lastRecalc: { byName: string | null; at: string } | null;
+  /** Recent bank / GL export events for this run (most recent first). */
+  exports: Array<{
+    kind: "BANK" | "GL" | "OTHER";
+    label: string;
+    byName: string | null;
+    at: string;
+  }>;
   period: {
     id: string;
     name: string;
@@ -168,28 +179,95 @@ export async function getPayRunDetail(
     return null;
   }
 
-  const excluderIds = [
+  const userIds = [
     ...new Set(
-      run.payslips
-        .map((slip) => slip.excludedByUserId)
-        .filter((id): id is string => Boolean(id)),
+      [
+        run.createdById,
+        run.postedById,
+        ...run.payslips.map((slip) => slip.excludedByUserId),
+      ].filter((id): id is string => Boolean(id)),
     ),
   ];
 
-  const excluders =
-    excluderIds.length > 0
+  const users =
+    userIds.length > 0
       ? await prisma.user.findMany({
-          where: { id: { in: excluderIds } },
+          where: { id: { in: userIds } },
           select: { id: true, firstName: true, lastName: true },
         })
       : [];
 
-  const excluderNameById = new Map(
-    excluders.map((user) => [
+  const userNameById = new Map(
+    users.map((user) => [
       user.id,
       `${user.firstName} ${user.lastName}`.trim(),
     ]),
   );
+  const excluderNameById = userNameById;
+
+  // Audit-derived provenance: last recalculation + recent exports.
+  const [recalcEvent, exportEvents] = await Promise.all([
+    prisma.auditEvent.findFirst({
+      where: {
+        moduleKey: "payroll",
+        entityType: "PayRun",
+        entityId: run.id,
+        action: "UPDATE",
+        description: { contains: "Recalculated draft pay run" },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        createdAt: true,
+        user: { select: { firstName: true, lastName: true } },
+      },
+    }),
+    prisma.auditEvent.findMany({
+      where: {
+        moduleKey: "payroll",
+        entityType: "PayRun",
+        entityId: run.id,
+        action: "EXPORT",
+      },
+      orderBy: { createdAt: "desc" },
+      take: 8,
+      select: {
+        createdAt: true,
+        newValues: true,
+        user: { select: { firstName: true, lastName: true } },
+      },
+    }),
+  ]);
+
+  const userDisplay = (
+    user: { firstName: string; lastName: string } | null,
+  ): string | null => (user ? `${user.firstName} ${user.lastName}`.trim() : null);
+
+  const lastRecalc = recalcEvent
+    ? { byName: userDisplay(recalcEvent.user), at: recalcEvent.createdAt.toISOString() }
+    : null;
+
+  const exports = exportEvents.map((event) => {
+    const kindRaw =
+      event.newValues &&
+      typeof event.newValues === "object" &&
+      !Array.isArray(event.newValues)
+        ? (event.newValues as Record<string, unknown>).exportKind
+        : null;
+    const kind =
+      kindRaw === "BANK" ? "BANK" : kindRaw === "GL" ? "GL" : "OTHER";
+    const label =
+      kind === "BANK"
+        ? "Bank payment CSV"
+        : kind === "GL"
+          ? "GL journal CSV"
+          : "Export";
+    return {
+      kind: kind as "BANK" | "GL" | "OTHER",
+      label,
+      byName: userDisplay(event.user),
+      at: event.createdAt.toISOString(),
+    };
+  });
 
   const excludedCount = run.payslips.filter(
     (slip) => !isPayslipIncludedInRun(slip.status),
@@ -272,6 +350,14 @@ export async function getPayRunDetail(
     notes: run.notes,
     postedAt: run.postedAt?.toISOString() ?? null,
     createdAt: run.createdAt.toISOString(),
+    createdByName: run.createdById
+      ? (userNameById.get(run.createdById) ?? null)
+      : null,
+    postedByName: run.postedById
+      ? (userNameById.get(run.postedById) ?? null)
+      : null,
+    lastRecalc,
+    exports,
     period: {
       id: run.payrollPeriod.id,
       name: run.payrollPeriod.name,

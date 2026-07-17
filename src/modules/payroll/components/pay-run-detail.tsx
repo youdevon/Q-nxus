@@ -818,12 +818,55 @@ export function PayRunDetailView({
         <div>
           <p className="text-xs text-muted-foreground">Created</p>
           <p className="mt-1 font-medium">{formatDate(run.createdAt)}</p>
+          {run.createdByName ? (
+            <p className="text-xs text-muted-foreground">by {run.createdByName}</p>
+          ) : null}
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Posted</p>
           <p className="mt-1 font-medium">{formatDate(run.postedAt)}</p>
+          {run.postedByName ? (
+            <p className="text-xs text-muted-foreground">by {run.postedByName}</p>
+          ) : null}
         </div>
       </section>
+
+      {run.lastRecalc || run.exports.length > 0 ? (
+        <section className="mt-6 grid gap-4 text-sm md:grid-cols-3">
+          {run.lastRecalc ? (
+            <div>
+              <p className="text-xs text-muted-foreground">Last recalculated</p>
+              <p className="mt-1 font-medium">
+                {formatDateTime(run.lastRecalc.at)}
+              </p>
+              {run.lastRecalc.byName ? (
+                <p className="text-xs text-muted-foreground">
+                  by {run.lastRecalc.byName}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+          {run.exports.length > 0 ? (
+            <div className="md:col-span-2">
+              <p className="text-xs text-muted-foreground">Export history</p>
+              <ul className="mt-1 space-y-0.5">
+                {run.exports.map((entry, index) => (
+                  <li
+                    key={`${entry.kind}-${entry.at}-${index}`}
+                    className="text-xs text-muted-foreground"
+                  >
+                    <span className="font-medium text-foreground">
+                      {entry.label}
+                    </span>{" "}
+                    · {formatDateTime(entry.at)}
+                    {entry.byName ? ` · ${entry.byName}` : ""}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {!isPosted ? (
         <p className="mt-6 text-sm text-muted-foreground">

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { buildBankPaymentCsv } from "@/src/modules/payroll/lib/payroll-exports";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
@@ -48,6 +49,22 @@ export async function GET(_request: Request, { params }: RouteContext) {
     ];
   });
   const csv = buildBankPaymentCsv({ runNumber: run.runNumber, rows });
+
+  const metadata = await getAuditRequestMetadata();
+  await prisma.auditEvent.create({
+    data: {
+      userId: capabilities.userId,
+      moduleKey: "payroll",
+      action: "EXPORT",
+      entityType: "PayRun",
+      entityId: run.id,
+      description: `Exported bank payment CSV for pay run ${run.runNumber} (${rows.length} payment line${rows.length === 1 ? "" : "s"}).`,
+      newValues: { exportKind: "BANK", lineCount: rows.length },
+      ipAddress: metadata.ipAddress,
+      userAgent: metadata.userAgent,
+      clientHostName: metadata.clientHostName,
+    },
+  });
 
   return new Response(csv, {
     headers: {
