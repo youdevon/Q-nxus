@@ -5,6 +5,11 @@ import {
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
+import {
+  computePayslipDelta,
+  netDeltaDirection,
+  formatSignedMoney,
+} from "@/src/modules/payroll/lib/payroll-correction-delta";
 import { isPayslipIncludedInRun } from "@/src/modules/payroll/lib/pay-run-membership";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
@@ -54,6 +59,17 @@ export type PayRunPayslipRow = {
     isTaxable: boolean;
     notes: string | null;
   }>;
+  /**
+   * Original-vs-correction comparison for correction / off-cycle runs.
+   * null on regular runs or when no comparable posted slip exists.
+   */
+  comparison: {
+    sourceLabel: string;
+    original: { grossPay: string; totalDeductions: string; netPay: string };
+    correction: { grossPay: string; totalDeductions: string; netPay: string };
+    delta: { grossPay: string; totalDeductions: string; netPay: string };
+    netDirection: "increase" | "decrease" | "none";
+  } | null;
   viewHref: string;
   printHref: string;
 };
@@ -179,6 +195,67 @@ export async function getPayRunDetail(
     (slip) => !isPayslipIncludedInRun(slip.status),
   ).length;
 
+  // Correction / off-cycle runs compare each slip to the original posted slip:
+  // the linked source run when present, otherwise the most recent posted slip
+  // for that employee in the same period (excluding this run).
+  type OriginalAmounts = {
+    grossPay: number;
+    totalDeductions: number;
+    netPay: number;
+    sourceLabel: string;
+  };
+  const originalByEmployee = new Map<string, OriginalAmounts>();
+
+  if (run.runKind !== "REGULAR") {
+    if (run.sourcePayRunId) {
+      const sourceSlips = await prisma.payslip.findMany({
+        where: { payRunId: run.sourcePayRunId, status: "POSTED" },
+        select: {
+          employeeId: true,
+          grossPay: true,
+          totalDeductions: true,
+          netPay: true,
+        },
+      });
+      const sourceLabel = run.sourcePayRun?.runNumber ?? "source run";
+      for (const slip of sourceSlips) {
+        originalByEmployee.set(slip.employeeId, {
+          grossPay: Number(slip.grossPay.toString()),
+          totalDeductions: Number(slip.totalDeductions.toString()),
+          netPay: Number(slip.netPay.toString()),
+          sourceLabel,
+        });
+      }
+    } else {
+      const priorSlips = await prisma.payslip.findMany({
+        where: {
+          payrollPeriodId: run.payrollPeriodId,
+          status: "POSTED",
+          payRunId: { not: run.id },
+        },
+        orderBy: [{ createdAt: "desc" }],
+        select: {
+          employeeId: true,
+          grossPay: true,
+          totalDeductions: true,
+          netPay: true,
+          payRun: { select: { runNumber: true } },
+        },
+      });
+      for (const slip of priorSlips) {
+        if (originalByEmployee.has(slip.employeeId)) {
+          continue;
+        }
+        originalByEmployee.set(slip.employeeId, {
+          grossPay: Number(slip.grossPay.toString()),
+          totalDeductions: Number(slip.totalDeductions.toString()),
+          netPay: Number(slip.netPay.toString()),
+          sourceLabel: slip.payRun.runNumber,
+        });
+      }
+    }
+  }
+
   return {
     id: run.id,
     runNumber: run.runNumber,
@@ -206,6 +283,50 @@ export async function getPayRunDetail(
     },
     payslips: run.payslips.map((slip) => {
       const isExcluded = !isPayslipIncludedInRun(slip.status);
+      const original = originalByEmployee.get(slip.employeeId) ?? null;
+      const correctionAmounts = {
+        grossPay: Number(slip.grossPay.toString()),
+        totalDeductions: Number(slip.totalDeductions.toString()),
+        netPay: Number(slip.netPay.toString()),
+      };
+      const delta =
+        run.runKind !== "REGULAR"
+          ? computePayslipDelta(correctionAmounts, original)
+          : null;
+      const comparison =
+        run.runKind !== "REGULAR" && original && delta
+          ? {
+              sourceLabel: original.sourceLabel,
+              original: {
+                grossPay: decimalLabel(original.grossPay, slip.currency),
+                totalDeductions: decimalLabel(
+                  original.totalDeductions,
+                  slip.currency,
+                ),
+                netPay: decimalLabel(original.netPay, slip.currency),
+              },
+              correction: {
+                grossPay: decimalLabel(correctionAmounts.grossPay, slip.currency),
+                totalDeductions: decimalLabel(
+                  correctionAmounts.totalDeductions,
+                  slip.currency,
+                ),
+                netPay: decimalLabel(correctionAmounts.netPay, slip.currency),
+              },
+              delta: {
+                grossPay: formatSignedMoney(delta.grossPay, {
+                  currency: slip.currency,
+                }),
+                totalDeductions: formatSignedMoney(delta.totalDeductions, {
+                  currency: slip.currency,
+                }),
+                netPay: formatSignedMoney(delta.netPay, {
+                  currency: slip.currency,
+                }),
+              },
+              netDirection: netDeltaDirection(delta),
+            }
+          : null;
 
       return {
         id: slip.id,
@@ -233,6 +354,7 @@ export async function getPayRunDetail(
           isTaxable: line.isTaxable,
           notes: line.notes,
         })),
+        comparison,
         viewHref: `/payroll/runs/${run.id}/payslips/${slip.id}`,
         printHref: `/payroll/runs/${run.id}/payslips/${slip.id}/print`,
       };

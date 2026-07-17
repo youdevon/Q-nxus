@@ -486,6 +486,50 @@ function PayrollLineItemsEditor({
   );
 }
 
+function CorrectionDeltaPanel({
+  comparison,
+}: {
+  comparison: NonNullable<PayRunPayslipRow["comparison"]>;
+}) {
+  const netToneClass =
+    comparison.netDirection === "increase"
+      ? "text-emerald-600 dark:text-emerald-400"
+      : comparison.netDirection === "decrease"
+        ? "text-destructive"
+        : "text-muted-foreground";
+
+  return (
+    <div className="mt-3 space-y-2 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3 md:col-span-full">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        Correction delta vs {comparison.sourceLabel}
+      </p>
+      <div className="grid grid-cols-[6rem_1fr_1fr_1fr] gap-x-3 gap-y-1 text-xs">
+        <span className="text-muted-foreground" />
+        <span className="text-muted-foreground">Gross</span>
+        <span className="text-muted-foreground">Deductions</span>
+        <span className="text-muted-foreground">Net</span>
+
+        <span className="text-muted-foreground">Original</span>
+        <span>{comparison.original.grossPay}</span>
+        <span>{comparison.original.totalDeductions}</span>
+        <span>{comparison.original.netPay}</span>
+
+        <span className="text-muted-foreground">This run</span>
+        <span>{comparison.correction.grossPay}</span>
+        <span>{comparison.correction.totalDeductions}</span>
+        <span>{comparison.correction.netPay}</span>
+
+        <span className="font-medium text-foreground">Difference</span>
+        <span className="font-medium">{comparison.delta.grossPay}</span>
+        <span className="font-medium">{comparison.delta.totalDeductions}</span>
+        <span className={`font-medium ${netToneClass}`}>
+          {comparison.delta.netPay}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function PayslipRow({
   runId,
   slip,
@@ -575,6 +619,9 @@ function PayslipRow({
           <ReincludePayslipButton runId={runId} slip={slip} />
         ) : null}
       </div>
+      {!slip.isExcluded && slip.comparison ? (
+        <CorrectionDeltaPanel comparison={slip.comparison} />
+      ) : null}
       {!slip.isExcluded ? (
         <PayrollLineItemsEditor
           runId={runId}
