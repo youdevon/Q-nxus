@@ -380,6 +380,27 @@ export const PayRunKind = {
 export type PayRunKind = (typeof PayRunKind)[keyof typeof PayRunKind]
 
 
+export const PayrollLineItemType = {
+  EARNING: 'EARNING',
+  DEDUCTION: 'DEDUCTION'
+} as const
+
+export type PayrollLineItemType = (typeof PayrollLineItemType)[keyof typeof PayrollLineItemType]
+
+
+export const PayrollLineItemCode = {
+  CORRECTION_EARNING: 'CORRECTION_EARNING',
+  CORRECTION_DEDUCTION: 'CORRECTION_DEDUCTION',
+  OVERTIME: 'OVERTIME',
+  BONUS: 'BONUS',
+  COMMISSION: 'COMMISSION',
+  OTHER_EARNING: 'OTHER_EARNING',
+  OTHER_DEDUCTION: 'OTHER_DEDUCTION'
+} as const
+
+export type PayrollLineItemCode = (typeof PayrollLineItemCode)[keyof typeof PayrollLineItemCode]
+
+
 export const PayslipRecordStatus = {
   DRAFT: 'DRAFT',
   EXCLUDED: 'EXCLUDED',

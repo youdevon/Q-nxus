@@ -339,6 +339,7 @@ export type PayRunWhereInput = {
   sourcePayRun?: Prisma.XOR<Prisma.PayRunNullableScalarRelationFilter, Prisma.PayRunWhereInput> | null
   derivedRuns?: Prisma.PayRunListRelationFilter
   payslips?: Prisma.PayslipListRelationFilter
+  lineItems?: Prisma.PayrollLineItemListRelationFilter
 }
 
 export type PayRunOrderByWithRelationInput = {
@@ -365,6 +366,7 @@ export type PayRunOrderByWithRelationInput = {
   sourcePayRun?: Prisma.PayRunOrderByWithRelationInput
   derivedRuns?: Prisma.PayRunOrderByRelationAggregateInput
   payslips?: Prisma.PayslipOrderByRelationAggregateInput
+  lineItems?: Prisma.PayrollLineItemOrderByRelationAggregateInput
 }
 
 export type PayRunWhereUniqueInput = Prisma.AtLeast<{
@@ -395,6 +397,7 @@ export type PayRunWhereUniqueInput = Prisma.AtLeast<{
   sourcePayRun?: Prisma.XOR<Prisma.PayRunNullableScalarRelationFilter, Prisma.PayRunWhereInput> | null
   derivedRuns?: Prisma.PayRunListRelationFilter
   payslips?: Prisma.PayslipListRelationFilter
+  lineItems?: Prisma.PayrollLineItemListRelationFilter
 }, "id" | "organizationId_runNumber">
 
 export type PayRunOrderByWithAggregationInput = {
@@ -468,6 +471,7 @@ export type PayRunCreateInput = {
   sourcePayRun?: Prisma.PayRunCreateNestedOneWithoutDerivedRunsInput
   derivedRuns?: Prisma.PayRunCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunUncheckedCreateInput = {
@@ -491,6 +495,7 @@ export type PayRunUncheckedCreateInput = {
   updatedAt?: Date | string
   derivedRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunUpdateInput = {
@@ -514,6 +519,7 @@ export type PayRunUpdateInput = {
   sourcePayRun?: Prisma.PayRunUpdateOneWithoutDerivedRunsNestedInput
   derivedRuns?: Prisma.PayRunUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateInput = {
@@ -537,6 +543,7 @@ export type PayRunUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   derivedRuns?: Prisma.PayRunUncheckedUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunCreateManyInput = {
@@ -865,6 +872,20 @@ export type PayRunUpdateOneRequiredWithoutPayslipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PayRunUpdateToOneWithWhereWithoutPayslipsInput, Prisma.PayRunUpdateWithoutPayslipsInput>, Prisma.PayRunUncheckedUpdateWithoutPayslipsInput>
 }
 
+export type PayRunCreateNestedOneWithoutLineItemsInput = {
+  create?: Prisma.XOR<Prisma.PayRunCreateWithoutLineItemsInput, Prisma.PayRunUncheckedCreateWithoutLineItemsInput>
+  connectOrCreate?: Prisma.PayRunCreateOrConnectWithoutLineItemsInput
+  connect?: Prisma.PayRunWhereUniqueInput
+}
+
+export type PayRunUpdateOneRequiredWithoutLineItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.PayRunCreateWithoutLineItemsInput, Prisma.PayRunUncheckedCreateWithoutLineItemsInput>
+  connectOrCreate?: Prisma.PayRunCreateOrConnectWithoutLineItemsInput
+  upsert?: Prisma.PayRunUpsertWithoutLineItemsInput
+  connect?: Prisma.PayRunWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PayRunUpdateToOneWithWhereWithoutLineItemsInput, Prisma.PayRunUpdateWithoutLineItemsInput>, Prisma.PayRunUncheckedUpdateWithoutLineItemsInput>
+}
+
 export type PayRunCreateWithoutOrganizationInput = {
   id?: string
   runNumber: string
@@ -885,6 +906,7 @@ export type PayRunCreateWithoutOrganizationInput = {
   sourcePayRun?: Prisma.PayRunCreateNestedOneWithoutDerivedRunsInput
   derivedRuns?: Prisma.PayRunCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunUncheckedCreateWithoutOrganizationInput = {
@@ -907,6 +929,7 @@ export type PayRunUncheckedCreateWithoutOrganizationInput = {
   updatedAt?: Date | string
   derivedRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunCreateOrConnectWithoutOrganizationInput = {
@@ -979,6 +1002,7 @@ export type PayRunCreateWithoutPayrollPeriodInput = {
   sourcePayRun?: Prisma.PayRunCreateNestedOneWithoutDerivedRunsInput
   derivedRuns?: Prisma.PayRunCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunUncheckedCreateWithoutPayrollPeriodInput = {
@@ -1001,6 +1025,7 @@ export type PayRunUncheckedCreateWithoutPayrollPeriodInput = {
   updatedAt?: Date | string
   derivedRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunCreateOrConnectWithoutPayrollPeriodInput = {
@@ -1049,6 +1074,7 @@ export type PayRunCreateWithoutDerivedRunsInput = {
   payrollPeriod: Prisma.PayrollPeriodCreateNestedOneWithoutPayRunsInput
   sourcePayRun?: Prisma.PayRunCreateNestedOneWithoutDerivedRunsInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunUncheckedCreateWithoutDerivedRunsInput = {
@@ -1071,6 +1097,7 @@ export type PayRunUncheckedCreateWithoutDerivedRunsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunCreateOrConnectWithoutDerivedRunsInput = {
@@ -1098,6 +1125,7 @@ export type PayRunCreateWithoutSourcePayRunInput = {
   payrollPeriod: Prisma.PayrollPeriodCreateNestedOneWithoutPayRunsInput
   derivedRuns?: Prisma.PayRunCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunUncheckedCreateWithoutSourcePayRunInput = {
@@ -1120,6 +1148,7 @@ export type PayRunUncheckedCreateWithoutSourcePayRunInput = {
   updatedAt?: Date | string
   derivedRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutSourcePayRunInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutPayRunInput
+  lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunCreateOrConnectWithoutSourcePayRunInput = {
@@ -1163,6 +1192,7 @@ export type PayRunUpdateWithoutDerivedRunsInput = {
   payrollPeriod?: Prisma.PayrollPeriodUpdateOneRequiredWithoutPayRunsNestedInput
   sourcePayRun?: Prisma.PayRunUpdateOneWithoutDerivedRunsNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateWithoutDerivedRunsInput = {
@@ -1185,6 +1215,7 @@ export type PayRunUncheckedUpdateWithoutDerivedRunsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUpsertWithWhereUniqueWithoutSourcePayRunInput = {
@@ -1223,6 +1254,7 @@ export type PayRunCreateWithoutPayslipsInput = {
   payrollPeriod: Prisma.PayrollPeriodCreateNestedOneWithoutPayRunsInput
   sourcePayRun?: Prisma.PayRunCreateNestedOneWithoutDerivedRunsInput
   derivedRuns?: Prisma.PayRunCreateNestedManyWithoutSourcePayRunInput
+  lineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunUncheckedCreateWithoutPayslipsInput = {
@@ -1245,6 +1277,7 @@ export type PayRunUncheckedCreateWithoutPayslipsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   derivedRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutSourcePayRunInput
+  lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayRunInput
 }
 
 export type PayRunCreateOrConnectWithoutPayslipsInput = {
@@ -1283,6 +1316,7 @@ export type PayRunUpdateWithoutPayslipsInput = {
   payrollPeriod?: Prisma.PayrollPeriodUpdateOneRequiredWithoutPayRunsNestedInput
   sourcePayRun?: Prisma.PayRunUpdateOneWithoutDerivedRunsNestedInput
   derivedRuns?: Prisma.PayRunUpdateManyWithoutSourcePayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateWithoutPayslipsInput = {
@@ -1305,6 +1339,115 @@ export type PayRunUncheckedUpdateWithoutPayslipsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   derivedRuns?: Prisma.PayRunUncheckedUpdateManyWithoutSourcePayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayRunNestedInput
+}
+
+export type PayRunCreateWithoutLineItemsInput = {
+  id?: string
+  runNumber: string
+  status?: $Enums.PayRunStatus
+  runKind?: $Enums.PayRunKind
+  currency?: string
+  employeeCount?: number
+  totalGross?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalDeductions?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalNet?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: string | null
+  postedAt?: Date | string | null
+  postedById?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutPayRunsInput
+  payrollPeriod: Prisma.PayrollPeriodCreateNestedOneWithoutPayRunsInput
+  sourcePayRun?: Prisma.PayRunCreateNestedOneWithoutDerivedRunsInput
+  derivedRuns?: Prisma.PayRunCreateNestedManyWithoutSourcePayRunInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutPayRunInput
+}
+
+export type PayRunUncheckedCreateWithoutLineItemsInput = {
+  id?: string
+  organizationId: string
+  payrollPeriodId: string
+  runNumber: string
+  status?: $Enums.PayRunStatus
+  runKind?: $Enums.PayRunKind
+  sourcePayRunId?: string | null
+  currency?: string
+  employeeCount?: number
+  totalGross?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalDeductions?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalNet?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: string | null
+  postedAt?: Date | string | null
+  postedById?: string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  derivedRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutSourcePayRunInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutPayRunInput
+}
+
+export type PayRunCreateOrConnectWithoutLineItemsInput = {
+  where: Prisma.PayRunWhereUniqueInput
+  create: Prisma.XOR<Prisma.PayRunCreateWithoutLineItemsInput, Prisma.PayRunUncheckedCreateWithoutLineItemsInput>
+}
+
+export type PayRunUpsertWithoutLineItemsInput = {
+  update: Prisma.XOR<Prisma.PayRunUpdateWithoutLineItemsInput, Prisma.PayRunUncheckedUpdateWithoutLineItemsInput>
+  create: Prisma.XOR<Prisma.PayRunCreateWithoutLineItemsInput, Prisma.PayRunUncheckedCreateWithoutLineItemsInput>
+  where?: Prisma.PayRunWhereInput
+}
+
+export type PayRunUpdateToOneWithWhereWithoutLineItemsInput = {
+  where?: Prisma.PayRunWhereInput
+  data: Prisma.XOR<Prisma.PayRunUpdateWithoutLineItemsInput, Prisma.PayRunUncheckedUpdateWithoutLineItemsInput>
+}
+
+export type PayRunUpdateWithoutLineItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  runNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPayRunStatusFieldUpdateOperationsInput | $Enums.PayRunStatus
+  runKind?: Prisma.EnumPayRunKindFieldUpdateOperationsInput | $Enums.PayRunKind
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  totalGross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalNet?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  postedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayRunsNestedInput
+  payrollPeriod?: Prisma.PayrollPeriodUpdateOneRequiredWithoutPayRunsNestedInput
+  sourcePayRun?: Prisma.PayRunUpdateOneWithoutDerivedRunsNestedInput
+  derivedRuns?: Prisma.PayRunUpdateManyWithoutSourcePayRunNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutPayRunNestedInput
+}
+
+export type PayRunUncheckedUpdateWithoutLineItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  payrollPeriodId?: Prisma.StringFieldUpdateOperationsInput | string
+  runNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPayRunStatusFieldUpdateOperationsInput | $Enums.PayRunStatus
+  runKind?: Prisma.EnumPayRunKindFieldUpdateOperationsInput | $Enums.PayRunKind
+  sourcePayRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  totalGross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  totalNet?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  postedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  derivedRuns?: Prisma.PayRunUncheckedUpdateManyWithoutSourcePayRunNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunCreateManyOrganizationInput = {
@@ -1347,6 +1490,7 @@ export type PayRunUpdateWithoutOrganizationInput = {
   sourcePayRun?: Prisma.PayRunUpdateOneWithoutDerivedRunsNestedInput
   derivedRuns?: Prisma.PayRunUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateWithoutOrganizationInput = {
@@ -1369,6 +1513,7 @@ export type PayRunUncheckedUpdateWithoutOrganizationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   derivedRuns?: Prisma.PayRunUncheckedUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1431,6 +1576,7 @@ export type PayRunUpdateWithoutPayrollPeriodInput = {
   sourcePayRun?: Prisma.PayRunUpdateOneWithoutDerivedRunsNestedInput
   derivedRuns?: Prisma.PayRunUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateWithoutPayrollPeriodInput = {
@@ -1453,6 +1599,7 @@ export type PayRunUncheckedUpdateWithoutPayrollPeriodInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   derivedRuns?: Prisma.PayRunUncheckedUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateManyWithoutPayrollPeriodInput = {
@@ -1515,6 +1662,7 @@ export type PayRunUpdateWithoutSourcePayRunInput = {
   payrollPeriod?: Prisma.PayrollPeriodUpdateOneRequiredWithoutPayRunsNestedInput
   derivedRuns?: Prisma.PayRunUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateWithoutSourcePayRunInput = {
@@ -1537,6 +1685,7 @@ export type PayRunUncheckedUpdateWithoutSourcePayRunInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   derivedRuns?: Prisma.PayRunUncheckedUpdateManyWithoutSourcePayRunNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutPayRunNestedInput
+  lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayRunNestedInput
 }
 
 export type PayRunUncheckedUpdateManyWithoutSourcePayRunInput = {
@@ -1567,11 +1716,13 @@ export type PayRunUncheckedUpdateManyWithoutSourcePayRunInput = {
 export type PayRunCountOutputType = {
   derivedRuns: number
   payslips: number
+  lineItems: number
 }
 
 export type PayRunCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   derivedRuns?: boolean | PayRunCountOutputTypeCountDerivedRunsArgs
   payslips?: boolean | PayRunCountOutputTypeCountPayslipsArgs
+  lineItems?: boolean | PayRunCountOutputTypeCountLineItemsArgs
 }
 
 /**
@@ -1596,6 +1747,13 @@ export type PayRunCountOutputTypeCountDerivedRunsArgs<ExtArgs extends runtime.Ty
  */
 export type PayRunCountOutputTypeCountPayslipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PayslipWhereInput
+}
+
+/**
+ * PayRunCountOutputType without action
+ */
+export type PayRunCountOutputTypeCountLineItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PayrollLineItemWhereInput
 }
 
 
@@ -1623,6 +1781,7 @@ export type PayRunSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   sourcePayRun?: boolean | Prisma.PayRun$sourcePayRunArgs<ExtArgs>
   derivedRuns?: boolean | Prisma.PayRun$derivedRunsArgs<ExtArgs>
   payslips?: boolean | Prisma.PayRun$payslipsArgs<ExtArgs>
+  lineItems?: boolean | Prisma.PayRun$lineItemsArgs<ExtArgs>
   _count?: boolean | Prisma.PayRunCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payRun"]>
 
@@ -1702,6 +1861,7 @@ export type PayRunInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   sourcePayRun?: boolean | Prisma.PayRun$sourcePayRunArgs<ExtArgs>
   derivedRuns?: boolean | Prisma.PayRun$derivedRunsArgs<ExtArgs>
   payslips?: boolean | Prisma.PayRun$payslipsArgs<ExtArgs>
+  lineItems?: boolean | Prisma.PayRun$lineItemsArgs<ExtArgs>
   _count?: boolean | Prisma.PayRunCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PayRunIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1723,6 +1883,7 @@ export type $PayRunPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     sourcePayRun: Prisma.$PayRunPayload<ExtArgs> | null
     derivedRuns: Prisma.$PayRunPayload<ExtArgs>[]
     payslips: Prisma.$PayslipPayload<ExtArgs>[]
+    lineItems: Prisma.$PayrollLineItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2145,6 +2306,7 @@ export interface Prisma__PayRunClient<T, Null = never, ExtArgs extends runtime.T
   sourcePayRun<T extends Prisma.PayRun$sourcePayRunArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PayRun$sourcePayRunArgs<ExtArgs>>): Prisma.Prisma__PayRunClient<runtime.Types.Result.GetResult<Prisma.$PayRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   derivedRuns<T extends Prisma.PayRun$derivedRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PayRun$derivedRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payslips<T extends Prisma.PayRun$payslipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PayRun$payslipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayslipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lineItems<T extends Prisma.PayRun$lineItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PayRun$lineItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollLineItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2657,6 +2819,30 @@ export type PayRun$payslipsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.PayslipScalarFieldEnum | Prisma.PayslipScalarFieldEnum[]
+}
+
+/**
+ * PayRun.lineItems
+ */
+export type PayRun$lineItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PayrollLineItem
+   */
+  select?: Prisma.PayrollLineItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PayrollLineItem
+   */
+  omit?: Prisma.PayrollLineItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PayrollLineItemInclude<ExtArgs> | null
+  where?: Prisma.PayrollLineItemWhereInput
+  orderBy?: Prisma.PayrollLineItemOrderByWithRelationInput | Prisma.PayrollLineItemOrderByWithRelationInput[]
+  cursor?: Prisma.PayrollLineItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PayrollLineItemScalarFieldEnum | Prisma.PayrollLineItemScalarFieldEnum[]
 }
 
 /**

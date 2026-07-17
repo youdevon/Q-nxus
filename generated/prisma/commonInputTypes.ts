@@ -912,6 +912,40 @@ export type EnumPayslipRecordStatusWithAggregatesFilter<$PrismaModel = never> = 
   _max?: Prisma.NestedEnumPayslipRecordStatusFilter<$PrismaModel>
 }
 
+export type EnumPayrollLineItemTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemType | Prisma.EnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemTypeFilter<$PrismaModel> | $Enums.PayrollLineItemType
+}
+
+export type EnumPayrollLineItemCodeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemCode | Prisma.EnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemCodeFilter<$PrismaModel> | $Enums.PayrollLineItemCode
+}
+
+export type EnumPayrollLineItemTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemType | Prisma.EnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.PayrollLineItemType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollLineItemTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollLineItemTypeFilter<$PrismaModel>
+}
+
+export type EnumPayrollLineItemCodeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemCode | Prisma.EnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemCodeWithAggregatesFilter<$PrismaModel> | $Enums.PayrollLineItemCode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollLineItemCodeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollLineItemCodeFilter<$PrismaModel>
+}
+
 export type EnumNotificationSeverityFilter<$PrismaModel = never> = {
   equals?: $Enums.NotificationSeverity | Prisma.EnumNotificationSeverityFieldRefInput<$PrismaModel>
   in?: $Enums.NotificationSeverity[] | Prisma.ListEnumNotificationSeverityFieldRefInput<$PrismaModel>
@@ -1835,6 +1869,40 @@ export type NestedEnumPayslipRecordStatusWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPayslipRecordStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPayslipRecordStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPayrollLineItemTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemType | Prisma.EnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemTypeFilter<$PrismaModel> | $Enums.PayrollLineItemType
+}
+
+export type NestedEnumPayrollLineItemCodeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemCode | Prisma.EnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemCodeFilter<$PrismaModel> | $Enums.PayrollLineItemCode
+}
+
+export type NestedEnumPayrollLineItemTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemType | Prisma.EnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemType[] | Prisma.ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.PayrollLineItemType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollLineItemTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollLineItemTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumPayrollLineItemCodeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollLineItemCode | Prisma.EnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollLineItemCode[] | Prisma.ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollLineItemCodeWithAggregatesFilter<$PrismaModel> | $Enums.PayrollLineItemCode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollLineItemCodeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollLineItemCodeFilter<$PrismaModel>
 }
 
 export type NestedEnumNotificationSeverityFilter<$PrismaModel = never> = {

@@ -429,6 +429,7 @@ export const ModelName = {
   PayrollPeriod: 'PayrollPeriod',
   PayRun: 'PayRun',
   Payslip: 'Payslip',
+  PayrollLineItem: 'PayrollLineItem',
   Notification: 'Notification',
   NotificationRecipient: 'NotificationRecipient',
   EmailDelivery: 'EmailDelivery',
@@ -450,7 +451,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveAttachment" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "allowanceCategory" | "employmentContractAllowance" | "payrollProfile" | "payrollBankAccount" | "statutoryRate" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "emailTemplate" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveAttachment" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "allowanceCategory" | "employmentContractAllowance" | "payrollProfile" | "payrollBankAccount" | "statutoryRate" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "emailTemplate" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3784,6 +3785,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PayrollLineItem: {
+      payload: Prisma.$PayrollLineItemPayload<ExtArgs>
+      fields: Prisma.PayrollLineItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PayrollLineItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PayrollLineItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>
+        }
+        findFirst: {
+          args: Prisma.PayrollLineItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PayrollLineItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>
+        }
+        findMany: {
+          args: Prisma.PayrollLineItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>[]
+        }
+        create: {
+          args: Prisma.PayrollLineItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>
+        }
+        createMany: {
+          args: Prisma.PayrollLineItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PayrollLineItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>[]
+        }
+        delete: {
+          args: Prisma.PayrollLineItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>
+        }
+        update: {
+          args: Prisma.PayrollLineItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.PayrollLineItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PayrollLineItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PayrollLineItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.PayrollLineItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollLineItemPayload>
+        }
+        aggregate: {
+          args: Prisma.PayrollLineItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePayrollLineItem>
+        }
+        groupBy: {
+          args: Prisma.PayrollLineItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PayrollLineItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PayrollLineItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PayrollLineItemCountAggregateOutputType> | number
+        }
+      }
+    }
     Notification: {
       payload: Prisma.$NotificationPayload<ExtArgs>
       fields: Prisma.NotificationFieldRefs
@@ -5139,6 +5214,26 @@ export const PayslipScalarFieldEnum = {
 export type PayslipScalarFieldEnum = (typeof PayslipScalarFieldEnum)[keyof typeof PayslipScalarFieldEnum]
 
 
+export const PayrollLineItemScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  payRunId: 'payRunId',
+  payslipId: 'payslipId',
+  employeeId: 'employeeId',
+  lineType: 'lineType',
+  code: 'code',
+  label: 'label',
+  amount: 'amount',
+  isTaxable: 'isTaxable',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayrollLineItemScalarFieldEnum = (typeof PayrollLineItemScalarFieldEnum)[keyof typeof PayrollLineItemScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -5819,6 +5914,34 @@ export type ListEnumPayslipRecordStatusFieldRefInput<$PrismaModel> = FieldRefInp
 
 
 /**
+ * Reference to a field of type 'PayrollLineItemType'
+ */
+export type EnumPayrollLineItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollLineItemType'>
+    
+
+
+/**
+ * Reference to a field of type 'PayrollLineItemType[]'
+ */
+export type ListEnumPayrollLineItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollLineItemType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PayrollLineItemCode'
+ */
+export type EnumPayrollLineItemCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollLineItemCode'>
+    
+
+
+/**
+ * Reference to a field of type 'PayrollLineItemCode[]'
+ */
+export type ListEnumPayrollLineItemCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollLineItemCode[]'>
+    
+
+
+/**
  * Reference to a field of type 'NotificationSeverity'
  */
 export type EnumNotificationSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationSeverity'>
@@ -6042,6 +6165,7 @@ export type GlobalOmitConfig = {
   payrollPeriod?: Prisma.PayrollPeriodOmit
   payRun?: Prisma.PayRunOmit
   payslip?: Prisma.PayslipOmit
+  payrollLineItem?: Prisma.PayrollLineItemOmit
   notification?: Prisma.NotificationOmit
   notificationRecipient?: Prisma.NotificationRecipientOmit
   emailDelivery?: Prisma.EmailDeliveryOmit

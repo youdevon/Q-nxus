@@ -269,6 +269,11 @@ export type PayRun = Prisma.PayRunModel
  */
 export type Payslip = Prisma.PayslipModel
 /**
+ * Model PayrollLineItem
+ * Manual draft-run additions/deductions such as correction deltas, overtime, bonuses, and commissions.
+ */
+export type PayrollLineItem = Prisma.PayrollLineItemModel
+/**
  * Model Notification
  * 
  */

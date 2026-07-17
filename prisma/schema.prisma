@@ -344,6 +344,7 @@ model Organization {
   payrollPeriods           PayrollPeriod[]
   payRuns                  PayRun[]
   payslips                 Payslip[]
+  payrollLineItems         PayrollLineItem[]
 
   @@index([status])
   @@map("organizations")
@@ -758,6 +759,7 @@ model Employee {
   appraisals     PerformanceAppraisal[]
   payrollProfile PayrollProfile?
   payslips       Payslip[]
+  payrollLineItems PayrollLineItem[]
 
   leaveBalances     EmployeeLeaveBalance[]
   leaveTransactions LeaveBalanceTransaction[]
@@ -1488,6 +1490,25 @@ enum PayRunKind {
   @@schema("payroll")
 }
 
+enum PayrollLineItemType {
+  EARNING
+  DEDUCTION
+
+  @@schema("payroll")
+}
+
+enum PayrollLineItemCode {
+  CORRECTION_EARNING
+  CORRECTION_DEDUCTION
+  OVERTIME
+  BONUS
+  COMMISSION
+  OTHER_EARNING
+  OTHER_DEDUCTION
+
+  @@schema("payroll")
+}
+
 enum PayslipRecordStatus {
   DRAFT
   EXCLUDED
@@ -1555,6 +1576,7 @@ model PayRun {
   sourcePayRun  PayRun?       @relation("PayRunSource", fields: [sourcePayRunId], references: [id], onDelete: SetNull)
   derivedRuns   PayRun[]      @relation("PayRunSource")
   payslips      Payslip[]
+  lineItems     PayrollLineItem[]
 
   @@unique([organizationId, runNumber])
   @@index([payrollPeriodId])
@@ -1601,6 +1623,7 @@ model Payslip {
   payRun        PayRun        @relation(fields: [payRunId], references: [id], onDelete: Cascade)
   payrollPeriod PayrollPeriod @relation(fields: [payrollPeriodId], references: [id], onDelete: Cascade)
   employee      Employee      @relation(fields: [employeeId], references: [id])
+  lineItems     PayrollLineItem[]
 
   @@unique([payRunId, employeeId])
   @@index([organizationId, employeeId, status])
@@ -1608,6 +1631,36 @@ model Payslip {
   @@index([employeeId, status, createdAt])
   @@index([payRunId, status])
   @@map("payslips")
+  @@schema("payroll")
+}
+
+/// Manual draft-run additions/deductions such as correction deltas, overtime, bonuses, and commissions.
+model PayrollLineItem {
+  id             String              @id @default(cuid())
+  organizationId String
+  payRunId       String
+  payslipId      String
+  employeeId     String
+  lineType       PayrollLineItemType
+  code           PayrollLineItemCode
+  label          String
+  amount         Decimal             @db.Decimal(14, 2)
+  isTaxable      Boolean             @default(true)
+  notes          String?
+  createdById    String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payRun       PayRun       @relation(fields: [payRunId], references: [id], onDelete: Cascade)
+  payslip      Payslip      @relation(fields: [payslipId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([payRunId])
+  @@index([payslipId])
+  @@index([employeeId])
+  @@index([organizationId, createdAt])
+  @@map("payroll_line_items")
   @@schema("payroll")
 }
 

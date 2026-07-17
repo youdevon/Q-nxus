@@ -96,6 +96,7 @@ export const ModelName = {
   PayrollPeriod: 'PayrollPeriod',
   PayRun: 'PayRun',
   Payslip: 'Payslip',
+  PayrollLineItem: 'PayrollLineItem',
   Notification: 'Notification',
   NotificationRecipient: 'NotificationRecipient',
   EmailDelivery: 'EmailDelivery',
@@ -990,6 +991,26 @@ export const PayslipScalarFieldEnum = {
 } as const
 
 export type PayslipScalarFieldEnum = (typeof PayslipScalarFieldEnum)[keyof typeof PayslipScalarFieldEnum]
+
+
+export const PayrollLineItemScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  payRunId: 'payRunId',
+  payslipId: 'payslipId',
+  employeeId: 'employeeId',
+  lineType: 'lineType',
+  code: 'code',
+  label: 'label',
+  amount: 'amount',
+  isTaxable: 'isTaxable',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayrollLineItemScalarFieldEnum = (typeof PayrollLineItemScalarFieldEnum)[keyof typeof PayrollLineItemScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
