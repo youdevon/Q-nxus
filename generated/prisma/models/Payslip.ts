@@ -30,6 +30,9 @@ export type PayslipAvgAggregateOutputType = {
   grossPay: runtime.Decimal | null
   totalDeductions: runtime.Decimal | null
   netPay: runtime.Decimal | null
+  payeAmount: runtime.Decimal | null
+  nisEmployeeAmount: runtime.Decimal | null
+  healthSurchargeAmount: runtime.Decimal | null
   baseSalary: runtime.Decimal | null
   allowancesTotal: runtime.Decimal | null
   monthlyTaxableEarnings: runtime.Decimal | null
@@ -39,6 +42,9 @@ export type PayslipSumAggregateOutputType = {
   grossPay: runtime.Decimal | null
   totalDeductions: runtime.Decimal | null
   netPay: runtime.Decimal | null
+  payeAmount: runtime.Decimal | null
+  nisEmployeeAmount: runtime.Decimal | null
+  healthSurchargeAmount: runtime.Decimal | null
   baseSalary: runtime.Decimal | null
   allowancesTotal: runtime.Decimal | null
   monthlyTaxableEarnings: runtime.Decimal | null
@@ -55,6 +61,9 @@ export type PayslipMinAggregateOutputType = {
   grossPay: runtime.Decimal | null
   totalDeductions: runtime.Decimal | null
   netPay: runtime.Decimal | null
+  payeAmount: runtime.Decimal | null
+  nisEmployeeAmount: runtime.Decimal | null
+  healthSurchargeAmount: runtime.Decimal | null
   baseSalary: runtime.Decimal | null
   allowancesTotal: runtime.Decimal | null
   monthlyTaxableEarnings: runtime.Decimal | null
@@ -84,6 +93,9 @@ export type PayslipMaxAggregateOutputType = {
   grossPay: runtime.Decimal | null
   totalDeductions: runtime.Decimal | null
   netPay: runtime.Decimal | null
+  payeAmount: runtime.Decimal | null
+  nisEmployeeAmount: runtime.Decimal | null
+  healthSurchargeAmount: runtime.Decimal | null
   baseSalary: runtime.Decimal | null
   allowancesTotal: runtime.Decimal | null
   monthlyTaxableEarnings: runtime.Decimal | null
@@ -113,6 +125,9 @@ export type PayslipCountAggregateOutputType = {
   grossPay: number
   totalDeductions: number
   netPay: number
+  payeAmount: number
+  nisEmployeeAmount: number
+  healthSurchargeAmount: number
   baseSalary: number
   allowancesTotal: number
   monthlyTaxableEarnings: number
@@ -138,6 +153,9 @@ export type PayslipAvgAggregateInputType = {
   grossPay?: true
   totalDeductions?: true
   netPay?: true
+  payeAmount?: true
+  nisEmployeeAmount?: true
+  healthSurchargeAmount?: true
   baseSalary?: true
   allowancesTotal?: true
   monthlyTaxableEarnings?: true
@@ -147,6 +165,9 @@ export type PayslipSumAggregateInputType = {
   grossPay?: true
   totalDeductions?: true
   netPay?: true
+  payeAmount?: true
+  nisEmployeeAmount?: true
+  healthSurchargeAmount?: true
   baseSalary?: true
   allowancesTotal?: true
   monthlyTaxableEarnings?: true
@@ -163,6 +184,9 @@ export type PayslipMinAggregateInputType = {
   grossPay?: true
   totalDeductions?: true
   netPay?: true
+  payeAmount?: true
+  nisEmployeeAmount?: true
+  healthSurchargeAmount?: true
   baseSalary?: true
   allowancesTotal?: true
   monthlyTaxableEarnings?: true
@@ -192,6 +216,9 @@ export type PayslipMaxAggregateInputType = {
   grossPay?: true
   totalDeductions?: true
   netPay?: true
+  payeAmount?: true
+  nisEmployeeAmount?: true
+  healthSurchargeAmount?: true
   baseSalary?: true
   allowancesTotal?: true
   monthlyTaxableEarnings?: true
@@ -221,6 +248,9 @@ export type PayslipCountAggregateInputType = {
   grossPay?: true
   totalDeductions?: true
   netPay?: true
+  payeAmount?: true
+  nisEmployeeAmount?: true
+  healthSurchargeAmount?: true
   baseSalary?: true
   allowancesTotal?: true
   monthlyTaxableEarnings?: true
@@ -338,6 +368,9 @@ export type PayslipGroupByOutputType = {
   grossPay: runtime.Decimal
   totalDeductions: runtime.Decimal
   netPay: runtime.Decimal
+  payeAmount: runtime.Decimal
+  nisEmployeeAmount: runtime.Decimal
+  healthSurchargeAmount: runtime.Decimal
   baseSalary: runtime.Decimal
   allowancesTotal: runtime.Decimal
   monthlyTaxableEarnings: runtime.Decimal
@@ -391,6 +424,9 @@ export type PayslipWhereInput = {
   grossPay?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -427,6 +463,9 @@ export type PayslipOrderByWithRelationInput = {
   grossPay?: Prisma.SortOrder
   totalDeductions?: Prisma.SortOrder
   netPay?: Prisma.SortOrder
+  payeAmount?: Prisma.SortOrder
+  nisEmployeeAmount?: Prisma.SortOrder
+  healthSurchargeAmount?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   allowancesTotal?: Prisma.SortOrder
   monthlyTaxableEarnings?: Prisma.SortOrder
@@ -467,6 +506,9 @@ export type PayslipWhereUniqueInput = Prisma.AtLeast<{
   grossPay?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -503,6 +545,9 @@ export type PayslipOrderByWithAggregationInput = {
   grossPay?: Prisma.SortOrder
   totalDeductions?: Prisma.SortOrder
   netPay?: Prisma.SortOrder
+  payeAmount?: Prisma.SortOrder
+  nisEmployeeAmount?: Prisma.SortOrder
+  healthSurchargeAmount?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   allowancesTotal?: Prisma.SortOrder
   monthlyTaxableEarnings?: Prisma.SortOrder
@@ -541,6 +586,9 @@ export type PayslipScalarWhereWithAggregatesInput = {
   grossPay?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalWithAggregatesFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -567,6 +615,9 @@ export type PayslipCreateInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -603,6 +654,9 @@ export type PayslipUncheckedCreateInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -631,6 +685,9 @@ export type PayslipUpdateInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -667,6 +724,9 @@ export type PayslipUncheckedUpdateInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -699,6 +759,9 @@ export type PayslipCreateManyInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -725,6 +788,9 @@ export type PayslipUpdateManyMutationInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -755,6 +821,9 @@ export type PayslipUncheckedUpdateManyInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -805,6 +874,9 @@ export type PayslipCountOrderByAggregateInput = {
   grossPay?: Prisma.SortOrder
   totalDeductions?: Prisma.SortOrder
   netPay?: Prisma.SortOrder
+  payeAmount?: Prisma.SortOrder
+  nisEmployeeAmount?: Prisma.SortOrder
+  healthSurchargeAmount?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   allowancesTotal?: Prisma.SortOrder
   monthlyTaxableEarnings?: Prisma.SortOrder
@@ -828,6 +900,9 @@ export type PayslipAvgOrderByAggregateInput = {
   grossPay?: Prisma.SortOrder
   totalDeductions?: Prisma.SortOrder
   netPay?: Prisma.SortOrder
+  payeAmount?: Prisma.SortOrder
+  nisEmployeeAmount?: Prisma.SortOrder
+  healthSurchargeAmount?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   allowancesTotal?: Prisma.SortOrder
   monthlyTaxableEarnings?: Prisma.SortOrder
@@ -844,6 +919,9 @@ export type PayslipMaxOrderByAggregateInput = {
   grossPay?: Prisma.SortOrder
   totalDeductions?: Prisma.SortOrder
   netPay?: Prisma.SortOrder
+  payeAmount?: Prisma.SortOrder
+  nisEmployeeAmount?: Prisma.SortOrder
+  healthSurchargeAmount?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   allowancesTotal?: Prisma.SortOrder
   monthlyTaxableEarnings?: Prisma.SortOrder
@@ -873,6 +951,9 @@ export type PayslipMinOrderByAggregateInput = {
   grossPay?: Prisma.SortOrder
   totalDeductions?: Prisma.SortOrder
   netPay?: Prisma.SortOrder
+  payeAmount?: Prisma.SortOrder
+  nisEmployeeAmount?: Prisma.SortOrder
+  healthSurchargeAmount?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   allowancesTotal?: Prisma.SortOrder
   monthlyTaxableEarnings?: Prisma.SortOrder
@@ -895,6 +976,9 @@ export type PayslipSumOrderByAggregateInput = {
   grossPay?: Prisma.SortOrder
   totalDeductions?: Prisma.SortOrder
   netPay?: Prisma.SortOrder
+  payeAmount?: Prisma.SortOrder
+  nisEmployeeAmount?: Prisma.SortOrder
+  healthSurchargeAmount?: Prisma.SortOrder
   baseSalary?: Prisma.SortOrder
   allowancesTotal?: Prisma.SortOrder
   monthlyTaxableEarnings?: Prisma.SortOrder
@@ -1107,6 +1191,9 @@ export type PayslipCreateWithoutOrganizationInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1141,6 +1228,9 @@ export type PayslipUncheckedCreateWithoutOrganizationInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1202,6 +1292,9 @@ export type PayslipScalarWhereInput = {
   grossPay?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFilter<"Payslip"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1228,6 +1321,9 @@ export type PayslipCreateWithoutEmployeeInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1262,6 +1358,9 @@ export type PayslipUncheckedCreateWithoutEmployeeInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1316,6 +1415,9 @@ export type PayslipCreateWithoutPayrollPaymentInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1351,6 +1453,9 @@ export type PayslipUncheckedCreateWithoutPayrollPaymentInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1394,6 +1499,9 @@ export type PayslipUpdateWithoutPayrollPaymentInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1429,6 +1537,9 @@ export type PayslipUncheckedUpdateWithoutPayrollPaymentInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1456,6 +1567,9 @@ export type PayslipCreateWithoutPayrollPeriodInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1490,6 +1604,9 @@ export type PayslipUncheckedCreateWithoutPayrollPeriodInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1544,6 +1661,9 @@ export type PayslipCreateWithoutPayRunInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1578,6 +1698,9 @@ export type PayslipUncheckedCreateWithoutPayRunInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1632,6 +1755,9 @@ export type PayslipCreateWithoutLineItemsInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1667,6 +1793,9 @@ export type PayslipUncheckedCreateWithoutLineItemsInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1710,6 +1839,9 @@ export type PayslipUpdateWithoutLineItemsInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1745,6 +1877,9 @@ export type PayslipUncheckedUpdateWithoutLineItemsInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1775,6 +1910,9 @@ export type PayslipCreateManyOrganizationInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1801,6 +1939,9 @@ export type PayslipUpdateWithoutOrganizationInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1835,6 +1976,9 @@ export type PayslipUncheckedUpdateWithoutOrganizationInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1866,6 +2010,9 @@ export type PayslipUncheckedUpdateManyWithoutOrganizationInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1895,6 +2042,9 @@ export type PayslipCreateManyEmployeeInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1921,6 +2071,9 @@ export type PayslipUpdateWithoutEmployeeInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1955,6 +2108,9 @@ export type PayslipUncheckedUpdateWithoutEmployeeInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1986,6 +2142,9 @@ export type PayslipUncheckedUpdateManyWithoutEmployeeInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2015,6 +2174,9 @@ export type PayslipCreateManyPayrollPeriodInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2041,6 +2203,9 @@ export type PayslipUpdateWithoutPayrollPeriodInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2075,6 +2240,9 @@ export type PayslipUncheckedUpdateWithoutPayrollPeriodInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2106,6 +2274,9 @@ export type PayslipUncheckedUpdateManyWithoutPayrollPeriodInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2135,6 +2306,9 @@ export type PayslipCreateManyPayRunInput = {
   grossPay: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions: runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay: runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal: runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2161,6 +2335,9 @@ export type PayslipUpdateWithoutPayRunInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2195,6 +2372,9 @@ export type PayslipUncheckedUpdateWithoutPayRunInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2226,6 +2406,9 @@ export type PayslipUncheckedUpdateManyWithoutPayRunInput = {
   grossPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalDeductions?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   netPay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  payeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  nisEmployeeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  healthSurchargeAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   allowancesTotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   monthlyTaxableEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2287,6 +2470,9 @@ export type PayslipSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   grossPay?: boolean
   totalDeductions?: boolean
   netPay?: boolean
+  payeAmount?: boolean
+  nisEmployeeAmount?: boolean
+  healthSurchargeAmount?: boolean
   baseSalary?: boolean
   allowancesTotal?: boolean
   monthlyTaxableEarnings?: boolean
@@ -2324,6 +2510,9 @@ export type PayslipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   grossPay?: boolean
   totalDeductions?: boolean
   netPay?: boolean
+  payeAmount?: boolean
+  nisEmployeeAmount?: boolean
+  healthSurchargeAmount?: boolean
   baseSalary?: boolean
   allowancesTotal?: boolean
   monthlyTaxableEarnings?: boolean
@@ -2358,6 +2547,9 @@ export type PayslipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   grossPay?: boolean
   totalDeductions?: boolean
   netPay?: boolean
+  payeAmount?: boolean
+  nisEmployeeAmount?: boolean
+  healthSurchargeAmount?: boolean
   baseSalary?: boolean
   allowancesTotal?: boolean
   monthlyTaxableEarnings?: boolean
@@ -2392,6 +2584,9 @@ export type PayslipSelectScalar = {
   grossPay?: boolean
   totalDeductions?: boolean
   netPay?: boolean
+  payeAmount?: boolean
+  nisEmployeeAmount?: boolean
+  healthSurchargeAmount?: boolean
   baseSalary?: boolean
   allowancesTotal?: boolean
   monthlyTaxableEarnings?: boolean
@@ -2411,7 +2606,7 @@ export type PayslipSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PayslipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "payRunId" | "payrollPeriodId" | "employeeId" | "status" | "currency" | "grossPay" | "totalDeductions" | "netPay" | "baseSalary" | "allowancesTotal" | "monthlyTaxableEarnings" | "employeeNumber" | "employeeName" | "nisNumber" | "birNumber" | "jobTitle" | "departmentName" | "payFrequency" | "paymentMethod" | "snapshot" | "excludedAt" | "excludedByUserId" | "exclusionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["payslip"]>
+export type PayslipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "payRunId" | "payrollPeriodId" | "employeeId" | "status" | "currency" | "grossPay" | "totalDeductions" | "netPay" | "payeAmount" | "nisEmployeeAmount" | "healthSurchargeAmount" | "baseSalary" | "allowancesTotal" | "monthlyTaxableEarnings" | "employeeNumber" | "employeeName" | "nisNumber" | "birNumber" | "jobTitle" | "departmentName" | "payFrequency" | "paymentMethod" | "snapshot" | "excludedAt" | "excludedByUserId" | "exclusionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["payslip"]>
 export type PayslipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   payRun?: boolean | Prisma.PayRunDefaultArgs<ExtArgs>
@@ -2455,6 +2650,12 @@ export type $PayslipPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     grossPay: runtime.Decimal
     totalDeductions: runtime.Decimal
     netPay: runtime.Decimal
+    /**
+     * Denormalized statutory lines for YTD/report sums without loading snapshot JSON.
+     */
+    payeAmount: runtime.Decimal
+    nisEmployeeAmount: runtime.Decimal
+    healthSurchargeAmount: runtime.Decimal
     baseSalary: runtime.Decimal
     allowancesTotal: runtime.Decimal
     monthlyTaxableEarnings: runtime.Decimal
@@ -2917,6 +3118,9 @@ export interface PayslipFieldRefs {
   readonly grossPay: Prisma.FieldRef<"Payslip", 'Decimal'>
   readonly totalDeductions: Prisma.FieldRef<"Payslip", 'Decimal'>
   readonly netPay: Prisma.FieldRef<"Payslip", 'Decimal'>
+  readonly payeAmount: Prisma.FieldRef<"Payslip", 'Decimal'>
+  readonly nisEmployeeAmount: Prisma.FieldRef<"Payslip", 'Decimal'>
+  readonly healthSurchargeAmount: Prisma.FieldRef<"Payslip", 'Decimal'>
   readonly baseSalary: Prisma.FieldRef<"Payslip", 'Decimal'>
   readonly allowancesTotal: Prisma.FieldRef<"Payslip", 'Decimal'>
   readonly monthlyTaxableEarnings: Prisma.FieldRef<"Payslip", 'Decimal'>

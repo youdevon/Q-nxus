@@ -2418,6 +2418,9 @@ export type $PayRunPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "PayRun"
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
+    /**
+     * Restrict so deleting a period cannot wipe pay runs (including posted history).
+     */
     payrollPeriod: Prisma.$PayrollPeriodPayload<ExtArgs>
     sourcePayRun: Prisma.$PayRunPayload<ExtArgs> | null
     derivedRuns: Prisma.$PayRunPayload<ExtArgs>[]

@@ -14,88 +14,100 @@ import type {
 export type { PayrollReadinessData, PayrollReadinessRow };
 
 export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
-  const [employees, fileCompleteness] = await Promise.all([
-    prisma.employee.findMany({
-      where: {
-        isArchived: false,
-        employmentStatus: {
-          in: ["ACTIVE", "ON_LEAVE"],
+  const employees = await prisma.employee.findMany({
+    where: {
+      isArchived: false,
+      employmentStatus: {
+        in: ["ACTIVE", "ON_LEAVE"],
+      },
+    },
+    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
+    select: {
+      id: true,
+      employeeNumber: true,
+      firstName: true,
+      lastName: true,
+      workforceCategory: true,
+      nisNumber: true,
+      birNumber: true,
+      departmentId: true,
+      department: {
+        select: {
+          name: true,
         },
       },
-      orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
-      select: {
-        id: true,
-        employeeNumber: true,
-        firstName: true,
-        lastName: true,
-        workforceCategory: true,
-        nisNumber: true,
-        birNumber: true,
-        department: {
-          select: {
-            name: true,
-          },
+      bankAccounts: {
+        where: { isActive: true, archivedAt: null },
+        orderBy: [{ sortOrder: "asc" }],
+        select: {
+          id: true,
+          bankName: true,
+          branchName: true,
+          accountNumber: true,
+          accountNumberLastFour: true,
+          accountHolderName: true,
+          isPrimary: true,
+          sortOrder: true,
+          financialInstitutionId: true,
         },
-        bankAccounts: {
-          where: { isActive: true, archivedAt: null },
-          orderBy: [{ sortOrder: "asc" }],
-          select: {
-            id: true,
-            bankName: true,
-            branchName: true,
-            accountNumber: true,
-            accountNumberLastFour: true,
-            accountHolderName: true,
-            isPrimary: true,
-            sortOrder: true,
-            financialInstitutionId: true,
-          },
+      },
+      payrollAllocations: {
+        where: { isActive: true },
+        orderBy: [{ priority: "asc" }],
+        select: {
+          employeeBankAccountId: true,
+          allocationType: true,
+          fixedAmount: true,
+          percentage: true,
+          receivesRemainder: true,
+          isActive: true,
+          priority: true,
         },
-        payrollAllocations: {
-          where: { isActive: true },
-          orderBy: [{ priority: "asc" }],
-          select: {
-            employeeBankAccountId: true,
-            allocationType: true,
-            fixedAmount: true,
-            percentage: true,
-            receivesRemainder: true,
-            isActive: true,
-            priority: true,
-          },
-        },
-        payrollProfile: {
-          select: {
-            payFrequency: true,
-            paymentMethod: true,
-            nisNumber: true,
-            birNumber: true,
-            exemptFromNis: true,
-            exemptFromPaye: true,
-            bankAccounts: {
-              select: {
-                bankName: true,
-                accountNumber: true,
-                amount: true,
-                isPrimary: true,
-              },
+      },
+      payrollProfile: {
+        select: {
+          payFrequency: true,
+          paymentMethod: true,
+          nisNumber: true,
+          birNumber: true,
+          exemptFromNis: true,
+          exemptFromPaye: true,
+          bankAccounts: {
+            select: {
+              bankName: true,
+              accountNumber: true,
+              amount: true,
+              isPrimary: true,
             },
           },
         },
-        contracts: {
-          where: {
-            isCurrent: true,
-            status: "ACTIVE",
-          },
-          take: 1,
-          select: {
-            baseSalary: true,
-          },
+      },
+      contracts: {
+        where: {
+          isCurrent: true,
+          status: "ACTIVE",
+        },
+        take: 1,
+        select: {
+          baseSalary: true,
         },
       },
-    }),
-    getOrgEmployeeFileCompleteness({ mode: "summary" }),
-  ]);
+    },
+  });
+
+  const fileCompleteness = await getOrgEmployeeFileCompleteness({
+    mode: "summary",
+    employees: employees
+      .filter((employee) => employee.workforceCategory === "EMPLOYEE")
+      .map((employee) => ({
+        id: employee.id,
+        employeeNumber: employee.employeeNumber,
+        firstName: employee.firstName,
+        lastName: employee.lastName,
+        departmentId: employee.departmentId,
+        departmentName: employee.department?.name ?? null,
+      })),
+  });
 
   const completenessByEmployee = new Map(
     fileCompleteness.map((row) => [row.employeeId, row.completeness]),

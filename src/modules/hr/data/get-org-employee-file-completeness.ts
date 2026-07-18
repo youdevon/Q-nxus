@@ -28,32 +28,52 @@ export async function getOrgEmployeeFileCompleteness(options?: {
   itemType?: EmployeeFileChecklistItemType | null;
   incompleteOnly?: boolean;
   mode?: "full" | "summary";
+  /** When provided, skip the employee directory query (shared with payroll readiness). */
+  employees?: Array<{
+    id: string;
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+    departmentId: string | null;
+    departmentName: string | null;
+  }>;
 }): Promise<EmployeeFileCompletenessRow[]> {
   const mode = options?.mode ?? "full";
 
-  const employees = await prisma.employee.findMany({
-    where: {
-      isArchived: false,
-      employmentStatus: { in: ["ACTIVE", "ON_LEAVE"] },
-      // Non-employee payees do not maintain employee files.
-      workforceCategory: "EMPLOYEE",
-      ...(options?.organizationId
-        ? { organizationId: options.organizationId }
-        : {}),
-      ...(options?.departmentId
-        ? { departmentId: options.departmentId }
-        : {}),
-    },
-    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
-    select: {
-      id: true,
-      employeeNumber: true,
-      firstName: true,
-      lastName: true,
-      departmentId: true,
-      department: { select: { name: true } },
-    },
-  });
+  const employees =
+    options?.employees ??
+    (
+      await prisma.employee.findMany({
+        where: {
+          isArchived: false,
+          employmentStatus: { in: ["ACTIVE", "ON_LEAVE"] },
+          // Non-employee payees do not maintain employee files.
+          workforceCategory: "EMPLOYEE",
+          ...(options?.organizationId
+            ? { organizationId: options.organizationId }
+            : {}),
+          ...(options?.departmentId
+            ? { departmentId: options.departmentId }
+            : {}),
+        },
+        orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
+        select: {
+          id: true,
+          employeeNumber: true,
+          firstName: true,
+          lastName: true,
+          departmentId: true,
+          department: { select: { name: true } },
+        },
+      })
+    ).map((employee) => ({
+      id: employee.id,
+      employeeNumber: employee.employeeNumber,
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      departmentId: employee.departmentId,
+      departmentName: employee.department?.name ?? null,
+    }));
 
   if (employees.length === 0) {
     return [];
@@ -176,7 +196,7 @@ export async function getOrgEmployeeFileCompleteness(options?: {
       employeeNumber: employee.employeeNumber,
       displayName: `${employee.firstName} ${employee.lastName}`,
       departmentId: employee.departmentId,
-      departmentName: employee.department?.name ?? null,
+      departmentName: employee.departmentName,
       completeness,
     };
   });

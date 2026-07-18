@@ -387,7 +387,7 @@ export type EmployeeLeaveBalanceOrderByWithRelationInput = {
 
 export type EmployeeLeaveBalanceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  contractId_leaveTypeId?: Prisma.EmployeeLeaveBalanceContractIdLeaveTypeIdCompoundUniqueInput
+  contractId_leaveTypeId_cycleStart_cycleEnd?: Prisma.EmployeeLeaveBalanceContractIdLeaveTypeIdCycleStartCycleEndCompoundUniqueInput
   AND?: Prisma.EmployeeLeaveBalanceWhereInput | Prisma.EmployeeLeaveBalanceWhereInput[]
   OR?: Prisma.EmployeeLeaveBalanceWhereInput[]
   NOT?: Prisma.EmployeeLeaveBalanceWhereInput | Prisma.EmployeeLeaveBalanceWhereInput[]
@@ -413,7 +413,7 @@ export type EmployeeLeaveBalanceWhereUniqueInput = Prisma.AtLeast<{
   leaveType?: Prisma.XOR<Prisma.LeaveTypeScalarRelationFilter, Prisma.LeaveTypeWhereInput>
   transactions?: Prisma.LeaveBalanceTransactionListRelationFilter
   requests?: Prisma.LeaveRequestListRelationFilter
-}, "id" | "contractId_leaveTypeId">
+}, "id" | "contractId_leaveTypeId_cycleStart_cycleEnd">
 
 export type EmployeeLeaveBalanceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -627,9 +627,11 @@ export type EmployeeLeaveBalanceOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type EmployeeLeaveBalanceContractIdLeaveTypeIdCompoundUniqueInput = {
+export type EmployeeLeaveBalanceContractIdLeaveTypeIdCycleStartCycleEndCompoundUniqueInput = {
   contractId: string
   leaveTypeId: string
+  cycleStart: Date | string
+  cycleEnd: Date | string
 }
 
 export type EmployeeLeaveBalanceCountOrderByAggregateInput = {

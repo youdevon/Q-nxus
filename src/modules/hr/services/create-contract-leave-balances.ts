@@ -18,12 +18,20 @@ export type CreateContractLeaveBalancesResult = {
   updated: number;
 };
 
+type DbClient = Prisma.TransactionClient | typeof prisma;
+
+/**
+ * Pass `db` as an open transaction client to make balance generation atomic
+ * with the surrounding write (e.g. contract creation). Defaults to the shared
+ * Prisma client for standalone use.
+ */
 export async function createContractLeaveBalances(
   contractId: string,
   createdByUserId?: string | null,
   options?: CreateContractLeaveBalancesOptions,
+  db: DbClient = prisma,
 ): Promise<CreateContractLeaveBalancesResult> {
-  const contract = await prisma.employmentContract.findUnique({
+  const contract = await db.employmentContract.findUnique({
     where: {
       id: contractId,
     },
@@ -59,7 +67,7 @@ export async function createContractLeaveBalances(
     ]),
   );
 
-  const rules = await prisma.leaveEntitlementRule.findMany({
+  const rules = await db.leaveEntitlementRule.findMany({
     where: {
       organizationId: contract.employee.organizationId,
       isActive: true,
@@ -162,7 +170,7 @@ export async function createContractLeaveBalances(
   // Overrides for leave types that have no matching entitlement rule.
   if (overrideByCode.size > 0) {
     const leftoverCodes = [...overrideByCode.keys()];
-    const leaveTypes = await prisma.leaveType.findMany({
+    const leaveTypes = await db.leaveType.findMany({
       where: {
         organizationId: contract.employee.organizationId,
         isActive: true,
@@ -203,13 +211,13 @@ export async function createContractLeaveBalances(
   let updated = 0;
 
   for (const plan of plans) {
-    const existing = await prisma.employeeLeaveBalance.findUnique({
+    // One active balance row per contract+type; cycle window may be updated in place.
+    const existing = await db.employeeLeaveBalance.findFirst({
       where: {
-        contractId_leaveTypeId: {
-          contractId: contract.id,
-          leaveTypeId: plan.leaveTypeId,
-        },
+        contractId: contract.id,
+        leaveTypeId: plan.leaveTypeId,
       },
+      orderBy: [{ cycleEnd: "desc" }],
       select: {
         id: true,
         availableBalance: true,
@@ -229,7 +237,7 @@ export async function createContractLeaveBalances(
         .minus(existing.reserved)
         .minus(existing.taken);
 
-      await prisma.employeeLeaveBalance.update({
+      await db.employeeLeaveBalance.update({
         where: {
           id: existing.id,
         },
@@ -247,7 +255,7 @@ export async function createContractLeaveBalances(
       continue;
     }
 
-    await prisma.$transaction(async (tx) => {
+    const writeBalanceWithLedger = async (tx: Prisma.TransactionClient) => {
       const balance = await tx.employeeLeaveBalance.create({
         data: {
           employeeId: contract.employeeId,
@@ -282,7 +290,15 @@ export async function createContractLeaveBalances(
           createdByUserId: createdByUserId ?? null,
         },
       });
-    });
+    };
+
+    // Balance + ledger entry stay atomic: reuse the caller's transaction when
+    // one was passed in, otherwise open a local one.
+    if ("$transaction" in db) {
+      await db.$transaction(writeBalanceWithLedger);
+    } else {
+      await writeBalanceWithLedger(db);
+    }
 
     created += 1;
   }

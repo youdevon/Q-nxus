@@ -1,6 +1,7 @@
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getOrganizationHolidayDatesInRange } from "@/src/modules/hr/data/get-organization-holidays";
+import { leaveBalanceCycleKey } from "@/src/modules/hr/lib/leave-balance-cycle-key";
 import { calculateLeaveDays } from "@/src/modules/hr/services/calculate-leave-days";
 
 export type ValidatedContractLeaveRequest = {
@@ -129,13 +130,13 @@ export async function validateContractLeaveRequest({
     (!leaveType.documentRequiredAfter ||
       calculation.requestedQuantity.gte(leaveType.documentRequiredAfter));
 
-  const balance = await prisma.employeeLeaveBalance.findUnique({
-    where: {
-      contractId_leaveTypeId: {
-        contractId,
-        leaveTypeId,
-      },
-    },
+  const balance = await prisma.employeeLeaveBalance.findFirst({
+    where: leaveBalanceCycleKey({
+      contractId,
+      leaveTypeId,
+      cycleStart: contract.startDate,
+      cycleEnd: contract.endDate,
+    }),
     select: {
       id: true,
       availableBalance: true,

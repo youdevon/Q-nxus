@@ -1,4 +1,7 @@
 import { prisma } from "@/lib/prisma";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
+
+import { resolveAuditLabels } from "@/src/modules/admin/data/resolve-audit-labels";
 
 const PAGE_SIZE = 25;
 
@@ -8,6 +11,8 @@ export type AuditEventListItem = {
   action: string;
   entityType: string;
   entityId: string | null;
+  /** Human-readable subject for the record (name, title, run number, etc.). */
+  entityLabel: string | null;
   description: string | null;
   oldValues: unknown;
   newValues: unknown;
@@ -36,6 +41,8 @@ export type AuditFilters = {
 
 export type AuditTrailData = {
   events: AuditEventListItem[];
+  /** Resolved labels for FK ids appearing in change payloads on this page. */
+  referenceLabels: Record<string, string>;
   total: number;
   page: number;
   pageSize: number;
@@ -73,90 +80,94 @@ export async function getAuditEvents(
       ? Number(filters.page)
       : 1;
 
+  const user = await getCurrentUser();
+  const organizationId = user?.organizationId ?? null;
+
   const query = filters.query?.trim();
   const dateFrom = parseStartDate(filters.dateFrom);
   const dateTo = parseEndDate(filters.dateTo);
 
-  const where = {
-    ...(filters.moduleKey
-      ? {
-          moduleKey: filters.moduleKey,
-        }
-      : {}),
-    ...(filters.action
-      ? {
-          action: filters.action,
-        }
-      : {}),
-    ...(filters.entityType
-      ? {
-          entityType: filters.entityType,
-        }
-      : {}),
-    ...(dateFrom || dateTo
-      ? {
-          createdAt: {
-            ...(dateFrom ? { gte: dateFrom } : {}),
-            ...(dateTo ? { lte: dateTo } : {}),
+  const orgScope = organizationId
+    ? {
+        OR: [{ organizationId }, { organizationId: null }],
+      }
+    : null;
+
+  const queryScope = query
+    ? {
+        OR: [
+          {
+            description: {
+              contains: query,
+              mode: "insensitive" as const,
+            },
           },
-        }
-      : {}),
-    ...(query
-      ? {
-          OR: [
-            {
-              description: {
-                contains: query,
-                mode: "insensitive" as const,
-              },
+          {
+            action: {
+              contains: query,
+              mode: "insensitive" as const,
             },
-            {
-              action: {
-                contains: query,
-                mode: "insensitive" as const,
-              },
+          },
+          {
+            entityType: {
+              contains: query,
+              mode: "insensitive" as const,
             },
-            {
-              entityType: {
-                contains: query,
-                mode: "insensitive" as const,
-              },
+          },
+          {
+            entityId: {
+              contains: query,
+              mode: "insensitive" as const,
             },
-            {
-              entityId: {
-                contains: query,
-                mode: "insensitive" as const,
-              },
-            },
-            {
-              user: {
-                is: {
-                  OR: [
-                    {
-                      email: {
-                        contains: query,
-                        mode: "insensitive" as const,
-                      },
+          },
+          {
+            user: {
+              is: {
+                OR: [
+                  {
+                    email: {
+                      contains: query,
+                      mode: "insensitive" as const,
                     },
-                    {
-                      firstName: {
-                        contains: query,
-                        mode: "insensitive" as const,
-                      },
+                  },
+                  {
+                    firstName: {
+                      contains: query,
+                      mode: "insensitive" as const,
                     },
-                    {
-                      lastName: {
-                        contains: query,
-                        mode: "insensitive" as const,
-                      },
+                  },
+                  {
+                    lastName: {
+                      contains: query,
+                      mode: "insensitive" as const,
                     },
-                  ],
-                },
+                  },
+                ],
               },
             },
-          ],
-        }
-      : {}),
+          },
+        ],
+      }
+    : null;
+
+  const where = {
+    AND: [
+      ...(orgScope ? [orgScope] : []),
+      ...(filters.moduleKey ? [{ moduleKey: filters.moduleKey }] : []),
+      ...(filters.action ? [{ action: filters.action }] : []),
+      ...(filters.entityType ? [{ entityType: filters.entityType }] : []),
+      ...(dateFrom || dateTo
+        ? [
+            {
+              createdAt: {
+                ...(dateFrom ? { gte: dateFrom } : {}),
+                ...(dateTo ? { lte: dateTo } : {}),
+              },
+            },
+          ]
+        : []),
+      ...(queryScope ? [queryScope] : []),
+    ],
   };
 
   const [events, total, modules, actions, entityTypes] = await Promise.all([
@@ -227,8 +238,29 @@ export async function getAuditEvents(
     }),
   ]);
 
+  const labelMap = await resolveAuditLabels({
+    entityRefs: events
+      .filter((event) => event.entityId)
+      .map((event) => ({
+        entityType: event.entityType,
+        entityId: event.entityId as string,
+      })),
+    changeValues: events.flatMap((event) => [
+      event.oldValues,
+      event.newValues,
+    ]),
+  });
+
+  const referenceLabels = Object.fromEntries(labelMap.entries());
+
   return {
-    events,
+    events: events.map((event) => ({
+      ...event,
+      entityLabel: event.entityId
+        ? (labelMap.get(event.entityId) ?? null)
+        : null,
+    })),
+    referenceLabels,
     total,
     page,
     pageSize: PAGE_SIZE,

@@ -1,6 +1,7 @@
 import { Prisma } from "@/generated/prisma/client";
 
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
+import { payslipPreviewToYtdContribution } from "@/src/modules/payroll/data/get-payslip-ytd";
 import {
   buildPayslipSnapshot,
   extractPayslipSnapshotTotals,
@@ -108,6 +109,8 @@ export function toPayslipCreateData(input: {
   row: PayRunEmployeeSnapshot;
   status: "DRAFT" | "POSTED";
 }): Prisma.PayslipCreateManyInput {
+  const statutory = payslipPreviewToYtdContribution(input.row.snapshot.payslip);
+
   return {
     organizationId: input.organizationId,
     payRunId: input.payRunId,
@@ -118,6 +121,9 @@ export function toPayslipCreateData(input: {
     grossPay: new Prisma.Decimal(input.row.grossPay),
     totalDeductions: new Prisma.Decimal(input.row.totalDeductions),
     netPay: new Prisma.Decimal(input.row.netPay),
+    payeAmount: new Prisma.Decimal(statutory.paye),
+    nisEmployeeAmount: new Prisma.Decimal(statutory.nisEmployee),
+    healthSurchargeAmount: new Prisma.Decimal(statutory.healthSurcharge),
     baseSalary: new Prisma.Decimal(input.row.baseSalary),
     allowancesTotal: new Prisma.Decimal(input.row.allowancesTotal),
     monthlyTaxableEarnings: new Prisma.Decimal(
@@ -139,11 +145,16 @@ export function toPayslipCreateData(input: {
 export function toPayslipRecalcUpdateData(
   row: PayRunEmployeeSnapshot,
 ): Prisma.PayslipUpdateInput {
+  const statutory = payslipPreviewToYtdContribution(row.snapshot.payslip);
+
   return {
     currency: row.currency,
     grossPay: new Prisma.Decimal(row.grossPay),
     totalDeductions: new Prisma.Decimal(row.totalDeductions),
     netPay: new Prisma.Decimal(row.netPay),
+    payeAmount: new Prisma.Decimal(statutory.paye),
+    nisEmployeeAmount: new Prisma.Decimal(statutory.nisEmployee),
+    healthSurchargeAmount: new Prisma.Decimal(statutory.healthSurcharge),
     baseSalary: new Prisma.Decimal(row.baseSalary),
     allowancesTotal: new Prisma.Decimal(row.allowancesTotal),
     monthlyTaxableEarnings: new Prisma.Decimal(row.monthlyTaxableEarnings),

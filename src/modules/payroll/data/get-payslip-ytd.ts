@@ -31,8 +31,27 @@ function toContribution(row: {
   grossPay: { toString(): string };
   totalDeductions: { toString(): string };
   netPay: { toString(): string };
+  payeAmount?: { toString(): string } | null;
+  nisEmployeeAmount?: { toString(): string } | null;
+  healthSurchargeAmount?: { toString(): string } | null;
   snapshot?: unknown;
 }): PayslipYtdContribution {
+  const hasStatutoryColumns =
+    row.payeAmount != null ||
+    row.nisEmployeeAmount != null ||
+    row.healthSurchargeAmount != null;
+
+  if (hasStatutoryColumns) {
+    return {
+      grossPay: Number(row.grossPay.toString()),
+      totalDeductions: Number(row.totalDeductions.toString()),
+      netPay: Number(row.netPay.toString()),
+      paye: Number(row.payeAmount?.toString() ?? 0),
+      nisEmployee: Number(row.nisEmployeeAmount?.toString() ?? 0),
+      healthSurcharge: Number(row.healthSurchargeAmount?.toString() ?? 0),
+    };
+  }
+
   const snapshot = parsePayslipSnapshot(row.snapshot);
   if (snapshot) {
     return payslipPreviewToYtdContribution(snapshot.payslip);
@@ -77,7 +96,9 @@ export async function getPostedPayslipYtd(input: {
       grossPay: true,
       totalDeductions: true,
       netPay: true,
-      snapshot: true,
+      payeAmount: true,
+      nisEmployeeAmount: true,
+      healthSurchargeAmount: true,
       createdAt: true,
       payrollPeriod: {
         select: { periodEnd: true },
@@ -146,7 +167,9 @@ export async function getPreviewPayslipYtd(input: {
       grossPay: true,
       totalDeductions: true,
       netPay: true,
-      snapshot: true,
+      payeAmount: true,
+      nisEmployeeAmount: true,
+      healthSurchargeAmount: true,
     },
   });
 

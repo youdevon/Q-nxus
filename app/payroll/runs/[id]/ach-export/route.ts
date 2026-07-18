@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 
 import { prisma } from "@/lib/prisma";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import {
   isPayrollBankingFeatureEnabled,
@@ -54,8 +55,11 @@ export async function GET(request: Request, { params }: RouteContext) {
     );
   }
 
-  const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const run = await prisma.payRun.findFirst({
+    where: {
+      id: payRunId,
+      organizationId: (await getCurrentUser())?.organizationId,
+    },
     select: {
       id: true,
       runNumber: true,
@@ -68,10 +72,23 @@ export async function GET(request: Request, { params }: RouteContext) {
     return new Response("Posted pay run not found", { status: 404 });
   }
 
+  async function readAchFileOr404(storageKey: string): Promise<string | Response> {
+    try {
+      const absolute = resolveAchExportAbsolutePath(storageKey);
+      return await readFile(absolute, "utf8");
+    } catch {
+      return new Response("Not found", { status: 404 });
+    }
+  }
+
   // Direct download of an existing generated batch.
   if (downloadBatchId) {
     const batch = await prisma.achPaymentBatch.findFirst({
-      where: { id: downloadBatchId, payRunId },
+      where: {
+        id: downloadBatchId,
+        payRunId,
+        organizationId: run.organizationId,
+      },
     });
     if (!batch?.fileStorageKey || !batch.fileName) {
       return Response.json(
@@ -83,24 +100,24 @@ export async function GET(request: Request, { params }: RouteContext) {
       );
     }
 
+    const contentOrError = await readAchFileOr404(batch.fileStorageKey);
+    if (contentOrError instanceof Response) {
+      return contentOrError;
+    }
+    const content = contentOrError;
+
     if (previewOnly) {
-      const absolute = resolveAchExportAbsolutePath(batch.fileStorageKey);
-      const content = await readFile(absolute, "utf8");
       return Response.json({
         batchId: batch.id,
         fileName: batch.fileName,
         contentHash: batch.fileContentHash,
         previewMasked: true,
-        // Preview never returns full account numbers from disk when masked in profile;
-        // still strip obvious long digit runs as a safety net.
         content: content.replace(/\d{6,}/g, (match) =>
           match.length <= 4 ? match : `••••${match.slice(-4)}`,
         ),
       });
     }
 
-    const absolute = resolveAchExportAbsolutePath(batch.fileStorageKey);
-    const content = await readFile(absolute, "utf8");
     const audit = await getAuditRequestMetadata();
     if (capabilities.can("payroll.manage")) {
       await markAchPaymentBatchExported({
@@ -147,6 +164,7 @@ export async function GET(request: Request, { params }: RouteContext) {
   const existingGenerated = await prisma.achPaymentBatch.findFirst({
     where: {
       payRunId,
+      organizationId: run.organizationId,
       status: { in: ["GENERATED", "EXPORTED"] },
       fileStorageKey: { not: null },
     },
@@ -154,11 +172,13 @@ export async function GET(request: Request, { params }: RouteContext) {
   });
 
   if (existingGenerated?.fileStorageKey && existingGenerated.fileName) {
-    const absolute = resolveAchExportAbsolutePath(
+    const contentOrError = await readAchFileOr404(
       existingGenerated.fileStorageKey,
     );
-    const content = await readFile(absolute, "utf8");
-    return new Response(content, {
+    if (contentOrError instanceof Response) {
+      return contentOrError;
+    }
+    return new Response(contentOrError, {
       headers: {
         "content-type":
           existingGenerated.fileMimeType ?? "text/csv; charset=utf-8",
@@ -209,19 +229,22 @@ export async function GET(request: Request, { params }: RouteContext) {
         error: "ACH_FILE_MISSING",
         message: "Batch was generated but the file is missing.",
       },
-      { status: 500 },
+      { status: 404 },
     );
   }
 
-  const absolute = resolveAchExportAbsolutePath(batch.fileStorageKey);
-  const content = await readFile(absolute, "utf8");
+  const contentOrError = await readAchFileOr404(batch.fileStorageKey);
+  if (contentOrError instanceof Response) {
+    return contentOrError;
+  }
+
   await markAchPaymentBatchExported({
     batchId: batch.id,
     actorUserId: capabilities.userId,
     audit,
   });
 
-  return new Response(content, {
+  return new Response(contentOrError, {
     headers: {
       "content-type": batch.fileMimeType ?? "text/csv; charset=utf-8",
       "content-disposition": `attachment; filename="${batch.fileName}"`,

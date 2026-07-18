@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 
 function formatDate(value: Date): string {
   return value.toISOString().slice(0, 10);
@@ -36,6 +37,14 @@ function serializeRequest(request: {
     employeeNumber: string;
     firstName: string;
     lastName: string;
+    position: {
+      title: string;
+    } | null;
+    assignments: {
+      position: {
+        title: string;
+      } | null;
+    }[];
   };
   finalDecisionBy: {
     firstName: string;
@@ -55,6 +64,26 @@ function serializeRequest(request: {
       firstName: string;
       lastName: string;
       email: string;
+    } | null;
+  }[];
+  acknowledgements?: {
+    id: string;
+    sequenceNumber: number;
+    status: string;
+    acknowledgedAt: Date | null;
+    comment: string | null;
+    acknowledgerUserId: string | null;
+    position: {
+      title: string;
+    };
+    acknowledgerUser: {
+      firstName: string;
+      lastName: string;
+      email: string;
+    } | null;
+    acknowledgerEmployee: {
+      firstName: string;
+      lastName: string;
     } | null;
   }[];
 }) {
@@ -78,7 +107,13 @@ function serializeRequest(request: {
     leaveTypeName: request.leaveType.name,
     leaveTypeColour: request.leaveType.colour,
     contractNumber: request.contract.contractNumber,
-    jobTitle: request.contract.jobTitle,
+    positionTitle:
+      resolveEmployeePositionTitle({
+        assignmentPositionTitle:
+          request.employee.assignments[0]?.position?.title,
+        positionTitle: request.employee.position?.title,
+        contractJobTitle: request.contract.jobTitle,
+      }) ?? request.contract.jobTitle,
     employeeId: request.employee.id,
     employeeNumber: request.employee.employeeNumber,
     employeeName: `${request.employee.firstName} ${request.employee.lastName}`,
@@ -97,6 +132,21 @@ function serializeRequest(request: {
         ? `${step.approverUser.firstName} ${step.approverUser.lastName}`
         : null,
       approverEmail: step.approverUser?.email ?? null,
+    })),
+    acknowledgements: (request.acknowledgements ?? []).map((item) => ({
+      id: item.id,
+      sequenceNumber: item.sequenceNumber,
+      status: item.status,
+      acknowledgedAt: item.acknowledgedAt?.toISOString() ?? null,
+      comment: item.comment,
+      acknowledgerUserId: item.acknowledgerUserId,
+      positionTitle: item.position.title,
+      acknowledgerName: item.acknowledgerUser
+        ? `${item.acknowledgerUser.firstName} ${item.acknowledgerUser.lastName}`
+        : item.acknowledgerEmployee
+          ? `${item.acknowledgerEmployee.firstName} ${item.acknowledgerEmployee.lastName}`
+          : null,
+      acknowledgerEmail: item.acknowledgerUser?.email ?? null,
     })),
   };
 }
@@ -136,6 +186,24 @@ const requestSelect = {
       employeeNumber: true,
       firstName: true,
       lastName: true,
+      position: {
+        select: {
+          title: true,
+        },
+      },
+      assignments: {
+        where: {
+          isCurrent: true,
+        },
+        take: 1,
+        select: {
+          position: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      },
     },
   },
   finalDecisionBy: {
@@ -165,6 +233,37 @@ const requestSelect = {
           firstName: true,
           lastName: true,
           email: true,
+        },
+      },
+    },
+  },
+  acknowledgements: {
+    orderBy: {
+      sequenceNumber: "asc" as const,
+    },
+    select: {
+      id: true,
+      sequenceNumber: true,
+      status: true,
+      acknowledgedAt: true,
+      comment: true,
+      acknowledgerUserId: true,
+      position: {
+        select: {
+          title: true,
+        },
+      },
+      acknowledgerUser: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+      },
+      acknowledgerEmployee: {
+        select: {
+          firstName: true,
+          lastName: true,
         },
       },
     },
@@ -225,26 +324,31 @@ function leaveRequestScopeWhere(
 
 const awaitingDecisionStatuses = [
   "SUBMITTED",
+  "AWAITING_ACKNOWLEDGEMENT",
   "PENDING_APPROVAL",
   "MANAGER_APPROVED",
 ] as const;
 
-export async function getLeaveWorkspace() {
+export async function getLeaveWorkspace(options?: {
+  /** Cap the main request list (queues stay uncapped / small). Default 100. */
+  requestLimit?: number;
+}) {
   const user = await requireCurrentUser();
-  const capabilities = await getUserCapabilities(user.id);
+  const capabilities = await getUserCapabilities();
   const canManageLeave = capabilities?.can("leave.manage") ?? false;
   const canApprove =
     (capabilities?.can("leave.approve") ?? false) || canManageLeave;
-  const canViewOrgStats =
-    capabilities?.canAny("leave.manage", "people.directory.view") ?? false;
+  const canViewDirectory =
+    capabilities?.can("people.directory.view") ?? false;
+  const canManageLeaveWorkspace =
+    canApprove || canManageLeave || canViewDirectory;
 
-  if (!user.employeeId && !canApprove && !canManageLeave) {
-    throw new Error("Your user account is not linked to an employee record.");
+  if (!canManageLeaveWorkspace) {
+    throw new Error("You do not have permission to manage leave requests.");
   }
 
-  // Approvers/HR without an employee link still need org queues.
-  const statsScope =
-    canViewOrgStats || !user.employeeId ? "org" : "self";
+  // Management workspace is always organization-scoped.
+  const statsScope = "org" as const;
   const yearStart = currentYearStartUtc();
   const today = todayUtcDate();
   const organizationId =
@@ -252,17 +356,22 @@ export async function getLeaveWorkspace() {
   const balanceScopeWhere = currentContractBalanceWhere(
     statsScope,
     organizationId,
-    user.employeeId,
+    null,
   );
   const requestScopeWhere = leaveRequestScopeWhere(
     statsScope,
     organizationId,
-    user.employeeId,
+    null,
+  );
+  const requestLimit = Math.max(
+    25,
+    Math.min(options?.requestLimit ?? 100, 250),
   );
 
   const [
-    myRequests,
+    allRequests,
     pendingMyApprovals,
+    pendingMyAcknowledgements,
     pendingManagerApprovals,
     pendingHrConfirmations,
     daysTakenAggregate,
@@ -270,23 +379,22 @@ export async function getLeaveWorkspace() {
     pendingRequestsCount,
     currentlyOnLeaveRequests,
   ] = await Promise.all([
-    user.employeeId
-      ? prisma.leaveRequest.findMany({
-          where: {
-            employeeId: user.employeeId,
-          },
-          orderBy: [
-            {
-              startDate: "desc",
-            },
-            {
-              createdAt: "desc",
-            },
-          ],
-          select: requestSelect,
-        })
-      : Promise.resolve([]),
-    // Assigned manager queue (anyone with leave.approve / leave.manage).
+    prisma.leaveRequest.findMany({
+      where: {
+        organizationId,
+      },
+      orderBy: [
+        {
+          startDate: "desc",
+        },
+        {
+          createdAt: "desc",
+        },
+      ],
+      take: requestLimit,
+      select: requestSelect,
+    }),
+    // Assigned manager/final queue (anyone with leave.approve / leave.manage).
     canApprove
       ? prisma.leaveRequest.findMany({
           where: {
@@ -312,19 +420,53 @@ export async function getLeaveWorkspace() {
           select: requestSelect,
         })
       : Promise.resolve([]),
+    canApprove
+      ? prisma.leaveRequest.findMany({
+          where: {
+            organizationId,
+            status: "AWAITING_ACKNOWLEDGEMENT",
+            acknowledgements: {
+              some: {
+                status: "PENDING",
+                acknowledgerUserId: user.id,
+              },
+            },
+          },
+          orderBy: [
+            {
+              submittedAt: "asc",
+            },
+            {
+              createdAt: "asc",
+            },
+          ],
+          select: requestSelect,
+        })
+      : Promise.resolve([]),
     // Org-wide awaiting manager — HR oversight (not assigned to current user).
     canManageLeave
       ? prisma.leaveRequest.findMany({
           where: {
             organizationId,
             status: {
-              in: ["SUBMITTED", "PENDING_APPROVAL"],
+              in: ["SUBMITTED", "PENDING_APPROVAL", "AWAITING_ACKNOWLEDGEMENT"],
             },
-            approvalSteps: {
-              some: {
-                status: "PENDING",
+            OR: [
+              {
+                approvalSteps: {
+                  some: {
+                    status: "PENDING",
+                  },
+                },
               },
-            },
+              {
+                acknowledgements: {
+                  some: {
+                    status: "PENDING",
+                  },
+                },
+              },
+            ],
           },
           orderBy: [
             {
@@ -474,14 +616,16 @@ export async function getLeaveWorkspace() {
         approvedYtdAggregate._sum.requestedQuantity?.toString() ?? "0",
       pendingRequestsCount,
       pendingMyApprovalCount: pendingMyApprovals.length,
+      pendingMyAcknowledgementCount: pendingMyAcknowledgements.length,
       pendingHrConfirmationCount: pendingHrConfirmations.length,
       pendingManagerApprovalCount: pendingManagerApprovals.length,
       currentlyOnLeaveCount: currentlyOnLeavePersonCount,
     },
     currentlyOnLeave,
-    myRequests: myRequests.map(serializeRequest),
+    allRequests: allRequests.map(serializeRequest),
     pendingApprovals: pendingApprovals.map(serializeRequest),
     pendingMyApprovals: pendingMyApprovals.map(serializeRequest),
+    pendingMyAcknowledgements: pendingMyAcknowledgements.map(serializeRequest),
     pendingManagerApprovals: pendingManagerApprovals.map(serializeRequest),
     pendingHrConfirmations: pendingHrConfirmations.map(serializeRequest),
   };
@@ -489,7 +633,33 @@ export async function getLeaveWorkspace() {
 
 export type LeaveWorkspaceData = Awaited<ReturnType<typeof getLeaveWorkspace>>;
 
-export type LeaveRequestSummary = LeaveWorkspaceData["myRequests"][number];
+export type LeaveRequestSummary = LeaveWorkspaceData["allRequests"][number];
+
+/** Self-service list of the current employee's own leave requests. */
+export async function getMyLeaveRequests() {
+  const user = await requireCurrentUser();
+
+  if (!user.employeeId) {
+    return [];
+  }
+
+  const requests = await prisma.leaveRequest.findMany({
+    where: {
+      employeeId: user.employeeId,
+    },
+    orderBy: [
+      {
+        startDate: "desc",
+      },
+      {
+        createdAt: "desc",
+      },
+    ],
+    select: requestSelect,
+  });
+
+  return requests.map(serializeRequest);
+}
 
 export async function getLeaveRequestDetail(leaveRequestId: string) {
   const user = await requireCurrentUser();
@@ -529,7 +699,10 @@ export async function getLeaveRequestDetail(leaveRequestId: string) {
     canManageLeave ||
     request.employeeId === user.employeeId ||
     request.createdByUserId === user.id ||
-    request.approvalSteps.some((step) => step.approverUserId === user.id);
+    request.approvalSteps.some((step) => step.approverUserId === user.id) ||
+    request.acknowledgements.some(
+      (item) => item.acknowledgerUserId === user.id,
+    );
 
   if (!canView) {
     return null;
@@ -555,8 +728,19 @@ export async function getLeaveRequestDetail(leaveRequestId: string) {
   );
   const awaitingDecision =
     request.status === "SUBMITTED" ||
+    request.status === "AWAITING_ACKNOWLEDGEMENT" ||
     request.status === "PENDING_APPROVAL" ||
     request.status === "MANAGER_APPROVED";
+  const awaitingApprovalDecision =
+    request.status === "SUBMITTED" ||
+    request.status === "PENDING_APPROVAL" ||
+    request.status === "MANAGER_APPROVED";
+
+  const pendingAck = request.acknowledgements.find(
+    (item) =>
+      item.status === "PENDING" &&
+      (item.acknowledgerUserId === user.id || canManageLeave),
+  );
 
   return {
     ...serializeRequest(request),
@@ -566,8 +750,8 @@ export async function getLeaveRequestDetail(leaveRequestId: string) {
       mimeType: attachment.mimeType,
       fileSize: attachment.fileSize,
       uploadedAt: attachment.uploadedAt.toISOString(),
-      viewUrl: `/leave/${request.id}/attachments/${attachment.id}?disposition=inline`,
-      downloadUrl: `/leave/${request.id}/attachments/${attachment.id}?disposition=attachment`,
+      viewUrl: `/people/leave/${request.id}/attachments/${attachment.id}?disposition=inline`,
+      downloadUrl: `/people/leave/${request.id}/attachments/${attachment.id}?disposition=attachment`,
     })),
     decisionMode:
       request.status === "MANAGER_APPROVED" && canManageLeave
@@ -575,8 +759,12 @@ export async function getLeaveRequestDetail(leaveRequestId: string) {
         : ("manager" as const),
     canDecide:
       Boolean(pendingStep) &&
-      awaitingDecision &&
+      awaitingApprovalDecision &&
       (pendingStep?.approverUserId === user.id || canManageLeave),
+    canAcknowledge:
+      request.status === "AWAITING_ACKNOWLEDGEMENT" &&
+      Boolean(pendingAck) &&
+      (pendingAck?.acknowledgerUserId === user.id || canManageLeave),
     canWithdraw: isOwner && awaitingDecision,
     canCancel:
       isOwner && request.status === "APPROVED" && leaveStartUtc > todayUtc,

@@ -1,22 +1,26 @@
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/src/lib/format";
-import {
-  getPostedPayslipYtd,
-  payslipPreviewToYtdContribution,
-} from "@/src/modules/payroll/data/get-payslip-ytd";
-import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { evaluateNetPayVariance, type PayVarianceFlag } from "@/src/modules/payroll/lib/pay-variance";
 import {
   computePayslipDelta,
   netDeltaDirection,
   formatSignedMoney,
 } from "@/src/modules/payroll/lib/payroll-correction-delta";
-import { isPayRunPosted } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import { isPayslipIncludedInRun } from "@/src/modules/payroll/lib/pay-run-membership";
-import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
-import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
 import { resolvePayrollOrganization } from "@/src/modules/payroll/lib/resolve-payroll-organization";
+
+export {
+  getEmployeePostedPayslipHistory,
+  getMostRecentPostedPayslip,
+  getPayRunBatchPrint,
+  getStoredPayslip,
+  type EmployeePayslipHistory,
+  type PayRunBatchPrintDocument,
+  type PayRunBatchPrintResult,
+  type SelfServicePayslipHistoryItem,
+  type StoredPayslipResult,
+} from "@/src/modules/payroll/data/get-stored-payslip";
 
 export type PayRunLifecycleStatusFilter =
   | "DRAFT"
@@ -148,7 +152,17 @@ export async function listPayRuns(options?: {
   const runs = await prisma.payRun.findMany({
     where: { organizationId },
     orderBy: [{ createdAt: "desc" }],
-    include: {
+    select: {
+      id: true,
+      runNumber: true,
+      status: true,
+      runKind: true,
+      currency: true,
+      employeeCount: true,
+      totalGross: true,
+      totalNet: true,
+      postedAt: true,
+      createdAt: true,
       payrollPeriod: {
         select: {
           id: true,
@@ -202,11 +216,8 @@ export async function getPayRunDetail(
       },
       payslips: {
         orderBy: [{ employeeName: "asc" }],
-        include: {
-          lineItems: {
-            orderBy: [{ createdAt: "asc" }],
-          },
-        },
+        // Snapshot JSON and line-item rows load on payslip detail / editor expand.
+        omit: { snapshot: true },
       },
     },
   });
@@ -214,6 +225,11 @@ export async function getPayRunDetail(
   if (!run) {
     return null;
   }
+
+  const needsLineItems =
+    run.status === "DRAFT" || run.status === "APPROVED";
+
+  const payslipIds = run.payslips.map((slip) => slip.id);
 
   const userIds = [
     ...new Set(
@@ -226,24 +242,60 @@ export async function getPayRunDetail(
     ),
   ];
 
-  const users =
+  const includedEmployeeIds =
+    run.runKind === "REGULAR" &&
+    (run.status === "DRAFT" || run.status === "APPROVED")
+      ? [
+          ...new Set(
+            run.payslips
+              .filter((slip) => isPayslipIncludedInRun(slip.status))
+              .map((slip) => slip.employeeId),
+          ),
+        ]
+      : [];
+
+  const [
+    users,
+    lineItems,
+    recalcEvent,
+    exportEvents,
+    priorNetRows,
+  ] = await Promise.all([
     userIds.length > 0
-      ? await prisma.user.findMany({
+      ? prisma.user.findMany({
           where: { id: { in: userIds } },
           select: { id: true, firstName: true, lastName: true },
         })
-      : [];
-
-  const userNameById = new Map(
-    users.map((user) => [
-      user.id,
-      `${user.firstName} ${user.lastName}`.trim(),
-    ]),
-  );
-  const excluderNameById = userNameById;
-
-  // Audit-derived provenance: last recalculation + recent exports.
-  const [recalcEvent, exportEvents] = await Promise.all([
+      : Promise.resolve([] as Array<{
+          id: string;
+          firstName: string;
+          lastName: string;
+        }>),
+    needsLineItems && payslipIds.length > 0
+      ? prisma.payrollLineItem.findMany({
+          where: { payslipId: { in: payslipIds } },
+          orderBy: [{ createdAt: "asc" }],
+          select: {
+            id: true,
+            payslipId: true,
+            lineType: true,
+            code: true,
+            label: true,
+            amount: true,
+            isTaxable: true,
+            notes: true,
+          },
+        })
+      : Promise.resolve([] as Array<{
+          id: string;
+          payslipId: string;
+          lineType: "EARNING" | "DEDUCTION";
+          code: string;
+          label: string;
+          amount: { toString(): string };
+          isTaxable: boolean;
+          notes: string | null;
+        }>),
     prisma.auditEvent.findFirst({
       where: {
         moduleKey: "payroll",
@@ -273,7 +325,35 @@ export async function getPayRunDetail(
         user: { select: { firstName: true, lastName: true } },
       },
     }),
+    includedEmployeeIds.length > 0
+      ? prisma.$queryRaw<Array<{ employeeId: string; netPay: Prisma.Decimal }>>`
+          SELECT DISTINCT ON (p."employeeId")
+            p."employeeId",
+            p."netPay"
+          FROM "payroll"."payslips" p
+          INNER JOIN "payroll"."payroll_periods" pp ON pp.id = p."payrollPeriodId"
+          WHERE p."employeeId" IN (${Prisma.join(includedEmployeeIds)})
+            AND p.status = 'POSTED'
+            AND pp."periodEnd" < ${run.payrollPeriod.periodEnd}
+          ORDER BY p."employeeId", pp."periodEnd" DESC
+        `
+      : Promise.resolve([] as Array<{ employeeId: string; netPay: Prisma.Decimal }>),
   ]);
+
+  const lineItemsByPayslip = new Map<string, typeof lineItems>();
+  for (const line of lineItems) {
+    const list = lineItemsByPayslip.get(line.payslipId) ?? [];
+    list.push(line);
+    lineItemsByPayslip.set(line.payslipId, list);
+  }
+
+  const userNameById = new Map(
+    users.map((user) => [
+      user.id,
+      `${user.firstName} ${user.lastName}`.trim(),
+    ]),
+  );
+  const excluderNameById = userNameById;
 
   const userDisplay = (
     user: { firstName: string; lastName: string } | null,
@@ -380,34 +460,16 @@ export async function getPayRunDetail(
     run.runKind === "REGULAR" &&
     (run.status === "DRAFT" || run.status === "APPROVED")
   ) {
-    const includedSlips = run.payslips.filter((slip) =>
-      isPayslipIncludedInRun(slip.status),
+    const priorNetByEmployee = new Map(
+      priorNetRows.map((row) => [
+        row.employeeId,
+        Number(row.netPay.toString()),
+      ]),
     );
-    const employeeIds = [
-      ...new Set(includedSlips.map((slip) => slip.employeeId)),
-    ];
 
-    const priorPostedSlips =
-      employeeIds.length > 0
-        ? await prisma.payslip.findMany({
-            where: {
-              employeeId: { in: employeeIds },
-              status: "POSTED",
-              payrollPeriod: { periodEnd: { lt: run.payrollPeriod.periodEnd } },
-            },
-            orderBy: [{ payrollPeriod: { periodEnd: "desc" } }],
-            select: { employeeId: true, netPay: true },
-          })
-        : [];
-
-    const priorNetByEmployee = new Map<string, number>();
-    for (const slip of priorPostedSlips) {
-      if (!priorNetByEmployee.has(slip.employeeId)) {
-        priorNetByEmployee.set(slip.employeeId, Number(slip.netPay.toString()));
-      }
-    }
-
-    for (const slip of includedSlips) {
+    for (const slip of run.payslips.filter((row) =>
+      isPayslipIncludedInRun(row.status),
+    )) {
       const flag = evaluateNetPayVariance({
         employeeId: slip.employeeId,
         employeeName: slip.employeeName,
@@ -524,7 +586,7 @@ export async function getPayRunDetail(
         excludedByName: slip.excludedByUserId
           ? (excluderNameById.get(slip.excludedByUserId) ?? null)
           : null,
-        lineItems: slip.lineItems.map((line) => ({
+        lineItems: (lineItemsByPayslip.get(slip.id) ?? []).map((line) => ({
           id: line.id,
           lineType: line.lineType,
           code: line.code,
@@ -538,335 +600,5 @@ export async function getPayRunDetail(
         printHref: `/payroll/runs/${run.id}/payslips/${slip.id}/print`,
       };
     }),
-  };
-}
-
-export type StoredPayslipResult = {
-  id: string;
-  payRunId: string;
-  runNumber: string;
-  periodName: string;
-  periodKey: string;
-  status: "DRAFT" | "EXCLUDED" | "POSTED";
-  isPosted: boolean;
-  payslip: PayslipPreview;
-  meta: PayslipDocumentMeta;
-  ytd: PayslipYtdTotals | null;
-};
-
-export type PayRunBatchPrintDocument = {
-  id: string;
-  employeeId: string;
-  employeeName: string;
-  employeeNumber: string;
-  payslip: PayslipPreview;
-  meta: PayslipDocumentMeta;
-  ytd: PayslipYtdTotals | null;
-  isOfficial: boolean;
-};
-
-export type PayRunBatchPrintResult = {
-  id: string;
-  runNumber: string;
-  periodName: string;
-  periodKey: string;
-  documents: PayRunBatchPrintDocument[];
-};
-
-export async function getStoredPayslip(
-  payslipId: string,
-): Promise<StoredPayslipResult | null> {
-  const row = await prisma.payslip.findUnique({
-    where: { id: payslipId },
-    include: {
-      payRun: {
-        select: {
-          id: true,
-          runNumber: true,
-          status: true,
-          postedAt: true,
-        },
-      },
-      payrollPeriod: {
-        select: {
-          name: true,
-          periodKey: true,
-          year: true,
-          periodEnd: true,
-        },
-      },
-    },
-  });
-
-  if (!row) {
-    return null;
-  }
-
-  const snapshot = parsePayslipSnapshot(row.snapshot);
-
-  if (!snapshot) {
-    return null;
-  }
-
-  const isPosted = row.status === "POSTED";
-  const ytd = isPosted
-    ? await getPostedPayslipYtd({
-        employeeId: row.employeeId,
-        payslipId: row.id,
-        year: row.payrollPeriod.year,
-        periodEnd: row.payrollPeriod.periodEnd,
-        postedAt: row.payRun.postedAt,
-        createdAt: row.createdAt,
-        current: payslipPreviewToYtdContribution(snapshot.payslip),
-      })
-    : null;
-
-  return {
-    id: row.id,
-    payRunId: row.payRun.id,
-    runNumber: row.payRun.runNumber,
-    periodName: row.payrollPeriod.name,
-    periodKey: row.payrollPeriod.periodKey,
-    status: row.status,
-    isPosted,
-    payslip: snapshot.payslip,
-    meta: snapshot.meta,
-    ytd,
-  };
-}
-
-/** Included (non-excluded) payslips for a posted run — multi-document print. */
-export async function getPayRunBatchPrint(
-  payRunId: string,
-): Promise<PayRunBatchPrintResult | null> {
-  const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
-    include: {
-      payrollPeriod: {
-        select: {
-          name: true,
-          periodKey: true,
-          year: true,
-          periodEnd: true,
-        },
-      },
-      payslips: {
-        where: {
-          status: { not: "EXCLUDED" },
-        },
-        orderBy: [{ employeeName: "asc" }],
-      },
-    },
-  });
-
-  if (!run || !isPayRunPosted(run.status)) {
-    return null;
-  }
-
-  const documents: PayRunBatchPrintDocument[] = [];
-
-  for (const slip of run.payslips) {
-    if (!isPayslipIncludedInRun(slip.status)) {
-      continue;
-    }
-
-    const snapshot = parsePayslipSnapshot(slip.snapshot);
-
-    if (!snapshot) {
-      continue;
-    }
-
-    const ytd =
-      slip.status === "POSTED"
-        ? await getPostedPayslipYtd({
-            employeeId: slip.employeeId,
-            payslipId: slip.id,
-            year: run.payrollPeriod.year,
-            periodEnd: run.payrollPeriod.periodEnd,
-            postedAt: run.postedAt,
-            createdAt: slip.createdAt,
-            current: payslipPreviewToYtdContribution(snapshot.payslip),
-          })
-        : null;
-
-    documents.push({
-      id: slip.id,
-      employeeId: slip.employeeId,
-      employeeName: slip.employeeName,
-      employeeNumber: slip.employeeNumber,
-      payslip: snapshot.payslip,
-      meta: snapshot.meta,
-      ytd,
-      isOfficial: slip.status === "POSTED",
-    });
-  }
-
-  return {
-    id: run.id,
-    runNumber: run.runNumber,
-    periodName: run.payrollPeriod.name,
-    periodKey: run.payrollPeriod.periodKey,
-    documents,
-  };
-}
-
-export type SelfServicePayslipHistoryItem = {
-  id: string;
-  periodName: string;
-  periodKey: string;
-  year: number;
-  runNumber: string;
-  runKind: "REGULAR" | "CORRECTION" | "OFF_CYCLE";
-  grossPay: string;
-  totalDeductions: string;
-  netPay: string;
-  postedAt: string | null;
-  viewHref: string;
-  printHref: string;
-};
-
-export type EmployeePayslipHistory = {
-  /** Distinct years that have posted payslips, most recent first. */
-  years: number[];
-  /** Selected year, or null when showing the last 12 months. */
-  selectedYear: number | null;
-  items: SelfServicePayslipHistoryItem[];
-};
-
-/**
- * Posted payslip history for one employee (self-service, own record only).
- * Defaults to the last 12 months; pass a year to filter to that calendar year.
- */
-export async function getEmployeePostedPayslipHistory(
-  employeeId: string,
-  options?: { year?: number | null },
-): Promise<EmployeePayslipHistory> {
-  const slips = await prisma.payslip.findMany({
-    where: {
-      employeeId,
-      status: "POSTED",
-    },
-    orderBy: [
-      { payrollPeriod: { periodEnd: "desc" } },
-      { createdAt: "desc" },
-    ],
-    select: {
-      id: true,
-      currency: true,
-      grossPay: true,
-      totalDeductions: true,
-      netPay: true,
-      payRun: {
-        select: { runNumber: true, runKind: true, postedAt: true },
-      },
-      payrollPeriod: {
-        select: { name: true, periodKey: true, year: true, periodEnd: true },
-      },
-    },
-  });
-
-  const years = [
-    ...new Set(slips.map((slip) => slip.payrollPeriod.year)),
-  ].sort((a, b) => b - a);
-
-  const requestedYear =
-    options?.year != null && years.includes(options.year)
-      ? options.year
-      : null;
-
-  const twelveMonthsAgo = new Date();
-  twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
-
-  const filtered = slips.filter((slip) => {
-    if (requestedYear != null) {
-      return slip.payrollPeriod.year === requestedYear;
-    }
-    return slip.payrollPeriod.periodEnd.getTime() >= twelveMonthsAgo.getTime();
-  });
-
-  return {
-    years,
-    selectedYear: requestedYear,
-    items: filtered.map((slip) => ({
-      id: slip.id,
-      periodName: slip.payrollPeriod.name,
-      periodKey: slip.payrollPeriod.periodKey,
-      year: slip.payrollPeriod.year,
-      runNumber: slip.payRun.runNumber,
-      runKind: slip.payRun.runKind,
-      grossPay: decimalLabel(slip.grossPay, slip.currency),
-      totalDeductions: decimalLabel(slip.totalDeductions, slip.currency),
-      netPay: decimalLabel(slip.netPay, slip.currency),
-      postedAt: slip.payRun.postedAt?.toISOString() ?? null,
-      viewHref: `/me/payslip?payslipId=${slip.id}`,
-      printHref: `/me/payslip/print?payslipId=${slip.id}`,
-    })),
-  };
-}
-
-/** Most recent posted payslip for an employee (official history). */
-export async function getMostRecentPostedPayslip(
-  employeeId: string,
-): Promise<StoredPayslipResult | null> {
-  const row = await prisma.payslip.findFirst({
-    where: {
-      employeeId,
-      status: "POSTED",
-    },
-    orderBy: [
-      { payrollPeriod: { periodEnd: "desc" } },
-      { createdAt: "desc" },
-    ],
-    include: {
-      payRun: {
-        select: {
-          id: true,
-          runNumber: true,
-          status: true,
-          postedAt: true,
-        },
-      },
-      payrollPeriod: {
-        select: {
-          name: true,
-          periodKey: true,
-          year: true,
-          periodEnd: true,
-        },
-      },
-    },
-  });
-
-  if (!row) {
-    return null;
-  }
-
-  const snapshot = parsePayslipSnapshot(row.snapshot);
-
-  if (!snapshot) {
-    return null;
-  }
-
-  const ytd = await getPostedPayslipYtd({
-    employeeId: row.employeeId,
-    payslipId: row.id,
-    year: row.payrollPeriod.year,
-    periodEnd: row.payrollPeriod.periodEnd,
-    postedAt: row.payRun.postedAt,
-    createdAt: row.createdAt,
-    current: payslipPreviewToYtdContribution(snapshot.payslip),
-  });
-
-  return {
-    id: row.id,
-    payRunId: row.payRun.id,
-    runNumber: row.payRun.runNumber,
-    periodName: row.payrollPeriod.name,
-    periodKey: row.payrollPeriod.periodKey,
-    status: row.status,
-    isPosted: true,
-    payslip: snapshot.payslip,
-    meta: snapshot.meta,
-    ytd,
   };
 }

@@ -5,8 +5,7 @@ import { ThemeProvider } from "@wrksz/themes/next";
 
 import { appConfig } from "@/src/config/app.config";
 import { AppProviders } from "@/src/core/providers/app-providers";
-import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
-import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
+import { getSessionContext } from "@/src/modules/auth/data/get-session-context";
 
 import "./globals.css";
 
@@ -20,21 +19,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: appConfig.displayName,
-    template: `%s · ${appConfig.displayName}`,
-  },
-  description: appConfig.description,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { chrome } = await getSessionContext();
+  const titleBase = chrome.organizationName || chrome.displayName;
+
+  return {
+    title: {
+      default: titleBase,
+      template: `%s · ${titleBase}`,
+    },
+    description: appConfig.description,
+  };
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const user = await getCurrentUser();
-  const capabilities = user ? await getUserCapabilities(user.id) : null;
+  const { user, capabilities, chrome } = await getSessionContext();
 
   return (
     <html
@@ -51,6 +54,7 @@ export default async function RootLayout({
         >
           <AppProviders
             user={user}
+            chrome={chrome}
             capabilities={
               capabilities
                 ? {

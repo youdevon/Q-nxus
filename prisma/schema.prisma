@@ -1200,10 +1200,10 @@ model EmployeeLeaveBalance {
 
   requests LeaveRequest[]
 
-  @@unique([contractId, leaveTypeId])
+  @@unique([contractId, leaveTypeId, cycleStart, cycleEnd])
   @@index([employeeId])
   @@index([employeeId, cycleStart, cycleEnd])
-  @@index([contractId])
+  @@index([contractId, leaveTypeId])
   @@index([leaveTypeId])
   @@index([availableBalance])
   @@map("employee_leave_balances")
@@ -1284,6 +1284,8 @@ model LeaveRequest {
 
   @@unique([organizationId, requestNumber])
   @@index([organizationId])
+  @@index([organizationId, status, createdAt])
+  @@index([organizationId, status, submittedAt])
   @@index([employeeId])
   @@index([contractId])
   @@index([leaveTypeId])
@@ -1443,6 +1445,8 @@ model EmployeeCorrespondence {
   @@index([relatedCorrespondenceId])
   @@index([employeeId, status, employeeVisible])
   @@index([employeeId, managerVisible, status])
+  @@index([employeeId, effectiveDate])
+  @@index([organizationId, requiresAcknowledgement, status, issueDate])
   @@index([organizationId, retentionUntil, status])
   @@map("employee_correspondences")
   @@schema("hr")
@@ -1495,6 +1499,7 @@ model EmployeeCredential {
   checklistLinks EmployeeFileChecklistItem[]
 
   @@index([organizationId])
+  @@index([organizationId, expiryDate])
   @@index([employeeId])
   @@index([expiryDate])
   @@map("employee_credentials")
@@ -1522,6 +1527,7 @@ model EmployeeTrainingRecord {
   employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@index([organizationId])
+  @@index([organizationId, expiryDate])
   @@index([employeeId])
   @@index([expiryDate])
   @@map("employee_training_records")
@@ -2561,7 +2567,8 @@ model PayRun {
   updatedAt       DateTime     @updatedAt
 
   organization  Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  payrollPeriod PayrollPeriod @relation(fields: [payrollPeriodId], references: [id], onDelete: Cascade)
+  /// Restrict so deleting a period cannot wipe pay runs (including posted history).
+  payrollPeriod PayrollPeriod @relation(fields: [payrollPeriodId], references: [id], onDelete: Restrict)
   sourcePayRun  PayRun?       @relation("PayRunSource", fields: [sourcePayRunId], references: [id], onDelete: SetNull)
   derivedRuns   PayRun[]      @relation("PayRunSource")
   payslips      Payslip[]
@@ -2573,6 +2580,7 @@ model PayRun {
   @@index([payrollPeriodId])
   @@index([organizationId, status])
   @@index([organizationId, runKind])
+  @@index([organizationId, createdAt])
   @@index([sourcePayRunId])
   @@index([approvedById])
   @@map("pay_runs")
@@ -2591,6 +2599,10 @@ model Payslip {
   grossPay               Decimal             @db.Decimal(14, 2)
   totalDeductions        Decimal             @db.Decimal(14, 2)
   netPay                 Decimal             @db.Decimal(14, 2)
+  /// Denormalized statutory lines for YTD/report sums without loading snapshot JSON.
+  payeAmount             Decimal             @default(0) @db.Decimal(14, 2)
+  nisEmployeeAmount      Decimal             @default(0) @db.Decimal(14, 2)
+  healthSurchargeAmount  Decimal             @default(0) @db.Decimal(14, 2)
   baseSalary             Decimal             @db.Decimal(14, 2)
   allowancesTotal        Decimal             @db.Decimal(14, 2)
   monthlyTaxableEarnings Decimal             @db.Decimal(14, 2)
@@ -2673,6 +2685,7 @@ model Notification {
 
   @@index([moduleKey])
   @@index([createdAt])
+  @@index([relatedType, relatedId])
   @@map("notifications")
   @@schema("notifications")
 }
@@ -2777,8 +2790,11 @@ model AuditEvent {
 
   @@index([userId])
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([moduleKey])
+  @@index([moduleKey, action, createdAt])
   @@index([entityType, entityId])
+  @@index([entityType, entityId, createdAt])
   @@index([createdAt])
   @@map("audit_events")
   @@schema("audit")

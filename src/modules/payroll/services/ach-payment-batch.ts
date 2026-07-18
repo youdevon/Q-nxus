@@ -6,6 +6,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { AuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import {
+  deleteStoredFile,
   resolveStoredFileAbsolutePath,
   safeStoredFileName,
   UPLOADS_ROOT,
@@ -75,6 +76,10 @@ async function storeAchExportFile(input: {
 
 export function resolveAchExportAbsolutePath(storageKey: string): string {
   return resolveStoredFileAbsolutePath(storageKey, ACH_STORAGE_PREFIX);
+}
+
+export async function deleteAchExportFile(storageKey: string): Promise<void> {
+  return deleteStoredFile(storageKey, resolveAchExportAbsolutePath);
 }
 
 export async function createAchPaymentBatch(input: {
@@ -544,6 +549,8 @@ export async function generateAchPaymentBatchFile(input: {
     };
   }
 
+  const previousStorageKey = batch.fileStorageKey;
+
   const stored = await storeAchExportFile({
     batchId: batch.id,
     fileName: generated.fileName,
@@ -578,6 +585,10 @@ export async function generateAchPaymentBatchFile(input: {
 
     return row;
   });
+
+  if (previousStorageKey && previousStorageKey !== stored.storageKey) {
+    await deleteAchExportFile(previousStorageKey);
+  }
 
   await recordAuditEvent(prisma, {
     userId: input.actorUserId,
