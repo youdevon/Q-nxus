@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { BarChart3, CalendarDays, CalendarRange, UserRound } from "lucide-react";
+import {
+  BarChart3,
+  CalendarDays,
+  CalendarRange,
+  Landmark,
+  UserRound,
+} from "lucide-react";
 
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
@@ -17,7 +23,7 @@ const reports = [
   {
     title: "Employee payment history",
     description:
-      "How much was paid to a selected employee over a year, rolling months, or custom month range — including corrections and off-cycle runs.",
+      "Posted payment totals for all employees, one person, or a department over a year, rolling months, or custom month range — including corrections and off-cycle runs.",
     href: "/payroll/reports/employee",
     icon: UserRound,
   },
@@ -27,6 +33,13 @@ const reports = [
       "Annual employee gross, PAYE, NIS, Health Surcharge, deductions, and net totals for TD4 / annual summary preparation.",
     href: "/payroll/reports/year-end",
     icon: CalendarDays,
+  },
+  {
+    title: "Statutory remittance",
+    description:
+      "PAYE, NIS (employee + employer), and Health Surcharge due for a selected month — summed from posted payslips to prepare the statutory filing.",
+    href: "/payroll/reports/remittance",
+    icon: Landmark,
   },
 ] as const;
 

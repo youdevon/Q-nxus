@@ -2374,6 +2374,10 @@ export type $EmploymentContractPayload<ExtArgs extends runtime.Types.Extensions.
     gratuityEligible: boolean
     gratuityRate: runtime.Decimal | null
     gratuityTaxRate: runtime.Decimal | null
+    /**
+     * At most one row per employee may be true — enforced by partial unique index
+     * `employment_contracts_one_current` (see migration; not expressible as @@unique).
+     */
     isCurrent: boolean
     signedDate: Date | null
     collectedAt: Date | null

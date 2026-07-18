@@ -2,6 +2,8 @@
  * Draft pay-run membership: included vs manually excluded payslips.
  */
 
+import { sumMoney } from "@/src/modules/payroll/lib/money";
+
 export type PayRunMembershipStatus = "DRAFT" | "EXCLUDED" | "POSTED";
 
 export type PayRunAmountRow = {
@@ -29,21 +31,12 @@ export function aggregateIncludedPayRunTotals(rows: PayRunAmountRow[]): {
   excludedCount: number;
 } {
   const included = filterIncludedPayRunRows(rows);
-  const totals = included.reduce(
-    (acc, row) => {
-      acc.totalGross += row.grossPay;
-      acc.totalDeductions += row.totalDeductions;
-      acc.totalNet += row.netPay;
-      return acc;
-    },
-    { totalGross: 0, totalDeductions: 0, totalNet: 0 },
-  );
 
   return {
     employeeCount: included.length,
-    totalGross: Math.round(totals.totalGross * 100) / 100,
-    totalDeductions: Math.round(totals.totalDeductions * 100) / 100,
-    totalNet: Math.round(totals.totalNet * 100) / 100,
+    totalGross: sumMoney(...included.map((row) => row.grossPay)),
+    totalDeductions: sumMoney(...included.map((row) => row.totalDeductions)),
+    totalNet: sumMoney(...included.map((row) => row.netPay)),
     excludedCount: rows.length - included.length,
   };
 }

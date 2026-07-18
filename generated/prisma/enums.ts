@@ -51,6 +51,16 @@ export const RoleAssignmentStatus = {
 export type RoleAssignmentStatus = (typeof RoleAssignmentStatus)[keyof typeof RoleAssignmentStatus]
 
 
+export const UserRoleSource = {
+  MANUAL: 'MANUAL',
+  POSITION: 'POSITION',
+  SELF_SERVICE: 'SELF_SERVICE',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type UserRoleSource = (typeof UserRoleSource)[keyof typeof UserRoleSource]
+
+
 export const ConfigurationStatus = {
   DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',
@@ -229,6 +239,7 @@ export type LeaveBalanceTransactionType = (typeof LeaveBalanceTransactionType)[k
 export const LeaveRequestStatus = {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
+  AWAITING_ACKNOWLEDGEMENT: 'AWAITING_ACKNOWLEDGEMENT',
   PENDING_APPROVAL: 'PENDING_APPROVAL',
   MANAGER_APPROVED: 'MANAGER_APPROVED',
   APPROVED: 'APPROVED',
@@ -249,6 +260,16 @@ export const LeaveApprovalStatus = {
 } as const
 
 export type LeaveApprovalStatus = (typeof LeaveApprovalStatus)[keyof typeof LeaveApprovalStatus]
+
+
+export const LeaveAcknowledgementStatus = {
+  PENDING: 'PENDING',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  SKIPPED: 'SKIPPED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type LeaveAcknowledgementStatus = (typeof LeaveAcknowledgementStatus)[keyof typeof LeaveAcknowledgementStatus]
 
 
 export const PerformanceAppraisalStatus = {
@@ -273,6 +294,138 @@ export const PerformanceRatingScale = {
 export type PerformanceRatingScale = (typeof PerformanceRatingScale)[keyof typeof PerformanceRatingScale]
 
 
+export const CorrespondenceCategory = {
+  RECOMMENDATION: 'RECOMMENDATION',
+  DISCIPLINARY: 'DISCIPLINARY',
+  WARNING: 'WARNING',
+  INSTRUCTION: 'INSTRUCTION',
+  COMMENDATION: 'COMMENDATION',
+  PERFORMANCE: 'PERFORMANCE',
+  GENERAL: 'GENERAL',
+  OTHER: 'OTHER',
+  POLICY: 'POLICY',
+  OFFER_LETTER: 'OFFER_LETTER',
+  EXIT_CLEARANCE: 'EXIT_CLEARANCE',
+  MEDICAL: 'MEDICAL',
+  IDENTIFICATION: 'IDENTIFICATION'
+} as const
+
+export type CorrespondenceCategory = (typeof CorrespondenceCategory)[keyof typeof CorrespondenceCategory]
+
+
+export const CorrespondenceStatus = {
+  DRAFT: 'DRAFT',
+  ISSUED: 'ISSUED',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
+  ARCHIVED: 'ARCHIVED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type CorrespondenceStatus = (typeof CorrespondenceStatus)[keyof typeof CorrespondenceStatus]
+
+
+export const EmployeeCorrespondenceResponseStatus = {
+  OPEN: 'OPEN',
+  REVIEWED: 'REVIEWED'
+} as const
+
+export type EmployeeCorrespondenceResponseStatus = (typeof EmployeeCorrespondenceResponseStatus)[keyof typeof EmployeeCorrespondenceResponseStatus]
+
+
+export const QualificationDocumentType = {
+  CXC: 'CXC',
+  CAMBRIDGE: 'CAMBRIDGE',
+  PEARSON_EDEXCEL: 'PEARSON_EDEXCEL',
+  IB: 'IB',
+  VOCATIONAL: 'VOCATIONAL',
+  UNIVERSITY: 'UNIVERSITY',
+  PROFESSIONAL: 'PROFESSIONAL',
+  TRADE_LICENCE: 'TRADE_LICENCE',
+  ADMISSION_ASSESSMENT: 'ADMISSION_ASSESSMENT',
+  OTHER: 'OTHER'
+} as const
+
+export type QualificationDocumentType = (typeof QualificationDocumentType)[keyof typeof QualificationDocumentType]
+
+
+export const QualificationDegreeType = {
+  ASSOCIATE: 'ASSOCIATE',
+  BA: 'BA',
+  BSC: 'BSC',
+  BBA: 'BBA',
+  BCOM: 'BCOM',
+  BED: 'BED',
+  BENG: 'BENG',
+  LLB: 'LLB',
+  MBBS: 'MBBS',
+  BN: 'BN',
+  BFA: 'BFA',
+  BTECH: 'BTECH',
+  BSW: 'BSW',
+  BPHARM: 'BPHARM',
+  PGCERT: 'PGCERT',
+  PGDIP: 'PGDIP',
+  MA: 'MA',
+  MSC: 'MSC',
+  MBA: 'MBA',
+  MED: 'MED',
+  MENG: 'MENG',
+  LLM: 'LLM',
+  MPA: 'MPA',
+  MPH: 'MPH',
+  MSW: 'MSW',
+  MPHIL: 'MPHIL',
+  EMBA: 'EMBA',
+  PHD: 'PHD',
+  DBA: 'DBA',
+  EDD: 'EDD',
+  DENG: 'DENG',
+  MD: 'MD',
+  DRPH: 'DRPH',
+  PSYD: 'PSYD',
+  DNP: 'DNP',
+  JD: 'JD',
+  CERTIFICATE: 'CERTIFICATE',
+  DIPLOMA: 'DIPLOMA',
+  HNC: 'HNC',
+  HND: 'HND',
+  FOUNDATION: 'FOUNDATION',
+  GRADCERT: 'GRADCERT',
+  GRADDIP: 'GRADDIP',
+  PROFESSIONAL_DEGREE: 'PROFESSIONAL_DEGREE',
+  HONORARY: 'HONORARY',
+  OTHER: 'OTHER'
+} as const
+
+export type QualificationDegreeType = (typeof QualificationDegreeType)[keyof typeof QualificationDegreeType]
+
+
+export const EmployeeFileChecklistItemType = {
+  ACADEMIC_CERTIFICATES: 'ACADEMIC_CERTIFICATES',
+  COPY_OF_ID: 'COPY_OF_ID',
+  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
+  MARRIAGE_CERTIFICATE: 'MARRIAGE_CERTIFICATE',
+  ASSUMPTION_OF_DUTY: 'ASSUMPTION_OF_DUTY'
+} as const
+
+export type EmployeeFileChecklistItemType = (typeof EmployeeFileChecklistItemType)[keyof typeof EmployeeFileChecklistItemType]
+
+
+export const EmployeeFileUpdateRequestStatus = {
+  OPEN: 'OPEN',
+  RESOLVED: 'RESOLVED'
+} as const
+
+export type EmployeeFileUpdateRequestStatus = (typeof EmployeeFileUpdateRequestStatus)[keyof typeof EmployeeFileUpdateRequestStatus]
+
+
+export const EmployeeFileUpdateRequestType = {
+  QUALIFICATION_UPDATE: 'QUALIFICATION_UPDATE'
+} as const
+
+export type EmployeeFileUpdateRequestType = (typeof EmployeeFileUpdateRequestType)[keyof typeof EmployeeFileUpdateRequestType]
+
+
 export const EmploymentType = {
   PERMANENT: 'PERMANENT',
   CONTRACT: 'CONTRACT',
@@ -283,6 +436,25 @@ export const EmploymentType = {
 } as const
 
 export type EmploymentType = (typeof EmploymentType)[keyof typeof EmploymentType]
+
+
+export const WorkforceCategory = {
+  EMPLOYEE: 'EMPLOYEE',
+  AGENT: 'AGENT',
+  BOARD: 'BOARD',
+  CONTRACTOR: 'CONTRACTOR'
+} as const
+
+export type WorkforceCategory = (typeof WorkforceCategory)[keyof typeof WorkforceCategory]
+
+
+export const EmployeeIdType = {
+  NATIONAL_ID: 'NATIONAL_ID',
+  DRIVERS_PERMIT: 'DRIVERS_PERMIT',
+  NON_NATIONAL: 'NON_NATIONAL'
+} as const
+
+export type EmployeeIdType = (typeof EmployeeIdType)[keyof typeof EmployeeIdType]
 
 
 export const EmailDeliveryStatus = {
@@ -346,13 +518,100 @@ export const PayrollPaymentMethod = {
 export type PayrollPaymentMethod = (typeof PayrollPaymentMethod)[keyof typeof PayrollPaymentMethod]
 
 
-export const StatutoryRateType = {
-  NIS_EMPLOYEE: 'NIS_EMPLOYEE',
-  NIS_EMPLOYER: 'NIS_EMPLOYER',
-  PAYE: 'PAYE'
+export const FinancialInstitutionType = {
+  COMMERCIAL_BANK: 'COMMERCIAL_BANK',
+  CREDIT_UNION: 'CREDIT_UNION',
+  BUILDING_SOCIETY: 'BUILDING_SOCIETY',
+  LICENSED_NON_BANK: 'LICENSED_NON_BANK',
+  ELECTRONIC_MONEY: 'ELECTRONIC_MONEY',
+  INVESTMENT_MORTGAGE_DEVELOPMENT: 'INVESTMENT_MORTGAGE_DEVELOPMENT',
+  CREDIT_UNION_SUPPORT: 'CREDIT_UNION_SUPPORT',
+  OTHER: 'OTHER'
 } as const
 
-export type StatutoryRateType = (typeof StatutoryRateType)[keyof typeof StatutoryRateType]
+export type FinancialInstitutionType = (typeof FinancialInstitutionType)[keyof typeof FinancialInstitutionType]
+
+
+export const BankAccountType = {
+  SAVINGS: 'SAVINGS',
+  CHEQUING: 'CHEQUING',
+  CURRENT: 'CURRENT',
+  CREDIT_UNION_SHARES: 'CREDIT_UNION_SHARES',
+  OTHER: 'OTHER'
+} as const
+
+export type BankAccountType = (typeof BankAccountType)[keyof typeof BankAccountType]
+
+
+export const BankAccountVerificationStatus = {
+  NOT_REQUIRED: 'NOT_REQUIRED',
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  FAILED: 'FAILED'
+} as const
+
+export type BankAccountVerificationStatus = (typeof BankAccountVerificationStatus)[keyof typeof BankAccountVerificationStatus]
+
+
+export const PayrollAllocationType = {
+  FULL_BALANCE: 'FULL_BALANCE',
+  FIXED_AMOUNT: 'FIXED_AMOUNT',
+  PERCENTAGE: 'PERCENTAGE',
+  REMAINDER: 'REMAINDER'
+} as const
+
+export type PayrollAllocationType = (typeof PayrollAllocationType)[keyof typeof PayrollAllocationType]
+
+
+export const PayrollPaymentStatus = {
+  NOT_CONFIGURED: 'NOT_CONFIGURED',
+  PENDING: 'PENDING',
+  PAYMENT_SETUP_REQUIRED: 'PAYMENT_SETUP_REQUIRED',
+  PAYMENT_SETUP_ERROR: 'PAYMENT_SETUP_ERROR',
+  READY: 'READY',
+  INCLUDED_IN_BATCH: 'INCLUDED_IN_BATCH',
+  PAID: 'PAID',
+  RECONCILED: 'RECONCILED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PayrollPaymentStatus = (typeof PayrollPaymentStatus)[keyof typeof PayrollPaymentStatus]
+
+
+export const PayrollPaymentAllocationStatus = {
+  PENDING: 'PENDING',
+  READY: 'READY',
+  INCLUDED_IN_BATCH: 'INCLUDED_IN_BATCH',
+  EXPORTED: 'EXPORTED',
+  PAID: 'PAID',
+  RETURNED: 'RETURNED',
+  REJECTED: 'REJECTED',
+  FAILED: 'FAILED',
+  RESOLVED: 'RESOLVED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type PayrollPaymentAllocationStatus = (typeof PayrollPaymentAllocationStatus)[keyof typeof PayrollPaymentAllocationStatus]
+
+
+export const AchPaymentBatchStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  GENERATED: 'GENERATED',
+  EXPORTED: 'EXPORTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type AchPaymentBatchStatus = (typeof AchPaymentBatchStatus)[keyof typeof AchPaymentBatchStatus]
+
+
+export const BankExportAdapterKind = {
+  MANUAL_REGISTER: 'MANUAL_REGISTER',
+  GENERIC_CSV: 'GENERIC_CSV'
+} as const
+
+export type BankExportAdapterKind = (typeof BankExportAdapterKind)[keyof typeof BankExportAdapterKind]
 
 
 export const PayrollPeriodStatus = {
@@ -365,7 +624,10 @@ export type PayrollPeriodStatus = (typeof PayrollPeriodStatus)[keyof typeof Payr
 
 export const PayRunStatus = {
   DRAFT: 'DRAFT',
-  POSTED: 'POSTED'
+  APPROVED: 'APPROVED',
+  POSTED: 'POSTED',
+  RECONCILED: 'RECONCILED',
+  CLOSED: 'CLOSED'
 } as const
 
 export type PayRunStatus = (typeof PayRunStatus)[keyof typeof PayRunStatus]

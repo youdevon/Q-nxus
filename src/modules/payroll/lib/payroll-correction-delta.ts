@@ -1,4 +1,5 @@
 import { formatMoney } from "@/src/lib/format";
+import { roundToCents } from "@/src/modules/payroll/lib/money";
 
 /** Bare monetary totals compared between an original and a correction payslip. */
 export type PayslipAmountSet = {
@@ -12,7 +13,7 @@ export type PayslipDelta = PayslipAmountSet;
 export type NetDeltaDirection = "increase" | "decrease" | "none";
 
 function round(value: number): number {
-  return Math.round(value * 100) / 100;
+  return roundToCents(value);
 }
 
 /**

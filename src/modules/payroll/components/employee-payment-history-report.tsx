@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { UserRound } from "lucide-react";
+import { Building2, Users, UserRound } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { buildListFilterUrl } from "@/src/lib/list-filter-url";
 import type { EmployeePaymentHistoryReportData } from "@/src/modules/payroll/data/get-employee-payment-history";
 import {
   runKindLabel,
+  type EmployeePaymentHistoryScope,
   type PayrollMoneyTotals,
 } from "@/src/modules/payroll/lib/payroll-analytics";
 import { formatPayslipPeriodLabel } from "@/src/modules/payroll/lib/payslip-preview";
@@ -25,6 +26,15 @@ const PRESETS = [
   { value: "last_12", label: "Last 12 months" },
   { value: "custom", label: "Custom range" },
 ] as const;
+
+const SCOPES: {
+  value: EmployeePaymentHistoryScope;
+  label: string;
+}[] = [
+  { value: "all", label: "All employees" },
+  { value: "employee", label: "One employee" },
+  { value: "department", label: "Department" },
+];
 
 function MoneyKpis({
   totals,
@@ -80,7 +90,9 @@ function MoneyKpis({
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Org cost (gross + employer)</p>
+            <p className="text-xs text-muted-foreground">
+              Org cost (gross + employer)
+            </p>
             <p className="mt-1 text-xl font-semibold tabular-nums">
               {formatMoney(total.organizationCost, {
                 currency: total.currency,
@@ -93,13 +105,59 @@ function MoneyKpis({
   );
 }
 
+function CurrencyStack({
+  totals,
+  field,
+}: {
+  totals: PayrollMoneyTotals[];
+  field: keyof Pick<
+    PayrollMoneyTotals,
+    "grossPay" | "totalDeductions" | "netPay" | "employerContributions"
+  >;
+}) {
+  if (totals.length === 0) {
+    return <span className="text-muted-foreground">—</span>;
+  }
+
+  return (
+    <div className="space-y-0.5">
+      {totals.map((total) => (
+        <p key={total.currency} className="tabular-nums">
+          {formatMoney(total[field], { currency: total.currency })}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function periodParams(period: EmployeePaymentHistoryReportData["period"]) {
+  return {
+    preset: period.preset,
+    start: period.startPeriodKey,
+    end: period.endPeriodKey,
+  };
+}
+
 export function EmployeePaymentHistoryReport({
   data,
 }: {
   data: EmployeePaymentHistoryReportData;
 }) {
-  const { period, selectedEmployee, history, matches, query } = data;
-  const mixed = (history?.totalsByCurrency.length ?? 0) > 1;
+  const {
+    scope,
+    period,
+    selectedEmployee,
+    history,
+    roster,
+    matches,
+    query,
+    departments,
+    selectedDepartmentId,
+    selectedDepartmentName,
+  } = data;
+  const mixed =
+    (history?.totalsByCurrency.length ?? roster?.totalsByCurrency.length ?? 0) >
+    1;
   const periodLabel = `${formatPayslipPeriodLabel(period.startPeriodKey) ?? period.startPeriodKey} – ${formatPayslipPeriodLabel(period.endPeriodKey) ?? period.endPeriodKey}`;
 
   return (
@@ -108,7 +166,7 @@ export function EmployeePaymentHistoryReport({
 
       <PageHeader
         title="Employee payment history"
-        description="Posted amounts paid to one employee over a selected period. Corrections and off-cycle runs are included and labeled."
+        description="Posted amounts paid across employees, one person, or a department over a selected period. Corrections and off-cycle runs are included and labeled."
         backHref="/payroll/reports"
         backLabel="Reports"
       />
@@ -118,11 +176,46 @@ export function EmployeePaymentHistoryReport({
         action="/payroll/reports/employee"
         className="mb-8 space-y-4 rounded-lg border border-border/70 bg-muted/20 px-4 py-4"
       >
-        {selectedEmployee ? (
+        {scope === "employee" && selectedEmployee ? (
           <input type="hidden" name="employeeId" value={selectedEmployee.id} />
         ) : null}
 
-        <div className="grid gap-4 md:grid-cols-[1fr_auto]">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-muted-foreground">View</span>
+            <select
+              name="scope"
+              defaultValue={scope}
+              className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+            >
+              {SCOPES.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="grid gap-1.5 text-sm">
+            <span className="text-muted-foreground">Department</span>
+            <select
+              name="departmentId"
+              defaultValue={selectedDepartmentId ?? ""}
+              className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+            >
+              <option value="">
+                {scope === "department"
+                  ? "Select a department"
+                  : "Optional (department view)"}
+              </option>
+              {departments.map((department) => (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
+              ))}
+            </select>
+          </label>
+
           <label className="grid gap-1.5 text-sm">
             <span className="text-muted-foreground">Find employee</span>
             <Input
@@ -132,9 +225,10 @@ export function EmployeePaymentHistoryReport({
               placeholder="Name or employee number"
             />
           </label>
+
           <div className="flex items-end">
             <Button type="submit" variant="outline">
-              Search
+              Apply filters
             </Button>
           </div>
         </div>
@@ -176,11 +270,11 @@ export function EmployeePaymentHistoryReport({
         </div>
         <p className="text-xs text-muted-foreground">
           Presets ignore custom months unless “Custom range” is selected. Month
-          ranges are inclusive.
+          ranges are inclusive. Draft and excluded slips are never counted.
         </p>
       </form>
 
-      {!selectedEmployee && query.trim() ? (
+      {scope === "employee" && !selectedEmployee && query.trim() ? (
         <section className="mb-10">
           <div className="mb-4 flex items-center gap-2">
             <UserRound className="size-4 text-muted-foreground" />
@@ -196,11 +290,10 @@ export function EmployeePaymentHistoryReport({
                 <Link
                   key={match.id}
                   href={buildListFilterUrl("/payroll/reports/employee", {
+                    scope: "employee",
                     employeeId: match.id,
                     query: query || undefined,
-                    preset: period.preset,
-                    start: period.startPeriodKey,
-                    end: period.endPeriodKey,
+                    ...periodParams(period),
                   })}
                   className="flex flex-wrap items-center justify-between gap-3 py-4 transition-colors hover:bg-muted/30"
                 >
@@ -221,13 +314,192 @@ export function EmployeePaymentHistoryReport({
         </section>
       ) : null}
 
-      {!selectedEmployee && !query.trim() ? (
+      {scope === "employee" && !selectedEmployee && !query.trim() ? (
         <p className="py-12 text-center text-sm text-muted-foreground">
           Search for an employee to view posted payment history.
         </p>
       ) : null}
 
-      {selectedEmployee ? (
+      {scope === "department" && !selectedDepartmentId ? (
+        <p className="py-12 text-center text-sm text-muted-foreground">
+          {departments.length === 0
+            ? "No active departments are set up yet."
+            : "Select a department to view posted payment history."}
+        </p>
+      ) : null}
+
+      {(scope === "all" ||
+        (scope === "department" && selectedDepartmentId)) &&
+      roster ? (
+        <section>
+          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                {scope === "department" ? (
+                  <Building2 className="size-4 text-muted-foreground" />
+                ) : (
+                  <Users className="size-4 text-muted-foreground" />
+                )}
+                <SectionHeading>
+                  {scope === "department"
+                    ? (selectedDepartmentName ?? "Department")
+                    : "All employees"}
+                </SectionHeading>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {periodLabel}
+                {roster.employeeCount > 0
+                  ? ` · ${roster.employeeCount} employee${roster.employeeCount === 1 ? "" : "s"}`
+                  : ""}
+              </p>
+            </div>
+          </div>
+
+          {roster.payslipCount === 0 ? (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              No posted payslips
+              {scope === "department" ? " for this department" : ""} in{" "}
+              {periodLabel}. Draft and excluded slips are not counted.
+            </p>
+          ) : (
+            <>
+              <div className="mb-8 rounded-lg border border-border/70 bg-muted/20 px-4 py-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                    Period totals
+                  </p>
+                  <span className="text-xs text-muted-foreground">
+                    {roster.payslipCount} payslip
+                    {roster.payslipCount === 1 ? "" : "s"} · {roster.runCount}{" "}
+                    run{roster.runCount === 1 ? "" : "s"}
+                  </span>
+                </div>
+                <div className="mt-3">
+                  <MoneyKpis
+                    totals={roster.totalsByCurrency}
+                    mixed={mixed}
+                  />
+                </div>
+              </div>
+
+              {roster.byRunKind.some((item) => item.runKind !== "REGULAR") ? (
+                <div className="mb-8">
+                  <SectionHeading className="mb-3">By run type</SectionHeading>
+                  <div className="flex flex-wrap gap-2">
+                    {roster.byRunKind.map((item) => (
+                      <Badge
+                        key={`${item.runKind}-${item.currency}`}
+                        variant="outline"
+                      >
+                        {runKindLabel(item.runKind)}
+                        {mixed ? ` (${item.currency})` : ""}:{" "}
+                        {formatMoney(item.grossPay, {
+                          currency: item.currency,
+                        })}{" "}
+                        gross · {item.payslipCount} slip
+                        {item.payslipCount === 1 ? "" : "s"}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              <SectionHeading className="mb-4">Employees</SectionHeading>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[48rem] text-sm">
+                  <thead>
+                    <tr className="border-b border-border/70 text-left text-xs text-muted-foreground">
+                      <th className="py-2 pr-3 font-medium">Employee</th>
+                      <th className="py-2 pr-3 text-right font-medium">
+                        Slips
+                      </th>
+                      <th className="py-2 pr-3 text-right font-medium">
+                        Gross
+                      </th>
+                      <th className="py-2 pr-3 text-right font-medium">
+                        Deductions
+                      </th>
+                      <th className="py-2 pr-3 text-right font-medium">Net</th>
+                      <th className="py-2 pr-3 text-right font-medium">
+                        Employer
+                      </th>
+                      <th className="py-2 text-right font-medium" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {roster.employees.map((employee) => (
+                      <tr
+                        key={employee.employeeId}
+                        className="border-b border-border/50"
+                      >
+                        <td className="py-3 pr-3">
+                          <p className="font-medium">{employee.employeeName}</p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            {employee.employeeNumber}
+                            {employee.departmentName
+                              ? ` · ${employee.departmentName}`
+                              : ""}
+                          </p>
+                        </td>
+                        <td className="py-3 pr-3 text-right tabular-nums">
+                          {employee.payslipCount}
+                        </td>
+                        <td className="py-3 pr-3 text-right">
+                          <CurrencyStack
+                            totals={employee.totalsByCurrency}
+                            field="grossPay"
+                          />
+                        </td>
+                        <td className="py-3 pr-3 text-right">
+                          <CurrencyStack
+                            totals={employee.totalsByCurrency}
+                            field="totalDeductions"
+                          />
+                        </td>
+                        <td className="py-3 pr-3 text-right">
+                          <CurrencyStack
+                            totals={employee.totalsByCurrency}
+                            field="netPay"
+                          />
+                        </td>
+                        <td className="py-3 pr-3 text-right">
+                          <CurrencyStack
+                            totals={employee.totalsByCurrency}
+                            field="employerContributions"
+                          />
+                        </td>
+                        <td className="py-3 text-right">
+                          <Button
+                            nativeButton={false}
+                            size="sm"
+                            variant="outline"
+                            render={
+                              <Link
+                                href={buildListFilterUrl(
+                                  "/payroll/reports/employee",
+                                  {
+                                    scope: "employee",
+                                    employeeId: employee.employeeId,
+                                    ...periodParams(period),
+                                  },
+                                )}
+                              />
+                            }
+                          >
+                            History
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </section>
+      ) : null}
+
+      {scope === "employee" && selectedEmployee ? (
         <section>
           <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -251,10 +523,9 @@ export function EmployeePaymentHistoryReport({
               render={
                 <Link
                   href={buildListFilterUrl("/payroll/reports/employee", {
+                    scope: "employee",
                     query: query || undefined,
-                    preset: period.preset,
-                    start: period.startPeriodKey,
-                    end: period.endPeriodKey,
+                    ...periodParams(period),
                   })}
                 />
               }

@@ -95,20 +95,20 @@
 }
 
 .dark {
-  --background: oklch(0.16 0.02 255);
-  --foreground: oklch(0.96 0.01 250);
-  --card: oklch(0.2 0.025 255);
-  --card-foreground: oklch(0.96 0.01 250);
-  --popover: oklch(0.2 0.025 255);
-  --popover-foreground: oklch(0.96 0.01 250);
+  --background: oklch(0.16 0.004 0);
+  --foreground: oklch(0.96 0.002 0);
+  --card: oklch(0.2 0.005 0);
+  --card-foreground: oklch(0.96 0.002 0);
+  --popover: oklch(0.2 0.005 0);
+  --popover-foreground: oklch(0.96 0.002 0);
   --primary: oklch(0.72 0.14 250);
-  --primary-foreground: oklch(0.18 0.04 255);
-  --secondary: oklch(0.28 0.035 255);
-  --secondary-foreground: oklch(0.92 0.02 250);
-  --muted: oklch(0.26 0.025 255);
-  --muted-foreground: oklch(0.72 0.025 250);
-  --accent: oklch(0.3 0.05 255);
-  --accent-foreground: oklch(0.96 0.01 250);
+  --primary-foreground: oklch(0.18 0.01 0);
+  --secondary: oklch(0.28 0.006 0);
+  --secondary-foreground: oklch(0.92 0.003 0);
+  --muted: oklch(0.26 0.005 0);
+  --muted-foreground: oklch(0.72 0.006 0);
+  --accent: oklch(0.3 0.008 0);
+  --accent-foreground: oklch(0.96 0.002 0);
   --destructive: oklch(0.65 0.18 25);
   --destructive-foreground: oklch(0.99 0.005 25);
   --success: oklch(0.7 0.13 155);
@@ -123,12 +123,12 @@
   --chart-3: oklch(0.8 0.12 75);
   --chart-4: oklch(0.68 0.16 25);
   --chart-5: oklch(0.65 0.1 290);
-  --sidebar: oklch(0.18 0.025 255);
-  --sidebar-foreground: oklch(0.92 0.015 250);
+  --sidebar: oklch(0.18 0.005 0);
+  --sidebar-foreground: oklch(0.92 0.003 0);
   --sidebar-primary: oklch(0.72 0.14 250);
-  --sidebar-primary-foreground: oklch(0.18 0.04 255);
-  --sidebar-accent: oklch(0.3 0.06 255);
-  --sidebar-accent-foreground: oklch(0.94 0.02 250);
+  --sidebar-primary-foreground: oklch(0.18 0.01 0);
+  --sidebar-accent: oklch(0.3 0.01 0);
+  --sidebar-accent-foreground: oklch(0.94 0.003 0);
   --sidebar-border: oklch(1 0 0 / 12%);
   --sidebar-ring: oklch(0.62 0.12 250);
 }
@@ -171,8 +171,9 @@
 }
 
 @media print {
+  /* Payslip print/PDF: A4 portrait (210 × 297 mm) — one detailed slip per page. */
   @page {
-    size: A4;
+    size: A4 portrait;
     margin: 12mm;
   }
 
@@ -186,6 +187,18 @@
 .payslip-print-page {
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
+}
+
+.payslip-sheet {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+@media screen {
+  .payslip-print-page .payslip-sheet {
+    border: 1px dashed var(--border);
+    background: var(--background);
+  }
 }
 
 @media print {

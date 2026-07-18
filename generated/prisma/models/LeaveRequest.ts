@@ -369,6 +369,7 @@ export type LeaveRequestWhereInput = {
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   days?: Prisma.LeaveRequestDayListRelationFilter
   approvalSteps?: Prisma.LeaveApprovalStepListRelationFilter
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementListRelationFilter
   attachments?: Prisma.LeaveAttachmentListRelationFilter
 }
 
@@ -405,6 +406,7 @@ export type LeaveRequestOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   days?: Prisma.LeaveRequestDayOrderByRelationAggregateInput
   approvalSteps?: Prisma.LeaveApprovalStepOrderByRelationAggregateInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementOrderByRelationAggregateInput
   attachments?: Prisma.LeaveAttachmentOrderByRelationAggregateInput
 }
 
@@ -445,6 +447,7 @@ export type LeaveRequestWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   days?: Prisma.LeaveRequestDayListRelationFilter
   approvalSteps?: Prisma.LeaveApprovalStepListRelationFilter
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementListRelationFilter
   attachments?: Prisma.LeaveAttachmentListRelationFilter
 }, "id" | "organizationId_requestNumber">
 
@@ -534,6 +537,7 @@ export type LeaveRequestCreateInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -563,6 +567,7 @@ export type LeaveRequestUncheckedCreateInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -592,6 +597,7 @@ export type LeaveRequestUpdateInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -621,6 +627,7 @@ export type LeaveRequestUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -1085,6 +1092,20 @@ export type LeaveRequestUpdateOneRequiredWithoutApprovalStepsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.LeaveRequestUpdateToOneWithWhereWithoutApprovalStepsInput, Prisma.LeaveRequestUpdateWithoutApprovalStepsInput>, Prisma.LeaveRequestUncheckedUpdateWithoutApprovalStepsInput>
 }
 
+export type LeaveRequestCreateNestedOneWithoutAcknowledgementsInput = {
+  create?: Prisma.XOR<Prisma.LeaveRequestCreateWithoutAcknowledgementsInput, Prisma.LeaveRequestUncheckedCreateWithoutAcknowledgementsInput>
+  connectOrCreate?: Prisma.LeaveRequestCreateOrConnectWithoutAcknowledgementsInput
+  connect?: Prisma.LeaveRequestWhereUniqueInput
+}
+
+export type LeaveRequestUpdateOneRequiredWithoutAcknowledgementsNestedInput = {
+  create?: Prisma.XOR<Prisma.LeaveRequestCreateWithoutAcknowledgementsInput, Prisma.LeaveRequestUncheckedCreateWithoutAcknowledgementsInput>
+  connectOrCreate?: Prisma.LeaveRequestCreateOrConnectWithoutAcknowledgementsInput
+  upsert?: Prisma.LeaveRequestUpsertWithoutAcknowledgementsInput
+  connect?: Prisma.LeaveRequestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LeaveRequestUpdateToOneWithWhereWithoutAcknowledgementsInput, Prisma.LeaveRequestUpdateWithoutAcknowledgementsInput>, Prisma.LeaveRequestUncheckedUpdateWithoutAcknowledgementsInput>
+}
+
 export type LeaveRequestCreateNestedOneWithoutAttachmentsInput = {
   create?: Prisma.XOR<Prisma.LeaveRequestCreateWithoutAttachmentsInput, Prisma.LeaveRequestUncheckedCreateWithoutAttachmentsInput>
   connectOrCreate?: Prisma.LeaveRequestCreateOrConnectWithoutAttachmentsInput
@@ -1166,6 +1187,7 @@ export type LeaveRequestCreateWithoutOrganizationInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1194,6 +1216,7 @@ export type LeaveRequestUncheckedCreateWithoutOrganizationInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1277,6 +1300,7 @@ export type LeaveRequestCreateWithoutCreatedByInput = {
   finalDecisionBy?: Prisma.UserCreateNestedOneWithoutFinalLeaveDecisionsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1305,6 +1329,7 @@ export type LeaveRequestUncheckedCreateWithoutCreatedByInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1343,6 +1368,7 @@ export type LeaveRequestCreateWithoutFinalDecisionByInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1371,6 +1397,7 @@ export type LeaveRequestUncheckedCreateWithoutFinalDecisionByInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1441,6 +1468,7 @@ export type LeaveRequestCreateWithoutEmployeeInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1469,6 +1497,7 @@ export type LeaveRequestUncheckedCreateWithoutEmployeeInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1523,6 +1552,7 @@ export type LeaveRequestCreateWithoutLeaveTypeInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1551,6 +1581,7 @@ export type LeaveRequestUncheckedCreateWithoutLeaveTypeInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1605,6 +1636,7 @@ export type LeaveRequestCreateWithoutLeaveBalanceInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1633,6 +1665,7 @@ export type LeaveRequestUncheckedCreateWithoutLeaveBalanceInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1687,6 +1720,7 @@ export type LeaveRequestCreateWithoutDaysInput = {
   finalDecisionBy?: Prisma.UserCreateNestedOneWithoutFinalLeaveDecisionsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1715,6 +1749,7 @@ export type LeaveRequestUncheckedCreateWithoutDaysInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1759,6 +1794,7 @@ export type LeaveRequestUpdateWithoutDaysInput = {
   finalDecisionBy?: Prisma.UserUpdateOneWithoutFinalLeaveDecisionsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -1787,6 +1823,7 @@ export type LeaveRequestUncheckedUpdateWithoutDaysInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -1815,6 +1852,7 @@ export type LeaveRequestCreateWithoutApprovalStepsInput = {
   finalDecisionBy?: Prisma.UserCreateNestedOneWithoutFinalLeaveDecisionsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1843,6 +1881,7 @@ export type LeaveRequestUncheckedCreateWithoutApprovalStepsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -1887,6 +1926,7 @@ export type LeaveRequestUpdateWithoutApprovalStepsInput = {
   finalDecisionBy?: Prisma.UserUpdateOneWithoutFinalLeaveDecisionsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -1915,6 +1955,139 @@ export type LeaveRequestUncheckedUpdateWithoutApprovalStepsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
+}
+
+export type LeaveRequestCreateWithoutAcknowledgementsInput = {
+  id?: string
+  requestNumber?: string | null
+  startDate: Date | string
+  endDate: Date | string
+  requestedQuantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason?: string | null
+  employeeComment?: string | null
+  status?: $Enums.LeaveRequestStatus
+  submittedAt?: Date | string | null
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  withdrawnAt?: Date | string | null
+  finalDecisionComment?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutLeaveRequestsInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutLeaveRequestsInput
+  contract: Prisma.EmploymentContractCreateNestedOneWithoutLeaveRequestsInput
+  leaveType: Prisma.LeaveTypeCreateNestedOneWithoutRequestsInput
+  leaveBalance?: Prisma.EmployeeLeaveBalanceCreateNestedOneWithoutRequestsInput
+  finalDecisionBy?: Prisma.UserCreateNestedOneWithoutFinalLeaveDecisionsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
+  days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
+  approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
+}
+
+export type LeaveRequestUncheckedCreateWithoutAcknowledgementsInput = {
+  id?: string
+  organizationId: string
+  employeeId: string
+  contractId: string
+  leaveTypeId: string
+  leaveBalanceId?: string | null
+  requestNumber?: string | null
+  startDate: Date | string
+  endDate: Date | string
+  requestedQuantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason?: string | null
+  employeeComment?: string | null
+  status?: $Enums.LeaveRequestStatus
+  submittedAt?: Date | string | null
+  approvedAt?: Date | string | null
+  rejectedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  withdrawnAt?: Date | string | null
+  finalDecisionByUserId?: string | null
+  finalDecisionComment?: string | null
+  createdByUserId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
+  approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
+}
+
+export type LeaveRequestCreateOrConnectWithoutAcknowledgementsInput = {
+  where: Prisma.LeaveRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.LeaveRequestCreateWithoutAcknowledgementsInput, Prisma.LeaveRequestUncheckedCreateWithoutAcknowledgementsInput>
+}
+
+export type LeaveRequestUpsertWithoutAcknowledgementsInput = {
+  update: Prisma.XOR<Prisma.LeaveRequestUpdateWithoutAcknowledgementsInput, Prisma.LeaveRequestUncheckedUpdateWithoutAcknowledgementsInput>
+  create: Prisma.XOR<Prisma.LeaveRequestCreateWithoutAcknowledgementsInput, Prisma.LeaveRequestUncheckedCreateWithoutAcknowledgementsInput>
+  where?: Prisma.LeaveRequestWhereInput
+}
+
+export type LeaveRequestUpdateToOneWithWhereWithoutAcknowledgementsInput = {
+  where?: Prisma.LeaveRequestWhereInput
+  data: Prisma.XOR<Prisma.LeaveRequestUpdateWithoutAcknowledgementsInput, Prisma.LeaveRequestUncheckedUpdateWithoutAcknowledgementsInput>
+}
+
+export type LeaveRequestUpdateWithoutAcknowledgementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  requestNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumLeaveRequestStatusFieldUpdateOperationsInput | $Enums.LeaveRequestStatus
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  withdrawnAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalDecisionComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLeaveRequestsNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutLeaveRequestsNestedInput
+  contract?: Prisma.EmploymentContractUpdateOneRequiredWithoutLeaveRequestsNestedInput
+  leaveType?: Prisma.LeaveTypeUpdateOneRequiredWithoutRequestsNestedInput
+  leaveBalance?: Prisma.EmployeeLeaveBalanceUpdateOneWithoutRequestsNestedInput
+  finalDecisionBy?: Prisma.UserUpdateOneWithoutFinalLeaveDecisionsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
+  days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
+  approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
+}
+
+export type LeaveRequestUncheckedUpdateWithoutAcknowledgementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  contractId?: Prisma.StringFieldUpdateOperationsInput | string
+  leaveTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  leaveBalanceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requestNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requestedQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumLeaveRequestStatusFieldUpdateOperationsInput | $Enums.LeaveRequestStatus
+  submittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  withdrawnAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  finalDecisionByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  finalDecisionComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -1944,6 +2117,7 @@ export type LeaveRequestCreateWithoutAttachmentsInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
 }
 
 export type LeaveRequestUncheckedCreateWithoutAttachmentsInput = {
@@ -1972,6 +2146,7 @@ export type LeaveRequestUncheckedCreateWithoutAttachmentsInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
 export type LeaveRequestCreateOrConnectWithoutAttachmentsInput = {
@@ -2016,6 +2191,7 @@ export type LeaveRequestUpdateWithoutAttachmentsInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
 }
 
 export type LeaveRequestUncheckedUpdateWithoutAttachmentsInput = {
@@ -2044,6 +2220,7 @@ export type LeaveRequestUncheckedUpdateWithoutAttachmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
 export type LeaveRequestCreateWithoutContractInput = {
@@ -2071,6 +2248,7 @@ export type LeaveRequestCreateWithoutContractInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedLeaveRequestsInput
   days?: Prisma.LeaveRequestDayCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -2099,6 +2277,7 @@ export type LeaveRequestUncheckedCreateWithoutContractInput = {
   updatedAt?: Date | string
   days?: Prisma.LeaveRequestDayUncheckedCreateNestedManyWithoutLeaveRequestInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutLeaveRequestInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutLeaveRequestInput
   attachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutLeaveRequestInput
 }
 
@@ -2178,6 +2357,7 @@ export type LeaveRequestUpdateWithoutOrganizationInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2206,6 +2386,7 @@ export type LeaveRequestUncheckedUpdateWithoutOrganizationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2309,6 +2490,7 @@ export type LeaveRequestUpdateWithoutCreatedByInput = {
   finalDecisionBy?: Prisma.UserUpdateOneWithoutFinalLeaveDecisionsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2337,6 +2519,7 @@ export type LeaveRequestUncheckedUpdateWithoutCreatedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2390,6 +2573,7 @@ export type LeaveRequestUpdateWithoutFinalDecisionByInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2418,6 +2602,7 @@ export type LeaveRequestUncheckedUpdateWithoutFinalDecisionByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2496,6 +2681,7 @@ export type LeaveRequestUpdateWithoutEmployeeInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2524,6 +2710,7 @@ export type LeaveRequestUncheckedUpdateWithoutEmployeeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2602,6 +2789,7 @@ export type LeaveRequestUpdateWithoutLeaveTypeInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2630,6 +2818,7 @@ export type LeaveRequestUncheckedUpdateWithoutLeaveTypeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2708,6 +2897,7 @@ export type LeaveRequestUpdateWithoutLeaveBalanceInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2736,6 +2926,7 @@ export type LeaveRequestUncheckedUpdateWithoutLeaveBalanceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2814,6 +3005,7 @@ export type LeaveRequestUpdateWithoutContractInput = {
   createdBy?: Prisma.UserUpdateOneWithoutCreatedLeaveRequestsNestedInput
   days?: Prisma.LeaveRequestDayUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2842,6 +3034,7 @@ export type LeaveRequestUncheckedUpdateWithoutContractInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   days?: Prisma.LeaveRequestDayUncheckedUpdateManyWithoutLeaveRequestNestedInput
   approvalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutLeaveRequestNestedInput
+  acknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutLeaveRequestNestedInput
   attachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutLeaveRequestNestedInput
 }
 
@@ -2878,12 +3071,14 @@ export type LeaveRequestUncheckedUpdateManyWithoutContractInput = {
 export type LeaveRequestCountOutputType = {
   days: number
   approvalSteps: number
+  acknowledgements: number
   attachments: number
 }
 
 export type LeaveRequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   days?: boolean | LeaveRequestCountOutputTypeCountDaysArgs
   approvalSteps?: boolean | LeaveRequestCountOutputTypeCountApprovalStepsArgs
+  acknowledgements?: boolean | LeaveRequestCountOutputTypeCountAcknowledgementsArgs
   attachments?: boolean | LeaveRequestCountOutputTypeCountAttachmentsArgs
 }
 
@@ -2909,6 +3104,13 @@ export type LeaveRequestCountOutputTypeCountDaysArgs<ExtArgs extends runtime.Typ
  */
 export type LeaveRequestCountOutputTypeCountApprovalStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.LeaveApprovalStepWhereInput
+}
+
+/**
+ * LeaveRequestCountOutputType without action
+ */
+export type LeaveRequestCountOutputTypeCountAcknowledgementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveRequestAcknowledgementWhereInput
 }
 
 /**
@@ -2952,6 +3154,7 @@ export type LeaveRequestSelect<ExtArgs extends runtime.Types.Extensions.Internal
   createdBy?: boolean | Prisma.LeaveRequest$createdByArgs<ExtArgs>
   days?: boolean | Prisma.LeaveRequest$daysArgs<ExtArgs>
   approvalSteps?: boolean | Prisma.LeaveRequest$approvalStepsArgs<ExtArgs>
+  acknowledgements?: boolean | Prisma.LeaveRequest$acknowledgementsArgs<ExtArgs>
   attachments?: boolean | Prisma.LeaveRequest$attachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.LeaveRequestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["leaveRequest"]>
@@ -3059,6 +3262,7 @@ export type LeaveRequestInclude<ExtArgs extends runtime.Types.Extensions.Interna
   createdBy?: boolean | Prisma.LeaveRequest$createdByArgs<ExtArgs>
   days?: boolean | Prisma.LeaveRequest$daysArgs<ExtArgs>
   approvalSteps?: boolean | Prisma.LeaveRequest$approvalStepsArgs<ExtArgs>
+  acknowledgements?: boolean | Prisma.LeaveRequest$acknowledgementsArgs<ExtArgs>
   attachments?: boolean | Prisma.LeaveRequest$attachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.LeaveRequestCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -3093,6 +3297,7 @@ export type $LeaveRequestPayload<ExtArgs extends runtime.Types.Extensions.Intern
     createdBy: Prisma.$UserPayload<ExtArgs> | null
     days: Prisma.$LeaveRequestDayPayload<ExtArgs>[]
     approvalSteps: Prisma.$LeaveApprovalStepPayload<ExtArgs>[]
+    acknowledgements: Prisma.$LeaveRequestAcknowledgementPayload<ExtArgs>[]
     attachments: Prisma.$LeaveAttachmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -3522,6 +3727,7 @@ export interface Prisma__LeaveRequestClient<T, Null = never, ExtArgs extends run
   createdBy<T extends Prisma.LeaveRequest$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeaveRequest$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   days<T extends Prisma.LeaveRequest$daysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeaveRequest$daysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestDayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvalSteps<T extends Prisma.LeaveRequest$approvalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeaveRequest$approvalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  acknowledgements<T extends Prisma.LeaveRequest$acknowledgementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeaveRequest$acknowledgementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestAcknowledgementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   attachments<T extends Prisma.LeaveRequest$attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.LeaveRequest$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4078,6 +4284,30 @@ export type LeaveRequest$approvalStepsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.LeaveApprovalStepScalarFieldEnum | Prisma.LeaveApprovalStepScalarFieldEnum[]
+}
+
+/**
+ * LeaveRequest.acknowledgements
+ */
+export type LeaveRequest$acknowledgementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveRequestAcknowledgement
+   */
+  select?: Prisma.LeaveRequestAcknowledgementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveRequestAcknowledgement
+   */
+  omit?: Prisma.LeaveRequestAcknowledgementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveRequestAcknowledgementInclude<ExtArgs> | null
+  where?: Prisma.LeaveRequestAcknowledgementWhereInput
+  orderBy?: Prisma.LeaveRequestAcknowledgementOrderByWithRelationInput | Prisma.LeaveRequestAcknowledgementOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveRequestAcknowledgementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveRequestAcknowledgementScalarFieldEnum | Prisma.LeaveRequestAcknowledgementScalarFieldEnum[]
 }
 
 /**

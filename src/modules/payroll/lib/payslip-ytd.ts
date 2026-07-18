@@ -8,6 +8,8 @@
  * - Live preview: YTD = prior posted in year + this preview period.
  */
 
+import { sumMoney } from "@/src/modules/payroll/lib/money";
+
 export type PayslipYtdContribution = {
   grossPay: number;
   totalDeductions: number;
@@ -27,10 +29,6 @@ export type PayslipYtdTotals = {
   nisEmployee: number;
   healthSurcharge: number;
 };
-
-function roundMoney(value: number): number {
-  return Math.round(value * 100) / 100;
-}
 
 export function emptyPayslipYtd(year: number): PayslipYtdTotals {
   return {
@@ -57,35 +55,19 @@ export function assemblePayslipYtd(input: {
     contributions.push(input.current);
   }
 
-  const totals = contributions.reduce(
-    (acc, row) => {
-      acc.grossPay += row.grossPay;
-      acc.totalDeductions += row.totalDeductions;
-      acc.netPay += row.netPay;
-      acc.paye += row.paye;
-      acc.nisEmployee += row.nisEmployee;
-      acc.healthSurcharge += row.healthSurcharge;
-      return acc;
-    },
-    {
-      grossPay: 0,
-      totalDeductions: 0,
-      netPay: 0,
-      paye: 0,
-      nisEmployee: 0,
-      healthSurcharge: 0,
-    },
-  );
-
   return {
     year: input.year,
     periodCount: contributions.length,
-    grossPay: roundMoney(totals.grossPay),
-    totalDeductions: roundMoney(totals.totalDeductions),
-    netPay: roundMoney(totals.netPay),
-    paye: roundMoney(totals.paye),
-    nisEmployee: roundMoney(totals.nisEmployee),
-    healthSurcharge: roundMoney(totals.healthSurcharge),
+    grossPay: sumMoney(...contributions.map((row) => row.grossPay)),
+    totalDeductions: sumMoney(
+      ...contributions.map((row) => row.totalDeductions),
+    ),
+    netPay: sumMoney(...contributions.map((row) => row.netPay)),
+    paye: sumMoney(...contributions.map((row) => row.paye)),
+    nisEmployee: sumMoney(...contributions.map((row) => row.nisEmployee)),
+    healthSurcharge: sumMoney(
+      ...contributions.map((row) => row.healthSurcharge),
+    ),
   };
 }
 

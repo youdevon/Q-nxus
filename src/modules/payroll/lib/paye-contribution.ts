@@ -1,5 +1,7 @@
 /** Trinidad & Tobago PAYE (income tax) calculation helpers (client-safe). */
 
+import { roundToCents } from "@/src/modules/payroll/lib/money";
+
 export type PayeTaxBracketRecord = {
   id: string;
   upToAmount: string | null;
@@ -64,10 +66,6 @@ export type PayeContributionResult = {
   monthlyPaye: number;
 };
 
-function roundMoney(value: number): number {
-  return Math.round(value * 100) / 100;
-}
-
 function sortBrackets(brackets: PayeTaxBracketInput[]): PayeTaxBracketInput[] {
   return [...brackets].sort(
     (left, right) => (left.sortOrder ?? 0) - (right.sortOrder ?? 0),
@@ -113,20 +111,21 @@ export function computeTaxOnChargeableIncome(
     previousCap = bandCeiling;
   }
 
-  return roundMoney(tax);
+  return roundToCents(tax);
 }
 
 /**
  * Estimate annual PAYE from taxable employment income and optional NIS/TD1 deductions.
  *
- * Phase 1 taxable income: current contract base salary only (annualised × 12).
- * OT/bonuses/commissions deferred.
+ * Taxable income is annualised monthly taxable earnings (base salary plus
+ * taxable allowances / variable earnings) × 12.
+ * OT/bonuses/commissions deferred unless entered as taxable run lines.
  *
  * NIS deductible = min(employeeWeeklyNIS × 52 × nisDeductiblePortion, remaining cap room)
  * combined with other TD1 approved deductions under approvedDeductionCapAnnual.
  */
 export function computePayeContribution(input: {
-  /** Monthly taxable employment earnings (Phase 1: base salary only). */
+  /** Monthly taxable employment earnings (base + taxable allowances/lines). */
   monthlyTaxableEarnings: number;
   config: PayeTaxConfigInput;
   /** Employee NIS weekly amount from earnings class (0 if none). */
@@ -134,30 +133,30 @@ export function computePayeContribution(input: {
   /** Other TD1 approved deductions (annual), e.g. pension/annuity. */
   otherApprovedDeductionsAnnual?: number;
 }): PayeContributionResult {
-  const annualTaxableIncome = roundMoney(input.monthlyTaxableEarnings * 12);
+  const annualTaxableIncome = roundToCents(input.monthlyTaxableEarnings * 12);
   const personalAllowance = input.config.personalAllowanceAnnual;
   const employeeNisWeekly = input.employeeNisWeekly ?? 0;
-  const employeeNisAnnual = roundMoney(employeeNisWeekly * 52);
-  const nisDeductibleGross = roundMoney(
+  const employeeNisAnnual = roundToCents(employeeNisWeekly * 52);
+  const nisDeductibleGross = roundToCents(
     employeeNisAnnual * input.config.nisDeductiblePortion,
   );
-  const otherApprovedDeductions = roundMoney(
+  const otherApprovedDeductions = roundToCents(
     Math.max(0, input.otherApprovedDeductionsAnnual ?? 0),
   );
 
-  const combinedBeforeCap = roundMoney(
+  const combinedBeforeCap = roundToCents(
     nisDeductibleGross + otherApprovedDeductions,
   );
-  const approvedDeductionsApplied = roundMoney(
+  const approvedDeductionsApplied = roundToCents(
     Math.min(combinedBeforeCap, input.config.approvedDeductionCapAnnual),
   );
 
   // Prefer applying NIS deductible within the combined cap when capping.
-  const nisDeductible = roundMoney(
+  const nisDeductible = roundToCents(
     Math.min(nisDeductibleGross, approvedDeductionsApplied),
   );
 
-  const chargeableIncome = roundMoney(
+  const chargeableIncome = roundToCents(
     Math.max(
       0,
       annualTaxableIncome - personalAllowance - approvedDeductionsApplied,
@@ -168,7 +167,7 @@ export function computePayeContribution(input: {
     chargeableIncome,
     input.config.brackets,
   );
-  const monthlyPaye = roundMoney(annualTax / 12);
+  const monthlyPaye = roundToCents(annualTax / 12);
 
   return {
     annualTaxableIncome,

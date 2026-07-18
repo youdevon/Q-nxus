@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PayRunDetailView } from "@/src/modules/payroll/components/pay-run-detail";
+import { getPayRunPaymentStatusSummary } from "@/src/modules/payroll/data/get-payroll-payments";
 import { getPayRunDetail } from "@/src/modules/payroll/data/get-pay-runs";
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
 
@@ -16,9 +17,14 @@ type PayRunPageProps = {
 };
 
 export default async function PayRunPage({ params }: PayRunPageProps) {
-  const capabilities = await requirePayrollViewAccess();
-  const { id } = await params;
-  const run = await getPayRunDetail(id);
+  const [{ id }, capabilities] = await Promise.all([
+    params,
+    requirePayrollViewAccess(),
+  ]);
+  const [run, paymentSummary] = await Promise.all([
+    getPayRunDetail(id, { actorUserId: capabilities.userId }),
+    getPayRunPaymentStatusSummary(id),
+  ]);
 
   if (!run) {
     notFound();
@@ -28,6 +34,7 @@ export default async function PayRunPage({ params }: PayRunPageProps) {
     <PayRunDetailView
       run={run}
       canManage={capabilities.can("payroll.manage")}
+      paymentSummary={paymentSummary}
     />
   );
 }

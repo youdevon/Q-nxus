@@ -24,9 +24,9 @@ export type PayslipPdfDocumentInput = {
 
 const styles = StyleSheet.create({
   page: {
-    paddingHorizontal: 40,
-    paddingVertical: 36,
-    fontSize: 9,
+    paddingHorizontal: 28,
+    paddingVertical: 24,
+    fontSize: 8,
     color: "#111827",
     fontFamily: "Helvetica",
   },
@@ -36,18 +36,18 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     borderBottomWidth: 1,
     borderBottomColor: "#d1d5db",
-    paddingBottom: 10,
-    marginBottom: 12,
+    paddingBottom: 6,
+    marginBottom: 8,
   },
   label: {
-    fontSize: 7,
+    fontSize: 6.5,
     color: "#6b7280",
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
-  orgName: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 2 },
+  orgName: { fontSize: 12, fontFamily: "Helvetica-Bold", marginTop: 1 },
   payslipTag: {
-    fontSize: 8,
+    fontSize: 7,
     color: "#1d4ed8",
     fontFamily: "Helvetica-Bold",
     textTransform: "uppercase",
@@ -55,51 +55,51 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   period: {
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: "Helvetica-Bold",
-    marginTop: 2,
+    marginTop: 1,
     textAlign: "right",
   },
   metaGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 12,
+    marginBottom: 8,
   },
-  metaItem: { width: "25%", marginBottom: 8, paddingRight: 8 },
-  metaValue: { fontSize: 9, fontFamily: "Helvetica-Bold", marginTop: 1 },
+  metaItem: { width: "25%", marginBottom: 5, paddingRight: 6 },
+  metaValue: { fontSize: 8, fontFamily: "Helvetica-Bold", marginTop: 1 },
   sectionTitle: {
-    fontSize: 8,
+    fontSize: 7,
     fontFamily: "Helvetica-Bold",
     textTransform: "uppercase",
     letterSpacing: 0.5,
     color: "#374151",
-    marginTop: 10,
-    marginBottom: 4,
+    marginTop: 6,
+    marginBottom: 3,
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
-    paddingBottom: 3,
+    paddingBottom: 2,
   },
   lineRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 2.5,
+    paddingVertical: 1.5,
     borderBottomWidth: 0.5,
     borderBottomColor: "#f3f4f6",
   },
   lineLabel: { flex: 1, paddingRight: 8 },
-  lineDetail: { fontSize: 7, color: "#6b7280", marginTop: 1 },
+  lineDetail: { fontSize: 6.5, color: "#6b7280", marginTop: 1 },
   amount: { fontFamily: "Helvetica-Bold" },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 4,
-    paddingTop: 4,
+    marginTop: 3,
+    paddingTop: 3,
     borderTopWidth: 1,
     borderTopColor: "#d1d5db",
   },
   netBox: {
-    marginTop: 10,
-    padding: 10,
+    marginTop: 6,
+    padding: 6,
     backgroundColor: "#eff6ff",
     borderWidth: 1,
     borderColor: "#bfdbfe",
@@ -108,21 +108,21 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   netLabel: {
-    fontSize: 8,
+    fontSize: 7,
     color: "#1d4ed8",
     fontFamily: "Helvetica-Bold",
     textTransform: "uppercase",
     letterSpacing: 1,
   },
-  netAmount: { fontSize: 20, fontFamily: "Helvetica-Bold", marginTop: 2 },
-  ytdRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 4 },
-  ytdItem: { width: "16.6%", marginBottom: 4 },
+  netAmount: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 1 },
+  ytdRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 3 },
+  ytdItem: { width: "16.6%", marginBottom: 3 },
   footer: {
-    marginTop: "auto",
-    paddingTop: 10,
+    marginTop: 8,
+    paddingTop: 6,
     borderTopWidth: 1,
     borderTopColor: "#e5e7eb",
-    fontSize: 7,
+    fontSize: 6.5,
     color: "#6b7280",
   },
 });
@@ -176,134 +176,139 @@ function PayslipPage({ payslip, meta, ytd, isOfficial }: PayslipPdfDocumentInput
   );
 
   return (
-    <Page size="A4" style={styles.page}>
-      <View style={styles.headerRow}>
-        <View>
-          <Text style={styles.label}>Employer</Text>
-          <Text style={styles.orgName}>{meta.organizationName}</Text>
-        </View>
-        <View>
-          <Text style={styles.payslipTag}>Payslip</Text>
-          <Text style={styles.period}>{payslip.period.label}</Text>
-          <Text style={[styles.label, { textAlign: "right" }]}>
-            Currency {currency}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.metaGrid}>
-        <MetaItem label="Employee" value={payslip.employee.displayName} />
-        <MetaItem
-          label="Employee no."
-          value={payslip.employee.employeeNumber}
-        />
-        <MetaItem label="Position" value={meta.jobTitle?.trim() || "—"} />
-        <MetaItem
-          label="Department"
-          value={meta.departmentName?.trim() || "—"}
-        />
-        <MetaItem label="NIS no." value={payslip.employee.nisNumber ?? "—"} />
-        <MetaItem label="BIR no." value={payslip.employee.birNumber ?? "—"} />
-        <MetaItem
-          label="Gross pay"
-          value={money(payslip.grossPay, currency)}
-        />
-        <MetaItem
-          label="Taxable"
-          value={money(payslip.monthlyTaxableEarnings, currency)}
-        />
-      </View>
-
-      <Text style={styles.sectionTitle}>Earnings</Text>
-      <LineList
-        lines={payslip.earnings}
-        currency={currency}
-        emptyLabel="No earnings on file."
-      />
-
-      <Text style={styles.sectionTitle}>Deductions</Text>
-      <LineList
-        lines={payslip.deductions}
-        currency={currency}
-        emptyLabel="No employee deductions calculated."
-      />
-      <View style={styles.totalRow}>
-        <Text style={styles.amount}>Total deductions</Text>
-        <Text style={styles.amount}>
-          {money(payslip.totalDeductions, currency)}
-        </Text>
-      </View>
-
-      <View style={styles.netBox}>
-        <View>
-          <Text style={styles.netLabel}>Net pay</Text>
-          <Text style={styles.netAmount}>{money(payslip.netPay, currency)}</Text>
-          {primaryBank ? (
-            <Text style={styles.lineDetail}>
-              Paid to {primaryBank.bankName} ({primaryBank.accountNumberMasked})
+    <Page size="A4" style={styles.page} wrap>
+      {/* wrap so dense slips continue onto a second page instead of clipping */}
+      <View wrap>
+        <View style={styles.headerRow} wrap={false}>
+          <View>
+            <Text style={styles.label}>Employer</Text>
+            <Text style={styles.orgName}>{meta.organizationName}</Text>
+          </View>
+          <View>
+            <Text style={styles.payslipTag}>Payslip</Text>
+            <Text style={styles.period}>{payslip.period.label}</Text>
+            <Text style={[styles.label, { textAlign: "right" }]}>
+              Currency {currency}
             </Text>
-          ) : null}
-        </View>
-        <Text style={styles.lineDetail}>
-          Gross {money(payslip.grossPay, currency)} − deductions{" "}
-          {money(payslip.totalDeductions, currency)}
-        </Text>
-      </View>
-
-      {ytd && ytd.periodCount > 0 ? (
-        <View>
-          <Text style={styles.sectionTitle}>
-            Year to date · {ytd.year} ({ytd.periodCount} period
-            {ytd.periodCount === 1 ? "" : "s"})
-          </Text>
-          <View style={styles.ytdRow}>
-            <View style={styles.ytdItem}>
-              <Text style={styles.label}>Gross</Text>
-              <Text>{money(ytd.grossPay, currency)}</Text>
-            </View>
-            <View style={styles.ytdItem}>
-              <Text style={styles.label}>Deductions</Text>
-              <Text>{money(ytd.totalDeductions, currency)}</Text>
-            </View>
-            <View style={styles.ytdItem}>
-              <Text style={styles.label}>PAYE</Text>
-              <Text>{money(ytd.paye, currency)}</Text>
-            </View>
-            <View style={styles.ytdItem}>
-              <Text style={styles.label}>NIS</Text>
-              <Text>{money(ytd.nisEmployee, currency)}</Text>
-            </View>
-            <View style={styles.ytdItem}>
-              <Text style={styles.label}>Health</Text>
-              <Text>{money(ytd.healthSurcharge, currency)}</Text>
-            </View>
-            <View style={styles.ytdItem}>
-              <Text style={styles.label}>Net</Text>
-              <Text>{money(ytd.netPay, currency)}</Text>
-            </View>
           </View>
         </View>
-      ) : null}
 
-      {payslip.employerContributions.length > 0 ? (
-        <View>
-          <Text style={styles.sectionTitle}>
-            Employer contributions (informational — not deducted)
-          </Text>
-          <LineList
-            lines={payslip.employerContributions}
-            currency={currency}
-            emptyLabel="None"
+        <View style={styles.metaGrid}>
+          <MetaItem label="Employee" value={payslip.employee.displayName} />
+          <MetaItem
+            label="Employee no."
+            value={payslip.employee.employeeNumber}
+          />
+          <MetaItem label="Position" value={meta.jobTitle?.trim() || "—"} />
+          <MetaItem
+            label="Department"
+            value={meta.departmentName?.trim() || "—"}
+          />
+          <MetaItem label="NIS no." value={payslip.employee.nisNumber ?? "—"} />
+          <MetaItem label="BIR no." value={payslip.employee.birNumber ?? "—"} />
+          <MetaItem
+            label="Gross pay"
+            value={money(payslip.grossPay, currency)}
+          />
+          <MetaItem
+            label="Taxable"
+            value={money(payslip.monthlyTaxableEarnings, currency)}
           />
         </View>
-      ) : null}
 
-      <View style={styles.footer}>
-        <Text>
-          {isOfficial
-            ? "Official payslip — amounts frozen from a posted pay run."
-            : "Preview — not an official payslip. Pay runs have not been posted."}
-        </Text>
+        <Text style={styles.sectionTitle}>Earnings</Text>
+        <LineList
+          lines={payslip.earnings}
+          currency={currency}
+          emptyLabel="No earnings on file."
+        />
+
+        <Text style={styles.sectionTitle}>Deductions</Text>
+        <LineList
+          lines={payslip.deductions}
+          currency={currency}
+          emptyLabel="No employee deductions calculated."
+        />
+        <View style={styles.totalRow} wrap={false}>
+          <Text style={styles.amount}>Total deductions</Text>
+          <Text style={styles.amount}>
+            {money(payslip.totalDeductions, currency)}
+          </Text>
+        </View>
+
+        <View style={styles.netBox} wrap={false}>
+          <View>
+            <Text style={styles.netLabel}>Net pay</Text>
+            <Text style={styles.netAmount}>
+              {money(payslip.netPay, currency)}
+            </Text>
+            {primaryBank ? (
+              <Text style={styles.lineDetail}>
+                Paid to {primaryBank.bankName} ({primaryBank.accountNumberMasked})
+              </Text>
+            ) : null}
+          </View>
+          <Text style={styles.lineDetail}>
+            Gross {money(payslip.grossPay, currency)} − deductions{" "}
+            {money(payslip.totalDeductions, currency)}
+          </Text>
+        </View>
+
+        {ytd && ytd.periodCount > 0 ? (
+          <View wrap={false}>
+            <Text style={styles.sectionTitle}>
+              Year to date · {ytd.year} ({ytd.periodCount} period
+              {ytd.periodCount === 1 ? "" : "s"})
+            </Text>
+            <View style={styles.ytdRow}>
+              <View style={styles.ytdItem}>
+                <Text style={styles.label}>Gross</Text>
+                <Text>{money(ytd.grossPay, currency)}</Text>
+              </View>
+              <View style={styles.ytdItem}>
+                <Text style={styles.label}>Deductions</Text>
+                <Text>{money(ytd.totalDeductions, currency)}</Text>
+              </View>
+              <View style={styles.ytdItem}>
+                <Text style={styles.label}>PAYE</Text>
+                <Text>{money(ytd.paye, currency)}</Text>
+              </View>
+              <View style={styles.ytdItem}>
+                <Text style={styles.label}>NIS</Text>
+                <Text>{money(ytd.nisEmployee, currency)}</Text>
+              </View>
+              <View style={styles.ytdItem}>
+                <Text style={styles.label}>Health</Text>
+                <Text>{money(ytd.healthSurcharge, currency)}</Text>
+              </View>
+              <View style={styles.ytdItem}>
+                <Text style={styles.label}>Net</Text>
+                <Text>{money(ytd.netPay, currency)}</Text>
+              </View>
+            </View>
+          </View>
+        ) : null}
+
+        {payslip.employerContributions.length > 0 ? (
+          <View>
+            <Text style={styles.sectionTitle}>
+              Employer contributions (informational — not deducted)
+            </Text>
+            <LineList
+              lines={payslip.employerContributions}
+              currency={currency}
+              emptyLabel="None"
+            />
+          </View>
+        ) : null}
+
+        <View style={styles.footer} wrap={false}>
+          <Text>
+            {isOfficial
+              ? "Official payslip — amounts frozen from a posted pay run."
+              : "Preview — not an official payslip. Pay runs have not been posted."}
+          </Text>
+        </View>
       </View>
     </Page>
   );
@@ -319,7 +324,7 @@ function PayslipPdf({ documents }: { documents: PayslipPdfDocumentInput[] }) {
   );
 }
 
-/** Render one or more payslips to a single PDF buffer (one page each). */
+/** Render one or more payslips to a single PDF buffer (A4 portrait; one page each). */
 export async function renderPayslipsPdf(
   documents: PayslipPdfDocumentInput[],
 ): Promise<Buffer> {

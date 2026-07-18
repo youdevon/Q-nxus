@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
-import { formatMoney } from "@/src/lib/format";
+import { payRunStatusBadgeVariant } from "@/src/config/ui-colors";
+import { formatMoney, formatDisplayDate } from "@/src/lib/format";
 import type { MonthlyPayrollReportData } from "@/src/modules/payroll/data/get-monthly-payroll-summary";
 import {
   runKindLabel,
@@ -17,14 +18,7 @@ import { formatPayslipPeriodLabel } from "@/src/modules/payroll/lib/payslip-prev
 import { PayrollNav } from "./payroll-nav";
 
 function formatDate(iso: string | null) {
-  if (!iso) {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-    timeZone: "America/Port_of_Spain",
-  }).format(new Date(iso));
+  return formatDisplayDate(iso, { fallback: "—" });
 }
 
 function MoneyKpis({
@@ -266,7 +260,7 @@ export function MonthlyPayrollReport({
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium">{run.runNumber}</p>
-                    <Badge variant="success">
+                    <Badge variant={payRunStatusBadgeVariant("POSTED")}>
                       <CircleCheck />
                       Posted
                     </Badge>

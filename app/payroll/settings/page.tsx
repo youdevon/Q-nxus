@@ -250,6 +250,49 @@ export default async function PayrollSettingsPage() {
           </p>
         )}
       </section>
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Landmark className="size-4 text-muted-foreground" />
+            <SectionHeading>Financial institutions</SectionHeading>
+          </div>
+
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/payroll/settings/institutions" />}
+          >
+            {canManage ? "Manage institutions" : "View institutions"}
+          </Button>
+        </div>
+
+        <p className="mb-4 text-sm text-muted-foreground">
+          Bank directory for employee payroll destinations. ACH routing codes
+          stay blank until confirmed (REQUIRES_CONFIRMATION).
+        </p>
+      </section>
+
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Landmark className="size-4 text-muted-foreground" />
+            <SectionHeading>Bank export profiles</SectionHeading>
+          </div>
+
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/payroll/settings/export-profiles" />}
+          >
+            {canManage ? "Manage export profiles" : "View export profiles"}
+          </Button>
+        </div>
+
+        <p className="mb-4 text-sm text-muted-foreground">
+          Configurable CSV / manual register adapters only. Official bank ACH
+          layouts are not shipped — seeded profiles are marked placeholder.
+        </p>
+      </section>
     </PageShell>
   );
 }

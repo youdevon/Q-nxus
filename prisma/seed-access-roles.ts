@@ -94,6 +94,56 @@ const permissions = [
     moduleKey: "payroll",
   },
   {
+    code: "payroll.bank_accounts.view",
+    name: "View employee bank accounts (masked)",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.bank_accounts.view_sensitive",
+    name: "View full employee bank account numbers",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.bank_accounts.create",
+    name: "Create employee bank accounts",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.bank_accounts.update",
+    name: "Update employee bank accounts",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.bank_accounts.verify",
+    name: "Verify employee bank accounts",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.bank_accounts.disable",
+    name: "Disable employee bank accounts",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.allocations.manage",
+    name: "Manage employee payroll deposit allocations",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.financial_institutions.manage",
+    name: "Manage financial institution directory",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.bank_export_profiles.manage",
+    name: "Manage bank export profiles (activate / safe fields)",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.payment_returns.manage",
+    name: "Mark payment returns/rejects and resolve failed disbursements",
+    moduleKey: "payroll",
+  },
+  {
     code: "documents.view",
     name: "View documents",
     moduleKey: "documents",
@@ -266,6 +316,10 @@ const roleTemplates: RoleTemplate[] = [
       "people.directory.view",
       "payroll.view",
       "payroll.setup",
+      "payroll.bank_accounts.view",
+      "payroll.bank_accounts.create",
+      "payroll.bank_accounts.update",
+      "payroll.allocations.manage",
     ],
   },
   {
@@ -279,6 +333,16 @@ const roleTemplates: RoleTemplate[] = [
       "payroll.view",
       "payroll.setup",
       "payroll.manage",
+      "payroll.bank_accounts.view",
+      "payroll.bank_accounts.view_sensitive",
+      "payroll.bank_accounts.create",
+      "payroll.bank_accounts.update",
+      "payroll.bank_accounts.verify",
+      "payroll.bank_accounts.disable",
+      "payroll.allocations.manage",
+      "payroll.financial_institutions.manage",
+      "payroll.bank_export_profiles.manage",
+      "payroll.payment_returns.manage",
     ],
   },
   {
@@ -299,6 +363,16 @@ const roleTemplates: RoleTemplate[] = [
       "payroll.view",
       "payroll.setup",
       "payroll.manage",
+      "payroll.bank_accounts.view",
+      "payroll.bank_accounts.view_sensitive",
+      "payroll.bank_accounts.create",
+      "payroll.bank_accounts.update",
+      "payroll.bank_accounts.verify",
+      "payroll.bank_accounts.disable",
+      "payroll.allocations.manage",
+      "payroll.financial_institutions.manage",
+      "payroll.bank_export_profiles.manage",
+      "payroll.payment_returns.manage",
     ],
   },
 ]
@@ -314,6 +388,7 @@ async function upsertRole(template: RoleTemplate) {
     update: {
       name: template.name,
       description: template.description,
+      isSystem: true,
       isActive: true,
     },
     create: {
@@ -321,6 +396,7 @@ async function upsertRole(template: RoleTemplate) {
       code: template.code,
       name: template.name,
       description: template.description,
+      isSystem: true,
       isActive: true,
     },
   })
@@ -401,12 +477,26 @@ async function main() {
     await syncRolePermissions(role.id, template.permissionCodes)
   }
 
-  const adminRole = await prisma.role.findUniqueOrThrow({
+  const adminRole = await prisma.role.upsert({
     where: {
       organizationId_code: {
         organizationId,
         code: "SYSTEM_ADMINISTRATOR",
       },
+    },
+    update: {
+      name: "System Administrator",
+      description: "Full platform administration access.",
+      isSystem: true,
+      isActive: true,
+    },
+    create: {
+      organizationId,
+      code: "SYSTEM_ADMINISTRATOR",
+      name: "System Administrator",
+      description: "Full platform administration access.",
+      isSystem: true,
+      isActive: true,
     },
   })
 

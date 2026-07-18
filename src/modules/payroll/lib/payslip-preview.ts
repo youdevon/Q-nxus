@@ -2,9 +2,9 @@
  * Assembles a single-period payslip preview from contract earnings,
  * statutory configs, and bank split rules (client-safe).
  *
- * Phase 1 period = one calendar month. Contract base salary is treated as
- * monthly; allowances are normalised to monthly equivalents and treated as
- * non-taxable.
+ * Period = one calendar month. Contract base salary is treated as monthly;
+ * allowances are normalised to monthly equivalents. Taxable pay includes
+ * base salary plus any contract allowance / variable earning with isTaxable.
  */
 
 import type { HealthSurchargeResult } from "@/src/modules/payroll/lib/health-surcharge";
@@ -27,6 +27,15 @@ import {
   bankFixedAmountTotal,
   type PayrollReadinessResult,
 } from "@/src/modules/payroll/lib/payroll-readiness";
+import { applyPostNetBankAllocations } from "@/src/modules/payroll/lib/post-net-bank-allocations";
+import {
+  addCents,
+  fromCents,
+  roundToCents,
+  subCents,
+  sumMoney,
+  toCents,
+} from "@/src/modules/payroll/lib/money";
 
 export type PayslipLineItem = {
   label: string;
@@ -40,7 +49,7 @@ export type PayslipBankLine = {
   accountNumber?: string;
   accountNumberMasked: string;
   amount: number;
-  kind: "FIXED" | "REMAINDER";
+  kind: "FIXED" | "PERCENTAGE" | "REMAINDER";
 };
 
 export type PayslipEarningInput = {
@@ -65,6 +74,11 @@ export type PayslipBankAccountInput = {
   accountNumber: string;
   amount: number | null;
   isPrimary: boolean;
+  /** Used when postNetSplitEnabled — percentage of full take-home (0–100). */
+  percentage?: number | null;
+  /** Used when postNetSplitEnabled. */
+  allocationKind?: "FIXED" | "PERCENTAGE" | "REMAINDER";
+  priority?: number;
 };
 
 export type AssemblePayslipPreviewInput = {
@@ -86,9 +100,17 @@ export type AssemblePayslipPreviewInput = {
   earnings: PayslipEarningInput[];
   deductions?: PayslipDeductionInput[];
   bankAccounts: PayslipBankAccountInput[];
+  /**
+   * When true, FIXED then PERCENTAGE then REMAINDER split full take-home;
+   * fixed amounts are NOT payslip deductions. Default false (Phase 1 math).
+   */
+  postNetSplitEnabled?: boolean;
   readiness: PayrollReadinessResult;
   td1OtherApprovedAnnual?: number;
   pensionOnlyIncome?: boolean;
+  exemptFromNis?: boolean;
+  exemptFromHealthSurcharge?: boolean;
+  exemptFromPaye?: boolean;
   nisClasses: NisEarningsClassInput[];
   payeConfig: PayeTaxConfigInput | null;
   healthConfig: HealthSurchargeConfigInput | null;
@@ -132,7 +154,7 @@ const PAYSLIP_PERIOD_PATTERN = /^(\d{4})-(0[1-9]|1[0-2])$/;
 /** Caveats that apply only to live / draft previews — never show on posted slips. */
 export const PAYSLIP_PREVIEW_CAVEAT_NOTES = [
   "Preview only — not a posted pay run.",
-  "Allowances remain visible in gross pay but are excluded from statutory deductions unless entered as taxable run line items.",
+  "Non-taxable allowances remain in gross pay only; taxable allowances and taxable run line items enter NIS/PAYE/Health taxable pay.",
   "Base salary and recurring allowances are pro-rated by calendar days worked when hire, termination, or contract dates fall inside the period.",
   "Health Surcharge uses contribution weeks (Mondays) in the pay period, not a 52/12 monthly average.",
 ] as const;
@@ -154,10 +176,6 @@ export function notesForPayslipDisplay(
   return notes.filter((note) => !PREVIEW_CAVEAT_NOTE_SET.has(note));
 }
 
-function roundMoney(value: number): number {
-  return Math.round(value * 100) / 100;
-}
-
 /** Convert an allowance/salary amount at its source frequency to a monthly period amount. */
 export function toMonthlyPeriodAmount(
   amount: number,
@@ -169,21 +187,21 @@ export function toMonthlyPeriodAmount(
 
   switch (frequency.toUpperCase().replaceAll(" ", "_")) {
     case "WEEKLY":
-      return roundMoney((amount * 52) / 12);
+      return roundToCents((amount * 52) / 12);
     case "BIWEEKLY":
-      return roundMoney((amount * 26) / 12);
+      return roundToCents((amount * 26) / 12);
     case "FORTNIGHTLY":
-      return roundMoney((amount * 26) / 12);
+      return roundToCents((amount * 26) / 12);
     case "SEMI_MONTHLY":
-      return roundMoney(amount * 2);
+      return roundToCents(amount * 2);
     case "ANNUAL":
-      return roundMoney(amount / 12);
+      return roundToCents(amount / 12);
     case "ONE_TIME":
       return 0;
     case "MONTHLY":
     case "PER_PAY_PERIOD":
     default:
-      return roundMoney(amount);
+      return roundToCents(amount);
   }
 }
 
@@ -222,6 +240,43 @@ export function getPreviousPayslipPeriod(referenceDate = new Date()): string {
   }
 
   return `${year}-${String(month).padStart(2, "0")}`;
+}
+
+export function getCurrentPayslipPeriod(referenceDate = new Date()): string {
+  const { year, month } = getTrinidadMonthParts(referenceDate);
+  return `${year}-${String(month).padStart(2, "0")}`;
+}
+
+/**
+ * Default live-preview period: previous month, unless that month ends before
+ * contract/hire coverage begins — then use the current month so joiners are
+ * not shown a $0 slip against an active contract.
+ */
+export function resolveDefaultLivePayslipPeriod(input?: {
+  referenceDate?: Date;
+  coverageStartDate?: string | Date | null;
+}): string {
+  const referenceDate = input?.referenceDate ?? new Date();
+  const previous = getPreviousPayslipPeriod(referenceDate);
+  const current = getCurrentPayslipPeriod(referenceDate);
+  const coverageStart = input?.coverageStartDate;
+
+  if (!coverageStart) {
+    return previous;
+  }
+
+  const coverageIso =
+    typeof coverageStart === "string"
+      ? coverageStart.slice(0, 10)
+      : coverageStart.toISOString().slice(0, 10);
+  const previousEnd = payslipPeriodToAsOfDate(previous);
+  const previousEndIso = previousEnd?.toISOString().slice(0, 10);
+
+  if (previousEndIso && coverageIso > previousEndIso) {
+    return current;
+  }
+
+  return previous;
 }
 
 export function payslipPeriodToAsOfDate(
@@ -305,21 +360,19 @@ export function applyFixedBankAllocations(input: {
     };
   }
 
-  let remainingCents = Math.round(
-    Math.max(0, input.availableAfterStatutory) * 100,
-  );
+  let remainingCents = toCents(Math.max(0, input.availableAfterStatutory));
   const deductions: PayslipLineItem[] = [];
   const lines: PayslipBankLine[] = [];
 
   for (const account of secondaries) {
-    const fixedCents = Math.round(Math.max(0, account.amount ?? 0) * 100);
+    const fixedCents = toCents(Math.max(0, account.amount ?? 0));
     if (fixedCents <= 0) {
       continue;
     }
 
     const paidCents = Math.min(fixedCents, remainingCents);
-    remainingCents -= paidCents;
-    const paidAmount = paidCents / 100;
+    remainingCents = subCents(remainingCents, paidCents);
+    const paidAmount = fromCents(paidCents);
 
     deductions.push({
       label: `Bank transfer — ${account.bankName}`,
@@ -343,7 +396,7 @@ export function applyFixedBankAllocations(input: {
     );
   }
 
-  const primaryRemainder = remainingCents / 100;
+  const primaryRemainder = fromCents(remainingCents);
 
   lines.push({
     bankName: primary.bankName,
@@ -382,10 +435,10 @@ export function assemblePayslipPreview(
   const notes: string[] = [...PAYSLIP_PREVIEW_CAVEAT_NOTES];
 
   const earnings: PayslipLineItem[] = [];
-  let baseSalary = 0;
-  let allowancesTotal = 0;
-  let grossPay = 0;
-  let monthlyTaxableEarnings = 0;
+  let baseSalaryCents = 0;
+  let allowancesTotalCents = 0;
+  let grossPayCents = 0;
+  let monthlyTaxableEarningsCents = 0;
 
   for (const element of input.earnings) {
     const periodAmount = toMonthlyPeriodAmount(
@@ -410,32 +463,47 @@ export function assemblePayslipPreview(
             : "Non-taxable",
     });
 
-    grossPay = roundMoney(grossPay + periodAmount);
+    const periodAmountCents = toCents(periodAmount);
+    grossPayCents = addCents(grossPayCents, periodAmountCents);
     if (element.source === "CONTRACT_SALARY") {
-      baseSalary = roundMoney(baseSalary + periodAmount);
-      monthlyTaxableEarnings = roundMoney(
-        monthlyTaxableEarnings + periodAmount,
+      baseSalaryCents = addCents(baseSalaryCents, periodAmountCents);
+      monthlyTaxableEarningsCents = addCents(
+        monthlyTaxableEarningsCents,
+        periodAmountCents,
       );
     } else if (element.source === "CONTRACT_ALLOWANCE") {
-      allowancesTotal = roundMoney(allowancesTotal + periodAmount);
+      allowancesTotalCents = addCents(allowancesTotalCents, periodAmountCents);
       if (element.isTaxable) {
-        monthlyTaxableEarnings = roundMoney(
-          monthlyTaxableEarnings + periodAmount,
+        monthlyTaxableEarningsCents = addCents(
+          monthlyTaxableEarningsCents,
+          periodAmountCents,
         );
       }
     } else if (element.isTaxable) {
-      monthlyTaxableEarnings = roundMoney(
-        monthlyTaxableEarnings + periodAmount,
+      monthlyTaxableEarningsCents = addCents(
+        monthlyTaxableEarningsCents,
+        periodAmountCents,
       );
     }
   }
+
+  const baseSalary = fromCents(baseSalaryCents);
+  const allowancesTotal = fromCents(allowancesTotalCents);
+  const grossPay = fromCents(grossPayCents);
+  const monthlyTaxableEarnings = fromCents(monthlyTaxableEarningsCents);
 
   let nis: NisContributionResult | null = null;
   let paye: PayeContributionResult | null = null;
   let health: HealthSurchargeResult | null = null;
 
+  const exemptFromNis = input.exemptFromNis ?? false;
+  const exemptFromPaye = input.exemptFromPaye ?? false;
+  const exemptFromHealthSurcharge = input.exemptFromHealthSurcharge ?? false;
+
   if (monthlyTaxableEarnings > 0) {
-    if (input.nisClasses.length > 0) {
+    if (exemptFromNis) {
+      notes.push("NIS exempt (employee opt-out) — no employee or employer contribution.");
+    } else if (input.nisClasses.length > 0) {
       nis = computeNisContribution({
         monthlySalary: monthlyTaxableEarnings,
         classes: input.nisClasses,
@@ -444,7 +512,9 @@ export function assemblePayslipPreview(
       warnings.push("No active NIS earnings classes configured.");
     }
 
-    if (input.payeConfig != null) {
+    if (exemptFromPaye) {
+      notes.push("PAYE exempt (employee opt-out) — no income tax deducted.");
+    } else if (input.payeConfig != null) {
       paye = computePayeContribution({
         monthlyTaxableEarnings,
         config: input.payeConfig,
@@ -461,11 +531,12 @@ export function assemblePayslipPreview(
         monthlyEarnings: monthlyTaxableEarnings,
         dateOfBirth: input.employee.dateOfBirth,
         pensionOnlyIncome: input.pensionOnlyIncome ?? false,
+        exemptFromHealthSurcharge,
         asOf,
         weeksInPeriod: countHealthContributionWeeks(periodStart, periodEnd),
       });
 
-      if (!input.employee.dateOfBirth) {
+      if (!exemptFromHealthSurcharge && !input.employee.dateOfBirth) {
         warnings.push(
           "Employee date of birth is not set — Health Surcharge age exemptions cannot be applied.",
         );
@@ -515,36 +586,64 @@ export function assemblePayslipPreview(
     }
     deductions.push({
       label: deduction.label,
-      amount: roundMoney(deduction.amount),
+      amount: roundToCents(deduction.amount),
       detail: deduction.detail,
     });
   }
 
-  const statutoryDeductionsTotal = roundMoney(
-    deductions.reduce((sum, line) => sum + line.amount, 0),
+  const statutoryDeductionsTotal = sumMoney(
+    ...deductions.map((line) => line.amount),
   );
-  const availableAfterStatutory = roundMoney(
-    grossPay - statutoryDeductionsTotal,
+  const availableAfterStatutory = fromCents(
+    subCents(toCents(grossPay), toCents(statutoryDeductionsTotal)),
   );
 
   let bankDistribution: PayslipBankLine[] | null = null;
 
   if (input.paymentMethod === "BANK_TRANSFER" && input.bankAccounts.length > 0) {
-    const allocated = applyFixedBankAllocations({
-      availableAfterStatutory,
-      accounts: input.bankAccounts,
-    });
-    deductions.push(...allocated.deductions);
-    bankDistribution = allocated.lines;
-    warnings.push(...allocated.warnings);
+    if (input.postNetSplitEnabled) {
+      const instructions = input.bankAccounts.map((account, index) => {
+        const kind =
+          account.allocationKind ??
+          (account.isPrimary
+            ? ("REMAINDER" as const)
+            : account.percentage != null && account.percentage > 0
+              ? ("PERCENTAGE" as const)
+              : ("FIXED" as const));
+        return {
+          bankName: account.bankName,
+          accountNumber: account.accountNumber,
+          fixedAmount: kind === "FIXED" ? account.amount : null,
+          percentage: kind === "PERCENTAGE" ? (account.percentage ?? null) : null,
+          kind,
+          priority: account.priority ?? index,
+        };
+      });
+      const allocated = applyPostNetBankAllocations({
+        availableAfterStatutory,
+        accounts: instructions,
+      });
+      if (!allocated.ok) {
+        warnings.push(allocated.error ?? "Post-net bank allocation failed.");
+      } else {
+        bankDistribution = allocated.lines;
+        warnings.push(...allocated.warnings);
+      }
+    } else {
+      const allocated = applyFixedBankAllocations({
+        availableAfterStatutory,
+        accounts: input.bankAccounts,
+      });
+      deductions.push(...allocated.deductions);
+      bankDistribution = allocated.lines;
+      warnings.push(...allocated.warnings);
+    }
   } else if (input.paymentMethod === "BANK_TRANSFER") {
     warnings.push("No bank accounts on file for net pay distribution.");
   }
 
-  const totalDeductions = roundMoney(
-    deductions.reduce((sum, line) => sum + line.amount, 0),
-  );
-  const netPay = roundMoney(grossPay - totalDeductions);
+  const totalDeductions = sumMoney(...deductions.map((line) => line.amount));
+  const netPay = fromCents(subCents(toCents(grossPay), toCents(totalDeductions)));
 
   const employerContributions: PayslipLineItem[] = [];
   if (nis && !nis.belowMinimum) {

@@ -105,4 +105,18 @@ describe("computeHealthSurcharge", () => {
       }).exemptionReason,
     ).toBe("PENSION_ONLY");
   });
+
+  it("exempts employee opt-out before age/pension checks", () => {
+    const result = computeHealthSurcharge({
+      config: TT_HEALTH_SURCHARGE_2026,
+      monthlyEarnings: 30_000,
+      ageYears: 40,
+      exemptFromHealthSurcharge: true,
+    });
+
+    expect(result.exempt).toBe(true);
+    expect(result.exemptionReason).toBe("EMPLOYEE_OPT_OUT");
+    expect(result.periodAmount).toBe(0);
+    expect(result.tier).toBe("EXEMPT");
+  });
 });

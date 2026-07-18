@@ -8,6 +8,13 @@ import {
   type PayslipSnapshotPayload,
 } from "@/src/modules/payroll/lib/payslip-snapshot";
 
+/**
+ * Draft pay-run snapshot builders.
+ *
+ * Single writer for payslip dual-write: `toPayslipCreateData` /
+ * `toPayslipRecalcUpdateData` write snapshot JSON + denormalized columns
+ * together. `postPayRunInTransaction` only flips status — never recomputes.
+ */
 export type PayRunEmployeeSnapshot = {
   employeeId: string;
   currency: string;
@@ -81,9 +88,9 @@ export async function buildEmployeePayRunSnapshot(
     return null;
   }
 
-  const { payslip, meta } = result;
+  const { payslip, meta, statutory } = result;
   const totals = extractPayslipSnapshotTotals(payslip, meta);
-  const snapshot = buildPayslipSnapshot(payslip, meta);
+  const snapshot = buildPayslipSnapshot(payslip, meta, statutory);
 
   return {
     employeeId,

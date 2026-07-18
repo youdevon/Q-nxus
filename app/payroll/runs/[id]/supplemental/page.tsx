@@ -5,6 +5,7 @@ import { CreateSupplementalPayRunForm } from "@/src/modules/payroll/components/c
 import { getPayRunDetail } from "@/src/modules/payroll/data/get-pay-runs";
 import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
 import { requirePayrollManageAccess } from "@/src/modules/payroll/data/require-payroll-access";
+import { isPayRunPosted } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 
 export const metadata: Metadata = {
   title: "Correction / off-cycle run",
@@ -21,12 +22,14 @@ export default async function SupplementalPayRunPage({
   params,
   searchParams,
 }: SupplementalPayRunPageProps) {
-  await requirePayrollManageAccess();
+  const capabilities = await requirePayrollManageAccess();
   const { id } = await params;
   const { kind } = await searchParams;
-  const source = await getPayRunDetail(id);
+  const source = await getPayRunDetail(id, {
+    actorUserId: capabilities.userId,
+  });
 
-  if (!source || source.status !== "POSTED") {
+  if (!source || !isPayRunPosted(source.status)) {
     notFound();
   }
 

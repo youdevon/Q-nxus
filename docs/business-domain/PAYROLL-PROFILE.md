@@ -132,6 +132,8 @@ A Payroll Profile should contain:
 
 - Residency or jurisdiction, where required
 
+**Identity source of truth (implemented):** NIS number, BIR number, and government/travel ID (`idType` / `idNumber`) live on the **Employee** record. Payroll Profile keeps mirrored `nisNumber` / `birNumber` copies for payslip snapshots and historical readiness. Opening payroll setup prefills from Employee. Saving payroll setup writes back to Employee **only** when the actor has `people.manage` (gap-fill for empty fields). Payroll-only actors may store numbers on the profile when Employee is empty, but never mutate People identity. Posted payslips continue to freeze the values captured at calculation time.
+
 ### Processing controls
 
 - Payroll eligible

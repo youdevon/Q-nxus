@@ -11,18 +11,17 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
+import { payRunStatusBadgeVariant } from "@/src/config/ui-colors";
+import { formatDisplayDate } from "@/src/lib/format";
 import type { PayRunListItem } from "@/src/modules/payroll/data/get-pay-runs";
+import {
+  isPayRunPosted,
+  payRunStatusLabel,
+} from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import { PayrollNav } from "./payroll-nav";
 
 function formatDate(iso: string | null) {
-  if (!iso) {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-    timeZone: "America/Port_of_Spain",
-  }).format(new Date(iso));
+  return formatDisplayDate(iso, { fallback: "—" });
 }
 
 function runKindLabel(kind: PayRunListItem["runKind"]) {
@@ -110,14 +109,16 @@ export function PayRunsDirectory({
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium">{run.runNumber}</p>
-                    {run.status === "POSTED" ? (
-                      <Badge variant="success">
-                        <CircleCheck />
-                        Posted
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline">Draft</Badge>
-                    )}
+                    <Badge variant={payRunStatusBadgeVariant(run.status)}>
+                      {isPayRunPosted(run.status) ? (
+                        <>
+                          <CircleCheck />
+                          {payRunStatusLabel(run.status)}
+                        </>
+                      ) : (
+                        payRunStatusLabel(run.status)
+                      )}
+                    </Badge>
                     {runKindLabel(run.runKind) ? (
                       <Badge variant="outline">{runKindLabel(run.runKind)}</Badge>
                     ) : null}
@@ -136,11 +137,11 @@ export function PayRunsDirectory({
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">
-                    {run.status === "POSTED" ? "Posted" : "Created"}
+                    {isPayRunPosted(run.status) ? "Posted" : "Created"}
                   </p>
                   <p className="text-sm font-medium">
                     {formatDate(
-                      run.status === "POSTED" ? run.postedAt : run.createdAt,
+                      isPayRunPosted(run.status) ? run.postedAt : run.createdAt,
                     )}
                   </p>
                 </div>

@@ -27,6 +27,7 @@ export type AggregateAuditEvent = {
 export type AuditEventMinAggregateOutputType = {
   id: string | null
   userId: string | null
+  organizationId: string | null
   moduleKey: string | null
   action: string | null
   entityType: string | null
@@ -42,6 +43,7 @@ export type AuditEventMinAggregateOutputType = {
 export type AuditEventMaxAggregateOutputType = {
   id: string | null
   userId: string | null
+  organizationId: string | null
   moduleKey: string | null
   action: string | null
   entityType: string | null
@@ -57,6 +59,7 @@ export type AuditEventMaxAggregateOutputType = {
 export type AuditEventCountAggregateOutputType = {
   id: number
   userId: number
+  organizationId: number
   moduleKey: number
   action: number
   entityType: number
@@ -76,6 +79,7 @@ export type AuditEventCountAggregateOutputType = {
 export type AuditEventMinAggregateInputType = {
   id?: true
   userId?: true
+  organizationId?: true
   moduleKey?: true
   action?: true
   entityType?: true
@@ -91,6 +95,7 @@ export type AuditEventMinAggregateInputType = {
 export type AuditEventMaxAggregateInputType = {
   id?: true
   userId?: true
+  organizationId?: true
   moduleKey?: true
   action?: true
   entityType?: true
@@ -106,6 +111,7 @@ export type AuditEventMaxAggregateInputType = {
 export type AuditEventCountAggregateInputType = {
   id?: true
   userId?: true
+  organizationId?: true
   moduleKey?: true
   action?: true
   entityType?: true
@@ -196,6 +202,7 @@ export type AuditEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 export type AuditEventGroupByOutputType = {
   id: string
   userId: string | null
+  organizationId: string | null
   moduleKey: string
   action: string
   entityType: string
@@ -234,6 +241,7 @@ export type AuditEventWhereInput = {
   NOT?: Prisma.AuditEventWhereInput | Prisma.AuditEventWhereInput[]
   id?: Prisma.StringFilter<"AuditEvent"> | string
   userId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   moduleKey?: Prisma.StringFilter<"AuditEvent"> | string
   action?: Prisma.StringFilter<"AuditEvent"> | string
   entityType?: Prisma.StringFilter<"AuditEvent"> | string
@@ -247,11 +255,13 @@ export type AuditEventWhereInput = {
   correlationId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
 }
 
 export type AuditEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   moduleKey?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
@@ -265,6 +275,7 @@ export type AuditEventOrderByWithRelationInput = {
   correlationId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  organization?: Prisma.OrganizationOrderByWithRelationInput
 }
 
 export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
@@ -273,6 +284,7 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.AuditEventWhereInput[]
   NOT?: Prisma.AuditEventWhereInput | Prisma.AuditEventWhereInput[]
   userId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   moduleKey?: Prisma.StringFilter<"AuditEvent"> | string
   action?: Prisma.StringFilter<"AuditEvent"> | string
   entityType?: Prisma.StringFilter<"AuditEvent"> | string
@@ -286,11 +298,13 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   correlationId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
 }, "id">
 
 export type AuditEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   moduleKey?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
@@ -314,6 +328,7 @@ export type AuditEventScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AuditEventScalarWhereWithAggregatesInput | Prisma.AuditEventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
   userId?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
+  organizationId?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   moduleKey?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
   action?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
   entityType?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
@@ -343,11 +358,13 @@ export type AuditEventCreateInput = {
   correlationId?: string | null
   createdAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutAuditEventsInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutAuditEventsInput
 }
 
 export type AuditEventUncheckedCreateInput = {
   id?: string
   userId?: string | null
+  organizationId?: string | null
   moduleKey: string
   action: string
   entityType: string
@@ -377,11 +394,13 @@ export type AuditEventUpdateInput = {
   correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutAuditEventsNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutAuditEventsNestedInput
 }
 
 export type AuditEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moduleKey?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -399,6 +418,7 @@ export type AuditEventUncheckedUpdateInput = {
 export type AuditEventCreateManyInput = {
   id?: string
   userId?: string | null
+  organizationId?: string | null
   moduleKey: string
   action: string
   entityType: string
@@ -432,6 +452,7 @@ export type AuditEventUpdateManyMutationInput = {
 export type AuditEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moduleKey?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -459,6 +480,7 @@ export type AuditEventOrderByRelationAggregateInput = {
 export type AuditEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   moduleKey?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
@@ -476,6 +498,7 @@ export type AuditEventCountOrderByAggregateInput = {
 export type AuditEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   moduleKey?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
@@ -491,6 +514,7 @@ export type AuditEventMaxOrderByAggregateInput = {
 export type AuditEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   moduleKey?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
@@ -501,6 +525,48 @@ export type AuditEventMinOrderByAggregateInput = {
   clientHostName?: Prisma.SortOrder
   correlationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type AuditEventCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutOrganizationInput, Prisma.AuditEventUncheckedCreateWithoutOrganizationInput> | Prisma.AuditEventCreateWithoutOrganizationInput[] | Prisma.AuditEventUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutOrganizationInput | Prisma.AuditEventCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.AuditEventCreateManyOrganizationInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUncheckedCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutOrganizationInput, Prisma.AuditEventUncheckedCreateWithoutOrganizationInput> | Prisma.AuditEventCreateWithoutOrganizationInput[] | Prisma.AuditEventUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutOrganizationInput | Prisma.AuditEventCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.AuditEventCreateManyOrganizationInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutOrganizationInput, Prisma.AuditEventUncheckedCreateWithoutOrganizationInput> | Prisma.AuditEventCreateWithoutOrganizationInput[] | Prisma.AuditEventUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutOrganizationInput | Prisma.AuditEventCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.AuditEventCreateManyOrganizationInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutOrganizationInput | Prisma.AuditEventUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+}
+
+export type AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutOrganizationInput, Prisma.AuditEventUncheckedCreateWithoutOrganizationInput> | Prisma.AuditEventCreateWithoutOrganizationInput[] | Prisma.AuditEventUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutOrganizationInput | Prisma.AuditEventCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.AuditEventCreateManyOrganizationInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutOrganizationInput | Prisma.AuditEventUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
 }
 
 export type AuditEventCreateNestedManyWithoutUserInput = {
@@ -545,8 +611,26 @@ export type AuditEventUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
 }
 
-export type AuditEventCreateWithoutUserInput = {
+export type AuditEventCreateWithoutOrganizationInput = {
   id?: string
+  moduleKey: string
+  action: string
+  entityType: string
+  entityId?: string | null
+  description?: string | null
+  oldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  newValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: string | null
+  userAgent?: string | null
+  clientHostName?: string | null
+  correlationId?: string | null
+  createdAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutAuditEventsInput
+}
+
+export type AuditEventUncheckedCreateWithoutOrganizationInput = {
+  id?: string
+  userId?: string | null
   moduleKey: string
   action: string
   entityType: string
@@ -561,8 +645,73 @@ export type AuditEventCreateWithoutUserInput = {
   createdAt?: Date | string
 }
 
+export type AuditEventCreateOrConnectWithoutOrganizationInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutOrganizationInput, Prisma.AuditEventUncheckedCreateWithoutOrganizationInput>
+}
+
+export type AuditEventCreateManyOrganizationInputEnvelope = {
+  data: Prisma.AuditEventCreateManyOrganizationInput | Prisma.AuditEventCreateManyOrganizationInput[]
+  skipDuplicates?: boolean
+}
+
+export type AuditEventUpsertWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  update: Prisma.XOR<Prisma.AuditEventUpdateWithoutOrganizationInput, Prisma.AuditEventUncheckedUpdateWithoutOrganizationInput>
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutOrganizationInput, Prisma.AuditEventUncheckedCreateWithoutOrganizationInput>
+}
+
+export type AuditEventUpdateWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateWithoutOrganizationInput, Prisma.AuditEventUncheckedUpdateWithoutOrganizationInput>
+}
+
+export type AuditEventUpdateManyWithWhereWithoutOrganizationInput = {
+  where: Prisma.AuditEventScalarWhereInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateManyMutationInput, Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationInput>
+}
+
+export type AuditEventScalarWhereInput = {
+  AND?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+  OR?: Prisma.AuditEventScalarWhereInput[]
+  NOT?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+  id?: Prisma.StringFilter<"AuditEvent"> | string
+  userId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  moduleKey?: Prisma.StringFilter<"AuditEvent"> | string
+  action?: Prisma.StringFilter<"AuditEvent"> | string
+  entityType?: Prisma.StringFilter<"AuditEvent"> | string
+  entityId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  description?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  oldValues?: Prisma.JsonNullableFilter<"AuditEvent">
+  newValues?: Prisma.JsonNullableFilter<"AuditEvent">
+  ipAddress?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  userAgent?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  clientHostName?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  correlationId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
+}
+
+export type AuditEventCreateWithoutUserInput = {
+  id?: string
+  moduleKey: string
+  action: string
+  entityType: string
+  entityId?: string | null
+  description?: string | null
+  oldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  newValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: string | null
+  userAgent?: string | null
+  clientHostName?: string | null
+  correlationId?: string | null
+  createdAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutAuditEventsInput
+}
+
 export type AuditEventUncheckedCreateWithoutUserInput = {
   id?: string
+  organizationId?: string | null
   moduleKey: string
   action: string
   entityType: string
@@ -603,28 +752,77 @@ export type AuditEventUpdateManyWithWhereWithoutUserInput = {
   data: Prisma.XOR<Prisma.AuditEventUpdateManyMutationInput, Prisma.AuditEventUncheckedUpdateManyWithoutUserInput>
 }
 
-export type AuditEventScalarWhereInput = {
-  AND?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
-  OR?: Prisma.AuditEventScalarWhereInput[]
-  NOT?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
-  id?: Prisma.StringFilter<"AuditEvent"> | string
-  userId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
-  moduleKey?: Prisma.StringFilter<"AuditEvent"> | string
-  action?: Prisma.StringFilter<"AuditEvent"> | string
-  entityType?: Prisma.StringFilter<"AuditEvent"> | string
-  entityId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
-  description?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
-  oldValues?: Prisma.JsonNullableFilter<"AuditEvent">
-  newValues?: Prisma.JsonNullableFilter<"AuditEvent">
-  ipAddress?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
-  userAgent?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
-  clientHostName?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
-  correlationId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
+export type AuditEventCreateManyOrganizationInput = {
+  id?: string
+  userId?: string | null
+  moduleKey: string
+  action: string
+  entityType: string
+  entityId?: string | null
+  description?: string | null
+  oldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  newValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: string | null
+  userAgent?: string | null
+  clientHostName?: string | null
+  correlationId?: string | null
+  createdAt?: Date | string
+}
+
+export type AuditEventUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  moduleKey?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  entityType?: Prisma.StringFieldUpdateOperationsInput | string
+  entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  newValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientHostName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutAuditEventsNestedInput
+}
+
+export type AuditEventUncheckedUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  moduleKey?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  entityType?: Prisma.StringFieldUpdateOperationsInput | string
+  entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  newValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientHostName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditEventUncheckedUpdateManyWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  moduleKey?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  entityType?: Prisma.StringFieldUpdateOperationsInput | string
+  entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oldValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  newValues?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientHostName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AuditEventCreateManyUserInput = {
   id?: string
+  organizationId?: string | null
   moduleKey: string
   action: string
   entityType: string
@@ -653,10 +851,12 @@ export type AuditEventUpdateWithoutUserInput = {
   clientHostName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   correlationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutAuditEventsNestedInput
 }
 
 export type AuditEventUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moduleKey?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -673,6 +873,7 @@ export type AuditEventUncheckedUpdateWithoutUserInput = {
 
 export type AuditEventUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   moduleKey?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
@@ -692,6 +893,7 @@ export type AuditEventUncheckedUpdateManyWithoutUserInput = {
 export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  organizationId?: boolean
   moduleKey?: boolean
   action?: boolean
   entityType?: boolean
@@ -705,11 +907,13 @@ export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   correlationId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.AuditEvent$userArgs<ExtArgs>
+  organization?: boolean | Prisma.AuditEvent$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  organizationId?: boolean
   moduleKey?: boolean
   action?: boolean
   entityType?: boolean
@@ -723,11 +927,13 @@ export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   correlationId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.AuditEvent$userArgs<ExtArgs>
+  organization?: boolean | Prisma.AuditEvent$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
+  organizationId?: boolean
   moduleKey?: boolean
   action?: boolean
   entityType?: boolean
@@ -741,11 +947,13 @@ export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   correlationId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.AuditEvent$userArgs<ExtArgs>
+  organization?: boolean | Prisma.AuditEvent$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectScalar = {
   id?: boolean
   userId?: boolean
+  organizationId?: boolean
   moduleKey?: boolean
   action?: boolean
   entityType?: boolean
@@ -760,25 +968,30 @@ export type AuditEventSelectScalar = {
   createdAt?: boolean
 }
 
-export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "moduleKey" | "action" | "entityType" | "entityId" | "description" | "oldValues" | "newValues" | "ipAddress" | "userAgent" | "clientHostName" | "correlationId" | "createdAt", ExtArgs["result"]["auditEvent"]>
+export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "organizationId" | "moduleKey" | "action" | "entityType" | "entityId" | "description" | "oldValues" | "newValues" | "ipAddress" | "userAgent" | "clientHostName" | "correlationId" | "createdAt", ExtArgs["result"]["auditEvent"]>
 export type AuditEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.AuditEvent$userArgs<ExtArgs>
+  organization?: boolean | Prisma.AuditEvent$organizationArgs<ExtArgs>
 }
 export type AuditEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.AuditEvent$userArgs<ExtArgs>
+  organization?: boolean | Prisma.AuditEvent$organizationArgs<ExtArgs>
 }
 export type AuditEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.AuditEvent$userArgs<ExtArgs>
+  organization?: boolean | Prisma.AuditEvent$organizationArgs<ExtArgs>
 }
 
 export type $AuditEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AuditEvent"
   objects: {
     user: Prisma.$UserPayload<ExtArgs> | null
+    organization: Prisma.$OrganizationPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string | null
+    organizationId: string | null
     moduleKey: string
     action: string
     entityType: string
@@ -1186,6 +1399,7 @@ readonly fields: AuditEventFieldRefs;
 export interface Prisma__AuditEventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.AuditEvent$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditEvent$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  organization<T extends Prisma.AuditEvent$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditEvent$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1217,6 +1431,7 @@ export interface Prisma__AuditEventClient<T, Null = never, ExtArgs extends runti
 export interface AuditEventFieldRefs {
   readonly id: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly userId: Prisma.FieldRef<"AuditEvent", 'String'>
+  readonly organizationId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly moduleKey: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly action: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly entityType: Prisma.FieldRef<"AuditEvent", 'String'>
@@ -1646,6 +1861,25 @@ export type AuditEvent$userArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * AuditEvent.organization
+ */
+export type AuditEvent$organizationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
 }
 
 /**

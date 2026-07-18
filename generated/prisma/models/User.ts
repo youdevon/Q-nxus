@@ -333,7 +333,15 @@ export type UserWhereInput = {
   createdLeaveRequests?: Prisma.LeaveRequestListRelationFilter
   finalLeaveDecisions?: Prisma.LeaveRequestListRelationFilter
   leaveApprovalSteps?: Prisma.LeaveApprovalStepListRelationFilter
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementListRelationFilter
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentListRelationFilter
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceListRelationFilter
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceListRelationFilter
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentListRelationFilter
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemListRelationFilter
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestListRelationFilter
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestListRelationFilter
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseListRelationFilter
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }
 
@@ -365,7 +373,15 @@ export type UserOrderByWithRelationInput = {
   createdLeaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
   finalLeaveDecisions?: Prisma.LeaveRequestOrderByRelationAggregateInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepOrderByRelationAggregateInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementOrderByRelationAggregateInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentOrderByRelationAggregateInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceOrderByRelationAggregateInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceOrderByRelationAggregateInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentOrderByRelationAggregateInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemOrderByRelationAggregateInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestOrderByRelationAggregateInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestOrderByRelationAggregateInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseOrderByRelationAggregateInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
 }
 
@@ -400,7 +416,15 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdLeaveRequests?: Prisma.LeaveRequestListRelationFilter
   finalLeaveDecisions?: Prisma.LeaveRequestListRelationFilter
   leaveApprovalSteps?: Prisma.LeaveApprovalStepListRelationFilter
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementListRelationFilter
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentListRelationFilter
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceListRelationFilter
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceListRelationFilter
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentListRelationFilter
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemListRelationFilter
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestListRelationFilter
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestListRelationFilter
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseListRelationFilter
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }, "id" | "email" | "employeeId">
 
@@ -480,7 +504,15 @@ export type UserCreateInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -511,7 +543,15 @@ export type UserUncheckedCreateInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUpdateInput = {
@@ -540,7 +580,15 @@ export type UserUpdateInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -571,7 +619,15 @@ export type UserUncheckedUpdateInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -884,6 +940,22 @@ export type UserUpdateOneWithoutLeaveApprovalStepsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveApprovalStepsInput, Prisma.UserUpdateWithoutLeaveApprovalStepsInput>, Prisma.UserUncheckedUpdateWithoutLeaveApprovalStepsInput>
 }
 
+export type UserCreateNestedOneWithoutLeaveAcknowledgementsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveAcknowledgementsInput, Prisma.UserUncheckedCreateWithoutLeaveAcknowledgementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveAcknowledgementsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutLeaveAcknowledgementsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLeaveAcknowledgementsInput, Prisma.UserUncheckedCreateWithoutLeaveAcknowledgementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLeaveAcknowledgementsInput
+  upsert?: Prisma.UserUpsertWithoutLeaveAcknowledgementsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLeaveAcknowledgementsInput, Prisma.UserUpdateWithoutLeaveAcknowledgementsInput>, Prisma.UserUncheckedUpdateWithoutLeaveAcknowledgementsInput>
+}
+
 export type UserCreateNestedOneWithoutUploadedLeaveAttachmentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedLeaveAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedLeaveAttachmentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedLeaveAttachmentsInput
@@ -898,6 +970,116 @@ export type UserUpdateOneWithoutUploadedLeaveAttachmentsNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedLeaveAttachmentsInput, Prisma.UserUpdateWithoutUploadedLeaveAttachmentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedLeaveAttachmentsInput>
+}
+
+export type UserCreateNestedOneWithoutIssuedCorrespondencesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutIssuedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutIssuedCorrespondencesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutIssuedCorrespondencesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutAcknowledgedCorrespondencesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAcknowledgedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutAcknowledgedCorrespondencesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAcknowledgedCorrespondencesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutIssuedCorrespondencesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutIssuedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutIssuedCorrespondencesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutIssuedCorrespondencesInput
+  upsert?: Prisma.UserUpsertWithoutIssuedCorrespondencesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutIssuedCorrespondencesInput, Prisma.UserUpdateWithoutIssuedCorrespondencesInput>, Prisma.UserUncheckedUpdateWithoutIssuedCorrespondencesInput>
+}
+
+export type UserUpdateOneWithoutAcknowledgedCorrespondencesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAcknowledgedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutAcknowledgedCorrespondencesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAcknowledgedCorrespondencesInput
+  upsert?: Prisma.UserUpsertWithoutAcknowledgedCorrespondencesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAcknowledgedCorrespondencesInput, Prisma.UserUpdateWithoutAcknowledgedCorrespondencesInput>, Prisma.UserUncheckedUpdateWithoutAcknowledgedCorrespondencesInput>
+}
+
+export type UserCreateNestedOneWithoutConfirmedAssumptionOfDutyItemsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutConfirmedAssumptionOfDutyItemsInput, Prisma.UserUncheckedCreateWithoutConfirmedAssumptionOfDutyItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutConfirmedAssumptionOfDutyItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutConfirmedAssumptionOfDutyItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutConfirmedAssumptionOfDutyItemsInput, Prisma.UserUncheckedCreateWithoutConfirmedAssumptionOfDutyItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutConfirmedAssumptionOfDutyItemsInput
+  upsert?: Prisma.UserUpsertWithoutConfirmedAssumptionOfDutyItemsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutConfirmedAssumptionOfDutyItemsInput, Prisma.UserUpdateWithoutConfirmedAssumptionOfDutyItemsInput>, Prisma.UserUncheckedUpdateWithoutConfirmedAssumptionOfDutyItemsInput>
+}
+
+export type UserCreateNestedOneWithoutRequestedFileUpdatesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRequestedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutRequestedFileUpdatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRequestedFileUpdatesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutResolvedFileUpdatesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResolvedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutResolvedFileUpdatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResolvedFileUpdatesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRequestedFileUpdatesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRequestedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutRequestedFileUpdatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRequestedFileUpdatesInput
+  upsert?: Prisma.UserUpsertWithoutRequestedFileUpdatesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRequestedFileUpdatesInput, Prisma.UserUpdateWithoutRequestedFileUpdatesInput>, Prisma.UserUncheckedUpdateWithoutRequestedFileUpdatesInput>
+}
+
+export type UserUpdateOneWithoutResolvedFileUpdatesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResolvedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutResolvedFileUpdatesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResolvedFileUpdatesInput
+  upsert?: Prisma.UserUpsertWithoutResolvedFileUpdatesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResolvedFileUpdatesInput, Prisma.UserUpdateWithoutResolvedFileUpdatesInput>, Prisma.UserUncheckedUpdateWithoutResolvedFileUpdatesInput>
+}
+
+export type UserCreateNestedOneWithoutUploadedCorrespondenceAttachmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedCorrespondenceAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedCorrespondenceAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedCorrespondenceAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutUploadedCorrespondenceAttachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedCorrespondenceAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedCorrespondenceAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedCorrespondenceAttachmentsInput
+  upsert?: Prisma.UserUpsertWithoutUploadedCorrespondenceAttachmentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedCorrespondenceAttachmentsInput, Prisma.UserUpdateWithoutUploadedCorrespondenceAttachmentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedCorrespondenceAttachmentsInput>
+}
+
+export type UserCreateNestedOneWithoutReviewedCorrespondenceResponsesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedCorrespondenceResponsesInput, Prisma.UserUncheckedCreateWithoutReviewedCorrespondenceResponsesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedCorrespondenceResponsesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutReviewedCorrespondenceResponsesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReviewedCorrespondenceResponsesInput, Prisma.UserUncheckedCreateWithoutReviewedCorrespondenceResponsesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReviewedCorrespondenceResponsesInput
+  upsert?: Prisma.UserUpsertWithoutReviewedCorrespondenceResponsesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReviewedCorrespondenceResponsesInput, Prisma.UserUpdateWithoutReviewedCorrespondenceResponsesInput>, Prisma.UserUncheckedUpdateWithoutReviewedCorrespondenceResponsesInput>
 }
 
 export type UserCreateNestedOneWithoutSupervisedAppraisalsInput = {
@@ -971,7 +1153,15 @@ export type UserCreateWithoutOrganizationInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1001,7 +1191,15 @@ export type UserUncheckedCreateWithoutOrganizationInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutOrganizationInput = {
@@ -1079,7 +1277,15 @@ export type UserCreateWithoutRolesInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1109,7 +1315,15 @@ export type UserUncheckedCreateWithoutRolesInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutRolesInput = {
@@ -1153,7 +1367,15 @@ export type UserUpdateWithoutRolesInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1183,7 +1405,15 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutEmployeeInput = {
@@ -1212,7 +1442,15 @@ export type UserCreateWithoutEmployeeInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutEmployeeInput = {
@@ -1241,7 +1479,15 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutEmployeeInput = {
@@ -1286,7 +1532,15 @@ export type UserUpdateWithoutEmployeeInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmployeeInput = {
@@ -1315,7 +1569,15 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutCreatedLeaveTransactionsInput = {
@@ -1343,7 +1605,15 @@ export type UserCreateWithoutCreatedLeaveTransactionsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1373,7 +1643,15 @@ export type UserUncheckedCreateWithoutCreatedLeaveTransactionsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedLeaveTransactionsInput = {
@@ -1417,7 +1695,15 @@ export type UserUpdateWithoutCreatedLeaveTransactionsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1447,7 +1733,15 @@ export type UserUncheckedUpdateWithoutCreatedLeaveTransactionsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutFinalLeaveDecisionsInput = {
@@ -1475,7 +1769,15 @@ export type UserCreateWithoutFinalLeaveDecisionsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1505,7 +1807,15 @@ export type UserUncheckedCreateWithoutFinalLeaveDecisionsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutFinalLeaveDecisionsInput = {
@@ -1538,7 +1848,15 @@ export type UserCreateWithoutCreatedLeaveRequestsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1568,7 +1886,15 @@ export type UserUncheckedCreateWithoutCreatedLeaveRequestsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedLeaveRequestsInput = {
@@ -1612,7 +1938,15 @@ export type UserUpdateWithoutFinalLeaveDecisionsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1642,7 +1976,15 @@ export type UserUncheckedUpdateWithoutFinalLeaveDecisionsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutCreatedLeaveRequestsInput = {
@@ -1681,7 +2023,15 @@ export type UserUpdateWithoutCreatedLeaveRequestsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1711,7 +2061,15 @@ export type UserUncheckedUpdateWithoutCreatedLeaveRequestsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutLeaveApprovalStepsInput = {
@@ -1739,7 +2097,15 @@ export type UserCreateWithoutLeaveApprovalStepsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1769,7 +2135,15 @@ export type UserUncheckedCreateWithoutLeaveApprovalStepsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutLeaveApprovalStepsInput = {
@@ -1813,7 +2187,15 @@ export type UserUpdateWithoutLeaveApprovalStepsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1843,7 +2225,179 @@ export type UserUncheckedUpdateWithoutLeaveApprovalStepsInput = {
   createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutLeaveAcknowledgementsInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLeaveAcknowledgementsInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutLeaveAcknowledgementsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveAcknowledgementsInput, Prisma.UserUncheckedCreateWithoutLeaveAcknowledgementsInput>
+}
+
+export type UserUpsertWithoutLeaveAcknowledgementsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLeaveAcknowledgementsInput, Prisma.UserUncheckedUpdateWithoutLeaveAcknowledgementsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLeaveAcknowledgementsInput, Prisma.UserUncheckedCreateWithoutLeaveAcknowledgementsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLeaveAcknowledgementsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLeaveAcknowledgementsInput, Prisma.UserUncheckedUpdateWithoutLeaveAcknowledgementsInput>
+}
+
+export type UserUpdateWithoutLeaveAcknowledgementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutUploadedLeaveAttachmentsInput = {
@@ -1872,6 +2426,14 @@ export type UserCreateWithoutUploadedLeaveAttachmentsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1902,6 +2464,14 @@ export type UserUncheckedCreateWithoutUploadedLeaveAttachmentsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedLeaveAttachmentsInput = {
@@ -1946,6 +2516,14 @@ export type UserUpdateWithoutUploadedLeaveAttachmentsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1976,6 +2554,1162 @@ export type UserUncheckedUpdateWithoutUploadedLeaveAttachmentsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutIssuedCorrespondencesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutIssuedCorrespondencesInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutIssuedCorrespondencesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutIssuedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutIssuedCorrespondencesInput>
+}
+
+export type UserCreateWithoutAcknowledgedCorrespondencesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAcknowledgedCorrespondencesInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutAcknowledgedCorrespondencesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAcknowledgedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutAcknowledgedCorrespondencesInput>
+}
+
+export type UserUpsertWithoutIssuedCorrespondencesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutIssuedCorrespondencesInput, Prisma.UserUncheckedUpdateWithoutIssuedCorrespondencesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutIssuedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutIssuedCorrespondencesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutIssuedCorrespondencesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutIssuedCorrespondencesInput, Prisma.UserUncheckedUpdateWithoutIssuedCorrespondencesInput>
+}
+
+export type UserUpdateWithoutIssuedCorrespondencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutIssuedCorrespondencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserUpsertWithoutAcknowledgedCorrespondencesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAcknowledgedCorrespondencesInput, Prisma.UserUncheckedUpdateWithoutAcknowledgedCorrespondencesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAcknowledgedCorrespondencesInput, Prisma.UserUncheckedCreateWithoutAcknowledgedCorrespondencesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAcknowledgedCorrespondencesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAcknowledgedCorrespondencesInput, Prisma.UserUncheckedUpdateWithoutAcknowledgedCorrespondencesInput>
+}
+
+export type UserUpdateWithoutAcknowledgedCorrespondencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAcknowledgedCorrespondencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutConfirmedAssumptionOfDutyItemsInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutConfirmedAssumptionOfDutyItemsInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutConfirmedAssumptionOfDutyItemsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutConfirmedAssumptionOfDutyItemsInput, Prisma.UserUncheckedCreateWithoutConfirmedAssumptionOfDutyItemsInput>
+}
+
+export type UserUpsertWithoutConfirmedAssumptionOfDutyItemsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutConfirmedAssumptionOfDutyItemsInput, Prisma.UserUncheckedUpdateWithoutConfirmedAssumptionOfDutyItemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutConfirmedAssumptionOfDutyItemsInput, Prisma.UserUncheckedCreateWithoutConfirmedAssumptionOfDutyItemsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutConfirmedAssumptionOfDutyItemsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutConfirmedAssumptionOfDutyItemsInput, Prisma.UserUncheckedUpdateWithoutConfirmedAssumptionOfDutyItemsInput>
+}
+
+export type UserUpdateWithoutConfirmedAssumptionOfDutyItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutConfirmedAssumptionOfDutyItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutRequestedFileUpdatesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRequestedFileUpdatesInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutRequestedFileUpdatesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRequestedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutRequestedFileUpdatesInput>
+}
+
+export type UserCreateWithoutResolvedFileUpdatesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutResolvedFileUpdatesInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutResolvedFileUpdatesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutResolvedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutResolvedFileUpdatesInput>
+}
+
+export type UserUpsertWithoutRequestedFileUpdatesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRequestedFileUpdatesInput, Prisma.UserUncheckedUpdateWithoutRequestedFileUpdatesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRequestedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutRequestedFileUpdatesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRequestedFileUpdatesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRequestedFileUpdatesInput, Prisma.UserUncheckedUpdateWithoutRequestedFileUpdatesInput>
+}
+
+export type UserUpdateWithoutRequestedFileUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRequestedFileUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserUpsertWithoutResolvedFileUpdatesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutResolvedFileUpdatesInput, Prisma.UserUncheckedUpdateWithoutResolvedFileUpdatesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutResolvedFileUpdatesInput, Prisma.UserUncheckedCreateWithoutResolvedFileUpdatesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutResolvedFileUpdatesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutResolvedFileUpdatesInput, Prisma.UserUncheckedUpdateWithoutResolvedFileUpdatesInput>
+}
+
+export type UserUpdateWithoutResolvedFileUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutResolvedFileUpdatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutUploadedCorrespondenceAttachmentsInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutUploadedCorrespondenceAttachmentsInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutUploadedCorrespondenceAttachmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedCorrespondenceAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedCorrespondenceAttachmentsInput>
+}
+
+export type UserUpsertWithoutUploadedCorrespondenceAttachmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedCorrespondenceAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedCorrespondenceAttachmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedCorrespondenceAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedCorrespondenceAttachmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadedCorrespondenceAttachmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedCorrespondenceAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedCorrespondenceAttachmentsInput>
+}
+
+export type UserUpdateWithoutUploadedCorrespondenceAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadedCorrespondenceAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutReviewedCorrespondenceResponsesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutReviewedCorrespondenceResponsesInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+}
+
+export type UserCreateOrConnectWithoutReviewedCorrespondenceResponsesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedCorrespondenceResponsesInput, Prisma.UserUncheckedCreateWithoutReviewedCorrespondenceResponsesInput>
+}
+
+export type UserUpsertWithoutReviewedCorrespondenceResponsesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReviewedCorrespondenceResponsesInput, Prisma.UserUncheckedUpdateWithoutReviewedCorrespondenceResponsesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReviewedCorrespondenceResponsesInput, Prisma.UserUncheckedCreateWithoutReviewedCorrespondenceResponsesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReviewedCorrespondenceResponsesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReviewedCorrespondenceResponsesInput, Prisma.UserUncheckedUpdateWithoutReviewedCorrespondenceResponsesInput>
+}
+
+export type UserUpdateWithoutReviewedCorrespondenceResponsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReviewedCorrespondenceResponsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
 }
 
 export type UserCreateWithoutSupervisedAppraisalsInput = {
@@ -2003,7 +3737,15 @@ export type UserCreateWithoutSupervisedAppraisalsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2033,7 +3775,15 @@ export type UserUncheckedCreateWithoutSupervisedAppraisalsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutSupervisedAppraisalsInput = {
@@ -2077,7 +3827,15 @@ export type UserUpdateWithoutSupervisedAppraisalsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2107,7 +3865,15 @@ export type UserUncheckedUpdateWithoutSupervisedAppraisalsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2135,7 +3901,15 @@ export type UserCreateWithoutNotificationsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2165,7 +3939,15 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2209,7 +3991,15 @@ export type UserUpdateWithoutNotificationsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2239,7 +4029,15 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutAuditEventsInput = {
@@ -2267,7 +4065,15 @@ export type UserCreateWithoutAuditEventsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2297,7 +4103,15 @@ export type UserUncheckedCreateWithoutAuditEventsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditEventsInput = {
@@ -2341,7 +4155,15 @@ export type UserUpdateWithoutAuditEventsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2371,7 +4193,15 @@ export type UserUncheckedUpdateWithoutAuditEventsInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateManyOrganizationInput = {
@@ -2419,7 +4249,15 @@ export type UserUpdateWithoutOrganizationInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2449,7 +4287,15 @@ export type UserUncheckedUpdateWithoutOrganizationInput = {
   createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
   finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
   uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutOrganizationInput = {
@@ -2486,7 +4332,15 @@ export type UserCountOutputType = {
   createdLeaveRequests: number
   finalLeaveDecisions: number
   leaveApprovalSteps: number
+  leaveAcknowledgements: number
   uploadedLeaveAttachments: number
+  issuedCorrespondences: number
+  acknowledgedCorrespondences: number
+  uploadedCorrespondenceAttachments: number
+  confirmedAssumptionOfDutyItems: number
+  requestedFileUpdates: number
+  resolvedFileUpdates: number
+  reviewedCorrespondenceResponses: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2498,7 +4352,15 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   createdLeaveRequests?: boolean | UserCountOutputTypeCountCreatedLeaveRequestsArgs
   finalLeaveDecisions?: boolean | UserCountOutputTypeCountFinalLeaveDecisionsArgs
   leaveApprovalSteps?: boolean | UserCountOutputTypeCountLeaveApprovalStepsArgs
+  leaveAcknowledgements?: boolean | UserCountOutputTypeCountLeaveAcknowledgementsArgs
   uploadedLeaveAttachments?: boolean | UserCountOutputTypeCountUploadedLeaveAttachmentsArgs
+  issuedCorrespondences?: boolean | UserCountOutputTypeCountIssuedCorrespondencesArgs
+  acknowledgedCorrespondences?: boolean | UserCountOutputTypeCountAcknowledgedCorrespondencesArgs
+  uploadedCorrespondenceAttachments?: boolean | UserCountOutputTypeCountUploadedCorrespondenceAttachmentsArgs
+  confirmedAssumptionOfDutyItems?: boolean | UserCountOutputTypeCountConfirmedAssumptionOfDutyItemsArgs
+  requestedFileUpdates?: boolean | UserCountOutputTypeCountRequestedFileUpdatesArgs
+  resolvedFileUpdates?: boolean | UserCountOutputTypeCountResolvedFileUpdatesArgs
+  reviewedCorrespondenceResponses?: boolean | UserCountOutputTypeCountReviewedCorrespondenceResponsesArgs
 }
 
 /**
@@ -2570,8 +4432,64 @@ export type UserCountOutputTypeCountLeaveApprovalStepsArgs<ExtArgs extends runti
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountLeaveAcknowledgementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LeaveRequestAcknowledgementWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountUploadedLeaveAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.LeaveAttachmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountIssuedCorrespondencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeCorrespondenceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAcknowledgedCorrespondencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeCorrespondenceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadedCorrespondenceAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeCorrespondenceAttachmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountConfirmedAssumptionOfDutyItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeFileChecklistItemWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRequestedFileUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeFileUpdateRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountResolvedFileUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeFileUpdateRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReviewedCorrespondenceResponsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeCorrespondenceResponseWhereInput
 }
 
 
@@ -2603,7 +4521,15 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdLeaveRequests?: boolean | Prisma.User$createdLeaveRequestsArgs<ExtArgs>
   finalLeaveDecisions?: boolean | Prisma.User$finalLeaveDecisionsArgs<ExtArgs>
   leaveApprovalSteps?: boolean | Prisma.User$leaveApprovalStepsArgs<ExtArgs>
+  leaveAcknowledgements?: boolean | Prisma.User$leaveAcknowledgementsArgs<ExtArgs>
   uploadedLeaveAttachments?: boolean | Prisma.User$uploadedLeaveAttachmentsArgs<ExtArgs>
+  issuedCorrespondences?: boolean | Prisma.User$issuedCorrespondencesArgs<ExtArgs>
+  acknowledgedCorrespondences?: boolean | Prisma.User$acknowledgedCorrespondencesArgs<ExtArgs>
+  uploadedCorrespondenceAttachments?: boolean | Prisma.User$uploadedCorrespondenceAttachmentsArgs<ExtArgs>
+  confirmedAssumptionOfDutyItems?: boolean | Prisma.User$confirmedAssumptionOfDutyItemsArgs<ExtArgs>
+  requestedFileUpdates?: boolean | Prisma.User$requestedFileUpdatesArgs<ExtArgs>
+  resolvedFileUpdates?: boolean | Prisma.User$resolvedFileUpdatesArgs<ExtArgs>
+  reviewedCorrespondenceResponses?: boolean | Prisma.User$reviewedCorrespondenceResponsesArgs<ExtArgs>
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -2686,7 +4612,15 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdLeaveRequests?: boolean | Prisma.User$createdLeaveRequestsArgs<ExtArgs>
   finalLeaveDecisions?: boolean | Prisma.User$finalLeaveDecisionsArgs<ExtArgs>
   leaveApprovalSteps?: boolean | Prisma.User$leaveApprovalStepsArgs<ExtArgs>
+  leaveAcknowledgements?: boolean | Prisma.User$leaveAcknowledgementsArgs<ExtArgs>
   uploadedLeaveAttachments?: boolean | Prisma.User$uploadedLeaveAttachmentsArgs<ExtArgs>
+  issuedCorrespondences?: boolean | Prisma.User$issuedCorrespondencesArgs<ExtArgs>
+  acknowledgedCorrespondences?: boolean | Prisma.User$acknowledgedCorrespondencesArgs<ExtArgs>
+  uploadedCorrespondenceAttachments?: boolean | Prisma.User$uploadedCorrespondenceAttachmentsArgs<ExtArgs>
+  confirmedAssumptionOfDutyItems?: boolean | Prisma.User$confirmedAssumptionOfDutyItemsArgs<ExtArgs>
+  requestedFileUpdates?: boolean | Prisma.User$requestedFileUpdatesArgs<ExtArgs>
+  resolvedFileUpdates?: boolean | Prisma.User$resolvedFileUpdatesArgs<ExtArgs>
+  reviewedCorrespondenceResponses?: boolean | Prisma.User$reviewedCorrespondenceResponsesArgs<ExtArgs>
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -2711,7 +4645,15 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdLeaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
     finalLeaveDecisions: Prisma.$LeaveRequestPayload<ExtArgs>[]
     leaveApprovalSteps: Prisma.$LeaveApprovalStepPayload<ExtArgs>[]
+    leaveAcknowledgements: Prisma.$LeaveRequestAcknowledgementPayload<ExtArgs>[]
     uploadedLeaveAttachments: Prisma.$LeaveAttachmentPayload<ExtArgs>[]
+    issuedCorrespondences: Prisma.$EmployeeCorrespondencePayload<ExtArgs>[]
+    acknowledgedCorrespondences: Prisma.$EmployeeCorrespondencePayload<ExtArgs>[]
+    uploadedCorrespondenceAttachments: Prisma.$EmployeeCorrespondenceAttachmentPayload<ExtArgs>[]
+    confirmedAssumptionOfDutyItems: Prisma.$EmployeeFileChecklistItemPayload<ExtArgs>[]
+    requestedFileUpdates: Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>[]
+    resolvedFileUpdates: Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>[]
+    reviewedCorrespondenceResponses: Prisma.$EmployeeCorrespondenceResponsePayload<ExtArgs>[]
     employee: Prisma.$EmployeePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -3136,7 +5078,15 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   createdLeaveRequests<T extends Prisma.User$createdLeaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdLeaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   finalLeaveDecisions<T extends Prisma.User$finalLeaveDecisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$finalLeaveDecisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveApprovalSteps<T extends Prisma.User$leaveApprovalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveApprovalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leaveAcknowledgements<T extends Prisma.User$leaveAcknowledgementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveAcknowledgementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestAcknowledgementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedLeaveAttachments<T extends Prisma.User$uploadedLeaveAttachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedLeaveAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  issuedCorrespondences<T extends Prisma.User$issuedCorrespondencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$issuedCorrespondencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeCorrespondencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  acknowledgedCorrespondences<T extends Prisma.User$acknowledgedCorrespondencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$acknowledgedCorrespondencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeCorrespondencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadedCorrespondenceAttachments<T extends Prisma.User$uploadedCorrespondenceAttachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedCorrespondenceAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeCorrespondenceAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  confirmedAssumptionOfDutyItems<T extends Prisma.User$confirmedAssumptionOfDutyItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$confirmedAssumptionOfDutyItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeFileChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  requestedFileUpdates<T extends Prisma.User$requestedFileUpdatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$requestedFileUpdatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  resolvedFileUpdates<T extends Prisma.User$resolvedFileUpdatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resolvedFileUpdatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reviewedCorrespondenceResponses<T extends Prisma.User$reviewedCorrespondenceResponsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reviewedCorrespondenceResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeCorrespondenceResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employee<T extends Prisma.User$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$employeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -3778,6 +5728,30 @@ export type User$leaveApprovalStepsArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+ * User.leaveAcknowledgements
+ */
+export type User$leaveAcknowledgementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LeaveRequestAcknowledgement
+   */
+  select?: Prisma.LeaveRequestAcknowledgementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LeaveRequestAcknowledgement
+   */
+  omit?: Prisma.LeaveRequestAcknowledgementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LeaveRequestAcknowledgementInclude<ExtArgs> | null
+  where?: Prisma.LeaveRequestAcknowledgementWhereInput
+  orderBy?: Prisma.LeaveRequestAcknowledgementOrderByWithRelationInput | Prisma.LeaveRequestAcknowledgementOrderByWithRelationInput[]
+  cursor?: Prisma.LeaveRequestAcknowledgementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LeaveRequestAcknowledgementScalarFieldEnum | Prisma.LeaveRequestAcknowledgementScalarFieldEnum[]
+}
+
+/**
  * User.uploadedLeaveAttachments
  */
 export type User$uploadedLeaveAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3799,6 +5773,174 @@ export type User$uploadedLeaveAttachmentsArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.LeaveAttachmentScalarFieldEnum | Prisma.LeaveAttachmentScalarFieldEnum[]
+}
+
+/**
+ * User.issuedCorrespondences
+ */
+export type User$issuedCorrespondencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeCorrespondence
+   */
+  select?: Prisma.EmployeeCorrespondenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeCorrespondence
+   */
+  omit?: Prisma.EmployeeCorrespondenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeCorrespondenceInclude<ExtArgs> | null
+  where?: Prisma.EmployeeCorrespondenceWhereInput
+  orderBy?: Prisma.EmployeeCorrespondenceOrderByWithRelationInput | Prisma.EmployeeCorrespondenceOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeCorrespondenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeCorrespondenceScalarFieldEnum | Prisma.EmployeeCorrespondenceScalarFieldEnum[]
+}
+
+/**
+ * User.acknowledgedCorrespondences
+ */
+export type User$acknowledgedCorrespondencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeCorrespondence
+   */
+  select?: Prisma.EmployeeCorrespondenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeCorrespondence
+   */
+  omit?: Prisma.EmployeeCorrespondenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeCorrespondenceInclude<ExtArgs> | null
+  where?: Prisma.EmployeeCorrespondenceWhereInput
+  orderBy?: Prisma.EmployeeCorrespondenceOrderByWithRelationInput | Prisma.EmployeeCorrespondenceOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeCorrespondenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeCorrespondenceScalarFieldEnum | Prisma.EmployeeCorrespondenceScalarFieldEnum[]
+}
+
+/**
+ * User.uploadedCorrespondenceAttachments
+ */
+export type User$uploadedCorrespondenceAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeCorrespondenceAttachment
+   */
+  select?: Prisma.EmployeeCorrespondenceAttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeCorrespondenceAttachment
+   */
+  omit?: Prisma.EmployeeCorrespondenceAttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeCorrespondenceAttachmentInclude<ExtArgs> | null
+  where?: Prisma.EmployeeCorrespondenceAttachmentWhereInput
+  orderBy?: Prisma.EmployeeCorrespondenceAttachmentOrderByWithRelationInput | Prisma.EmployeeCorrespondenceAttachmentOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeCorrespondenceAttachmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeCorrespondenceAttachmentScalarFieldEnum | Prisma.EmployeeCorrespondenceAttachmentScalarFieldEnum[]
+}
+
+/**
+ * User.confirmedAssumptionOfDutyItems
+ */
+export type User$confirmedAssumptionOfDutyItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeFileChecklistItem
+   */
+  select?: Prisma.EmployeeFileChecklistItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeFileChecklistItem
+   */
+  omit?: Prisma.EmployeeFileChecklistItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeFileChecklistItemInclude<ExtArgs> | null
+  where?: Prisma.EmployeeFileChecklistItemWhereInput
+  orderBy?: Prisma.EmployeeFileChecklistItemOrderByWithRelationInput | Prisma.EmployeeFileChecklistItemOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeFileChecklistItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeFileChecklistItemScalarFieldEnum | Prisma.EmployeeFileChecklistItemScalarFieldEnum[]
+}
+
+/**
+ * User.requestedFileUpdates
+ */
+export type User$requestedFileUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeFileUpdateRequest
+   */
+  select?: Prisma.EmployeeFileUpdateRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeFileUpdateRequest
+   */
+  omit?: Prisma.EmployeeFileUpdateRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeFileUpdateRequestInclude<ExtArgs> | null
+  where?: Prisma.EmployeeFileUpdateRequestWhereInput
+  orderBy?: Prisma.EmployeeFileUpdateRequestOrderByWithRelationInput | Prisma.EmployeeFileUpdateRequestOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeFileUpdateRequestScalarFieldEnum | Prisma.EmployeeFileUpdateRequestScalarFieldEnum[]
+}
+
+/**
+ * User.resolvedFileUpdates
+ */
+export type User$resolvedFileUpdatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeFileUpdateRequest
+   */
+  select?: Prisma.EmployeeFileUpdateRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeFileUpdateRequest
+   */
+  omit?: Prisma.EmployeeFileUpdateRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeFileUpdateRequestInclude<ExtArgs> | null
+  where?: Prisma.EmployeeFileUpdateRequestWhereInput
+  orderBy?: Prisma.EmployeeFileUpdateRequestOrderByWithRelationInput | Prisma.EmployeeFileUpdateRequestOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeFileUpdateRequestScalarFieldEnum | Prisma.EmployeeFileUpdateRequestScalarFieldEnum[]
+}
+
+/**
+ * User.reviewedCorrespondenceResponses
+ */
+export type User$reviewedCorrespondenceResponsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeCorrespondenceResponse
+   */
+  select?: Prisma.EmployeeCorrespondenceResponseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeCorrespondenceResponse
+   */
+  omit?: Prisma.EmployeeCorrespondenceResponseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeCorrespondenceResponseInclude<ExtArgs> | null
+  where?: Prisma.EmployeeCorrespondenceResponseWhereInput
+  orderBy?: Prisma.EmployeeCorrespondenceResponseOrderByWithRelationInput | Prisma.EmployeeCorrespondenceResponseOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeCorrespondenceResponseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeCorrespondenceResponseScalarFieldEnum | Prisma.EmployeeCorrespondenceResponseScalarFieldEnum[]
 }
 
 /**

@@ -28,11 +28,9 @@ import {
   type PayrollProfileFormState,
 } from "@/src/modules/payroll/actions/save-payroll-profile";
 import { FinancialInstitutionSelect } from "@/src/modules/payroll/components/financial-institution-select";
+import { PayrollNav } from "@/src/modules/payroll/components/payroll-nav";
 import type { EmployeePayrollSetup } from "@/src/modules/payroll/lib/payroll-setup-types";
-import {
-  OTHER_FINANCIAL_INSTITUTION_ID,
-  findTtFinancialInstitutionByName,
-} from "@/src/modules/payroll/lib/tt-financial-institutions";
+import { OTHER_FINANCIAL_INSTITUTION_ID } from "@/src/modules/payroll/lib/tt-financial-institutions";
 
 const initialState: PayrollProfileFormState = {
   status: "idle",
@@ -41,7 +39,7 @@ const initialState: PayrollProfileFormState = {
 
 type BankAccountRow = {
   rowId: string;
-  /** Select value: institution id, or `other`. Empty when unset. */
+  /** Select value: DB institution id, catalog key, or `other`. */
   institutionId: string;
   /** Official institution name (or custom text when Other). */
   bankName: string;
@@ -49,21 +47,37 @@ type BankAccountRow = {
   accountNumber: string;
   accountName: string;
   amount: string;
+  percentage: string;
+  /** Secondary split mode when percentage allocations are enabled. */
+  splitMode: "fixed" | "percentage";
   isPrimary: boolean;
 };
 
-function resolveInstitutionSelection(bankName: string): {
-  institutionId: string;
-  bankName: string;
-} {
-  const trimmed = bankName.trim();
+function resolveInstitutionSelection(
+  account: EmployeePayrollSetup["bankAccounts"][number],
+  institutions: EmployeePayrollSetup["financialInstitutions"],
+): { institutionId: string; bankName: string } {
+  if (account.financialInstitutionId) {
+    const match = institutions.find(
+      (row) => row.id === account.financialInstitutionId,
+    );
+    if (match) {
+      return { institutionId: match.id, bankName: match.displayName };
+    }
+  }
+
+  const trimmed = account.bankName.trim();
   if (!trimmed) {
     return { institutionId: "", bankName: "" };
   }
 
-  const match = findTtFinancialInstitutionByName(trimmed);
-  if (match) {
-    return { institutionId: match.id, bankName: match.name };
+  const byName = institutions.find(
+    (row) =>
+      row.displayName.toLowerCase() === trimmed.toLowerCase() ||
+      row.shortName.toLowerCase() === trimmed.toLowerCase(),
+  );
+  if (byName) {
+    return { institutionId: byName.id, bankName: byName.displayName };
   }
 
   return {
@@ -81,6 +95,8 @@ function newBankAccount(isPrimary: boolean): BankAccountRow {
     accountNumber: "",
     accountName: "",
     amount: "",
+    percentage: "",
+    splitMode: "fixed",
     isPrimary,
   };
 }
@@ -95,6 +111,15 @@ export function PayrollProfileForm({
     initialState,
   );
 
+  const institutions = setup.financialInstitutions ?? [];
+  const bankingFlags = setup.bankingFlags ?? {
+    bankingEnabled: true,
+    splitDepositEnabled: true,
+    multipleAccountsEnabled: true,
+    percentageAllocationEnabled: false,
+    postNetSplitEnabled: false,
+  };
+
   const [paymentMethod, setPaymentMethod] = useState<string>(
     setup.profile?.paymentMethod ?? "BANK_TRANSFER",
   );
@@ -102,7 +127,9 @@ export function PayrollProfileForm({
   const [bankAccounts, setBankAccounts] = useState<BankAccountRow[]>(
     setup.bankAccounts.length > 0
       ? setup.bankAccounts.map((account) => {
-          const selection = resolveInstitutionSelection(account.bankName);
+          const selection = resolveInstitutionSelection(account, institutions);
+          const hasPercentage =
+            account.percentage != null && Number(account.percentage) > 0;
           return {
             rowId: account.id,
             institutionId: selection.institutionId,
@@ -111,11 +138,28 @@ export function PayrollProfileForm({
             accountNumber: account.accountNumber,
             accountName: account.accountName ?? "",
             amount: account.amount ?? "",
+            percentage: account.percentage ?? "",
+            splitMode: hasPercentage ? ("percentage" as const) : ("fixed" as const),
             isPrimary: account.isPrimary,
           };
         })
       : [newBankAccount(true)],
   );
+
+  const [allowanceTaxable, setAllowanceTaxable] = useState<
+    Record<string, boolean>
+  >(() => {
+    const initial: Record<string, boolean> = {};
+    for (const element of setup.payElements) {
+      if (
+        element.source === "CONTRACT_ALLOWANCE" &&
+        element.contractAllowanceId
+      ) {
+        initial[element.contractAllowanceId] = element.isTaxable;
+      }
+    }
+    return initial;
+  });
 
   useEffect(() => {
     if (state.status === "error") {
@@ -149,8 +193,12 @@ export function PayrollProfileForm({
     });
   }
 
-  const showBankSection = paymentMethod === "BANK_TRANSFER";
-  const profileHref = `/people/employees/${setup.employee.id}`;
+  const showBankSection =
+    paymentMethod === "BANK_TRANSFER" && bankingFlags.bankingEnabled;
+  const canAddAnotherAccount =
+    bankingFlags.multipleAccountsEnabled && bankingFlags.splitDepositEnabled;
+  const payrollHref = "/payroll";
+  const setupPayslipHref = `/payroll/employees/${setup.employee.id}/payslip`;
   const currency =
     setup.currentContract?.currency ??
     setup.payElements[0]?.currency ??
@@ -179,41 +227,54 @@ export function PayrollProfileForm({
   const bankAccountsJson = JSON.stringify(
     showBankSection
       ? bankAccounts.map((row) => ({
+          financialInstitutionId: row.institutionId || null,
           bankName: row.bankName.trim(),
           branchName: row.branchName.trim() || null,
           accountNumber: row.accountNumber.trim(),
           accountName: row.accountName.trim() || null,
-          amount: row.isPrimary
-            ? null
-            : row.amount.trim() === ""
+          amount:
+            row.isPrimary || row.splitMode === "percentage"
               ? null
-              : Number(row.amount),
+              : row.amount.trim() === ""
+                ? null
+                : Number(row.amount),
+          percentage:
+            row.isPrimary || row.splitMode === "fixed"
+              ? null
+              : row.percentage.trim() === ""
+                ? null
+                : Number(row.percentage),
           isPrimary: row.isPrimary,
         }))
       : [],
   );
 
+  const allowanceTaxableJson = JSON.stringify(allowanceTaxable);
+  const hasEditableAllowances = Object.keys(allowanceTaxable).length > 0;
+
   return (
     <form action={formAction}>
       <PageShell>
+        <PayrollNav />
         <input type="hidden" name="employeeId" value={setup.employee.id} />
         <input type="hidden" name="bankAccountsJson" value={bankAccountsJson} />
+        <input
+          type="hidden"
+          name="allowanceTaxableJson"
+          value={allowanceTaxableJson}
+        />
 
         <PageHeader
           title="Payroll Setup"
           description={`${setup.employee.displayName} · ${setup.employee.employeeNumber}`}
-          backHref={profileHref}
-          backLabel="Employee profile"
+          backHref={payrollHref}
+          backLabel="Payroll"
           actions={
-            <FormPageActions cancelHref={profileHref}>
+            <FormPageActions cancelHref={payrollHref}>
               <Button
                 nativeButton={false}
                 variant="outline"
-                render={
-                  <Link
-                    href={`/people/employees/${setup.employee.id}/payroll/payslip`}
-                  />
-                }
+                render={<Link href={setupPayslipHref} />}
               >
                 <FileText />
                 View payslip
@@ -278,13 +339,16 @@ export function PayrollProfileForm({
               <select
                 id="payFrequency"
                 name="payFrequency"
-                defaultValue={setup.profile?.payFrequency ?? "MONTHLY"}
+                defaultValue={
+                  setup.profile?.payFrequency === "BIWEEKLY"
+                    ? "FORTNIGHTLY"
+                    : (setup.profile?.payFrequency ?? "MONTHLY")
+                }
                 className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm"
               >
                 <option value="MONTHLY">Monthly</option>
-                <option value="FORTNIGHTLY">Fortnightly</option>
+                <option value="FORTNIGHTLY">Fortnightly / Biweekly</option>
                 <option value="WEEKLY">Weekly</option>
-                <option value="BIWEEKLY">Biweekly</option>
                 <option value="SEMI_MONTHLY">Semi-monthly</option>
               </select>
               {state.fieldErrors?.payFrequency && (
@@ -320,24 +384,78 @@ export function PayrollProfileForm({
               <label className="text-sm font-medium" htmlFor="nisNumber">
                 NIS number
               </label>
-              <Input
-                id="nisNumber"
-                name="nisNumber"
-                defaultValue={setup.profile?.nisNumber ?? ""}
-                placeholder="National insurance number"
-              />
+              {setup.employee.nisNumber ? (
+                <>
+                  <Input
+                    id="nisNumber"
+                    value={setup.employee.nisNumber}
+                    readOnly
+                    className="bg-muted"
+                  />
+                  <input
+                    type="hidden"
+                    name="nisNumber"
+                    value={setup.employee.nisNumber}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    From the employee record — edit on the employee profile.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Input
+                    id="nisNumber"
+                    name="nisNumber"
+                    defaultValue={setup.statutoryNumbers.nisNumber ?? ""}
+                    placeholder="National insurance number"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Not on the employee record yet
+                    {setup.profile?.nisNumber
+                      ? " (legacy payroll copy — save to sync)"
+                      : ""}. Saving writes this to the employee profile.
+                  </p>
+                </>
+              )}
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium" htmlFor="birNumber">
                 BIR number
               </label>
-              <Input
-                id="birNumber"
-                name="birNumber"
-                defaultValue={setup.profile?.birNumber ?? ""}
-                placeholder="Board of Inland Revenue file number"
-              />
+              {setup.employee.birNumber ? (
+                <>
+                  <Input
+                    id="birNumber"
+                    value={setup.employee.birNumber}
+                    readOnly
+                    className="bg-muted"
+                  />
+                  <input
+                    type="hidden"
+                    name="birNumber"
+                    value={setup.employee.birNumber}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    From the employee record — edit on the employee profile.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Input
+                    id="birNumber"
+                    name="birNumber"
+                    defaultValue={setup.statutoryNumbers.birNumber ?? ""}
+                    placeholder="Board of Inland Revenue file number"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Not on the employee record yet
+                    {setup.profile?.birNumber
+                      ? " (legacy payroll copy — save to sync)"
+                      : ""}. Saving writes this to the employee profile.
+                  </p>
+                </>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -376,6 +494,64 @@ export function PayrollProfileForm({
               Pension is only source of income (Health Surcharge exempt)
             </label>
 
+            <div className="space-y-3 md:col-span-2">
+              <p className="text-sm font-medium">Statutory exemptions</p>
+              <p className="text-xs text-muted-foreground">
+                Opt this employee out of specific statutory deductions. Exempt
+                flags also relax payroll readiness (NIS number / BIR number)
+                where applicable.
+              </p>
+              <div className="grid gap-3 md:grid-cols-3">
+                <label className="flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    name="exemptFromNis"
+                    className="mt-0.5"
+                    defaultChecked={setup.profile?.exemptFromNis ?? false}
+                  />
+                  <span>
+                    <span className="font-medium">Exempt from NIS</span>
+                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                      No employee or employer NIS. NIS number not required for
+                      readiness.
+                    </span>
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    name="exemptFromHealthSurcharge"
+                    className="mt-0.5"
+                    defaultChecked={
+                      setup.profile?.exemptFromHealthSurcharge ?? false
+                    }
+                  />
+                  <span>
+                    <span className="font-medium">
+                      Exempt from Health Surcharge
+                    </span>
+                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                      Health Surcharge calculates as zero for this employee.
+                    </span>
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    name="exemptFromPaye"
+                    className="mt-0.5"
+                    defaultChecked={setup.profile?.exemptFromPaye ?? false}
+                  />
+                  <span>
+                    <span className="font-medium">Exempt from PAYE</span>
+                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                      No PAYE deducted. BIR number not required for readiness.
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </div>
+
             <div className="space-y-2 md:col-span-2">
               <label className="text-sm font-medium" htmlFor="notes">
                 Notes
@@ -398,28 +574,32 @@ export function PayrollProfileForm({
               {formatMoney(setup.statutoryPreview.monthlyTaxableEarnings, {
                 currency,
               })}
-              /mo from current contract base salary only. Allowances remain part
-              of gross pay but are excluded in Phase 1.
+              /mo from current contract base salary plus taxable allowances.
+              Non-taxable allowances remain in gross pay only.
             </p>
 
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               <div>
                 <p className="text-xs text-muted-foreground">NIS (employee)</p>
                 <p className="mt-1 text-sm font-medium">
-                  {setup.statutoryPreview.nis
-                    ? setup.statutoryPreview.nis.belowMinimum
-                      ? "Below Class I — none"
-                      : `Class ${setup.statutoryPreview.nis.classCode}: ${formatMoney(setup.statutoryPreview.nis.employeeMonthly, { currency: "TTD" })}/mo`
-                    : "No NIS classes configured"}
+                  {setup.profile?.exemptFromNis
+                    ? "Exempt (opt-out)"
+                    : setup.statutoryPreview.nis
+                      ? setup.statutoryPreview.nis.belowMinimum
+                        ? "Below Class I — none"
+                        : `Class ${setup.statutoryPreview.nis.classCode}: ${formatMoney(setup.statutoryPreview.nis.employeeMonthly, { currency: "TTD" })}/mo`
+                      : "No NIS classes configured"}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs text-muted-foreground">PAYE</p>
                 <p className="mt-1 text-sm font-medium">
-                  {setup.statutoryPreview.paye
-                    ? `${formatMoney(setup.statutoryPreview.paye.monthlyPaye, { currency: "TTD" })}/mo`
-                    : "No PAYE config"}
+                  {setup.profile?.exemptFromPaye
+                    ? "Exempt (opt-out)"
+                    : setup.statutoryPreview.paye
+                      ? `${formatMoney(setup.statutoryPreview.paye.monthlyPaye, { currency: "TTD" })}/mo`
+                      : "No PAYE config"}
                 </p>
               </div>
 
@@ -458,25 +638,27 @@ export function PayrollProfileForm({
                 </Badge>
               </div>
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  setBankAccounts((rows) => [
-                    ...rows,
-                    newBankAccount(rows.length === 0),
-                  ])
-                }
-              >
-                <Plus />
-                Add bank account
-              </Button>
+              {canAddAnotherAccount ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setBankAccounts((rows) => [
+                      ...rows,
+                      newBankAccount(rows.length === 0),
+                    ])
+                  }
+                >
+                  <Plus />
+                  Add bank account
+                </Button>
+              ) : null}
             </div>
 
             <p className="mb-3 text-xs text-muted-foreground">
-              Mark one account as primary — it receives the remainder after
-              fixed amounts on other accounts. Secondary accounts take a fixed{" "}
-              {currency} amount each pay period.
+              {canAddAnotherAccount
+                ? `Mark one account as primary — it receives the remainder after fixed amounts on other accounts. Secondary accounts take a fixed ${currency} amount each pay period. These destinations feed payslip bankDistribution and later payment snapshots; changing them after a posted run is prepared does not rewrite frozen payments.`
+                : "Split deposits are disabled — one FULL_BALANCE destination only. Prepared payment snapshots on posted runs stay frozen if you change this later."}
             </p>
 
             {hasBaseSalary ? (
@@ -562,6 +744,7 @@ export function PayrollProfileForm({
                         id={`institution-${row.rowId}`}
                         institutionId={row.institutionId}
                         bankName={row.bankName}
+                        institutions={institutions}
                         onChange={({ institutionId, bankName }) =>
                           updateRow(row.rowId, { institutionId, bankName })
                         }
@@ -642,7 +825,12 @@ export function PayrollProfileForm({
                         className="text-xs text-muted-foreground"
                         htmlFor={`amount-${row.rowId}`}
                       >
-                        Amount ({currency})
+                        {row.isPrimary
+                          ? `Remainder (${currency})`
+                          : bankingFlags.percentageAllocationEnabled &&
+                              row.splitMode === "percentage"
+                            ? "Percentage (%)"
+                            : `Amount (${currency})`}
                       </label>
                       {row.isPrimary ? (
                         <div className="space-y-1">
@@ -672,25 +860,88 @@ export function PayrollProfileForm({
                         </div>
                       ) : (
                         <div className="space-y-1">
-                          <Input
-                            id={`amount-${row.rowId}`}
-                            type="number"
-                            min={0.01}
-                            max={hasBaseSalary ? baseSalary : undefined}
-                            step={0.01}
-                            value={row.amount}
-                            onChange={(event) =>
-                              updateRow(row.rowId, {
-                                amount: event.target.value,
-                              })
-                            }
-                            required
-                            aria-invalid={exceedsSalary}
-                          />
+                          {bankingFlags.percentageAllocationEnabled ? (
+                            <div className="mb-1 flex gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={
+                                  row.splitMode === "fixed"
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() =>
+                                  updateRow(row.rowId, {
+                                    splitMode: "fixed",
+                                    percentage: "",
+                                  })
+                                }
+                              >
+                                Fixed
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant={
+                                  row.splitMode === "percentage"
+                                    ? "default"
+                                    : "outline"
+                                }
+                                onClick={() =>
+                                  updateRow(row.rowId, {
+                                    splitMode: "percentage",
+                                    amount: "",
+                                  })
+                                }
+                              >
+                                %
+                              </Button>
+                            </div>
+                          ) : null}
+                          {row.splitMode === "percentage" &&
+                          bankingFlags.percentageAllocationEnabled ? (
+                            <Input
+                              id={`amount-${row.rowId}`}
+                              type="number"
+                              min={0.01}
+                              max={100}
+                              step={0.01}
+                              value={row.percentage}
+                              onChange={(event) =>
+                                updateRow(row.rowId, {
+                                  percentage: event.target.value,
+                                })
+                              }
+                              required
+                            />
+                          ) : (
+                            <Input
+                              id={`amount-${row.rowId}`}
+                              type="number"
+                              min={0.01}
+                              max={hasBaseSalary ? baseSalary : undefined}
+                              step={0.01}
+                              value={row.amount}
+                              onChange={(event) =>
+                                updateRow(row.rowId, {
+                                  amount: event.target.value,
+                                })
+                              }
+                              required
+                              aria-invalid={exceedsSalary}
+                            />
+                          )}
                           {hasBaseSalary &&
+                          row.splitMode === "fixed" &&
                           Number(row.amount) > baseSalary + Number.EPSILON ? (
                             <p className="text-[11px] text-destructive">
                               Amount exceeds base salary
+                            </p>
+                          ) : null}
+                          {bankingFlags.percentageAllocationEnabled &&
+                          !bankingFlags.postNetSplitEnabled ? (
+                            <p className="text-[11px] text-muted-foreground">
+                              % splits apply when POST_NET_SPLIT_ENABLED is on.
                             </p>
                           ) : null}
                         </div>
@@ -737,46 +988,83 @@ export function PayrollProfileForm({
               contract with a base salary is in place.
             </p>
           ) : (
-            <div className="divide-y divide-border/70">
-              {setup.payElements.map((element, index) => (
-                <div
-                  key={`${element.label}-${index}`}
-                  className="grid gap-4 py-4 md:grid-cols-[1fr_10rem_8rem_8rem]"
-                >
-                  <div>
-                    <p className="text-sm font-medium">{element.label}</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {element.source === "CONTRACT_SALARY"
-                        ? "Contract base salary"
-                        : "Contract allowance"}
-                    </p>
-                  </div>
+            <>
+              {hasEditableAllowances ? (
+                <p className="mb-3 text-xs text-muted-foreground">
+                  Toggle Taxable on allowances to update the current contract.
+                  Taxable allowances are included in NIS/PAYE taxable pay;
+                  non-taxable remain in gross only. Amount and frequency are
+                  edited on the contract.
+                </p>
+              ) : null}
 
-                  <div>
-                    <p className="text-xs text-muted-foreground">Amount</p>
-                    <p className="mt-1 text-sm font-medium">
-                      {formatMoney(element.amount, {
-                        currency: element.currency,
-                      })}
-                    </p>
-                  </div>
+              <div className="divide-y divide-border/70">
+                {setup.payElements.map((element, index) => {
+                  const allowanceId = element.contractAllowanceId ?? null;
+                  const canEditTaxable =
+                    element.source === "CONTRACT_ALLOWANCE" &&
+                    allowanceId != null;
 
-                  <div>
-                    <p className="text-xs text-muted-foreground">Frequency</p>
-                    <p className="mt-1 text-sm font-medium">
-                      {element.frequency}
-                    </p>
-                  </div>
+                  return (
+                    <div
+                      key={`${element.label}-${index}`}
+                      className="grid gap-4 py-4 md:grid-cols-[1fr_10rem_8rem_8rem]"
+                    >
+                      <div>
+                        <p className="text-sm font-medium">{element.label}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {element.source === "CONTRACT_SALARY"
+                            ? "Contract base salary"
+                            : "Contract allowance"}
+                        </p>
+                      </div>
 
-                  <div>
-                    <p className="text-xs text-muted-foreground">Taxable</p>
-                    <p className="mt-1 text-sm font-medium">
-                      {element.isTaxable ? "Yes" : "No"}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Amount</p>
+                        <p className="mt-1 text-sm font-medium">
+                          {formatMoney(element.amount, {
+                            currency: element.currency,
+                          })}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs text-muted-foreground">
+                          Frequency
+                        </p>
+                        <p className="mt-1 text-sm font-medium">
+                          {element.frequency}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs text-muted-foreground">Taxable</p>
+                        {canEditTaxable ? (
+                          <label className="mt-1 flex items-center gap-2 text-sm font-medium">
+                            <input
+                              type="checkbox"
+                              checked={
+                                allowanceTaxable[allowanceId] ??
+                                element.isTaxable
+                              }
+                              onChange={(event) =>
+                                setAllowanceTaxable((current) => ({
+                                  ...current,
+                                  [allowanceId]: event.target.checked,
+                                }))
+                              }
+                            />
+                            Taxable
+                          </label>
+                        ) : (
+                          <p className="mt-1 text-sm font-medium">Yes</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           )}
         </section>
       </PageShell>

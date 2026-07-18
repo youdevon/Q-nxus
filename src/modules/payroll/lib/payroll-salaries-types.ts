@@ -5,7 +5,7 @@ export type PayrollSalaryRow = {
   employeeNumber: string;
   displayName: string;
   departmentName: string | null;
-  jobTitle: string | null;
+  positionTitle: string | null;
   payFrequency: string | null;
   currency: string | null;
   /** Current contract base salary (monthly). Null when no current contract. */
@@ -14,7 +14,7 @@ export type PayrollSalaryRow = {
   monthlyAllowances: number | null;
   /** Monthly gross pay = base salary + allowances. */
   grossPay: number | null;
-  /** Phase 1 taxable pay uses base salary only. */
+  /** Taxable pay = base salary + taxable contract allowances (monthly). */
   monthlyTaxableEarnings: number | null;
   hasCurrentContract: boolean;
   isReady: boolean;

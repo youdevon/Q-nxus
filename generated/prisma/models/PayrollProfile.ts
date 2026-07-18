@@ -45,6 +45,9 @@ export type PayrollProfileMinAggregateOutputType = {
   isPayrollReady: boolean | null
   td1OtherApprovedAnnual: runtime.Decimal | null
   pensionOnlyIncome: boolean | null
+  exemptFromNis: boolean | null
+  exemptFromHealthSurcharge: boolean | null
+  exemptFromPaye: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +63,9 @@ export type PayrollProfileMaxAggregateOutputType = {
   isPayrollReady: boolean | null
   td1OtherApprovedAnnual: runtime.Decimal | null
   pensionOnlyIncome: boolean | null
+  exemptFromNis: boolean | null
+  exemptFromHealthSurcharge: boolean | null
+  exemptFromPaye: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -75,6 +81,9 @@ export type PayrollProfileCountAggregateOutputType = {
   isPayrollReady: number
   td1OtherApprovedAnnual: number
   pensionOnlyIncome: number
+  exemptFromNis: number
+  exemptFromHealthSurcharge: number
+  exemptFromPaye: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -100,6 +109,9 @@ export type PayrollProfileMinAggregateInputType = {
   isPayrollReady?: true
   td1OtherApprovedAnnual?: true
   pensionOnlyIncome?: true
+  exemptFromNis?: true
+  exemptFromHealthSurcharge?: true
+  exemptFromPaye?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -115,6 +127,9 @@ export type PayrollProfileMaxAggregateInputType = {
   isPayrollReady?: true
   td1OtherApprovedAnnual?: true
   pensionOnlyIncome?: true
+  exemptFromNis?: true
+  exemptFromHealthSurcharge?: true
+  exemptFromPaye?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -130,6 +145,9 @@ export type PayrollProfileCountAggregateInputType = {
   isPayrollReady?: true
   td1OtherApprovedAnnual?: true
   pensionOnlyIncome?: true
+  exemptFromNis?: true
+  exemptFromHealthSurcharge?: true
+  exemptFromPaye?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -232,6 +250,9 @@ export type PayrollProfileGroupByOutputType = {
   isPayrollReady: boolean
   td1OtherApprovedAnnual: runtime.Decimal | null
   pensionOnlyIncome: boolean
+  exemptFromNis: boolean
+  exemptFromHealthSurcharge: boolean
+  exemptFromPaye: boolean
   createdAt: Date
   updatedAt: Date
   _count: PayrollProfileCountAggregateOutputType | null
@@ -270,6 +291,9 @@ export type PayrollProfileWhereInput = {
   isPayrollReady?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   td1OtherApprovedAnnual?: Prisma.DecimalNullableFilter<"PayrollProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  exemptFromNis?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  exemptFromPaye?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -287,6 +311,9 @@ export type PayrollProfileOrderByWithRelationInput = {
   isPayrollReady?: Prisma.SortOrder
   td1OtherApprovedAnnual?: Prisma.SortOrderInput | Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
+  exemptFromNis?: Prisma.SortOrder
+  exemptFromHealthSurcharge?: Prisma.SortOrder
+  exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -307,6 +334,9 @@ export type PayrollProfileWhereUniqueInput = Prisma.AtLeast<{
   isPayrollReady?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   td1OtherApprovedAnnual?: Prisma.DecimalNullableFilter<"PayrollProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  exemptFromNis?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  exemptFromPaye?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -324,6 +354,9 @@ export type PayrollProfileOrderByWithAggregationInput = {
   isPayrollReady?: Prisma.SortOrder
   td1OtherApprovedAnnual?: Prisma.SortOrderInput | Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
+  exemptFromNis?: Prisma.SortOrder
+  exemptFromHealthSurcharge?: Prisma.SortOrder
+  exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PayrollProfileCountOrderByAggregateInput
@@ -347,6 +380,9 @@ export type PayrollProfileScalarWhereWithAggregatesInput = {
   isPayrollReady?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
   td1OtherApprovedAnnual?: Prisma.DecimalNullableWithAggregatesFilter<"PayrollProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
+  exemptFromNis?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
+  exemptFromPaye?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PayrollProfile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PayrollProfile"> | Date | string
 }
@@ -361,6 +397,9 @@ export type PayrollProfileCreateInput = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutPayrollProfileInput
@@ -378,6 +417,9 @@ export type PayrollProfileUncheckedCreateInput = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bankAccounts?: Prisma.PayrollBankAccountUncheckedCreateNestedManyWithoutPayrollProfileInput
@@ -393,6 +435,9 @@ export type PayrollProfileUpdateInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutPayrollProfileNestedInput
@@ -410,6 +455,9 @@ export type PayrollProfileUncheckedUpdateInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bankAccounts?: Prisma.PayrollBankAccountUncheckedUpdateManyWithoutPayrollProfileNestedInput
@@ -426,6 +474,9 @@ export type PayrollProfileCreateManyInput = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -440,6 +491,9 @@ export type PayrollProfileUpdateManyMutationInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -455,6 +509,9 @@ export type PayrollProfileUncheckedUpdateManyInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -475,6 +532,9 @@ export type PayrollProfileCountOrderByAggregateInput = {
   isPayrollReady?: Prisma.SortOrder
   td1OtherApprovedAnnual?: Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
+  exemptFromNis?: Prisma.SortOrder
+  exemptFromHealthSurcharge?: Prisma.SortOrder
+  exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -494,6 +554,9 @@ export type PayrollProfileMaxOrderByAggregateInput = {
   isPayrollReady?: Prisma.SortOrder
   td1OtherApprovedAnnual?: Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
+  exemptFromNis?: Prisma.SortOrder
+  exemptFromHealthSurcharge?: Prisma.SortOrder
+  exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -509,6 +572,9 @@ export type PayrollProfileMinOrderByAggregateInput = {
   isPayrollReady?: Prisma.SortOrder
   td1OtherApprovedAnnual?: Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
+  exemptFromNis?: Prisma.SortOrder
+  exemptFromHealthSurcharge?: Prisma.SortOrder
+  exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -586,6 +652,9 @@ export type PayrollProfileCreateWithoutEmployeeInput = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bankAccounts?: Prisma.PayrollBankAccountCreateNestedManyWithoutPayrollProfileInput
@@ -601,6 +670,9 @@ export type PayrollProfileUncheckedCreateWithoutEmployeeInput = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   bankAccounts?: Prisma.PayrollBankAccountUncheckedCreateNestedManyWithoutPayrollProfileInput
@@ -632,6 +704,9 @@ export type PayrollProfileUpdateWithoutEmployeeInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bankAccounts?: Prisma.PayrollBankAccountUpdateManyWithoutPayrollProfileNestedInput
@@ -647,6 +722,9 @@ export type PayrollProfileUncheckedUpdateWithoutEmployeeInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   bankAccounts?: Prisma.PayrollBankAccountUncheckedUpdateManyWithoutPayrollProfileNestedInput
@@ -662,6 +740,9 @@ export type PayrollProfileCreateWithoutBankAccountsInput = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutPayrollProfileInput
@@ -678,6 +759,9 @@ export type PayrollProfileUncheckedCreateWithoutBankAccountsInput = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -708,6 +792,9 @@ export type PayrollProfileUpdateWithoutBankAccountsInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutPayrollProfileNestedInput
@@ -724,6 +811,9 @@ export type PayrollProfileUncheckedUpdateWithoutBankAccountsInput = {
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -770,6 +860,9 @@ export type PayrollProfileSelect<ExtArgs extends runtime.Types.Extensions.Intern
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -788,6 +881,9 @@ export type PayrollProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -804,6 +900,9 @@ export type PayrollProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -820,11 +919,14 @@ export type PayrollProfileSelectScalar = {
   isPayrollReady?: boolean
   td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
+  exemptFromNis?: boolean
+  exemptFromHealthSurcharge?: boolean
+  exemptFromPaye?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PayrollProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "payFrequency" | "paymentMethod" | "nisNumber" | "birNumber" | "notes" | "isPayrollReady" | "td1OtherApprovedAnnual" | "pensionOnlyIncome" | "createdAt" | "updatedAt", ExtArgs["result"]["payrollProfile"]>
+export type PayrollProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "payFrequency" | "paymentMethod" | "nisNumber" | "birNumber" | "notes" | "isPayrollReady" | "td1OtherApprovedAnnual" | "pensionOnlyIncome" | "exemptFromNis" | "exemptFromHealthSurcharge" | "exemptFromPaye" | "createdAt" | "updatedAt", ExtArgs["result"]["payrollProfile"]>
 export type PayrollProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   bankAccounts?: boolean | Prisma.PayrollProfile$bankAccountsArgs<ExtArgs>
@@ -848,7 +950,15 @@ export type $PayrollProfilePayload<ExtArgs extends runtime.Types.Extensions.Inte
     employeeId: string
     payFrequency: $Enums.PayFrequency
     paymentMethod: $Enums.PayrollPaymentMethod
+    /**
+     * Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
+     * here from payroll writers — prefer Employee writes when people.manage.
+     */
     nisNumber: string | null
+    /**
+     * Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
+     * here from payroll writers — prefer Employee writes when people.manage.
+     */
     birNumber: string | null
     notes: string | null
     isPayrollReady: boolean
@@ -860,6 +970,18 @@ export type $PayrollProfilePayload<ExtArgs extends runtime.Types.Extensions.Inte
      * Health Surcharge: pension as only income source (exempt when true).
      */
     pensionOnlyIncome: boolean
+    /**
+     * Opt out of NIS employee/employer contributions and NIS number readiness.
+     */
+    exemptFromNis: boolean
+    /**
+     * Opt out of Health Surcharge (in addition to age/pension exemptions).
+     */
+    exemptFromHealthSurcharge: boolean
+    /**
+     * Opt out of PAYE and BIR number readiness.
+     */
+    exemptFromPaye: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["payrollProfile"]>
@@ -1297,6 +1419,9 @@ export interface PayrollProfileFieldRefs {
   readonly isPayrollReady: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
   readonly td1OtherApprovedAnnual: Prisma.FieldRef<"PayrollProfile", 'Decimal'>
   readonly pensionOnlyIncome: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
+  readonly exemptFromNis: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
+  readonly exemptFromHealthSurcharge: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
+  readonly exemptFromPaye: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PayrollProfile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PayrollProfile", 'DateTime'>
 }

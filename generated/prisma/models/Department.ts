@@ -230,6 +230,7 @@ export type DepartmentOrderByWithRelationInput = {
 export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   organizationId_name?: Prisma.DepartmentOrganizationIdNameCompoundUniqueInput
+  organizationId_code?: Prisma.DepartmentOrganizationIdCodeCompoundUniqueInput
   AND?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
   OR?: Prisma.DepartmentWhereInput[]
   NOT?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
@@ -244,7 +245,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   positions?: Prisma.PositionListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
   employeeAssignments?: Prisma.EmployeeAssignmentListRelationFilter
-}, "id" | "organizationId_name">
+}, "id" | "organizationId_name" | "organizationId_code">
 
 export type DepartmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -375,6 +376,11 @@ export type DepartmentOrderByRelationAggregateInput = {
 export type DepartmentOrganizationIdNameCompoundUniqueInput = {
   organizationId: string
   name: string
+}
+
+export type DepartmentOrganizationIdCodeCompoundUniqueInput = {
+  organizationId: string
+  code: string
 }
 
 export type DepartmentCountOrderByAggregateInput = {

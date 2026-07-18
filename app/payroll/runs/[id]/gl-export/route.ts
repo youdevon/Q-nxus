@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { buildGlJournalCsv } from "@/src/modules/payroll/lib/payroll-exports";
+import { isPayRunPosted } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +29,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
     },
   });
 
-  if (!run || run.status !== "POSTED") {
+  if (!run || !isPayRunPosted(run.status)) {
     return new Response("Posted pay run not found", { status: 404 });
   }
 

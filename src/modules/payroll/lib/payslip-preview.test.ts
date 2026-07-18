@@ -13,6 +13,7 @@ import {
   notesForPayslipDisplay,
   PAYSLIP_PREVIEW_CAVEAT_NOTES,
   payslipPeriodToAsOfDate,
+  resolveDefaultLivePayslipPeriod,
   toMonthlyPeriodAmount,
 } from "./payslip-preview";
 
@@ -50,6 +51,21 @@ describe("payslip periods", () => {
     expect(getPreviousPayslipPeriod(new Date(Date.UTC(2026, 0, 5, 12)))).toBe(
       "2025-12",
     );
+  });
+
+  it("defaults live preview to the current month when coverage starts after the previous month", () => {
+    expect(
+      resolveDefaultLivePayslipPeriod({
+        referenceDate: new Date(Date.UTC(2026, 6, 17, 12)),
+        coverageStartDate: "2026-07-01",
+      }),
+    ).toBe("2026-07");
+    expect(
+      resolveDefaultLivePayslipPeriod({
+        referenceDate: new Date(Date.UTC(2026, 6, 17, 12)),
+        coverageStartDate: "2026-06-02",
+      }),
+    ).toBe("2026-06");
   });
 
   it("parses a period as the end of that month", () => {
@@ -406,7 +422,7 @@ describe("assemblePayslipPreview", () => {
     );
   });
 
-  it("keeps allowances in gross pay but excludes them from taxable pay", () => {
+  it("keeps non-taxable allowances in gross pay but excludes them from taxable pay", () => {
     const preview = assemblePayslipPreview({
       employee: {
         id: "emp-3",
@@ -447,6 +463,50 @@ describe("assemblePayslipPreview", () => {
     expect(preview.monthlyTaxableEarnings).toBe(28_000);
     expect(preview.paye?.annualTaxableIncome).toBe(336_000);
     expect(preview.paye?.monthlyPaye).toBe(4_996.46);
+  });
+
+  it("includes taxable contract allowances in NIS/PAYE/Health taxable pay", () => {
+    const preview = assemblePayslipPreview({
+      employee: {
+        id: "emp-3b",
+        employeeNumber: "E-301",
+        displayName: "Taxable Allowance",
+        dateOfBirth: "1985-06-01",
+      },
+      currency: "TTD",
+      payFrequency: "MONTHLY",
+      paymentMethod: "CHEQUE",
+      asOf: new Date("2026-07-16T12:00:00.000Z"),
+      earnings: [
+        {
+          label: "Base salary",
+          amount: 28_000,
+          frequency: "Monthly",
+          isTaxable: true,
+          source: "CONTRACT_SALARY",
+        },
+        {
+          label: "Housing",
+          amount: 2_000,
+          frequency: "Monthly",
+          isTaxable: true,
+          source: "CONTRACT_ALLOWANCE",
+        },
+      ],
+      bankAccounts: [],
+      readiness: { isReady: true, blockingIssues: [] },
+      nisClasses: TT_NIS_2026_CLASSES,
+      payeConfig: TT_PAYE_2026_CONFIG,
+      healthConfig: TT_HEALTH_SURCHARGE_2026,
+    });
+
+    expect(preview.baseSalary).toBe(28_000);
+    expect(preview.allowancesTotal).toBe(2_000);
+    expect(preview.grossPay).toBe(30_000);
+    expect(preview.monthlyTaxableEarnings).toBe(30_000);
+    expect(preview.paye?.annualTaxableIncome).toBe(360_000);
+    expect(preview.nis).not.toBeNull();
+    expect(preview.health).not.toBeNull();
   });
 
   it("includes taxable variable earnings and variable deductions", () => {
@@ -497,6 +557,56 @@ describe("assemblePayslipPreview", () => {
     expect(preview.earnings.map((line) => line.label)).toContain("Overtime");
     expect(preview.deductions.map((line) => line.label)).toContain(
       "Correction deduction",
+    );
+  });
+
+  it("zeros NIS, PAYE, and Health when employee is opted out", () => {
+    const preview = assemblePayslipPreview({
+      employee: {
+        id: "emp-exempt",
+        employeeNumber: "E-EX",
+        displayName: "Exempt Person",
+        dateOfBirth: "1990-01-15",
+        nisNumber: null,
+        birNumber: null,
+      },
+      currency: "TTD",
+      payFrequency: "MONTHLY",
+      paymentMethod: "CASH",
+      asOf: new Date("2026-07-16T12:00:00.000Z"),
+      earnings: [
+        {
+          label: "Base salary",
+          amount: 30_000,
+          frequency: "Monthly",
+          isTaxable: true,
+          source: "CONTRACT_SALARY",
+        },
+      ],
+      bankAccounts: [],
+      readiness: { isReady: true, blockingIssues: [] },
+      exemptFromNis: true,
+      exemptFromPaye: true,
+      exemptFromHealthSurcharge: true,
+      nisClasses: TT_NIS_2026_CLASSES,
+      payeConfig: TT_PAYE_2026_CONFIG,
+      healthConfig: TT_HEALTH_SURCHARGE_2026,
+    });
+
+    expect(preview.nis).toBeNull();
+    expect(preview.paye).toBeNull();
+    expect(preview.health?.exempt).toBe(true);
+    expect(preview.health?.exemptionReason).toBe("EMPLOYEE_OPT_OUT");
+    expect(preview.health?.periodAmount).toBe(0);
+    expect(preview.employerContributions).toEqual([]);
+    expect(preview.deductions.map((line) => line.label)).toEqual([]);
+    expect(preview.netPay).toBe(30_000);
+    expect(preview.notes).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("NIS exempt"),
+        expect.stringContaining("PAYE exempt"),
+        expect.stringContaining("employee opt out"),
+      ]),
     );
   });
 });

@@ -222,7 +222,7 @@ export function PayrollSalariesDirectory({
             <div className="divide-y divide-border/70">
               <div className="hidden gap-4 border-b border-border/70 pb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase md:grid md:grid-cols-[minmax(12rem,1.4fr)_9rem_8rem_7rem_7rem_7rem_7rem_auto]">
                 <span>Employee</span>
-                <span>Department / role</span>
+                <span>Department / position</span>
                 <span>Pay frequency</span>
                 <span className="text-right">Base salary</span>
                 <span className="text-right">Allowances</span>
@@ -232,7 +232,7 @@ export function PayrollSalariesDirectory({
               </div>
 
               {data.rows.map((row) => {
-                const setupHref = `/people/employees/${row.employeeId}/payroll`;
+                const setupHref = `/payroll/employees/${row.employeeId}`;
                 const payslipHref = `${setupHref}/payslip?from=salaries`;
                 const currency = row.currency ?? "TTD";
 
@@ -266,13 +266,13 @@ export function PayrollSalariesDirectory({
 
                     <div>
                       <p className="text-xs text-muted-foreground md:hidden">
-                        Department / role
+                        Department / position
                       </p>
                       <p className="mt-1 text-sm font-medium md:mt-0">
                         {row.departmentName ?? "Unassigned"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {row.jobTitle ?? "No job title"}
+                        {row.positionTitle ?? "No position"}
                       </p>
                     </div>
 

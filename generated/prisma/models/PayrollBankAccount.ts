@@ -14,7 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model PayrollBankAccount
- * 
+ * @deprecated Prefer EmployeeBankAccount. Kept for one-release dual-read/sync.
  */
 export type PayrollBankAccountModel = runtime.Types.Result.DefaultSelection<Prisma.$PayrollBankAccountPayload>
 

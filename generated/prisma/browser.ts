@@ -109,7 +109,9 @@ export type Department = Prisma.DepartmentModel
 export type Position = Prisma.PositionModel
 /**
  * Model Employee
- * 
+ * Current org seat: `departmentId` / `positionId` are a denormalized cache of
+ * the current EmployeeAssignment (`isCurrent = true`). Writers must keep them
+ * in sync inside the same transaction (see `assertCurrentSeatMatchesAssignment`).
  */
 export type Employee = Prisma.EmployeeModel
 /**
@@ -163,10 +165,68 @@ export type LeaveRequestDay = Prisma.LeaveRequestDayModel
  */
 export type LeaveApprovalStep = Prisma.LeaveApprovalStepModel
 /**
+ * Model LeaveRequestAcknowledgement
+ * 
+ */
+export type LeaveRequestAcknowledgement = Prisma.LeaveRequestAcknowledgementModel
+/**
  * Model LeaveAttachment
  * 
  */
 export type LeaveAttachment = Prisma.LeaveAttachmentModel
+/**
+ * Model EmployeeCorrespondence
+ * HR correspondence / employee file letters (recommendations, discipline, etc.).
+ */
+export type EmployeeCorrespondence = Prisma.EmployeeCorrespondenceModel
+/**
+ * Model CorrespondenceTemplate
+ * Org-scoped reusable letter template with {{merge}} placeholders.
+ */
+export type CorrespondenceTemplate = Prisma.CorrespondenceTemplateModel
+/**
+ * Model EmployeeCredential
+ * Certificates, licences, and other credentials held by an employee.
+ */
+export type EmployeeCredential = Prisma.EmployeeCredentialModel
+/**
+ * Model EmployeeTrainingRecord
+ * Completed training / courses for an employee.
+ */
+export type EmployeeTrainingRecord = Prisma.EmployeeTrainingRecordModel
+/**
+ * Model EmployeeQualificationDocument
+ * Uploaded qualification proof (e.g. one CXC certificate) with many subject line items.
+ */
+export type EmployeeQualificationDocument = Prisma.EmployeeQualificationDocumentModel
+/**
+ * Model EmployeeQualificationEntry
+ * Subject / result line under a qualification document (e.g. Mathematics Grade I).
+ */
+export type EmployeeQualificationEntry = Prisma.EmployeeQualificationEntryModel
+/**
+ * Model EmployeeFileChecklistItem
+ * Per-employee status / links for the standard employee-file document checklist.
+ * Status is primarily derived from linked qualifications, credentials, and
+ * correspondence; this row stores overrides (N/A, manual assumption signed)
+ * and explicit links when HR pins a record.
+ */
+export type EmployeeFileChecklistItem = Prisma.EmployeeFileChecklistItemModel
+/**
+ * Model EmployeeFileUpdateRequest
+ * Employee-initiated request for HR to update file contents (e.g. qualifications).
+ */
+export type EmployeeFileUpdateRequest = Prisma.EmployeeFileUpdateRequestModel
+/**
+ * Model EmployeeCorrespondenceAttachment
+ * 
+ */
+export type EmployeeCorrespondenceAttachment = Prisma.EmployeeCorrespondenceAttachmentModel
+/**
+ * Model EmployeeCorrespondenceResponse
+ * Employee-written statement in response to a letter that allows it.
+ */
+export type EmployeeCorrespondenceResponse = Prisma.EmployeeCorrespondenceResponseModel
 /**
  * Model PerformanceAppraisal
  * 
@@ -199,14 +259,54 @@ export type EmploymentContractAllowance = Prisma.EmploymentContractAllowanceMode
 export type PayrollProfile = Prisma.PayrollProfileModel
 /**
  * Model PayrollBankAccount
- * 
+ * @deprecated Prefer EmployeeBankAccount. Kept for one-release dual-read/sync.
  */
 export type PayrollBankAccount = Prisma.PayrollBankAccountModel
 /**
- * Model StatutoryRate
+ * Model FinancialInstitution
+ * Configurable financial institution directory (TT seed; extensible to other jurisdictions).
+ */
+export type FinancialInstitution = Prisma.FinancialInstitutionModel
+/**
+ * Model FinancialInstitutionBranch
  * 
  */
-export type StatutoryRate = Prisma.StatutoryRateModel
+export type FinancialInstitutionBranch = Prisma.FinancialInstitutionBranchModel
+/**
+ * Model EmployeeBankAccount
+ * Employee-owned bank account (Phase 1 source of truth for payroll destinations).
+ */
+export type EmployeeBankAccount = Prisma.EmployeeBankAccountModel
+/**
+ * Model EmployeePayrollAllocation
+ * Payroll deposit allocation instructions (Phase 1: FULL_BALANCE / FIXED_AMOUNT / REMAINDER).
+ */
+export type EmployeePayrollAllocation = Prisma.EmployeePayrollAllocationModel
+/**
+ * Model PayrollPayment
+ * Immutable payment snapshot for one posted payslip (Phase 2 — Calc ≠ Payment).
+ */
+export type PayrollPayment = Prisma.PayrollPaymentModel
+/**
+ * Model PayrollPaymentAllocation
+ * Frozen bank destination lines for a PayrollPayment. Never mutate when live accounts change.
+ */
+export type PayrollPaymentAllocation = Prisma.PayrollPaymentAllocationModel
+/**
+ * Model BankExportProfile
+ * Configurable export profile (generic CSV / manual register). No invented bank layouts.
+ */
+export type BankExportProfile = Prisma.BankExportProfileModel
+/**
+ * Model AchPaymentBatch
+ * ACH / bank payment batch built from prepared PayrollPaymentAllocation rows.
+ */
+export type AchPaymentBatch = Prisma.AchPaymentBatchModel
+/**
+ * Model AchPaymentBatchDetail
+ * 
+ */
+export type AchPaymentBatchDetail = Prisma.AchPaymentBatchDetailModel
 /**
  * Model NisEarningsClass
  * Trinidad & Tobago NIS earnings-class bands (fixed weekly employee/employer amounts).
@@ -269,11 +369,6 @@ export type EmailDelivery = Prisma.EmailDeliveryModel
  * 
  */
 export type EmailDeliveryAttempt = Prisma.EmailDeliveryAttemptModel
-/**
- * Model EmailTemplate
- * 
- */
-export type EmailTemplate = Prisma.EmailTemplateModel
 /**
  * Model AuditEvent
  * 

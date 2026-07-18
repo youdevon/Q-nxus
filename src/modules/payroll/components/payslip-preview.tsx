@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { payslipStatusBadgeVariant } from "@/src/config/ui-colors";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { PayslipDocument } from "@/src/modules/payroll/components/payslip-document";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
@@ -78,7 +79,7 @@ export function PayslipPreviewView({
 
       {isOfficial ? (
         <section className="mb-4">
-          <Badge variant="success">
+          <Badge variant={payslipStatusBadgeVariant("POSTED")}>
             <CircleCheck />
             Posted payslip
           </Badge>

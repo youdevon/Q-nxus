@@ -19,7 +19,7 @@ export type PayslipBatchPrintDocument = {
 
 /**
  * Shell-less multi-document print surface.
- * Each payslip is a separate print page (CSS page-break).
+ * A4 portrait — one detailed payslip per page.
  * Prefer browser Print → Save as PDF for a true multi-page PDF.
  */
 export function PayslipBatchPrintView({
@@ -40,7 +40,7 @@ export function PayslipBatchPrintView({
 
     const timer = window.setTimeout(() => {
       window.print();
-    }, 400);
+    }, 350);
 
     return () => window.clearTimeout(timer);
   }, [documents.length]);
@@ -131,16 +131,9 @@ export function PayslipBatchPrintView({
         </div>
       ) : null}
 
-      <div className="mx-auto max-w-[210mm] px-4 py-6 print:max-w-none print:px-0 print:py-0">
-        {documents.map((doc, index) => (
-          <div
-            key={doc.key}
-            className={
-              index < documents.length - 1
-                ? "payslip-batch-page mb-8 print:mb-0"
-                : "payslip-batch-page"
-            }
-          >
+      <div className="mx-auto max-w-[210mm] space-y-8 px-4 py-6 print:max-w-none print:space-y-0 print:px-0 print:py-0">
+        {documents.map((doc) => (
+          <div key={doc.key} className="payslip-batch-page payslip-sheet">
             <PayslipDocument
               payslip={doc.payslip}
               meta={doc.meta}

@@ -18,7 +18,7 @@ export default async function PayrollRunsPage({
   searchParams,
 }: PayrollRunsPageProps) {
   const capabilities = await requirePayrollViewAccess();
-  const runs = await listPayRuns();
+  const runs = await listPayRuns({ actorUserId: capabilities.userId });
   const params = await searchParams;
   const deletedRaw = params.deleted;
   let deletedRunNumber: string | null = null;

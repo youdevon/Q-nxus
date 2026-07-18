@@ -4,12 +4,27 @@
  */
 
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
+import { sumMoney } from "@/src/modules/payroll/lib/money";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 
+export type PayslipStatutorySnapshot = {
+  payeConfigId: string | null;
+  payeVersionLabel: string | null;
+  payeEffectiveFrom: string | null;
+  healthConfigId: string | null;
+  healthVersionLabel: string | null;
+  healthEffectiveFrom: string | null;
+  nisVersionLabel: string | null;
+  nisEffectiveFrom: string | null;
+  nisClassCount: number;
+};
+
 export type PayslipSnapshotPayload = {
-  version: 1;
+  version: 1 | 2;
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
+  /** Present on version 2+ — pins statutory config used at calculation time. */
+  statutory?: PayslipStatutorySnapshot;
 };
 
 export type PayslipSnapshotTotals = {
@@ -57,7 +72,9 @@ function isPayslipBankLine(value: unknown): boolean {
       typeof value.accountNumber === "string") &&
     typeof value.accountNumberMasked === "string" &&
     typeof value.amount === "number" &&
-    (value.kind === "FIXED" || value.kind === "REMAINDER")
+    (value.kind === "FIXED" ||
+      value.kind === "PERCENTAGE" ||
+      value.kind === "REMAINDER")
   );
 }
 
@@ -115,7 +132,17 @@ function isPayslipDocumentMeta(value: unknown): value is PayslipDocumentMeta {
 export function buildPayslipSnapshot(
   payslip: PayslipPreview,
   meta: PayslipDocumentMeta,
+  statutory?: PayslipStatutorySnapshot | null,
 ): PayslipSnapshotPayload {
+  if (statutory) {
+    return {
+      version: 2,
+      payslip,
+      meta,
+      statutory,
+    };
+  }
+
   return {
     version: 1,
     payslip,
@@ -180,20 +207,43 @@ export function sumPayRunTotals(
   totalDeductions: number;
   totalNet: number;
 } {
-  const totals = rows.reduce(
-    (acc, row) => {
-      acc.totalGross += row.grossPay;
-      acc.totalDeductions += row.totalDeductions;
-      acc.totalNet += row.netPay;
-      return acc;
-    },
-    { totalGross: 0, totalDeductions: 0, totalNet: 0 },
-  );
-
   return {
     employeeCount: rows.length,
-    totalGross: Math.round(totals.totalGross * 100) / 100,
-    totalDeductions: Math.round(totals.totalDeductions * 100) / 100,
-    totalNet: Math.round(totals.totalNet * 100) / 100,
+    totalGross: sumMoney(...rows.map((row) => row.grossPay)),
+    totalDeductions: sumMoney(...rows.map((row) => row.totalDeductions)),
+    totalNet: sumMoney(...rows.map((row) => row.netPay)),
   };
 }
+
+/**
+ * Post-invariant: denormalized payslip columns must match the frozen snapshot
+ * JSON. Draft writers (`toPayslipCreateData` / `toPayslipRecalcUpdateData`) are
+ * the only paths that dual-write; `postPayRunInTransaction` must not recompute.
+ */
+export function assertPayslipColumnsMatchSnapshot(input: {
+  snapshot: unknown;
+  columns: {
+    grossPay: number;
+    totalDeductions: number;
+    netPay: number;
+    baseSalary: number;
+    allowancesTotal: number;
+    monthlyTaxableEarnings: number;
+  };
+}): boolean {
+  const parsed = parsePayslipSnapshot(input.snapshot);
+  if (!parsed) {
+    return false;
+  }
+
+  const { payslip } = parsed;
+  return (
+    payslip.grossPay === input.columns.grossPay &&
+    payslip.totalDeductions === input.columns.totalDeductions &&
+    payslip.netPay === input.columns.netPay &&
+    payslip.baseSalary === input.columns.baseSalary &&
+    payslip.allowancesTotal === input.columns.allowancesTotal &&
+    payslip.monthlyTaxableEarnings === input.columns.monthlyTaxableEarnings
+  );
+}
+

@@ -3,9 +3,9 @@ import { FileText, Printer, Wallet } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
+import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
 import type { EmployeePayslipHistory } from "@/src/modules/payroll/data/get-pay-runs";
 
 function runKindLabel(kind: "REGULAR" | "CORRECTION" | "OFF_CYCLE"): string {
@@ -49,7 +49,7 @@ export function SelfServicePayslipHistory({
 
   return (
     <PageShell size="md">
-      <PageHeader
+      <MePageHeader
         title="Payslip history"
         description="Your posted payslips. Preview periods without a posted run are not shown here."
         backHref="/me"

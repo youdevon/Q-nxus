@@ -1,7 +1,14 @@
 import { prisma } from "@/lib/prisma";
+import {
+  resolveEmployeePositionTitle,
+  resolveStatutoryNumber,
+} from "@/src/modules/hr/public";
 import { getCurrentHealthSurchargeConfig } from "@/src/modules/payroll/data/get-health-surcharge-config";
+import { getSelectableFinancialInstitutionOptions } from "@/src/modules/payroll/data/get-financial-institutions";
 import { getCurrentNisClasses } from "@/src/modules/payroll/data/get-nis-classes";
 import { getCurrentPayeTaxConfig } from "@/src/modules/payroll/data/get-paye-tax-config";
+import { decryptAccountNumber } from "@/src/modules/payroll/lib/bank-account-crypto";
+import { toPayrollBankAccountRecords } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
 import {
   computeHealthSurcharge,
   toHealthConfigInput,
@@ -14,7 +21,12 @@ import {
   computePayeContribution,
   toPayeConfigInput,
 } from "@/src/modules/payroll/lib/paye-contribution";
+import {
+  isPayrollBankingFeatureEnabled,
+  PAYROLL_BANKING_FEATURE_FLAGS,
+} from "@/src/modules/payroll/lib/payroll-banking-flags";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
+import { roundToCents } from "@/src/modules/payroll/lib/money";
 import type {
   EmployeePayrollSetup,
   PayrollBankAccountRecord,
@@ -45,11 +57,60 @@ export async function getEmployeePayrollSetup(
     },
     select: {
       id: true,
+      organizationId: true,
       employeeNumber: true,
       firstName: true,
       lastName: true,
       employmentStatus: true,
       dateOfBirth: true,
+      nisNumber: true,
+      birNumber: true,
+      bankAccounts: {
+        where: { isActive: true, archivedAt: null },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        select: {
+          id: true,
+          bankName: true,
+          branchName: true,
+          accountNumber: true,
+          accountNumberLastFour: true,
+          accountHolderName: true,
+          isPrimary: true,
+          sortOrder: true,
+          financialInstitutionId: true,
+        },
+      },
+      payrollAllocations: {
+        where: { isActive: true },
+        orderBy: [{ priority: "asc" }, { createdAt: "asc" }],
+        select: {
+          employeeBankAccountId: true,
+          allocationType: true,
+          fixedAmount: true,
+          percentage: true,
+          receivesRemainder: true,
+          isActive: true,
+          priority: true,
+        },
+      },
+      position: {
+        select: {
+          title: true,
+        },
+      },
+      assignments: {
+        where: {
+          isCurrent: true,
+        },
+        take: 1,
+        select: {
+          position: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      },
       payrollProfile: {
         select: {
           id: true,
@@ -60,6 +121,9 @@ export async function getEmployeePayrollSetup(
           notes: true,
           td1OtherApprovedAnnual: true,
           pensionOnlyIncome: true,
+          exemptFromNis: true,
+          exemptFromHealthSurcharge: true,
+          exemptFromPaye: true,
           isPayrollReady: true,
           updatedAt: true,
           bankAccounts: {
@@ -82,6 +146,7 @@ export async function getEmployeePayrollSetup(
           isCurrent: true,
           status: "ACTIVE",
         },
+        orderBy: [{ startDate: "desc" }, { createdAt: "desc" }],
         take: 1,
         select: {
           id: true,
@@ -93,8 +158,10 @@ export async function getEmployeePayrollSetup(
           terminationDate: true,
           allowances: {
             select: {
+              id: true,
               amount: true,
               frequency: true,
+              isTaxable: true,
               category: {
                 select: {
                   name: true,
@@ -113,17 +180,96 @@ export async function getEmployeePayrollSetup(
 
   const contract = employee.contracts[0] ?? null;
   const profile = employee.payrollProfile;
-  const bankAccounts: PayrollBankAccountRecord[] =
-    profile?.bankAccounts.map((account) => ({
-      id: account.id,
-      bankName: account.bankName,
-      branchName: account.branchName,
-      accountNumber: account.accountNumber,
-      accountName: account.accountName,
-      amount: account.amount?.toString() ?? null,
-      isPrimary: account.isPrimary,
-      sortOrder: account.sortOrder,
-    })) ?? [];
+  const positionTitle = resolveEmployeePositionTitle({
+    assignmentPositionTitle: employee.assignments[0]?.position?.title,
+    positionTitle: employee.position?.title,
+    contractJobTitle: contract?.jobTitle,
+  });
+  const effectiveNis = resolveStatutoryNumber(
+    employee.nisNumber,
+    profile?.nisNumber,
+  );
+  const effectiveBir = resolveStatutoryNumber(
+    employee.birNumber,
+    profile?.birNumber,
+  );
+  const employeeBanks = employee.bankAccounts;
+  let bankAccounts: PayrollBankAccountRecord[];
+
+  if (employeeBanks.length > 0) {
+    const records = toPayrollBankAccountRecords({
+      accounts: employeeBanks.map((account) => ({
+        id: account.id,
+        bankName: account.bankName,
+        branchName: account.branchName,
+        accountNumber:
+          decryptAccountNumber(account.accountNumber) ?? account.accountNumber,
+        accountNumberLastFour: account.accountNumberLastFour,
+        accountHolderName: account.accountHolderName,
+        isPrimary: account.isPrimary,
+        sortOrder: account.sortOrder,
+        financialInstitutionId: account.financialInstitutionId,
+      })),
+      allocations: employee.payrollAllocations.map((row) => ({
+        employeeBankAccountId: row.employeeBankAccountId,
+        allocationType: row.allocationType,
+        fixedAmount: row.fixedAmount?.toString() ?? null,
+        percentage: row.percentage?.toString() ?? null,
+        receivesRemainder: row.receivesRemainder,
+        isActive: row.isActive,
+        priority: row.priority,
+      })),
+    });
+    const allocByAccountId = new Map(
+      employee.payrollAllocations
+        .filter((row) => row.isActive)
+        .map((row) => [row.employeeBankAccountId, row]),
+    );
+    bankAccounts = records.map((account) => {
+      const alloc = allocByAccountId.get(account.id);
+      return {
+        ...account,
+        percentage:
+          alloc?.allocationType === "PERCENTAGE" && alloc.percentage != null
+            ? alloc.percentage.toString()
+            : null,
+      };
+    });
+  } else {
+    bankAccounts =
+      profile?.bankAccounts.map((account) => ({
+        id: account.id,
+        bankName: account.bankName,
+        branchName: account.branchName,
+        accountNumber:
+          decryptAccountNumber(account.accountNumber) ?? account.accountNumber,
+        accountName: account.accountName,
+        amount: account.amount?.toString() ?? null,
+        percentage: null,
+        isPrimary: account.isPrimary,
+        sortOrder: account.sortOrder,
+      })) ?? [];
+  }
+
+  const [
+    financialInstitutions,
+    bankingEnabled,
+    splitDepositEnabled,
+    multipleAccountsEnabled,
+    percentageAllocationEnabled,
+    postNetSplitEnabled,
+  ] = await Promise.all([
+    getSelectableFinancialInstitutionOptions(),
+    isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.PAYROLL_BANKING_ENABLED),
+    isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.SPLIT_DEPOSIT_ENABLED),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.MULTIPLE_EMPLOYEE_BANK_ACCOUNTS_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.PERCENTAGE_ALLOCATION_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.POST_NET_SPLIT_ENABLED),
+  ]);
 
   const payElements: PayrollPayElement[] = [];
   let monthlyTaxableEarnings = 0;
@@ -133,33 +279,40 @@ export async function getEmployeePayrollSetup(
     monthlyTaxableEarnings += baseSalary;
 
     payElements.push({
-      label: `Base salary — ${contract.jobTitle}`,
+      label: `Base salary — ${positionTitle ?? contract.jobTitle}`,
       amount: contract.baseSalary.toString(),
       currency: contract.currency,
       frequency: "Monthly",
       source: "CONTRACT_SALARY",
       isTaxable: true,
+      contractAllowanceId: null,
     });
 
     for (const allowance of contract.allowances) {
+      const amount = Number(allowance.amount.toString());
+      if (allowance.isTaxable) {
+        monthlyTaxableEarnings += amount;
+      }
+
       payElements.push({
         label: allowance.category.name,
         amount: allowance.amount.toString(),
         currency: contract.currency,
         frequency: allowanceFrequencyLabel(allowance.frequency),
         source: "CONTRACT_ALLOWANCE",
-        isTaxable: false,
+        isTaxable: allowance.isTaxable,
+        contractAllowanceId: allowance.id,
       });
     }
   }
 
-  monthlyTaxableEarnings = Math.round(monthlyTaxableEarnings * 100) / 100;
+  monthlyTaxableEarnings = roundToCents(monthlyTaxableEarnings);
 
   const readiness = evaluatePayrollReadiness({
     hasCurrentContract: contract != null,
     baseSalary: contract ? Number(contract.baseSalary.toString()) : null,
-    nisNumber: profile?.nisNumber ?? null,
-    birNumber: profile?.birNumber ?? null,
+    nisNumber: effectiveNis,
+    birNumber: effectiveBir,
     paymentMethod: profile?.paymentMethod ?? "BANK_TRANSFER",
     bankAccounts: bankAccounts.map((account) => ({
       bankName: account.bankName,
@@ -167,6 +320,8 @@ export async function getEmployeePayrollSetup(
       amount: account.amount != null ? Number(account.amount) : null,
       isPrimary: account.isPrimary,
     })),
+    exemptFromNis: profile?.exemptFromNis ?? false,
+    exemptFromPaye: profile?.exemptFromPaye ?? false,
   });
 
   let statutoryPreview: StatutoryPreview | null = null;
@@ -178,8 +333,13 @@ export async function getEmployeePayrollSetup(
       getCurrentHealthSurchargeConfig(),
     ]);
 
+    const exemptFromNis = profile?.exemptFromNis ?? false;
+    const exemptFromPaye = profile?.exemptFromPaye ?? false;
+    const exemptFromHealthSurcharge =
+      profile?.exemptFromHealthSurcharge ?? false;
+
     const nis =
-      nisClasses.length > 0
+      !exemptFromNis && nisClasses.length > 0
         ? computeNisContribution({
             monthlySalary: monthlyTaxableEarnings,
             classes: toNisClassInputs(nisClasses),
@@ -187,7 +347,7 @@ export async function getEmployeePayrollSetup(
         : null;
 
     const paye =
-      payeConfig != null
+      !exemptFromPaye && payeConfig != null
         ? computePayeContribution({
             monthlyTaxableEarnings,
             config: toPayeConfigInput(payeConfig),
@@ -206,6 +366,7 @@ export async function getEmployeePayrollSetup(
             monthlyEarnings: monthlyTaxableEarnings,
             dateOfBirth: employee.dateOfBirth,
             pensionOnlyIncome: profile?.pensionOnlyIncome ?? false,
+            exemptFromHealthSurcharge,
           })
         : null;
 
@@ -215,8 +376,14 @@ export async function getEmployeePayrollSetup(
       paye,
       health,
       notes: [
-        "Phase 1 taxable pay uses current contract base salary only; allowances remain visible in gross pay but are excluded from statutory deductions.",
+        "Taxable contract allowances (isTaxable) are included in NIS/PAYE/Health taxable pay; non-taxable allowances remain in gross only.",
         "Overtime, bonuses, and commissions are deferred from this preview.",
+        ...(exemptFromNis
+          ? ["NIS exempt (employee opt-out) — no contribution estimated."]
+          : []),
+        ...(exemptFromPaye
+          ? ["PAYE exempt (employee opt-out) — no income tax estimated."]
+          : []),
       ],
     };
   }
@@ -230,6 +397,8 @@ export async function getEmployeePayrollSetup(
       dateOfBirth: employee.dateOfBirth
         ? employee.dateOfBirth.toISOString().slice(0, 10)
         : null,
+      nisNumber: employee.nisNumber,
+      birNumber: employee.birNumber,
     },
     profile: profile
       ? {
@@ -242,15 +411,33 @@ export async function getEmployeePayrollSetup(
           td1OtherApprovedAnnual:
             profile.td1OtherApprovedAnnual?.toString() ?? null,
           pensionOnlyIncome: profile.pensionOnlyIncome,
+          exemptFromNis: profile.exemptFromNis,
+          exemptFromHealthSurcharge: profile.exemptFromHealthSurcharge,
+          exemptFromPaye: profile.exemptFromPaye,
           isPayrollReady: profile.isPayrollReady,
           updatedAt: profile.updatedAt.toISOString(),
         }
       : null,
+    statutoryNumbers: {
+      nisNumber: effectiveNis,
+      birNumber: effectiveBir,
+      fromEmployee: Boolean(
+        employee.nisNumber?.trim() || employee.birNumber?.trim(),
+      ),
+    },
     bankAccounts,
+    financialInstitutions,
+    bankingFlags: {
+      bankingEnabled,
+      splitDepositEnabled,
+      multipleAccountsEnabled,
+      percentageAllocationEnabled,
+      postNetSplitEnabled,
+    },
     currentContract: contract
       ? {
           id: contract.id,
-          jobTitle: contract.jobTitle,
+          positionTitle: positionTitle ?? contract.jobTitle,
           baseSalary: contract.baseSalary.toString(),
           currency: contract.currency,
           startDate: contract.startDate.toISOString().slice(0, 10),

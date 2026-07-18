@@ -3,8 +3,8 @@
  *
  * An employee is payroll-ready when:
  * - a current active employment contract with a base salary above zero exists
- * - the NIS number is recorded
- * - the BIR (tax) number is recorded
+ * - the NIS number is recorded (unless exempt from NIS)
+ * - the BIR (tax) number is recorded (unless exempt from PAYE)
  * - when paid by bank transfer:
  *   - at least one bank account exists
  *   - exactly one account is marked primary (receives remainder of net pay)
@@ -26,6 +26,10 @@ export type PayrollReadinessInput = {
   birNumber: string | null;
   paymentMethod: "BANK_TRANSFER" | "CHEQUE" | "CASH";
   bankAccounts: PayrollBankAccountInput[];
+  /** When true, NIS number is not required for readiness. */
+  exemptFromNis?: boolean;
+  /** When true, BIR number is not required for readiness. */
+  exemptFromPaye?: boolean;
 };
 
 export type PayrollReadinessResult = {
@@ -59,11 +63,11 @@ export function evaluatePayrollReadiness(
     blockingIssues.push("Current contract has no base salary.");
   }
 
-  if (!input.nisNumber?.trim()) {
+  if (!input.exemptFromNis && !input.nisNumber?.trim()) {
     blockingIssues.push("NIS number missing.");
   }
 
-  if (!input.birNumber?.trim()) {
+  if (!input.exemptFromPaye && !input.birNumber?.trim()) {
     blockingIssues.push("BIR number missing.");
   }
 

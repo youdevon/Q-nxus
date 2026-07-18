@@ -1,5 +1,7 @@
 /** Trinidad & Tobago Health Surcharge calculation helpers (client-safe). */
 
+import { roundToCents } from "@/src/modules/payroll/lib/money";
+
 /** Serializable Health Surcharge config passed from server pages into client components. */
 export type HealthSurchargeConfigRecord = {
   id: string;
@@ -40,9 +42,15 @@ export function toHealthConfigInput(
   };
 }
 
+export type HealthSurchargeExemptionReason =
+  | "UNDER_AGE"
+  | "SENIOR"
+  | "PENSION_ONLY"
+  | "EMPLOYEE_OPT_OUT";
+
 export type HealthSurchargeResult = {
   exempt: boolean;
-  exemptionReason: "UNDER_AGE" | "SENIOR" | "PENSION_ONLY" | null;
+  exemptionReason: HealthSurchargeExemptionReason | null;
   weeklyAmount: number;
   annualAmount: number;
   /** Legacy reference only: average monthly = weekly x 52 / 12. */
@@ -53,10 +61,6 @@ export type HealthSurchargeResult = {
   periodAmount: number;
   tier: "HIGHER" | "LOWER" | "EXEMPT";
 };
-
-function roundMoney(value: number): number {
-  return Math.round(value * 100) / 100;
-}
 
 export function ageInFullYears(
   dateOfBirth: Date | string,
@@ -123,6 +127,22 @@ export function countHealthContributionWeeks(
  * Higher tier when monthly > monthlyEarningsThreshold OR weekly > weeklyEarningsThreshold.
  * Lower tier when monthly ≤ threshold OR weekly ≤ threshold (whichever basis is provided).
  */
+function exemptHealthResult(
+  reason: HealthSurchargeExemptionReason,
+  weeksInPeriod: number,
+): HealthSurchargeResult {
+  return {
+    exempt: true,
+    exemptionReason: reason,
+    weeklyAmount: 0,
+    annualAmount: 0,
+    averageMonthlyAmount: 0,
+    weeksInPeriod,
+    periodAmount: 0,
+    tier: "EXEMPT",
+  };
+}
+
 export function computeHealthSurcharge(input: {
   config: HealthSurchargeConfigInput;
   monthlyEarnings?: number | null;
@@ -130,11 +150,17 @@ export function computeHealthSurcharge(input: {
   dateOfBirth?: Date | string | null;
   ageYears?: number | null;
   pensionOnlyIncome?: boolean;
+  /** Per-employee payroll-profile opt-out. */
+  exemptFromHealthSurcharge?: boolean;
   weeksInPeriod?: number;
   asOf?: Date;
 }): HealthSurchargeResult {
   const weeksInPeriod = Math.max(0, input.weeksInPeriod ?? 1);
   const asOf = input.asOf ?? new Date();
+
+  if (input.exemptFromHealthSurcharge) {
+    return exemptHealthResult("EMPLOYEE_OPT_OUT", weeksInPeriod);
+  }
 
   let ageYears = input.ageYears ?? null;
 
@@ -143,42 +169,15 @@ export function computeHealthSurcharge(input: {
   }
 
   if (ageYears != null && ageYears < input.config.underAgeExempt) {
-    return {
-      exempt: true,
-      exemptionReason: "UNDER_AGE",
-      weeklyAmount: 0,
-      annualAmount: 0,
-      averageMonthlyAmount: 0,
-      weeksInPeriod,
-      periodAmount: 0,
-      tier: "EXEMPT",
-    };
+    return exemptHealthResult("UNDER_AGE", weeksInPeriod);
   }
 
   if (ageYears != null && ageYears >= input.config.seniorAgeExempt) {
-    return {
-      exempt: true,
-      exemptionReason: "SENIOR",
-      weeklyAmount: 0,
-      annualAmount: 0,
-      averageMonthlyAmount: 0,
-      weeksInPeriod,
-      periodAmount: 0,
-      tier: "EXEMPT",
-    };
+    return exemptHealthResult("SENIOR", weeksInPeriod);
   }
 
   if (input.pensionOnlyIncome) {
-    return {
-      exempt: true,
-      exemptionReason: "PENSION_ONLY",
-      weeklyAmount: 0,
-      annualAmount: 0,
-      averageMonthlyAmount: 0,
-      weeksInPeriod,
-      periodAmount: 0,
-      tier: "EXEMPT",
-    };
+    return exemptHealthResult("PENSION_ONLY", weeksInPeriod);
   }
 
   const monthly = input.monthlyEarnings;
@@ -196,9 +195,9 @@ export function computeHealthSurcharge(input: {
     ? input.config.higherWeeklyAmount
     : input.config.lowerWeeklyAmount;
 
-  const annualAmount = roundMoney(weeklyAmount * 52);
-  const averageMonthlyAmount = roundMoney(annualAmount / 12);
-  const periodAmount = roundMoney(weeklyAmount * weeksInPeriod);
+  const annualAmount = roundToCents(weeklyAmount * 52);
+  const averageMonthlyAmount = roundToCents(annualAmount / 12);
+  const periodAmount = roundToCents(weeklyAmount * weeksInPeriod);
 
   return {
     exempt: false,

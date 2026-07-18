@@ -96,7 +96,7 @@ export function PayrollReadinessDirectory({
         ) : (
           <div className="divide-y divide-border/70">
             {data.rows.map((row) => {
-              const setupHref = `/people/employees/${row.employeeId}/payroll`;
+              const setupHref = `/payroll/employees/${row.employeeId}`;
               const payslipHref = `${setupHref}/payslip?from=payroll`;
 
               return (
@@ -105,6 +105,11 @@ export function PayrollReadinessDirectory({
                     <div className="flex min-w-0 flex-wrap items-center gap-2">
                       <p className="font-medium">{row.displayName}</p>
                       <Badge variant="outline">{row.employeeNumber}</Badge>
+                      {row.workforceCategoryLabel ? (
+                        <Badge variant="secondary">
+                          {row.workforceCategoryLabel}
+                        </Badge>
+                      ) : null}
                       {row.isReady ? (
                         <Badge variant="success">
                           <CircleCheck />
@@ -163,6 +168,19 @@ export function PayrollReadinessDirectory({
                           className="inline-flex max-w-full rounded-md border border-warning/30 bg-warning/10 px-2 py-0.5 text-xs leading-snug text-warning-foreground break-words"
                         >
                           {issue}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  {row.softWarnings.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {row.softWarnings.map((warning) => (
+                        <span
+                          key={warning}
+                          className="inline-flex max-w-full rounded-md border border-border bg-muted/40 px-2 py-0.5 text-xs leading-snug text-muted-foreground break-words"
+                        >
+                          {warning}
                         </span>
                       ))}
                     </div>

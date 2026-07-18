@@ -1537,6 +1537,10 @@ export type $EmployeeAssignmentPayload<ExtArgs extends runtime.Types.Extensions.
     assignmentType: $Enums.EmployeeAssignmentType
     startDate: Date
     endDate: Date | null
+    /**
+     * At most one row per employee may be true — enforced by partial unique index
+     * `employee_assignments_one_current` (see migration; not expressible as @@unique).
+     */
     isCurrent: boolean
     isActing: boolean
     referenceNumber: string | null

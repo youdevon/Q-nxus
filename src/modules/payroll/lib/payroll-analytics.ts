@@ -17,6 +17,13 @@ import {
   defaultMonthlyPeriodKey,
   parseMonthlyPeriodKey,
 } from "@/src/modules/payroll/lib/pay-period";
+import {
+  addCents,
+  fromCents,
+  roundToCents,
+  sumMoney,
+  toCents,
+} from "@/src/modules/payroll/lib/money";
 import { getPreviousPayslipPeriod } from "@/src/modules/payroll/lib/payslip-preview";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
 
@@ -95,6 +102,37 @@ export type EmployeePaymentHistory = {
   months: EmployeePaymentMonthBucket[];
 };
 
+/** Scope for the employee payment history report. */
+export type EmployeePaymentHistoryScope =
+  | "all"
+  | "employee"
+  | "department";
+
+/** One employee’s posted totals within a multi-employee roster. */
+export type EmployeePaymentRosterRow = {
+  employeeId: string;
+  employeeNumber: string;
+  employeeName: string;
+  departmentName: string | null;
+  payslipCount: number;
+  totalsByCurrency: PayrollMoneyTotals[];
+};
+
+/**
+ * Aggregated posted payment history across many employees
+ * (org-wide or department-scoped).
+ */
+export type EmployeePaymentRoster = {
+  startPeriodKey: string;
+  endPeriodKey: string;
+  employeeCount: number;
+  payslipCount: number;
+  runCount: number;
+  totalsByCurrency: PayrollMoneyTotals[];
+  byRunKind: PayrollRunKindTotals[];
+  employees: EmployeePaymentRosterRow[];
+};
+
 export type EmployeeHistoryPeriodPreset =
   | "this_year"
   | "previous_year"
@@ -109,9 +147,6 @@ export type ResolvedPeriodRange = {
   preset: EmployeeHistoryPeriodPreset;
 };
 
-function roundMoney(value: number): number {
-  return Math.round(value * 100) / 100;
-}
 
 function emptyMoneyTotals(currency: string): PayrollMoneyTotals {
   return {
@@ -133,16 +168,16 @@ function finalizeMoneyTotals(
     employerContributions: number;
   },
 ): PayrollMoneyTotals {
-  const grossPay = roundMoney(amounts.grossPay);
-  const employerContributions = roundMoney(amounts.employerContributions);
+  const grossPay = roundToCents(amounts.grossPay);
+  const employerContributions = roundToCents(amounts.employerContributions);
 
   return {
     currency,
     grossPay,
-    totalDeductions: roundMoney(amounts.totalDeductions),
-    netPay: roundMoney(amounts.netPay),
+    totalDeductions: roundToCents(amounts.totalDeductions),
+    netPay: roundToCents(amounts.netPay),
     employerContributions,
-    organizationCost: roundMoney(grossPay + employerContributions),
+    organizationCost: roundToCents(grossPay + employerContributions),
   };
 }
 
@@ -163,14 +198,12 @@ export function extractEmployerContributionFromSnapshot(
   if (parsed) {
     const lines = parsed.payslip.employerContributions;
     if (Array.isArray(lines) && lines.length > 0) {
-      return roundMoney(
-        lines.reduce((sum, line) => sum + (Number(line.amount) || 0), 0),
-      );
+      return sumMoney(...lines.map((line) => Number(line.amount) || 0));
     }
 
     const employerMonthly = parsed.payslip.nis?.employerMonthly;
     if (typeof employerMonthly === "number" && Number.isFinite(employerMonthly)) {
-      return roundMoney(employerMonthly);
+      return roundToCents(employerMonthly);
     }
   }
 
@@ -184,20 +217,21 @@ export function extractEmployerContributionFromSnapshot(
   }
 
   if (Array.isArray(payslip.employerContributions)) {
-    const sum = payslip.employerContributions.reduce((acc: number, line) => {
-      if (!isRecord(line) || typeof line.amount !== "number") {
-        return acc;
-      }
-      return acc + line.amount;
-    }, 0);
+    const amounts = payslip.employerContributions
+      .filter(
+        (line): line is Record<string, unknown> =>
+          isRecord(line) && typeof line.amount === "number",
+      )
+      .map((line) => line.amount as number);
+    const sum = sumMoney(...amounts);
     if (sum !== 0) {
-      return roundMoney(sum);
+      return sum;
     }
   }
 
   const nis = isRecord(payslip.nis) ? payslip.nis : null;
   if (nis && typeof nis.employerMonthly === "number") {
-    return roundMoney(nis.employerMonthly);
+    return roundToCents(nis.employerMonthly);
   }
 
   return 0;
@@ -342,7 +376,7 @@ export function resolveEmployeeHistoryPeriodRange(input: {
 }
 
 function accumulateRows(rows: PostedPayslipAnalyticsRow[]) {
-  const byCurrency = new Map<
+  const centsByCurrency = new Map<
     string,
     {
       grossPay: number;
@@ -354,17 +388,42 @@ function accumulateRows(rows: PostedPayslipAnalyticsRow[]) {
 
   for (const row of rows) {
     const currency = row.currency || "TTD";
-    const current = byCurrency.get(currency) ?? {
+    const current = centsByCurrency.get(currency) ?? {
       grossPay: 0,
       totalDeductions: 0,
       netPay: 0,
       employerContributions: 0,
     };
-    current.grossPay += row.grossPay;
-    current.totalDeductions += row.totalDeductions;
-    current.netPay += row.netPay;
-    current.employerContributions += row.employerContributions;
-    byCurrency.set(currency, current);
+    current.grossPay = addCents(current.grossPay, toCents(row.grossPay));
+    current.totalDeductions = addCents(
+      current.totalDeductions,
+      toCents(row.totalDeductions),
+    );
+    current.netPay = addCents(current.netPay, toCents(row.netPay));
+    current.employerContributions = addCents(
+      current.employerContributions,
+      toCents(row.employerContributions),
+    );
+    centsByCurrency.set(currency, current);
+  }
+
+  const byCurrency = new Map<
+    string,
+    {
+      grossPay: number;
+      totalDeductions: number;
+      netPay: number;
+      employerContributions: number;
+    }
+  >();
+
+  for (const [currency, cents] of centsByCurrency) {
+    byCurrency.set(currency, {
+      grossPay: fromCents(cents.grossPay),
+      totalDeductions: fromCents(cents.totalDeductions),
+      netPay: fromCents(cents.netPay),
+      employerContributions: fromCents(cents.employerContributions),
+    });
   }
 
   return byCurrency;
@@ -531,6 +590,96 @@ export function assembleEmployeePaymentHistory(input: {
     byRunKind: aggregateByRunKind(rows),
     months,
   };
+}
+
+/**
+ * Aggregate POSTED payslips across employees for a period range.
+ * Rows outside the inclusive month range are dropped.
+ * `departmentsByEmployeeId` supplies live department names for the table.
+ */
+export function assembleEmployeePaymentRoster(input: {
+  startPeriodKey: string;
+  endPeriodKey: string;
+  rows: PostedPayslipAnalyticsRow[];
+  departmentsByEmployeeId?: ReadonlyMap<string, string | null>;
+}): EmployeePaymentRoster {
+  const rows = input.rows
+    .filter((row) =>
+      isPeriodKeyInInclusiveRange(
+        row.periodKey,
+        input.startPeriodKey,
+        input.endPeriodKey,
+      ),
+    )
+    .sort((a, b) => {
+      const nameCmp = a.employeeName.localeCompare(b.employeeName);
+      if (nameCmp !== 0) {
+        return nameCmp;
+      }
+      const numberCmp = a.employeeNumber.localeCompare(b.employeeNumber);
+      if (numberCmp !== 0) {
+        return numberCmp;
+      }
+      return comparePeriodKeys(a.periodKey, b.periodKey);
+    });
+
+  const byEmployee = new Map<string, PostedPayslipAnalyticsRow[]>();
+  for (const row of rows) {
+    const list = byEmployee.get(row.employeeId) ?? [];
+    list.push(row);
+    byEmployee.set(row.employeeId, list);
+  }
+
+  const employees: EmployeePaymentRosterRow[] = [...byEmployee.entries()]
+    .map(([employeeId, employeeRows]) => {
+      const first = employeeRows[0]!;
+      const departmentName =
+        input.departmentsByEmployeeId?.get(employeeId) ?? null;
+
+      return {
+        employeeId,
+        employeeNumber: first.employeeNumber,
+        employeeName: first.employeeName,
+        departmentName,
+        payslipCount: employeeRows.length,
+        totalsByCurrency: totalsListFromRows(employeeRows),
+      };
+    })
+    .sort((a, b) => {
+      const nameCmp = a.employeeName.localeCompare(b.employeeName);
+      if (nameCmp !== 0) {
+        return nameCmp;
+      }
+      return a.employeeNumber.localeCompare(b.employeeNumber);
+    });
+
+  return {
+    startPeriodKey: input.startPeriodKey,
+    endPeriodKey: input.endPeriodKey,
+    employeeCount: employees.length,
+    payslipCount: rows.length,
+    runCount: new Set(rows.map((row) => row.payRunId)).size,
+    totalsByCurrency: totalsListFromRows(rows),
+    byRunKind: aggregateByRunKind(rows),
+    employees,
+  };
+}
+
+export function resolveEmployeePaymentHistoryScope(
+  value?: string | null,
+  options?: { employeeId?: string | null },
+): EmployeePaymentHistoryScope {
+  const raw = value?.trim();
+  if (raw === "all" || raw === "employee" || raw === "department") {
+    return raw;
+  }
+
+  // Preserve deep links that only pass employeeId.
+  if (options?.employeeId?.trim()) {
+    return "employee";
+  }
+
+  return "all";
 }
 
 /** Empty totals helper for UI empty states. */

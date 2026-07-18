@@ -6,8 +6,16 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { resolveEmployeeStatutoryWriteFromPayroll } from "@/src/modules/hr/public";
+import { OTHER_FINANCIAL_INSTITUTION_ID } from "@/src/modules/payroll/lib/tt-financial-institutions";
+import {
+  isPayrollBankingFeatureEnabled,
+  PAYROLL_BANKING_FEATURE_FLAGS,
+} from "@/src/modules/payroll/lib/payroll-banking-flags";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
+import { replaceEmployeeBankSetup } from "@/src/modules/payroll/services/replace-employee-bank-setup";
 
 export type PayrollProfileFormState = {
   status: "idle" | "error";
@@ -29,11 +37,13 @@ type PayFrequency = (typeof PAY_FREQUENCIES)[number];
 type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 type BankAccountInput = {
+  financialInstitutionId: string | null;
   bankName: string;
   branchName: string | null;
   accountNumber: string;
   accountName: string | null;
   amount: number | null;
+  percentage: number | null;
   isPrimary: boolean;
 };
 
@@ -83,8 +93,20 @@ function parseBankAccounts(raw: string): BankAccountInput[] | null {
         ? record.accountName.trim()
         : null;
     const isPrimary = record.isPrimary === true;
+    const rawInstitutionId =
+      typeof record.financialInstitutionId === "string"
+        ? record.financialInstitutionId.trim()
+        : typeof record.institutionId === "string"
+          ? record.institutionId.trim()
+          : "";
+    const financialInstitutionId =
+      !rawInstitutionId ||
+      rawInstitutionId === OTHER_FINANCIAL_INSTITUTION_ID
+        ? null
+        : rawInstitutionId;
 
     let amount: number | null = null;
+    let percentage: number | null = null;
 
     if (
       record.amount !== null &&
@@ -98,17 +120,66 @@ function parseBankAccounts(raw: string): BankAccountInput[] | null {
       amount = parsedAmount;
     }
 
+    if (
+      record.percentage !== null &&
+      record.percentage !== undefined &&
+      record.percentage !== ""
+    ) {
+      const parsedPercentage = Number(record.percentage);
+      if (!Number.isFinite(parsedPercentage)) {
+        return null;
+      }
+      percentage = parsedPercentage;
+    }
+
     accounts.push({
+      financialInstitutionId,
       bankName,
       branchName,
       accountNumber,
       accountName,
       amount: isPrimary ? null : amount,
+      percentage: isPrimary ? null : percentage,
       isPrimary,
     });
   }
 
   return accounts;
+}
+
+/** Parses `{ [allowanceId]: boolean }` from the payroll form. Empty object if absent. */
+function parseAllowanceTaxable(
+  raw: string,
+): Record<string, boolean> | null {
+  if (!raw) {
+    return {};
+  }
+
+  let parsed: unknown;
+
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+
+  if (typeof parsed !== "object" || parsed == null || Array.isArray(parsed)) {
+    return null;
+  }
+
+  const result: Record<string, boolean> = {};
+
+  for (const [key, value] of Object.entries(parsed)) {
+    if (typeof key !== "string" || key.length === 0) {
+      return null;
+    }
+    if (typeof value !== "boolean") {
+      return null;
+    }
+    result[key] = value;
+  }
+
+  return result;
 }
 
 function validateBankAccounts(
@@ -135,9 +206,28 @@ function validateBankAccounts(
       continue;
     }
 
-    if (account.amount == null || !(account.amount > 0)) {
-      return "Each secondary bank account needs a fixed amount greater than zero.";
+    const hasFixed = account.amount != null && account.amount > 0;
+    const hasPercentage =
+      account.percentage != null &&
+      account.percentage > 0 &&
+      account.percentage <= 100;
+
+    if (hasFixed && hasPercentage) {
+      return "Each secondary account needs either a fixed amount or a percentage — not both.";
     }
+
+    if (!hasFixed && !hasPercentage) {
+      return "Each secondary bank account needs a fixed amount or percentage greater than zero.";
+    }
+  }
+
+  const percentageTotal = accounts.reduce(
+    (sum, account) =>
+      account.isPrimary ? sum : sum + Math.max(0, account.percentage ?? 0),
+    0,
+  );
+  if (percentageTotal > 100 + Number.EPSILON) {
+    return "Percentage allocations cannot exceed 100%.";
   }
 
   return undefined;
@@ -189,10 +279,61 @@ export async function savePayrollProfile(
     fieldErrors.paymentMethod = "Select a valid payment method.";
   }
 
-  const nisNumber = nullableText(formData, "nisNumber");
-  const birNumber = nullableText(formData, "birNumber");
+  const [
+    bankingEnabled,
+    chequeEnabled,
+    cashEnabled,
+    splitDepositEnabled,
+    fixedAmountEnabled,
+    percentageEnabled,
+    remainderEnabled,
+    multipleAccountsEnabled,
+  ] = await Promise.all([
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.PAYROLL_BANKING_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.CHEQUE_PAYMENT_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.CASH_PAYMENT_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.SPLIT_DEPOSIT_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.FIXED_AMOUNT_ALLOCATION_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.PERCENTAGE_ALLOCATION_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.REMAINDER_ALLOCATION_ENABLED,
+    ),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.MULTIPLE_EMPLOYEE_BANK_ACCOUNTS_ENABLED,
+    ),
+  ]);
+
+  if (paymentMethod === "BANK_TRANSFER" && !bankingEnabled) {
+    fieldErrors.paymentMethod =
+      "Payroll banking is disabled for this organization.";
+  }
+  if (paymentMethod === "CHEQUE" && !chequeEnabled) {
+    fieldErrors.paymentMethod = "Cheque payments are disabled.";
+  }
+  if (paymentMethod === "CASH" && !cashEnabled) {
+    fieldErrors.paymentMethod = "Cash payments are disabled.";
+  }
+
+  const nisFromForm = nullableText(formData, "nisNumber");
+  const birFromForm = nullableText(formData, "birNumber");
   const notes = nullableText(formData, "notes");
   const pensionOnlyIncome = formData.get("pensionOnlyIncome") === "on";
+  const exemptFromNis = formData.get("exemptFromNis") === "on";
+  const exemptFromHealthSurcharge =
+    formData.get("exemptFromHealthSurcharge") === "on";
+  const exemptFromPaye = formData.get("exemptFromPaye") === "on";
 
   const td1Raw = textValue(formData, "td1OtherApprovedAnnual");
   let td1OtherApprovedAnnual: number | null = null;
@@ -219,12 +360,43 @@ export async function savePayrollProfile(
     }
   }
 
+  const allowanceTaxable = parseAllowanceTaxable(
+    textValue(formData, "allowanceTaxableJson"),
+  );
+
+  if (!allowanceTaxable) {
+    fieldErrors.allowanceTaxable = "Allowance taxable flags are invalid.";
+  }
+
   if (Object.keys(fieldErrors).length > 0) {
     return {
       status: "error",
       message: "Review the payroll setup information.",
       fieldErrors,
     };
+  }
+
+  const accountsForWrite = bankAccounts ?? [];
+  const writesBankSetup =
+    paymentMethod === "BANK_TRANSFER" && accountsForWrite.length > 0;
+
+  if (writesBankSetup) {
+    const canWriteBanks = actor.actor.canAny(
+      "payroll.manage",
+      "payroll.bank_accounts.create",
+      "payroll.bank_accounts.update",
+    );
+    const canWriteAllocations = actor.actor.canAny(
+      "payroll.manage",
+      "payroll.allocations.manage",
+    );
+    if (!canWriteBanks || !canWriteAllocations) {
+      return {
+        status: "error",
+        message:
+          "You need payroll bank account and allocation permissions to save bank destinations.",
+      };
+    }
   }
 
   const employee = await prisma.employee.findUnique({
@@ -236,6 +408,9 @@ export async function savePayrollProfile(
       employeeNumber: true,
       firstName: true,
       lastName: true,
+      organizationId: true,
+      nisNumber: true,
+      birNumber: true,
       contracts: {
         where: {
           isCurrent: true,
@@ -243,7 +418,19 @@ export async function savePayrollProfile(
         },
         take: 1,
         select: {
+          id: true,
           baseSalary: true,
+          allowances: {
+            select: {
+              id: true,
+              isTaxable: true,
+              category: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -256,8 +443,56 @@ export async function savePayrollProfile(
     };
   }
 
+  // Employee is SoT. Payroll without people.manage never writes NIS/BIR
+  // (profile only mirrors Employee — no profile-only lasting form values).
+  const statutory = resolveEmployeeStatutoryWriteFromPayroll({
+    actor: actor.actor,
+    employee: {
+      nisNumber: employee.nisNumber,
+      birNumber: employee.birNumber,
+    },
+    form: {
+      nisNumber: nisFromForm,
+      birNumber: birFromForm,
+    },
+  });
+  const nisNumber = statutory.profile.nisNumber;
+  const birNumber = statutory.profile.birNumber;
+
   const contract = employee.contracts[0] ?? null;
   const accounts = bankAccounts ?? [];
+  const requestedAllowanceTaxable = allowanceTaxable ?? {};
+
+  const allowanceTaxableUpdates: Array<{
+    id: string;
+    label: string;
+    previousIsTaxable: boolean;
+    isTaxable: boolean;
+  }> = [];
+
+  if (contract) {
+    const allowanceById = new Map(
+      contract.allowances.map((allowance) => [allowance.id, allowance]),
+    );
+
+    for (const [allowanceId, isTaxable] of Object.entries(
+      requestedAllowanceTaxable,
+    )) {
+      const allowance = allowanceById.get(allowanceId);
+      if (!allowance) {
+        continue;
+      }
+      if (allowance.isTaxable === isTaxable) {
+        continue;
+      }
+      allowanceTaxableUpdates.push({
+        id: allowance.id,
+        label: allowance.category.name,
+        previousIsTaxable: allowance.isTaxable,
+        isTaxable,
+      });
+    }
+  }
 
   const readiness = evaluatePayrollReadiness({
     hasCurrentContract: contract != null,
@@ -271,6 +506,8 @@ export async function savePayrollProfile(
       amount: account.amount,
       isPrimary: account.isPrimary,
     })),
+    exemptFromNis,
+    exemptFromPaye,
   });
 
   const metadata = await getAuditRequestMetadata(formData);
@@ -286,11 +523,26 @@ export async function savePayrollProfile(
         ? null
         : new Prisma.Decimal(td1OtherApprovedAnnual.toFixed(2)),
     pensionOnlyIncome,
+    exemptFromNis,
+    exemptFromHealthSurcharge,
+    exemptFromPaye,
     isPayrollReady: readiness.isReady,
   };
 
   try {
     await prisma.$transaction(async (transaction) => {
+      if (statutory.employeeUpdate) {
+        await transaction.employee.update({
+          where: {
+            id: employee.id,
+          },
+          data: {
+            nisNumber: statutory.employeeUpdate.nisNumber,
+            birNumber: statutory.employeeUpdate.birNumber,
+          },
+        });
+      }
+
       const profile = await transaction.payrollProfile.upsert({
         where: {
           employeeId: employee.id,
@@ -305,74 +557,156 @@ export async function savePayrollProfile(
         },
       });
 
-      await transaction.payrollBankAccount.deleteMany({
-        where: {
-          payrollProfileId: profile.id,
-        },
-      });
+      let auditBanks: Array<Record<string, unknown>> = [];
 
-      if (accounts.length > 0) {
-        // Exactly one primary: honour the flagged row, else the first.
-        const primaryIndex = Math.max(
-          accounts.findIndex((account) => account.isPrimary),
-          0,
+      if (paymentMethod === "BANK_TRANSFER" && accounts.length > 0) {
+        // Resolve catalog-key institution ids (from UI) to DB ids when needed.
+        const resolvedAccounts = await Promise.all(
+          accounts.map(async (account) => {
+            if (!account.financialInstitutionId) {
+              return account;
+            }
+
+            const byId = await transaction.financialInstitution.findUnique({
+              where: { id: account.financialInstitutionId },
+              select: { id: true, displayName: true },
+            });
+            if (byId) {
+              return {
+                ...account,
+                financialInstitutionId: byId.id,
+                bankName: account.bankName || byId.displayName,
+              };
+            }
+
+            const byCatalog =
+              await transaction.financialInstitution.findUnique({
+                where: { catalogKey: account.financialInstitutionId },
+                select: { id: true, displayName: true },
+              });
+            if (byCatalog) {
+              return {
+                ...account,
+                financialInstitutionId: byCatalog.id,
+                bankName: account.bankName || byCatalog.displayName,
+              };
+            }
+
+            return { ...account, financialInstitutionId: null };
+          }),
         );
 
-        await transaction.payrollBankAccount.createMany({
-          data: accounts.map((account, index) => {
-            const isPrimary = index === primaryIndex;
+        const bankWrite = await replaceEmployeeBankSetup(transaction, {
+          organizationId: employee.organizationId,
+          employeeId: employee.id,
+          payrollProfileId: profile.id,
+          createdByUserId: actor.actor.userId,
+          accounts: resolvedAccounts,
+          flags: {
+            splitDepositEnabled,
+            fixedAmountEnabled,
+            percentageEnabled,
+            remainderEnabled,
+            multipleAccountsEnabled,
+          },
+        });
 
-            return {
-              payrollProfileId: profile.id,
-              bankName: account.bankName,
-              branchName: account.branchName,
-              accountNumber: account.accountNumber,
-              accountName: account.accountName,
-              amount:
-                isPrimary || account.amount == null
-                  ? null
-                  : new Prisma.Decimal(account.amount.toFixed(2)),
-              isPrimary,
-              sortOrder: index,
-            };
-          }),
+        if (bankWrite.error) {
+          throw new Error(bankWrite.error);
+        }
+        auditBanks = bankWrite.auditBanks ?? [];
+      } else {
+        const existingBankCount = await transaction.employeeBankAccount.count({
+          where: { employeeId: employee.id },
+        });
+        if (existingBankCount > 0) {
+          const canClearBanks = actor.actor.canAny(
+            "payroll.manage",
+            "payroll.bank_accounts.update",
+            "payroll.bank_accounts.disable",
+            "payroll.allocations.manage",
+          );
+          if (!canClearBanks) {
+            throw new Error(
+              "You need payroll bank account permissions to clear bank destinations.",
+            );
+          }
+        }
+        await transaction.employeePayrollAllocation.deleteMany({
+          where: { employeeId: employee.id },
+        });
+        await transaction.employeeBankAccount.deleteMany({
+          where: { employeeId: employee.id },
+        });
+        await transaction.payrollBankAccount.deleteMany({
+          where: { payrollProfileId: profile.id },
         });
       }
 
-      await transaction.auditEvent.create({
-        data: {
-          userId: actor.actor.userId,
-          moduleKey: "payroll",
-          action: "UPDATE",
-          entityType: "PayrollProfile",
-          entityId: profile.id,
-          description: `Updated payroll setup for ${employee.firstName} ${employee.lastName} (${employee.employeeNumber}).`,
-          newValues: {
-            ...profileValues,
-            bankAccounts: accounts.map((account) => ({
-              bankName: account.bankName,
-              accountNumber: account.accountNumber,
-              amount: account.amount,
-              isPrimary: account.isPrimary,
-            })),
+      for (const update of allowanceTaxableUpdates) {
+        await transaction.employmentContractAllowance.update({
+          where: {
+            id: update.id,
           },
-          ipAddress: metadata.ipAddress,
-          userAgent: metadata.userAgent,
-          clientHostName: metadata.clientHostName,
+          data: {
+            isTaxable: update.isTaxable,
+          },
+        });
+      }
+
+      await recordAuditEvent(transaction, {
+        userId: actor.actor.userId,
+        organizationId: employee.organizationId,
+        moduleKey: "payroll",
+        action: "UPDATE",
+        entityType: "PayrollProfile",
+        entityId: profile.id,
+        description: `Updated payroll setup for ${employee.firstName} ${employee.lastName} (${employee.employeeNumber}).`,
+        newValues: {
+          ...profileValues,
+          employeeStatutoryUpdated: statutory.employeeUpdate != null,
+          bankAccounts: auditBanks as Prisma.InputJsonValue,
+          ...(allowanceTaxableUpdates.length > 0
+            ? {
+                allowanceTaxable: allowanceTaxableUpdates.map((update) => ({
+                  id: update.id,
+                  label: update.label,
+                  previousIsTaxable: update.previousIsTaxable,
+                  isTaxable: update.isTaxable,
+                })),
+              }
+            : {}),
         },
+        ...metadata,
       });
     });
   } catch (error) {
     console.error("Unable to save payroll profile:", error);
 
+    const message =
+      error instanceof Error &&
+      (error.message.includes("allocation") ||
+        error.message.includes("Split deposits") ||
+        error.message.includes("FULL_BALANCE") ||
+        error.message.includes("Multiple employee") ||
+        error.message.includes("Percentage") ||
+        error.message.includes("Fixed-amount") ||
+        error.message.includes("Remainder"))
+        ? error.message
+        : "Unable to save the payroll setup. Try again.";
+
     return {
       status: "error",
-      message: "Unable to save the payroll setup. Try again.",
+      message,
+      fieldErrors:
+        message !== "Unable to save the payroll setup. Try again."
+          ? { bankAccounts: message }
+          : undefined,
     };
   }
 
   revalidatePath("/payroll");
+  revalidatePath(`/payroll/employees/${employee.id}`);
   revalidatePath(`/people/employees/${employee.id}`);
-  revalidatePath(`/people/employees/${employee.id}/payroll`);
-  redirect(`/people/employees/${employee.id}/payroll`);
+  redirect(`/payroll/employees/${employee.id}`);
 }

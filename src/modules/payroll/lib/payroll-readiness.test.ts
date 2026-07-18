@@ -99,6 +99,51 @@ describe("evaluatePayrollReadiness", () => {
 
     expect(result.isReady).toBe(true);
   });
+
+  it("skips NIS number when exempt from NIS", () => {
+    const result = evaluatePayrollReadiness({
+      hasCurrentContract: true,
+      baseSalary: 5000,
+      nisNumber: null,
+      birNumber: "BIR-1",
+      paymentMethod: "CASH",
+      bankAccounts: [],
+      exemptFromNis: true,
+    });
+
+    expect(result.isReady).toBe(true);
+    expect(result.blockingIssues).toEqual([]);
+  });
+
+  it("skips BIR number when exempt from PAYE", () => {
+    const result = evaluatePayrollReadiness({
+      hasCurrentContract: true,
+      baseSalary: 5000,
+      nisNumber: "NIS-1",
+      birNumber: null,
+      paymentMethod: "CASH",
+      bankAccounts: [],
+      exemptFromPaye: true,
+    });
+
+    expect(result.isReady).toBe(true);
+    expect(result.blockingIssues).toEqual([]);
+  });
+
+  it("still requires BIR when only NIS-exempt", () => {
+    const result = evaluatePayrollReadiness({
+      hasCurrentContract: true,
+      baseSalary: 5000,
+      nisNumber: null,
+      birNumber: null,
+      paymentMethod: "CASH",
+      bankAccounts: [],
+      exemptFromNis: true,
+    });
+
+    expect(result.isReady).toBe(false);
+    expect(result.blockingIssues).toEqual(["BIR number missing."]);
+  });
 });
 
 describe("bankFixedAmountTotal", () => {

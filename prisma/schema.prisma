@@ -46,6 +46,17 @@ enum RoleAssignmentStatus {
   @@schema("core")
 }
 
+/// How a UserRole grant was created. Sync and revoke paths key off this,
+/// not free-text reason strings.
+enum UserRoleSource {
+  MANUAL
+  POSITION
+  SELF_SERVICE
+  SYSTEM
+
+  @@schema("core")
+}
+
 enum ConfigurationStatus {
   DRAFT
   ACTIVE
@@ -210,6 +221,8 @@ enum LeaveBalanceTransactionType {
 enum LeaveRequestStatus {
   DRAFT
   SUBMITTED
+  /// Reporting-line acknowledgements outstanding (ack-then-final modes).
+  AWAITING_ACKNOWLEDGEMENT
   PENDING_APPROVAL
   MANAGER_APPROVED
   APPROVED
@@ -224,6 +237,15 @@ enum LeaveApprovalStatus {
   PENDING
   APPROVED
   REJECTED
+  SKIPPED
+  CANCELLED
+
+  @@schema("hr")
+}
+
+enum LeaveAcknowledgementStatus {
+  PENDING
+  ACKNOWLEDGED
   SKIPPED
   CANCELLED
 
@@ -250,6 +272,139 @@ enum PerformanceRatingScale {
   @@schema("hr")
 }
 
+enum CorrespondenceCategory {
+  RECOMMENDATION
+  DISCIPLINARY
+  WARNING
+  INSTRUCTION
+  COMMENDATION
+  PERFORMANCE
+  GENERAL
+  OTHER
+  POLICY
+  OFFER_LETTER
+  EXIT_CLEARANCE
+  MEDICAL
+  IDENTIFICATION
+
+  @@schema("hr")
+}
+
+enum CorrespondenceStatus {
+  DRAFT
+  ISSUED
+  ACKNOWLEDGED
+  ARCHIVED
+  SUPERSEDED
+
+  @@schema("hr")
+}
+
+enum EmployeeCorrespondenceResponseStatus {
+  OPEN
+  REVIEWED
+
+  @@schema("hr")
+}
+
+/// Top-level qualification category (Caribbean HR taxonomy).
+/// Use qualificationSubtype for CSEC/CAPE, Cambridge levels, etc.
+enum QualificationDocumentType {
+  CXC
+  CAMBRIDGE
+  PEARSON_EDEXCEL
+  IB
+  VOCATIONAL
+  UNIVERSITY
+  PROFESSIONAL
+  TRADE_LICENCE
+  ADMISSION_ASSESSMENT
+  OTHER
+
+  @@schema("hr")
+}
+
+/// Specific degree award when documentType is UNIVERSITY.
+/// Grouped by academic band in the UI; authority sort derives band from type.
+enum QualificationDegreeType {
+  // Undergraduate
+  ASSOCIATE
+  BA
+  BSC
+  BBA
+  BCOM
+  BED
+  BENG
+  LLB
+  MBBS
+  BN
+  BFA
+  BTECH
+  BSW
+  BPHARM
+  // Postgraduate
+  PGCERT
+  PGDIP
+  MA
+  MSC
+  MBA
+  MED
+  MENG
+  LLM
+  MPA
+  MPH
+  MSW
+  MPHIL
+  EMBA
+  // Doctoral
+  PHD
+  DBA
+  EDD
+  DENG
+  MD
+  DRPH
+  PSYD
+  DNP
+  JD
+  // Other higher-education
+  CERTIFICATE
+  DIPLOMA
+  HNC
+  HND
+  FOUNDATION
+  GRADCERT
+  GRADDIP
+  PROFESSIONAL_DEGREE
+  HONORARY
+  OTHER
+
+  @@schema("hr")
+}
+
+/// Standard onboarding / employee-file checklist document types.
+enum EmployeeFileChecklistItemType {
+  ACADEMIC_CERTIFICATES
+  COPY_OF_ID
+  BIRTH_CERTIFICATE
+  MARRIAGE_CERTIFICATE
+  ASSUMPTION_OF_DUTY
+
+  @@schema("hr")
+}
+
+enum EmployeeFileUpdateRequestStatus {
+  OPEN
+  RESOLVED
+
+  @@schema("hr")
+}
+
+enum EmployeeFileUpdateRequestType {
+  QUALIFICATION_UPDATE
+
+  @@schema("hr")
+}
+
 enum EmploymentType {
   PERMANENT
   CONTRACT
@@ -257,6 +412,28 @@ enum EmploymentType {
   PART_TIME
   INTERN
   CONSULTANT
+
+  @@schema("hr")
+}
+
+/// Distinguishes full HR employees from non-employee payees (agents, board, contractors).
+/// Non-EMPLOYEE categories use EmploymentContract for time-bounded engagement; they do not get employee files.
+enum WorkforceCategory {
+  EMPLOYEE
+  AGENT
+  BOARD
+  /// Consultants and similar non-employee payees.
+  CONTRACTOR
+
+  @@schema("hr")
+}
+
+/// Government / travel identity document used for employee verification.
+enum EmployeeIdType {
+  NATIONAL_ID
+  DRIVERS_PERMIT
+  /// Passport or foreign ID for non-nationals.
+  NON_NATIONAL
 
   @@schema("hr")
 }
@@ -336,8 +513,15 @@ model Organization {
   organizationHolidays  OrganizationHoliday[]
 
   leaveRequests LeaveRequest[]
+  employeeCorrespondences EmployeeCorrespondence[]
+  correspondenceTemplates CorrespondenceTemplate[]
+  employeeCredentials     EmployeeCredential[]
+  employeeTrainingRecords EmployeeTrainingRecord[]
+  employeeQualificationDocuments EmployeeQualificationDocument[]
+  employeeFileChecklistItems EmployeeFileChecklistItem[]
+  employeeFileUpdateRequests EmployeeFileUpdateRequest[]
+  employeeCorrespondenceResponses EmployeeCorrespondenceResponse[]
 
-  statutoryRates           StatutoryRate[]
   nisEarningsClasses       NisEarningsClass[]
   payeTaxConfigs           PayeTaxConfig[]
   healthSurchargeConfigs   HealthSurchargeConfig[]
@@ -345,6 +529,12 @@ model Organization {
   payRuns                  PayRun[]
   payslips                 Payslip[]
   payrollLineItems         PayrollLineItem[]
+  employeeBankAccounts     EmployeeBankAccount[]
+  employeePayrollAllocations EmployeePayrollAllocation[]
+  payrollPayments          PayrollPayment[]
+  achPaymentBatches        AchPaymentBatch[]
+  bankExportProfiles       BankExportProfile[]
+  auditEvents              AuditEvent[]
 
   @@index([status])
   @@map("organizations")
@@ -415,7 +605,16 @@ model User {
   createdLeaveRequests     LeaveRequest[]      @relation("LeaveRequestCreator")
   finalLeaveDecisions      LeaveRequest[]      @relation("LeaveFinalDecisionUser")
   leaveApprovalSteps       LeaveApprovalStep[] @relation("LeaveApprovalUser")
+  leaveAcknowledgements    LeaveRequestAcknowledgement[] @relation("LeaveAcknowledgementUser")
   uploadedLeaveAttachments LeaveAttachment[]   @relation("LeaveAttachmentUploader")
+
+  issuedCorrespondences              EmployeeCorrespondence[] @relation("CorrespondenceIssuer")
+  acknowledgedCorrespondences        EmployeeCorrespondence[] @relation("CorrespondenceAcknowledger")
+  uploadedCorrespondenceAttachments  EmployeeCorrespondenceAttachment[] @relation("CorrespondenceAttachmentUploader")
+  confirmedAssumptionOfDutyItems     EmployeeFileChecklistItem[] @relation("AssumptionOfDutyConfirmer")
+  requestedFileUpdates               EmployeeFileUpdateRequest[] @relation("FileUpdateRequester")
+  resolvedFileUpdates                EmployeeFileUpdateRequest[] @relation("FileUpdateResolver")
+  reviewedCorrespondenceResponses      EmployeeCorrespondenceResponse[] @relation("CorrespondenceResponseReviewer")
 
   employeeId String?   @unique
   employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
@@ -449,22 +648,29 @@ model Role {
 }
 
 model UserRole {
-  id             String               @id @default(cuid())
-  userId         String
-  roleId         String
-  status         RoleAssignmentStatus @default(ACTIVE)
-  effectiveFrom  DateTime             @default(now())
-  effectiveUntil DateTime?
-  assignedAt     DateTime             @default(now())
-  revokedAt      DateTime?
-  reason         String?
+  id               String               @id @default(cuid())
+  userId           String
+  roleId           String
+  status           RoleAssignmentStatus @default(ACTIVE)
+  effectiveFrom    DateTime             @default(now())
+  effectiveUntil   DateTime?
+  assignedAt       DateTime             @default(now())
+  revokedAt        DateTime?
+  reason           String?
+  /// Provenance for sync/revoke — do not infer from reason text.
+  source           UserRoleSource       @default(MANUAL)
+  /// When source is POSITION, the Position that granted this role (optional).
+  sourcePositionId String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  sourcePosition Position? @relation(fields: [sourcePositionId], references: [id], onDelete: SetNull)
 
   @@index([userId, status])
   @@index([roleId, status])
+  @@index([userId, source, status])
   @@index([effectiveFrom, effectiveUntil])
+  @@index([sourcePositionId])
   @@map("user_roles")
   @@schema("core")
 }
@@ -694,6 +900,7 @@ model Department {
   employeeAssignments EmployeeAssignment[]
 
   @@unique([organizationId, name])
+  @@unique([organizationId, code])
   @@index([organizationId])
   @@map("departments")
   @@schema("hr")
@@ -706,7 +913,7 @@ model Position {
   title               String
   code                String?
   description         String?
-  /** Optional Role.code granted to the holder (e.g. HR_ADMINISTRATOR, SYSTEM_ADMINISTRATOR). */
+  /** Optional Role.code granted to the holder (allowlisted operational roles only — never SYSTEM_ADMINISTRATOR). */
   systemRoleCode      String?
   isActive            Boolean  @default(true)
   createdAt           DateTime @default(now())
@@ -718,8 +925,10 @@ model Position {
   employees         Employee[]
   assignments       EmployeeAssignment[]
   jobDescriptions   PositionJobDescription[]
+  userRoleGrants    UserRole[]
 
-  leaveApprovalSteps LeaveApprovalStep[]
+  leaveApprovalSteps    LeaveApprovalStep[]
+  leaveAcknowledgements LeaveRequestAcknowledgement[]
 
   @@unique([departmentId, title])
   @@index([departmentId])
@@ -728,6 +937,9 @@ model Position {
   @@schema("hr")
 }
 
+/// Current org seat: `departmentId` / `positionId` are a denormalized cache of
+/// the current EmployeeAssignment (`isCurrent = true`). Writers must keep them
+/// in sync inside the same transaction (see `assertCurrentSeatMatchesAssignment`).
 model Employee {
   id               String           @id @default(cuid())
   organizationId   String
@@ -741,15 +953,27 @@ model Employee {
   workEmail        String?
   personalEmail    String?
   phone            String?
+  /// Postal / residential address (multiline free text).
+  address          String?
+  emergencyContactName         String?
+  emergencyContactPhone        String?
+  emergencyContactRelationship String?
   /// Used for Health Surcharge age exemptions (<16 / ≥60).
   dateOfBirth      DateTime?        @db.Date
-  employmentStatus EmploymentStatus @default(ACTIVE)
-  employmentType   EmploymentType
-  hireDate         DateTime
-  terminationDate  DateTime?
-  isArchived       Boolean          @default(false)
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  /// National Insurance Scheme number — source of truth; payroll profile mirrors for readiness/snapshots.
+  nisNumber        String?
+  /// Board of Inland Revenue file number — source of truth; payroll profile mirrors for readiness/snapshots.
+  birNumber        String?
+  idType             EmployeeIdType?
+  idNumber           String?
+  workforceCategory  WorkforceCategory @default(EMPLOYEE)
+  employmentStatus   EmploymentStatus  @default(ACTIVE)
+  employmentType     EmploymentType
+  hireDate           DateTime
+  terminationDate    DateTime?
+  isArchived         Boolean           @default(false)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
 
   organization   Organization           @relation(fields: [organizationId], references: [id])
   department     Department?            @relation(fields: [departmentId], references: [id])
@@ -760,16 +984,29 @@ model Employee {
   payrollProfile PayrollProfile?
   payslips       Payslip[]
   payrollLineItems PayrollLineItem[]
+  bankAccounts   EmployeeBankAccount[]
+  payrollAllocations EmployeePayrollAllocation[]
+  payrollPayments PayrollPayment[]
 
   leaveBalances     EmployeeLeaveBalance[]
   leaveTransactions LeaveBalanceTransaction[]
 
   leaveRequests LeaveRequest[]
+  leaveAcknowledgements LeaveRequestAcknowledgement[]
+  correspondences EmployeeCorrespondence[]
+  credentials     EmployeeCredential[]
+  trainingRecords EmployeeTrainingRecord[]
+  qualificationDocuments EmployeeQualificationDocument[]
+  fileChecklistItems EmployeeFileChecklistItem[]
+  fileUpdateRequests EmployeeFileUpdateRequest[]
+  correspondenceResponses EmployeeCorrespondenceResponse[]
 
   user User?
 
   @@unique([organizationId, employeeNumber])
   @@index([organizationId])
+  @@index([organizationId, isArchived, employmentStatus])
+  @@index([organizationId, workforceCategory])
   @@index([departmentId])
   @@index([positionId])
   @@map("employees")
@@ -837,6 +1074,8 @@ model EmployeeAssignment {
   assignmentType   EmployeeAssignmentType @default(INITIAL_APPOINTMENT)
   startDate        DateTime
   endDate          DateTime?
+  /// At most one row per employee may be true — enforced by partial unique index
+  /// `employee_assignments_one_current` (see migration; not expressible as @@unique).
   isCurrent        Boolean                @default(true)
   isActing         Boolean                @default(false)
   referenceNumber  String?
@@ -1038,9 +1277,10 @@ model LeaveRequest {
   leaveBalance    EmployeeLeaveBalance? @relation(fields: [leaveBalanceId], references: [id], onDelete: SetNull)
   finalDecisionBy User?                 @relation("LeaveFinalDecisionUser", fields: [finalDecisionByUserId], references: [id], onDelete: SetNull)
   createdBy       User?                 @relation("LeaveRequestCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  days            LeaveRequestDay[]
-  approvalSteps   LeaveApprovalStep[]
-  attachments     LeaveAttachment[]
+  days             LeaveRequestDay[]
+  approvalSteps    LeaveApprovalStep[]
+  acknowledgements LeaveRequestAcknowledgement[]
+  attachments      LeaveAttachment[]
 
   @@unique([organizationId, requestNumber])
   @@index([organizationId])
@@ -1099,6 +1339,33 @@ model LeaveApprovalStep {
   @@schema("hr")
 }
 
+model LeaveRequestAcknowledgement {
+  id                     String                      @id @default(cuid())
+  leaveRequestId         String
+  sequenceNumber         Int
+  positionId             String
+  acknowledgerUserId     String?
+  acknowledgerEmployeeId String?
+  status                 LeaveAcknowledgementStatus  @default(PENDING)
+  assignedAt             DateTime                    @default(now())
+  acknowledgedAt         DateTime?
+  comment                String?
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+
+  leaveRequest         LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Cascade)
+  position             Position     @relation(fields: [positionId], references: [id], onDelete: Restrict)
+  acknowledgerUser     User?        @relation("LeaveAcknowledgementUser", fields: [acknowledgerUserId], references: [id], onDelete: SetNull)
+  acknowledgerEmployee Employee?    @relation(fields: [acknowledgerEmployeeId], references: [id], onDelete: SetNull)
+
+  @@unique([leaveRequestId, sequenceNumber])
+  @@index([acknowledgerUserId, status])
+  @@index([leaveRequestId, status])
+  @@index([positionId])
+  @@map("leave_request_acknowledgements")
+  @@schema("hr")
+}
+
 model LeaveAttachment {
   id               String   @id @default(cuid())
   leaveRequestId   String
@@ -1115,6 +1382,331 @@ model LeaveAttachment {
   @@index([leaveRequestId])
   @@index([uploadedByUserId])
   @@map("leave_attachments")
+  @@schema("hr")
+}
+
+/// HR correspondence / employee file letters (recommendations, discipline, etc.).
+model EmployeeCorrespondence {
+  id                      String                  @id @default(cuid())
+  organizationId          String
+  employeeId              String
+  category                CorrespondenceCategory  @default(GENERAL)
+  /// Free-form sub-type / tag (e.g. FIRST_WARNING, FINAL_WARNING).
+  subType                 String?
+  title                   String
+  body                    String?
+  effectiveDate           DateTime                @db.Date
+  issueDate               DateTime?               @db.Date
+  issuedByUserId          String?
+  status                  CorrespondenceStatus    @default(DRAFT)
+  employeeVisible         Boolean                 @default(true)
+  /// Reporting officer (supervisor) may view the issued record read-only.
+  managerVisible          Boolean                 @default(false)
+  requiresAcknowledgement Boolean                 @default(false)
+  /// When true, the employee may submit a written response (statement).
+  allowsEmployeeResponse  Boolean                 @default(false)
+  acknowledgedAt          DateTime?
+  acknowledgedByUserId    String?
+  retentionUntil          DateTime?               @db.Date
+  /// The older letter this record replaces (supersession chain).
+  supersedesId            String?                 @unique
+  /// Lightweight related letter (e.g. assumption of duty linked from offer).
+  relatedCorrespondenceId String?
+  templateId              String?
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  organization     Organization                        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee         Employee                            @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  issuedBy         User?                               @relation("CorrespondenceIssuer", fields: [issuedByUserId], references: [id], onDelete: SetNull)
+  acknowledgedBy   User?                               @relation("CorrespondenceAcknowledger", fields: [acknowledgedByUserId], references: [id], onDelete: SetNull)
+  supersedes       EmployeeCorrespondence?             @relation("CorrespondenceSupersession", fields: [supersedesId], references: [id], onDelete: SetNull)
+  supersededBy     EmployeeCorrespondence?             @relation("CorrespondenceSupersession")
+  relatedCorrespondence EmployeeCorrespondence?        @relation("CorrespondenceRelated", fields: [relatedCorrespondenceId], references: [id], onDelete: SetNull)
+  relatedFrom      EmployeeCorrespondence[]            @relation("CorrespondenceRelated")
+  template         CorrespondenceTemplate?             @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  attachments      EmployeeCorrespondenceAttachment[]
+  responses        EmployeeCorrespondenceResponse[]
+  checklistLinks   EmployeeFileChecklistItem[]
+
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([status])
+  @@index([category])
+  @@index([subType])
+  @@index([allowsEmployeeResponse])
+  @@index([issueDate])
+  @@index([retentionUntil])
+  @@index([issuedByUserId])
+  @@index([acknowledgedByUserId])
+  @@index([templateId])
+  @@index([relatedCorrespondenceId])
+  @@index([employeeId, status, employeeVisible])
+  @@index([employeeId, managerVisible, status])
+  @@index([organizationId, retentionUntil, status])
+  @@map("employee_correspondences")
+  @@schema("hr")
+}
+
+/// Org-scoped reusable letter template with {{merge}} placeholders.
+model CorrespondenceTemplate {
+  id                      String                 @id @default(cuid())
+  organizationId          String
+  name                    String
+  category                CorrespondenceCategory @default(GENERAL)
+  defaultTitle            String
+  /// Supports {{employeeName}}, {{position}}, {{date}}, {{employeeNumber}}.
+  body                    String
+  employeeVisible         Boolean                @default(true)
+  requiresAcknowledgement Boolean                @default(false)
+  allowsEmployeeResponse  Boolean                @default(false)
+  isActive                Boolean                @default(true)
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+
+  organization    Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  correspondences EmployeeCorrespondence[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId, isActive])
+  @@map("correspondence_templates")
+  @@schema("hr")
+}
+
+/// Certificates, licences, and other credentials held by an employee.
+model EmployeeCredential {
+  id              String    @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  name            String
+  issuer          String?
+  issueDate       DateTime? @db.Date
+  expiryDate      DateTime? @db.Date
+  employeeVisible Boolean   @default(true)
+  fileName        String?
+  storageKey      String?
+  mimeType        String?
+  fileSize        Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  checklistLinks EmployeeFileChecklistItem[]
+
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([expiryDate])
+  @@map("employee_credentials")
+  @@schema("hr")
+}
+
+/// Completed training / courses for an employee.
+model EmployeeTrainingRecord {
+  id              String    @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  courseName      String
+  provider        String?
+  completedAt     DateTime  @db.Date
+  expiryDate      DateTime? @db.Date
+  employeeVisible Boolean   @default(true)
+  fileName        String?
+  storageKey      String?
+  mimeType        String?
+  fileSize        Int?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([expiryDate])
+  @@map("employee_training_records")
+  @@schema("hr")
+}
+
+/// Uploaded qualification proof (e.g. one CXC certificate) with many subject line items.
+model EmployeeQualificationDocument {
+  id              String                     @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  title           String
+  documentType    QualificationDocumentType  @default(OTHER)
+  /// Category subtype (e.g. CSEC, CAPE, IGCSE, ACCA). Stored as string for presets + free entry.
+  qualificationSubtype String?
+  /// Set when documentType is UNIVERSITY (specific award code, e.g. BSC, MBA, PHD).
+  degreeType      QualificationDegreeType?
+  /// Display name when subtype/degreeType is OTHER / free-text, or legacy custom labels.
+  customTypeLabel String?
+  /// Optional programme / field of study (typically UNIVERSITY awards).
+  programme       String?
+  issuer          String?
+  issueDate       DateTime?                  @db.Date
+  year            Int?
+  employeeVisible Boolean                    @default(true)
+  fileName        String?
+  storageKey      String?
+  mimeType        String?
+  fileSize        Int?
+  /// HR-only notes; not shown on employee self-service.
+  notes           String?
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+
+  organization Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee                      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  entries      EmployeeQualificationEntry[]
+  checklistLinks EmployeeFileChecklistItem[]
+
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([documentType])
+  @@map("employee_qualification_documents")
+  @@schema("hr")
+}
+
+/// Subject / result line under a qualification document (e.g. Mathematics Grade I).
+model EmployeeQualificationEntry {
+  id            String  @id @default(cuid())
+  documentId    String
+  subjectOrName String
+  gradeOrResult String?
+  level         String?
+  sortOrder     Int     @default(0)
+
+  document EmployeeQualificationDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, sortOrder])
+  @@map("employee_qualification_entries")
+  @@schema("hr")
+}
+
+/// Per-employee status / links for the standard employee-file document checklist.
+/// Status is primarily derived from linked qualifications, credentials, and
+/// correspondence; this row stores overrides (N/A, manual assumption signed)
+/// and explicit links when HR pins a record.
+model EmployeeFileChecklistItem {
+  id                          String                       @id @default(cuid())
+  organizationId              String
+  employeeId                  String
+  itemType                    EmployeeFileChecklistItemType
+  /// Marriage certificate (and optionally assumption of duty) can be marked N/A.
+  notApplicable               Boolean                      @default(false)
+  /// HR-only notes; not shown on employee self-service.
+  notes                       String?
+  qualificationDocumentId     String?
+  credentialId                String?
+  correspondenceId            String?
+  /// Fallback attachment when no module record is used.
+  fileName                    String?
+  storageKey                  String?
+  mimeType                    String?
+  fileSize                    Int?
+  /// Manual confirmation that assumption of duty was signed (when no letter ack).
+  assumptionOfDutySignedAt    DateTime?
+  assumptionOfDutyConfirmedByUserId String?
+  /// Whether the employee can see this checklist item and its direct attachment.
+  employeeVisible             Boolean                      @default(true)
+  createdAt                   DateTime                     @default(now())
+  updatedAt                   DateTime                     @updatedAt
+
+  organization              Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee                  Employee                       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  qualificationDocument     EmployeeQualificationDocument? @relation(fields: [qualificationDocumentId], references: [id], onDelete: SetNull)
+  credential                EmployeeCredential?            @relation(fields: [credentialId], references: [id], onDelete: SetNull)
+  correspondence            EmployeeCorrespondence?        @relation(fields: [correspondenceId], references: [id], onDelete: SetNull)
+  assumptionOfDutyConfirmedBy User?                        @relation("AssumptionOfDutyConfirmer", fields: [assumptionOfDutyConfirmedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([employeeId, itemType])
+  @@index([organizationId])
+  @@index([employeeId])
+  @@index([itemType])
+  @@index([qualificationDocumentId])
+  @@index([credentialId])
+  @@index([correspondenceId])
+  @@index([assumptionOfDutyConfirmedByUserId])
+  @@map("employee_file_checklist_items")
+  @@schema("hr")
+}
+
+/// Employee-initiated request for HR to update file contents (e.g. qualifications).
+model EmployeeFileUpdateRequest {
+  id               String                         @id @default(cuid())
+  organizationId   String
+  employeeId       String
+  requestType      EmployeeFileUpdateRequestType  @default(QUALIFICATION_UPDATE)
+  title            String
+  note             String?
+  status           EmployeeFileUpdateRequestStatus @default(OPEN)
+  requestedByUserId String
+  resolvedByUserId String?
+  resolvedAt       DateTime?
+  createdAt        DateTime                       @default(now())
+  updatedAt        DateTime                       @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  requestedBy  User         @relation("FileUpdateRequester", fields: [requestedByUserId], references: [id], onDelete: Cascade)
+  resolvedBy   User?        @relation("FileUpdateResolver", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([employeeId, status])
+  @@index([requestedByUserId])
+  @@index([resolvedByUserId])
+  @@map("employee_file_update_requests")
+  @@schema("hr")
+}
+
+model EmployeeCorrespondenceAttachment {
+  id               String   @id @default(cuid())
+  correspondenceId String
+  fileName         String
+  storageKey       String
+  mimeType         String?
+  fileSize         Int?
+  uploadedByUserId String?
+  uploadedAt       DateTime @default(now())
+
+  correspondence EmployeeCorrespondence @relation(fields: [correspondenceId], references: [id], onDelete: Cascade)
+  uploadedBy     User?                  @relation("CorrespondenceAttachmentUploader", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([correspondenceId])
+  @@index([uploadedByUserId])
+  @@map("employee_correspondence_attachments")
+  @@schema("hr")
+}
+
+/// Employee-written statement in response to a letter that allows it.
+model EmployeeCorrespondenceResponse {
+  id               String                              @id @default(cuid())
+  organizationId   String
+  correspondenceId String                              @unique
+  employeeId       String
+  body             String
+  fileName         String?
+  storageKey       String?
+  mimeType         String?
+  fileSize         Int?
+  status           EmployeeCorrespondenceResponseStatus @default(OPEN)
+  submittedAt      DateTime                            @default(now())
+  reviewedAt       DateTime?
+  reviewedByUserId String?
+  reviewNote       String?
+  createdAt        DateTime                            @default(now())
+  updatedAt        DateTime                            @updatedAt
+
+  organization   Organization           @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  correspondence EmployeeCorrespondence @relation(fields: [correspondenceId], references: [id], onDelete: Cascade)
+  employee       Employee               @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewedBy     User?                  @relation("CorrespondenceResponseReviewer", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([employeeId, status])
+  @@index([reviewedByUserId])
+  @@map("employee_correspondence_responses")
   @@schema("hr")
 }
 
@@ -1205,6 +1797,8 @@ model EmploymentContract {
   gratuityEligible  Boolean                  @default(false)
   gratuityRate      Decimal?                 @db.Decimal(5, 2)
   gratuityTaxRate   Decimal?                 @db.Decimal(5, 2)
+  /// At most one row per employee may be true — enforced by partial unique index
+  /// `employment_contracts_one_current` (see migration; not expressible as @@unique).
   isCurrent         Boolean                  @default(true)
   signedDate        DateTime?
   collectedAt       DateTime?
@@ -1240,7 +1834,7 @@ model AllowanceCategory {
   code                      String?
   name                      String
   description               String?
-  isTaxableDefault          Boolean  @default(true)
+  isTaxableDefault          Boolean  @default(false)
   includedInGratuityDefault Boolean  @default(false)
   isActive                  Boolean  @default(true)
   createdAt                 DateTime @default(now())
@@ -1262,7 +1856,7 @@ model EmploymentContractAllowance {
   categoryId         String
   amount             Decimal            @db.Decimal(14, 2)
   frequency          AllowanceFrequency @default(MONTHLY)
-  isTaxable          Boolean            @default(true)
+  isTaxable          Boolean            @default(false)
   includedInGratuity Boolean            @default(false)
   notes              String?
   createdAt          DateTime           @default(now())
@@ -1295,20 +1889,16 @@ enum PayrollPaymentMethod {
   @@schema("payroll")
 }
 
-enum StatutoryRateType {
-  NIS_EMPLOYEE
-  NIS_EMPLOYER
-  PAYE
-
-  @@schema("payroll")
-}
-
 model PayrollProfile {
   id             String               @id @default(cuid())
   employeeId     String               @unique
   payFrequency   PayFrequency         @default(MONTHLY)
   paymentMethod  PayrollPaymentMethod @default(BANK_TRANSFER)
+  /// Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
+  /// here from payroll writers — prefer Employee writes when people.manage.
   nisNumber      String?
+  /// Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
+  /// here from payroll writers — prefer Employee writes when people.manage.
   birNumber      String?
   notes          String?
   isPayrollReady Boolean              @default(false)
@@ -1316,6 +1906,12 @@ model PayrollProfile {
   td1OtherApprovedAnnual Decimal?     @db.Decimal(14, 2)
   /// Health Surcharge: pension as only income source (exempt when true).
   pensionOnlyIncome      Boolean      @default(false)
+  /// Opt out of NIS employee/employer contributions and NIS number readiness.
+  exemptFromNis              Boolean  @default(false)
+  /// Opt out of Health Surcharge (in addition to age/pension exemptions).
+  exemptFromHealthSurcharge  Boolean  @default(false)
+  /// Opt out of PAYE and BIR number readiness.
+  exemptFromPaye             Boolean  @default(false)
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
 
@@ -1326,6 +1922,7 @@ model PayrollProfile {
   @@schema("payroll")
 }
 
+/// @deprecated Prefer EmployeeBankAccount. Kept for one-release dual-read/sync.
 model PayrollBankAccount {
   id               String   @id @default(cuid())
   payrollProfileId String
@@ -1347,23 +1944,404 @@ model PayrollBankAccount {
   @@schema("payroll")
 }
 
-model StatutoryRate {
-  id             String            @id @default(cuid())
-  organizationId String
-  rateType       StatutoryRateType
-  ratePercent    Decimal           @db.Decimal(7, 4)
-  effectiveFrom  DateTime          @db.Date
-  effectiveTo    DateTime?         @db.Date
-  notes          String?
-  isActive       Boolean           @default(true)
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+enum FinancialInstitutionType {
+  COMMERCIAL_BANK
+  CREDIT_UNION
+  BUILDING_SOCIETY
+  LICENSED_NON_BANK
+  ELECTRONIC_MONEY
+  INVESTMENT_MORTGAGE_DEVELOPMENT
+  CREDIT_UNION_SUPPORT
+  OTHER
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  @@schema("payroll")
+}
 
-  @@index([organizationId, rateType, effectiveFrom])
+enum BankAccountType {
+  SAVINGS
+  CHEQUING
+  CURRENT
+  CREDIT_UNION_SHARES
+  OTHER
+
+  @@schema("payroll")
+}
+
+enum BankAccountVerificationStatus {
+  NOT_REQUIRED
+  PENDING
+  VERIFIED
+  FAILED
+
+  @@schema("payroll")
+}
+
+enum PayrollAllocationType {
+  FULL_BALANCE
+  FIXED_AMOUNT
+  PERCENTAGE
+  REMAINDER
+
+  @@schema("payroll")
+}
+
+/// Configurable financial institution directory (TT seed; extensible to other jurisdictions).
+model FinancialInstitution {
+  id                           String                    @id @default(cuid())
+  /// Stable catalog key matching tt-financial-institutions.ts ids (e.g. "fcb").
+  catalogKey                   String?                   @unique
+  legalName                    String
+  displayName                  String
+  shortName                    String
+  institutionType              FinancialInstitutionType
+  countryCode                  String                    @default("TT")
+  currencyCode                 String                    @default("TTD")
+  regulator                    String?
+  regulatoryReference          String?
+  localInstitutionCode         String?
+  /// ACH participant code — null until confirmed. REQUIRES_CONFIRMATION.
+  achParticipantCode           String?
+  swiftBic                     String?
+  /// ACH / local routing code — null until confirmed. REQUIRES_CONFIRMATION.
+  routingCode                  String?
+  requiresBranchCode           Boolean                   @default(false)
+  requiresAccountType          Boolean                   @default(false)
+  requiresBeneficiaryId        Boolean                   @default(false)
+  requiresAccountVerification  Boolean                   @default(false)
+  supportsAchCredits           Boolean                   @default(false)
+  supportsAchDebits            Boolean                   @default(false)
+  supportsPayrollDeposits      Boolean                   @default(true)
+  supportsInternalTransfers    Boolean                   @default(false)
+  supportsExternalTransfers    Boolean                   @default(false)
+  supportsSplitDeposits        Boolean                   @default(true)
+  isSelectableForEmployees     Boolean                   @default(true)
+  isActive                     Boolean                   @default(true)
+  effectiveFrom                DateTime                  @default(now())
+  effectiveTo                  DateTime?
+  createdAt                    DateTime                  @default(now())
+  updatedAt                    DateTime                  @updatedAt
+  archivedAt                   DateTime?
+
+  branches             FinancialInstitutionBranch[]
+  employeeBankAccounts EmployeeBankAccount[]
+  paymentAllocations   PayrollPaymentAllocation[]
+
+  @@index([countryCode, isActive])
+  @@index([isSelectableForEmployees, isActive])
+  @@index([institutionType, isActive])
+  @@map("financial_institutions")
+  @@schema("payroll")
+}
+
+model FinancialInstitutionBranch {
+  id            String   @id @default(cuid())
+  institutionId String
+  branchCode    String
+  name          String
+  address       String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  institution FinancialInstitution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+
+  @@unique([institutionId, branchCode])
+  @@index([institutionId, isActive])
+  @@map("financial_institution_branches")
+  @@schema("payroll")
+}
+
+/// Employee-owned bank account (Phase 1 source of truth for payroll destinations).
+model EmployeeBankAccount {
+  id                       String                        @id @default(cuid())
+  organizationId           String
+  employeeId               String
+  financialInstitutionId   String?
+  /// Display / free-text name (institution displayName, or custom when Other).
+  bankName                 String
+  branchCode               String?
+  branchName               String?
+  accountHolderName        String?
+  /// AES-256-GCM ciphertext (`v1:…`) or legacy plaintext until migrate encrypts.
+  accountNumber            String
+  accountNumberLastFour    String
+  accountType              BankAccountType               @default(SAVINGS)
+  currencyCode             String                        @default("TTD")
+  nickname                 String?
+  isPrimary                Boolean                       @default(false)
+  isPayrollEnabled         Boolean                       @default(true)
+  isVerified               Boolean                       @default(false)
+  verificationStatus       BankAccountVerificationStatus @default(NOT_REQUIRED)
+  verificationMethod       String?
+  verifiedAt               DateTime?
+  verifiedByUserId         String?
+  effectiveFrom            DateTime                      @default(now())
+  effectiveTo              DateTime?
+  isActive                 Boolean                       @default(true)
+  sortOrder                Int                           @default(0)
+  createdByUserId          String?
+  createdAt                DateTime                      @default(now())
+  updatedAt                DateTime                      @updatedAt
+  archivedAt               DateTime?
+
+  organization         Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee             Employee                       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  financialInstitution FinancialInstitution?          @relation(fields: [financialInstitutionId], references: [id], onDelete: SetNull)
+  allocations          EmployeePayrollAllocation[]
+  paymentAllocations   PayrollPaymentAllocation[]
+
+  @@index([employeeId, isActive])
+  @@index([organizationId, employeeId])
+  @@index([financialInstitutionId])
+  @@map("employee_bank_accounts")
+  @@schema("payroll")
+}
+
+/// Payroll deposit allocation instructions (Phase 1: FULL_BALANCE / FIXED_AMOUNT / REMAINDER).
+model EmployeePayrollAllocation {
+  id                    String                 @id @default(cuid())
+  organizationId        String
+  employeeId            String
+  employeeBankAccountId String
+  allocationType        PayrollAllocationType
+  percentage            Decimal?               @db.Decimal(7, 4)
+  fixedAmount           Decimal?               @db.Decimal(14, 2)
+  priority              Int                    @default(0)
+  receivesRemainder     Boolean                @default(false)
+  effectiveFrom         DateTime               @default(now())
+  effectiveTo           DateTime?
+  isActive              Boolean                @default(true)
+  createdByUserId       String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+
+  organization        Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee            Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeeBankAccount EmployeeBankAccount @relation(fields: [employeeBankAccountId], references: [id], onDelete: Cascade)
+  paymentAllocations  PayrollPaymentAllocation[]
+
+  @@index([employeeId, isActive])
+  @@index([organizationId, employeeId])
+  @@index([employeeBankAccountId])
+  @@map("employee_payroll_allocations")
+  @@schema("payroll")
+}
+
+/// Payment-layer status after a posted pay run is prepared for disbursement.
+/// Calc (payslip) stays authoritative; these rows never rewrite net pay.
+enum PayrollPaymentStatus {
+  NOT_CONFIGURED
+  PENDING
+  PAYMENT_SETUP_REQUIRED
+  PAYMENT_SETUP_ERROR
+  READY
+  INCLUDED_IN_BATCH
+  PAID
+  RECONCILED
+  CANCELLED
+
+  @@schema("payroll")
+}
+
+enum PayrollPaymentAllocationStatus {
+  PENDING
+  READY
+  INCLUDED_IN_BATCH
+  EXPORTED
+  PAID
+  RETURNED
+  REJECTED
+  FAILED
+  /// Return/failure acknowledged — original failed txn preserved; no pay-run reverse.
+  RESOLVED
+  CANCELLED
+
+  @@schema("payroll")
+}
+
+enum AchPaymentBatchStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  GENERATED
+  EXPORTED
+  CANCELLED
+
+  @@schema("payroll")
+}
+
+enum BankExportAdapterKind {
+  MANUAL_REGISTER
+  GENERIC_CSV
+
+  @@schema("payroll")
+}
+
+/// Immutable payment snapshot for one posted payslip (Phase 2 — Calc ≠ Payment).
+model PayrollPayment {
+  id                String               @id @default(cuid())
+  organizationId    String
+  payRunId          String
+  payslipId         String               @unique
+  employeeId        String
+  netPay            Decimal              @db.Decimal(14, 2)
+  allocatedAmount   Decimal              @db.Decimal(14, 2)
+  unallocatedAmount Decimal              @db.Decimal(14, 2)
+  paymentMethod     PayrollPaymentMethod
+  paymentStatus     PayrollPaymentStatus @default(PENDING)
+  currencyCode      String               @default("TTD")
+  setupErrorMessage String?
+  generatedAt       DateTime?
+  generatedByUserId String?
+  approvedAt        DateTime?
+  approvedByUserId  String?
+  paidAt            DateTime?
+  reconciledAt      DateTime?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  organization Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payRun       PayRun                     @relation(fields: [payRunId], references: [id], onDelete: Cascade)
+  payslip      Payslip                    @relation(fields: [payslipId], references: [id], onDelete: Cascade)
+  employee     Employee                   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  allocations  PayrollPaymentAllocation[]
+
+  @@index([organizationId, payRunId])
+  @@index([payRunId, paymentStatus])
+  @@index([employeeId])
+  @@map("payroll_payments")
+  @@schema("payroll")
+}
+
+/// Frozen bank destination lines for a PayrollPayment. Never mutate when live accounts change.
+model PayrollPaymentAllocation {
+  id                         String                         @id @default(cuid())
+  payrollPaymentId           String
+  sourceAllocationId         String?
+  employeeBankAccountId      String?
+  financialInstitutionId     String?
+  beneficiaryName            String?
+  bankName                   String
+  branchCode                 String?
+  branchName                 String?
+  accountType                BankAccountType?
+  accountNumberMasked        String
+  /// AES-256-GCM ciphertext (`v1:…`) or legacy plaintext until migrated.
+  accountNumberEncrypted     String?
+  amount                     Decimal                        @db.Decimal(14, 2)
+  currencyCode               String                         @default("TTD")
+  sequence                   Int                            @default(0)
+  allocationKind             String
+  status                     PayrollPaymentAllocationStatus @default(PENDING)
+  returnCode                 String?
+  returnReason               String?
+  /// Amount returned / rejected (may be partial). Defaults to full line amount when unset at mark-return.
+  returnedAmount             Decimal?                       @db.Decimal(14, 2)
+  returnedAt                 DateTime?
+  settledAt                  DateTime?
+  resolutionNote             String?
+  resolvedAt                 DateTime?
+  resolvedByUserId           String?
+  createdAt                  DateTime                       @default(now())
+  updatedAt                  DateTime                       @updatedAt
+
+  payrollPayment         PayrollPayment              @relation(fields: [payrollPaymentId], references: [id], onDelete: Cascade)
+  sourceAllocation       EmployeePayrollAllocation?  @relation(fields: [sourceAllocationId], references: [id], onDelete: SetNull)
+  employeeBankAccount    EmployeeBankAccount?        @relation(fields: [employeeBankAccountId], references: [id], onDelete: SetNull)
+  financialInstitution   FinancialInstitution?       @relation(fields: [financialInstitutionId], references: [id], onDelete: SetNull)
+  batchDetails           AchPaymentBatchDetail[]
+
+  @@index([payrollPaymentId, sequence])
+  @@index([employeeBankAccountId])
+  @@index([financialInstitutionId])
+  @@index([status])
+  @@map("payroll_payment_allocations")
+  @@schema("payroll")
+}
+
+/// Configurable export profile (generic CSV / manual register). No invented bank layouts.
+model BankExportProfile {
+  id                 String               @id @default(cuid())
+  organizationId     String
+  code               String
+  name               String
+  description        String?
+  adapterKind        BankExportAdapterKind
+  isDefault          Boolean              @default(false)
+  /// Seeded placeholder — routing codes / official formats still REQUIRES_CONFIRMATION.
+  isPlaceholder      Boolean              @default(true)
+  isActive           Boolean              @default(true)
+  configurationJson  Json
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batches      AchPaymentBatch[]
+
+  @@unique([organizationId, code])
   @@index([organizationId, isActive])
-  @@map("statutory_rates")
+  @@map("bank_export_profiles")
+  @@schema("payroll")
+}
+
+/// ACH / bank payment batch built from prepared PayrollPaymentAllocation rows.
+model AchPaymentBatch {
+  id                  String               @id @default(cuid())
+  organizationId      String
+  payRunId            String
+  bankExportProfileId String
+  batchNumber         String
+  status              AchPaymentBatchStatus @default(DRAFT)
+  currencyCode        String               @default("TTD")
+  controlTotalAmount  Decimal              @db.Decimal(14, 2)
+  detailCount         Int                  @default(0)
+  fileName            String?
+  fileStorageKey      String?
+  fileContentHash     String?
+  fileMimeType        String?
+  preparedByUserId    String?
+  preparedAt          DateTime?
+  approvedByUserId    String?
+  approvedAt          DateTime?
+  generatedAt         DateTime?
+  exportedAt          DateTime?
+  notes               String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  organization      Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  payRun            PayRun                @relation(fields: [payRunId], references: [id], onDelete: Cascade)
+  bankExportProfile BankExportProfile     @relation(fields: [bankExportProfileId], references: [id], onDelete: Restrict)
+  details           AchPaymentBatchDetail[]
+
+  @@unique([organizationId, batchNumber])
+  @@index([payRunId, status])
+  @@index([organizationId, status])
+  @@index([bankExportProfileId])
+  @@map("ach_payment_batches")
+  @@schema("payroll")
+}
+
+model AchPaymentBatchDetail {
+  id                         String   @id @default(cuid())
+  achPaymentBatchId          String
+  payrollPaymentAllocationId String
+  sequence                   Int      @default(0)
+  amount                     Decimal  @db.Decimal(14, 2)
+  currencyCode               String   @default("TTD")
+  employeeNumber             String
+  employeeName               String
+  bankName                   String
+  accountNumberMasked        String
+  allocationKind             String
+  createdAt                  DateTime @default(now())
+
+  achPaymentBatch          AchPaymentBatch            @relation(fields: [achPaymentBatchId], references: [id], onDelete: Cascade)
+  payrollPaymentAllocation PayrollPaymentAllocation   @relation(fields: [payrollPaymentAllocationId], references: [id], onDelete: Restrict)
+
+  @@unique([achPaymentBatchId, payrollPaymentAllocationId])
+  @@index([achPaymentBatchId, sequence])
+  @@map("ach_payment_batch_details")
   @@schema("payroll")
 }
 
@@ -1477,7 +2455,14 @@ enum PayrollPeriodStatus {
 
 enum PayRunStatus {
   DRAFT
+  /// Figures reviewed and approved for posting (maker-checker).
+  APPROVED
+  /// Amounts frozen; payslips immutable.
   POSTED
+  /// Payments matched / returns resolved for this run.
+  RECONCILED
+  /// Terminal — no further payment or reopen without a new run.
+  CLOSED
 
   @@schema("payroll")
 }
@@ -1565,6 +2550,10 @@ model PayRun {
   totalDeductions Decimal      @default(0) @db.Decimal(14, 2)
   totalNet        Decimal      @default(0) @db.Decimal(14, 2)
   notes           String?
+  /// Set when a reviewer approves the draft figures (maker-checker). Cleared on recalc.
+  approvedAt      DateTime?
+  approvedById    String?
+  approvalNote    String?
   postedAt        DateTime?
   postedById      String?
   createdById     String?
@@ -1577,12 +2566,15 @@ model PayRun {
   derivedRuns   PayRun[]      @relation("PayRunSource")
   payslips      Payslip[]
   lineItems     PayrollLineItem[]
+  payrollPayments PayrollPayment[]
+  achPaymentBatches AchPaymentBatch[]
 
   @@unique([organizationId, runNumber])
   @@index([payrollPeriodId])
   @@index([organizationId, status])
   @@index([organizationId, runKind])
   @@index([sourcePayRunId])
+  @@index([approvedById])
   @@map("pay_runs")
   @@schema("payroll")
 }
@@ -1624,6 +2616,7 @@ model Payslip {
   payrollPeriod PayrollPeriod @relation(fields: [payrollPeriodId], references: [id], onDelete: Cascade)
   employee      Employee      @relation(fields: [employeeId], references: [id])
   lineItems     PayrollLineItem[]
+  payrollPayment PayrollPayment?
 
   @@unique([payRunId, employeeId])
   @@index([organizationId, employeeId, status])
@@ -1762,32 +2755,10 @@ model EmailDeliveryAttempt {
   @@schema("notifications")
 }
 
-model EmailTemplate {
-  id              String   @id @default(cuid())
-  organizationId  String?
-  key             String
-  name            String
-  description     String?
-  subjectTemplate String
-  textTemplate    String?
-  htmlTemplate    String?
-  moduleKey       String?
-  isSystem        Boolean  @default(false)
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@unique([organizationId, key])
-  @@index([organizationId])
-  @@index([moduleKey])
-  @@index([isActive])
-  @@map("email_templates")
-  @@schema("notifications")
-}
-
 model AuditEvent {
   id             String   @id @default(cuid())
   userId         String?
+  organizationId String?
   moduleKey      String
   action         String
   entityType     String
@@ -1801,9 +2772,11 @@ model AuditEvent {
   correlationId  String?
   createdAt      DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([organizationId])
   @@index([moduleKey])
   @@index([entityType, entityId])
   @@index([createdAt])

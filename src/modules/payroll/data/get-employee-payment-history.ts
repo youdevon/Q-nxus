@@ -3,10 +3,14 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   assembleEmployeePaymentHistory,
+  assembleEmployeePaymentRoster,
   extractEmployerContributionFromSnapshot,
   resolveEmployeeHistoryPeriodRange,
+  resolveEmployeePaymentHistoryScope,
   type EmployeeHistoryPeriodPreset,
   type EmployeePaymentHistory,
+  type EmployeePaymentHistoryScope,
+  type EmployeePaymentRoster,
   type PostedPayslipAnalyticsRow,
 } from "@/src/modules/payroll/lib/payroll-analytics";
 import { parseMonthlyPeriodKey } from "@/src/modules/payroll/lib/pay-period";
@@ -21,16 +25,26 @@ export type EmployeePaymentHistoryMatch = {
   departmentName: string | null;
 };
 
+export type EmployeePaymentHistoryDepartmentOption = {
+  id: string;
+  name: string;
+};
+
 export type EmployeePaymentHistoryReportData = {
+  scope: EmployeePaymentHistoryScope;
   query: string;
   matches: EmployeePaymentHistoryMatch[];
   selectedEmployee: EmployeePaymentHistoryMatch | null;
+  departments: EmployeePaymentHistoryDepartmentOption[];
+  selectedDepartmentId: string | null;
+  selectedDepartmentName: string | null;
   period: {
     preset: EmployeeHistoryPeriodPreset;
     startPeriodKey: string;
     endPeriodKey: string;
   };
   history: EmployeePaymentHistory | null;
+  roster: EmployeePaymentRoster | null;
 };
 
 function decimalToNumber(value: { toString(): string }): number {
@@ -75,6 +89,33 @@ function employeeSearchWhere(query: string): Prisma.EmployeeWhereInput {
     ],
   };
 }
+
+const payslipSelect = {
+  id: true,
+  employeeId: true,
+  employeeNumber: true,
+  employeeName: true,
+  currency: true,
+  grossPay: true,
+  totalDeductions: true,
+  netPay: true,
+  snapshot: true,
+  payrollPeriod: {
+    select: {
+      periodKey: true,
+      name: true,
+      periodEnd: true,
+    },
+  },
+  payRun: {
+    select: {
+      id: true,
+      runNumber: true,
+      runKind: true,
+      postedAt: true,
+    },
+  },
+} as const;
 
 function mapPostedRow(row: {
   id: string;
@@ -187,12 +228,116 @@ async function searchEmployees(
   }));
 }
 
+async function listDepartments(): Promise<
+  EmployeePaymentHistoryDepartmentOption[]
+> {
+  return prisma.department.findMany({
+    where: {
+      isActive: true,
+    },
+    orderBy: {
+      name: "asc",
+    },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+}
+
+async function loadDepartmentsByEmployeeId(
+  employeeIds: string[],
+): Promise<Map<string, string | null>> {
+  const uniqueIds = [...new Set(employeeIds.filter(Boolean))];
+  const map = new Map<string, string | null>();
+
+  if (uniqueIds.length === 0) {
+    return map;
+  }
+
+  const employees = await prisma.employee.findMany({
+    where: {
+      id: { in: uniqueIds },
+    },
+    select: {
+      id: true,
+      department: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  for (const employee of employees) {
+    map.set(employee.id, employee.department?.name ?? null);
+  }
+
+  return map;
+}
+
+async function loadPostedPayslipsInRange(input: {
+  startPeriodKey: string;
+  endPeriodKey: string;
+  employeeId?: string;
+  departmentId?: string;
+}): Promise<PostedPayslipAnalyticsRow[]> {
+  const payslips = await prisma.payslip.findMany({
+    where: {
+      status: "POSTED",
+      ...(input.employeeId
+        ? { employeeId: input.employeeId }
+        : input.departmentId
+          ? { employee: { departmentId: input.departmentId } }
+          : {}),
+      payrollPeriod: {
+        periodKey: {
+          gte: input.startPeriodKey,
+          lte: input.endPeriodKey,
+        },
+      },
+    },
+    select: payslipSelect,
+    orderBy: [
+      {
+        payrollPeriod: {
+          periodEnd: "asc",
+        },
+      },
+      {
+        createdAt: "asc",
+      },
+    ],
+  });
+
+  return payslips.map(mapPostedRow);
+}
+
+function emptyPeriodShell(input: {
+  scope: EmployeePaymentHistoryScope;
+  query: string;
+  matches: EmployeePaymentHistoryMatch[];
+  selectedEmployee: EmployeePaymentHistoryMatch | null;
+  departments: EmployeePaymentHistoryDepartmentOption[];
+  selectedDepartmentId: string | null;
+  selectedDepartmentName: string | null;
+  period: EmployeePaymentHistoryReportData["period"];
+}): EmployeePaymentHistoryReportData {
+  return {
+    ...input,
+    history: null,
+    roster: null,
+  };
+}
+
 /**
- * Posted payment history for one employee over an inclusive month range.
+ * Posted payment history report — all employees, one employee, or a department.
  * Only POSTED payslips; draft / EXCLUDED never count.
  */
 export async function getEmployeePaymentHistory(input: {
+  scope?: string | null;
   employeeId?: string | null;
+  departmentId?: string | null;
   query?: string | null;
   preset?: string | null;
   startPeriodKey?: string | null;
@@ -206,102 +351,87 @@ export async function getEmployeePaymentHistory(input: {
 
   const query = input.query?.trim() ?? "";
   const employeeId = input.employeeId?.trim() || null;
+  const departmentId = input.departmentId?.trim() || null;
+  const scope = resolveEmployeePaymentHistoryScope(input.scope, {
+    employeeId,
+  });
 
-  const [selectedEmployee, matches] = await Promise.all([
-    employeeId ? getEmployeeMatch(employeeId) : Promise.resolve(null),
-    searchEmployees(query),
+  const [departments, selectedEmployee, matches] = await Promise.all([
+    listDepartments(),
+    scope === "employee" && employeeId
+      ? getEmployeeMatch(employeeId)
+      : Promise.resolve(null),
+    scope === "employee" ? searchEmployees(query) : Promise.resolve([]),
   ]);
 
-  if (!selectedEmployee) {
-    return {
-      query,
-      matches,
-      selectedEmployee: null,
-      period,
-      history: null,
-    };
-  }
+  const selectedDepartment =
+    scope === "department" && departmentId
+      ? (departments.find((department) => department.id === departmentId) ??
+        null)
+      : null;
+
+  const base = {
+    scope,
+    query,
+    matches,
+    selectedEmployee,
+    departments,
+    selectedDepartmentId: selectedDepartment?.id ?? null,
+    selectedDepartmentName: selectedDepartment?.name ?? null,
+    period,
+  };
 
   const startParsed = parseMonthlyPeriodKey(period.startPeriodKey);
   const endParsed = parseMonthlyPeriodKey(period.endPeriodKey);
-
   if (!startParsed || !endParsed) {
+    return emptyPeriodShell(base);
+  }
+
+  if (scope === "employee") {
+    if (!selectedEmployee) {
+      return emptyPeriodShell(base);
+    }
+
+    const rows = await loadPostedPayslipsInRange({
+      startPeriodKey: period.startPeriodKey,
+      endPeriodKey: period.endPeriodKey,
+      employeeId: selectedEmployee.id,
+    });
+
     return {
-      query,
-      matches,
-      selectedEmployee,
-      period,
+      ...base,
       history: assembleEmployeePaymentHistory({
         employeeId: selectedEmployee.id,
         startPeriodKey: period.startPeriodKey,
         endPeriodKey: period.endPeriodKey,
-        rows: [],
+        rows,
       }),
+      roster: null,
     };
   }
 
-  const payslips = await prisma.payslip.findMany({
-    where: {
-      employeeId: selectedEmployee.id,
-      status: "POSTED",
-      payrollPeriod: {
-        periodKey: {
-          gte: period.startPeriodKey,
-          lte: period.endPeriodKey,
-        },
-      },
-    },
-    select: {
-      id: true,
-      employeeId: true,
-      employeeNumber: true,
-      employeeName: true,
-      currency: true,
-      grossPay: true,
-      totalDeductions: true,
-      netPay: true,
-      snapshot: true,
-      payrollPeriod: {
-        select: {
-          periodKey: true,
-          name: true,
-          periodEnd: true,
-        },
-      },
-      payRun: {
-        select: {
-          id: true,
-          runNumber: true,
-          runKind: true,
-          postedAt: true,
-        },
-      },
-    },
-    orderBy: [
-      {
-        payrollPeriod: {
-          periodEnd: "asc",
-        },
-      },
-      {
-        createdAt: "asc",
-      },
-    ],
-  });
+  if (scope === "department" && !selectedDepartment) {
+    return emptyPeriodShell(base);
+  }
 
-  const rows = payslips.map(mapPostedRow);
-  const history = assembleEmployeePaymentHistory({
-    employeeId: selectedEmployee.id,
+  const rows = await loadPostedPayslipsInRange({
     startPeriodKey: period.startPeriodKey,
     endPeriodKey: period.endPeriodKey,
-    rows,
+    departmentId: selectedDepartment?.id,
   });
 
+  const departmentsByEmployeeId = await loadDepartmentsByEmployeeId(
+    rows.map((row) => row.employeeId),
+  );
+
   return {
-    query,
-    matches,
-    selectedEmployee,
-    period,
-    history,
+    ...base,
+    history: null,
+    roster: assembleEmployeePaymentRoster({
+      startPeriodKey: period.startPeriodKey,
+      endPeriodKey: period.endPeriodKey,
+      rows,
+      departmentsByEmployeeId,
+    }),
   };
 }

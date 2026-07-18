@@ -6,6 +6,7 @@ import {
   parseMonthlyPeriodKey,
 } from "./pay-period";
 import {
+  assertPayslipColumnsMatchSnapshot,
   buildPayslipSnapshot,
   extractPayslipSnapshotTotals,
   parsePayslipSnapshot,
@@ -132,7 +133,8 @@ describe("payslip-snapshot", () => {
       employeeCount: 2,
       totalGross: 15_000.21,
       totalDeductions: 150.15,
-      totalNet: 14_850.06,
+      // Cent-sum (not float accumulate): 9900.00 + 4950.05
+      totalNet: 14_850.05,
     });
   });
 
@@ -149,5 +151,36 @@ describe("payslip-snapshot", () => {
     expect(restored?.payslip.grossPay).toBe(10_000);
     expect(restored?.payslip.netPay).toBe(9_500);
     expect(liveWouldBe.netPay).not.toBe(restored?.payslip.netPay);
+  });
+
+  it("asserts denormalized columns match frozen snapshot (post invariant)", () => {
+    const snapshot = buildPayslipSnapshot(samplePayslip, sampleMeta);
+    expect(
+      assertPayslipColumnsMatchSnapshot({
+        snapshot,
+        columns: {
+          grossPay: samplePayslip.grossPay,
+          totalDeductions: samplePayslip.totalDeductions,
+          netPay: samplePayslip.netPay,
+          baseSalary: samplePayslip.baseSalary,
+          allowancesTotal: samplePayslip.allowancesTotal,
+          monthlyTaxableEarnings: samplePayslip.monthlyTaxableEarnings,
+        },
+      }),
+    ).toBe(true);
+
+    expect(
+      assertPayslipColumnsMatchSnapshot({
+        snapshot,
+        columns: {
+          grossPay: 999,
+          totalDeductions: samplePayslip.totalDeductions,
+          netPay: samplePayslip.netPay,
+          baseSalary: samplePayslip.baseSalary,
+          allowancesTotal: samplePayslip.allowancesTotal,
+          monthlyTaxableEarnings: samplePayslip.monthlyTaxableEarnings,
+        },
+      }),
+    ).toBe(false);
   });
 });

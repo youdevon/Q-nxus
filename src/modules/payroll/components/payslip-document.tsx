@@ -41,7 +41,9 @@ function LineRows({
   currency: string;
   compact?: boolean;
 }) {
-  const cellPad = compact ? "px-3 py-1" : "px-3 py-1.5";
+  const cellPad = compact
+    ? "px-3 py-1 print:px-2.5 print:py-px"
+    : "px-3 py-1.5 print:px-2.5 print:py-px";
 
   return (
     <>
@@ -51,16 +53,18 @@ function LineRows({
           className="border-b border-border/40 last:border-0"
         >
           <td className={`${cellPad} align-top`}>
-            <p className="text-sm font-medium leading-snug text-foreground">
+            <p className="text-sm font-medium leading-snug text-foreground print:text-[10px]">
               {line.label}
             </p>
             {line.detail ? (
-              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
+              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground print:mt-0 print:text-[8px]">
                 {line.detail}
               </p>
             ) : null}
           </td>
-          <td className={`${cellPad} text-right align-top text-sm`}>
+          <td
+            className={`${cellPad} text-right align-top text-sm print:text-[10px]`}
+          >
             <Amount amount={line.amount} currency={currency} />
           </td>
         </tr>
@@ -71,7 +75,7 @@ function LineRows({
 
 function SectionTitle({ children }: { children: ReactNode }) {
   return (
-    <h2 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+    <h2 className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[9px]">
       {children}
     </h2>
   );
@@ -112,14 +116,14 @@ function MetaItem({
 }) {
   return (
     <div className="min-w-0">
-      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+      <p className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground print:text-[8px]">
         {label}
       </p>
-      <p className="mt-0.5 truncate text-sm font-medium leading-tight text-foreground tabular-nums">
+      <p className="mt-0.5 truncate text-sm font-medium leading-tight text-foreground tabular-nums print:mt-0 print:text-[10px]">
         {value}
       </p>
       {detail ? (
-        <p className="mt-0.5 truncate text-[11px] leading-snug text-muted-foreground">
+        <p className="mt-0.5 truncate text-[11px] leading-snug text-muted-foreground print:mt-0 print:text-[9px]">
           {detail}
         </p>
       ) : null}
@@ -183,32 +187,32 @@ export function PayslipDocument({
         </section>
       ) : null}
 
-      <article className="overflow-hidden rounded-xl border border-border/80 bg-background shadow-sm print:rounded-none print:border print:border-border print:shadow-none">
+      <article className="overflow-hidden rounded-xl border border-border/80 bg-background print:rounded-none print:border print:border-border">
         {/* Org / period chrome + employee header */}
-        <header className="border-b border-border/70 bg-muted/25 px-4 py-3 sm:px-5 print:bg-transparent">
-          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        <header className="border-b border-border/70 bg-muted/25 px-4 py-3 sm:px-5 print:bg-transparent print:px-2.5 print:py-1.5">
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 print:gap-y-0.5">
             <div className="min-w-0">
-              <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+              <p className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground print:text-[8px]">
                 Employer
               </p>
-              <p className="mt-0.5 text-base font-semibold tracking-tight text-foreground sm:text-lg">
+              <p className="mt-0.5 text-base font-semibold tracking-tight text-foreground sm:text-lg print:mt-0 print:text-xs">
                 {meta.organizationName}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary print:text-[8px]">
                 Payslip
               </p>
-              <p className="mt-0.5 text-sm font-semibold text-foreground sm:text-base">
+              <p className="mt-0.5 text-sm font-semibold text-foreground sm:text-base print:mt-0 print:text-xs">
                 {payslip.period.label}
               </p>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-[11px] text-muted-foreground print:text-[9px]">
                 Currency {currency}
               </p>
             </div>
           </div>
 
-          <div className="mt-3 grid gap-2.5 border-t border-border/60 pt-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-3 grid gap-2.5 border-t border-border/60 pt-3 sm:grid-cols-2 lg:grid-cols-4 print:mt-1 print:gap-1 print:pt-1 print:grid-cols-4">
             <MetaItem label="Employee" value={payslip.employee.displayName} />
             <MetaItem label="Position" value={position} />
             <MetaItem
@@ -246,18 +250,18 @@ export function PayslipDocument({
 
         {/* Deductions — two compact columns when both groups exist */}
         <section className="border-b border-border/70">
-          <div className="border-b border-border/60 px-3 py-1.5 sm:px-4">
+          <div className="border-b border-border/60 px-3 py-1.5 sm:px-4 print:px-2.5 print:py-0.5">
             <SectionTitle>Deductions</SectionTitle>
           </div>
 
           {payslip.deductions.length === 0 ? (
-            <p className="px-3 py-2 text-xs text-muted-foreground sm:px-4">
+            <p className="px-3 py-2 text-xs text-muted-foreground sm:px-4 print:px-2.5 print:py-0.5">
               No employee deductions calculated.
             </p>
           ) : hasBothDeductionGroups ? (
-            <div className="grid sm:grid-cols-2 sm:divide-x sm:divide-border/70">
-              <div className="border-b border-border/60 sm:border-b-0">
-                <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent sm:px-4">
+            <div className="grid sm:grid-cols-2 sm:divide-x sm:divide-border/70 print:grid-cols-2 print:divide-x print:divide-border/70">
+              <div className="border-b border-border/60 sm:border-b-0 print:border-b-0">
+                <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
                   Statutory / tax
                 </p>
                 <CompactLinesTable
@@ -267,7 +271,7 @@ export function PayslipDocument({
                 />
               </div>
               <div>
-                <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent sm:px-4">
+                <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
                   Bank transfers
                 </p>
                 <CompactLinesTable
@@ -279,7 +283,7 @@ export function PayslipDocument({
             </div>
           ) : singleDeductionGroup ? (
             <div>
-              <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent sm:px-4">
+              <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
                 {singleDeductionGroup.title}
               </p>
               <CompactLinesTable
@@ -292,37 +296,37 @@ export function PayslipDocument({
 
           {/* Totals + net — full width under both deduction columns */}
           <div className="border-t border-border/70">
-            <div className="flex items-baseline justify-between gap-3 bg-muted/20 px-3 py-1.5 print:bg-transparent sm:px-4">
-              <p className="text-sm font-semibold text-foreground">
+            <div className="flex items-baseline justify-between gap-3 bg-muted/20 px-3 py-1.5 print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
+              <p className="text-sm font-semibold text-foreground print:text-[10px]">
                 Total deductions
               </p>
               <Amount
                 amount={payslip.totalDeductions}
                 currency={currency}
                 showCurrency
-                className="text-sm font-semibold text-foreground"
+                className="text-sm font-semibold text-foreground print:text-[10px]"
               />
             </div>
 
-            <div className="border-t border-primary/20 bg-primary/5 px-3 py-2.5 print:border-border print:bg-transparent sm:px-4">
-              <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1.5">
+            <div className="border-t border-primary/20 bg-primary/5 px-3 py-2.5 print:border-border print:bg-transparent print:px-2.5 print:py-1 sm:px-4">
+              <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1.5 print:gap-y-0">
                 <div className="min-w-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary print:text-[8px]">
                     Net pay
                   </p>
-                  <p className="mt-0.5 text-2xl font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl">
+                  <p className="mt-0.5 text-2xl font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl print:mt-0 print:text-base">
                     {formatMoney(payslip.netPay, { currency })}
                   </p>
                   {primaryBank ? (
-                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm print:mt-0 print:text-[9px]">
                       Net pay paid to primary bank — {primaryBank.bankName}
-                      <span className="ml-1.5 font-mono text-[11px]">
+                      <span className="ml-1.5 font-mono text-[11px] print:text-[9px]">
                         ({primaryBank.accountNumberMasked})
                       </span>
                     </p>
                   ) : null}
                 </div>
-                <p className="text-right text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
+                <p className="text-right text-[11px] leading-relaxed text-muted-foreground sm:text-xs print:text-[9px] print:leading-tight">
                   Gross{" "}
                   <Amount
                     amount={payslip.grossPay}
@@ -345,15 +349,15 @@ export function PayslipDocument({
         </section>
 
         {ytd && ytd.periodCount > 0 ? (
-          <section className="border-b border-border/70 px-3 py-2 sm:px-4">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+          <section className="border-b border-border/70 px-3 py-2 sm:px-4 print:px-2.5 print:py-0.5">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 print:gap-y-0">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
                 Year to date · {ytd.year}
                 <span className="ml-1.5 font-normal normal-case tracking-normal">
                   ({ytd.periodCount} period{ytd.periodCount === 1 ? "" : "s"})
                 </span>
               </p>
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] tabular-nums text-muted-foreground">
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] tabular-nums text-muted-foreground print:gap-x-2 print:text-[9px]">
                 <span>
                   Gross{" "}
                   <span className="font-medium text-foreground">
@@ -396,23 +400,23 @@ export function PayslipDocument({
         ) : null}
 
         {payslip.employerContributions.length > 0 ? (
-          <section className="border-b border-border/70 px-3 py-2 sm:px-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+          <section className="border-b border-border/70 px-3 py-2 sm:px-4 print:px-2.5 print:py-0.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
               Employer contributions
               <span className="ml-1.5 font-normal normal-case tracking-normal text-muted-foreground/80">
                 (informational — not deducted from net)
               </span>
             </p>
-            <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5">
+            <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 print:mt-0 print:gap-x-3">
               {payslip.employerContributions.map((line) => (
                 <li
                   key={line.label}
-                  className="flex items-baseline gap-1.5 text-xs"
+                  className="flex items-baseline gap-1.5 text-xs print:text-[9px]"
                 >
                   <span className="text-muted-foreground">
                     {line.label}
                     {line.detail ? (
-                      <span className="ml-1 text-[10px]">
+                      <span className="ml-1 text-[10px] print:text-[8px]">
                         ({line.detail.split(" · ")[0]})
                       </span>
                     ) : null}
@@ -429,14 +433,14 @@ export function PayslipDocument({
           </section>
         ) : null}
 
-        <footer className="px-3 py-2.5 sm:px-4">
-          <p className="text-[11px] font-medium text-muted-foreground">
+        <footer className="px-3 py-2.5 sm:px-4 print:px-2.5 print:py-1">
+          <p className="text-[11px] font-medium text-muted-foreground print:text-[9px] print:leading-tight">
             {isOfficial
               ? "Official payslip — amounts frozen from a posted pay run."
               : "Preview — not an official payslip. Pay runs have not been posted."}
           </p>
           {footerNotes.length > 0 ? (
-            <ul className="mt-1 space-y-0.5 text-[10px] leading-relaxed text-muted-foreground/90">
+            <ul className="mt-1 space-y-0.5 text-[10px] leading-relaxed text-muted-foreground/90 print:mt-0.5 print:space-y-0 print:text-[8px] print:leading-snug">
               {footerNotes.map((note) => (
                 <li key={note}>{note}</li>
               ))}

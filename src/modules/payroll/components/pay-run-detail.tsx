@@ -3,6 +3,8 @@
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  AlertTriangle,
+  Archive,
   CircleCheck,
   FileDown,
   FileText,
@@ -10,6 +12,7 @@ import {
   Plus,
   Printer,
   RefreshCw,
+  ShieldCheck,
   Trash2,
   Undo2,
   UserX,
@@ -33,14 +36,18 @@ import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
+import { payRunStatusBadgeVariant, payslipStatusBadgeVariant } from "@/src/config/ui-colors";
 import {
   addPayrollLineItem,
+  closePayRun,
   deleteDraftPayRun,
   deletePayrollLineItem,
   emailPostedPayslips,
   excludePayslipFromPayRun,
   postPayRun,
+  approveDraftPayRun,
   recalculateDraftPayRun,
+  reconcilePayRun,
   reincludePayslipInPayRun,
   type PayRunFormState,
 } from "@/src/modules/payroll/actions/manage-pay-run";
@@ -48,6 +55,26 @@ import type {
   PayRunDetail,
   PayRunPayslipRow,
 } from "@/src/modules/payroll/data/get-pay-runs";
+import {
+  canApprovePayRun,
+  canClosePayRun,
+  canPostPayRun,
+  canReconcilePayRun,
+  isPayRunPosted,
+  payRunStatusLabel,
+} from "@/src/modules/payroll/lib/pay-run-lifecycle";
+import {
+  correctionCodeForKind,
+  defaultAdjustmentLabel,
+  isCorrectionAdjustmentCode,
+  isSupplementalPayRunKind,
+  type PayrollAdjustmentKind,
+} from "@/src/modules/payroll/lib/payroll-adjustment-line";
+import {
+  formatDisplayDate,
+  formatDisplayDateTime,
+  formatMoney,
+} from "@/src/lib/format";
 import { PayrollNav } from "./payroll-nav";
 
 const initialState: PayRunFormState = {
@@ -56,26 +83,11 @@ const initialState: PayRunFormState = {
 };
 
 function formatDate(iso: string | null) {
-  if (!iso) {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-    timeZone: "America/Port_of_Spain",
-  }).format(new Date(iso));
+  return formatDisplayDate(iso, { fallback: "—" });
 }
 
 function formatDateTime(iso: string | null) {
-  if (!iso) {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "America/Port_of_Spain",
-  }).format(new Date(iso));
+  return formatDisplayDateTime(iso, { fallback: "—" });
 }
 
 function RecalculatePayRunButton({ payRunId }: { payRunId: string }) {
@@ -101,6 +113,97 @@ function RecalculatePayRunButton({ payRunId }: { payRunId: string }) {
         {pending ? "Recalculating…" : "Recalculate"}
       </Button>
     </form>
+  );
+}
+
+function ApprovePayRunButton({
+  payRunId,
+  varianceFlagCount,
+}: {
+  payRunId: string;
+  varianceFlagCount: number;
+}) {
+  const [open, setOpen] = useState(false);
+  const [state, formAction, pending] = useActionState(
+    approveDraftPayRun,
+    initialState,
+  );
+  const noteRequired = varianceFlagCount > 0;
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+      setOpen(false);
+    }
+  }, [state]);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => setOpen(true)}
+      >
+        <CircleCheck />
+        Approve for posting
+      </Button>
+      <DialogContent showCloseButton={!pending}>
+        <DialogHeader>
+          <DialogTitle>Approve this pay run?</DialogTitle>
+          <DialogDescription>
+            {noteRequired ? (
+              <>
+                This run has {varianceFlagCount} net-pay exception
+                {varianceFlagCount === 1 ? "" : "s"} requiring explanation (see
+                Exceptions below). Add a note explaining the review before
+                approving. A different payroll officer must post this run.
+              </>
+            ) : (
+              "A different payroll officer must post this run once approved."
+            )}
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          action={formAction}
+          className="flex flex-col gap-3"
+        >
+          <input type="hidden" name="payRunId" value={payRunId} />
+          <label className="grid gap-1.5 text-xs" htmlFor="approvalNote">
+            <span className="text-muted-foreground">
+              Approval note{noteRequired ? " (required)" : " (optional)"}
+            </span>
+            <Textarea
+              id="approvalNote"
+              name="approvalNote"
+              rows={3}
+              required={noteRequired}
+              placeholder={
+                noteRequired
+                  ? "Explain the flagged net-pay variance(s) before approving."
+                  : "Optional note for the approval audit trail."
+              }
+            />
+          </label>
+          {state.status === "error" ? (
+            <p className="text-xs text-destructive">{state.message}</p>
+          ) : null}
+          <DialogFooter>
+            <DialogClose
+              render={<Button type="button" variant="outline" disabled={pending} />}
+            >
+              Cancel
+            </DialogClose>
+            <Button type="submit" disabled={pending}>
+              <CircleCheck />
+              {pending ? "Approving…" : "Approve"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -198,6 +301,79 @@ function EmailPayslipsButton({ payRunId }: { payRunId: string }) {
         {pending ? "Queueing…" : "Email payslips"}
       </Button>
     </form>
+  );
+}
+
+function ReconcilePayRunButton({ payRunId }: { payRunId: string }) {
+  const [state, formAction, pending] = useActionState(
+    reconcilePayRun,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(state.message);
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    }
+  }, [state]);
+
+  return (
+    <form action={formAction}>
+      <input type="hidden" name="payRunId" value={payRunId} />
+      <Button type="submit" variant="outline" disabled={pending}>
+        <ShieldCheck />
+        {pending ? "Reconciling…" : "Mark reconciled"}
+      </Button>
+    </form>
+  );
+}
+
+function ClosePayRunButton({ payRunId }: { payRunId: string }) {
+  const [open, setOpen] = useState(false);
+  const [state, formAction, pending] = useActionState(
+    closePayRun,
+    initialState,
+  );
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(state.message);
+      setOpen(false);
+    }
+  }, [state]);
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <Button type="button" variant="outline" onClick={() => setOpen(true)}>
+        <Archive />
+        Close run
+      </Button>
+      <DialogContent showCloseButton={!pending}>
+        <DialogHeader>
+          <DialogTitle>Close this pay run?</DialogTitle>
+          <DialogDescription>
+            Closing is terminal — no further payment or reopen is possible
+            without creating a new correction or off-cycle run.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose
+            render={<Button type="button" variant="outline" disabled={pending} />}
+          >
+            Cancel
+          </DialogClose>
+          <form action={formAction}>
+            <input type="hidden" name="payRunId" value={payRunId} />
+            <Button type="submit" disabled={pending}>
+              <Archive />
+              {pending ? "Closing…" : "Close run"}
+            </Button>
+          </form>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -349,17 +525,50 @@ function RemoveLineItemButton({
   );
 }
 
-function PayrollLineItemsEditor({
+function LineItemRow({
   runId,
-  slip,
+  line,
   canManage,
   isPosted,
 }: {
   runId: string;
-  slip: PayRunPayslipRow;
+  line: PayRunPayslipRow["lineItems"][number];
   canManage: boolean;
   isPosted: boolean;
 }) {
+  const isAdjustment = isCorrectionAdjustmentCode(line.code);
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          {isAdjustment ? <Badge variant="outline">Adjustment</Badge> : null}
+          <span className="font-medium text-foreground">{line.label}</span>
+        </div>
+        <p className="mt-0.5 text-muted-foreground">
+          {line.lineType.toLowerCase()} · {line.amount}
+          {line.isTaxable ? " · taxable" : ""}
+          {line.notes ? ` · ${line.notes}` : ""}
+        </p>
+      </div>
+      {canManage && !isPosted ? (
+        <RemoveLineItemButton payRunId={runId} lineItemId={line.id} />
+      ) : null}
+    </div>
+  );
+}
+
+function AddAdjustmentPanel({
+  runId,
+  slip,
+  currency,
+}: {
+  runId: string;
+  slip: PayRunPayslipRow;
+  currency: string;
+}) {
+  const [kind, setKind] = useState<PayrollAdjustmentKind>("EARNING");
+  const [formKey, setFormKey] = useState(0);
   const [state, formAction, pending] = useActionState(
     addPayrollLineItem,
     initialState,
@@ -367,121 +576,330 @@ function PayrollLineItemsEditor({
 
   useEffect(() => {
     if (state.status === "error") {
+      toast.error(
+        state.fieldErrors?.notes ||
+          state.fieldErrors?.amount ||
+          state.message,
+      );
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+      setFormKey((key) => key + 1);
+      setKind("EARNING");
+    }
+  }, [state]);
+
+  return (
+    <div className="space-y-3 rounded-lg border border-sky-500/30 bg-sky-500/5 p-3">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Add adjustment
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Adds a one-off amount on this run. The original posted payslip is not
+          changed.
+        </p>
+      </div>
+
+      <form
+        key={formKey}
+        action={formAction}
+        className="grid gap-2 md:grid-cols-6"
+      >
+        <input type="hidden" name="payRunId" value={runId} />
+        <input type="hidden" name="payslipId" value={slip.id} />
+        <input type="hidden" name="lineType" value={kind} />
+        <input type="hidden" name="code" value={correctionCodeForKind(kind)} />
+        <input type="hidden" name="label" value={defaultAdjustmentLabel(kind)} />
+
+        <fieldset className="grid gap-1 text-xs md:col-span-2">
+          <legend className="text-muted-foreground">Type</legend>
+          <div className="flex h-9 flex-wrap items-center gap-3">
+            <label className="flex cursor-pointer items-center gap-1.5">
+              <input
+                type="radio"
+                name="adjustmentKind"
+                checked={kind === "EARNING"}
+                onChange={() => setKind("EARNING")}
+              />
+              Earning (pay more)
+            </label>
+            <label className="flex cursor-pointer items-center gap-1.5">
+              <input
+                type="radio"
+                name="adjustmentKind"
+                checked={kind === "DEDUCTION"}
+                onChange={() => setKind("DEDUCTION")}
+              />
+              Deduction (recover)
+            </label>
+          </div>
+          {state.fieldErrors?.lineType ? (
+            <p className="text-destructive">{state.fieldErrors.lineType}</p>
+          ) : null}
+        </fieldset>
+
+        <label className="grid gap-1 text-xs">
+          <span className="text-muted-foreground">Amount ({currency})</span>
+          <input
+            name="amount"
+            type="number"
+            step="0.01"
+            min="0.01"
+            className="h-9 rounded-md border border-input bg-background px-2"
+            placeholder="0.00"
+            required
+            aria-invalid={Boolean(state.fieldErrors?.amount)}
+          />
+          {state.fieldErrors?.amount ? (
+            <p className="text-destructive">{state.fieldErrors.amount}</p>
+          ) : null}
+        </label>
+
+        <label className="grid gap-1 text-xs md:col-span-2">
+          <span className="text-muted-foreground">Reason</span>
+          <input
+            name="notes"
+            className="h-9 rounded-md border border-input bg-background px-2"
+            placeholder="Why is this adjustment needed?"
+            required
+            aria-invalid={Boolean(state.fieldErrors?.notes)}
+          />
+          {state.fieldErrors?.notes ? (
+            <p className="text-destructive">{state.fieldErrors.notes}</p>
+          ) : null}
+        </label>
+
+        {kind === "EARNING" ? (
+          <label className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+            <input name="isTaxable" type="checkbox" defaultChecked />
+            Taxable earning
+          </label>
+        ) : (
+          <div className="hidden md:block" aria-hidden />
+        )}
+
+        <div className="flex items-end md:col-span-6">
+          <Button type="submit" size="sm" disabled={pending}>
+            <Plus />
+            {pending ? "Adding…" : "Add adjustment"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function AdvancedLineItemsForm({
+  runId,
+  slip,
+  includeCorrectionCodes,
+}: {
+  runId: string;
+  slip: PayRunPayslipRow;
+  includeCorrectionCodes: boolean;
+}) {
+  const [state, formAction, pending] = useActionState(
+    addPayrollLineItem,
+    initialState,
+  );
+  const [formKey, setFormKey] = useState(0);
+
+  useEffect(() => {
+    if (state.status === "error") {
       toast.error(state.message);
     }
     if (state.status === "success" && state.message) {
       toast.success(state.message);
+      setFormKey((key) => key + 1);
     }
   }, [state]);
 
-  if (slip.lineItems.length === 0 && (isPosted || !canManage)) {
+  return (
+    <form
+      key={formKey}
+      action={formAction}
+      className="grid gap-2 md:grid-cols-6"
+    >
+      <input type="hidden" name="payRunId" value={runId} />
+      <input type="hidden" name="payslipId" value={slip.id} />
+      <label className="grid gap-1 text-xs">
+        <span className="text-muted-foreground">Type</span>
+        <select
+          name="lineType"
+          className="h-9 rounded-md border border-input bg-background px-2"
+          defaultValue="EARNING"
+        >
+          <option value="EARNING">Earning</option>
+          <option value="DEDUCTION">Deduction</option>
+        </select>
+      </label>
+      <label className="grid gap-1 text-xs">
+        <span className="text-muted-foreground">Code</span>
+        <select
+          name="code"
+          className="h-9 rounded-md border border-input bg-background px-2"
+          defaultValue="OVERTIME"
+        >
+          {includeCorrectionCodes ? (
+            <>
+              <option value="CORRECTION_EARNING">Correction earning</option>
+              <option value="CORRECTION_DEDUCTION">Correction deduction</option>
+            </>
+          ) : null}
+          <option value="OVERTIME">Overtime</option>
+          <option value="BONUS">Bonus</option>
+          <option value="COMMISSION">Commission</option>
+          <option value="OTHER_EARNING">Other earning</option>
+          <option value="OTHER_DEDUCTION">Other deduction</option>
+        </select>
+      </label>
+      <label className="grid gap-1 text-xs md:col-span-2">
+        <span className="text-muted-foreground">Label</span>
+        <input
+          name="label"
+          className="h-9 rounded-md border border-input bg-background px-2"
+          placeholder="e.g. July overtime"
+          required
+        />
+      </label>
+      <label className="grid gap-1 text-xs">
+        <span className="text-muted-foreground">Amount</span>
+        <input
+          name="amount"
+          type="number"
+          step="0.01"
+          className="h-9 rounded-md border border-input bg-background px-2"
+          placeholder="0.00"
+          required
+        />
+      </label>
+      <label className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+        <input name="isTaxable" type="checkbox" defaultChecked />
+        Taxable earning
+      </label>
+      <label className="grid gap-1 text-xs md:col-span-5">
+        <span className="text-muted-foreground">Notes</span>
+        <input
+          name="notes"
+          className="h-9 rounded-md border border-input bg-background px-2"
+          placeholder={
+            includeCorrectionCodes
+              ? "Required for correction codes"
+              : "Optional audit note"
+          }
+        />
+      </label>
+      <div className="flex items-end">
+        <Button type="submit" size="sm" disabled={pending}>
+          <Plus />
+          {pending ? "Adding…" : "Add line"}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function PayrollLineItemsEditor({
+  runId,
+  slip,
+  canManage,
+  isPosted,
+  runKind,
+  currency,
+}: {
+  runId: string;
+  slip: PayRunPayslipRow;
+  canManage: boolean;
+  isPosted: boolean;
+  runKind: PayRunDetail["runKind"];
+  currency: string;
+}) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const isSupplemental = isSupplementalPayRunKind(runKind);
+  const adjustmentLines = slip.lineItems.filter((line) =>
+    isCorrectionAdjustmentCode(line.code),
+  );
+  const otherLines = slip.lineItems.filter(
+    (line) => !isCorrectionAdjustmentCode(line.code),
+  );
+
+  if (
+    slip.lineItems.length === 0 &&
+    (isPosted || !canManage)
+  ) {
     return null;
   }
 
   return (
     <div className="mt-3 space-y-3 rounded-lg border border-border/70 bg-muted/15 p-3 md:col-span-full">
-      {slip.lineItems.length > 0 ? (
+      {adjustmentLines.length > 0 ? (
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Run line items
+            Adjustments
           </p>
-          {slip.lineItems.map((line) => (
-            <div
+          {adjustmentLines.map((line) => (
+            <LineItemRow
               key={line.id}
-              className="flex flex-wrap items-center justify-between gap-2 text-xs"
-            >
-              <div>
-                <span className="font-medium text-foreground">
-                  {line.label}
-                </span>{" "}
-                <span className="text-muted-foreground">
-                  {line.lineType.toLowerCase()} · {line.amount}
-                  {line.isTaxable ? " · taxable" : ""}
-                  {line.notes ? ` · ${line.notes}` : ""}
-                </span>
-              </div>
-              {canManage && !isPosted ? (
-                <RemoveLineItemButton payRunId={runId} lineItemId={line.id} />
-              ) : null}
-            </div>
+              runId={runId}
+              line={line}
+              canManage={canManage}
+              isPosted={isPosted}
+            />
           ))}
         </div>
       ) : null}
 
+      {otherLines.length > 0 ? (
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {isSupplemental ? "Other line items" : "Run line items"}
+          </p>
+          {otherLines.map((line) => (
+            <LineItemRow
+              key={line.id}
+              runId={runId}
+              line={line}
+              canManage={canManage}
+              isPosted={isPosted}
+            />
+          ))}
+        </div>
+      ) : null}
+
+      {canManage && !isPosted && isSupplemental ? (
+        <AddAdjustmentPanel runId={runId} slip={slip} currency={currency} />
+      ) : null}
+
       {canManage && !isPosted ? (
-        <form action={formAction} className="grid gap-2 md:grid-cols-6">
-          <input type="hidden" name="payRunId" value={runId} />
-          <input type="hidden" name="payslipId" value={slip.id} />
-          <label className="grid gap-1 text-xs">
-            <span className="text-muted-foreground">Type</span>
-            <select
-              name="lineType"
-              className="h-9 rounded-md border border-input bg-background px-2"
-              defaultValue="EARNING"
+        isSupplemental ? (
+          <div className="space-y-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowAdvanced((open) => !open)}
             >
-              <option value="EARNING">Earning</option>
-              <option value="DEDUCTION">Deduction</option>
-            </select>
-          </label>
-          <label className="grid gap-1 text-xs">
-            <span className="text-muted-foreground">Code</span>
-            <select
-              name="code"
-              className="h-9 rounded-md border border-input bg-background px-2"
-              defaultValue={
-                runId && slip.lineItems.length > 0
-                  ? "OTHER_EARNING"
-                  : "OVERTIME"
-              }
-            >
-              <option value="CORRECTION_EARNING">Correction earning</option>
-              <option value="CORRECTION_DEDUCTION">Correction deduction</option>
-              <option value="OVERTIME">Overtime</option>
-              <option value="BONUS">Bonus</option>
-              <option value="COMMISSION">Commission</option>
-              <option value="OTHER_EARNING">Other earning</option>
-              <option value="OTHER_DEDUCTION">Other deduction</option>
-            </select>
-          </label>
-          <label className="grid gap-1 text-xs md:col-span-2">
-            <span className="text-muted-foreground">Label</span>
-            <input
-              name="label"
-              className="h-9 rounded-md border border-input bg-background px-2"
-              placeholder="e.g. July overtime"
-              required
-            />
-          </label>
-          <label className="grid gap-1 text-xs">
-            <span className="text-muted-foreground">Amount</span>
-            <input
-              name="amount"
-              type="number"
-              step="0.01"
-              className="h-9 rounded-md border border-input bg-background px-2"
-              placeholder="0.00"
-              required
-            />
-          </label>
-          <label className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
-            <input name="isTaxable" type="checkbox" defaultChecked />
-            Taxable earning
-          </label>
-          <label className="grid gap-1 text-xs md:col-span-5">
-            <span className="text-muted-foreground">Notes</span>
-            <input
-              name="notes"
-              className="h-9 rounded-md border border-input bg-background px-2"
-              placeholder="Optional audit note"
-            />
-          </label>
-          <div className="flex items-end">
-            <Button type="submit" size="sm" disabled={pending}>
               <Plus />
-              {pending ? "Adding…" : "Add line"}
+              {showAdvanced
+                ? "Hide other line types"
+                : "Add overtime, bonus, or other line"}
             </Button>
+            {showAdvanced ? (
+              <AdvancedLineItemsForm
+                runId={runId}
+                slip={slip}
+                includeCorrectionCodes={false}
+              />
+            ) : null}
           </div>
-        </form>
+        ) : (
+          <AdvancedLineItemsForm
+            runId={runId}
+            slip={slip}
+            includeCorrectionCodes
+          />
+        )
       ) : null}
     </div>
   );
@@ -536,11 +954,15 @@ function PayslipRow({
   slip,
   canManage,
   isPosted,
+  runKind,
+  currency,
 }: {
   runId: string;
   slip: PayRunPayslipRow;
   canManage: boolean;
   isPosted: boolean;
+  runKind: PayRunDetail["runKind"];
+  currency: string;
 }) {
   return (
     <div className="grid gap-3 py-4 md:grid-cols-[1fr_8rem_8rem_8rem_auto]">
@@ -548,7 +970,11 @@ function PayslipRow({
         <div className="flex flex-wrap items-center gap-2">
           <p className="font-medium">{slip.employeeName}</p>
           <Badge variant="outline">{slip.employeeNumber}</Badge>
-          {slip.isExcluded ? <Badge variant="secondary">Excluded</Badge> : null}
+          {slip.isExcluded ? (
+            <Badge variant={payslipStatusBadgeVariant("EXCLUDED")}>
+              Excluded
+            </Badge>
+          ) : null}
         </div>
         <p className="mt-1 text-xs text-muted-foreground">
           {[slip.jobTitle, slip.departmentName].filter(Boolean).join(" · ") ||
@@ -640,18 +1066,100 @@ function PayslipRow({
           slip={slip}
           canManage={canManage}
           isPosted={isPosted}
+          runKind={runKind}
+          currency={currency}
         />
       ) : null}
     </div>
   );
 }
 
+function reasonLabel(reason: PayRunDetail["varianceFlags"][number]["reason"]) {
+  switch (reason) {
+    case "NEW":
+      return "New pay";
+    case "ABSOLUTE":
+      return "Large change";
+    case "RELATIVE":
+      return "Large % change";
+    default:
+      return reason;
+  }
+}
+
+function ExceptionsPanel({
+  flags,
+  currency,
+}: {
+  flags: PayRunDetail["varianceFlags"];
+  currency: string;
+}) {
+  if (flags.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="mt-10">
+      <div className="mb-4 flex items-center gap-2">
+        <AlertTriangle className="size-4 text-amber-600 dark:text-amber-400" />
+        <SectionHeading>
+          Exceptions ({flags.length})
+        </SectionHeading>
+      </div>
+      <p className="mb-4 text-sm text-muted-foreground">
+        Net pay changed materially vs this employee&apos;s last posted period.
+        Review before approving — add context in the approval note.
+      </p>
+      <div className="divide-y divide-border/70 rounded-lg border border-amber-500/40 bg-amber-500/5">
+        {flags.map((flag) => (
+          <div
+            key={flag.employeeId}
+            className="grid gap-2 px-4 py-3 text-sm md:grid-cols-[1fr_7rem_7rem_7rem_auto]"
+          >
+            <p className="font-medium">{flag.employeeName}</p>
+            <div>
+              <p className="text-xs text-muted-foreground">Prior net</p>
+              <p className="tabular-nums">
+                {formatMoney(flag.priorNet, { currency })}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Current net</p>
+              <p className="tabular-nums">
+                {formatMoney(flag.currentNet, { currency })}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Delta</p>
+              <p className="tabular-nums font-medium">
+                {flag.deltaNet >= 0 ? "+" : ""}
+                {formatMoney(flag.deltaNet, { currency })}
+              </p>
+            </div>
+            <div className="flex items-center md:justify-end">
+              <Badge variant="warning">{reasonLabel(flag.reason)}</Badge>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export function PayRunDetailView({
   run,
   canManage,
+  paymentSummary = null,
 }: {
   run: PayRunDetail;
   canManage: boolean;
+  paymentSummary?: {
+    prepared: boolean;
+    paymentCount: number;
+    readyCount: number;
+    batchCount: number;
+    latestBatchStatus: string | null;
+  } | null;
 }) {
   const [postState, postAction, postPending] = useActionState(
     postPayRun,
@@ -664,7 +1172,9 @@ export function PayRunDetailView({
     }
   }, [postState]);
 
-  const isPosted = run.status === "POSTED";
+  const isPosted = isPayRunPosted(run.status);
+  const isSupplemental = isSupplementalPayRunKind(run.runKind);
+  const unexplainedVarianceCount = run.varianceFlags.length;
   const included = run.payslips.filter((slip) => !slip.isExcluded);
   const excluded = run.payslips.filter((slip) => slip.isExcluded);
   const kindSuffix =
@@ -710,11 +1220,25 @@ export function PayRunDetailView({
                 <Button
                   nativeButton={false}
                   variant="outline"
-                  render={<Link href={`/payroll/runs/${run.id}/bank-export`} />}
+                  render={<Link href={`/payroll/runs/${run.id}/payments`} />}
                 >
-                  <FileText />
-                  Bank CSV
+                  <Wallet />
+                  {paymentSummary?.prepared
+                    ? `Payments (${paymentSummary.readyCount}/${paymentSummary.paymentCount})`
+                    : "Prepare payments"}
                 </Button>
+                {canManage ? (
+                  <Button
+                    nativeButton={false}
+                    variant="outline"
+                    render={
+                      <Link href={`/payroll/runs/${run.id}/bank-export`} />
+                    }
+                  >
+                    <FileText />
+                    Bank CSV
+                  </Button>
+                ) : null}
                 {canManage ? <EmailPayslipsButton payRunId={run.id} /> : null}
                 {canManage ? (
                   <>
@@ -737,11 +1261,23 @@ export function PayRunDetailView({
                     </Button>
                   </>
                 ) : null}
+                {canManage && canReconcilePayRun(run.status) ? (
+                  <ReconcilePayRunButton payRunId={run.id} />
+                ) : null}
+                {canManage && canClosePayRun(run.status) ? (
+                  <ClosePayRunButton payRunId={run.id} />
+                ) : null}
               </>
             ) : null}
             {canManage && !isPosted ? (
               <>
                 <RecalculatePayRunButton payRunId={run.id} />
+                {canApprovePayRun(run.status) ? (
+                  <ApprovePayRunButton
+                    payRunId={run.id}
+                    varianceFlagCount={unexplainedVarianceCount}
+                  />
+                ) : null}
                 <DeleteDraftPayRunButton
                   payRunId={run.id}
                   runNumber={run.runNumber}
@@ -749,9 +1285,16 @@ export function PayRunDetailView({
                 />
                 <form action={postAction}>
                   <input type="hidden" name="payRunId" value={run.id} />
-                  <Button type="submit" disabled={postPending}>
+                  <Button
+                    type="submit"
+                    disabled={postPending || !canPostPayRun(run.status)}
+                  >
                     <Lock />
-                    {postPending ? "Posting…" : "Post pay run"}
+                    {postPending
+                      ? "Posting…"
+                      : run.status === "APPROVED"
+                        ? "Post pay run"
+                        : "Post (needs approval)"}
                   </Button>
                 </form>
               </>
@@ -773,14 +1316,16 @@ export function PayRunDetailView({
         <div>
           <p className="text-xs text-muted-foreground">Status</p>
           <div className="mt-1 flex flex-wrap gap-2">
-            {isPosted ? (
-              <Badge variant="success">
-                <CircleCheck />
-                Posted
-              </Badge>
-            ) : (
-              <Badge variant="outline">Draft</Badge>
-            )}
+            <Badge variant={payRunStatusBadgeVariant(run.status)}>
+              {isPosted ? (
+                <>
+                  <CircleCheck />
+                  {payRunStatusLabel(run.status)}
+                </>
+              ) : (
+                payRunStatusLabel(run.status)
+              )}
+            </Badge>
             {run.runKind !== "REGULAR" ? (
               <Badge variant="outline">
                 {run.runKind === "CORRECTION" ? "Correction" : "Off-cycle"}
@@ -806,6 +1351,52 @@ export function PayRunDetailView({
           <p className="mt-1 text-lg font-semibold">{run.totalNet}</p>
         </div>
       </section>
+
+      {isPosted ? (
+        <section className="mt-6 flex flex-wrap items-center justify-between gap-3 border-y border-border/60 py-3 text-sm">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-muted-foreground">Payments</span>
+            {paymentSummary?.prepared ? (
+              <>
+                <Badge variant="success">
+                  {paymentSummary.readyCount}/{paymentSummary.paymentCount} ready
+                </Badge>
+                {paymentSummary.batchCount > 0 ? (
+                  <Badge variant="outline">
+                    {paymentSummary.batchCount} batch
+                    {paymentSummary.batchCount === 1 ? "" : "es"}
+                    {paymentSummary.latestBatchStatus
+                      ? ` · ${paymentSummary.latestBatchStatus}`
+                      : ""}
+                  </Badge>
+                ) : (
+                  <Badge variant="warning">No batch yet</Badge>
+                )}
+              </>
+            ) : (
+              <Badge variant="warning">Not prepared</Badge>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {!paymentSummary?.prepared ? (
+              <p className="max-w-md text-xs text-muted-foreground">
+                Pay run is posted. Open payments to prepare disbursement
+                snapshots, then use Manual register or Bank CSV. Enable ACH only
+                after the bank confirms the export layout.
+              </p>
+            ) : null}
+            <Button
+              nativeButton={false}
+              size="sm"
+              variant="outline"
+              render={<Link href={`/payroll/runs/${run.id}/payments`} />}
+            >
+              <Wallet />
+              {paymentSummary?.prepared ? "Open payments" : "Prepare payments"}
+            </Button>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mt-8 grid gap-4 text-sm md:grid-cols-3">
         <div>
@@ -870,11 +1461,24 @@ export function PayRunDetailView({
 
       {!isPosted ? (
         <p className="mt-6 text-sm text-muted-foreground">
-          Draft amounts are snapshotted from the payslip preview calculation.
-          Use Recalculate to refresh included employees from current contracts
-          and statutory configs. Excluded employees stay out of totals and are
-          not posted. Posting freezes included payslips so later changes do not
-          rewrite history.
+          {isSupplemental ? (
+            <>
+              This {run.runKind === "CORRECTION" ? "correction" : "off-cycle"}{" "}
+              draft creates its own payslips — the original posted payslip is
+              not changed. Use <span className="font-medium text-foreground">Add adjustment</span>{" "}
+              for one-off earning or deduction deltas, then Recalculate if
+              needed. Posting freezes included payslips so later changes do not
+              rewrite history.
+            </>
+          ) : (
+            <>
+              Draft amounts are snapshotted from the payslip preview calculation.
+              Use Recalculate to refresh included employees from current contracts
+              and statutory configs. Excluded employees stay out of totals and are
+              not posted. Posting freezes included payslips so later changes do not
+              rewrite history.
+            </>
+          )}
         </p>
       ) : (
         <p className="mt-6 text-sm text-muted-foreground">
@@ -883,6 +1487,8 @@ export function PayRunDetailView({
           history for this run.
         </p>
       )}
+
+      <ExceptionsPanel flags={run.varianceFlags} currency={run.currency} />
 
       <section className="mt-10">
         <div className="mb-4 flex items-center gap-2">
@@ -903,6 +1509,8 @@ export function PayRunDetailView({
                 slip={slip}
                 canManage={canManage}
                 isPosted={isPosted}
+                runKind={run.runKind}
+                currency={run.currency}
               />
             ))}
           </div>
@@ -923,6 +1531,8 @@ export function PayRunDetailView({
                 slip={slip}
                 canManage={canManage}
                 isPosted={isPosted}
+                runKind={run.runKind}
+                currency={run.currency}
               />
             ))}
           </div>

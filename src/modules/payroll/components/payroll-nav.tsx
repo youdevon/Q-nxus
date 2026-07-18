@@ -65,7 +65,8 @@ export function PayrollNav() {
         const Icon = item.icon;
         const active =
           item.href === "/payroll"
-            ? pathname === "/payroll"
+            ? pathname === "/payroll" ||
+              pathname.startsWith("/payroll/employees/")
             : pathname.startsWith(item.href);
 
         return (

@@ -1,5 +1,7 @@
 /** Trinidad & Tobago NIS earnings-class contribution helpers (client-safe). */
 
+import { roundToCents } from "@/src/modules/payroll/lib/money";
+
 export const NIS_WEEKS_PER_MONTH = 13 / 3;
 
 /** Minimum monthly insurable earnings for Class I (below = no NIS contribution). */
@@ -60,12 +62,8 @@ export type NisContributionResult = {
   belowMinimum: boolean;
 };
 
-function roundMoney(value: number): number {
-  return Math.round(value * 100) / 100;
-}
-
 function weeklyToMonthly(weeklyAmount: number, weeksPerMonth: number): number {
-  return roundMoney(weeklyAmount * weeksPerMonth);
+  return roundToCents(weeklyAmount * weeksPerMonth);
 }
 
 function sortClasses(classes: NisEarningsClassInput[]): NisEarningsClassInput[] {
@@ -136,7 +134,7 @@ export function computeNisContribution(input: {
     employerWeekly: earningsClass.employerWeeklyAmount,
     employeeMonthly,
     employerMonthly,
-    totalMonthly: roundMoney(employeeMonthly + employerMonthly),
+    totalMonthly: roundToCents(employeeMonthly + employerMonthly),
     belowMinimum: false,
   };
 }

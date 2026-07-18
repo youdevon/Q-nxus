@@ -375,6 +375,11 @@ async function seedFeatureControls(): Promise<void> {
       },
     });
   }
+
+  const {
+    seedPayrollBankingFeatureControls,
+  } = await import("./seed-financial-institutions");
+  await seedPayrollBankingFeatureControls(prisma, organizationId);
 }
 
 async function seedDomainSettings(): Promise<void> {
@@ -386,33 +391,64 @@ async function seedDomainSettings(): Promise<void> {
       dataType: SettingDataType.BOOLEAN,
       value: false,
     },
+    {
+      settingCode: "leave.workflow",
+      moduleKey: "leave",
+      name: "Leave approval workflow",
+      description:
+        "Controls leave acknowledgement and final approval behaviour. Final approver is a Position (typically General Manager). Prefer People → Leave workflow for editing.",
+      dataType: SettingDataType.JSON,
+      value: {
+        mode: "MANAGER_THEN_HR",
+        finalApproverPositionId: null,
+        requireAllAcksBeforeFinal: true,
+        ackOrder: "ANY",
+      },
+    },
   ] as const;
 
   for (const setting of settings) {
-    await prisma.domainSetting.upsert({
+    const existing = await prisma.domainSetting.findUnique({
       where: {
         organizationId_settingCode: {
           organizationId,
           settingCode: setting.settingCode,
         },
       },
-      update: {
-        moduleKey: setting.moduleKey,
-        name: setting.name,
-        dataType: setting.dataType,
-        value: setting.value,
-        status: ConfigurationStatus.ACTIVE,
-      },
-      create: {
-        organizationId,
-        settingCode: setting.settingCode,
-        moduleKey: setting.moduleKey,
-        name: setting.name,
-        dataType: setting.dataType,
-        value: setting.value,
-        status: ConfigurationStatus.ACTIVE,
-      },
+      select: { id: true },
     });
+
+    if (existing) {
+      await prisma.domainSetting.update({
+        where: { id: existing.id },
+        data: {
+          moduleKey: setting.moduleKey,
+          name: setting.name,
+          description:
+            "description" in setting ? setting.description : undefined,
+          dataType: setting.dataType,
+          // Preserve existing values so admin workflow config is not reset.
+          ...(setting.settingCode === "leave.workflow"
+            ? {}
+            : { value: setting.value }),
+          status: ConfigurationStatus.ACTIVE,
+        },
+      });
+    } else {
+      await prisma.domainSetting.create({
+        data: {
+          organizationId,
+          settingCode: setting.settingCode,
+          moduleKey: setting.moduleKey,
+          name: setting.name,
+          description:
+            "description" in setting ? setting.description : undefined,
+          dataType: setting.dataType,
+          value: setting.value,
+          status: ConfigurationStatus.ACTIVE,
+        },
+      });
+    }
   }
 }
 
@@ -531,6 +567,7 @@ async function seedRoles(): Promise<void> {
     },
     update: {
       name: "HR Administrator",
+      isSystem: true,
       isActive: true,
     },
     create: {
@@ -538,6 +575,7 @@ async function seedRoles(): Promise<void> {
       code: "HR_ADMINISTRATOR",
       name: "HR Administrator",
       description: "Administration of Employees and workforce records.",
+      isSystem: true,
       isActive: true,
     },
   });
@@ -551,6 +589,7 @@ async function seedRoles(): Promise<void> {
     },
     update: {
       name: "Employee",
+      isSystem: true,
       isActive: true,
     },
     create: {
@@ -558,6 +597,7 @@ async function seedRoles(): Promise<void> {
       code: "EMPLOYEE",
       name: "Employee",
       description: "Standard Employee self-service access.",
+      isSystem: true,
       isActive: true,
     },
   });
@@ -701,6 +741,27 @@ async function main(): Promise<void> {
   await seedRolePermissions();
   await seedAdministrator();
   await seedModuleStatuses();
+
+  const {
+    seedFinancialInstitutions,
+    migratePayrollBankAccountsToEmployeeBankAccounts,
+    seedBankExportProfiles,
+  } = await import("./seed-financial-institutions");
+  await seedFinancialInstitutions(prisma);
+  const organization = await prisma.organization.findFirst({
+    orderBy: { createdAt: "asc" },
+    select: { id: true },
+  });
+  if (organization) {
+    await seedBankExportProfiles(prisma, organization.id);
+  }
+  const migratedBanks =
+    await migratePayrollBankAccountsToEmployeeBankAccounts(prisma);
+  if (migratedBanks > 0) {
+    console.log(
+      `Migrated ${migratedBanks} legacy PayrollBankAccount row(s) to EmployeeBankAccount.`,
+    );
+  }
 
   console.log("Q-NXUS platform foundation seeded successfully.");
   console.log("Initial administrator: admin@q-nxus.local");

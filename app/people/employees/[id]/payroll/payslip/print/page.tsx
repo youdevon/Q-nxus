@@ -1,56 +1,28 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
-import { PayslipPrintView } from "@/src/modules/payroll/components/payslip-print-view";
-import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
-import {
-  getPreviewPayslipYtd,
-  payslipPreviewToYtdContribution,
-} from "@/src/modules/payroll/data/get-payslip-ytd";
-import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
-import { payslipPeriodToAsOfDate } from "@/src/modules/payroll/lib/payslip-preview";
-import { periodKeyFromAsOf } from "@/src/modules/payroll/lib/payslip-ytd";
-
-export const metadata: Metadata = {
-  title: "Print payslip",
-};
-
-export const dynamic = "force-dynamic";
-
-type EmployeePayslipPrintPageProps = {
+type EmployeePayslipPrintRedirectProps = {
   params: Promise<{
     id: string;
   }>;
-  searchParams: Promise<{
-    period?: string;
-  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function EmployeePayslipPrintPage({
+export default async function EmployeePayslipPrintRedirect({
   params,
   searchParams,
-}: EmployeePayslipPrintPageProps) {
-  await requirePayrollViewAccess();
-
+}: EmployeePayslipPrintRedirectProps) {
   const { id } = await params;
-  const { period } = await searchParams;
-  const result = await getEmployeePayslipPreview(id, {
-    asOf: payslipPeriodToAsOfDate(period) ?? undefined,
-  });
-
-  if (!result) {
-    notFound();
+  const query = await searchParams;
+  const qs = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (typeof value === "string") {
+      qs.set(key, value);
+    } else if (Array.isArray(value)) {
+      for (const entry of value) {
+        qs.append(key, entry);
+      }
+    }
   }
-
-  const { payslip, meta } = result;
-  const resolvedPeriodKey = periodKeyFromAsOf(payslip.period.asOf);
-  const ytd = resolvedPeriodKey
-    ? await getPreviewPayslipYtd({
-        employeeId: id,
-        periodKey: resolvedPeriodKey,
-        current: payslipPreviewToYtdContribution(payslip),
-      })
-    : null;
-
-  return <PayslipPrintView payslip={payslip} meta={meta} ytd={ytd} />;
+  const suffix = qs.size > 0 ? `?${qs.toString()}` : "";
+  redirect(`/payroll/employees/${id}/payslip/print${suffix}`);
 }

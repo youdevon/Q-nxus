@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { UI_ELEVATION } from "@/src/config/ui-elevation";
+import type { FinancialInstitutionOption } from "@/src/modules/payroll/lib/payroll-setup-types";
 import {
   OTHER_FINANCIAL_INSTITUTION_ID,
   formatTtFinancialInstitutionLabel,
@@ -20,7 +22,7 @@ import {
   getTtFinancialInstitutionsGrouped,
 } from "@/src/modules/payroll/lib/tt-financial-institutions";
 
-const institutionGroups = getTtFinancialInstitutionsGrouped();
+const fallbackGroups = getTtFinancialInstitutionsGrouped();
 
 type FinancialInstitutionSelectProps = {
   id?: string;
@@ -28,11 +30,24 @@ type FinancialInstitutionSelectProps = {
   bankName: string;
   onChange: (next: { institutionId: string; bankName: string }) => void;
   disabled?: boolean;
+  /** DB-backed options; falls back to the TT TypeScript catalog when empty. */
+  institutions?: readonly FinancialInstitutionOption[];
 };
 
-function selectedLabel(institutionId: string, bankName: string): string {
+function selectedLabel(
+  institutionId: string,
+  bankName: string,
+  institutions: readonly FinancialInstitutionOption[],
+): string {
   if (institutionId === OTHER_FINANCIAL_INSTITUTION_ID) {
     return bankName.trim() || "Other (enter name)";
+  }
+
+  const fromDb = institutions.find(
+    (row) => row.id === institutionId || row.catalogKey === institutionId,
+  );
+  if (fromDb) {
+    return `${fromDb.displayName} (${fromDb.shortName})`;
   }
 
   const institution = getTtFinancialInstitutionById(institutionId);
@@ -49,10 +64,41 @@ export function FinancialInstitutionSelect({
   bankName,
   onChange,
   disabled = false,
+  institutions = [],
 }: FinancialInstitutionSelectProps) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+
+  const groups = useMemo(() => {
+    if (institutions.length === 0) {
+      return fallbackGroups.map((group) => ({
+        label: group.label,
+        items: group.institutions.map((row) => ({
+          id: row.id,
+          label: formatTtFinancialInstitutionLabel(row),
+          bankName: row.name,
+        })),
+      }));
+    }
+
+    const byType = new Map<string, FinancialInstitutionOption[]>();
+    for (const row of institutions) {
+      const key = row.institutionType;
+      const list = byType.get(key) ?? [];
+      list.push(row);
+      byType.set(key, list);
+    }
+
+    return [...byType.entries()].map(([type, rows]) => ({
+      label: type.replaceAll("_", " "),
+      items: rows.map((row) => ({
+        id: row.id,
+        label: `${row.displayName} (${row.shortName})`,
+        bankName: row.displayName,
+      })),
+    }));
+  }, [institutions]);
 
   useEffect(() => {
     if (!open) {
@@ -88,87 +134,62 @@ export function FinancialInstitutionSelect({
         id={id}
         type="button"
         variant="outline"
-        disabled={disabled}
+        role="combobox"
         aria-expanded={open}
         aria-controls={listId}
-        aria-haspopup="listbox"
-        className={cn(
-          "h-9 w-full justify-between px-3 font-normal",
-          !institutionId && "text-muted-foreground",
-        )}
-        onClick={() => setOpen((current) => !current)}
+        disabled={disabled}
+        className="w-full justify-between font-normal"
+        onClick={() => setOpen((value) => !value)}
       >
-        <span className="truncate text-left">
-          {institutionId
-            ? selectedLabel(institutionId, bankName)
-            : "Select institution…"}
+        <span className="truncate">
+          {selectedLabel(institutionId, bankName, institutions)}
         </span>
-        <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+        <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
       </Button>
 
       {open ? (
         <div
           id={listId}
-          className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-popover shadow-md"
+          className={cn(
+            "absolute z-50 mt-1 w-full overflow-hidden rounded-md border bg-popover text-popover-foreground",
+            UI_ELEVATION.raised,
+          )}
         >
-          <Command
-            filter={(value, search) => {
-              const query = search.trim().toLowerCase();
-              if (!query) {
-                return 1;
-              }
-              return value.toLowerCase().includes(query) ? 1 : 0;
-            }}
-          >
-            <CommandInput placeholder="Search by name or short name…" />
+          <Command>
+            <CommandInput placeholder="Search institutions…" />
             <CommandList>
               <CommandEmpty>No institution found.</CommandEmpty>
-              {institutionGroups.map((group) => (
-                <CommandGroup key={group.categoryId} heading={group.label}>
-                  {group.institutions.map((institution) => (
+              {groups.map((group) => (
+                <CommandGroup key={group.label} heading={group.label}>
+                  {group.items.map((item) => (
                     <CommandItem
-                      key={institution.id}
-                      value={`${institution.name} ${institution.shortName} ${institution.id}`}
-                      data-checked={
-                        institutionId === institution.id ? "true" : undefined
-                      }
+                      key={item.id}
+                      value={item.label}
                       onSelect={() => {
                         onChange({
-                          institutionId: institution.id,
-                          bankName: institution.name,
+                          institutionId: item.id,
+                          bankName: item.bankName,
                         });
                         setOpen(false);
                       }}
                     >
-                      <span className="min-w-0 flex-1 truncate">
-                        {formatTtFinancialInstitutionLabel(institution)}
-                      </span>
+                      {item.label}
                     </CommandItem>
                   ))}
                 </CommandGroup>
               ))}
-              <CommandGroup heading="Custom">
+              <CommandGroup heading="Other">
                 <CommandItem
-                  value="other custom enter name"
-                  data-checked={
-                    institutionId === OTHER_FINANCIAL_INSTITUTION_ID
-                      ? "true"
-                      : undefined
-                  }
+                  value="Other enter custom name"
                   onSelect={() => {
                     onChange({
                       institutionId: OTHER_FINANCIAL_INSTITUTION_ID,
-                      bankName:
-                        institutionId === OTHER_FINANCIAL_INSTITUTION_ID
-                          ? bankName
-                          : "",
+                      bankName: bankName.trim() || "",
                     });
                     setOpen(false);
                   }}
                 >
-                  <span className="min-w-0 flex-1 truncate">
-                    Other (enter name)
-                  </span>
+                  Other (enter name)
                 </CommandItem>
               </CommandGroup>
             </CommandList>

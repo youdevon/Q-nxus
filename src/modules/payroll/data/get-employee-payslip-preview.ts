@@ -1,5 +1,6 @@
 import { getOrganizationProfile } from "@/src/modules/admin/data/get-organization-profile";
 import { prisma } from "@/lib/prisma";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
 import { getCurrentHealthSurchargeConfig } from "@/src/modules/payroll/data/get-health-surcharge-config";
 import { getEmployeePayrollSetup } from "@/src/modules/payroll/data/get-employee-payroll-setup";
 import { getCurrentNisClasses } from "@/src/modules/payroll/data/get-nis-classes";
@@ -9,12 +10,15 @@ import { toNisClassInputs } from "@/src/modules/payroll/lib/nis-contribution";
 import { toPayeConfigInput } from "@/src/modules/payroll/lib/paye-contribution";
 import {
   assemblePayslipPreview,
+  type PayslipEarningInput,
   type PayslipPreview,
 } from "@/src/modules/payroll/lib/payslip-preview";
+import { roundToCents } from "@/src/modules/payroll/lib/money";
+import type { PayslipStatutorySnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
 import {
   calculateCalendarOverlapDays,
-  calculateCalendarProration,
   prorateMoney,
+  resolveContractPaySegments,
 } from "@/src/modules/payroll/lib/payroll-period-adjustments";
 
 export type { PayslipPreview };
@@ -29,11 +33,22 @@ export type PayslipDocumentMeta = {
 export type EmployeePayslipPreviewResult = {
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
+  statutory: PayslipStatutorySnapshot;
 };
+
+function allowanceFrequencyLabel(frequency: string): string {
+  return frequency
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
 
 /**
  * Build a monthly payslip preview for an employee using current statutory
- * configs and the current contract pay elements.
+ * configs and contract pay elements that cover the selected period.
+ *
+ * Mid-month amendments use the current contract from its start date and any
+ * prior SUPERSEDED contract only for uncovered earlier days in the period.
  */
 export async function getEmployeePayslipPreview(
   employeeId: string,
@@ -60,7 +75,15 @@ export async function getEmployeePayslipPreview(
     return null;
   }
 
-  const [nisClasses, payeConfig, healthConfig, organization, employeeExtras] =
+  const asOf = options?.asOf ?? new Date();
+  const periodStart =
+    options?.periodStart ??
+    new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth(), 1, 12));
+  const periodEnd =
+    options?.periodEnd ??
+    new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth() + 1, 0, 12));
+
+  const [nisClasses, payeConfig, healthConfig, organization, employeeExtras, contracts] =
     await Promise.all([
       getCurrentNisClasses(),
       getCurrentPayeTaxConfig(),
@@ -71,6 +94,16 @@ export async function getEmployeePayslipPreview(
         select: {
           hireDate: true,
           terminationDate: true,
+          position: {
+            select: { title: true },
+          },
+          assignments: {
+            where: { isCurrent: true },
+            take: 1,
+            select: {
+              position: { select: { title: true } },
+            },
+          },
           department: {
             select: { name: true },
           },
@@ -78,8 +111,8 @@ export async function getEmployeePayslipPreview(
             where: {
               status: "APPROVED",
               leaveType: { isPaid: false },
-              startDate: { lte: options?.periodEnd ?? options?.asOf },
-              endDate: { gte: options?.periodStart ?? options?.asOf },
+              startDate: { lte: periodEnd },
+              endDate: { gte: periodStart },
             },
             select: {
               startDate: true,
@@ -89,28 +122,98 @@ export async function getEmployeePayslipPreview(
           },
         },
       }),
+      prisma.employmentContract.findMany({
+        where: {
+          employeeId,
+          status: { in: ["ACTIVE", "SUPERSEDED"] },
+          startDate: { lte: periodEnd },
+        },
+        orderBy: [{ startDate: "asc" }, { createdAt: "asc" }],
+        select: {
+          id: true,
+          isCurrent: true,
+          status: true,
+          startDate: true,
+          endDate: true,
+          terminationDate: true,
+          baseSalary: true,
+          jobTitle: true,
+          currency: true,
+          allowances: {
+            select: {
+              amount: true,
+              frequency: true,
+              isTaxable: true,
+              category: { select: { name: true } },
+            },
+          },
+        },
+      }),
     ]);
 
-  const asOf = options?.asOf ?? new Date();
-  const periodStart =
-    options?.periodStart ??
-    new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth(), 1, 12));
-  const periodEnd =
-    options?.periodEnd ??
-    new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth() + 1, 0, 12));
-  const proration = calculateCalendarProration({
+  const coverage = resolveContractPaySegments({
     periodStart,
     periodEnd,
     employeeHireDate: employeeExtras?.hireDate,
     employeeTerminationDate: employeeExtras?.terminationDate,
-    contractStartDate: setup.currentContract?.startDate,
-    contractEndDate: setup.currentContract?.endDate,
-    contractTerminationDate: setup.currentContract?.terminationDate,
+    contracts: contracts.map((contract) => ({
+      id: contract.id,
+      isCurrent: contract.isCurrent,
+      status: contract.status,
+      startDate: contract.startDate,
+      endDate: contract.endDate,
+      terminationDate: contract.terminationDate,
+      baseSalary: Number(contract.baseSalary.toString()),
+      jobTitle: contract.jobTitle,
+      currency: contract.currency,
+      allowances: contract.allowances.map((allowance) => ({
+        label: allowance.category.name,
+        amount: Number(allowance.amount.toString()),
+        frequency: allowanceFrequencyLabel(allowance.frequency),
+        isTaxable: allowance.isTaxable,
+      })),
+    })),
   });
 
-  const monthlyBaseSalary = setup.payElements
-    .filter((element) => element.source === "CONTRACT_SALARY")
-    .reduce((sum, element) => sum + Number(element.amount), 0);
+  const earnings: PayslipEarningInput[] = [];
+
+  for (const segment of coverage.segments) {
+    const salaryAmount = prorateMoney(segment.baseSalary, segment.factor);
+    earnings.push({
+      label: `Base salary — ${segment.jobTitle}`,
+      amount: salaryAmount,
+      frequency: "Monthly",
+      isTaxable: true,
+      source: "CONTRACT_SALARY",
+      detail: segment.detail ?? undefined,
+    });
+
+    for (const allowance of segment.allowances) {
+      earnings.push({
+        label: allowance.label,
+        amount: prorateMoney(allowance.amount, segment.factor),
+        frequency: allowance.frequency,
+        isTaxable: allowance.isTaxable,
+        source: "CONTRACT_ALLOWANCE",
+        detail: segment.detail ?? undefined,
+      });
+    }
+  }
+
+  const unpaidLeaveDailyRateBase =
+    coverage.segments.find((segment) =>
+      contracts.some(
+        (contract) =>
+          contract.id === segment.contractId &&
+          contract.isCurrent &&
+          contract.status === "ACTIVE",
+      ),
+    )?.baseSalary ??
+    coverage.segments[coverage.segments.length - 1]?.baseSalary ??
+    (setup.currentContract
+      ? Number(setup.currentContract.baseSalary)
+      : 0);
+
   const unpaidLeaveDeductions =
     employeeExtras?.leaveRequests.map((request) => {
       const days = calculateCalendarOverlapDays({
@@ -120,13 +223,37 @@ export async function getEmployeePayslipPreview(
         endDate: request.endDate,
       });
       const dailyRate =
-        proration.periodDays > 0 ? monthlyBaseSalary / proration.periodDays : 0;
+        coverage.periodDays > 0
+          ? unpaidLeaveDailyRateBase / coverage.periodDays
+          : 0;
       return {
         label: `Unpaid leave — ${request.leaveType.name}`,
-        amount: Math.round(days * dailyRate * 100) / 100,
+        amount: roundToCents(days * dailyRate),
         detail: `${days} calendar day${days === 1 ? "" : "s"} overlapping period`,
       };
     }) ?? [];
+
+  const primarySegment =
+    coverage.segments.find((segment) =>
+      contracts.some(
+        (contract) =>
+          contract.id === segment.contractId &&
+          contract.isCurrent &&
+          contract.status === "ACTIVE",
+      ),
+    ) ?? coverage.segments[coverage.segments.length - 1];
+
+  const readiness =
+    coverage.segments.length === 0 && Boolean(setup.currentContract)
+      ? {
+          isReady: setup.readiness.isReady,
+          blockingIssues: [
+            ...setup.readiness.blockingIssues,
+            coverage.detail ??
+              "No contract covers this pay period — earnings are zero.",
+          ],
+        }
+      : setup.readiness;
 
   const payslip = assemblePayslipPreview({
     employee: {
@@ -134,10 +261,11 @@ export async function getEmployeePayslipPreview(
       employeeNumber: setup.employee.employeeNumber,
       displayName: setup.employee.displayName,
       dateOfBirth: setup.employee.dateOfBirth,
-      nisNumber: setup.profile?.nisNumber ?? null,
-      birNumber: setup.profile?.birNumber ?? null,
+      nisNumber: setup.statutoryNumbers.nisNumber,
+      birNumber: setup.statutoryNumbers.birNumber,
     },
     currency:
+      primarySegment?.currency ??
       setup.currentContract?.currency ??
       setup.payElements[0]?.currency ??
       "TTD",
@@ -146,18 +274,7 @@ export async function getEmployeePayslipPreview(
     asOf,
     periodStart,
     periodEnd,
-    earnings: setup.payElements.map((element) => ({
-      label: element.label,
-      amount:
-        element.source === "CONTRACT_SALARY" ||
-        element.source === "CONTRACT_ALLOWANCE"
-          ? prorateMoney(Number(element.amount), proration.factor)
-          : Number(element.amount),
-      frequency: element.frequency,
-      isTaxable: element.isTaxable,
-      source: element.source,
-      detail: proration.detail ?? undefined,
-    })).concat(
+    earnings: earnings.concat(
       (options?.variableEarnings ?? []).map((line) => ({
         label: line.label,
         amount: line.amount,
@@ -175,14 +292,27 @@ export async function getEmployeePayslipPreview(
       bankName: account.bankName,
       accountNumber: account.accountNumber,
       amount: account.amount != null ? Number(account.amount) : null,
+      percentage:
+        account.percentage != null ? Number(account.percentage) : null,
       isPrimary: account.isPrimary,
+      allocationKind: account.isPrimary
+        ? ("REMAINDER" as const)
+        : account.percentage != null && Number(account.percentage) > 0
+          ? ("PERCENTAGE" as const)
+          : ("FIXED" as const),
+      priority: account.sortOrder,
     })),
-    readiness: setup.readiness,
+    postNetSplitEnabled: setup.bankingFlags.postNetSplitEnabled,
+    readiness,
     td1OtherApprovedAnnual:
       setup.profile?.td1OtherApprovedAnnual != null
         ? Number(setup.profile.td1OtherApprovedAnnual)
         : 0,
     pensionOnlyIncome: setup.profile?.pensionOnlyIncome ?? false,
+    exemptFromNis: setup.profile?.exemptFromNis ?? false,
+    exemptFromHealthSurcharge:
+      setup.profile?.exemptFromHealthSurcharge ?? false,
+    exemptFromPaye: setup.profile?.exemptFromPaye ?? false,
     nisClasses: toNisClassInputs(nisClasses),
     payeConfig: payeConfig != null ? toPayeConfigInput(payeConfig) : null,
     healthConfig:
@@ -196,8 +326,27 @@ export async function getEmployeePayslipPreview(
         organization?.legalName?.trim() ||
         organization?.name?.trim() ||
         "Organization",
-      jobTitle: setup.currentContract?.jobTitle ?? null,
+      jobTitle: resolveEmployeePositionTitle({
+        assignmentPositionTitle:
+          employeeExtras?.assignments[0]?.position?.title,
+        positionTitle: employeeExtras?.position?.title,
+        contractJobTitle:
+          primarySegment?.jobTitle ??
+          setup.currentContract?.positionTitle ??
+          null,
+      }),
       departmentName: employeeExtras?.department?.name ?? null,
+    },
+    statutory: {
+      payeConfigId: payeConfig?.id ?? null,
+      payeVersionLabel: payeConfig?.versionLabel ?? null,
+      payeEffectiveFrom: payeConfig?.effectiveFrom ?? null,
+      healthConfigId: healthConfig?.id ?? null,
+      healthVersionLabel: healthConfig?.versionLabel ?? null,
+      healthEffectiveFrom: healthConfig?.effectiveFrom ?? null,
+      nisVersionLabel: nisClasses[0]?.versionLabel ?? null,
+      nisEffectiveFrom: nisClasses[0]?.effectiveFrom ?? null,
+      nisClassCount: nisClasses.length,
     },
   };
 }

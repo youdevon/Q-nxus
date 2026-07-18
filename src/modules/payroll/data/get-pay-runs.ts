@@ -5,20 +5,30 @@ import {
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
+import { evaluateNetPayVariance, type PayVarianceFlag } from "@/src/modules/payroll/lib/pay-variance";
 import {
   computePayslipDelta,
   netDeltaDirection,
   formatSignedMoney,
 } from "@/src/modules/payroll/lib/payroll-correction-delta";
+import { isPayRunPosted } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import { isPayslipIncludedInRun } from "@/src/modules/payroll/lib/pay-run-membership";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
 import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import { resolvePayrollOrganization } from "@/src/modules/payroll/lib/resolve-payroll-organization";
+
+export type PayRunLifecycleStatusFilter =
+  | "DRAFT"
+  | "APPROVED"
+  | "POSTED"
+  | "RECONCILED"
+  | "CLOSED";
 
 export type PayRunListItem = {
   id: string;
   runNumber: string;
-  status: "DRAFT" | "POSTED";
+  status: PayRunLifecycleStatusFilter;
   runKind: "REGULAR" | "CORRECTION" | "OFF_CYCLE";
   currency: string;
   employeeCount: number;
@@ -77,7 +87,7 @@ export type PayRunPayslipRow = {
 export type PayRunDetail = {
   id: string;
   runNumber: string;
-  status: "DRAFT" | "POSTED";
+  status: PayRunLifecycleStatusFilter;
   runKind: "REGULAR" | "CORRECTION" | "OFF_CYCLE";
   sourcePayRunId: string | null;
   sourceRunNumber: string | null;
@@ -92,6 +102,9 @@ export type PayRunDetail = {
   createdAt: string;
   createdByName: string | null;
   postedByName: string | null;
+  approvedAt: string | null;
+  approvedByName: string | null;
+  approvalNote: string | null;
   /** Most recent recalculation of this run (from the audit trail). */
   lastRecalc: { byName: string | null; at: string } | null;
   /** Recent bank / GL export events for this run (most recent first). */
@@ -111,14 +124,29 @@ export type PayRunDetail = {
     periodEnd: string;
   };
   payslips: PayRunPayslipRow[];
+  /**
+   * Net-pay variance vs the employee's prior posted period (REGULAR
+   * draft/approved runs only). Only flags requiring explanation are
+   * included — used to drive the Exceptions panel before approval.
+   */
+  varianceFlags: PayVarianceFlag[];
 };
 
 function decimalLabel(value: { toString(): string }, currency: string) {
   return formatMoney(Number(value.toString()), { currency });
 }
 
-export async function listPayRuns(): Promise<PayRunListItem[]> {
+export async function listPayRuns(options?: {
+  /** Actor whose organization scopes the returned runs. Resolves via session/legacy fallback when omitted. */
+  actorUserId?: string | null;
+  organizationId?: string | null;
+}): Promise<PayRunListItem[]> {
+  const organizationId =
+    options?.organizationId ??
+    (await resolvePayrollOrganization({ actorUserId: options?.actorUserId })).id;
+
   const runs = await prisma.payRun.findMany({
+    where: { organizationId },
     orderBy: [{ createdAt: "desc" }],
     include: {
       payrollPeriod: {
@@ -156,9 +184,17 @@ export async function listPayRuns(): Promise<PayRunListItem[]> {
 
 export async function getPayRunDetail(
   payRunId: string,
+  options?: {
+    actorUserId?: string | null;
+    organizationId?: string | null;
+  },
 ): Promise<PayRunDetail | null> {
+  const organizationId =
+    options?.organizationId ??
+    (await resolvePayrollOrganization({ actorUserId: options?.actorUserId })).id;
+
   const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+    where: { id: payRunId, organizationId },
     include: {
       payrollPeriod: true,
       sourcePayRun: {
@@ -184,6 +220,7 @@ export async function getPayRunDetail(
       [
         run.createdById,
         run.postedById,
+        run.approvedById,
         ...run.payslips.map((slip) => slip.excludedByUserId),
       ].filter((id): id is string => Boolean(id)),
     ),
@@ -334,6 +371,56 @@ export async function getPayRunDetail(
     }
   }
 
+  // Net-pay variance vs the prior posted period — REGULAR draft/approved runs
+  // only. Corrections/off-cycle already have their own original-vs-correction
+  // comparison above and are not compared period-over-period here.
+  const varianceFlags: PayVarianceFlag[] = [];
+
+  if (
+    run.runKind === "REGULAR" &&
+    (run.status === "DRAFT" || run.status === "APPROVED")
+  ) {
+    const includedSlips = run.payslips.filter((slip) =>
+      isPayslipIncludedInRun(slip.status),
+    );
+    const employeeIds = [
+      ...new Set(includedSlips.map((slip) => slip.employeeId)),
+    ];
+
+    const priorPostedSlips =
+      employeeIds.length > 0
+        ? await prisma.payslip.findMany({
+            where: {
+              employeeId: { in: employeeIds },
+              status: "POSTED",
+              payrollPeriod: { periodEnd: { lt: run.payrollPeriod.periodEnd } },
+            },
+            orderBy: [{ payrollPeriod: { periodEnd: "desc" } }],
+            select: { employeeId: true, netPay: true },
+          })
+        : [];
+
+    const priorNetByEmployee = new Map<string, number>();
+    for (const slip of priorPostedSlips) {
+      if (!priorNetByEmployee.has(slip.employeeId)) {
+        priorNetByEmployee.set(slip.employeeId, Number(slip.netPay.toString()));
+      }
+    }
+
+    for (const slip of includedSlips) {
+      const flag = evaluateNetPayVariance({
+        employeeId: slip.employeeId,
+        employeeName: slip.employeeName,
+        priorNet: priorNetByEmployee.get(slip.employeeId) ?? null,
+        currentNet: Number(slip.netPay.toString()),
+      });
+
+      if (flag.requiresExplanation) {
+        varianceFlags.push(flag);
+      }
+    }
+  }
+
   return {
     id: run.id,
     runNumber: run.runNumber,
@@ -356,6 +443,12 @@ export async function getPayRunDetail(
     postedByName: run.postedById
       ? (userNameById.get(run.postedById) ?? null)
       : null,
+    varianceFlags,
+    approvedAt: run.approvedAt?.toISOString() ?? null,
+    approvedByName: run.approvedById
+      ? (userNameById.get(run.approvedById) ?? null)
+      : null,
+    approvalNote: run.approvalNote,
     lastRecalc,
     exports,
     period: {
@@ -566,7 +659,7 @@ export async function getPayRunBatchPrint(
     },
   });
 
-  if (!run || run.status !== "POSTED") {
+  if (!run || !isPayRunPosted(run.status)) {
     return null;
   }
 

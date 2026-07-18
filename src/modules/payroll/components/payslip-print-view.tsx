@@ -53,14 +53,17 @@ export function PayslipPrintView({
         </div>
       </div>
 
+      {/* A4 portrait: one detailed payslip per page. */}
       <div className="mx-auto max-w-[210mm] px-4 py-6 print:max-w-none print:px-0 print:py-0">
-        <PayslipDocument
-          payslip={payslip}
-          meta={meta}
-          ytd={ytd}
-          showWarnings={!isOfficial}
-          isOfficial={isOfficial}
-        />
+        <div className="payslip-sheet">
+          <PayslipDocument
+            payslip={payslip}
+            meta={meta}
+            ytd={ytd}
+            showWarnings={!isOfficial}
+            isOfficial={isOfficial}
+          />
+        </div>
       </div>
     </div>
   );

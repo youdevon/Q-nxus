@@ -10,9 +10,17 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "jobs:run": "npx tsx scripts/run-scheduled-jobs.ts",
     "email:process": "npx tsx scripts/process-email-queue.ts",
     "notify:vacation-forfeiture": "npx tsx scripts/notify-vacation-forfeiture.ts",
-    "seed:access": "npx tsx prisma/seed-access-roles.ts"
+    "notify:correspondence-ack": "npx tsx scripts/notify-correspondence-ack.ts",
+    "notify:correspondence-backfill": "npx tsx scripts/backfill-correspondence-notifications.ts",
+    "backfill:employee-login-emails": "npx tsx scripts/backfill-employee-login-emails.ts",
+    "archive:correspondence-retention": "npx tsx scripts/archive-correspondence-retention.ts",
+    "seed:access": "npx tsx prisma/seed-access-roles.ts",
+    "banking:backfill-accounts": "npx tsx scripts/backfill-employee-bank-accounts.ts",
+    "banking:migrate-encrypt": "npx tsx scripts/migrate-encrypt-bank-accounts.ts",
+    "payroll:parallel": "npx tsx scripts/parallel-payroll-compare.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
