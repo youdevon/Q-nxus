@@ -692,7 +692,7 @@ export async function getLeaveRequestDetail(leaveRequestId: string) {
     return null;
   }
 
-  const capabilities = await getUserCapabilities(user.id);
+  const capabilities = await getUserCapabilities();
   const canManageLeave = capabilities?.can("leave.manage") ?? false;
 
   const canView =

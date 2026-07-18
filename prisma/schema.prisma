@@ -666,6 +666,8 @@ model UserRole {
   role           Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
   sourcePosition Position? @relation(fields: [sourcePositionId], references: [id], onDelete: SetNull)
 
+  /// Partial unique for ACTIVE/PENDING grants: see migration
+  /// `user_roles_userId_roleId_active_key` (revoked rows may reuse the pair).
   @@index([userId, status])
   @@index([roleId, status])
   @@index([userId, source, status])
@@ -2074,6 +2076,8 @@ model EmployeeBankAccount {
   accountType              BankAccountType               @default(SAVINGS)
   currencyCode             String                        @default("TTD")
   nickname                 String?
+  /// At most one active primary per employee: partial unique
+  /// `employee_bank_accounts_one_primary_per_employee` (migration).
   isPrimary                Boolean                       @default(false)
   isPayrollEnabled         Boolean                       @default(true)
   isVerified               Boolean                       @default(false)

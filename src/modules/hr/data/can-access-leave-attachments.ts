@@ -32,7 +32,7 @@ export async function canAccessLeaveRequestAttachments(
     return false;
   }
 
-  const capabilities = await getUserCapabilities(user.id);
+  const capabilities = await getUserCapabilities();
   const canManageLeave = capabilities?.can("leave.manage") ?? false;
 
   return (

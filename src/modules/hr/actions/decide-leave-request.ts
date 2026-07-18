@@ -14,14 +14,18 @@ import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { findUsersWithPermission } from "@/src/modules/hr/data/find-users-with-permission";
+import { getLeaveWorkflowSettings } from "@/src/modules/hr/data/get-leave-workflow-settings";
+import { resolveFinalApproverByPosition } from "@/src/modules/hr/data/resolve-leave-reporting-line";
 import {
   applyLeaveApprove,
   applyLeaveRelease,
 } from "@/src/modules/hr/lib/leave-balance-math";
 import {
-  isLeaveAwaitingDecision,
+  isLeaveAwaitingApprovalDecision,
   resolveLeaveDecisionOutcome,
 } from "@/src/modules/hr/lib/leave-decision-outcome";
+import { leaveRequestAuditSuffix } from "@/src/modules/hr/lib/leave-request-audit-label";
+import { canFinalApproverAct } from "@/src/modules/hr/lib/leave-reporting-line";
 import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
 
 export type LeaveDecisionFormState = {
@@ -44,9 +48,8 @@ function nullableText(formData: FormData, key: string): string | null {
  * - Assigned pending approver may decide their step.
  * - `leave.manage` may override any pending step (HR).
  * - `leave.approve` alone may NOT override others' steps.
- * - Manager approve (step 1, without leave.manage) advances to
- *   MANAGER_APPROVED and creates an HR confirmation step.
- * - HR confirm (step 2) or leave.manage approve finalizes APPROVED.
+ * - Behaviour depends on org leave.workflow settings (manager→HR,
+ *   direct manager, ack-then-final, etc.).
  */
 export async function decideLeaveRequest(
   _previousState: LeaveDecisionFormState,
@@ -127,6 +130,11 @@ export async function decideLeaveRequest(
           stepNumber: "asc",
         },
       },
+      acknowledgements: {
+        select: {
+          status: true,
+        },
+      },
     },
   });
 
@@ -137,10 +145,13 @@ export async function decideLeaveRequest(
     };
   }
 
-  if (!isLeaveAwaitingDecision(request.status)) {
+  if (!isLeaveAwaitingApprovalDecision(request.status)) {
     return {
       status: "error",
-      message: "This leave request is no longer awaiting a decision.",
+      message:
+        request.status === LeaveRequestStatus.AWAITING_ACKNOWLEDGEMENT
+          ? "This leave request is still awaiting acknowledgements."
+          : "This leave request is no longer awaiting a decision.",
     };
   }
 
@@ -148,8 +159,23 @@ export async function decideLeaveRequest(
     request.approvalSteps.find((step) => step.approverUserId === user.id) ??
     null;
 
-  const capabilities = await getUserCapabilities(user.id);
+  const capabilities = await getUserCapabilities();
   const canManageLeave = capabilities?.can("leave.manage") ?? false;
+  const workflow = await getLeaveWorkflowSettings(request.organizationId);
+
+  if (
+    workflow.mode === "REPORTING_LINE_ACK_THEN_FINAL" &&
+    !canFinalApproverAct({
+      requireAllAcksBeforeFinal: workflow.requireAllAcksBeforeFinal,
+      acknowledgements: request.acknowledgements,
+    })
+  ) {
+    return {
+      status: "error",
+      message:
+        "Final approval is blocked until all reporting-line acknowledgements are complete.",
+    };
+  }
 
   // Assigned approver first; HR leave.manage may override unassigned
   // or another user's pending step. leave.approve alone cannot override.
@@ -168,6 +194,7 @@ export async function decideLeaveRequest(
     decision,
     stepNumber: stepToDecide.stepNumber,
     canManageLeave,
+    mode: workflow.mode,
   });
 
   const metadata = await getAuditRequestMetadata(formData);
@@ -245,11 +272,82 @@ export async function decideLeaveRequest(
             action: "APPROVE",
             entityType: "LeaveRequest",
             entityId: request.id,
-            description: `Manager approved leave request ${request.requestNumber ?? request.id} for ${request.employee.employeeNumber}; awaiting HR confirmation.`,
+            description: `Manager approved leave request${leaveRequestAuditSuffix(request.requestNumber)} for ${request.employee.employeeNumber}; awaiting HR confirmation.`,
             newValues: {
               decision,
               decisionComment,
               status: LeaveRequestStatus.MANAGER_APPROVED,
+              override: !assignedStep,
+            },
+            ipAddress: metadata.ipAddress,
+            userAgent: metadata.userAgent,
+            clientHostName: metadata.clientHostName,
+          },
+        });
+
+        return;
+      }
+
+      if (outcome.kind === "advance_to_final") {
+        if (!workflow.finalApproverPositionId) {
+          throw new Error(
+            "Final approver position is not configured for this leave workflow.",
+          );
+        }
+
+        const finalApprover = await resolveFinalApproverByPosition(
+          workflow.finalApproverPositionId,
+        );
+
+        if (!finalApprover?.userId) {
+          throw new Error(
+            "The final approver could not be resolved for the next approval step.",
+          );
+        }
+
+        const requestResult = await transaction.leaveRequest.updateMany({
+          where: {
+            id: request.id,
+            status: {
+              in: [...awaitingStatuses],
+            },
+          },
+          data: {
+            status: LeaveRequestStatus.PENDING_APPROVAL,
+            finalDecisionByUserId: null,
+            finalDecisionComment: decisionComment,
+          },
+        });
+
+        if (requestResult.count !== 1) {
+          throw new Error(
+            "This leave request is no longer awaiting a decision.",
+          );
+        }
+
+        await transaction.leaveApprovalStep.create({
+          data: {
+            leaveRequestId: request.id,
+            stepNumber: stepToDecide.stepNumber + 1,
+            approverUserId: finalApprover.userId,
+            approverPositionId: finalApprover.positionId,
+            status: LeaveApprovalStatus.PENDING,
+          },
+        });
+
+        await transaction.auditEvent.create({
+          data: {
+            userId: user.id,
+            moduleKey: "hr",
+            action: "APPROVE",
+            entityType: "LeaveRequest",
+            entityId: request.id,
+            description: `Manager approved leave request${leaveRequestAuditSuffix(request.requestNumber)} for ${request.employee.employeeNumber}; awaiting final approval.`,
+            newValues: {
+              decision,
+              decisionComment,
+              status: LeaveRequestStatus.PENDING_APPROVAL,
+              finalApproverUserId: finalApprover.userId,
               override: !assignedStep,
             },
             ipAddress: metadata.ipAddress,
@@ -357,8 +455,8 @@ export async function decideLeaveRequest(
             referenceType: "LeaveRequest",
             referenceId: request.id,
             description: approved
-              ? `Leave taken for approved request ${request.requestNumber ?? request.id}.`
-              : `Released reserved leave for rejected request ${request.requestNumber ?? request.id}.`,
+              ? `Leave taken for approved request${leaveRequestAuditSuffix(request.requestNumber)}.`
+              : `Released reserved leave for rejected request${leaveRequestAuditSuffix(request.requestNumber)}.`,
             createdByUserId: user.id,
           },
         });
@@ -371,7 +469,7 @@ export async function decideLeaveRequest(
           action: approved ? "APPROVE" : "REJECT",
           entityType: "LeaveRequest",
           entityId: request.id,
-          description: `${approved ? "Approved" : "Rejected"} leave request ${request.requestNumber ?? request.id} for ${request.employee.employeeNumber}.`,
+          description: `${approved ? "Approved" : "Rejected"} leave request${leaveRequestAuditSuffix(request.requestNumber)} for ${request.employee.employeeNumber}.`,
           newValues: {
             decision,
             decisionComment,
@@ -407,7 +505,7 @@ export async function decideLeaveRequest(
             message: `${request.employee.firstName} ${request.employee.lastName}'s ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was approved by their manager and needs HR confirmation.`,
             severity: NotificationSeverity.INFORMATION,
             moduleKey: "hr",
-            actionUrl: `/leave/${request.id}`,
+            actionUrl: `/people/leave/${request.id}`,
             relatedType: "LeaveRequest",
             relatedId: request.id,
             recipients,
@@ -433,7 +531,7 @@ export async function decideLeaveRequest(
             message: `Your ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was approved by your manager and is awaiting HR confirmation.`,
             severity: NotificationSeverity.INFORMATION,
             moduleKey: "hr",
-            actionUrl: `/leave/${request.id}`,
+            actionUrl: `/people/leave/${request.id}`,
             relatedType: "LeaveRequest",
             relatedId: request.id,
             recipients: [
@@ -457,14 +555,96 @@ export async function decideLeaveRequest(
         }
       }
 
-      revalidatePath("/leave");
-      revalidatePath(`/leave/${request.id}`);
+      revalidatePath("/people/leave");
+      revalidatePath(`/people/leave/${request.id}`);
       revalidatePath("/notifications");
 
       return {
         status: "success",
         message:
           "Leave request approved. It is now awaiting HR confirmation.",
+      };
+    }
+
+    if (outcome.kind === "advance_to_final") {
+      if (workflow.finalApproverPositionId) {
+        try {
+          const finalApprover = await resolveFinalApproverByPosition(
+            workflow.finalApproverPositionId,
+          );
+
+          if (finalApprover?.userId) {
+            await createSystemNotification({
+              title: "Leave ready for final approval",
+              message: `${request.employee.firstName} ${request.employee.lastName}'s ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was approved by their manager and needs your approval.`,
+              severity: NotificationSeverity.INFORMATION,
+              moduleKey: "hr",
+              actionUrl: `/people/leave/${request.id}`,
+              relatedType: "LeaveRequest",
+              relatedId: request.id,
+              recipients: [
+                {
+                  userId: finalApprover.userId,
+                  email: finalApprover.userEmail,
+                  name: finalApprover.userName,
+                  sendEmail: Boolean(finalApprover.userEmail),
+                },
+              ],
+              email: {
+                subject: `Final approval · ${request.requestNumber ?? "Leave request"}`,
+                actionLabel: "Review leave request",
+              },
+            });
+          }
+        } catch (notificationError) {
+          console.error(
+            "Leave advanced to final approver but notification failed:",
+            notificationError,
+          );
+        }
+      }
+
+      const employeeUser = request.employee.user;
+
+      if (employeeUser?.isActive) {
+        try {
+          await createSystemNotification({
+            title: "Leave approved by manager",
+            message: `Your ${request.leaveType.name} request (${request.requestNumber ?? "leave request"}) was approved by your manager and is awaiting final approval.`,
+            severity: NotificationSeverity.INFORMATION,
+            moduleKey: "hr",
+            actionUrl: `/people/leave/${request.id}`,
+            relatedType: "LeaveRequest",
+            relatedId: request.id,
+            recipients: [
+              {
+                userId: employeeUser.id,
+                email: employeeUser.email,
+                name: `${employeeUser.firstName} ${employeeUser.lastName}`,
+                sendEmail: Boolean(employeeUser.email),
+              },
+            ],
+            email: {
+              subject: `Manager approved · ${request.requestNumber ?? "Leave request"}`,
+              actionLabel: "View leave request",
+            },
+          });
+        } catch (notificationError) {
+          console.error(
+            "Leave advanced to final but employee notification failed:",
+            notificationError,
+          );
+        }
+      }
+
+      revalidatePath("/people/leave");
+      revalidatePath(`/people/leave/${request.id}`);
+      revalidatePath("/notifications");
+
+      return {
+        status: "success",
+        message:
+          "Leave request approved. It is now awaiting final approval.",
       };
     }
 
@@ -482,7 +662,7 @@ export async function decideLeaveRequest(
             ? NotificationSeverity.SUCCESS
             : NotificationSeverity.WARNING,
           moduleKey: "hr",
-          actionUrl: `/leave/${request.id}`,
+          actionUrl: `/people/leave/${request.id}`,
           relatedType: "LeaveRequest",
           relatedId: request.id,
           recipients: [
@@ -506,8 +686,8 @@ export async function decideLeaveRequest(
       }
     }
 
-    revalidatePath("/leave");
-    revalidatePath(`/leave/${request.id}`);
+    revalidatePath("/people/leave");
+    revalidatePath(`/people/leave/${request.id}`);
     revalidatePath("/people/leave/balances");
     revalidatePath("/notifications");
 
