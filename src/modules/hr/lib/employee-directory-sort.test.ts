@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_EMPLOYEE_DIRECTORY_ORDER,
@@ -11,48 +10,48 @@ import {
 
 describe("employee-directory-sort", () => {
   it("defaults to name ascending", () => {
-    assert.deepEqual(parseEmployeeDirectorySort({}), {
+    expect(parseEmployeeDirectorySort({})).toEqual({
       sort: DEFAULT_EMPLOYEE_DIRECTORY_SORT,
       order: DEFAULT_EMPLOYEE_DIRECTORY_ORDER,
     });
   });
 
   it("uses field default order when order is omitted", () => {
-    assert.deepEqual(parseEmployeeDirectorySort({ sort: "hireDate" }), {
+    expect(parseEmployeeDirectorySort({ sort: "hireDate" })).toEqual({
       sort: "hireDate",
       order: "desc",
     });
-    assert.deepEqual(parseEmployeeDirectorySort({ sort: "number" }), {
+    expect(parseEmployeeDirectorySort({ sort: "number" })).toEqual({
       sort: "number",
       order: "asc",
     });
   });
 
   it("ignores invalid sort values", () => {
-    assert.deepEqual(parseEmployeeDirectorySort({ sort: "nope", order: "desc" }), {
+    expect(
+      parseEmployeeDirectorySort({ sort: "nope", order: "desc" }),
+    ).toEqual({
       sort: "name",
       order: "desc",
     });
   });
 
   it("toggles order for the same field and resets for a new field", () => {
-    assert.deepEqual(
+    expect(
       nextEmployeeDirectorySort({ sort: "name", order: "asc" }, "name"),
-      { sort: "name", order: "desc" },
-    );
-    assert.deepEqual(
+    ).toEqual({ sort: "name", order: "desc" });
+    expect(
       nextEmployeeDirectorySort({ sort: "name", order: "asc" }, "hireDate"),
-      { sort: "hireDate", order: "desc" },
-    );
+    ).toEqual({ sort: "hireDate", order: "desc" });
   });
 
   it("builds prisma orderBy for hire date and employee number", () => {
-    assert.deepEqual(employeeDirectoryOrderBy("hireDate", "desc"), [
+    expect(employeeDirectoryOrderBy("hireDate", "desc")).toEqual([
       { hireDate: "desc" },
       { lastName: "asc" },
       { firstName: "asc" },
     ]);
-    assert.deepEqual(employeeDirectoryOrderBy("number", "asc"), [
+    expect(employeeDirectoryOrderBy("number", "asc")).toEqual([
       { employeeNumber: "asc" },
       { lastName: "asc" },
       { firstName: "asc" },

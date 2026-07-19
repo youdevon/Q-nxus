@@ -1,21 +1,18 @@
 /**
  * Org-scoped employment contract approval workflow (DomainSetting `contracts.workflow`).
- * Modes match the Prisma `ContractWorkflowMode` enum.
+ * Mode string values match the Prisma `ContractWorkflowMode` enum (keep in sync).
+ *
+ * Keep this module free of Node / Prisma client imports — it is used from client components.
  */
-
-import {
-  ContractWorkflowMode as ContractWorkflowModeEnum,
-  type ContractWorkflowMode,
-} from "@/generated/prisma/client";
-
-export type { ContractWorkflowMode };
 
 export const CONTRACT_WORKFLOW_SETTING_CODE = "contracts.workflow";
 
 export const CONTRACT_WORKFLOW_MODES = [
-  ContractWorkflowModeEnum.PEOPLE_MANAGE_AUTO,
-  ContractWorkflowModeEnum.FINAL_APPROVER_POSITION,
+  "PEOPLE_MANAGE_AUTO",
+  "FINAL_APPROVER_POSITION",
 ] as const;
+
+export type ContractWorkflowMode = (typeof CONTRACT_WORKFLOW_MODES)[number];
 
 export type ContractWorkflowSettings = {
   mode: ContractWorkflowMode;
@@ -26,7 +23,7 @@ export type ContractWorkflowSettings = {
 };
 
 export const DEFAULT_CONTRACT_WORKFLOW_SETTINGS: ContractWorkflowSettings = {
-  mode: ContractWorkflowModeEnum.PEOPLE_MANAGE_AUTO,
+  mode: "PEOPLE_MANAGE_AUTO",
   finalApproverPositionId: null,
   requireDualSignature: true,
 };
@@ -72,14 +69,14 @@ export function parseContractWorkflowSettings(
 export function contractWorkflowRequiresFinalApprover(
   mode: ContractWorkflowMode,
 ): boolean {
-  return mode === ContractWorkflowModeEnum.FINAL_APPROVER_POSITION;
+  return mode === "FINAL_APPROVER_POSITION";
 }
 
 export function contractWorkflowModeLabel(mode: ContractWorkflowMode): string {
   switch (mode) {
-    case ContractWorkflowModeEnum.PEOPLE_MANAGE_AUTO:
+    case "PEOPLE_MANAGE_AUTO":
       return "HR / contracts managers (auto-approve)";
-    case ContractWorkflowModeEnum.FINAL_APPROVER_POSITION:
+    case "FINAL_APPROVER_POSITION":
       return "Final approver position";
     default:
       return mode;
