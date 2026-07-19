@@ -112,8 +112,6 @@ An Employment Contract should contain:
 
 - Position
 
-- Job title
-
 - Employment type
 
 - Assignment type
@@ -220,6 +218,20 @@ Contract type alone must not determine all Payroll or Leave behaviour.
 
 ## 6. Contract Statuses
 
+Implemented statuses on `EmploymentContract.status`:
+
+| Status | Meaning |
+|--------|---------|
+| `DRAFT` | Being prepared; not current; does not affect payroll or leave |
+| `PENDING_APPROVAL` | Submitted for review (`EmploymentContractApprovalStep`) |
+| `APPROVED` | Internally approved; may still need signatures |
+| `AWAITING_SIGNATURE` | Native employee and/or organization acceptance outstanding |
+| `ACTIVE` | In force; may be `isCurrent` and drive payroll/leave |
+| `EXPIRED` | Ended by date |
+| `SUPERSEDED` | Replaced by a later activated version |
+| `TERMINATED` | Closed early |
+| `CANCELLED` | Cancelled before or after use |
+
 ### Draft
 
 The contract is being prepared and has not entered the approval process.
@@ -232,7 +244,7 @@ Rules:
 
 - Must not affect Payroll
 
-- Must not become the employee’s current contract
+- Must not become the employee’s current contract (`isCurrent` stays false)
 
 ### Pending Approval
 
@@ -244,7 +256,7 @@ Rules:
 
 - Material changes may require resubmission
 
-- Approval workflow must be auditable
+- Approval workflow must be auditable (`EmploymentContractApprovalStep`)
 
 ### Approved
 
@@ -254,9 +266,7 @@ Rules:
 
 - May still require signatures
 
-- Must not become active before its effective date
-
-- Approved compensation may be prepared for Payroll consumption
+- Must not become active before activation (or Save & activate shortcut)
 
 ### Awaiting Signature
 
@@ -264,11 +274,9 @@ The contract is approved but has not been fully executed.
 
 Rules:
 
-- Employee or organizational signature remains outstanding
+- Employee or organizational signature remains outstanding (`employeeSignedAt` / `orgSignedAt`)
 
-- Activation depends on policy
-
-- Signature reminders may be generated
+- Activation depends on `contracts.workflow` dual-signature setting
 
 ### Active
 
@@ -294,7 +302,7 @@ Rules:
 
 - Renewal, extension or conclusion action may be required
 
-- Expiring is generally a derived status
+- Expiring is generally a derived status (monitoring dashboard)
 
 ### Expired
 

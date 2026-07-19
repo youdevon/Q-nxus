@@ -231,6 +231,8 @@ export type PositionWhereInput = {
   userRoleGrants?: Prisma.UserRoleListRelationFilter
   leaveApprovalSteps?: Prisma.LeaveApprovalStepListRelationFilter
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementListRelationFilter
+  employmentContracts?: Prisma.EmploymentContractListRelationFilter
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepListRelationFilter
 }
 
 export type PositionOrderByWithRelationInput = {
@@ -253,6 +255,8 @@ export type PositionOrderByWithRelationInput = {
   userRoleGrants?: Prisma.UserRoleOrderByRelationAggregateInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepOrderByRelationAggregateInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementOrderByRelationAggregateInput
+  employmentContracts?: Prisma.EmploymentContractOrderByRelationAggregateInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepOrderByRelationAggregateInput
 }
 
 export type PositionWhereUniqueInput = Prisma.AtLeast<{
@@ -279,6 +283,8 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   userRoleGrants?: Prisma.UserRoleListRelationFilter
   leaveApprovalSteps?: Prisma.LeaveApprovalStepListRelationFilter
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementListRelationFilter
+  employmentContracts?: Prisma.EmploymentContractListRelationFilter
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepListRelationFilter
 }, "id" | "departmentId_title">
 
 export type PositionOrderByWithAggregationInput = {
@@ -331,6 +337,8 @@ export type PositionCreateInput = {
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateInput = {
@@ -351,6 +359,8 @@ export type PositionUncheckedCreateInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUpdateInput = {
@@ -371,6 +381,8 @@ export type PositionUpdateInput = {
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateInput = {
@@ -391,6 +403,8 @@ export type PositionUncheckedUpdateInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionCreateManyInput = {
@@ -686,6 +700,38 @@ export type PositionUpdateOneRequiredWithoutLeaveAcknowledgementsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutLeaveAcknowledgementsInput, Prisma.PositionUpdateWithoutLeaveAcknowledgementsInput>, Prisma.PositionUncheckedUpdateWithoutLeaveAcknowledgementsInput>
 }
 
+export type PositionCreateNestedOneWithoutEmploymentContractsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutEmploymentContractsInput, Prisma.PositionUncheckedCreateWithoutEmploymentContractsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutEmploymentContractsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneWithoutEmploymentContractsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutEmploymentContractsInput, Prisma.PositionUncheckedCreateWithoutEmploymentContractsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutEmploymentContractsInput
+  upsert?: Prisma.PositionUpsertWithoutEmploymentContractsInput
+  disconnect?: Prisma.PositionWhereInput | boolean
+  delete?: Prisma.PositionWhereInput | boolean
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutEmploymentContractsInput, Prisma.PositionUpdateWithoutEmploymentContractsInput>, Prisma.PositionUncheckedUpdateWithoutEmploymentContractsInput>
+}
+
+export type PositionCreateNestedOneWithoutContractApprovalStepsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutContractApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutContractApprovalStepsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutContractApprovalStepsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneWithoutContractApprovalStepsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutContractApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutContractApprovalStepsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutContractApprovalStepsInput
+  upsert?: Prisma.PositionUpsertWithoutContractApprovalStepsInput
+  disconnect?: Prisma.PositionWhereInput | boolean
+  delete?: Prisma.PositionWhereInput | boolean
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutContractApprovalStepsInput, Prisma.PositionUpdateWithoutContractApprovalStepsInput>, Prisma.PositionUncheckedUpdateWithoutContractApprovalStepsInput>
+}
+
 export type PositionCreateWithoutUserRoleGrantsInput = {
   id?: string
   title: string
@@ -703,6 +749,8 @@ export type PositionCreateWithoutUserRoleGrantsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutUserRoleGrantsInput = {
@@ -722,6 +770,8 @@ export type PositionUncheckedCreateWithoutUserRoleGrantsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutUserRoleGrantsInput = {
@@ -757,6 +807,8 @@ export type PositionUpdateWithoutUserRoleGrantsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutUserRoleGrantsInput = {
@@ -776,6 +828,8 @@ export type PositionUncheckedUpdateWithoutUserRoleGrantsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionCreateWithoutDepartmentInput = {
@@ -795,6 +849,8 @@ export type PositionCreateWithoutDepartmentInput = {
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutDepartmentInput = {
@@ -814,6 +870,8 @@ export type PositionUncheckedCreateWithoutDepartmentInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutDepartmentInput = {
@@ -875,6 +933,8 @@ export type PositionCreateWithoutDirectReportsInput = {
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutDirectReportsInput = {
@@ -894,6 +954,8 @@ export type PositionUncheckedCreateWithoutDirectReportsInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutDirectReportsInput = {
@@ -918,6 +980,8 @@ export type PositionCreateWithoutReportsToPositionInput = {
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutReportsToPositionInput = {
@@ -937,6 +1001,8 @@ export type PositionUncheckedCreateWithoutReportsToPositionInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutReportsToPositionInput = {
@@ -977,6 +1043,8 @@ export type PositionUpdateWithoutDirectReportsInput = {
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutDirectReportsInput = {
@@ -996,6 +1064,8 @@ export type PositionUncheckedUpdateWithoutDirectReportsInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUpsertWithWhereUniqueWithoutReportsToPositionInput = {
@@ -1031,6 +1101,8 @@ export type PositionCreateWithoutEmployeesInput = {
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutEmployeesInput = {
@@ -1050,6 +1122,8 @@ export type PositionUncheckedCreateWithoutEmployeesInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutEmployeesInput = {
@@ -1085,6 +1159,8 @@ export type PositionUpdateWithoutEmployeesInput = {
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutEmployeesInput = {
@@ -1104,6 +1180,8 @@ export type PositionUncheckedUpdateWithoutEmployeesInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionCreateWithoutJobDescriptionsInput = {
@@ -1123,6 +1201,8 @@ export type PositionCreateWithoutJobDescriptionsInput = {
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutJobDescriptionsInput = {
@@ -1142,6 +1222,8 @@ export type PositionUncheckedCreateWithoutJobDescriptionsInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutJobDescriptionsInput = {
@@ -1177,6 +1259,8 @@ export type PositionUpdateWithoutJobDescriptionsInput = {
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutJobDescriptionsInput = {
@@ -1196,6 +1280,8 @@ export type PositionUncheckedUpdateWithoutJobDescriptionsInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionCreateWithoutAssignmentsInput = {
@@ -1215,6 +1301,8 @@ export type PositionCreateWithoutAssignmentsInput = {
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutAssignmentsInput = {
@@ -1234,6 +1322,8 @@ export type PositionUncheckedCreateWithoutAssignmentsInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutAssignmentsInput = {
@@ -1269,6 +1359,8 @@ export type PositionUpdateWithoutAssignmentsInput = {
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutAssignmentsInput = {
@@ -1288,6 +1380,8 @@ export type PositionUncheckedUpdateWithoutAssignmentsInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionCreateWithoutLeaveApprovalStepsInput = {
@@ -1307,6 +1401,8 @@ export type PositionCreateWithoutLeaveApprovalStepsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutLeaveApprovalStepsInput = {
@@ -1326,6 +1422,8 @@ export type PositionUncheckedCreateWithoutLeaveApprovalStepsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutLeaveApprovalStepsInput = {
@@ -1361,6 +1459,8 @@ export type PositionUpdateWithoutLeaveApprovalStepsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutLeaveApprovalStepsInput = {
@@ -1380,6 +1480,8 @@ export type PositionUncheckedUpdateWithoutLeaveApprovalStepsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionCreateWithoutLeaveAcknowledgementsInput = {
@@ -1399,6 +1501,8 @@ export type PositionCreateWithoutLeaveAcknowledgementsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
   userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionUncheckedCreateWithoutLeaveAcknowledgementsInput = {
@@ -1418,6 +1522,8 @@ export type PositionUncheckedCreateWithoutLeaveAcknowledgementsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
   userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
 }
 
 export type PositionCreateOrConnectWithoutLeaveAcknowledgementsInput = {
@@ -1453,6 +1559,8 @@ export type PositionUpdateWithoutLeaveAcknowledgementsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
@@ -1472,6 +1580,208 @@ export type PositionUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
   jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionCreateWithoutEmploymentContractsInput = {
+  id?: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionUncheckedCreateWithoutEmploymentContractsInput = {
+  id?: string
+  departmentId: string
+  reportsToPositionId?: string | null
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+}
+
+export type PositionCreateOrConnectWithoutEmploymentContractsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutEmploymentContractsInput, Prisma.PositionUncheckedCreateWithoutEmploymentContractsInput>
+}
+
+export type PositionUpsertWithoutEmploymentContractsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutEmploymentContractsInput, Prisma.PositionUncheckedUpdateWithoutEmploymentContractsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutEmploymentContractsInput, Prisma.PositionUncheckedCreateWithoutEmploymentContractsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutEmploymentContractsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutEmploymentContractsInput, Prisma.PositionUncheckedUpdateWithoutEmploymentContractsInput>
+}
+
+export type PositionUpdateWithoutEmploymentContractsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutEmploymentContractsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+}
+
+export type PositionCreateWithoutContractApprovalStepsInput = {
+  id?: string
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+  reportsToPosition?: Prisma.PositionCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.PositionCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionCreateNestedManyWithoutPositionInput
+  userRoleGrants?: Prisma.UserRoleCreateNestedManyWithoutSourcePositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverPositionInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutPositionInput
+}
+
+export type PositionUncheckedCreateWithoutContractApprovalStepsInput = {
+  id?: string
+  departmentId: string
+  reportsToPositionId?: string | null
+  title: string
+  code?: string | null
+  description?: string | null
+  systemRoleCode?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.PositionUncheckedCreateNestedManyWithoutReportsToPositionInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutPositionInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutPositionInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedCreateNestedManyWithoutPositionInput
+  userRoleGrants?: Prisma.UserRoleUncheckedCreateNestedManyWithoutSourcePositionInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverPositionInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutPositionInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutPositionInput
+}
+
+export type PositionCreateOrConnectWithoutContractApprovalStepsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutContractApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutContractApprovalStepsInput>
+}
+
+export type PositionUpsertWithoutContractApprovalStepsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutContractApprovalStepsInput, Prisma.PositionUncheckedUpdateWithoutContractApprovalStepsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutContractApprovalStepsInput, Prisma.PositionUncheckedCreateWithoutContractApprovalStepsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutContractApprovalStepsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutContractApprovalStepsInput, Prisma.PositionUncheckedUpdateWithoutContractApprovalStepsInput>
+}
+
+export type PositionUpdateWithoutContractApprovalStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutPositionsNestedInput
+  reportsToPosition?: Prisma.PositionUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.PositionUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUpdateManyWithoutPositionNestedInput
+  userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutContractApprovalStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  reportsToPositionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  systemRoleCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.PositionUncheckedUpdateManyWithoutReportsToPositionNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutPositionNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutPositionNestedInput
+  jobDescriptions?: Prisma.PositionJobDescriptionUncheckedUpdateManyWithoutPositionNestedInput
+  userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionCreateManyDepartmentInput = {
@@ -1503,6 +1813,8 @@ export type PositionUpdateWithoutDepartmentInput = {
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutDepartmentInput = {
@@ -1522,6 +1834,8 @@ export type PositionUncheckedUpdateWithoutDepartmentInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
@@ -1565,6 +1879,8 @@ export type PositionUpdateWithoutReportsToPositionInput = {
   userRoleGrants?: Prisma.UserRoleUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutReportsToPositionInput = {
@@ -1584,6 +1900,8 @@ export type PositionUncheckedUpdateWithoutReportsToPositionInput = {
   userRoleGrants?: Prisma.UserRoleUncheckedUpdateManyWithoutSourcePositionNestedInput
   leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
   leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutPositionNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverPositionNestedInput
 }
 
 export type PositionUncheckedUpdateManyWithoutReportsToPositionInput = {
@@ -1611,6 +1929,8 @@ export type PositionCountOutputType = {
   userRoleGrants: number
   leaveApprovalSteps: number
   leaveAcknowledgements: number
+  employmentContracts: number
+  contractApprovalSteps: number
 }
 
 export type PositionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1621,6 +1941,8 @@ export type PositionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   userRoleGrants?: boolean | PositionCountOutputTypeCountUserRoleGrantsArgs
   leaveApprovalSteps?: boolean | PositionCountOutputTypeCountLeaveApprovalStepsArgs
   leaveAcknowledgements?: boolean | PositionCountOutputTypeCountLeaveAcknowledgementsArgs
+  employmentContracts?: boolean | PositionCountOutputTypeCountEmploymentContractsArgs
+  contractApprovalSteps?: boolean | PositionCountOutputTypeCountContractApprovalStepsArgs
 }
 
 /**
@@ -1682,6 +2004,20 @@ export type PositionCountOutputTypeCountLeaveAcknowledgementsArgs<ExtArgs extend
   where?: Prisma.LeaveRequestAcknowledgementWhereInput
 }
 
+/**
+ * PositionCountOutputType without action
+ */
+export type PositionCountOutputTypeCountEmploymentContractsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+/**
+ * PositionCountOutputType without action
+ */
+export type PositionCountOutputTypeCountContractApprovalStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmploymentContractApprovalStepWhereInput
+}
+
 
 export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1703,6 +2039,8 @@ export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   userRoleGrants?: boolean | Prisma.Position$userRoleGrantsArgs<ExtArgs>
   leaveApprovalSteps?: boolean | Prisma.Position$leaveApprovalStepsArgs<ExtArgs>
   leaveAcknowledgements?: boolean | Prisma.Position$leaveAcknowledgementsArgs<ExtArgs>
+  employmentContracts?: boolean | Prisma.Position$employmentContractsArgs<ExtArgs>
+  contractApprovalSteps?: boolean | Prisma.Position$contractApprovalStepsArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
 
@@ -1760,6 +2098,8 @@ export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   userRoleGrants?: boolean | Prisma.Position$userRoleGrantsArgs<ExtArgs>
   leaveApprovalSteps?: boolean | Prisma.Position$leaveApprovalStepsArgs<ExtArgs>
   leaveAcknowledgements?: boolean | Prisma.Position$leaveAcknowledgementsArgs<ExtArgs>
+  employmentContracts?: boolean | Prisma.Position$employmentContractsArgs<ExtArgs>
+  contractApprovalSteps?: boolean | Prisma.Position$contractApprovalStepsArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PositionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1783,6 +2123,8 @@ export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     userRoleGrants: Prisma.$UserRolePayload<ExtArgs>[]
     leaveApprovalSteps: Prisma.$LeaveApprovalStepPayload<ExtArgs>[]
     leaveAcknowledgements: Prisma.$LeaveRequestAcknowledgementPayload<ExtArgs>[]
+    employmentContracts: Prisma.$EmploymentContractPayload<ExtArgs>[]
+    contractApprovalSteps: Prisma.$EmploymentContractApprovalStepPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2201,6 +2543,8 @@ export interface Prisma__PositionClient<T, Null = never, ExtArgs extends runtime
   userRoleGrants<T extends Prisma.Position$userRoleGrantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$userRoleGrantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveApprovalSteps<T extends Prisma.Position$leaveApprovalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$leaveApprovalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveAcknowledgements<T extends Prisma.Position$leaveAcknowledgementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$leaveAcknowledgementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestAcknowledgementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employmentContracts<T extends Prisma.Position$employmentContractsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$employmentContractsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  contractApprovalSteps<T extends Prisma.Position$contractApprovalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$contractApprovalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2825,6 +3169,54 @@ export type Position$leaveAcknowledgementsArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.LeaveRequestAcknowledgementScalarFieldEnum | Prisma.LeaveRequestAcknowledgementScalarFieldEnum[]
+}
+
+/**
+ * Position.employmentContracts
+ */
+export type Position$employmentContractsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContract
+   */
+  select?: Prisma.EmploymentContractSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmploymentContract
+   */
+  omit?: Prisma.EmploymentContractOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmploymentContractInclude<ExtArgs> | null
+  where?: Prisma.EmploymentContractWhereInput
+  orderBy?: Prisma.EmploymentContractOrderByWithRelationInput | Prisma.EmploymentContractOrderByWithRelationInput[]
+  cursor?: Prisma.EmploymentContractWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmploymentContractScalarFieldEnum | Prisma.EmploymentContractScalarFieldEnum[]
+}
+
+/**
+ * Position.contractApprovalSteps
+ */
+export type Position$contractApprovalStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContractApprovalStep
+   */
+  select?: Prisma.EmploymentContractApprovalStepSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmploymentContractApprovalStep
+   */
+  omit?: Prisma.EmploymentContractApprovalStepOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmploymentContractApprovalStepInclude<ExtArgs> | null
+  where?: Prisma.EmploymentContractApprovalStepWhereInput
+  orderBy?: Prisma.EmploymentContractApprovalStepOrderByWithRelationInput | Prisma.EmploymentContractApprovalStepOrderByWithRelationInput[]
+  cursor?: Prisma.EmploymentContractApprovalStepWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmploymentContractApprovalStepScalarFieldEnum | Prisma.EmploymentContractApprovalStepScalarFieldEnum[]
 }
 
 /**

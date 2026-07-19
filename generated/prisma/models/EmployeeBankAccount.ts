@@ -2248,6 +2248,10 @@ export type $EmployeeBankAccountPayload<ExtArgs extends runtime.Types.Extensions
     accountType: $Enums.BankAccountType
     currencyCode: string
     nickname: string | null
+    /**
+     * At most one active primary per employee: partial unique
+     * `employee_bank_accounts_one_primary_per_employee` (migration).
+     */
     isPrimary: boolean
     isPayrollEnabled: boolean
     isVerified: boolean

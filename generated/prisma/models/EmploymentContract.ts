@@ -30,12 +30,24 @@ export type EmploymentContractAvgAggregateOutputType = {
   baseSalary: runtime.Decimal | null
   gratuityRate: runtime.Decimal | null
   gratuityTaxRate: runtime.Decimal | null
+  fte: runtime.Decimal | null
+  standardHoursPerWeek: runtime.Decimal | null
+  noticePeriodDays: number | null
+  documentSize: number | null
+  vacationLeaveDaysOverride: runtime.Decimal | null
+  sickLeaveDaysOverride: runtime.Decimal | null
 }
 
 export type EmploymentContractSumAggregateOutputType = {
   baseSalary: runtime.Decimal | null
   gratuityRate: runtime.Decimal | null
   gratuityTaxRate: runtime.Decimal | null
+  fte: runtime.Decimal | null
+  standardHoursPerWeek: runtime.Decimal | null
+  noticePeriodDays: number | null
+  documentSize: number | null
+  vacationLeaveDaysOverride: runtime.Decimal | null
+  sickLeaveDaysOverride: runtime.Decimal | null
 }
 
 export type EmploymentContractMinAggregateOutputType = {
@@ -54,13 +66,31 @@ export type EmploymentContractMinAggregateOutputType = {
   gratuityEligible: boolean | null
   gratuityRate: runtime.Decimal | null
   gratuityTaxRate: runtime.Decimal | null
+  positionId: string | null
+  departmentId: string | null
+  fte: runtime.Decimal | null
+  standardHoursPerWeek: runtime.Decimal | null
+  probationEndDate: Date | null
+  noticePeriodDays: number | null
+  approvedAt: Date | null
+  approvedByUserId: string | null
+  employeeSignedAt: Date | null
+  orgSignedAt: Date | null
+  activatedAt: Date | null
   isCurrent: boolean | null
   signedDate: Date | null
   collectedAt: Date | null
   terminationDate: Date | null
   terminationReason: string | null
   documentReference: string | null
+  documentStorageKey: string | null
+  documentFileName: string | null
+  documentMimeType: string | null
+  documentSize: number | null
+  storedFileId: string | null
   notes: string | null
+  vacationLeaveDaysOverride: runtime.Decimal | null
+  sickLeaveDaysOverride: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -81,13 +111,31 @@ export type EmploymentContractMaxAggregateOutputType = {
   gratuityEligible: boolean | null
   gratuityRate: runtime.Decimal | null
   gratuityTaxRate: runtime.Decimal | null
+  positionId: string | null
+  departmentId: string | null
+  fte: runtime.Decimal | null
+  standardHoursPerWeek: runtime.Decimal | null
+  probationEndDate: Date | null
+  noticePeriodDays: number | null
+  approvedAt: Date | null
+  approvedByUserId: string | null
+  employeeSignedAt: Date | null
+  orgSignedAt: Date | null
+  activatedAt: Date | null
   isCurrent: boolean | null
   signedDate: Date | null
   collectedAt: Date | null
   terminationDate: Date | null
   terminationReason: string | null
   documentReference: string | null
+  documentStorageKey: string | null
+  documentFileName: string | null
+  documentMimeType: string | null
+  documentSize: number | null
+  storedFileId: string | null
   notes: string | null
+  vacationLeaveDaysOverride: runtime.Decimal | null
+  sickLeaveDaysOverride: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -108,13 +156,31 @@ export type EmploymentContractCountAggregateOutputType = {
   gratuityEligible: number
   gratuityRate: number
   gratuityTaxRate: number
+  positionId: number
+  departmentId: number
+  fte: number
+  standardHoursPerWeek: number
+  probationEndDate: number
+  noticePeriodDays: number
+  approvedAt: number
+  approvedByUserId: number
+  employeeSignedAt: number
+  orgSignedAt: number
+  activatedAt: number
   isCurrent: number
   signedDate: number
   collectedAt: number
   terminationDate: number
   terminationReason: number
   documentReference: number
+  documentStorageKey: number
+  documentFileName: number
+  documentMimeType: number
+  documentSize: number
+  storedFileId: number
   notes: number
+  vacationLeaveDaysOverride: number
+  sickLeaveDaysOverride: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -125,12 +191,24 @@ export type EmploymentContractAvgAggregateInputType = {
   baseSalary?: true
   gratuityRate?: true
   gratuityTaxRate?: true
+  fte?: true
+  standardHoursPerWeek?: true
+  noticePeriodDays?: true
+  documentSize?: true
+  vacationLeaveDaysOverride?: true
+  sickLeaveDaysOverride?: true
 }
 
 export type EmploymentContractSumAggregateInputType = {
   baseSalary?: true
   gratuityRate?: true
   gratuityTaxRate?: true
+  fte?: true
+  standardHoursPerWeek?: true
+  noticePeriodDays?: true
+  documentSize?: true
+  vacationLeaveDaysOverride?: true
+  sickLeaveDaysOverride?: true
 }
 
 export type EmploymentContractMinAggregateInputType = {
@@ -149,13 +227,31 @@ export type EmploymentContractMinAggregateInputType = {
   gratuityEligible?: true
   gratuityRate?: true
   gratuityTaxRate?: true
+  positionId?: true
+  departmentId?: true
+  fte?: true
+  standardHoursPerWeek?: true
+  probationEndDate?: true
+  noticePeriodDays?: true
+  approvedAt?: true
+  approvedByUserId?: true
+  employeeSignedAt?: true
+  orgSignedAt?: true
+  activatedAt?: true
   isCurrent?: true
   signedDate?: true
   collectedAt?: true
   terminationDate?: true
   terminationReason?: true
   documentReference?: true
+  documentStorageKey?: true
+  documentFileName?: true
+  documentMimeType?: true
+  documentSize?: true
+  storedFileId?: true
   notes?: true
+  vacationLeaveDaysOverride?: true
+  sickLeaveDaysOverride?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -176,13 +272,31 @@ export type EmploymentContractMaxAggregateInputType = {
   gratuityEligible?: true
   gratuityRate?: true
   gratuityTaxRate?: true
+  positionId?: true
+  departmentId?: true
+  fte?: true
+  standardHoursPerWeek?: true
+  probationEndDate?: true
+  noticePeriodDays?: true
+  approvedAt?: true
+  approvedByUserId?: true
+  employeeSignedAt?: true
+  orgSignedAt?: true
+  activatedAt?: true
   isCurrent?: true
   signedDate?: true
   collectedAt?: true
   terminationDate?: true
   terminationReason?: true
   documentReference?: true
+  documentStorageKey?: true
+  documentFileName?: true
+  documentMimeType?: true
+  documentSize?: true
+  storedFileId?: true
   notes?: true
+  vacationLeaveDaysOverride?: true
+  sickLeaveDaysOverride?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -203,13 +317,31 @@ export type EmploymentContractCountAggregateInputType = {
   gratuityEligible?: true
   gratuityRate?: true
   gratuityTaxRate?: true
+  positionId?: true
+  departmentId?: true
+  fte?: true
+  standardHoursPerWeek?: true
+  probationEndDate?: true
+  noticePeriodDays?: true
+  approvedAt?: true
+  approvedByUserId?: true
+  employeeSignedAt?: true
+  orgSignedAt?: true
+  activatedAt?: true
   isCurrent?: true
   signedDate?: true
   collectedAt?: true
   terminationDate?: true
   terminationReason?: true
   documentReference?: true
+  documentStorageKey?: true
+  documentFileName?: true
+  documentMimeType?: true
+  documentSize?: true
+  storedFileId?: true
   notes?: true
+  vacationLeaveDaysOverride?: true
+  sickLeaveDaysOverride?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -317,13 +449,31 @@ export type EmploymentContractGroupByOutputType = {
   gratuityEligible: boolean
   gratuityRate: runtime.Decimal | null
   gratuityTaxRate: runtime.Decimal | null
+  positionId: string | null
+  departmentId: string | null
+  fte: runtime.Decimal | null
+  standardHoursPerWeek: runtime.Decimal | null
+  probationEndDate: Date | null
+  noticePeriodDays: number | null
+  approvedAt: Date | null
+  approvedByUserId: string | null
+  employeeSignedAt: Date | null
+  orgSignedAt: Date | null
+  activatedAt: Date | null
   isCurrent: boolean
   signedDate: Date | null
   collectedAt: Date | null
   terminationDate: Date | null
   terminationReason: string | null
   documentReference: string | null
+  documentStorageKey: string | null
+  documentFileName: string | null
+  documentMimeType: string | null
+  documentSize: number | null
+  storedFileId: string | null
   notes: string | null
+  vacationLeaveDaysOverride: runtime.Decimal | null
+  sickLeaveDaysOverride: runtime.Decimal | null
   createdAt: Date
   updatedAt: Date
   _count: EmploymentContractCountAggregateOutputType | null
@@ -367,19 +517,42 @@ export type EmploymentContractWhereInput = {
   gratuityEligible?: Prisma.BoolFilter<"EmploymentContract"> | boolean
   gratuityRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  departmentId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  fte?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  noticePeriodDays?: Prisma.IntNullableFilter<"EmploymentContract"> | number | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  approvedByUserId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  employeeSignedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  orgSignedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
   signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   collectedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentStorageKey?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentFileName?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentMimeType?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentSize?: Prisma.IntNullableFilter<"EmploymentContract"> | number | null
+  storedFileId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   notes?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  vacationLeaveDaysOverride?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   sourceContract?: Prisma.XOR<Prisma.EmploymentContractNullableScalarRelationFilter, Prisma.EmploymentContractWhereInput> | null
   amendments?: Prisma.EmploymentContractListRelationFilter
   allowances?: Prisma.EmploymentContractAllowanceListRelationFilter
+  approvalSteps?: Prisma.EmploymentContractApprovalStepListRelationFilter
+  position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
+  approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  storedFile?: Prisma.XOR<Prisma.StoredFileNullableScalarRelationFilter, Prisma.StoredFileWhereInput> | null
   leaveBalances?: Prisma.EmployeeLeaveBalanceListRelationFilter
   leaveTransactions?: Prisma.LeaveBalanceTransactionListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
@@ -401,19 +574,42 @@ export type EmploymentContractOrderByWithRelationInput = {
   gratuityEligible?: Prisma.SortOrder
   gratuityRate?: Prisma.SortOrderInput | Prisma.SortOrder
   gratuityTaxRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  positionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  fte?: Prisma.SortOrderInput | Prisma.SortOrder
+  standardHoursPerWeek?: Prisma.SortOrderInput | Prisma.SortOrder
+  probationEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  noticePeriodDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  employeeSignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  orgSignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrderInput | Prisma.SortOrder
   collectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   documentReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentFileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  storedFileId?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  vacationLeaveDaysOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  sickLeaveDaysOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
   sourceContract?: Prisma.EmploymentContractOrderByWithRelationInput
   amendments?: Prisma.EmploymentContractOrderByRelationAggregateInput
   allowances?: Prisma.EmploymentContractAllowanceOrderByRelationAggregateInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepOrderByRelationAggregateInput
+  position?: Prisma.PositionOrderByWithRelationInput
+  department?: Prisma.DepartmentOrderByWithRelationInput
+  approvedBy?: Prisma.UserOrderByWithRelationInput
+  storedFile?: Prisma.StoredFileOrderByWithRelationInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceOrderByRelationAggregateInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionOrderByRelationAggregateInput
   leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
@@ -438,19 +634,42 @@ export type EmploymentContractWhereUniqueInput = Prisma.AtLeast<{
   gratuityEligible?: Prisma.BoolFilter<"EmploymentContract"> | boolean
   gratuityRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  departmentId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  fte?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  noticePeriodDays?: Prisma.IntNullableFilter<"EmploymentContract"> | number | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  approvedByUserId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  employeeSignedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  orgSignedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
   signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   collectedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
   terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentStorageKey?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentFileName?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentMimeType?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentSize?: Prisma.IntNullableFilter<"EmploymentContract"> | number | null
+  storedFileId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
   notes?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  vacationLeaveDaysOverride?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   sourceContract?: Prisma.XOR<Prisma.EmploymentContractNullableScalarRelationFilter, Prisma.EmploymentContractWhereInput> | null
   amendments?: Prisma.EmploymentContractListRelationFilter
   allowances?: Prisma.EmploymentContractAllowanceListRelationFilter
+  approvalSteps?: Prisma.EmploymentContractApprovalStepListRelationFilter
+  position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
+  approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  storedFile?: Prisma.XOR<Prisma.StoredFileNullableScalarRelationFilter, Prisma.StoredFileWhereInput> | null
   leaveBalances?: Prisma.EmployeeLeaveBalanceListRelationFilter
   leaveTransactions?: Prisma.LeaveBalanceTransactionListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
@@ -472,13 +691,31 @@ export type EmploymentContractOrderByWithAggregationInput = {
   gratuityEligible?: Prisma.SortOrder
   gratuityRate?: Prisma.SortOrderInput | Prisma.SortOrder
   gratuityTaxRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  positionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  fte?: Prisma.SortOrderInput | Prisma.SortOrder
+  standardHoursPerWeek?: Prisma.SortOrderInput | Prisma.SortOrder
+  probationEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  noticePeriodDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  employeeSignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  orgSignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrderInput | Prisma.SortOrder
   collectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   terminationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   documentReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentFileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  storedFileId?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  vacationLeaveDaysOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  sickLeaveDaysOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmploymentContractCountOrderByAggregateInput
@@ -507,13 +744,31 @@ export type EmploymentContractScalarWhereWithAggregatesInput = {
   gratuityEligible?: Prisma.BoolWithAggregatesFilter<"EmploymentContract"> | boolean
   gratuityRate?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  departmentId?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  fte?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+  noticePeriodDays?: Prisma.IntNullableWithAggregatesFilter<"EmploymentContract"> | number | null
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+  approvedByUserId?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  employeeSignedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+  orgSignedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
   isCurrent?: Prisma.BoolWithAggregatesFilter<"EmploymentContract"> | boolean
   signedDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
   collectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
   terminationDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
   terminationReason?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
   documentReference?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  documentStorageKey?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  documentFileName?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  documentMimeType?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  documentSize?: Prisma.IntNullableWithAggregatesFilter<"EmploymentContract"> | number | null
+  storedFileId?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+  vacationLeaveDaysOverride?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.DecimalNullableWithAggregatesFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
 }
@@ -532,19 +787,38 @@ export type EmploymentContractCreateInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
   sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
   amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
@@ -566,17 +840,36 @@ export type EmploymentContractUncheckedCreateInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
@@ -596,19 +889,38 @@ export type EmploymentContractUpdateInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
   sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
   amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
@@ -630,17 +942,36 @@ export type EmploymentContractUncheckedUpdateInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
@@ -662,13 +993,31 @@ export type EmploymentContractCreateManyInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -687,13 +1036,27 @@ export type EmploymentContractUpdateManyMutationInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -714,13 +1077,31 @@ export type EmploymentContractUncheckedUpdateManyInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -761,13 +1142,31 @@ export type EmploymentContractCountOrderByAggregateInput = {
   gratuityEligible?: Prisma.SortOrder
   gratuityRate?: Prisma.SortOrder
   gratuityTaxRate?: Prisma.SortOrder
+  positionId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  fte?: Prisma.SortOrder
+  standardHoursPerWeek?: Prisma.SortOrder
+  probationEndDate?: Prisma.SortOrder
+  noticePeriodDays?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrder
+  employeeSignedAt?: Prisma.SortOrder
+  orgSignedAt?: Prisma.SortOrder
+  activatedAt?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrder
   collectedAt?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   terminationReason?: Prisma.SortOrder
   documentReference?: Prisma.SortOrder
+  documentStorageKey?: Prisma.SortOrder
+  documentFileName?: Prisma.SortOrder
+  documentMimeType?: Prisma.SortOrder
+  documentSize?: Prisma.SortOrder
+  storedFileId?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  vacationLeaveDaysOverride?: Prisma.SortOrder
+  sickLeaveDaysOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -776,6 +1175,12 @@ export type EmploymentContractAvgOrderByAggregateInput = {
   baseSalary?: Prisma.SortOrder
   gratuityRate?: Prisma.SortOrder
   gratuityTaxRate?: Prisma.SortOrder
+  fte?: Prisma.SortOrder
+  standardHoursPerWeek?: Prisma.SortOrder
+  noticePeriodDays?: Prisma.SortOrder
+  documentSize?: Prisma.SortOrder
+  vacationLeaveDaysOverride?: Prisma.SortOrder
+  sickLeaveDaysOverride?: Prisma.SortOrder
 }
 
 export type EmploymentContractMaxOrderByAggregateInput = {
@@ -794,13 +1199,31 @@ export type EmploymentContractMaxOrderByAggregateInput = {
   gratuityEligible?: Prisma.SortOrder
   gratuityRate?: Prisma.SortOrder
   gratuityTaxRate?: Prisma.SortOrder
+  positionId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  fte?: Prisma.SortOrder
+  standardHoursPerWeek?: Prisma.SortOrder
+  probationEndDate?: Prisma.SortOrder
+  noticePeriodDays?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrder
+  employeeSignedAt?: Prisma.SortOrder
+  orgSignedAt?: Prisma.SortOrder
+  activatedAt?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrder
   collectedAt?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   terminationReason?: Prisma.SortOrder
   documentReference?: Prisma.SortOrder
+  documentStorageKey?: Prisma.SortOrder
+  documentFileName?: Prisma.SortOrder
+  documentMimeType?: Prisma.SortOrder
+  documentSize?: Prisma.SortOrder
+  storedFileId?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  vacationLeaveDaysOverride?: Prisma.SortOrder
+  sickLeaveDaysOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -821,13 +1244,31 @@ export type EmploymentContractMinOrderByAggregateInput = {
   gratuityEligible?: Prisma.SortOrder
   gratuityRate?: Prisma.SortOrder
   gratuityTaxRate?: Prisma.SortOrder
+  positionId?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  fte?: Prisma.SortOrder
+  standardHoursPerWeek?: Prisma.SortOrder
+  probationEndDate?: Prisma.SortOrder
+  noticePeriodDays?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrder
+  employeeSignedAt?: Prisma.SortOrder
+  orgSignedAt?: Prisma.SortOrder
+  activatedAt?: Prisma.SortOrder
   isCurrent?: Prisma.SortOrder
   signedDate?: Prisma.SortOrder
   collectedAt?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   terminationReason?: Prisma.SortOrder
   documentReference?: Prisma.SortOrder
+  documentStorageKey?: Prisma.SortOrder
+  documentFileName?: Prisma.SortOrder
+  documentMimeType?: Prisma.SortOrder
+  documentSize?: Prisma.SortOrder
+  storedFileId?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  vacationLeaveDaysOverride?: Prisma.SortOrder
+  sickLeaveDaysOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -836,6 +1277,138 @@ export type EmploymentContractSumOrderByAggregateInput = {
   baseSalary?: Prisma.SortOrder
   gratuityRate?: Prisma.SortOrder
   gratuityTaxRate?: Prisma.SortOrder
+  fte?: Prisma.SortOrder
+  standardHoursPerWeek?: Prisma.SortOrder
+  noticePeriodDays?: Prisma.SortOrder
+  documentSize?: Prisma.SortOrder
+  vacationLeaveDaysOverride?: Prisma.SortOrder
+  sickLeaveDaysOverride?: Prisma.SortOrder
+}
+
+export type EmploymentContractCreateNestedManyWithoutApprovedByInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput> | Prisma.EmploymentContractCreateWithoutApprovedByInput[] | Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput | Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput[]
+  createMany?: Prisma.EmploymentContractCreateManyApprovedByInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUncheckedCreateNestedManyWithoutApprovedByInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput> | Prisma.EmploymentContractCreateWithoutApprovedByInput[] | Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput | Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput[]
+  createMany?: Prisma.EmploymentContractCreateManyApprovedByInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUpdateManyWithoutApprovedByNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput> | Prisma.EmploymentContractCreateWithoutApprovedByInput[] | Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput | Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutApprovedByInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutApprovedByInput[]
+  createMany?: Prisma.EmploymentContractCreateManyApprovedByInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutApprovedByInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutApprovedByInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutApprovedByInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutApprovedByInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutApprovedByNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput> | Prisma.EmploymentContractCreateWithoutApprovedByInput[] | Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput | Prisma.EmploymentContractCreateOrConnectWithoutApprovedByInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutApprovedByInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutApprovedByInput[]
+  createMany?: Prisma.EmploymentContractCreateManyApprovedByInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutApprovedByInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutApprovedByInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutApprovedByInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutApprovedByInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentContractCreateWithoutDepartmentInput[] | Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentContractCreateManyDepartmentInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUncheckedCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentContractCreateWithoutDepartmentInput[] | Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentContractCreateManyDepartmentInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentContractCreateWithoutDepartmentInput[] | Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentContractCreateManyDepartmentInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutDepartmentInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput> | Prisma.EmploymentContractCreateWithoutDepartmentInput[] | Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput | Prisma.EmploymentContractCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.EmploymentContractCreateManyDepartmentInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutDepartmentInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractCreateNestedManyWithoutPositionInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutPositionInput, Prisma.EmploymentContractUncheckedCreateWithoutPositionInput> | Prisma.EmploymentContractCreateWithoutPositionInput[] | Prisma.EmploymentContractUncheckedCreateWithoutPositionInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutPositionInput | Prisma.EmploymentContractCreateOrConnectWithoutPositionInput[]
+  createMany?: Prisma.EmploymentContractCreateManyPositionInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUncheckedCreateNestedManyWithoutPositionInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutPositionInput, Prisma.EmploymentContractUncheckedCreateWithoutPositionInput> | Prisma.EmploymentContractCreateWithoutPositionInput[] | Prisma.EmploymentContractUncheckedCreateWithoutPositionInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutPositionInput | Prisma.EmploymentContractCreateOrConnectWithoutPositionInput[]
+  createMany?: Prisma.EmploymentContractCreateManyPositionInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUpdateManyWithoutPositionNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutPositionInput, Prisma.EmploymentContractUncheckedCreateWithoutPositionInput> | Prisma.EmploymentContractCreateWithoutPositionInput[] | Prisma.EmploymentContractUncheckedCreateWithoutPositionInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutPositionInput | Prisma.EmploymentContractCreateOrConnectWithoutPositionInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutPositionInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutPositionInput[]
+  createMany?: Prisma.EmploymentContractCreateManyPositionInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutPositionInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutPositionInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutPositionInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutPositionInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutPositionNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutPositionInput, Prisma.EmploymentContractUncheckedCreateWithoutPositionInput> | Prisma.EmploymentContractCreateWithoutPositionInput[] | Prisma.EmploymentContractUncheckedCreateWithoutPositionInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutPositionInput | Prisma.EmploymentContractCreateOrConnectWithoutPositionInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutPositionInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutPositionInput[]
+  createMany?: Prisma.EmploymentContractCreateManyPositionInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutPositionInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutPositionInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutPositionInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutPositionInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
 }
 
 export type EmploymentContractCreateNestedManyWithoutEmployeeInput = {
@@ -992,6 +1565,20 @@ export type EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInpu
   deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
 }
 
+export type EmploymentContractCreateNestedOneWithoutApprovalStepsInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovalStepsInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovalStepsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutApprovalStepsInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+}
+
+export type EmploymentContractUpdateOneRequiredWithoutApprovalStepsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovalStepsInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovalStepsInput>
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutApprovalStepsInput
+  upsert?: Prisma.EmploymentContractUpsertWithoutApprovalStepsInput
+  connect?: Prisma.EmploymentContractWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmploymentContractUpdateToOneWithWhereWithoutApprovalStepsInput, Prisma.EmploymentContractUpdateWithoutApprovalStepsInput>, Prisma.EmploymentContractUncheckedUpdateWithoutApprovalStepsInput>
+}
+
 export type EmploymentContractCreateNestedOneWithoutAllowancesInput = {
   create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutAllowancesInput, Prisma.EmploymentContractUncheckedCreateWithoutAllowancesInput>
   connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutAllowancesInput
@@ -1004,6 +1591,474 @@ export type EmploymentContractUpdateOneRequiredWithoutAllowancesNestedInput = {
   upsert?: Prisma.EmploymentContractUpsertWithoutAllowancesInput
   connect?: Prisma.EmploymentContractWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmploymentContractUpdateToOneWithWhereWithoutAllowancesInput, Prisma.EmploymentContractUpdateWithoutAllowancesInput>, Prisma.EmploymentContractUncheckedUpdateWithoutAllowancesInput>
+}
+
+export type EmploymentContractCreateNestedManyWithoutStoredFileInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput> | Prisma.EmploymentContractCreateWithoutStoredFileInput[] | Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput | Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput[]
+  createMany?: Prisma.EmploymentContractCreateManyStoredFileInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUncheckedCreateNestedManyWithoutStoredFileInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput> | Prisma.EmploymentContractCreateWithoutStoredFileInput[] | Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput | Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput[]
+  createMany?: Prisma.EmploymentContractCreateManyStoredFileInputEnvelope
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+}
+
+export type EmploymentContractUpdateManyWithoutStoredFileNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput> | Prisma.EmploymentContractCreateWithoutStoredFileInput[] | Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput | Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutStoredFileInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutStoredFileInput[]
+  createMany?: Prisma.EmploymentContractCreateManyStoredFileInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutStoredFileInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutStoredFileInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutStoredFileInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutStoredFileInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutStoredFileNestedInput = {
+  create?: Prisma.XOR<Prisma.EmploymentContractCreateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput> | Prisma.EmploymentContractCreateWithoutStoredFileInput[] | Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput | Prisma.EmploymentContractCreateOrConnectWithoutStoredFileInput[]
+  upsert?: Prisma.EmploymentContractUpsertWithWhereUniqueWithoutStoredFileInput | Prisma.EmploymentContractUpsertWithWhereUniqueWithoutStoredFileInput[]
+  createMany?: Prisma.EmploymentContractCreateManyStoredFileInputEnvelope
+  set?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  disconnect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  delete?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  connect?: Prisma.EmploymentContractWhereUniqueInput | Prisma.EmploymentContractWhereUniqueInput[]
+  update?: Prisma.EmploymentContractUpdateWithWhereUniqueWithoutStoredFileInput | Prisma.EmploymentContractUpdateWithWhereUniqueWithoutStoredFileInput[]
+  updateMany?: Prisma.EmploymentContractUpdateManyWithWhereWithoutStoredFileInput | Prisma.EmploymentContractUpdateManyWithWhereWithoutStoredFileInput[]
+  deleteMany?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+}
+
+export type EmploymentContractCreateWithoutApprovedByInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutApprovedByInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutApprovedByInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput>
+}
+
+export type EmploymentContractCreateManyApprovedByInputEnvelope = {
+  data: Prisma.EmploymentContractCreateManyApprovedByInput | Prisma.EmploymentContractCreateManyApprovedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmploymentContractUpsertWithWhereUniqueWithoutApprovedByInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedUpdateWithoutApprovedByInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovedByInput>
+}
+
+export type EmploymentContractUpdateWithWhereUniqueWithoutApprovedByInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutApprovedByInput, Prisma.EmploymentContractUncheckedUpdateWithoutApprovedByInput>
+}
+
+export type EmploymentContractUpdateManyWithWhereWithoutApprovedByInput = {
+  where: Prisma.EmploymentContractScalarWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateManyMutationInput, Prisma.EmploymentContractUncheckedUpdateManyWithoutApprovedByInput>
+}
+
+export type EmploymentContractScalarWhereInput = {
+  AND?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+  OR?: Prisma.EmploymentContractScalarWhereInput[]
+  NOT?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
+  id?: Prisma.StringFilter<"EmploymentContract"> | string
+  employeeId?: Prisma.StringFilter<"EmploymentContract"> | string
+  sourceContractId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractNumber?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFilter<"EmploymentContract"> | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFilter<"EmploymentContract"> | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFilter<"EmploymentContract"> | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
+  endDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  jobTitle?: Prisma.StringFilter<"EmploymentContract"> | string
+  baseSalary?: Prisma.DecimalFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFilter<"EmploymentContract"> | string
+  gratuityEligible?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  gratuityRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  departmentId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  fte?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  noticePeriodDays?: Prisma.IntNullableFilter<"EmploymentContract"> | number | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  approvedByUserId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  employeeSignedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  orgSignedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  activatedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
+  signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  collectedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+  terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentStorageKey?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentFileName?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentMimeType?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  documentSize?: Prisma.IntNullableFilter<"EmploymentContract"> | number | null
+  storedFileId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  notes?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
+  vacationLeaveDaysOverride?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
+}
+
+export type EmploymentContractCreateWithoutDepartmentInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutDepartmentInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutDepartmentInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput>
+}
+
+export type EmploymentContractCreateManyDepartmentInputEnvelope = {
+  data: Prisma.EmploymentContractCreateManyDepartmentInput | Prisma.EmploymentContractCreateManyDepartmentInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmploymentContractUpsertWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedUpdateWithoutDepartmentInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedCreateWithoutDepartmentInput>
+}
+
+export type EmploymentContractUpdateWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutDepartmentInput, Prisma.EmploymentContractUncheckedUpdateWithoutDepartmentInput>
+}
+
+export type EmploymentContractUpdateManyWithWhereWithoutDepartmentInput = {
+  where: Prisma.EmploymentContractScalarWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateManyMutationInput, Prisma.EmploymentContractUncheckedUpdateManyWithoutDepartmentInput>
+}
+
+export type EmploymentContractCreateWithoutPositionInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutPositionInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutPositionInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutPositionInput, Prisma.EmploymentContractUncheckedCreateWithoutPositionInput>
+}
+
+export type EmploymentContractCreateManyPositionInputEnvelope = {
+  data: Prisma.EmploymentContractCreateManyPositionInput | Prisma.EmploymentContractCreateManyPositionInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmploymentContractUpsertWithWhereUniqueWithoutPositionInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutPositionInput, Prisma.EmploymentContractUncheckedUpdateWithoutPositionInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutPositionInput, Prisma.EmploymentContractUncheckedCreateWithoutPositionInput>
+}
+
+export type EmploymentContractUpdateWithWhereUniqueWithoutPositionInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutPositionInput, Prisma.EmploymentContractUncheckedUpdateWithoutPositionInput>
+}
+
+export type EmploymentContractUpdateManyWithWhereWithoutPositionInput = {
+  where: Prisma.EmploymentContractScalarWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateManyMutationInput, Prisma.EmploymentContractUncheckedUpdateManyWithoutPositionInput>
 }
 
 export type EmploymentContractCreateWithoutEmployeeInput = {
@@ -1020,18 +2075,37 @@ export type EmploymentContractCreateWithoutEmployeeInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
   amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
@@ -1052,17 +2126,36 @@ export type EmploymentContractUncheckedCreateWithoutEmployeeInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
@@ -1094,36 +2187,6 @@ export type EmploymentContractUpdateManyWithWhereWithoutEmployeeInput = {
   data: Prisma.XOR<Prisma.EmploymentContractUpdateManyMutationInput, Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeInput>
 }
 
-export type EmploymentContractScalarWhereInput = {
-  AND?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
-  OR?: Prisma.EmploymentContractScalarWhereInput[]
-  NOT?: Prisma.EmploymentContractScalarWhereInput | Prisma.EmploymentContractScalarWhereInput[]
-  id?: Prisma.StringFilter<"EmploymentContract"> | string
-  employeeId?: Prisma.StringFilter<"EmploymentContract"> | string
-  sourceContractId?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
-  contractNumber?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
-  contractType?: Prisma.EnumEmploymentContractTypeFilter<"EmploymentContract"> | $Enums.EmploymentContractType
-  changeType?: Prisma.EnumContractChangeTypeFilter<"EmploymentContract"> | $Enums.ContractChangeType
-  status?: Prisma.EnumEmploymentContractStatusFilter<"EmploymentContract"> | $Enums.EmploymentContractStatus
-  startDate?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
-  endDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
-  jobTitle?: Prisma.StringFilter<"EmploymentContract"> | string
-  baseSalary?: Prisma.DecimalFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  currency?: Prisma.StringFilter<"EmploymentContract"> | string
-  gratuityEligible?: Prisma.BoolFilter<"EmploymentContract"> | boolean
-  gratuityRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  gratuityTaxRate?: Prisma.DecimalNullableFilter<"EmploymentContract"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  isCurrent?: Prisma.BoolFilter<"EmploymentContract"> | boolean
-  signedDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
-  collectedAt?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
-  terminationDate?: Prisma.DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
-  terminationReason?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
-  documentReference?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
-  notes?: Prisma.StringNullableFilter<"EmploymentContract"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"EmploymentContract"> | Date | string
-}
-
 export type EmploymentContractCreateWithoutLeaveBalancesInput = {
   id?: string
   contractNumber?: string | null
@@ -1138,19 +2201,38 @@ export type EmploymentContractCreateWithoutLeaveBalancesInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
   sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
   amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
 }
@@ -1171,17 +2253,36 @@ export type EmploymentContractUncheckedCreateWithoutLeaveBalancesInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
 }
@@ -1216,19 +2317,38 @@ export type EmploymentContractUpdateWithoutLeaveBalancesInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
   sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
   amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
 }
@@ -1249,17 +2369,36 @@ export type EmploymentContractUncheckedUpdateWithoutLeaveBalancesInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
 }
@@ -1278,19 +2417,38 @@ export type EmploymentContractCreateWithoutLeaveTransactionsInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
   sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
   amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
 }
@@ -1311,17 +2469,36 @@ export type EmploymentContractUncheckedCreateWithoutLeaveTransactionsInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
 }
@@ -1356,19 +2533,38 @@ export type EmploymentContractUpdateWithoutLeaveTransactionsInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
   sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
   amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
 }
@@ -1389,17 +2585,36 @@ export type EmploymentContractUncheckedUpdateWithoutLeaveTransactionsInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
 }
@@ -1418,19 +2633,38 @@ export type EmploymentContractCreateWithoutLeaveRequestsInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
   sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
   amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
 }
@@ -1451,17 +2685,36 @@ export type EmploymentContractUncheckedCreateWithoutLeaveRequestsInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
 }
@@ -1496,19 +2749,38 @@ export type EmploymentContractUpdateWithoutLeaveRequestsInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
   sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
   amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
 }
@@ -1529,17 +2801,36 @@ export type EmploymentContractUncheckedUpdateWithoutLeaveRequestsInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
 }
@@ -1558,18 +2849,37 @@ export type EmploymentContractCreateWithoutAmendmentsInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
   sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
   allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
@@ -1591,16 +2901,35 @@ export type EmploymentContractUncheckedCreateWithoutAmendmentsInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
@@ -1625,18 +2954,37 @@ export type EmploymentContractCreateWithoutSourceContractInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
   amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
@@ -1657,17 +3005,36 @@ export type EmploymentContractUncheckedCreateWithoutSourceContractInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
@@ -1708,18 +3075,37 @@ export type EmploymentContractUpdateWithoutAmendmentsInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
   sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
@@ -1741,16 +3127,35 @@ export type EmploymentContractUncheckedUpdateWithoutAmendmentsInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
@@ -1772,6 +3177,222 @@ export type EmploymentContractUpdateManyWithWhereWithoutSourceContractInput = {
   data: Prisma.XOR<Prisma.EmploymentContractUpdateManyMutationInput, Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractInput>
 }
 
+export type EmploymentContractCreateWithoutApprovalStepsInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutApprovalStepsInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutApprovalStepsInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovalStepsInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovalStepsInput>
+}
+
+export type EmploymentContractUpsertWithoutApprovalStepsInput = {
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutApprovalStepsInput, Prisma.EmploymentContractUncheckedUpdateWithoutApprovalStepsInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutApprovalStepsInput, Prisma.EmploymentContractUncheckedCreateWithoutApprovalStepsInput>
+  where?: Prisma.EmploymentContractWhereInput
+}
+
+export type EmploymentContractUpdateToOneWithWhereWithoutApprovalStepsInput = {
+  where?: Prisma.EmploymentContractWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutApprovalStepsInput, Prisma.EmploymentContractUncheckedUpdateWithoutApprovalStepsInput>
+}
+
+export type EmploymentContractUpdateWithoutApprovalStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutApprovalStepsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
 export type EmploymentContractCreateWithoutAllowancesInput = {
   id?: string
   contractNumber?: string | null
@@ -1786,18 +3407,37 @@ export type EmploymentContractCreateWithoutAllowancesInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
   sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
   amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutEmploymentContractsInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
@@ -1819,16 +3459,35 @@ export type EmploymentContractUncheckedCreateWithoutAllowancesInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
@@ -1864,18 +3523,37 @@ export type EmploymentContractUpdateWithoutAllowancesInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
   sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
   amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
@@ -1897,19 +3575,728 @@ export type EmploymentContractUncheckedUpdateWithoutAllowancesInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractCreateWithoutStoredFileInput = {
+  id?: string
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutContractsInput
+  sourceContract?: Prisma.EmploymentContractCreateNestedOneWithoutAmendmentsInput
+  amendments?: Prisma.EmploymentContractCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutContractInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmploymentContractsInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmploymentContractsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedEmploymentContractsInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractUncheckedCreateWithoutStoredFileInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  amendments?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutSourceContractInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedCreateNestedManyWithoutContractInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutContractInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutContractInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutContractInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutContractInput
+}
+
+export type EmploymentContractCreateOrConnectWithoutStoredFileInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput>
+}
+
+export type EmploymentContractCreateManyStoredFileInputEnvelope = {
+  data: Prisma.EmploymentContractCreateManyStoredFileInput | Prisma.EmploymentContractCreateManyStoredFileInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmploymentContractUpsertWithWhereUniqueWithoutStoredFileInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedUpdateWithoutStoredFileInput>
+  create: Prisma.XOR<Prisma.EmploymentContractCreateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedCreateWithoutStoredFileInput>
+}
+
+export type EmploymentContractUpdateWithWhereUniqueWithoutStoredFileInput = {
+  where: Prisma.EmploymentContractWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateWithoutStoredFileInput, Prisma.EmploymentContractUncheckedUpdateWithoutStoredFileInput>
+}
+
+export type EmploymentContractUpdateManyWithWhereWithoutStoredFileInput = {
+  where: Prisma.EmploymentContractScalarWhereInput
+  data: Prisma.XOR<Prisma.EmploymentContractUpdateManyMutationInput, Prisma.EmploymentContractUncheckedUpdateManyWithoutStoredFileInput>
+}
+
+export type EmploymentContractCreateManyApprovedByInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmploymentContractUpdateWithoutApprovedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutApprovedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutApprovedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmploymentContractCreateManyDepartmentInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmploymentContractUpdateWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmploymentContractCreateManyPositionInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmploymentContractUpdateWithoutPositionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutPositionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutPositionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EmploymentContractCreateManyEmployeeInput = {
@@ -1927,13 +4314,31 @@ export type EmploymentContractCreateManyEmployeeInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1952,18 +4357,37 @@ export type EmploymentContractUpdateWithoutEmployeeInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
   amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
@@ -1984,17 +4408,36 @@ export type EmploymentContractUncheckedUpdateWithoutEmployeeInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
@@ -2015,13 +4458,31 @@ export type EmploymentContractUncheckedUpdateManyWithoutEmployeeInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2041,13 +4502,31 @@ export type EmploymentContractCreateManySourceContractInput = {
   gratuityEligible?: boolean
   gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
   isCurrent?: boolean
   signedDate?: Date | string | null
   collectedAt?: Date | string | null
   terminationDate?: Date | string | null
   terminationReason?: string | null
   documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  storedFileId?: string | null
   notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2066,18 +4545,37 @@ export type EmploymentContractUpdateWithoutSourceContractInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
   amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutEmploymentContractsNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
@@ -2098,17 +4596,36 @@ export type EmploymentContractUncheckedUpdateWithoutSourceContractInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
   allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
@@ -2129,13 +4646,219 @@ export type EmploymentContractUncheckedUpdateManyWithoutSourceContractInput = {
   gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
   gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
   signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmploymentContractCreateManyStoredFileInput = {
+  id?: string
+  employeeId: string
+  sourceContractId?: string | null
+  contractNumber?: string | null
+  contractType: $Enums.EmploymentContractType
+  changeType?: $Enums.ContractChangeType
+  status?: $Enums.EmploymentContractStatus
+  startDate: Date | string
+  endDate?: Date | string | null
+  jobTitle: string
+  baseSalary: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  gratuityEligible?: boolean
+  gratuityRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: string | null
+  departmentId?: string | null
+  fte?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Date | string | null
+  noticePeriodDays?: number | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  employeeSignedAt?: Date | string | null
+  orgSignedAt?: Date | string | null
+  activatedAt?: Date | string | null
+  isCurrent?: boolean
+  signedDate?: Date | string | null
+  collectedAt?: Date | string | null
+  terminationDate?: Date | string | null
+  terminationReason?: string | null
+  documentReference?: string | null
+  documentStorageKey?: string | null
+  documentFileName?: string | null
+  documentMimeType?: string | null
+  documentSize?: number | null
+  notes?: string | null
+  vacationLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmploymentContractUpdateWithoutStoredFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutContractsNestedInput
+  sourceContract?: Prisma.EmploymentContractUpdateOneWithoutAmendmentsNestedInput
+  amendments?: Prisma.EmploymentContractUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutContractNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmploymentContractsNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmploymentContractsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedEmploymentContractsNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateWithoutStoredFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  amendments?: Prisma.EmploymentContractUncheckedUpdateManyWithoutSourceContractNestedInput
+  allowances?: Prisma.EmploymentContractAllowanceUncheckedUpdateManyWithoutContractNestedInput
+  approvalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutContractNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutContractNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutContractNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutContractNestedInput
+}
+
+export type EmploymentContractUncheckedUpdateManyWithoutStoredFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceContractId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contractType?: Prisma.EnumEmploymentContractTypeFieldUpdateOperationsInput | $Enums.EmploymentContractType
+  changeType?: Prisma.EnumContractChangeTypeFieldUpdateOperationsInput | $Enums.ContractChangeType
+  status?: Prisma.EnumEmploymentContractStatusFieldUpdateOperationsInput | $Enums.EmploymentContractStatus
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  baseSalary?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  gratuityEligible?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gratuityRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  gratuityTaxRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fte?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  standardHoursPerWeek?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  probationEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  noticePeriodDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  orgSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isCurrent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  signedDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  collectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  terminationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vacationLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sickLeaveDaysOverride?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2148,6 +4871,7 @@ export type EmploymentContractUncheckedUpdateManyWithoutSourceContractInput = {
 export type EmploymentContractCountOutputType = {
   amendments: number
   allowances: number
+  approvalSteps: number
   leaveBalances: number
   leaveTransactions: number
   leaveRequests: number
@@ -2156,6 +4880,7 @@ export type EmploymentContractCountOutputType = {
 export type EmploymentContractCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   amendments?: boolean | EmploymentContractCountOutputTypeCountAmendmentsArgs
   allowances?: boolean | EmploymentContractCountOutputTypeCountAllowancesArgs
+  approvalSteps?: boolean | EmploymentContractCountOutputTypeCountApprovalStepsArgs
   leaveBalances?: boolean | EmploymentContractCountOutputTypeCountLeaveBalancesArgs
   leaveTransactions?: boolean | EmploymentContractCountOutputTypeCountLeaveTransactionsArgs
   leaveRequests?: boolean | EmploymentContractCountOutputTypeCountLeaveRequestsArgs
@@ -2183,6 +4908,13 @@ export type EmploymentContractCountOutputTypeCountAmendmentsArgs<ExtArgs extends
  */
 export type EmploymentContractCountOutputTypeCountAllowancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmploymentContractAllowanceWhereInput
+}
+
+/**
+ * EmploymentContractCountOutputType without action
+ */
+export type EmploymentContractCountOutputTypeCountApprovalStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmploymentContractApprovalStepWhereInput
 }
 
 /**
@@ -2223,19 +4955,42 @@ export type EmploymentContractSelect<ExtArgs extends runtime.Types.Extensions.In
   gratuityEligible?: boolean
   gratuityRate?: boolean
   gratuityTaxRate?: boolean
+  positionId?: boolean
+  departmentId?: boolean
+  fte?: boolean
+  standardHoursPerWeek?: boolean
+  probationEndDate?: boolean
+  noticePeriodDays?: boolean
+  approvedAt?: boolean
+  approvedByUserId?: boolean
+  employeeSignedAt?: boolean
+  orgSignedAt?: boolean
+  activatedAt?: boolean
   isCurrent?: boolean
   signedDate?: boolean
   collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
+  documentStorageKey?: boolean
+  documentFileName?: boolean
+  documentMimeType?: boolean
+  documentSize?: boolean
+  storedFileId?: boolean
   notes?: boolean
+  vacationLeaveDaysOverride?: boolean
+  sickLeaveDaysOverride?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
   amendments?: boolean | Prisma.EmploymentContract$amendmentsArgs<ExtArgs>
   allowances?: boolean | Prisma.EmploymentContract$allowancesArgs<ExtArgs>
+  approvalSteps?: boolean | Prisma.EmploymentContract$approvalStepsArgs<ExtArgs>
+  position?: boolean | Prisma.EmploymentContract$positionArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentContract$departmentArgs<ExtArgs>
+  approvedBy?: boolean | Prisma.EmploymentContract$approvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmploymentContract$storedFileArgs<ExtArgs>
   leaveBalances?: boolean | Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs>
   leaveTransactions?: boolean | Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs>
@@ -2258,17 +5013,39 @@ export type EmploymentContractSelectCreateManyAndReturn<ExtArgs extends runtime.
   gratuityEligible?: boolean
   gratuityRate?: boolean
   gratuityTaxRate?: boolean
+  positionId?: boolean
+  departmentId?: boolean
+  fte?: boolean
+  standardHoursPerWeek?: boolean
+  probationEndDate?: boolean
+  noticePeriodDays?: boolean
+  approvedAt?: boolean
+  approvedByUserId?: boolean
+  employeeSignedAt?: boolean
+  orgSignedAt?: boolean
+  activatedAt?: boolean
   isCurrent?: boolean
   signedDate?: boolean
   collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
+  documentStorageKey?: boolean
+  documentFileName?: boolean
+  documentMimeType?: boolean
+  documentSize?: boolean
+  storedFileId?: boolean
   notes?: boolean
+  vacationLeaveDaysOverride?: boolean
+  sickLeaveDaysOverride?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
+  position?: boolean | Prisma.EmploymentContract$positionArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentContract$departmentArgs<ExtArgs>
+  approvedBy?: boolean | Prisma.EmploymentContract$approvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmploymentContract$storedFileArgs<ExtArgs>
 }, ExtArgs["result"]["employmentContract"]>
 
 export type EmploymentContractSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2287,17 +5064,39 @@ export type EmploymentContractSelectUpdateManyAndReturn<ExtArgs extends runtime.
   gratuityEligible?: boolean
   gratuityRate?: boolean
   gratuityTaxRate?: boolean
+  positionId?: boolean
+  departmentId?: boolean
+  fte?: boolean
+  standardHoursPerWeek?: boolean
+  probationEndDate?: boolean
+  noticePeriodDays?: boolean
+  approvedAt?: boolean
+  approvedByUserId?: boolean
+  employeeSignedAt?: boolean
+  orgSignedAt?: boolean
+  activatedAt?: boolean
   isCurrent?: boolean
   signedDate?: boolean
   collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
+  documentStorageKey?: boolean
+  documentFileName?: boolean
+  documentMimeType?: boolean
+  documentSize?: boolean
+  storedFileId?: boolean
   notes?: boolean
+  vacationLeaveDaysOverride?: boolean
+  sickLeaveDaysOverride?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
+  position?: boolean | Prisma.EmploymentContract$positionArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentContract$departmentArgs<ExtArgs>
+  approvedBy?: boolean | Prisma.EmploymentContract$approvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmploymentContract$storedFileArgs<ExtArgs>
 }, ExtArgs["result"]["employmentContract"]>
 
 export type EmploymentContractSelectScalar = {
@@ -2316,23 +5115,46 @@ export type EmploymentContractSelectScalar = {
   gratuityEligible?: boolean
   gratuityRate?: boolean
   gratuityTaxRate?: boolean
+  positionId?: boolean
+  departmentId?: boolean
+  fte?: boolean
+  standardHoursPerWeek?: boolean
+  probationEndDate?: boolean
+  noticePeriodDays?: boolean
+  approvedAt?: boolean
+  approvedByUserId?: boolean
+  employeeSignedAt?: boolean
+  orgSignedAt?: boolean
+  activatedAt?: boolean
   isCurrent?: boolean
   signedDate?: boolean
   collectedAt?: boolean
   terminationDate?: boolean
   terminationReason?: boolean
   documentReference?: boolean
+  documentStorageKey?: boolean
+  documentFileName?: boolean
+  documentMimeType?: boolean
+  documentSize?: boolean
+  storedFileId?: boolean
   notes?: boolean
+  vacationLeaveDaysOverride?: boolean
+  sickLeaveDaysOverride?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmploymentContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "sourceContractId" | "contractNumber" | "contractType" | "changeType" | "status" | "startDate" | "endDate" | "jobTitle" | "baseSalary" | "currency" | "gratuityEligible" | "gratuityRate" | "gratuityTaxRate" | "isCurrent" | "signedDate" | "collectedAt" | "terminationDate" | "terminationReason" | "documentReference" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentContract"]>
+export type EmploymentContractOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "sourceContractId" | "contractNumber" | "contractType" | "changeType" | "status" | "startDate" | "endDate" | "jobTitle" | "baseSalary" | "currency" | "gratuityEligible" | "gratuityRate" | "gratuityTaxRate" | "positionId" | "departmentId" | "fte" | "standardHoursPerWeek" | "probationEndDate" | "noticePeriodDays" | "approvedAt" | "approvedByUserId" | "employeeSignedAt" | "orgSignedAt" | "activatedAt" | "isCurrent" | "signedDate" | "collectedAt" | "terminationDate" | "terminationReason" | "documentReference" | "documentStorageKey" | "documentFileName" | "documentMimeType" | "documentSize" | "storedFileId" | "notes" | "vacationLeaveDaysOverride" | "sickLeaveDaysOverride" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentContract"]>
 export type EmploymentContractInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
   amendments?: boolean | Prisma.EmploymentContract$amendmentsArgs<ExtArgs>
   allowances?: boolean | Prisma.EmploymentContract$allowancesArgs<ExtArgs>
+  approvalSteps?: boolean | Prisma.EmploymentContract$approvalStepsArgs<ExtArgs>
+  position?: boolean | Prisma.EmploymentContract$positionArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentContract$departmentArgs<ExtArgs>
+  approvedBy?: boolean | Prisma.EmploymentContract$approvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmploymentContract$storedFileArgs<ExtArgs>
   leaveBalances?: boolean | Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs>
   leaveTransactions?: boolean | Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs>
@@ -2341,10 +5163,18 @@ export type EmploymentContractInclude<ExtArgs extends runtime.Types.Extensions.I
 export type EmploymentContractIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
+  position?: boolean | Prisma.EmploymentContract$positionArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentContract$departmentArgs<ExtArgs>
+  approvedBy?: boolean | Prisma.EmploymentContract$approvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmploymentContract$storedFileArgs<ExtArgs>
 }
 export type EmploymentContractIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   sourceContract?: boolean | Prisma.EmploymentContract$sourceContractArgs<ExtArgs>
+  position?: boolean | Prisma.EmploymentContract$positionArgs<ExtArgs>
+  department?: boolean | Prisma.EmploymentContract$departmentArgs<ExtArgs>
+  approvedBy?: boolean | Prisma.EmploymentContract$approvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmploymentContract$storedFileArgs<ExtArgs>
 }
 
 export type $EmploymentContractPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2354,6 +5184,11 @@ export type $EmploymentContractPayload<ExtArgs extends runtime.Types.Extensions.
     sourceContract: Prisma.$EmploymentContractPayload<ExtArgs> | null
     amendments: Prisma.$EmploymentContractPayload<ExtArgs>[]
     allowances: Prisma.$EmploymentContractAllowancePayload<ExtArgs>[]
+    approvalSteps: Prisma.$EmploymentContractApprovalStepPayload<ExtArgs>[]
+    position: Prisma.$PositionPayload<ExtArgs> | null
+    department: Prisma.$DepartmentPayload<ExtArgs> | null
+    approvedBy: Prisma.$UserPayload<ExtArgs> | null
+    storedFile: Prisma.$StoredFilePayload<ExtArgs> | null
     leaveBalances: Prisma.$EmployeeLeaveBalancePayload<ExtArgs>[]
     leaveTransactions: Prisma.$LeaveBalanceTransactionPayload<ExtArgs>[]
     leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
@@ -2375,6 +5210,23 @@ export type $EmploymentContractPayload<ExtArgs extends runtime.Types.Extensions.
     gratuityRate: runtime.Decimal | null
     gratuityTaxRate: runtime.Decimal | null
     /**
+     * Arrangement (optional; assignment still authoritative for current seat).
+     */
+    positionId: string | null
+    departmentId: string | null
+    fte: runtime.Decimal | null
+    standardHoursPerWeek: runtime.Decimal | null
+    probationEndDate: Date | null
+    noticePeriodDays: number | null
+    /**
+     * Governance
+     */
+    approvedAt: Date | null
+    approvedByUserId: string | null
+    employeeSignedAt: Date | null
+    orgSignedAt: Date | null
+    activatedAt: Date | null
+    /**
      * At most one row per employee may be true — enforced by partial unique index
      * `employment_contracts_one_current` (see migration; not expressible as @@unique).
      */
@@ -2384,7 +5236,20 @@ export type $EmploymentContractPayload<ExtArgs extends runtime.Types.Extensions.
     terminationDate: Date | null
     terminationReason: string | null
     documentReference: string | null
+    /**
+     * Filed executed / draft contract PDF (denormalized; also linked via storedFileId).
+     */
+    documentStorageKey: string | null
+    documentFileName: string | null
+    documentMimeType: string | null
+    documentSize: number | null
+    storedFileId: string | null
     notes: string | null
+    /**
+     * Entitlement overrides captured at draft time; applied on activate.
+     */
+    vacationLeaveDaysOverride: runtime.Decimal | null
+    sickLeaveDaysOverride: runtime.Decimal | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["employmentContract"]>
@@ -2785,6 +5650,11 @@ export interface Prisma__EmploymentContractClient<T, Null = never, ExtArgs exten
   sourceContract<T extends Prisma.EmploymentContract$sourceContractArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$sourceContractArgs<ExtArgs>>): Prisma.Prisma__EmploymentContractClient<runtime.Types.Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   amendments<T extends Prisma.EmploymentContract$amendmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$amendmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   allowances<T extends Prisma.EmploymentContract$allowancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$allowancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractAllowancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvalSteps<T extends Prisma.EmploymentContract$approvalStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$approvalStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractApprovalStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  position<T extends Prisma.EmploymentContract$positionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$positionArgs<ExtArgs>>): Prisma.Prisma__PositionClient<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  department<T extends Prisma.EmploymentContract$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  approvedBy<T extends Prisma.EmploymentContract$approvedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$approvedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  storedFile<T extends Prisma.EmploymentContract$storedFileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$storedFileArgs<ExtArgs>>): Prisma.Prisma__StoredFileClient<runtime.Types.Result.GetResult<Prisma.$StoredFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   leaveBalances<T extends Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$leaveBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeLeaveBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveTransactions<T extends Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$leaveTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveBalanceTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveRequests<T extends Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmploymentContract$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2832,13 +5702,31 @@ export interface EmploymentContractFieldRefs {
   readonly gratuityEligible: Prisma.FieldRef<"EmploymentContract", 'Boolean'>
   readonly gratuityRate: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
   readonly gratuityTaxRate: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
+  readonly positionId: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly departmentId: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly fte: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
+  readonly standardHoursPerWeek: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
+  readonly probationEndDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
+  readonly noticePeriodDays: Prisma.FieldRef<"EmploymentContract", 'Int'>
+  readonly approvedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
+  readonly approvedByUserId: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly employeeSignedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
+  readonly orgSignedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
+  readonly activatedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly isCurrent: Prisma.FieldRef<"EmploymentContract", 'Boolean'>
   readonly signedDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly collectedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly terminationDate: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly terminationReason: Prisma.FieldRef<"EmploymentContract", 'String'>
   readonly documentReference: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly documentStorageKey: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly documentFileName: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly documentMimeType: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly documentSize: Prisma.FieldRef<"EmploymentContract", 'Int'>
+  readonly storedFileId: Prisma.FieldRef<"EmploymentContract", 'String'>
   readonly notes: Prisma.FieldRef<"EmploymentContract", 'String'>
+  readonly vacationLeaveDaysOverride: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
+  readonly sickLeaveDaysOverride: Prisma.FieldRef<"EmploymentContract", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EmploymentContract", 'DateTime'>
 }
@@ -3306,6 +6194,106 @@ export type EmploymentContract$allowancesArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.EmploymentContractAllowanceScalarFieldEnum | Prisma.EmploymentContractAllowanceScalarFieldEnum[]
+}
+
+/**
+ * EmploymentContract.approvalSteps
+ */
+export type EmploymentContract$approvalStepsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContractApprovalStep
+   */
+  select?: Prisma.EmploymentContractApprovalStepSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmploymentContractApprovalStep
+   */
+  omit?: Prisma.EmploymentContractApprovalStepOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmploymentContractApprovalStepInclude<ExtArgs> | null
+  where?: Prisma.EmploymentContractApprovalStepWhereInput
+  orderBy?: Prisma.EmploymentContractApprovalStepOrderByWithRelationInput | Prisma.EmploymentContractApprovalStepOrderByWithRelationInput[]
+  cursor?: Prisma.EmploymentContractApprovalStepWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmploymentContractApprovalStepScalarFieldEnum | Prisma.EmploymentContractApprovalStepScalarFieldEnum[]
+}
+
+/**
+ * EmploymentContract.position
+ */
+export type EmploymentContract$positionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Position
+   */
+  select?: Prisma.PositionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Position
+   */
+  omit?: Prisma.PositionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PositionInclude<ExtArgs> | null
+  where?: Prisma.PositionWhereInput
+}
+
+/**
+ * EmploymentContract.department
+ */
+export type EmploymentContract$departmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Department
+   */
+  select?: Prisma.DepartmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Department
+   */
+  omit?: Prisma.DepartmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentInclude<ExtArgs> | null
+  where?: Prisma.DepartmentWhereInput
+}
+
+/**
+ * EmploymentContract.approvedBy
+ */
+export type EmploymentContract$approvedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * EmploymentContract.storedFile
+ */
+export type EmploymentContract$storedFileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StoredFile
+   */
+  select?: Prisma.StoredFileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StoredFile
+   */
+  omit?: Prisma.StoredFileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StoredFileInclude<ExtArgs> | null
+  where?: Prisma.StoredFileWhereInput
 }
 
 /**

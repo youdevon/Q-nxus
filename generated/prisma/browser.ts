@@ -243,6 +243,11 @@ export type PerformanceAppraisalCriterion = Prisma.PerformanceAppraisalCriterion
  */
 export type EmploymentContract = Prisma.EmploymentContractModel
 /**
+ * Model EmploymentContractApprovalStep
+ * 
+ */
+export type EmploymentContractApprovalStep = Prisma.EmploymentContractApprovalStepModel
+/**
  * Model AllowanceCategory
  * 
  */
@@ -252,6 +257,41 @@ export type AllowanceCategory = Prisma.AllowanceCategoryModel
  * 
  */
 export type EmploymentContractAllowance = Prisma.EmploymentContractAllowanceModel
+/**
+ * Model StoredFile
+ * Shared file metadata / retention spine (bytes remain under uploads/).
+ */
+export type StoredFile = Prisma.StoredFileModel
+/**
+ * Model EmployeeFilePack
+ * Org-configurable employee-file required-document pack.
+ */
+export type EmployeeFilePack = Prisma.EmployeeFilePackModel
+/**
+ * Model EmployeeFilePackItem
+ * 
+ */
+export type EmployeeFilePackItem = Prisma.EmployeeFilePackItemModel
+/**
+ * Model EmployeeOnboardingCase
+ * 
+ */
+export type EmployeeOnboardingCase = Prisma.EmployeeOnboardingCaseModel
+/**
+ * Model EmployeeOnboardingTask
+ * 
+ */
+export type EmployeeOnboardingTask = Prisma.EmployeeOnboardingTaskModel
+/**
+ * Model EmployeeOffboardingCase
+ * 
+ */
+export type EmployeeOffboardingCase = Prisma.EmployeeOffboardingCaseModel
+/**
+ * Model EmployeeOffboardingTask
+ * 
+ */
+export type EmployeeOffboardingTask = Prisma.EmployeeOffboardingTaskModel
 /**
  * Model PayrollProfile
  * 

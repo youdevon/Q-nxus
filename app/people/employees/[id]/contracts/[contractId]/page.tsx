@@ -7,15 +7,20 @@ import { Badge } from "@/components/ui/badge";
 import { activeStateBadgeVariant } from "@/src/config/ui-colors";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
-import { formatMoney } from "@/src/lib/format";
+import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import { ContractVersionHistoryTabs } from "@/src/modules/hr/components/contract-version-history-tabs";
+import { DeleteEmploymentContractButton } from "@/src/modules/hr/components/delete-employment-contract-button";
+import { EmploymentContractLifecyclePanel } from "@/src/modules/hr/components/employment-contract-lifecycle-panel";
 import { MarkContractCollectedButton } from "@/src/modules/hr/components/mark-contract-collected-button";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 import {
   calculateContractCompensation,
   getEmploymentContractProfile,
 } from "@/src/modules/hr/data/get-employment-contracts";
 import { resolveEmployeeContractAccess } from "@/src/modules/hr/data/require-people-access";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
 export const metadata: Metadata = {
   title: "Employment Contract",
@@ -58,6 +63,7 @@ export default async function EmploymentContractPage({
   const { id, contractId } = await params;
   const access = await resolveEmployeeContractAccess(id);
   const contract = await getEmploymentContractProfile(id, contractId);
+  const currentUser = await getCurrentUser();
 
   if (!contract) {
     notFound();
@@ -66,65 +72,87 @@ export default async function EmploymentContractPage({
   const compensation = calculateContractCompensation(contract);
   const historyHref = `/people/employees/${id}/contracts`;
   const isCollected = Boolean(contract.collectedAt);
+  const isEmployeeSelf = currentUser?.employeeId === id;
+
+  const headerDescription = access.isSelfService
+    ? `Your employment contract · ${contract.employee.employeeNumber}`
+    : `Employment contract · ${contract.employee.employeeNumber}`;
+  const headerBackLabel = access.isSelfService ? "My contracts" : "Contracts";
+  const headerActions = access.canManage ? (
+    <div className="flex flex-wrap gap-2">
+      {contract.isCurrent && !isCollected ? (
+        <MarkContractCollectedButton
+          employeeId={id}
+          contractId={contract.id}
+        />
+      ) : null}
+
+      {contract.isCurrent ? (
+        <Button
+          nativeButton={false}
+          variant="outline"
+          render={
+            <Link
+              href={`/people/employees/${id}/contracts/${contract.id}/amend`}
+            />
+          }
+        >
+          <FilePenLine />
+          Amend
+        </Button>
+      ) : null}
+
+      {contract.isCurrent ||
+      contract.status === "TERMINATED" ||
+      contract.status === "EXPIRED" ||
+      contract.status === "CANCELLED" ? (
+        <Button
+          nativeButton={false}
+          render={
+            <Link
+              href={`/people/employees/${id}/contracts/${contract.id}/renew`}
+            />
+          }
+        >
+          <RefreshCw />
+          Renew
+        </Button>
+      ) : null}
+
+      <DeleteEmploymentContractButton
+        employeeId={id}
+        contractId={contract.id}
+      />
+    </div>
+  ) : undefined;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
-      {access.showPeopleNav ? <PeopleNav /> : null}
-
-      <PageHeader
-        title={contract.jobTitle}
-        description={
-          access.isSelfService
-            ? `Your employment contract · ${contract.employee.employeeNumber}`
-            : `Employment contract · ${contract.employee.employeeNumber}`
-        }
-        backHref={historyHref}
-        backLabel={access.isSelfService ? "My contracts" : "Contracts"}
-        actions={
-          access.canManage ? (
-          <div className="flex flex-wrap gap-2">
-            {contract.isCurrent && !isCollected ? (
-              <MarkContractCollectedButton
-                employeeId={id}
-                contractId={contract.id}
-              />
-            ) : null}
-
-            {contract.isCurrent ? (
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={
-                  <Link
-                    href={`/people/employees/${id}/contracts/${contract.id}/amend`}
-                  />
-                }
-              >
-                <FilePenLine />
-                Amend
-              </Button>
-            ) : null}
-
-            {contract.isCurrent ||
-            contract.status === "TERMINATED" ||
-            contract.status === "EXPIRED" ||
-            contract.status === "CANCELLED" ? (
-              <Button
-                nativeButton={false}
-                render={
-                  <Link
-                    href={`/people/employees/${id}/contracts/${contract.id}/renew`}
-                  />
-                }
-              >
-                <RefreshCw />
-                Renew
-              </Button>
-            ) : null}
-          </div>
-          ) : undefined
-        }
-      />
+    <PageShell size="md">
+      {access.showPeopleNav ? (
+        <PeoplePageHeader
+          title={contract.jobTitle}
+          description={headerDescription}
+          backHref={historyHref}
+          backLabel={headerBackLabel}
+          actions={headerActions}
+        />
+      ) : access.isSelfService ? (
+        <MePageHeader
+          title={contract.jobTitle}
+          description={headerDescription}
+          backHref={historyHref}
+          backLabel={headerBackLabel}
+          actions={headerActions}
+        />
+      ) : (
+        <PageHeader
+          title={contract.jobTitle}
+          description={headerDescription}
+          backHref={historyHref}
+          backLabel={headerBackLabel}
+          actions={headerActions}
+        />
+      )}
 
       <section>
         <div className="flex items-start justify-between gap-4">
@@ -175,6 +203,17 @@ export default async function EmploymentContractPage({
         </div>
       ) : null}
 
+      <EmploymentContractLifecyclePanel
+        contractId={contract.id}
+        employeeId={id}
+        status={contract.status}
+        employeeSignedAt={contract.employeeSignedAt}
+        orgSignedAt={contract.orgSignedAt}
+        documentFileName={contract.documentFileName}
+        canManage={access.canManage}
+        isEmployeeSelf={isEmployeeSelf}
+      />
+
       <ContractVersionHistoryTabs
         employeeId={id}
         previousVersions={contract.previousVersions}
@@ -190,11 +229,18 @@ export default async function EmploymentContractPage({
             labelText="Contract action"
             value={label(contract.changeType)}
           />
-          <Detail labelText="Job title" value={contract.jobTitle} />
-          <Detail labelText="Start date" value={contract.startDate} />
+          <Detail labelText="Position" value={contract.jobTitle} />
+          <Detail
+            labelText="Start date"
+            value={formatDisplayDate(contract.startDate)}
+          />
           <Detail
             labelText="End date"
-            value={contract.endDate ?? "No end date"}
+            value={
+              contract.endDate
+                ? formatDisplayDate(contract.endDate)
+                : "No end date"
+            }
           />
           <Detail
             labelText="Signed date"
@@ -295,50 +341,65 @@ export default async function EmploymentContractPage({
             No allowances are recorded for this contract.
           </p>
         ) : (
-          <div className="divide-y divide-border/70">
-            {contract.allowances.map((allowance) => (
-              <div
-                key={allowance.id}
-                className="grid gap-4 py-5 md:grid-cols-[1fr_10rem_10rem_8rem]"
-              >
-                <div>
-                  <p className="text-sm font-medium">
-                    {allowance.categoryName}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {allowance.notes || "No additional notes"}
-                  </p>
-                </div>
+          <>
+            {access.canManage && contract.isCurrent ? (
+              <p className="mb-4 text-xs text-muted-foreground">
+                To change amounts or taxability, use{" "}
+                <Link
+                  href={`/people/employees/${id}/contracts/${contract.id}/amend`}
+                  className="font-medium text-foreground underline-offset-4 hover:underline"
+                >
+                  Amend
+                </Link>
+                .
+              </p>
+            ) : null}
 
-                <div>
-                  <p className="text-xs text-muted-foreground">Amount</p>
-                  <p className="mt-1 text-sm font-medium">
-                    {formatMoney(allowance.amount, {
-                      currency: contract.currency,
-                    })}
-                  </p>
-                </div>
+            <div className="divide-y divide-border/70">
+              {contract.allowances.map((allowance) => (
+                <div
+                  key={allowance.id}
+                  className="grid gap-4 py-5 md:grid-cols-[1fr_10rem_10rem_8rem]"
+                >
+                  <div>
+                    <p className="text-sm font-medium">
+                      {allowance.categoryName}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {allowance.notes || "No additional notes"}
+                    </p>
+                  </div>
 
-                <div>
-                  <p className="text-xs text-muted-foreground">Frequency</p>
-                  <p className="mt-1 text-sm font-medium">
-                    {label(allowance.frequency)}
-                  </p>
-                </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Amount</p>
+                    <p className="mt-1 text-sm font-medium">
+                      {formatMoney(allowance.amount, {
+                        currency: contract.currency,
+                      })}
+                    </p>
+                  </div>
 
-                <div>
-                  <p className="text-xs text-muted-foreground">Taxable</p>
-                  <p className="mt-1 text-sm font-medium">
-                    {allowance.isTaxable ? "Yes" : "No"}
-                  </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    Gratuity:{" "}
-                    {allowance.includedInGratuity ? "Included" : "Excluded"}
-                  </p>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Frequency</p>
+                    <p className="mt-1 text-sm font-medium">
+                      {label(allowance.frequency)}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted-foreground">Taxable</p>
+                    <p className="mt-1 text-sm font-medium">
+                      {allowance.isTaxable ? "Yes" : "No"}
+                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Gratuity:{" "}
+                      {allowance.includedInGratuity ? "Included" : "Excluded"}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </section>
 
@@ -420,6 +481,6 @@ export default async function EmploymentContractPage({
           />
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }

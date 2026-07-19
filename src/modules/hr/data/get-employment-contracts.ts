@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 
 export type EmploymentContractListRecord = {
   id: string;
@@ -31,7 +32,12 @@ export type EmployeeContractHistory = {
     employeeNumber: string;
     firstName: string;
     lastName: string;
+    workforceCategory: string;
     employmentType: string;
+    hireDate: string;
+    updatedAt: string;
+    departmentId: string | null;
+    positionId: string | null;
     departmentName: string | null;
     positionTitle: string | null;
   };
@@ -99,7 +105,12 @@ export async function getEmployeeContractHistory(
       employeeNumber: true,
       firstName: true,
       lastName: true,
+      workforceCategory: true,
       employmentType: true,
+      hireDate: true,
+      updatedAt: true,
+      departmentId: true,
+      positionId: true,
       department: {
         select: {
           name: true,
@@ -108,6 +119,19 @@ export async function getEmployeeContractHistory(
       position: {
         select: {
           title: true,
+        },
+      },
+      assignments: {
+        where: {
+          isCurrent: true,
+        },
+        take: 1,
+        select: {
+          position: {
+            select: {
+              title: true,
+            },
+          },
         },
       },
       contracts: {
@@ -159,9 +183,20 @@ export async function getEmployeeContractHistory(
       employeeNumber: employee.employeeNumber,
       firstName: employee.firstName,
       lastName: employee.lastName,
+      workforceCategory: employee.workforceCategory,
       employmentType: employee.employmentType,
+      hireDate: employee.hireDate.toISOString().slice(0, 10),
+      updatedAt: employee.updatedAt.toISOString(),
+      departmentId: employee.departmentId,
+      positionId: employee.positionId,
       departmentName: employee.department?.name ?? null,
-      positionTitle: employee.position?.title ?? null,
+      positionTitle: resolveEmployeePositionTitle({
+        assignmentPositionTitle: employee.assignments[0]?.position?.title,
+        positionTitle: employee.position?.title,
+        contractJobTitle:
+          employee.contracts.find((contract) => contract.isCurrent)?.jobTitle ??
+          null,
+      }),
     },
     contracts: employee.contracts.map(mapContract),
   };
@@ -173,6 +208,7 @@ export type EmploymentContractProfile = EmploymentContractListRecord & {
     employeeNumber: string;
     firstName: string;
     lastName: string;
+    workforceCategory: string;
   };
   sourceContract: {
     id: string;
@@ -208,6 +244,18 @@ export type EmploymentContractProfile = EmploymentContractListRecord & {
   }[];
   amendedAfterCollection: boolean;
   terminationReason: string | null;
+  probationEndDate: string | null;
+  noticePeriodDays: number | null;
+  fte: string | null;
+  standardHoursPerWeek: string | null;
+  approvedAt: string | null;
+  employeeSignedAt: string | null;
+  orgSignedAt: string | null;
+  activatedAt: string | null;
+  documentStorageKey: string | null;
+  documentFileName: string | null;
+  documentMimeType: string | null;
+  documentSize: number | null;
   allowances: {
     id: string;
     categoryId: string;
@@ -252,12 +300,25 @@ export async function getEmploymentContractProfile(
       notes: true,
       createdAt: true,
       updatedAt: true,
+      probationEndDate: true,
+      noticePeriodDays: true,
+      fte: true,
+      standardHoursPerWeek: true,
+      approvedAt: true,
+      employeeSignedAt: true,
+      orgSignedAt: true,
+      activatedAt: true,
+      documentStorageKey: true,
+      documentFileName: true,
+      documentMimeType: true,
+      documentSize: true,
       employee: {
         select: {
           id: true,
           employeeNumber: true,
           firstName: true,
           lastName: true,
+          workforceCategory: true,
         },
       },
       sourceContract: {
@@ -373,6 +434,18 @@ export async function getEmploymentContractProfile(
     employee: contract.employee,
     terminationReason: contract.terminationReason,
     amendedAfterCollection,
+    probationEndDate: contract.probationEndDate?.toISOString().slice(0, 10) ?? null,
+    noticePeriodDays: contract.noticePeriodDays,
+    fte: contract.fte?.toString() ?? null,
+    standardHoursPerWeek: contract.standardHoursPerWeek?.toString() ?? null,
+    approvedAt: contract.approvedAt?.toISOString() ?? null,
+    employeeSignedAt: contract.employeeSignedAt?.toISOString() ?? null,
+    orgSignedAt: contract.orgSignedAt?.toISOString() ?? null,
+    activatedAt: contract.activatedAt?.toISOString() ?? null,
+    documentStorageKey: contract.documentStorageKey,
+    documentFileName: contract.documentFileName,
+    documentMimeType: contract.documentMimeType,
+    documentSize: contract.documentSize,
     previousVersions,
     allowances: contract.allowances.map((allowance) => ({
       id: allowance.id,
@@ -418,7 +491,7 @@ export type ContractMonitoringRecord = {
   employeeNumber: string;
   employeeName: string;
   contractNumber: string | null;
-  jobTitle: string;
+  positionTitle: string;
   contractType: string;
   status: string;
   startDate: string;
@@ -445,6 +518,9 @@ export type ContractMonitoringDashboard = {
   contracts: ContractMonitoringRecord[];
   summary: {
     active: number;
+    pendingApproval: number;
+    awaitingSignature: number;
+    draft: number;
     expiringWithin30Days: number;
     expiringWithin60Days: number;
     expiringWithin90Days: number;
@@ -495,6 +571,9 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
       contracts: [],
       summary: {
         active: 0,
+        pendingApproval: 0,
+        awaitingSignature: 0,
+        draft: 0,
         expiringWithin30Days: 0,
         expiringWithin60Days: 0,
         expiringWithin90Days: 0,
@@ -549,6 +628,24 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
           employeeNumber: true,
           firstName: true,
           lastName: true,
+          position: {
+            select: {
+              title: true,
+            },
+          },
+          assignments: {
+            where: {
+              isCurrent: true,
+            },
+            take: 1,
+            select: {
+              position: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -598,13 +695,23 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
       estimatedNetGratuity = estimate.estimatedNetGratuity;
     }
 
+    const positionTitle =
+      contract.isCurrent
+        ? resolveEmployeePositionTitle({
+            assignmentPositionTitle:
+              contract.employee.assignments[0]?.position?.title,
+            positionTitle: contract.employee.position?.title,
+            contractJobTitle: contract.jobTitle,
+          }) ?? contract.jobTitle
+        : contract.jobTitle;
+
     return {
       id: contract.id,
       employeeId: contract.employee.id,
       employeeNumber: contract.employee.employeeNumber,
       employeeName: `${contract.employee.firstName} ${contract.employee.lastName}`,
       contractNumber: contract.contractNumber,
-      jobTitle: contract.jobTitle,
+      positionTitle,
       contractType: contract.contractType,
       status: contract.status,
       startDate: contract.startDate.toISOString().slice(0, 10),
@@ -634,6 +741,13 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
     summary: {
       active: currentRecords.filter((contract) => contract.status === "ACTIVE")
         .length,
+      pendingApproval: records.filter(
+        (contract) => contract.status === "PENDING_APPROVAL",
+      ).length,
+      awaitingSignature: records.filter(
+        (contract) => contract.status === "AWAITING_SIGNATURE",
+      ).length,
+      draft: records.filter((contract) => contract.status === "DRAFT").length,
       expiringWithin30Days: currentRecords.filter(
         (contract) => contract.expiryCategory === "WITHIN_30_DAYS",
       ).length,

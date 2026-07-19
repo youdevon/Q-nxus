@@ -210,6 +210,7 @@ export type DepartmentWhereInput = {
   positions?: Prisma.PositionListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
   employeeAssignments?: Prisma.EmployeeAssignmentListRelationFilter
+  employmentContracts?: Prisma.EmploymentContractListRelationFilter
 }
 
 export type DepartmentOrderByWithRelationInput = {
@@ -225,6 +226,7 @@ export type DepartmentOrderByWithRelationInput = {
   positions?: Prisma.PositionOrderByRelationAggregateInput
   employees?: Prisma.EmployeeOrderByRelationAggregateInput
   employeeAssignments?: Prisma.EmployeeAssignmentOrderByRelationAggregateInput
+  employmentContracts?: Prisma.EmploymentContractOrderByRelationAggregateInput
 }
 
 export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
@@ -245,6 +247,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   positions?: Prisma.PositionListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
   employeeAssignments?: Prisma.EmployeeAssignmentListRelationFilter
+  employmentContracts?: Prisma.EmploymentContractListRelationFilter
 }, "id" | "organizationId_name" | "organizationId_code">
 
 export type DepartmentOrderByWithAggregationInput = {
@@ -287,6 +290,7 @@ export type DepartmentCreateInput = {
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateInput = {
@@ -301,6 +305,7 @@ export type DepartmentUncheckedCreateInput = {
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUpdateInput = {
@@ -315,6 +320,7 @@ export type DepartmentUpdateInput = {
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateInput = {
@@ -329,6 +335,7 @@ export type DepartmentUncheckedUpdateInput = {
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateManyInput = {
@@ -512,6 +519,22 @@ export type DepartmentUpdateOneRequiredWithoutEmployeeAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutEmployeeAssignmentsInput, Prisma.DepartmentUpdateWithoutEmployeeAssignmentsInput>, Prisma.DepartmentUncheckedUpdateWithoutEmployeeAssignmentsInput>
 }
 
+export type DepartmentCreateNestedOneWithoutEmploymentContractsInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutEmploymentContractsInput, Prisma.DepartmentUncheckedCreateWithoutEmploymentContractsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutEmploymentContractsInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+}
+
+export type DepartmentUpdateOneWithoutEmploymentContractsNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutEmploymentContractsInput, Prisma.DepartmentUncheckedCreateWithoutEmploymentContractsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutEmploymentContractsInput
+  upsert?: Prisma.DepartmentUpsertWithoutEmploymentContractsInput
+  disconnect?: Prisma.DepartmentWhereInput | boolean
+  delete?: Prisma.DepartmentWhereInput | boolean
+  connect?: Prisma.DepartmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutEmploymentContractsInput, Prisma.DepartmentUpdateWithoutEmploymentContractsInput>, Prisma.DepartmentUncheckedUpdateWithoutEmploymentContractsInput>
+}
+
 export type DepartmentCreateWithoutOrganizationInput = {
   id?: string
   name: string
@@ -523,6 +546,7 @@ export type DepartmentCreateWithoutOrganizationInput = {
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutOrganizationInput = {
@@ -536,6 +560,7 @@ export type DepartmentUncheckedCreateWithoutOrganizationInput = {
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutOrganizationInput = {
@@ -589,6 +614,7 @@ export type DepartmentCreateWithoutPositionsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutDepartmentsInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutPositionsInput = {
@@ -602,6 +628,7 @@ export type DepartmentUncheckedCreateWithoutPositionsInput = {
   updatedAt?: Date | string
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutPositionsInput = {
@@ -631,6 +658,7 @@ export type DepartmentUpdateWithoutPositionsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutDepartmentsNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutPositionsInput = {
@@ -644,6 +672,7 @@ export type DepartmentUncheckedUpdateWithoutPositionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutEmployeesInput = {
@@ -657,6 +686,7 @@ export type DepartmentCreateWithoutEmployeesInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutDepartmentsInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutEmployeesInput = {
@@ -670,6 +700,7 @@ export type DepartmentUncheckedCreateWithoutEmployeesInput = {
   updatedAt?: Date | string
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutEmployeesInput = {
@@ -699,6 +730,7 @@ export type DepartmentUpdateWithoutEmployeesInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutDepartmentsNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutEmployeesInput = {
@@ -712,6 +744,7 @@ export type DepartmentUncheckedUpdateWithoutEmployeesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutEmployeeAssignmentsInput = {
@@ -725,6 +758,7 @@ export type DepartmentCreateWithoutEmployeeAssignmentsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutDepartmentsInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutEmployeeAssignmentsInput = {
@@ -738,6 +772,7 @@ export type DepartmentUncheckedCreateWithoutEmployeeAssignmentsInput = {
   updatedAt?: Date | string
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutEmployeeAssignmentsInput = {
@@ -767,6 +802,7 @@ export type DepartmentUpdateWithoutEmployeeAssignmentsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutDepartmentsNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutEmployeeAssignmentsInput = {
@@ -780,6 +816,79 @@ export type DepartmentUncheckedUpdateWithoutEmployeeAssignmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentCreateWithoutEmploymentContractsInput = {
+  id?: string
+  name: string
+  code?: string | null
+  description?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutDepartmentsInput
+  positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
+  employeeAssignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentUncheckedCreateWithoutEmploymentContractsInput = {
+  id?: string
+  organizationId: string
+  name: string
+  code?: string | null
+  description?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentCreateOrConnectWithoutEmploymentContractsInput = {
+  where: Prisma.DepartmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutEmploymentContractsInput, Prisma.DepartmentUncheckedCreateWithoutEmploymentContractsInput>
+}
+
+export type DepartmentUpsertWithoutEmploymentContractsInput = {
+  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutEmploymentContractsInput, Prisma.DepartmentUncheckedUpdateWithoutEmploymentContractsInput>
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutEmploymentContractsInput, Prisma.DepartmentUncheckedCreateWithoutEmploymentContractsInput>
+  where?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentUpdateToOneWithWhereWithoutEmploymentContractsInput = {
+  where?: Prisma.DepartmentWhereInput
+  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutEmploymentContractsInput, Prisma.DepartmentUncheckedUpdateWithoutEmploymentContractsInput>
+}
+
+export type DepartmentUpdateWithoutEmploymentContractsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutDepartmentsNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentUncheckedUpdateWithoutEmploymentContractsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
+  employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateManyOrganizationInput = {
@@ -803,6 +912,7 @@ export type DepartmentUpdateWithoutOrganizationInput = {
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutOrganizationInput = {
@@ -816,6 +926,7 @@ export type DepartmentUncheckedUpdateWithoutOrganizationInput = {
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   employeeAssignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutDepartmentNestedInput
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateManyWithoutOrganizationInput = {
@@ -837,12 +948,14 @@ export type DepartmentCountOutputType = {
   positions: number
   employees: number
   employeeAssignments: number
+  employmentContracts: number
 }
 
 export type DepartmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   positions?: boolean | DepartmentCountOutputTypeCountPositionsArgs
   employees?: boolean | DepartmentCountOutputTypeCountEmployeesArgs
   employeeAssignments?: boolean | DepartmentCountOutputTypeCountEmployeeAssignmentsArgs
+  employmentContracts?: boolean | DepartmentCountOutputTypeCountEmploymentContractsArgs
 }
 
 /**
@@ -876,6 +989,13 @@ export type DepartmentCountOutputTypeCountEmployeeAssignmentsArgs<ExtArgs extend
   where?: Prisma.EmployeeAssignmentWhereInput
 }
 
+/**
+ * DepartmentCountOutputType without action
+ */
+export type DepartmentCountOutputTypeCountEmploymentContractsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmploymentContractWhereInput
+}
+
 
 export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -890,6 +1010,7 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   positions?: boolean | Prisma.Department$positionsArgs<ExtArgs>
   employees?: boolean | Prisma.Department$employeesArgs<ExtArgs>
   employeeAssignments?: boolean | Prisma.Department$employeeAssignmentsArgs<ExtArgs>
+  employmentContracts?: boolean | Prisma.Department$employmentContractsArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["department"]>
 
@@ -934,6 +1055,7 @@ export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   positions?: boolean | Prisma.Department$positionsArgs<ExtArgs>
   employees?: boolean | Prisma.Department$employeesArgs<ExtArgs>
   employeeAssignments?: boolean | Prisma.Department$employeeAssignmentsArgs<ExtArgs>
+  employmentContracts?: boolean | Prisma.Department$employmentContractsArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -950,6 +1072,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     positions: Prisma.$PositionPayload<ExtArgs>[]
     employees: Prisma.$EmployeePayload<ExtArgs>[]
     employeeAssignments: Prisma.$EmployeeAssignmentPayload<ExtArgs>[]
+    employmentContracts: Prisma.$EmploymentContractPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1358,6 +1481,7 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
   positions<T extends Prisma.Department$positionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$positionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employees<T extends Prisma.Department$employeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employeeAssignments<T extends Prisma.Department$employeeAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$employeeAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employmentContracts<T extends Prisma.Department$employmentContractsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$employmentContractsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1865,6 +1989,30 @@ export type Department$employeeAssignmentsArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeAssignmentScalarFieldEnum | Prisma.EmployeeAssignmentScalarFieldEnum[]
+}
+
+/**
+ * Department.employmentContracts
+ */
+export type Department$employmentContractsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmploymentContract
+   */
+  select?: Prisma.EmploymentContractSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmploymentContract
+   */
+  omit?: Prisma.EmploymentContractOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmploymentContractInclude<ExtArgs> | null
+  where?: Prisma.EmploymentContractWhereInput
+  orderBy?: Prisma.EmploymentContractOrderByWithRelationInput | Prisma.EmploymentContractOrderByWithRelationInput[]
+  cursor?: Prisma.EmploymentContractWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmploymentContractScalarFieldEnum | Prisma.EmploymentContractScalarFieldEnum[]
 }
 
 /**

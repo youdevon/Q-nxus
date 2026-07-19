@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { EmploymentContractForm } from "@/src/modules/hr/components/employment-contract-form";
 import { getContractLeaveEntitlementDefaults } from "@/src/modules/hr/data/get-contract-leave-entitlement-defaults";
+import { getEmployeeFormOptions } from "@/src/modules/hr/data/get-employee-form-data";
 import {
   getAllowanceCategories,
   getEmployeeContractHistory,
@@ -33,11 +34,13 @@ export default async function AmendEmploymentContractPage({
     sourceContract,
     allowanceCategories,
     leaveEntitlementDefaults,
+    departments,
   ] = await Promise.all([
     getEmployeeContractHistory(id),
     getEmploymentContractProfile(id, contractId),
     getAllowanceCategories(),
     getContractLeaveEntitlementDefaults(id),
+    getEmployeeFormOptions(),
   ]);
 
   if (!history || !sourceContract) {
@@ -50,6 +53,7 @@ export default async function AmendEmploymentContractPage({
       sourceContract={sourceContract}
       allowanceCategories={allowanceCategories}
       leaveEntitlementDefaults={leaveEntitlementDefaults}
+      departments={departments}
       mode="amend"
     />
   );

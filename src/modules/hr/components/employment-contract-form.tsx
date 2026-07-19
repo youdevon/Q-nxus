@@ -7,22 +7,24 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageShell } from "@/src/components/layout/page-shell";
 import { FieldError, FieldHint, FieldLabel } from "@/src/components/ui/field";
 import {
   calculateContractEndDate,
   earliestRenewalStartDate,
   inferContractPeriod,
+  type ContractLengthPreset,
   type ContractPeriodOption,
-  type ContractPeriodYears,
 } from "@/src/lib/contract-dates";
-import { formatMoney } from "@/src/lib/format";
+import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import {
   createEmploymentContract,
   type EmploymentContractFormState,
 } from "@/src/modules/hr/actions/create-employment-contract";
 import type { ContractLeaveEntitlementDefault } from "@/src/modules/hr/data/get-contract-leave-entitlement-defaults";
+import type { EmployeeFormDepartment } from "@/src/modules/hr/data/get-employee-form-data";
 import type {
   EmployeeContractHistory,
   EmploymentContractProfile,
@@ -31,10 +33,14 @@ import type {
 import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity";
 import { calculateContractLeaveEntitlementDays } from "@/src/modules/hr/lib/contract-leave-entitlement";
 import {
+  isNonEmployeePayee,
+  suggestedContractTypeForCategory,
+  workforceCategoryBadgeLabel,
+} from "@/src/modules/hr/lib/workforce-category";
+import {
   ContractAllowanceEditor,
   type ContractAllowanceInput,
 } from "./contract-allowance-editor";
-import { PeopleNav } from "./people-nav";
 
 const initialState: EmploymentContractFormState = {
   status: "idle",
@@ -43,15 +49,31 @@ const initialState: EmploymentContractFormState = {
 
 export type EmploymentContractFormMode = "create" | "amend" | "renew";
 
+type StartDateMode = "hire" | "specific";
+
 function resolveInitialPeriod(
   startDate: string,
   endDate: string,
 ): ContractPeriodOption {
   if (!startDate || !endDate) {
-    return 1;
+    return "1Y";
   }
 
   return inferContractPeriod(startDate, endDate);
+}
+
+function resolveCreateDefaults(hireDate: string | null | undefined): {
+  startDate: string;
+  endDate: string;
+  period: ContractPeriodOption;
+} {
+  const period: ContractPeriodOption = "1Y";
+  const startDate = hireDate?.trim() || "";
+  const endDate = startDate
+    ? (calculateContractEndDate(startDate, "1Y") ?? "")
+    : "";
+
+  return { startDate, endDate, period };
 }
 
 function resolveRenewalDefaults(sourceContract: EmploymentContractProfile): {
@@ -66,9 +88,9 @@ function resolveRenewalDefaults(sourceContract: EmploymentContractProfile): {
       status: sourceContract.status,
     }) ?? "";
 
-  const period: ContractPeriodOption = 1;
+  const period: ContractPeriodOption = "1Y";
   const endDate = startDate
-    ? (calculateContractEndDate(startDate, 1) ?? "")
+    ? (calculateContractEndDate(startDate, "1Y") ?? "")
     : "";
 
   return { startDate, endDate, period };
@@ -105,17 +127,41 @@ function previewLeaveDays(
   }
 }
 
+function resolveInitialDepartmentId(
+  departments: EmployeeFormDepartment[],
+  departmentId: string | null,
+  positionId: string | null,
+): string {
+  if (departmentId) {
+    return departmentId;
+  }
+
+  if (!positionId) {
+    return "";
+  }
+
+  for (const department of departments) {
+    if (department.positions.some((position) => position.id === positionId)) {
+      return department.id;
+    }
+  }
+
+  return "";
+}
+
 export function EmploymentContractForm({
   history,
   sourceContract,
   allowanceCategories,
   leaveEntitlementDefaults = [],
+  departments = [],
   mode = "create",
 }: {
   history: EmployeeContractHistory;
   sourceContract?: EmploymentContractProfile | null;
   allowanceCategories: AllowanceCategoryRecord[];
   leaveEntitlementDefaults?: ContractLeaveEntitlementDefault[];
+  departments?: EmployeeFormDepartment[];
   mode?: EmploymentContractFormMode;
 }) {
   const resolvedMode: EmploymentContractFormMode =
@@ -127,25 +173,68 @@ export function EmploymentContractForm({
 
   const renewalDefaults =
     isRenewal && sourceContract ? resolveRenewalDefaults(sourceContract) : null;
+  const employeeHireDate = history.employee.hireDate?.trim() || "";
+  const hasHireDate = employeeHireDate.length > 0;
+  const createDefaults =
+    !isFollowOn && !sourceContract
+      ? resolveCreateDefaults(employeeHireDate || null)
+      : null;
+  const isCreateMode = !isFollowOn && !sourceContract;
+  const nonEmployeePayee = isNonEmployeePayee(
+    history.employee.workforceCategory,
+  );
+  const suggestedContractType = suggestedContractTypeForCategory(
+    history.employee.workforceCategory,
+  );
+  const categoryLabel = workforceCategoryBadgeLabel(
+    history.employee.workforceCategory,
+  );
 
   const [state, action, pending] = useActionState(
     createEmploymentContract,
     initialState,
   );
+  const [saveIntent, setSaveIntent] = useState<"draft" | "submit" | "activate">(
+    "activate",
+  );
+
+  const [departmentId, setDepartmentId] = useState(() =>
+    resolveInitialDepartmentId(
+      departments,
+      history.employee.departmentId,
+      history.employee.positionId,
+    ),
+  );
+  const [positionId, setPositionId] = useState(
+    history.employee.positionId ?? "",
+  );
 
   const [gratuityEligible, setGratuityEligible] = useState(
     sourceContract?.gratuityEligible ?? false,
   );
+  const [startDateMode, setStartDateMode] = useState<StartDateMode>(() =>
+    isCreateMode && hasHireDate ? "hire" : "specific",
+  );
   const [startDate, setStartDate] = useState(
-    renewalDefaults?.startDate ?? sourceContract?.startDate ?? "",
+    renewalDefaults?.startDate ??
+      sourceContract?.startDate ??
+      createDefaults?.startDate ??
+      "",
   );
   const [endDate, setEndDate] = useState(
-    renewalDefaults?.endDate ?? sourceContract?.endDate ?? "",
+    renewalDefaults?.endDate ??
+      sourceContract?.endDate ??
+      createDefaults?.endDate ??
+      "",
   );
   const [contractPeriod, setContractPeriod] = useState<ContractPeriodOption>(
     () => {
       if (renewalDefaults) {
         return renewalDefaults.period;
+      }
+
+      if (createDefaults) {
+        return createDefaults.period;
       }
 
       return resolveInitialPeriod(
@@ -185,8 +274,15 @@ export function EmploymentContractForm({
   );
 
   const initialStart =
-    renewalDefaults?.startDate ?? sourceContract?.startDate ?? "";
-  const initialEnd = renewalDefaults?.endDate ?? sourceContract?.endDate ?? "";
+    renewalDefaults?.startDate ??
+    sourceContract?.startDate ??
+    createDefaults?.startDate ??
+    "";
+  const initialEnd =
+    renewalDefaults?.endDate ??
+    sourceContract?.endDate ??
+    createDefaults?.endDate ??
+    "";
 
   const [vacationLeaveDays, setVacationLeaveDays] = useState(() =>
     previewLeaveDays(vacationRule, initialStart, initialEnd),
@@ -220,10 +316,7 @@ export function EmploymentContractForm({
       return;
     }
 
-    const calculated = calculateContractEndDate(
-      value,
-      contractPeriod as ContractPeriodYears,
-    );
+    const calculated = calculateContractEndDate(value, contractPeriod);
 
     if (calculated) {
       setEndDate(calculated);
@@ -234,9 +327,17 @@ export function EmploymentContractForm({
     syncLeaveDayDefaults(value, endDate);
   }
 
+  function handleStartDateModeChange(mode: StartDateMode) {
+    setStartDateMode(mode);
+
+    if (mode === "hire" && hasHireDate) {
+      handleStartDateChange(employeeHireDate);
+    }
+  }
+
   function handleContractPeriodChange(value: string) {
     const period =
-      value === "custom" ? "custom" : (Number(value) as ContractPeriodYears);
+      value === "custom" ? "custom" : (value as ContractLengthPreset);
 
     setContractPeriod(period);
 
@@ -244,10 +345,7 @@ export function EmploymentContractForm({
       return;
     }
 
-    const calculated = calculateContractEndDate(
-      startDate,
-      period as ContractPeriodYears,
-    );
+    const calculated = calculateContractEndDate(startDate, period);
 
     if (calculated) {
       setEndDate(calculated);
@@ -311,6 +409,17 @@ export function EmploymentContractForm({
       ? "AMENDMENT"
       : null;
 
+  const positionsForDepartment = useMemo(
+    () =>
+      departments.find((department) => department.id === departmentId)
+        ?.positions ?? [],
+    [departmentId, departments],
+  );
+
+  const selectedPosition = positionsForDepartment.find(
+    (position) => position.id === positionId,
+  );
+
   const pageTitle = isRenewal
     ? "Renew Employment Contract"
     : isAmendment
@@ -330,13 +439,11 @@ export function EmploymentContractForm({
     : null;
 
   return (
-    <form
-      action={action}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
+    <form action={action}>
+      <PageShell>
       <input type="hidden" name="employeeId" value={employee.id} />
+      <input type="hidden" name="employeeUpdatedAt" value={employee.updatedAt} />
+      <input type="hidden" name="positionId" value={positionId} />
 
       {sourceContract && (
         <input
@@ -349,23 +456,48 @@ export function EmploymentContractForm({
       {lockedChangeType ? (
         <input type="hidden" name="changeType" value={lockedChangeType} />
       ) : null}
+      <input type="hidden" name="saveIntent" value={saveIntent} />
 
-      <PageHeader
+      <PeoplePageHeader
         title={pageTitle}
         description={`${employee.firstName} ${employee.lastName} · ${employee.employeeNumber}`}
         backHref={cancelHref}
         backLabel="Contracts"
         actions={
           <FormPageActions cancelHref={cancelHref}>
-            <Button type="submit" disabled={pending}>
+            <Button
+              type="submit"
+              variant="outline"
+              disabled={pending}
+              onClick={() => setSaveIntent("draft")}
+            >
               <Save />
-              {pending
-                ? "Saving…"
+              {pending && saveIntent === "draft" ? "Saving…" : "Save draft"}
+            </Button>
+            <Button
+              type="submit"
+              variant="outline"
+              disabled={pending}
+              onClick={() => setSaveIntent("submit")}
+            >
+              <FileSignature />
+              {pending && saveIntent === "submit"
+                ? "Submitting…"
+                : "Submit for approval"}
+            </Button>
+            <Button
+              type="submit"
+              disabled={pending}
+              onClick={() => setSaveIntent("activate")}
+            >
+              <Save />
+              {pending && saveIntent === "activate"
+                ? "Activating…"
                 : isRenewal
-                  ? "Save renewal"
+                  ? "Save & activate renewal"
                   : isAmendment
-                    ? "Save amendment"
-                    : "Save contract"}
+                    ? "Save & activate amendment"
+                    : "Save & activate"}
             </Button>
           </FormPageActions>
         }
@@ -427,7 +559,10 @@ export function EmploymentContractForm({
             <select
               id="contractType"
               name="contractType"
-              defaultValue={sourceContract?.contractType ?? "FIXED_TERM"}
+              defaultValue={
+                sourceContract?.contractType ??
+                (nonEmployeePayee ? suggestedContractType : "FIXED_TERM")
+              }
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
@@ -441,6 +576,12 @@ export function EmploymentContractForm({
               <option value="SECONDMENT">Secondment</option>
               <option value="OTHER">Other</option>
             </select>
+            {nonEmployeePayee && categoryLabel ? (
+              <p className="mt-1 text-xs text-muted-foreground">
+                {categoryLabel} engagements are typically Fixed term,
+                Consultancy, or Other — an end date is required.
+              </p>
+            ) : null}
           </div>
 
           {!lockedChangeType ? (
@@ -474,34 +615,154 @@ export function EmploymentContractForm({
           )}
 
           <div>
-            <label htmlFor="jobTitle" className="text-sm font-medium">
-              Contract job title
+            <label htmlFor="departmentId" className="text-sm font-medium">
+              Department
             </label>
-            <Input
-              id="jobTitle"
-              name="jobTitle"
-              defaultValue={
-                sourceContract?.jobTitle ?? employee.positionTitle ?? ""
-              }
-              className="mt-2"
+            <select
+              id="departmentId"
+              value={departmentId}
+              onChange={(event) => {
+                const nextDepartmentId = event.target.value;
+                setDepartmentId(nextDepartmentId);
+
+                const nextPositions =
+                  departments.find(
+                    (department) => department.id === nextDepartmentId,
+                  )?.positions ?? [];
+
+                setPositionId(
+                  nextPositions.some((position) => position.id === positionId)
+                    ? positionId
+                    : (nextPositions[0]?.id ?? ""),
+                );
+              }}
+              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
-            />
+            >
+              <option value="">Select department</option>
+              {departments.map((department) => (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
-            <label htmlFor="startDate" className="text-sm font-medium">
-              Start date
+            <label htmlFor="positionSelect" className="text-sm font-medium">
+              Position
             </label>
-            <Input
-              id="startDate"
-              name="startDate"
-              type="date"
-              className="mt-2"
-              value={startDate}
-              min={isRenewal && earliestRenewal ? earliestRenewal : undefined}
-              onChange={(event) => handleStartDateChange(event.target.value)}
+            <select
+              id="positionSelect"
+              value={positionId}
+              onChange={(event) => setPositionId(event.target.value)}
+              className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
-            />
+              disabled={!departmentId || positionsForDepartment.length === 0}
+            >
+              <option value="">
+                {!departmentId
+                  ? "Select a department first"
+                  : positionsForDepartment.length === 0
+                    ? "No positions in this department"
+                    : "Select position"}
+              </option>
+              {positionsForDepartment.map((position) => (
+                <option key={position.id} value={position.id}>
+                  {position.title}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {selectedPosition
+                ? positionId === employee.positionId
+                  ? "Uses the employee’s current organizational assignment."
+                  : "Saving will attach the employee to this position (same assignment path as Organization)."
+                : "Choose the catalog Position — job title is taken from it, not free text."}
+            </p>
+            {state.fieldErrors?.positionId ? (
+              <FieldError>{state.fieldErrors.positionId}</FieldError>
+            ) : null}
+            {state.fieldErrors?.jobTitle ? (
+              <FieldError>{state.fieldErrors.jobTitle}</FieldError>
+            ) : null}
+          </div>
+
+          <div>
+            <p className="text-sm font-medium" id="startDateLabel">
+              Start date
+            </p>
+            {isCreateMode ? (
+              <>
+                <div
+                  className="mt-2 flex flex-wrap gap-3"
+                  role="radiogroup"
+                  aria-labelledby="startDateLabel"
+                >
+                  <label className="flex cursor-pointer items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      name="startDateMode"
+                      value="hire"
+                      checked={startDateMode === "hire"}
+                      disabled={!hasHireDate}
+                      onChange={() => handleStartDateModeChange("hire")}
+                    />
+                    Use hire date
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      name="startDateMode"
+                      value="specific"
+                      checked={startDateMode === "specific"}
+                      onChange={() => handleStartDateModeChange("specific")}
+                    />
+                    Specific date
+                  </label>
+                </div>
+                {startDateMode === "hire" && hasHireDate ? (
+                  <>
+                    <input
+                      type="hidden"
+                      name="startDate"
+                      value={employeeHireDate}
+                    />
+                    <p className="mt-2 text-sm">
+                      {formatDisplayDate(employeeHireDate)}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Uses the employee’s hire date as the contract start.
+                    </p>
+                  </>
+                ) : (
+                  <Input
+                    id="startDate"
+                    name="startDate"
+                    type="date"
+                    className="mt-2"
+                    value={startDate}
+                    onChange={(event) =>
+                      handleStartDateChange(event.target.value)
+                    }
+                    required
+                    aria-labelledby="startDateLabel"
+                  />
+                )}
+              </>
+            ) : (
+              <Input
+                id="startDate"
+                name="startDate"
+                type="date"
+                className="mt-2"
+                value={startDate}
+                min={isRenewal && earliestRenewal ? earliestRenewal : undefined}
+                onChange={(event) => handleStartDateChange(event.target.value)}
+                required
+                aria-labelledby="startDateLabel"
+              />
+            )}
             {state.fieldErrors?.startDate ? (
               <FieldError>{state.fieldErrors.startDate}</FieldError>
             ) : null}
@@ -509,21 +770,19 @@ export function EmploymentContractForm({
 
           <div>
             <label htmlFor="contractPeriod" className="text-sm font-medium">
-              Contract period
+              Contract length
             </label>
             <select
               id="contractPeriod"
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-              value={
-                contractPeriod === "custom" ? "custom" : String(contractPeriod)
-              }
+              value={contractPeriod}
               onChange={(event) =>
                 handleContractPeriodChange(event.target.value)
               }
             >
-              <option value="1">1 year</option>
-              <option value="2">2 years</option>
-              <option value="3">3 years</option>
+              <option value="6M">6 months</option>
+              <option value="1Y">1 year</option>
+              <option value="3Y">3 years</option>
               <option value="custom">Custom</option>
             </select>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -534,7 +793,7 @@ export function EmploymentContractForm({
 
           <div>
             <label htmlFor="endDate" className="text-sm font-medium">
-              End date
+              End date{nonEmployeePayee ? " (engagement period)" : ""}
             </label>
             <Input
               id="endDate"
@@ -550,9 +809,11 @@ export function EmploymentContractForm({
               <FieldError>{state.fieldErrors.endDate}</FieldError>
             ) : (
               <p className="mt-1 text-xs text-muted-foreground">
-                {isCustomPeriod
-                  ? "Required for leave balances and gratuity estimates."
-                  : "Auto-calculated from the start date and period. Choose Custom to edit."}
+                {nonEmployeePayee
+                  ? "Required engagement end. Closing the contract drops the payee from active payroll."
+                  : isCustomPeriod
+                    ? "Required for leave balances and gratuity estimates."
+                    : "Auto-calculated from the start date and period. Choose Custom to edit."}
               </p>
             )}
           </div>
@@ -613,6 +874,64 @@ export function EmploymentContractForm({
                   : "No active sick entitlement rule found. Enter days for this contract, or leave blank."}
               </FieldHint>
             )}
+          </div>
+
+          <div>
+            <label htmlFor="fte" className="text-sm font-medium">
+              FTE
+            </label>
+            <Input
+              id="fte"
+              name="fte"
+              type="number"
+              min="0.01"
+              max="2"
+              step="0.01"
+              defaultValue="1"
+              className="mt-2"
+            />
+            <FieldHint>Full-time equivalent (1.0 = full time).</FieldHint>
+          </div>
+
+          <div>
+            <label htmlFor="standardHoursPerWeek" className="text-sm font-medium">
+              Standard hours / week
+            </label>
+            <Input
+              id="standardHoursPerWeek"
+              name="standardHoursPerWeek"
+              type="number"
+              min="0"
+              max="168"
+              step="0.25"
+              className="mt-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="probationEndDate" className="text-sm font-medium">
+              Probation end date
+            </label>
+            <Input
+              id="probationEndDate"
+              name="probationEndDate"
+              type="date"
+              className="mt-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="noticePeriodDays" className="text-sm font-medium">
+              Notice period (days)
+            </label>
+            <Input
+              id="noticePeriodDays"
+              name="noticePeriodDays"
+              type="number"
+              min="0"
+              step="1"
+              className="mt-2"
+            />
           </div>
 
           <div>
@@ -796,6 +1115,7 @@ export function EmploymentContractForm({
           </div>
         </div>
       </section>
+      </PageShell>
     </form>
   );
 }

@@ -8,9 +8,9 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
-import { formatMoney } from "@/src/lib/format";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { formatMoney, formatDisplayDate } from "@/src/lib/format";
 import { cn } from "@/lib/utils";
 import { getContractMonitoringDashboard } from "@/src/modules/hr/data/get-employment-contracts";
 import { requireContractViewAccess } from "@/src/modules/hr/data/require-people-access";
@@ -22,10 +22,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 type ExpiringFilter = "30" | "60" | "90" | "expired" | "none";
+type StatusFilter = "pending" | "signature" | "draft";
 
 type SearchParams = Promise<{
   expiring?: string;
   within?: string;
+  status?: string;
 }>;
 
 function label(value: string): string {
@@ -141,14 +143,14 @@ function StatFilterLink({
       scroll={false}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "block rounded-lg border px-3 py-3 -mx-3 transition-colors",
+        "block min-w-0 rounded-lg border px-3 py-3 transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         active
-          ? "border-border bg-muted/40"
-          : "border-transparent hover:border-border/80 hover:bg-muted/30",
+          ? "border-border bg-muted/50 shadow-sm"
+          : "border-border/60 hover:border-border hover:bg-muted/30",
       )}
     >
-      <p className="text-xs text-muted-foreground">{statLabel}</p>
+      <p className="text-xs leading-snug text-muted-foreground">{statLabel}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
     </Link>
   );
@@ -164,7 +166,13 @@ export default async function ContractsPage({
   const params = await searchParams;
   const expiringFilter = parseExpiringFilter(params.expiring);
   const withinDays = expiringFilter ? null : parseWithinDays(params.within);
-  const hasListFilter = Boolean(expiringFilter || withinDays);
+  const statusFilter: StatusFilter | null =
+    params.status === "pending" ||
+    params.status === "signature" ||
+    params.status === "draft"
+      ? params.status
+      : null;
+  const hasListFilter = Boolean(expiringFilter || withinDays || statusFilter);
 
   const dashboard = await getContractMonitoringDashboard();
 
@@ -172,36 +180,85 @@ export default async function ContractsPage({
     (contract) => contract.isCurrent || contract.expiryCategory === "EXPIRED",
   );
 
-  const filteredContracts = expiringFilter
-    ? monitoredContracts.filter((contract) =>
-        matchesExpiringFilter(contract.expiryCategory, expiringFilter),
-      )
-    : withinDays
-      ? monitoredContracts.filter((contract) =>
-          matchesWithinDays(contract.expiryCategory, withinDays),
-        )
-      : monitoredContracts;
+  const statusQueueContracts = statusFilter
+    ? dashboard.contracts.filter((contract) => {
+        if (statusFilter === "pending") {
+          return contract.status === "PENDING_APPROVAL";
+        }
+        if (statusFilter === "signature") {
+          return contract.status === "AWAITING_SIGNATURE";
+        }
+        return contract.status === "DRAFT";
+      })
+    : null;
 
-  const filterMessage = expiringFilter
+  const filteredContracts = statusQueueContracts
+    ? statusQueueContracts
+    : expiringFilter
+      ? monitoredContracts.filter((contract) =>
+          matchesExpiringFilter(contract.expiryCategory, expiringFilter),
+        )
+      : withinDays
+        ? monitoredContracts.filter((contract) =>
+            matchesWithinDays(contract.expiryCategory, withinDays),
+          )
+        : monitoredContracts;
+
+  const filterMessage = statusFilter
     ? `Showing contracts in the “${
-        expiringFilter === "none"
-          ? "No end date"
-          : expiringFilter === "expired"
-            ? "Expired"
-            : `Within ${expiringFilter} days`
-      }” window.`
-    : withinDays
-      ? "Showing current and expired contracts ending within 90 days."
-      : null;
+        statusFilter === "pending"
+          ? "Pending approval"
+          : statusFilter === "signature"
+            ? "Awaiting signature"
+            : "Draft"
+      }” queue.`
+    : expiringFilter
+      ? `Showing contracts in the “${
+          expiringFilter === "none"
+            ? "No end date"
+            : expiringFilter === "expired"
+              ? "Expired"
+              : `Within ${expiringFilter} days`
+        }” window.`
+      : withinDays
+        ? "Showing current and expired contracts ending within 90 days."
+        : null;
 
   return (
     <PageShell size="xl">
-      <PageHeader
+      <PeoplePageHeader
         title="Contract Monitoring"
         description="Monitor current employment contracts, upcoming expirations and estimated gratuity exposure."
       />
 
-      <section className="grid gap-2 sm:grid-cols-2 xl:grid-cols-6">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <StatFilterLink
+          href="/contracts?status=draft"
+          label="Draft"
+          value={dashboard.summary.draft}
+          active={statusFilter === "draft"}
+        />
+        <StatFilterLink
+          href="/contracts?status=pending"
+          label="Pending approval"
+          value={dashboard.summary.pendingApproval}
+          active={statusFilter === "pending"}
+        />
+        <StatFilterLink
+          href="/contracts?status=signature"
+          label="Awaiting signature"
+          value={dashboard.summary.awaitingSignature}
+          active={statusFilter === "signature"}
+        />
+        <StatFilterLink
+          href="/contracts"
+          label="Active current"
+          value={dashboard.summary.active}
+          active={!hasListFilter}
+        />
+      </section>
+
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
         <StatFilterLink
           href="/contracts"
           label="Active"
@@ -325,7 +382,7 @@ export default async function ContractsPage({
                     {contract.employeeNumber}
                   </p>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {contract.jobTitle}
+                    {contract.positionTitle}
                   </p>
                 </div>
 
@@ -342,7 +399,9 @@ export default async function ContractsPage({
                 <div>
                   <p className="text-xs text-muted-foreground">End date</p>
                   <p className="mt-1 text-sm font-medium">
-                    {contract.endDate ?? "None"}
+                    {contract.endDate
+                      ? formatDisplayDate(contract.endDate)
+                      : "None"}
                   </p>
                 </div>
 

@@ -162,6 +162,9 @@ export type AllowanceFrequency = (typeof AllowanceFrequency)[keyof typeof Allowa
 
 export const EmploymentContractStatus = {
   DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  AWAITING_SIGNATURE: 'AWAITING_SIGNATURE',
   ACTIVE: 'ACTIVE',
   EXPIRED: 'EXPIRED',
   SUPERSEDED: 'SUPERSEDED',
@@ -170,6 +173,25 @@ export const EmploymentContractStatus = {
 } as const
 
 export type EmploymentContractStatus = (typeof EmploymentContractStatus)[keyof typeof EmploymentContractStatus]
+
+
+export const ContractApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SKIPPED: 'SKIPPED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type ContractApprovalStatus = (typeof ContractApprovalStatus)[keyof typeof ContractApprovalStatus]
+
+
+export const ContractWorkflowMode = {
+  PEOPLE_MANAGE_AUTO: 'PEOPLE_MANAGE_AUTO',
+  FINAL_APPROVER_POSITION: 'FINAL_APPROVER_POSITION'
+} as const
+
+export type ContractWorkflowMode = (typeof ContractWorkflowMode)[keyof typeof ContractWorkflowMode]
 
 
 export const EmploymentContractType = {
@@ -420,10 +442,62 @@ export type EmployeeFileUpdateRequestStatus = (typeof EmployeeFileUpdateRequestS
 
 
 export const EmployeeFileUpdateRequestType = {
-  QUALIFICATION_UPDATE: 'QUALIFICATION_UPDATE'
+  QUALIFICATION_UPDATE: 'QUALIFICATION_UPDATE',
+  COPY_OF_ID: 'COPY_OF_ID',
+  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
+  CREDENTIAL: 'CREDENTIAL',
+  TRAINING: 'TRAINING',
+  OTHER: 'OTHER'
 } as const
 
 export type EmployeeFileUpdateRequestType = (typeof EmployeeFileUpdateRequestType)[keyof typeof EmployeeFileUpdateRequestType]
+
+
+export const OnboardingCaseStatus = {
+  OPEN: 'OPEN',
+  READY: 'READY',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OnboardingCaseStatus = (typeof OnboardingCaseStatus)[keyof typeof OnboardingCaseStatus]
+
+
+export const OffboardingCaseStatus = {
+  OPEN: 'OPEN',
+  CLEARED: 'CLEARED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OffboardingCaseStatus = (typeof OffboardingCaseStatus)[keyof typeof OffboardingCaseStatus]
+
+
+export const LifecycleTaskStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  SKIPPED: 'SKIPPED',
+  BLOCKED: 'BLOCKED'
+} as const
+
+export type LifecycleTaskStatus = (typeof LifecycleTaskStatus)[keyof typeof LifecycleTaskStatus]
+
+
+export const LifecycleTaskCode = {
+  CREATE_DRAFT_CONTRACT: 'CREATE_DRAFT_CONTRACT',
+  SEED_FILE_CHECKLIST: 'SEED_FILE_CHECKLIST',
+  ISSUE_ASSUMPTION_OF_DUTY: 'ISSUE_ASSUMPTION_OF_DUTY',
+  COMPLETE_REQUIRED_DOCS: 'COMPLETE_REQUIRED_DOCS',
+  ACTIVATE_CONTRACT: 'ACTIVATE_CONTRACT',
+  PAYROLL_READINESS: 'PAYROLL_READINESS',
+  CLOSE_CONTRACT: 'CLOSE_CONTRACT',
+  FREEZE_EMPLOYEE_FILE: 'FREEZE_EMPLOYEE_FILE',
+  REVOKE_ACCESS: 'REVOKE_ACCESS',
+  FINAL_PAY_CHECK: 'FINAL_PAY_CHECK'
+} as const
+
+export type LifecycleTaskCode = (typeof LifecycleTaskCode)[keyof typeof LifecycleTaskCode]
 
 
 export const EmploymentType = {

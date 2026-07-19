@@ -20,8 +20,18 @@ export type EmployeeFileUpdateRequestModel = runtime.Types.Result.DefaultSelecti
 
 export type AggregateEmployeeFileUpdateRequest = {
   _count: EmployeeFileUpdateRequestCountAggregateOutputType | null
+  _avg: EmployeeFileUpdateRequestAvgAggregateOutputType | null
+  _sum: EmployeeFileUpdateRequestSumAggregateOutputType | null
   _min: EmployeeFileUpdateRequestMinAggregateOutputType | null
   _max: EmployeeFileUpdateRequestMaxAggregateOutputType | null
+}
+
+export type EmployeeFileUpdateRequestAvgAggregateOutputType = {
+  fileSize: number | null
+}
+
+export type EmployeeFileUpdateRequestSumAggregateOutputType = {
+  fileSize: number | null
 }
 
 export type EmployeeFileUpdateRequestMinAggregateOutputType = {
@@ -35,6 +45,11 @@ export type EmployeeFileUpdateRequestMinAggregateOutputType = {
   requestedByUserId: string | null
   resolvedByUserId: string | null
   resolvedAt: Date | null
+  fileName: string | null
+  storageKey: string | null
+  mimeType: string | null
+  fileSize: number | null
+  storedFileId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +65,11 @@ export type EmployeeFileUpdateRequestMaxAggregateOutputType = {
   requestedByUserId: string | null
   resolvedByUserId: string | null
   resolvedAt: Date | null
+  fileName: string | null
+  storageKey: string | null
+  mimeType: string | null
+  fileSize: number | null
+  storedFileId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -65,11 +85,24 @@ export type EmployeeFileUpdateRequestCountAggregateOutputType = {
   requestedByUserId: number
   resolvedByUserId: number
   resolvedAt: number
+  fileName: number
+  storageKey: number
+  mimeType: number
+  fileSize: number
+  storedFileId: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type EmployeeFileUpdateRequestAvgAggregateInputType = {
+  fileSize?: true
+}
+
+export type EmployeeFileUpdateRequestSumAggregateInputType = {
+  fileSize?: true
+}
 
 export type EmployeeFileUpdateRequestMinAggregateInputType = {
   id?: true
@@ -82,6 +115,11 @@ export type EmployeeFileUpdateRequestMinAggregateInputType = {
   requestedByUserId?: true
   resolvedByUserId?: true
   resolvedAt?: true
+  fileName?: true
+  storageKey?: true
+  mimeType?: true
+  fileSize?: true
+  storedFileId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -97,6 +135,11 @@ export type EmployeeFileUpdateRequestMaxAggregateInputType = {
   requestedByUserId?: true
   resolvedByUserId?: true
   resolvedAt?: true
+  fileName?: true
+  storageKey?: true
+  mimeType?: true
+  fileSize?: true
+  storedFileId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +155,11 @@ export type EmployeeFileUpdateRequestCountAggregateInputType = {
   requestedByUserId?: true
   resolvedByUserId?: true
   resolvedAt?: true
+  fileName?: true
+  storageKey?: true
+  mimeType?: true
+  fileSize?: true
+  storedFileId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -155,6 +203,18 @@ export type EmployeeFileUpdateRequestAggregateArgs<ExtArgs extends runtime.Types
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: EmployeeFileUpdateRequestAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: EmployeeFileUpdateRequestSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: EmployeeFileUpdateRequestMinAggregateInputType
@@ -185,6 +245,8 @@ export type EmployeeFileUpdateRequestGroupByArgs<ExtArgs extends runtime.Types.E
   take?: number
   skip?: number
   _count?: EmployeeFileUpdateRequestCountAggregateInputType | true
+  _avg?: EmployeeFileUpdateRequestAvgAggregateInputType
+  _sum?: EmployeeFileUpdateRequestSumAggregateInputType
   _min?: EmployeeFileUpdateRequestMinAggregateInputType
   _max?: EmployeeFileUpdateRequestMaxAggregateInputType
 }
@@ -200,9 +262,16 @@ export type EmployeeFileUpdateRequestGroupByOutputType = {
   requestedByUserId: string
   resolvedByUserId: string | null
   resolvedAt: Date | null
+  fileName: string | null
+  storageKey: string | null
+  mimeType: string | null
+  fileSize: number | null
+  storedFileId: string | null
   createdAt: Date
   updatedAt: Date
   _count: EmployeeFileUpdateRequestCountAggregateOutputType | null
+  _avg: EmployeeFileUpdateRequestAvgAggregateOutputType | null
+  _sum: EmployeeFileUpdateRequestSumAggregateOutputType | null
   _min: EmployeeFileUpdateRequestMinAggregateOutputType | null
   _max: EmployeeFileUpdateRequestMaxAggregateOutputType | null
 }
@@ -236,12 +305,18 @@ export type EmployeeFileUpdateRequestWhereInput = {
   requestedByUserId?: Prisma.StringFilter<"EmployeeFileUpdateRequest"> | string
   resolvedByUserId?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
   resolvedAt?: Prisma.DateTimeNullableFilter<"EmployeeFileUpdateRequest"> | Date | string | null
+  fileName?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  storageKey?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  mimeType?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  fileSize?: Prisma.IntNullableFilter<"EmployeeFileUpdateRequest"> | number | null
+  storedFileId?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeFileUpdateRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeFileUpdateRequest"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   requestedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   resolvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  storedFile?: Prisma.XOR<Prisma.StoredFileNullableScalarRelationFilter, Prisma.StoredFileWhereInput> | null
 }
 
 export type EmployeeFileUpdateRequestOrderByWithRelationInput = {
@@ -255,12 +330,18 @@ export type EmployeeFileUpdateRequestOrderByWithRelationInput = {
   requestedByUserId?: Prisma.SortOrder
   resolvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  storageKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  storedFileId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
   requestedBy?: Prisma.UserOrderByWithRelationInput
   resolvedBy?: Prisma.UserOrderByWithRelationInput
+  storedFile?: Prisma.StoredFileOrderByWithRelationInput
 }
 
 export type EmployeeFileUpdateRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -277,12 +358,18 @@ export type EmployeeFileUpdateRequestWhereUniqueInput = Prisma.AtLeast<{
   requestedByUserId?: Prisma.StringFilter<"EmployeeFileUpdateRequest"> | string
   resolvedByUserId?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
   resolvedAt?: Prisma.DateTimeNullableFilter<"EmployeeFileUpdateRequest"> | Date | string | null
+  fileName?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  storageKey?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  mimeType?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  fileSize?: Prisma.IntNullableFilter<"EmployeeFileUpdateRequest"> | number | null
+  storedFileId?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeFileUpdateRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeFileUpdateRequest"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   requestedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   resolvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  storedFile?: Prisma.XOR<Prisma.StoredFileNullableScalarRelationFilter, Prisma.StoredFileWhereInput> | null
 }, "id">
 
 export type EmployeeFileUpdateRequestOrderByWithAggregationInput = {
@@ -296,11 +383,18 @@ export type EmployeeFileUpdateRequestOrderByWithAggregationInput = {
   requestedByUserId?: Prisma.SortOrder
   resolvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  storageKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileSize?: Prisma.SortOrderInput | Prisma.SortOrder
+  storedFileId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeFileUpdateRequestCountOrderByAggregateInput
+  _avg?: Prisma.EmployeeFileUpdateRequestAvgOrderByAggregateInput
   _max?: Prisma.EmployeeFileUpdateRequestMaxOrderByAggregateInput
   _min?: Prisma.EmployeeFileUpdateRequestMinOrderByAggregateInput
+  _sum?: Prisma.EmployeeFileUpdateRequestSumOrderByAggregateInput
 }
 
 export type EmployeeFileUpdateRequestScalarWhereWithAggregatesInput = {
@@ -317,6 +411,11 @@ export type EmployeeFileUpdateRequestScalarWhereWithAggregatesInput = {
   requestedByUserId?: Prisma.StringWithAggregatesFilter<"EmployeeFileUpdateRequest"> | string
   resolvedByUserId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeFileUpdateRequest"> | string | null
   resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeFileUpdateRequest"> | Date | string | null
+  fileName?: Prisma.StringNullableWithAggregatesFilter<"EmployeeFileUpdateRequest"> | string | null
+  storageKey?: Prisma.StringNullableWithAggregatesFilter<"EmployeeFileUpdateRequest"> | string | null
+  mimeType?: Prisma.StringNullableWithAggregatesFilter<"EmployeeFileUpdateRequest"> | string | null
+  fileSize?: Prisma.IntNullableWithAggregatesFilter<"EmployeeFileUpdateRequest"> | number | null
+  storedFileId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeFileUpdateRequest"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeFileUpdateRequest"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeFileUpdateRequest"> | Date | string
 }
@@ -328,12 +427,17 @@ export type EmployeeFileUpdateRequestCreateInput = {
   note?: string | null
   status?: $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeFileUpdateRequestsInput
   employee: Prisma.EmployeeCreateNestedOneWithoutFileUpdateRequestsInput
   requestedBy: Prisma.UserCreateNestedOneWithoutRequestedFileUpdatesInput
   resolvedBy?: Prisma.UserCreateNestedOneWithoutResolvedFileUpdatesInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutFileUpdateRequestsInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedCreateInput = {
@@ -347,6 +451,11 @@ export type EmployeeFileUpdateRequestUncheckedCreateInput = {
   requestedByUserId: string
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -358,12 +467,17 @@ export type EmployeeFileUpdateRequestUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeFileUpdateRequestsNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutFileUpdateRequestsNestedInput
   requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedFileUpdatesNestedInput
   resolvedBy?: Prisma.UserUpdateOneWithoutResolvedFileUpdatesNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutFileUpdateRequestsNestedInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedUpdateInput = {
@@ -377,6 +491,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateInput = {
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -392,6 +511,11 @@ export type EmployeeFileUpdateRequestCreateManyInput = {
   requestedByUserId: string
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -403,6 +527,10 @@ export type EmployeeFileUpdateRequestUpdateManyMutationInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -418,6 +546,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateManyInput = {
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,8 +576,17 @@ export type EmployeeFileUpdateRequestCountOrderByAggregateInput = {
   requestedByUserId?: Prisma.SortOrder
   resolvedByUserId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  storageKey?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrder
+  storedFileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type EmployeeFileUpdateRequestAvgOrderByAggregateInput = {
+  fileSize?: Prisma.SortOrder
 }
 
 export type EmployeeFileUpdateRequestMaxOrderByAggregateInput = {
@@ -458,6 +600,11 @@ export type EmployeeFileUpdateRequestMaxOrderByAggregateInput = {
   requestedByUserId?: Prisma.SortOrder
   resolvedByUserId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  storageKey?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrder
+  storedFileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -473,8 +620,17 @@ export type EmployeeFileUpdateRequestMinOrderByAggregateInput = {
   requestedByUserId?: Prisma.SortOrder
   resolvedByUserId?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  fileName?: Prisma.SortOrder
+  storageKey?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
+  fileSize?: Prisma.SortOrder
+  storedFileId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type EmployeeFileUpdateRequestSumOrderByAggregateInput = {
+  fileSize?: Prisma.SortOrder
 }
 
 export type EmployeeFileUpdateRequestCreateNestedManyWithoutOrganizationInput = {
@@ -653,6 +809,48 @@ export type EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput = {
   set?: $Enums.EmployeeFileUpdateRequestStatus
 }
 
+export type EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput = {
+  create?: Prisma.XOR<Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput> | Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput[] | Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput[]
+  createMany?: Prisma.EmployeeFileUpdateRequestCreateManyStoredFileInputEnvelope
+  connect?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+}
+
+export type EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput = {
+  create?: Prisma.XOR<Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput> | Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput[] | Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput[]
+  createMany?: Prisma.EmployeeFileUpdateRequestCreateManyStoredFileInputEnvelope
+  connect?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+}
+
+export type EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput> | Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput[] | Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput[]
+  upsert?: Prisma.EmployeeFileUpdateRequestUpsertWithWhereUniqueWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestUpsertWithWhereUniqueWithoutStoredFileInput[]
+  createMany?: Prisma.EmployeeFileUpdateRequestCreateManyStoredFileInputEnvelope
+  set?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  delete?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  connect?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  update?: Prisma.EmployeeFileUpdateRequestUpdateWithWhereUniqueWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestUpdateWithWhereUniqueWithoutStoredFileInput[]
+  updateMany?: Prisma.EmployeeFileUpdateRequestUpdateManyWithWhereWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestUpdateManyWithWhereWithoutStoredFileInput[]
+  deleteMany?: Prisma.EmployeeFileUpdateRequestScalarWhereInput | Prisma.EmployeeFileUpdateRequestScalarWhereInput[]
+}
+
+export type EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput> | Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput[] | Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput[]
+  connectOrCreate?: Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput[]
+  upsert?: Prisma.EmployeeFileUpdateRequestUpsertWithWhereUniqueWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestUpsertWithWhereUniqueWithoutStoredFileInput[]
+  createMany?: Prisma.EmployeeFileUpdateRequestCreateManyStoredFileInputEnvelope
+  set?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  delete?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  connect?: Prisma.EmployeeFileUpdateRequestWhereUniqueInput | Prisma.EmployeeFileUpdateRequestWhereUniqueInput[]
+  update?: Prisma.EmployeeFileUpdateRequestUpdateWithWhereUniqueWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestUpdateWithWhereUniqueWithoutStoredFileInput[]
+  updateMany?: Prisma.EmployeeFileUpdateRequestUpdateManyWithWhereWithoutStoredFileInput | Prisma.EmployeeFileUpdateRequestUpdateManyWithWhereWithoutStoredFileInput[]
+  deleteMany?: Prisma.EmployeeFileUpdateRequestScalarWhereInput | Prisma.EmployeeFileUpdateRequestScalarWhereInput[]
+}
+
 export type EmployeeFileUpdateRequestCreateWithoutOrganizationInput = {
   id?: string
   requestType?: $Enums.EmployeeFileUpdateRequestType
@@ -660,11 +858,16 @@ export type EmployeeFileUpdateRequestCreateWithoutOrganizationInput = {
   note?: string | null
   status?: $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutFileUpdateRequestsInput
   requestedBy: Prisma.UserCreateNestedOneWithoutRequestedFileUpdatesInput
   resolvedBy?: Prisma.UserCreateNestedOneWithoutResolvedFileUpdatesInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutFileUpdateRequestsInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedCreateWithoutOrganizationInput = {
@@ -677,6 +880,11 @@ export type EmployeeFileUpdateRequestUncheckedCreateWithoutOrganizationInput = {
   requestedByUserId: string
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -721,6 +929,11 @@ export type EmployeeFileUpdateRequestScalarWhereInput = {
   requestedByUserId?: Prisma.StringFilter<"EmployeeFileUpdateRequest"> | string
   resolvedByUserId?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
   resolvedAt?: Prisma.DateTimeNullableFilter<"EmployeeFileUpdateRequest"> | Date | string | null
+  fileName?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  storageKey?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  mimeType?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
+  fileSize?: Prisma.IntNullableFilter<"EmployeeFileUpdateRequest"> | number | null
+  storedFileId?: Prisma.StringNullableFilter<"EmployeeFileUpdateRequest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeFileUpdateRequest"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeFileUpdateRequest"> | Date | string
 }
@@ -732,11 +945,16 @@ export type EmployeeFileUpdateRequestCreateWithoutRequestedByInput = {
   note?: string | null
   status?: $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeFileUpdateRequestsInput
   employee: Prisma.EmployeeCreateNestedOneWithoutFileUpdateRequestsInput
   resolvedBy?: Prisma.UserCreateNestedOneWithoutResolvedFileUpdatesInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutFileUpdateRequestsInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedCreateWithoutRequestedByInput = {
@@ -749,6 +967,11 @@ export type EmployeeFileUpdateRequestUncheckedCreateWithoutRequestedByInput = {
   status?: $Enums.EmployeeFileUpdateRequestStatus
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -770,11 +993,16 @@ export type EmployeeFileUpdateRequestCreateWithoutResolvedByInput = {
   note?: string | null
   status?: $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeFileUpdateRequestsInput
   employee: Prisma.EmployeeCreateNestedOneWithoutFileUpdateRequestsInput
   requestedBy: Prisma.UserCreateNestedOneWithoutRequestedFileUpdatesInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutFileUpdateRequestsInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedCreateWithoutResolvedByInput = {
@@ -787,6 +1015,11 @@ export type EmployeeFileUpdateRequestUncheckedCreateWithoutResolvedByInput = {
   status?: $Enums.EmployeeFileUpdateRequestStatus
   requestedByUserId: string
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -840,11 +1073,16 @@ export type EmployeeFileUpdateRequestCreateWithoutEmployeeInput = {
   note?: string | null
   status?: $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeFileUpdateRequestsInput
   requestedBy: Prisma.UserCreateNestedOneWithoutRequestedFileUpdatesInput
   resolvedBy?: Prisma.UserCreateNestedOneWithoutResolvedFileUpdatesInput
+  storedFile?: Prisma.StoredFileCreateNestedOneWithoutFileUpdateRequestsInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedCreateWithoutEmployeeInput = {
@@ -857,6 +1095,11 @@ export type EmployeeFileUpdateRequestUncheckedCreateWithoutEmployeeInput = {
   requestedByUserId: string
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -887,6 +1130,70 @@ export type EmployeeFileUpdateRequestUpdateManyWithWhereWithoutEmployeeInput = {
   data: Prisma.XOR<Prisma.EmployeeFileUpdateRequestUpdateManyMutationInput, Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeInput>
 }
 
+export type EmployeeFileUpdateRequestCreateWithoutStoredFileInput = {
+  id?: string
+  requestType?: $Enums.EmployeeFileUpdateRequestType
+  title: string
+  note?: string | null
+  status?: $Enums.EmployeeFileUpdateRequestStatus
+  resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeFileUpdateRequestsInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutFileUpdateRequestsInput
+  requestedBy: Prisma.UserCreateNestedOneWithoutRequestedFileUpdatesInput
+  resolvedBy?: Prisma.UserCreateNestedOneWithoutResolvedFileUpdatesInput
+}
+
+export type EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput = {
+  id?: string
+  organizationId: string
+  employeeId: string
+  requestType?: $Enums.EmployeeFileUpdateRequestType
+  title: string
+  note?: string | null
+  status?: $Enums.EmployeeFileUpdateRequestStatus
+  requestedByUserId: string
+  resolvedByUserId?: string | null
+  resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmployeeFileUpdateRequestCreateOrConnectWithoutStoredFileInput = {
+  where: Prisma.EmployeeFileUpdateRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput>
+}
+
+export type EmployeeFileUpdateRequestCreateManyStoredFileInputEnvelope = {
+  data: Prisma.EmployeeFileUpdateRequestCreateManyStoredFileInput | Prisma.EmployeeFileUpdateRequestCreateManyStoredFileInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmployeeFileUpdateRequestUpsertWithWhereUniqueWithoutStoredFileInput = {
+  where: Prisma.EmployeeFileUpdateRequestWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmployeeFileUpdateRequestUpdateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedUpdateWithoutStoredFileInput>
+  create: Prisma.XOR<Prisma.EmployeeFileUpdateRequestCreateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedCreateWithoutStoredFileInput>
+}
+
+export type EmployeeFileUpdateRequestUpdateWithWhereUniqueWithoutStoredFileInput = {
+  where: Prisma.EmployeeFileUpdateRequestWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmployeeFileUpdateRequestUpdateWithoutStoredFileInput, Prisma.EmployeeFileUpdateRequestUncheckedUpdateWithoutStoredFileInput>
+}
+
+export type EmployeeFileUpdateRequestUpdateManyWithWhereWithoutStoredFileInput = {
+  where: Prisma.EmployeeFileUpdateRequestScalarWhereInput
+  data: Prisma.XOR<Prisma.EmployeeFileUpdateRequestUpdateManyMutationInput, Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileInput>
+}
+
 export type EmployeeFileUpdateRequestCreateManyOrganizationInput = {
   id?: string
   employeeId: string
@@ -897,6 +1204,11 @@ export type EmployeeFileUpdateRequestCreateManyOrganizationInput = {
   requestedByUserId: string
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -908,11 +1220,16 @@ export type EmployeeFileUpdateRequestUpdateWithoutOrganizationInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutFileUpdateRequestsNestedInput
   requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedFileUpdatesNestedInput
   resolvedBy?: Prisma.UserUpdateOneWithoutResolvedFileUpdatesNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutFileUpdateRequestsNestedInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedUpdateWithoutOrganizationInput = {
@@ -925,6 +1242,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateWithoutOrganizationInput = {
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -939,6 +1261,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateManyWithoutOrganizationInput
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -953,6 +1280,11 @@ export type EmployeeFileUpdateRequestCreateManyRequestedByInput = {
   status?: $Enums.EmployeeFileUpdateRequestStatus
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -967,6 +1299,11 @@ export type EmployeeFileUpdateRequestCreateManyResolvedByInput = {
   status?: $Enums.EmployeeFileUpdateRequestStatus
   requestedByUserId: string
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -978,11 +1315,16 @@ export type EmployeeFileUpdateRequestUpdateWithoutRequestedByInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeFileUpdateRequestsNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutFileUpdateRequestsNestedInput
   resolvedBy?: Prisma.UserUpdateOneWithoutResolvedFileUpdatesNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutFileUpdateRequestsNestedInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedUpdateWithoutRequestedByInput = {
@@ -995,6 +1337,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateWithoutRequestedByInput = {
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1009,6 +1356,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByInput 
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1020,11 +1372,16 @@ export type EmployeeFileUpdateRequestUpdateWithoutResolvedByInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeFileUpdateRequestsNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutFileUpdateRequestsNestedInput
   requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedFileUpdatesNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutFileUpdateRequestsNestedInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedUpdateWithoutResolvedByInput = {
@@ -1037,6 +1394,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateWithoutResolvedByInput = {
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1051,6 +1413,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByInput =
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1065,6 +1432,11 @@ export type EmployeeFileUpdateRequestCreateManyEmployeeInput = {
   requestedByUserId: string
   resolvedByUserId?: string | null
   resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  storedFileId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1076,11 +1448,16 @@ export type EmployeeFileUpdateRequestUpdateWithoutEmployeeInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeFileUpdateRequestsNestedInput
   requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedFileUpdatesNestedInput
   resolvedBy?: Prisma.UserUpdateOneWithoutResolvedFileUpdatesNestedInput
+  storedFile?: Prisma.StoredFileUpdateOneWithoutFileUpdateRequestsNestedInput
 }
 
 export type EmployeeFileUpdateRequestUncheckedUpdateWithoutEmployeeInput = {
@@ -1093,6 +1470,11 @@ export type EmployeeFileUpdateRequestUncheckedUpdateWithoutEmployeeInput = {
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1107,6 +1489,87 @@ export type EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeInput = {
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storedFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmployeeFileUpdateRequestCreateManyStoredFileInput = {
+  id?: string
+  organizationId: string
+  employeeId: string
+  requestType?: $Enums.EmployeeFileUpdateRequestType
+  title: string
+  note?: string | null
+  status?: $Enums.EmployeeFileUpdateRequestStatus
+  requestedByUserId: string
+  resolvedByUserId?: string | null
+  resolvedAt?: Date | string | null
+  fileName?: string | null
+  storageKey?: string | null
+  mimeType?: string | null
+  fileSize?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmployeeFileUpdateRequestUpdateWithoutStoredFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  requestType?: Prisma.EnumEmployeeFileUpdateRequestTypeFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeFileUpdateRequestsNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutFileUpdateRequestsNestedInput
+  requestedBy?: Prisma.UserUpdateOneRequiredWithoutRequestedFileUpdatesNestedInput
+  resolvedBy?: Prisma.UserUpdateOneWithoutResolvedFileUpdatesNestedInput
+}
+
+export type EmployeeFileUpdateRequestUncheckedUpdateWithoutStoredFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  requestType?: Prisma.EnumEmployeeFileUpdateRequestTypeFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
+  requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  requestType?: Prisma.EnumEmployeeFileUpdateRequestTypeFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestType
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeFileUpdateRequestStatusFieldUpdateOperationsInput | $Enums.EmployeeFileUpdateRequestStatus
+  requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  resolvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  fileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  storageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1124,12 +1587,18 @@ export type EmployeeFileUpdateRequestSelect<ExtArgs extends runtime.Types.Extens
   requestedByUserId?: boolean
   resolvedByUserId?: boolean
   resolvedAt?: boolean
+  fileName?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  fileSize?: boolean
+  storedFileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resolvedBy?: boolean | Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs>
 }, ExtArgs["result"]["employeeFileUpdateRequest"]>
 
 export type EmployeeFileUpdateRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1143,12 +1612,18 @@ export type EmployeeFileUpdateRequestSelectCreateManyAndReturn<ExtArgs extends r
   requestedByUserId?: boolean
   resolvedByUserId?: boolean
   resolvedAt?: boolean
+  fileName?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  fileSize?: boolean
+  storedFileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resolvedBy?: boolean | Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs>
 }, ExtArgs["result"]["employeeFileUpdateRequest"]>
 
 export type EmployeeFileUpdateRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1162,12 +1637,18 @@ export type EmployeeFileUpdateRequestSelectUpdateManyAndReturn<ExtArgs extends r
   requestedByUserId?: boolean
   resolvedByUserId?: boolean
   resolvedAt?: boolean
+  fileName?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  fileSize?: boolean
+  storedFileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resolvedBy?: boolean | Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs>
 }, ExtArgs["result"]["employeeFileUpdateRequest"]>
 
 export type EmployeeFileUpdateRequestSelectScalar = {
@@ -1181,28 +1662,36 @@ export type EmployeeFileUpdateRequestSelectScalar = {
   requestedByUserId?: boolean
   resolvedByUserId?: boolean
   resolvedAt?: boolean
+  fileName?: boolean
+  storageKey?: boolean
+  mimeType?: boolean
+  fileSize?: boolean
+  storedFileId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeFileUpdateRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "requestType" | "title" | "note" | "status" | "requestedByUserId" | "resolvedByUserId" | "resolvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeFileUpdateRequest"]>
+export type EmployeeFileUpdateRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "requestType" | "title" | "note" | "status" | "requestedByUserId" | "resolvedByUserId" | "resolvedAt" | "fileName" | "storageKey" | "mimeType" | "fileSize" | "storedFileId" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeFileUpdateRequest"]>
 export type EmployeeFileUpdateRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resolvedBy?: boolean | Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs>
 }
 export type EmployeeFileUpdateRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resolvedBy?: boolean | Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs>
 }
 export type EmployeeFileUpdateRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   requestedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   resolvedBy?: boolean | Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs>
+  storedFile?: boolean | Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs>
 }
 
 export type $EmployeeFileUpdateRequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1212,6 +1701,7 @@ export type $EmployeeFileUpdateRequestPayload<ExtArgs extends runtime.Types.Exte
     employee: Prisma.$EmployeePayload<ExtArgs>
     requestedBy: Prisma.$UserPayload<ExtArgs>
     resolvedBy: Prisma.$UserPayload<ExtArgs> | null
+    storedFile: Prisma.$StoredFilePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1224,6 +1714,11 @@ export type $EmployeeFileUpdateRequestPayload<ExtArgs extends runtime.Types.Exte
     requestedByUserId: string
     resolvedByUserId: string | null
     resolvedAt: Date | null
+    fileName: string | null
+    storageKey: string | null
+    mimeType: string | null
+    fileSize: number | null
+    storedFileId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["employeeFileUpdateRequest"]>
@@ -1624,6 +2119,7 @@ export interface Prisma__EmployeeFileUpdateRequestClient<T, Null = never, ExtArg
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   requestedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   resolvedBy<T extends Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  storedFile<T extends Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeFileUpdateRequest$storedFileArgs<ExtArgs>>): Prisma.Prisma__StoredFileClient<runtime.Types.Result.GetResult<Prisma.$StoredFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1663,6 +2159,11 @@ export interface EmployeeFileUpdateRequestFieldRefs {
   readonly requestedByUserId: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'String'>
   readonly resolvedByUserId: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'String'>
   readonly resolvedAt: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'DateTime'>
+  readonly fileName: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'String'>
+  readonly storageKey: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'String'>
+  readonly mimeType: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'String'>
+  readonly fileSize: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'Int'>
+  readonly storedFileId: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'String'>
   readonly createdAt: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EmployeeFileUpdateRequest", 'DateTime'>
 }
@@ -2082,6 +2583,25 @@ export type EmployeeFileUpdateRequest$resolvedByArgs<ExtArgs extends runtime.Typ
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * EmployeeFileUpdateRequest.storedFile
+ */
+export type EmployeeFileUpdateRequest$storedFileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StoredFile
+   */
+  select?: Prisma.StoredFileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StoredFile
+   */
+  omit?: Prisma.StoredFileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StoredFileInclude<ExtArgs> | null
+  where?: Prisma.StoredFileWhereInput
 }
 
 /**

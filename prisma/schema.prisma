@@ -150,11 +150,33 @@ enum AllowanceFrequency {
 
 enum EmploymentContractStatus {
   DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  AWAITING_SIGNATURE
   ACTIVE
   EXPIRED
   SUPERSEDED
   TERMINATED
   CANCELLED
+
+  @@schema("hr")
+}
+
+enum ContractApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SKIPPED
+  CANCELLED
+
+  @@schema("hr")
+}
+
+enum ContractWorkflowMode {
+  /// contracts.manage users may auto-approve / activate without a position step
+  PEOPLE_MANAGE_AUTO
+  /// Single final approver Position must approve before signature
+  FINAL_APPROVER_POSITION
 
   @@schema("hr")
 }
@@ -401,6 +423,54 @@ enum EmployeeFileUpdateRequestStatus {
 
 enum EmployeeFileUpdateRequestType {
   QUALIFICATION_UPDATE
+  COPY_OF_ID
+  BIRTH_CERTIFICATE
+  CREDENTIAL
+  TRAINING
+  OTHER
+
+  @@schema("hr")
+}
+
+enum OnboardingCaseStatus {
+  OPEN
+  READY
+  COMPLETED
+  CANCELLED
+
+  @@schema("hr")
+}
+
+enum OffboardingCaseStatus {
+  OPEN
+  CLEARED
+  COMPLETED
+  CANCELLED
+
+  @@schema("hr")
+}
+
+enum LifecycleTaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  SKIPPED
+  BLOCKED
+
+  @@schema("hr")
+}
+
+enum LifecycleTaskCode {
+  CREATE_DRAFT_CONTRACT
+  SEED_FILE_CHECKLIST
+  ISSUE_ASSUMPTION_OF_DUTY
+  COMPLETE_REQUIRED_DOCS
+  ACTIVATE_CONTRACT
+  PAYROLL_READINESS
+  CLOSE_CONTRACT
+  FREEZE_EMPLOYEE_FILE
+  REVOKE_ACCESS
+  FINAL_PAY_CHECK
 
   @@schema("hr")
 }
@@ -521,6 +591,10 @@ model Organization {
   employeeFileChecklistItems EmployeeFileChecklistItem[]
   employeeFileUpdateRequests EmployeeFileUpdateRequest[]
   employeeCorrespondenceResponses EmployeeCorrespondenceResponse[]
+  storedFiles              StoredFile[]
+  employeeFilePacks        EmployeeFilePack[]
+  employeeOnboardingCases  EmployeeOnboardingCase[]
+  employeeOffboardingCases EmployeeOffboardingCase[]
 
   nisEarningsClasses       NisEarningsClass[]
   payeTaxConfigs           PayeTaxConfig[]
@@ -615,6 +689,14 @@ model User {
   requestedFileUpdates               EmployeeFileUpdateRequest[] @relation("FileUpdateRequester")
   resolvedFileUpdates                EmployeeFileUpdateRequest[] @relation("FileUpdateResolver")
   reviewedCorrespondenceResponses      EmployeeCorrespondenceResponse[] @relation("CorrespondenceResponseReviewer")
+
+  approvedEmploymentContracts        EmploymentContract[] @relation("ContractApprovedBy")
+  contractApprovalSteps              EmploymentContractApprovalStep[] @relation("ContractApprovalUser")
+  uploadedStoredFiles                StoredFile[] @relation("StoredFileUploader")
+  openedOnboardingCases              EmployeeOnboardingCase[] @relation("OnboardingCaseOpener")
+  openedOffboardingCases             EmployeeOffboardingCase[] @relation("OffboardingCaseOpener")
+  completedOnboardingTasks           EmployeeOnboardingTask[] @relation("OnboardingTaskCompleter")
+  completedOffboardingTasks          EmployeeOffboardingTask[] @relation("OffboardingTaskCompleter")
 
   employeeId String?   @unique
   employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
@@ -900,6 +982,7 @@ model Department {
   positions           Position[]
   employees           Employee[]
   employeeAssignments EmployeeAssignment[]
+  employmentContracts EmploymentContract[]
 
   @@unique([organizationId, name])
   @@unique([organizationId, code])
@@ -931,6 +1014,8 @@ model Position {
 
   leaveApprovalSteps    LeaveApprovalStep[]
   leaveAcknowledgements LeaveRequestAcknowledgement[]
+  employmentContracts   EmploymentContract[]
+  contractApprovalSteps EmploymentContractApprovalStep[]
 
   @@unique([departmentId, title])
   @@index([departmentId])
@@ -974,6 +1059,8 @@ model Employee {
   hireDate           DateTime
   terminationDate    DateTime?
   isArchived         Boolean           @default(false)
+  /// When set, employee file uploads/edits are blocked (offboarding freeze).
+  fileFrozenAt       DateTime?
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
 
@@ -1002,6 +1089,8 @@ model Employee {
   fileChecklistItems EmployeeFileChecklistItem[]
   fileUpdateRequests EmployeeFileUpdateRequest[]
   correspondenceResponses EmployeeCorrespondenceResponse[]
+  onboardingCases EmployeeOnboardingCase[]
+  offboardingCases EmployeeOffboardingCase[]
 
   user User?
 
@@ -1652,6 +1741,11 @@ model EmployeeFileUpdateRequest {
   requestedByUserId String
   resolvedByUserId String?
   resolvedAt       DateTime?
+  fileName         String?
+  storageKey       String?
+  mimeType         String?
+  fileSize         Int?
+  storedFileId     String?
   createdAt        DateTime                       @default(now())
   updatedAt        DateTime                       @updatedAt
 
@@ -1659,11 +1753,13 @@ model EmployeeFileUpdateRequest {
   employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   requestedBy  User         @relation("FileUpdateRequester", fields: [requestedByUserId], references: [id], onDelete: Cascade)
   resolvedBy   User?        @relation("FileUpdateResolver", fields: [resolvedByUserId], references: [id], onDelete: SetNull)
+  storedFile   StoredFile?  @relation(fields: [storedFileId], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
   @@index([employeeId, status])
   @@index([requestedByUserId])
   @@index([resolvedByUserId])
+  @@index([storedFileId])
   @@map("employee_file_update_requests")
   @@schema("hr")
 }
@@ -1796,7 +1892,7 @@ model EmploymentContract {
   contractNumber    String?
   contractType      EmploymentContractType
   changeType        ContractChangeType       @default(INITIAL)
-  status            EmploymentContractStatus @default(ACTIVE)
+  status            EmploymentContractStatus @default(DRAFT)
   startDate         DateTime
   endDate           DateTime?
   jobTitle          String
@@ -1805,15 +1901,37 @@ model EmploymentContract {
   gratuityEligible  Boolean                  @default(false)
   gratuityRate      Decimal?                 @db.Decimal(5, 2)
   gratuityTaxRate   Decimal?                 @db.Decimal(5, 2)
+  /// Arrangement (optional; assignment still authoritative for current seat).
+  positionId        String?
+  departmentId      String?
+  fte               Decimal?                 @db.Decimal(5, 2)
+  standardHoursPerWeek Decimal?              @db.Decimal(6, 2)
+  probationEndDate  DateTime?                @db.Date
+  noticePeriodDays  Int?
+  /// Governance
+  approvedAt        DateTime?
+  approvedByUserId  String?
+  employeeSignedAt  DateTime?
+  orgSignedAt       DateTime?
+  activatedAt       DateTime?
   /// At most one row per employee may be true — enforced by partial unique index
   /// `employment_contracts_one_current` (see migration; not expressible as @@unique).
-  isCurrent         Boolean                  @default(true)
+  isCurrent         Boolean                  @default(false)
   signedDate        DateTime?
   collectedAt       DateTime?
   terminationDate   DateTime?
   terminationReason String?
   documentReference String?
+  /// Filed executed / draft contract PDF (denormalized; also linked via storedFileId).
+  documentStorageKey String?
+  documentFileName   String?
+  documentMimeType   String?
+  documentSize       Int?
+  storedFileId       String?
   notes             String?
+  /// Entitlement overrides captured at draft time; applied on activate.
+  vacationLeaveDaysOverride Decimal?         @db.Decimal(9, 2)
+  sickLeaveDaysOverride     Decimal?         @db.Decimal(9, 2)
   createdAt         DateTime                 @default(now())
   updatedAt         DateTime                 @updatedAt
 
@@ -1821,6 +1939,11 @@ model EmploymentContract {
   sourceContract EmploymentContract?           @relation("ContractHistory", fields: [sourceContractId], references: [id])
   amendments     EmploymentContract[]          @relation("ContractHistory")
   allowances     EmploymentContractAllowance[]
+  approvalSteps  EmploymentContractApprovalStep[]
+  position       Position?                     @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  department     Department?                   @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  approvedBy     User?                         @relation("ContractApprovedBy", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  storedFile     StoredFile?                   @relation(fields: [storedFileId], references: [id], onDelete: SetNull)
 
   leaveBalances     EmployeeLeaveBalance[]
   leaveTransactions LeaveBalanceTransaction[]
@@ -1832,7 +1955,36 @@ model EmploymentContract {
   @@index([status])
   @@index([endDate])
   @@index([sourceContractId])
+  @@index([positionId])
+  @@index([departmentId])
+  @@index([approvedByUserId])
+  @@index([storedFileId])
   @@map("employment_contracts")
+  @@schema("hr")
+}
+
+model EmploymentContractApprovalStep {
+  id                 String                 @id @default(cuid())
+  contractId         String
+  stepNumber         Int
+  approverUserId     String?
+  approverPositionId String?
+  status             ContractApprovalStatus @default(PENDING)
+  assignedAt         DateTime               @default(now())
+  decidedAt          DateTime?
+  decisionComment    String?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+
+  contract         EmploymentContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  approverUser     User?              @relation("ContractApprovalUser", fields: [approverUserId], references: [id], onDelete: SetNull)
+  approverPosition Position?          @relation(fields: [approverPositionId], references: [id], onDelete: SetNull)
+
+  @@unique([contractId, stepNumber])
+  @@index([approverUserId])
+  @@index([approverPositionId])
+  @@index([status])
+  @@map("employment_contract_approval_steps")
   @@schema("hr")
 }
 
@@ -1876,6 +2028,181 @@ model EmploymentContractAllowance {
   @@index([contractId])
   @@index([categoryId])
   @@map("employment_contract_allowances")
+  @@schema("hr")
+}
+
+/// Shared file metadata / retention spine (bytes remain under uploads/).
+model StoredFile {
+  id             String    @id @default(cuid())
+  organizationId String
+  storageKey     String
+  fileName       String
+  mimeType       String?
+  fileSize       Int?
+  checksumSha256 String?
+  uploadedByUserId String?
+  uploadedAt     DateTime  @default(now())
+  retentionUntil DateTime?
+  legalHold      Boolean   @default(false)
+  archivedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  uploadedBy   User?        @relation("StoredFileUploader", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+  employmentContracts EmploymentContract[]
+  fileUpdateRequests  EmployeeFileUpdateRequest[]
+
+  @@unique([organizationId, storageKey])
+  @@index([organizationId])
+  @@index([uploadedByUserId])
+  @@index([retentionUntil])
+  @@index([legalHold])
+  @@map("stored_files")
+  @@schema("hr")
+}
+
+/// Org-configurable employee-file required-document pack.
+model EmployeeFilePack {
+  id               String   @id @default(cuid())
+  organizationId   String
+  code             String
+  name             String
+  description      String?
+  workforceCategory WorkforceCategory?
+  contractType     EmploymentContractType?
+  isDefault        Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  items        EmployeeFilePackItem[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+  @@map("employee_file_packs")
+  @@schema("hr")
+}
+
+model EmployeeFilePackItem {
+  id         String                       @id @default(cuid())
+  packId     String
+  itemType   EmployeeFileChecklistItemType
+  label      String?
+  required   Boolean                      @default(true)
+  sortOrder  Int                          @default(0)
+  createdAt  DateTime                     @default(now())
+  updatedAt  DateTime                     @updatedAt
+
+  pack EmployeeFilePack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@unique([packId, itemType])
+  @@index([packId, sortOrder])
+  @@map("employee_file_pack_items")
+  @@schema("hr")
+}
+
+model EmployeeOnboardingCase {
+  id               String               @id @default(cuid())
+  organizationId   String
+  employeeId       String
+  status           OnboardingCaseStatus @default(OPEN)
+  openedByUserId   String?
+  openedAt         DateTime             @default(now())
+  readyAt          DateTime?
+  completedAt      DateTime?
+  notes            String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  organization Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  openedBy     User?                   @relation("OnboardingCaseOpener", fields: [openedByUserId], references: [id], onDelete: SetNull)
+  tasks        EmployeeOnboardingTask[]
+
+  @@index([organizationId, status])
+  @@index([employeeId])
+  @@index([openedByUserId])
+  @@map("employee_onboarding_cases")
+  @@schema("hr")
+}
+
+model EmployeeOnboardingTask {
+  id                String            @id @default(cuid())
+  caseId            String
+  code              LifecycleTaskCode
+  label             String
+  status            LifecycleTaskStatus @default(PENDING)
+  sortOrder         Int               @default(0)
+  dueAt             DateTime?
+  completedAt       DateTime?
+  completedByUserId String?
+  relatedEntityType String?
+  relatedEntityId   String?
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  case        EmployeeOnboardingCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  completedBy User?                  @relation("OnboardingTaskCompleter", fields: [completedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([caseId, code])
+  @@index([caseId, status])
+  @@index([completedByUserId])
+  @@map("employee_onboarding_tasks")
+  @@schema("hr")
+}
+
+model EmployeeOffboardingCase {
+  id               String                @id @default(cuid())
+  organizationId   String
+  employeeId       String
+  status           OffboardingCaseStatus @default(OPEN)
+  reason           String?
+  openedByUserId   String?
+  openedAt         DateTime              @default(now())
+  clearedAt        DateTime?
+  completedAt      DateTime?
+  notes            String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  organization Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee                 @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  openedBy     User?                    @relation("OffboardingCaseOpener", fields: [openedByUserId], references: [id], onDelete: SetNull)
+  tasks        EmployeeOffboardingTask[]
+
+  @@index([organizationId, status])
+  @@index([employeeId])
+  @@index([openedByUserId])
+  @@map("employee_offboarding_cases")
+  @@schema("hr")
+}
+
+model EmployeeOffboardingTask {
+  id                String              @id @default(cuid())
+  caseId            String
+  code              LifecycleTaskCode
+  label             String
+  status            LifecycleTaskStatus @default(PENDING)
+  sortOrder         Int                 @default(0)
+  dueAt             DateTime?
+  completedAt       DateTime?
+  completedByUserId String?
+  relatedEntityType String?
+  relatedEntityId   String?
+  notes             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  case        EmployeeOffboardingCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  completedBy User?                   @relation("OffboardingTaskCompleter", fields: [completedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([caseId, code])
+  @@index([caseId, status])
+  @@index([completedByUserId])
+  @@map("employee_offboarding_tasks")
   @@schema("hr")
 }
 

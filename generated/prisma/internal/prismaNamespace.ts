@@ -428,8 +428,16 @@ export const ModelName = {
   PerformanceAppraisal: 'PerformanceAppraisal',
   PerformanceAppraisalCriterion: 'PerformanceAppraisalCriterion',
   EmploymentContract: 'EmploymentContract',
+  EmploymentContractApprovalStep: 'EmploymentContractApprovalStep',
   AllowanceCategory: 'AllowanceCategory',
   EmploymentContractAllowance: 'EmploymentContractAllowance',
+  StoredFile: 'StoredFile',
+  EmployeeFilePack: 'EmployeeFilePack',
+  EmployeeFilePackItem: 'EmployeeFilePackItem',
+  EmployeeOnboardingCase: 'EmployeeOnboardingCase',
+  EmployeeOnboardingTask: 'EmployeeOnboardingTask',
+  EmployeeOffboardingCase: 'EmployeeOffboardingCase',
+  EmployeeOffboardingTask: 'EmployeeOffboardingTask',
   PayrollProfile: 'PayrollProfile',
   PayrollBankAccount: 'PayrollBankAccount',
   FinancialInstitution: 'FinancialInstitution',
@@ -469,7 +477,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "allowanceCategory" | "employmentContractAllowance" | "payrollProfile" | "payrollBankAccount" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "payrollProfile" | "payrollBankAccount" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3729,6 +3737,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EmploymentContractApprovalStep: {
+      payload: Prisma.$EmploymentContractApprovalStepPayload<ExtArgs>
+      fields: Prisma.EmploymentContractApprovalStepFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmploymentContractApprovalStepFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmploymentContractApprovalStepFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>
+        }
+        findFirst: {
+          args: Prisma.EmploymentContractApprovalStepFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmploymentContractApprovalStepFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>
+        }
+        findMany: {
+          args: Prisma.EmploymentContractApprovalStepFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>[]
+        }
+        create: {
+          args: Prisma.EmploymentContractApprovalStepCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>
+        }
+        createMany: {
+          args: Prisma.EmploymentContractApprovalStepCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmploymentContractApprovalStepCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>[]
+        }
+        delete: {
+          args: Prisma.EmploymentContractApprovalStepDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>
+        }
+        update: {
+          args: Prisma.EmploymentContractApprovalStepUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmploymentContractApprovalStepDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmploymentContractApprovalStepUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmploymentContractApprovalStepUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmploymentContractApprovalStepUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmploymentContractApprovalStepPayload>
+        }
+        aggregate: {
+          args: Prisma.EmploymentContractApprovalStepAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmploymentContractApprovalStep>
+        }
+        groupBy: {
+          args: Prisma.EmploymentContractApprovalStepGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmploymentContractApprovalStepGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmploymentContractApprovalStepCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmploymentContractApprovalStepCountAggregateOutputType> | number
+        }
+      }
+    }
     AllowanceCategory: {
       payload: Prisma.$AllowanceCategoryPayload<ExtArgs>
       fields: Prisma.AllowanceCategoryFieldRefs
@@ -3874,6 +3956,524 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EmploymentContractAllowanceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EmploymentContractAllowanceCountAggregateOutputType> | number
+        }
+      }
+    }
+    StoredFile: {
+      payload: Prisma.$StoredFilePayload<ExtArgs>
+      fields: Prisma.StoredFileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StoredFileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StoredFileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>
+        }
+        findFirst: {
+          args: Prisma.StoredFileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StoredFileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>
+        }
+        findMany: {
+          args: Prisma.StoredFileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>[]
+        }
+        create: {
+          args: Prisma.StoredFileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>
+        }
+        createMany: {
+          args: Prisma.StoredFileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StoredFileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>[]
+        }
+        delete: {
+          args: Prisma.StoredFileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>
+        }
+        update: {
+          args: Prisma.StoredFileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>
+        }
+        deleteMany: {
+          args: Prisma.StoredFileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StoredFileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StoredFileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>[]
+        }
+        upsert: {
+          args: Prisma.StoredFileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoredFilePayload>
+        }
+        aggregate: {
+          args: Prisma.StoredFileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStoredFile>
+        }
+        groupBy: {
+          args: Prisma.StoredFileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StoredFileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StoredFileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StoredFileCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeFilePack: {
+      payload: Prisma.$EmployeeFilePackPayload<ExtArgs>
+      fields: Prisma.EmployeeFilePackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeFilePackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeFilePackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeFilePackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeFilePackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeFilePackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeFilePackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeFilePackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeFilePackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeFilePackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>
+        }
+        update: {
+          args: Prisma.EmployeeFilePackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeFilePackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeFilePackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeFilePackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeFilePackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeFilePackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeFilePack>
+        }
+        groupBy: {
+          args: Prisma.EmployeeFilePackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeFilePackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeFilePackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeFilePackCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeFilePackItem: {
+      payload: Prisma.$EmployeeFilePackItemPayload<ExtArgs>
+      fields: Prisma.EmployeeFilePackItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeFilePackItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeFilePackItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeFilePackItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeFilePackItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeFilePackItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeFilePackItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeFilePackItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeFilePackItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeFilePackItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>
+        }
+        update: {
+          args: Prisma.EmployeeFilePackItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeFilePackItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeFilePackItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeFilePackItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeFilePackItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeFilePackItemPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeFilePackItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeFilePackItem>
+        }
+        groupBy: {
+          args: Prisma.EmployeeFilePackItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeFilePackItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeFilePackItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeFilePackItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeOnboardingCase: {
+      payload: Prisma.$EmployeeOnboardingCasePayload<ExtArgs>
+      fields: Prisma.EmployeeOnboardingCaseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeOnboardingCaseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeOnboardingCaseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeOnboardingCaseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeOnboardingCaseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeOnboardingCaseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeOnboardingCaseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeOnboardingCaseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeOnboardingCaseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeOnboardingCaseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>
+        }
+        update: {
+          args: Prisma.EmployeeOnboardingCaseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeOnboardingCaseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeOnboardingCaseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeOnboardingCaseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeOnboardingCaseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingCasePayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeOnboardingCaseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeOnboardingCase>
+        }
+        groupBy: {
+          args: Prisma.EmployeeOnboardingCaseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOnboardingCaseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeOnboardingCaseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOnboardingCaseCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeOnboardingTask: {
+      payload: Prisma.$EmployeeOnboardingTaskPayload<ExtArgs>
+      fields: Prisma.EmployeeOnboardingTaskFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeOnboardingTaskFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeOnboardingTaskFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeOnboardingTaskFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeOnboardingTaskFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeOnboardingTaskFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeOnboardingTaskCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeOnboardingTaskCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeOnboardingTaskCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeOnboardingTaskDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>
+        }
+        update: {
+          args: Prisma.EmployeeOnboardingTaskUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeOnboardingTaskDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeOnboardingTaskUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeOnboardingTaskUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeOnboardingTaskUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOnboardingTaskPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeOnboardingTaskAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeOnboardingTask>
+        }
+        groupBy: {
+          args: Prisma.EmployeeOnboardingTaskGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOnboardingTaskGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeOnboardingTaskCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOnboardingTaskCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeOffboardingCase: {
+      payload: Prisma.$EmployeeOffboardingCasePayload<ExtArgs>
+      fields: Prisma.EmployeeOffboardingCaseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeOffboardingCaseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeOffboardingCaseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeOffboardingCaseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeOffboardingCaseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeOffboardingCaseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeOffboardingCaseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeOffboardingCaseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeOffboardingCaseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeOffboardingCaseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>
+        }
+        update: {
+          args: Prisma.EmployeeOffboardingCaseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeOffboardingCaseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeOffboardingCaseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeOffboardingCaseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeOffboardingCaseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingCasePayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeOffboardingCaseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeOffboardingCase>
+        }
+        groupBy: {
+          args: Prisma.EmployeeOffboardingCaseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOffboardingCaseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeOffboardingCaseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOffboardingCaseCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeOffboardingTask: {
+      payload: Prisma.$EmployeeOffboardingTaskPayload<ExtArgs>
+      fields: Prisma.EmployeeOffboardingTaskFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeOffboardingTaskFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeOffboardingTaskFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeOffboardingTaskFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeOffboardingTaskFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeOffboardingTaskFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeOffboardingTaskCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeOffboardingTaskCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeOffboardingTaskCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeOffboardingTaskDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>
+        }
+        update: {
+          args: Prisma.EmployeeOffboardingTaskUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeOffboardingTaskDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeOffboardingTaskUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeOffboardingTaskUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeOffboardingTaskUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOffboardingTaskPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeOffboardingTaskAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeOffboardingTask>
+        }
+        groupBy: {
+          args: Prisma.EmployeeOffboardingTaskGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOffboardingTaskGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeOffboardingTaskCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOffboardingTaskCountAggregateOutputType> | number
         }
       }
     }
@@ -6026,6 +6626,7 @@ export const EmployeeScalarFieldEnum = {
   hireDate: 'hireDate',
   terminationDate: 'terminationDate',
   isArchived: 'isArchived',
+  fileFrozenAt: 'fileFrozenAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -6444,6 +7045,11 @@ export const EmployeeFileUpdateRequestScalarFieldEnum = {
   requestedByUserId: 'requestedByUserId',
   resolvedByUserId: 'resolvedByUserId',
   resolvedAt: 'resolvedAt',
+  fileName: 'fileName',
+  storageKey: 'storageKey',
+  mimeType: 'mimeType',
+  fileSize: 'fileSize',
+  storedFileId: 'storedFileId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -6555,18 +7161,53 @@ export const EmploymentContractScalarFieldEnum = {
   gratuityEligible: 'gratuityEligible',
   gratuityRate: 'gratuityRate',
   gratuityTaxRate: 'gratuityTaxRate',
+  positionId: 'positionId',
+  departmentId: 'departmentId',
+  fte: 'fte',
+  standardHoursPerWeek: 'standardHoursPerWeek',
+  probationEndDate: 'probationEndDate',
+  noticePeriodDays: 'noticePeriodDays',
+  approvedAt: 'approvedAt',
+  approvedByUserId: 'approvedByUserId',
+  employeeSignedAt: 'employeeSignedAt',
+  orgSignedAt: 'orgSignedAt',
+  activatedAt: 'activatedAt',
   isCurrent: 'isCurrent',
   signedDate: 'signedDate',
   collectedAt: 'collectedAt',
   terminationDate: 'terminationDate',
   terminationReason: 'terminationReason',
   documentReference: 'documentReference',
+  documentStorageKey: 'documentStorageKey',
+  documentFileName: 'documentFileName',
+  documentMimeType: 'documentMimeType',
+  documentSize: 'documentSize',
+  storedFileId: 'storedFileId',
   notes: 'notes',
+  vacationLeaveDaysOverride: 'vacationLeaveDaysOverride',
+  sickLeaveDaysOverride: 'sickLeaveDaysOverride',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type EmploymentContractScalarFieldEnum = (typeof EmploymentContractScalarFieldEnum)[keyof typeof EmploymentContractScalarFieldEnum]
+
+
+export const EmploymentContractApprovalStepScalarFieldEnum = {
+  id: 'id',
+  contractId: 'contractId',
+  stepNumber: 'stepNumber',
+  approverUserId: 'approverUserId',
+  approverPositionId: 'approverPositionId',
+  status: 'status',
+  assignedAt: 'assignedAt',
+  decidedAt: 'decidedAt',
+  decisionComment: 'decisionComment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmploymentContractApprovalStepScalarFieldEnum = (typeof EmploymentContractApprovalStepScalarFieldEnum)[keyof typeof EmploymentContractApprovalStepScalarFieldEnum]
 
 
 export const AllowanceCategoryScalarFieldEnum = {
@@ -6599,6 +7240,132 @@ export const EmploymentContractAllowanceScalarFieldEnum = {
 } as const
 
 export type EmploymentContractAllowanceScalarFieldEnum = (typeof EmploymentContractAllowanceScalarFieldEnum)[keyof typeof EmploymentContractAllowanceScalarFieldEnum]
+
+
+export const StoredFileScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  storageKey: 'storageKey',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  fileSize: 'fileSize',
+  checksumSha256: 'checksumSha256',
+  uploadedByUserId: 'uploadedByUserId',
+  uploadedAt: 'uploadedAt',
+  retentionUntil: 'retentionUntil',
+  legalHold: 'legalHold',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StoredFileScalarFieldEnum = (typeof StoredFileScalarFieldEnum)[keyof typeof StoredFileScalarFieldEnum]
+
+
+export const EmployeeFilePackScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  workforceCategory: 'workforceCategory',
+  contractType: 'contractType',
+  isDefault: 'isDefault',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeFilePackScalarFieldEnum = (typeof EmployeeFilePackScalarFieldEnum)[keyof typeof EmployeeFilePackScalarFieldEnum]
+
+
+export const EmployeeFilePackItemScalarFieldEnum = {
+  id: 'id',
+  packId: 'packId',
+  itemType: 'itemType',
+  label: 'label',
+  required: 'required',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeFilePackItemScalarFieldEnum = (typeof EmployeeFilePackItemScalarFieldEnum)[keyof typeof EmployeeFilePackItemScalarFieldEnum]
+
+
+export const EmployeeOnboardingCaseScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  status: 'status',
+  openedByUserId: 'openedByUserId',
+  openedAt: 'openedAt',
+  readyAt: 'readyAt',
+  completedAt: 'completedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeOnboardingCaseScalarFieldEnum = (typeof EmployeeOnboardingCaseScalarFieldEnum)[keyof typeof EmployeeOnboardingCaseScalarFieldEnum]
+
+
+export const EmployeeOnboardingTaskScalarFieldEnum = {
+  id: 'id',
+  caseId: 'caseId',
+  code: 'code',
+  label: 'label',
+  status: 'status',
+  sortOrder: 'sortOrder',
+  dueAt: 'dueAt',
+  completedAt: 'completedAt',
+  completedByUserId: 'completedByUserId',
+  relatedEntityType: 'relatedEntityType',
+  relatedEntityId: 'relatedEntityId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeOnboardingTaskScalarFieldEnum = (typeof EmployeeOnboardingTaskScalarFieldEnum)[keyof typeof EmployeeOnboardingTaskScalarFieldEnum]
+
+
+export const EmployeeOffboardingCaseScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  status: 'status',
+  reason: 'reason',
+  openedByUserId: 'openedByUserId',
+  openedAt: 'openedAt',
+  clearedAt: 'clearedAt',
+  completedAt: 'completedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeOffboardingCaseScalarFieldEnum = (typeof EmployeeOffboardingCaseScalarFieldEnum)[keyof typeof EmployeeOffboardingCaseScalarFieldEnum]
+
+
+export const EmployeeOffboardingTaskScalarFieldEnum = {
+  id: 'id',
+  caseId: 'caseId',
+  code: 'code',
+  label: 'label',
+  status: 'status',
+  sortOrder: 'sortOrder',
+  dueAt: 'dueAt',
+  completedAt: 'completedAt',
+  completedByUserId: 'completedByUserId',
+  relatedEntityType: 'relatedEntityType',
+  relatedEntityId: 'relatedEntityId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeOffboardingTaskScalarFieldEnum = (typeof EmployeeOffboardingTaskScalarFieldEnum)[keyof typeof EmployeeOffboardingTaskScalarFieldEnum]
 
 
 export const PayrollProfileScalarFieldEnum = {
@@ -7756,6 +8523,20 @@ export type ListEnumEmploymentContractStatusFieldRefInput<$PrismaModel> = FieldR
 
 
 /**
+ * Reference to a field of type 'ContractApprovalStatus'
+ */
+export type EnumContractApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractApprovalStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ContractApprovalStatus[]'
+ */
+export type ListEnumContractApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContractApprovalStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'AllowanceFrequency'
  */
 export type EnumAllowanceFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AllowanceFrequency'>
@@ -7766,6 +8547,62 @@ export type EnumAllowanceFrequencyFieldRefInput<$PrismaModel> = FieldRefInputTyp
  * Reference to a field of type 'AllowanceFrequency[]'
  */
 export type ListEnumAllowanceFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AllowanceFrequency[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OnboardingCaseStatus'
+ */
+export type EnumOnboardingCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingCaseStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OnboardingCaseStatus[]'
+ */
+export type ListEnumOnboardingCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OnboardingCaseStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LifecycleTaskCode'
+ */
+export type EnumLifecycleTaskCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LifecycleTaskCode'>
+    
+
+
+/**
+ * Reference to a field of type 'LifecycleTaskCode[]'
+ */
+export type ListEnumLifecycleTaskCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LifecycleTaskCode[]'>
+    
+
+
+/**
+ * Reference to a field of type 'LifecycleTaskStatus'
+ */
+export type EnumLifecycleTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LifecycleTaskStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'LifecycleTaskStatus[]'
+ */
+export type ListEnumLifecycleTaskStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LifecycleTaskStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OffboardingCaseStatus'
+ */
+export type EnumOffboardingCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OffboardingCaseStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OffboardingCaseStatus[]'
+ */
+export type ListEnumOffboardingCaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OffboardingCaseStatus[]'>
     
 
 
@@ -8216,8 +9053,16 @@ export type GlobalOmitConfig = {
   performanceAppraisal?: Prisma.PerformanceAppraisalOmit
   performanceAppraisalCriterion?: Prisma.PerformanceAppraisalCriterionOmit
   employmentContract?: Prisma.EmploymentContractOmit
+  employmentContractApprovalStep?: Prisma.EmploymentContractApprovalStepOmit
   allowanceCategory?: Prisma.AllowanceCategoryOmit
   employmentContractAllowance?: Prisma.EmploymentContractAllowanceOmit
+  storedFile?: Prisma.StoredFileOmit
+  employeeFilePack?: Prisma.EmployeeFilePackOmit
+  employeeFilePackItem?: Prisma.EmployeeFilePackItemOmit
+  employeeOnboardingCase?: Prisma.EmployeeOnboardingCaseOmit
+  employeeOnboardingTask?: Prisma.EmployeeOnboardingTaskOmit
+  employeeOffboardingCase?: Prisma.EmployeeOffboardingCaseOmit
+  employeeOffboardingTask?: Prisma.EmployeeOffboardingTaskOmit
   payrollProfile?: Prisma.PayrollProfileOmit
   payrollBankAccount?: Prisma.PayrollBankAccountOmit
   financialInstitution?: Prisma.FinancialInstitutionOmit

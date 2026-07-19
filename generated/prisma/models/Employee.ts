@@ -54,6 +54,7 @@ export type EmployeeMinAggregateOutputType = {
   hireDate: Date | null
   terminationDate: Date | null
   isArchived: boolean | null
+  fileFrozenAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -86,6 +87,7 @@ export type EmployeeMaxAggregateOutputType = {
   hireDate: Date | null
   terminationDate: Date | null
   isArchived: boolean | null
+  fileFrozenAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -118,6 +120,7 @@ export type EmployeeCountAggregateOutputType = {
   hireDate: number
   terminationDate: number
   isArchived: number
+  fileFrozenAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -152,6 +155,7 @@ export type EmployeeMinAggregateInputType = {
   hireDate?: true
   terminationDate?: true
   isArchived?: true
+  fileFrozenAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -184,6 +188,7 @@ export type EmployeeMaxAggregateInputType = {
   hireDate?: true
   terminationDate?: true
   isArchived?: true
+  fileFrozenAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -216,6 +221,7 @@ export type EmployeeCountAggregateInputType = {
   hireDate?: true
   terminationDate?: true
   isArchived?: true
+  fileFrozenAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -321,6 +327,7 @@ export type EmployeeGroupByOutputType = {
   hireDate: Date
   terminationDate: Date | null
   isArchived: boolean
+  fileFrozenAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: EmployeeCountAggregateOutputType | null
@@ -374,6 +381,7 @@ export type EmployeeWhereInput = {
   hireDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
   terminationDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   isArchived?: Prisma.BoolFilter<"Employee"> | boolean
+  fileFrozenAt?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -399,6 +407,8 @@ export type EmployeeWhereInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemListRelationFilter
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestListRelationFilter
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseListRelationFilter
+  onboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
+  offboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
@@ -430,6 +440,7 @@ export type EmployeeOrderByWithRelationInput = {
   hireDate?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  fileFrozenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
@@ -455,6 +466,8 @@ export type EmployeeOrderByWithRelationInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemOrderByRelationAggregateInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestOrderByRelationAggregateInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseOrderByRelationAggregateInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseOrderByRelationAggregateInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseOrderByRelationAggregateInput
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -490,6 +503,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   hireDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
   terminationDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   isArchived?: Prisma.BoolFilter<"Employee"> | boolean
+  fileFrozenAt?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -515,6 +529,8 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemListRelationFilter
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestListRelationFilter
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseListRelationFilter
+  onboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
+  offboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "organizationId_employeeNumber">
 
@@ -546,6 +562,7 @@ export type EmployeeOrderByWithAggregationInput = {
   hireDate?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  fileFrozenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
@@ -584,6 +601,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   hireDate?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   terminationDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   isArchived?: Prisma.BoolWithAggregatesFilter<"Employee"> | boolean
+  fileFrozenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
@@ -613,6 +631,7 @@ export type EmployeeCreateInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -638,6 +657,8 @@ export type EmployeeCreateInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -669,6 +690,7 @@ export type EmployeeUncheckedCreateInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -691,6 +713,8 @@ export type EmployeeUncheckedCreateInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -719,6 +743,7 @@ export type EmployeeUpdateInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -744,6 +769,8 @@ export type EmployeeUpdateInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -775,6 +802,7 @@ export type EmployeeUncheckedUpdateInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -797,6 +825,8 @@ export type EmployeeUncheckedUpdateInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -828,6 +858,7 @@ export type EmployeeCreateManyInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -857,6 +888,7 @@ export type EmployeeUpdateManyMutationInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -889,6 +921,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -941,6 +974,7 @@ export type EmployeeCountOrderByAggregateInput = {
   hireDate?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  fileFrozenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -973,6 +1007,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   hireDate?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  fileFrozenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1005,6 +1040,7 @@ export type EmployeeMinOrderByAggregateInput = {
   hireDate?: Prisma.SortOrder
   terminationDate?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  fileFrozenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1370,6 +1406,34 @@ export type EmployeeUpdateOneRequiredWithoutContractsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutContractsInput, Prisma.EmployeeUpdateWithoutContractsInput>, Prisma.EmployeeUncheckedUpdateWithoutContractsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutOnboardingCasesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingCasesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOnboardingCasesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutOnboardingCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingCasesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOnboardingCasesInput
+  upsert?: Prisma.EmployeeUpsertWithoutOnboardingCasesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOnboardingCasesInput, Prisma.EmployeeUpdateWithoutOnboardingCasesInput>, Prisma.EmployeeUncheckedUpdateWithoutOnboardingCasesInput>
+}
+
+export type EmployeeCreateNestedOneWithoutOffboardingCasesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOffboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOffboardingCasesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOffboardingCasesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutOffboardingCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOffboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOffboardingCasesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOffboardingCasesInput
+  upsert?: Prisma.EmployeeUpsertWithoutOffboardingCasesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOffboardingCasesInput, Prisma.EmployeeUpdateWithoutOffboardingCasesInput>, Prisma.EmployeeUncheckedUpdateWithoutOffboardingCasesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutPayrollProfileInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayrollProfileInput, Prisma.EmployeeUncheckedCreateWithoutPayrollProfileInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayrollProfileInput
@@ -1479,6 +1543,7 @@ export type EmployeeCreateWithoutOrganizationInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -1503,6 +1568,8 @@ export type EmployeeCreateWithoutOrganizationInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -1533,6 +1600,7 @@ export type EmployeeUncheckedCreateWithoutOrganizationInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1555,6 +1623,8 @@ export type EmployeeUncheckedCreateWithoutOrganizationInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -1615,6 +1685,7 @@ export type EmployeeScalarWhereInput = {
   hireDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
   terminationDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   isArchived?: Prisma.BoolFilter<"Employee"> | boolean
+  fileFrozenAt?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
@@ -1644,6 +1715,7 @@ export type EmployeeCreateWithoutUserInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -1669,6 +1741,8 @@ export type EmployeeCreateWithoutUserInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeUncheckedCreateWithoutUserInput = {
@@ -1699,6 +1773,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1721,6 +1796,8 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeCreateOrConnectWithoutUserInput = {
@@ -1764,6 +1841,7 @@ export type EmployeeUpdateWithoutUserInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -1789,6 +1867,8 @@ export type EmployeeUpdateWithoutUserInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutUserInput = {
@@ -1819,6 +1899,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1841,6 +1922,8 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeCreateWithoutDepartmentInput = {
@@ -1868,6 +1951,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -1892,6 +1976,8 @@ export type EmployeeCreateWithoutDepartmentInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -1922,6 +2008,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1944,6 +2031,8 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -1998,6 +2087,7 @@ export type EmployeeCreateWithoutPositionInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -2022,6 +2112,8 @@ export type EmployeeCreateWithoutPositionInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2052,6 +2144,7 @@ export type EmployeeUncheckedCreateWithoutPositionInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2074,6 +2167,8 @@ export type EmployeeUncheckedCreateWithoutPositionInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2128,6 +2223,7 @@ export type EmployeeCreateWithoutAssignmentsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -2152,6 +2248,8 @@ export type EmployeeCreateWithoutAssignmentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2183,6 +2281,7 @@ export type EmployeeUncheckedCreateWithoutAssignmentsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2204,6 +2303,8 @@ export type EmployeeUncheckedCreateWithoutAssignmentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2248,6 +2349,7 @@ export type EmployeeUpdateWithoutAssignmentsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -2272,6 +2374,8 @@ export type EmployeeUpdateWithoutAssignmentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -2303,6 +2407,7 @@ export type EmployeeUncheckedUpdateWithoutAssignmentsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2324,6 +2429,8 @@ export type EmployeeUncheckedUpdateWithoutAssignmentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -2352,6 +2459,7 @@ export type EmployeeCreateWithoutLeaveBalancesInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -2376,6 +2484,8 @@ export type EmployeeCreateWithoutLeaveBalancesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2407,6 +2517,7 @@ export type EmployeeUncheckedCreateWithoutLeaveBalancesInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2428,6 +2539,8 @@ export type EmployeeUncheckedCreateWithoutLeaveBalancesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2472,6 +2585,7 @@ export type EmployeeUpdateWithoutLeaveBalancesInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -2496,6 +2610,8 @@ export type EmployeeUpdateWithoutLeaveBalancesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -2527,6 +2643,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveBalancesInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2548,6 +2665,8 @@ export type EmployeeUncheckedUpdateWithoutLeaveBalancesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -2576,6 +2695,7 @@ export type EmployeeCreateWithoutLeaveTransactionsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -2600,6 +2720,8 @@ export type EmployeeCreateWithoutLeaveTransactionsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2631,6 +2753,7 @@ export type EmployeeUncheckedCreateWithoutLeaveTransactionsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2652,6 +2775,8 @@ export type EmployeeUncheckedCreateWithoutLeaveTransactionsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2696,6 +2821,7 @@ export type EmployeeUpdateWithoutLeaveTransactionsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -2720,6 +2846,8 @@ export type EmployeeUpdateWithoutLeaveTransactionsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -2751,6 +2879,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveTransactionsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2772,6 +2901,8 @@ export type EmployeeUncheckedUpdateWithoutLeaveTransactionsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -2800,6 +2931,7 @@ export type EmployeeCreateWithoutLeaveRequestsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -2824,6 +2956,8 @@ export type EmployeeCreateWithoutLeaveRequestsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2855,6 +2989,7 @@ export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2876,6 +3011,8 @@ export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -2920,6 +3057,7 @@ export type EmployeeUpdateWithoutLeaveRequestsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -2944,6 +3082,8 @@ export type EmployeeUpdateWithoutLeaveRequestsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -2975,6 +3115,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2996,6 +3137,8 @@ export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3024,6 +3167,7 @@ export type EmployeeCreateWithoutLeaveAcknowledgementsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -3048,6 +3192,8 @@ export type EmployeeCreateWithoutLeaveAcknowledgementsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3079,6 +3225,7 @@ export type EmployeeUncheckedCreateWithoutLeaveAcknowledgementsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3100,6 +3247,8 @@ export type EmployeeUncheckedCreateWithoutLeaveAcknowledgementsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3144,6 +3293,7 @@ export type EmployeeUpdateWithoutLeaveAcknowledgementsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -3168,6 +3318,8 @@ export type EmployeeUpdateWithoutLeaveAcknowledgementsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3199,6 +3351,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3220,6 +3373,8 @@ export type EmployeeUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3248,6 +3403,7 @@ export type EmployeeCreateWithoutCorrespondencesInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -3272,6 +3428,8 @@ export type EmployeeCreateWithoutCorrespondencesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3303,6 +3461,7 @@ export type EmployeeUncheckedCreateWithoutCorrespondencesInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3324,6 +3483,8 @@ export type EmployeeUncheckedCreateWithoutCorrespondencesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3368,6 +3529,7 @@ export type EmployeeUpdateWithoutCorrespondencesInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -3392,6 +3554,8 @@ export type EmployeeUpdateWithoutCorrespondencesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3423,6 +3587,7 @@ export type EmployeeUncheckedUpdateWithoutCorrespondencesInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3444,6 +3609,8 @@ export type EmployeeUncheckedUpdateWithoutCorrespondencesInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3472,6 +3639,7 @@ export type EmployeeCreateWithoutCredentialsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -3496,6 +3664,8 @@ export type EmployeeCreateWithoutCredentialsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3527,6 +3697,7 @@ export type EmployeeUncheckedCreateWithoutCredentialsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3548,6 +3719,8 @@ export type EmployeeUncheckedCreateWithoutCredentialsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3592,6 +3765,7 @@ export type EmployeeUpdateWithoutCredentialsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -3616,6 +3790,8 @@ export type EmployeeUpdateWithoutCredentialsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3647,6 +3823,7 @@ export type EmployeeUncheckedUpdateWithoutCredentialsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3668,6 +3845,8 @@ export type EmployeeUncheckedUpdateWithoutCredentialsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3696,6 +3875,7 @@ export type EmployeeCreateWithoutTrainingRecordsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -3720,6 +3900,8 @@ export type EmployeeCreateWithoutTrainingRecordsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3751,6 +3933,7 @@ export type EmployeeUncheckedCreateWithoutTrainingRecordsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3772,6 +3955,8 @@ export type EmployeeUncheckedCreateWithoutTrainingRecordsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3816,6 +4001,7 @@ export type EmployeeUpdateWithoutTrainingRecordsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -3840,6 +4026,8 @@ export type EmployeeUpdateWithoutTrainingRecordsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3871,6 +4059,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingRecordsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3892,6 +4081,8 @@ export type EmployeeUncheckedUpdateWithoutTrainingRecordsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -3920,6 +4111,7 @@ export type EmployeeCreateWithoutQualificationDocumentsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -3944,6 +4136,8 @@ export type EmployeeCreateWithoutQualificationDocumentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -3975,6 +4169,7 @@ export type EmployeeUncheckedCreateWithoutQualificationDocumentsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3996,6 +4191,8 @@ export type EmployeeUncheckedCreateWithoutQualificationDocumentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4040,6 +4237,7 @@ export type EmployeeUpdateWithoutQualificationDocumentsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -4064,6 +4262,8 @@ export type EmployeeUpdateWithoutQualificationDocumentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4095,6 +4295,7 @@ export type EmployeeUncheckedUpdateWithoutQualificationDocumentsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4116,6 +4317,8 @@ export type EmployeeUncheckedUpdateWithoutQualificationDocumentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4144,6 +4347,7 @@ export type EmployeeCreateWithoutFileChecklistItemsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -4168,6 +4372,8 @@ export type EmployeeCreateWithoutFileChecklistItemsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4199,6 +4405,7 @@ export type EmployeeUncheckedCreateWithoutFileChecklistItemsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4220,6 +4427,8 @@ export type EmployeeUncheckedCreateWithoutFileChecklistItemsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4264,6 +4473,7 @@ export type EmployeeUpdateWithoutFileChecklistItemsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -4288,6 +4498,8 @@ export type EmployeeUpdateWithoutFileChecklistItemsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4319,6 +4531,7 @@ export type EmployeeUncheckedUpdateWithoutFileChecklistItemsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4340,6 +4553,8 @@ export type EmployeeUncheckedUpdateWithoutFileChecklistItemsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4368,6 +4583,7 @@ export type EmployeeCreateWithoutFileUpdateRequestsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -4392,6 +4608,8 @@ export type EmployeeCreateWithoutFileUpdateRequestsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4423,6 +4641,7 @@ export type EmployeeUncheckedCreateWithoutFileUpdateRequestsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4444,6 +4663,8 @@ export type EmployeeUncheckedCreateWithoutFileUpdateRequestsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4488,6 +4709,7 @@ export type EmployeeUpdateWithoutFileUpdateRequestsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -4512,6 +4734,8 @@ export type EmployeeUpdateWithoutFileUpdateRequestsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4543,6 +4767,7 @@ export type EmployeeUncheckedUpdateWithoutFileUpdateRequestsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4564,6 +4789,8 @@ export type EmployeeUncheckedUpdateWithoutFileUpdateRequestsInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4592,6 +4819,7 @@ export type EmployeeCreateWithoutCorrespondenceResponsesInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -4616,6 +4844,8 @@ export type EmployeeCreateWithoutCorrespondenceResponsesInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4647,6 +4877,7 @@ export type EmployeeUncheckedCreateWithoutCorrespondenceResponsesInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4668,6 +4899,8 @@ export type EmployeeUncheckedCreateWithoutCorrespondenceResponsesInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4712,6 +4945,7 @@ export type EmployeeUpdateWithoutCorrespondenceResponsesInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -4736,6 +4970,8 @@ export type EmployeeUpdateWithoutCorrespondenceResponsesInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4767,6 +5003,7 @@ export type EmployeeUncheckedUpdateWithoutCorrespondenceResponsesInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4788,6 +5025,8 @@ export type EmployeeUncheckedUpdateWithoutCorrespondenceResponsesInput = {
   qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4816,6 +5055,7 @@ export type EmployeeCreateWithoutAppraisalsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -4840,6 +5080,8 @@ export type EmployeeCreateWithoutAppraisalsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4871,6 +5113,7 @@ export type EmployeeUncheckedCreateWithoutAppraisalsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4892,6 +5135,8 @@ export type EmployeeUncheckedCreateWithoutAppraisalsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -4936,6 +5181,7 @@ export type EmployeeUpdateWithoutAppraisalsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -4960,6 +5206,8 @@ export type EmployeeUpdateWithoutAppraisalsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -4991,6 +5239,7 @@ export type EmployeeUncheckedUpdateWithoutAppraisalsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5012,6 +5261,8 @@ export type EmployeeUncheckedUpdateWithoutAppraisalsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5040,6 +5291,7 @@ export type EmployeeCreateWithoutContractsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -5064,6 +5316,8 @@ export type EmployeeCreateWithoutContractsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5095,6 +5349,7 @@ export type EmployeeUncheckedCreateWithoutContractsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5116,6 +5371,8 @@ export type EmployeeUncheckedCreateWithoutContractsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5160,6 +5417,7 @@ export type EmployeeUpdateWithoutContractsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -5184,6 +5442,8 @@ export type EmployeeUpdateWithoutContractsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5215,6 +5475,7 @@ export type EmployeeUncheckedUpdateWithoutContractsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5236,6 +5497,480 @@ export type EmployeeUncheckedUpdateWithoutContractsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutOnboardingCasesInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutOnboardingCasesInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutOnboardingCasesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingCasesInput>
+}
+
+export type EmployeeUpsertWithoutOnboardingCasesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutOnboardingCasesInput, Prisma.EmployeeUncheckedUpdateWithoutOnboardingCasesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOnboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOnboardingCasesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutOnboardingCasesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutOnboardingCasesInput, Prisma.EmployeeUncheckedUpdateWithoutOnboardingCasesInput>
+}
+
+export type EmployeeUpdateWithoutOnboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutOnboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutOffboardingCasesInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutOffboardingCasesInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutOffboardingCasesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOffboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOffboardingCasesInput>
+}
+
+export type EmployeeUpsertWithoutOffboardingCasesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutOffboardingCasesInput, Prisma.EmployeeUncheckedUpdateWithoutOffboardingCasesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOffboardingCasesInput, Prisma.EmployeeUncheckedCreateWithoutOffboardingCasesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutOffboardingCasesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutOffboardingCasesInput, Prisma.EmployeeUncheckedUpdateWithoutOffboardingCasesInput>
+}
+
+export type EmployeeUpdateWithoutOffboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutOffboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5264,6 +5999,7 @@ export type EmployeeCreateWithoutPayrollProfileInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -5288,6 +6024,8 @@ export type EmployeeCreateWithoutPayrollProfileInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5319,6 +6057,7 @@ export type EmployeeUncheckedCreateWithoutPayrollProfileInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5340,6 +6079,8 @@ export type EmployeeUncheckedCreateWithoutPayrollProfileInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5384,6 +6125,7 @@ export type EmployeeUpdateWithoutPayrollProfileInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -5408,6 +6150,8 @@ export type EmployeeUpdateWithoutPayrollProfileInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5439,6 +6183,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollProfileInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5460,6 +6205,8 @@ export type EmployeeUncheckedUpdateWithoutPayrollProfileInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5488,6 +6235,7 @@ export type EmployeeCreateWithoutBankAccountsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -5512,6 +6260,8 @@ export type EmployeeCreateWithoutBankAccountsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5543,6 +6293,7 @@ export type EmployeeUncheckedCreateWithoutBankAccountsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5564,6 +6315,8 @@ export type EmployeeUncheckedCreateWithoutBankAccountsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5608,6 +6361,7 @@ export type EmployeeUpdateWithoutBankAccountsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -5632,6 +6386,8 @@ export type EmployeeUpdateWithoutBankAccountsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5663,6 +6419,7 @@ export type EmployeeUncheckedUpdateWithoutBankAccountsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5684,6 +6441,8 @@ export type EmployeeUncheckedUpdateWithoutBankAccountsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5712,6 +6471,7 @@ export type EmployeeCreateWithoutPayrollAllocationsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -5736,6 +6496,8 @@ export type EmployeeCreateWithoutPayrollAllocationsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5767,6 +6529,7 @@ export type EmployeeUncheckedCreateWithoutPayrollAllocationsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5788,6 +6551,8 @@ export type EmployeeUncheckedCreateWithoutPayrollAllocationsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5832,6 +6597,7 @@ export type EmployeeUpdateWithoutPayrollAllocationsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -5856,6 +6622,8 @@ export type EmployeeUpdateWithoutPayrollAllocationsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5887,6 +6655,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollAllocationsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5908,6 +6677,8 @@ export type EmployeeUncheckedUpdateWithoutPayrollAllocationsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -5936,6 +6707,7 @@ export type EmployeeCreateWithoutPayrollPaymentsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -5960,6 +6732,8 @@ export type EmployeeCreateWithoutPayrollPaymentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -5991,6 +6765,7 @@ export type EmployeeUncheckedCreateWithoutPayrollPaymentsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6012,6 +6787,8 @@ export type EmployeeUncheckedCreateWithoutPayrollPaymentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -6056,6 +6833,7 @@ export type EmployeeUpdateWithoutPayrollPaymentsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -6080,6 +6858,8 @@ export type EmployeeUpdateWithoutPayrollPaymentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6111,6 +6891,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollPaymentsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6132,6 +6913,8 @@ export type EmployeeUncheckedUpdateWithoutPayrollPaymentsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6160,6 +6943,7 @@ export type EmployeeCreateWithoutPayslipsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -6184,6 +6968,8 @@ export type EmployeeCreateWithoutPayslipsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -6215,6 +7001,7 @@ export type EmployeeUncheckedCreateWithoutPayslipsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6236,6 +7023,8 @@ export type EmployeeUncheckedCreateWithoutPayslipsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -6280,6 +7069,7 @@ export type EmployeeUpdateWithoutPayslipsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -6304,6 +7094,8 @@ export type EmployeeUpdateWithoutPayslipsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6335,6 +7127,7 @@ export type EmployeeUncheckedUpdateWithoutPayslipsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6356,6 +7149,8 @@ export type EmployeeUncheckedUpdateWithoutPayslipsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6384,6 +7179,7 @@ export type EmployeeCreateWithoutPayrollLineItemsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
@@ -6408,6 +7204,8 @@ export type EmployeeCreateWithoutPayrollLineItemsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
 }
 
@@ -6439,6 +7237,7 @@ export type EmployeeUncheckedCreateWithoutPayrollLineItemsInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6460,6 +7259,8 @@ export type EmployeeUncheckedCreateWithoutPayrollLineItemsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
 }
 
@@ -6504,6 +7305,7 @@ export type EmployeeUpdateWithoutPayrollLineItemsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -6528,6 +7330,8 @@ export type EmployeeUpdateWithoutPayrollLineItemsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6559,6 +7363,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollLineItemsInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6580,6 +7385,8 @@ export type EmployeeUncheckedUpdateWithoutPayrollLineItemsInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6610,6 +7417,7 @@ export type EmployeeCreateManyOrganizationInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -6639,6 +7447,7 @@ export type EmployeeUpdateWithoutOrganizationInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -6663,6 +7472,8 @@ export type EmployeeUpdateWithoutOrganizationInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6693,6 +7504,7 @@ export type EmployeeUncheckedUpdateWithoutOrganizationInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6715,6 +7527,8 @@ export type EmployeeUncheckedUpdateWithoutOrganizationInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6745,6 +7559,7 @@ export type EmployeeUncheckedUpdateManyWithoutOrganizationInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -6776,6 +7591,7 @@ export type EmployeeCreateManyDepartmentInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -6805,6 +7621,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -6829,6 +7646,8 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6859,6 +7678,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6881,6 +7701,8 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6911,6 +7733,7 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -6942,6 +7765,7 @@ export type EmployeeCreateManyPositionInput = {
   hireDate: Date | string
   terminationDate?: Date | string | null
   isArchived?: boolean
+  fileFrozenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -6971,6 +7795,7 @@ export type EmployeeUpdateWithoutPositionInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
@@ -6995,6 +7820,8 @@ export type EmployeeUpdateWithoutPositionInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -7025,6 +7852,7 @@ export type EmployeeUncheckedUpdateWithoutPositionInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7047,6 +7875,8 @@ export type EmployeeUncheckedUpdateWithoutPositionInput = {
   fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -7077,6 +7907,7 @@ export type EmployeeUncheckedUpdateManyWithoutPositionInput = {
   hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -7106,6 +7937,8 @@ export type EmployeeCountOutputType = {
   fileChecklistItems: number
   fileUpdateRequests: number
   correspondenceResponses: number
+  onboardingCases: number
+  offboardingCases: number
 }
 
 export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -7128,6 +7961,8 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   fileChecklistItems?: boolean | EmployeeCountOutputTypeCountFileChecklistItemsArgs
   fileUpdateRequests?: boolean | EmployeeCountOutputTypeCountFileUpdateRequestsArgs
   correspondenceResponses?: boolean | EmployeeCountOutputTypeCountCorrespondenceResponsesArgs
+  onboardingCases?: boolean | EmployeeCountOutputTypeCountOnboardingCasesArgs
+  offboardingCases?: boolean | EmployeeCountOutputTypeCountOffboardingCasesArgs
 }
 
 /**
@@ -7273,6 +8108,20 @@ export type EmployeeCountOutputTypeCountCorrespondenceResponsesArgs<ExtArgs exte
   where?: Prisma.EmployeeCorrespondenceResponseWhereInput
 }
 
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountOnboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOnboardingCaseWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountOffboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOffboardingCaseWhereInput
+}
+
 
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -7302,6 +8151,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   hireDate?: boolean
   terminationDate?: boolean
   isArchived?: boolean
+  fileFrozenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -7327,6 +8177,8 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   fileChecklistItems?: boolean | Prisma.Employee$fileChecklistItemsArgs<ExtArgs>
   fileUpdateRequests?: boolean | Prisma.Employee$fileUpdateRequestsArgs<ExtArgs>
   correspondenceResponses?: boolean | Prisma.Employee$correspondenceResponsesArgs<ExtArgs>
+  onboardingCases?: boolean | Prisma.Employee$onboardingCasesArgs<ExtArgs>
+  offboardingCases?: boolean | Prisma.Employee$offboardingCasesArgs<ExtArgs>
   user?: boolean | Prisma.Employee$userArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
@@ -7359,6 +8211,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   hireDate?: boolean
   terminationDate?: boolean
   isArchived?: boolean
+  fileFrozenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -7394,6 +8247,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   hireDate?: boolean
   terminationDate?: boolean
   isArchived?: boolean
+  fileFrozenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -7429,11 +8283,12 @@ export type EmployeeSelectScalar = {
   hireDate?: boolean
   terminationDate?: boolean
   isArchived?: boolean
+  fileFrozenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "departmentId" | "positionId" | "employeeNumber" | "firstName" | "middleName" | "lastName" | "preferredName" | "workEmail" | "personalEmail" | "phone" | "address" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelationship" | "dateOfBirth" | "nisNumber" | "birNumber" | "idType" | "idNumber" | "workforceCategory" | "employmentStatus" | "employmentType" | "hireDate" | "terminationDate" | "isArchived" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "departmentId" | "positionId" | "employeeNumber" | "firstName" | "middleName" | "lastName" | "preferredName" | "workEmail" | "personalEmail" | "phone" | "address" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelationship" | "dateOfBirth" | "nisNumber" | "birNumber" | "idType" | "idNumber" | "workforceCategory" | "employmentStatus" | "employmentType" | "hireDate" | "terminationDate" | "isArchived" | "fileFrozenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -7458,6 +8313,8 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   fileChecklistItems?: boolean | Prisma.Employee$fileChecklistItemsArgs<ExtArgs>
   fileUpdateRequests?: boolean | Prisma.Employee$fileUpdateRequestsArgs<ExtArgs>
   correspondenceResponses?: boolean | Prisma.Employee$correspondenceResponsesArgs<ExtArgs>
+  onboardingCases?: boolean | Prisma.Employee$onboardingCasesArgs<ExtArgs>
+  offboardingCases?: boolean | Prisma.Employee$offboardingCasesArgs<ExtArgs>
   user?: boolean | Prisma.Employee$userArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -7498,6 +8355,8 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     fileChecklistItems: Prisma.$EmployeeFileChecklistItemPayload<ExtArgs>[]
     fileUpdateRequests: Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>[]
     correspondenceResponses: Prisma.$EmployeeCorrespondenceResponsePayload<ExtArgs>[]
+    onboardingCases: Prisma.$EmployeeOnboardingCasePayload<ExtArgs>[]
+    offboardingCases: Prisma.$EmployeeOffboardingCasePayload<ExtArgs>[]
     user: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -7540,6 +8399,10 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     hireDate: Date
     terminationDate: Date | null
     isArchived: boolean
+    /**
+     * When set, employee file uploads/edits are blocked (offboarding freeze).
+     */
+    fileFrozenAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["employee"]>
@@ -7959,6 +8822,8 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   fileChecklistItems<T extends Prisma.Employee$fileChecklistItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$fileChecklistItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeFileChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fileUpdateRequests<T extends Prisma.Employee$fileUpdateRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$fileUpdateRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   correspondenceResponses<T extends Prisma.Employee$correspondenceResponsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$correspondenceResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeCorrespondenceResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  onboardingCases<T extends Prisma.Employee$onboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$onboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOnboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  offboardingCases<T extends Prisma.Employee$offboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$offboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOffboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   user<T extends Prisma.Employee$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8016,6 +8881,7 @@ export interface EmployeeFieldRefs {
   readonly hireDate: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly terminationDate: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly isArchived: Prisma.FieldRef<"Employee", 'Boolean'>
+  readonly fileFrozenAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }
@@ -8929,6 +9795,54 @@ export type Employee$correspondenceResponsesArgs<ExtArgs extends runtime.Types.E
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeCorrespondenceResponseScalarFieldEnum | Prisma.EmployeeCorrespondenceResponseScalarFieldEnum[]
+}
+
+/**
+ * Employee.onboardingCases
+ */
+export type Employee$onboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOnboardingCase
+   */
+  select?: Prisma.EmployeeOnboardingCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOnboardingCase
+   */
+  omit?: Prisma.EmployeeOnboardingCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOnboardingCaseInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOnboardingCaseWhereInput
+  orderBy?: Prisma.EmployeeOnboardingCaseOrderByWithRelationInput | Prisma.EmployeeOnboardingCaseOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOnboardingCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOnboardingCaseScalarFieldEnum | Prisma.EmployeeOnboardingCaseScalarFieldEnum[]
+}
+
+/**
+ * Employee.offboardingCases
+ */
+export type Employee$offboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOffboardingCase
+   */
+  select?: Prisma.EmployeeOffboardingCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOffboardingCase
+   */
+  omit?: Prisma.EmployeeOffboardingCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOffboardingCaseInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOffboardingCaseWhereInput
+  orderBy?: Prisma.EmployeeOffboardingCaseOrderByWithRelationInput | Prisma.EmployeeOffboardingCaseOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOffboardingCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOffboardingCaseScalarFieldEnum | Prisma.EmployeeOffboardingCaseScalarFieldEnum[]
 }
 
 /**
