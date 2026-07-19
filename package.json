@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "jobs:run": "npx tsx scripts/run-scheduled-jobs.ts",
+    "smoke:hr": "npx tsx scripts/smoke-hr-contract-spine.ts",
     "email:process": "npx tsx scripts/process-email-queue.ts",
     "notify:vacation-forfeiture": "npx tsx scripts/notify-vacation-forfeiture.ts",
     "notify:correspondence-ack": "npx tsx scripts/notify-correspondence-ack.ts",
