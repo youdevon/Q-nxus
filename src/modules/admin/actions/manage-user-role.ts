@@ -2,10 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 
-import { RoleAssignmentStatus } from "@/generated/prisma/client";
+import { RoleAssignmentStatus, UserRoleSource } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  DEFAULT_ADMINISTRATOR_PROTECTION_MESSAGE,
+  isDefaultAdministratorUser,
+} from "@/src/modules/admin/lib/protected-administrator";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 
 export type RoleAssignmentState = {
   status: "idle" | "success" | "error";
@@ -52,8 +57,16 @@ export async function assignUserRole(
   const userId = textValue(formData, "userId");
   const roleId = textValue(formData, "roleId");
   const reason = nullableText(formData, "reason");
-  const effectiveFrom = parseDate(textValue(formData, "effectiveFrom"));
-  const effectiveUntil = parseDate(textValue(formData, "effectiveUntil"));
+  const useEffectiveDates =
+    textValue(formData, "useEffectiveDates").toLowerCase() === "true";
+
+  // When dates are not set, start immediately with no end date.
+  const effectiveFrom = useEffectiveDates
+    ? parseDate(textValue(formData, "effectiveFrom"))
+    : new Date();
+  const effectiveUntil = useEffectiveDates
+    ? parseDate(textValue(formData, "effectiveUntil"))
+    : null;
 
   const errors: Record<string, string> = {};
 
@@ -65,7 +78,7 @@ export async function assignUserRole(
     errors.roleId = "Select a role.";
   }
 
-  if (!effectiveFrom) {
+  if (useEffectiveDates && !effectiveFrom) {
     errors.effectiveFrom = "Enter a valid effective-from date.";
   }
 
@@ -152,30 +165,30 @@ export async function assignUserRole(
           effectiveFrom: effectiveFrom!,
           effectiveUntil,
           reason,
+          source: UserRoleSource.MANUAL,
         },
       });
 
-      await transaction.auditEvent.create({
-        data: {
-          userId: actor.actor.userId,
-          moduleKey: "identity",
-          action: "ASSIGN_ROLE",
-          entityType: "UserRole",
-          entityId: assignment.id,
-          description: `Assigned role ${role.name} to ${user.firstName} ${user.lastName}.`,
-          newValues: {
-            userId,
-            roleId,
-            roleCode: role.code,
-            status: assignment.status,
-            effectiveFrom: assignment.effectiveFrom,
-            effectiveUntil: assignment.effectiveUntil,
-            reason: assignment.reason,
-          },
-          ipAddress,
-          userAgent,
-          clientHostName,
+      await recordAuditEvent(transaction, {
+        userId: actor.actor.userId,
+        moduleKey: "identity",
+        action: "ASSIGN_ROLE",
+        entityType: "UserRole",
+        entityId: assignment.id,
+        description: `Assigned role ${role.name} to ${user.firstName} ${user.lastName}.`,
+        newValues: {
+          userId,
+          roleId,
+          roleCode: role.code,
+          status: assignment.status,
+          effectiveFrom: assignment.effectiveFrom,
+          effectiveUntil: assignment.effectiveUntil,
+          reason: assignment.reason,
+          source: assignment.source,
         },
+        ipAddress,
+        userAgent,
+        clientHostName,
       });
 
       return {
@@ -207,6 +220,7 @@ export async function assignUserRole(
 
     revalidatePath("/administration/access");
     revalidatePath(`/administration/access/users/${userId}`);
+    revalidatePath(`/administration/access/users/${userId}/edit`);
 
     return {
       status: "success",
@@ -223,7 +237,10 @@ export async function assignUserRole(
   }
 }
 
-export async function revokeUserRole(formData: FormData): Promise<void> {
+export async function revokeUserRole(
+  _previousState: RoleAssignmentState,
+  formData: FormData,
+): Promise<RoleAssignmentState> {
   const actor = await requireActor(
     "administration.manage",
     "identity.user.update",
@@ -231,7 +248,10 @@ export async function revokeUserRole(formData: FormData): Promise<void> {
   );
 
   if (!actor.ok) {
-    throw new Error(actor.message);
+    return {
+      status: "error",
+      message: actor.message,
+    };
   }
 
   const assignmentId = textValue(formData, "assignmentId");
@@ -240,55 +260,73 @@ export async function revokeUserRole(formData: FormData): Promise<void> {
     nullableText(formData, "revocationReason") ?? "Revoked by administrator.";
 
   if (!assignmentId || !userId) {
-    return;
+    return {
+      status: "error",
+      message: "The role assignment could not be identified.",
+    };
   }
 
-  const { ipAddress, userAgent, clientHostName } =
-    await getAuditRequestMetadata(formData);
+  try {
+    const { ipAddress, userAgent, clientHostName } =
+      await getAuditRequestMetadata(formData);
 
-  await prisma.$transaction(async (transaction) => {
-    const current = await transaction.userRole.findUnique({
-      where: {
-        id: assignmentId,
-      },
-      include: {
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
+    const result = await prisma.$transaction(async (transaction) => {
+      const current = await transaction.userRole.findUnique({
+        where: {
+          id: assignmentId,
+        },
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          role: {
+            select: {
+              code: true,
+              name: true,
+            },
           },
         },
-        role: {
-          select: {
-            code: true,
-            name: true,
-          },
+      });
+
+      if (
+        !current ||
+        current.userId !== userId ||
+        current.status === RoleAssignmentStatus.REVOKED
+      ) {
+        return {
+          outcome: "missing" as const,
+        };
+      }
+
+      if (
+        current.role.code === "SYSTEM_ADMINISTRATOR" &&
+        isDefaultAdministratorUser({
+          id: current.userId,
+          email: current.user.email,
+        })
+      ) {
+        return {
+          outcome: "protected-administrator" as const,
+        };
+      }
+
+      const updated = await transaction.userRole.update({
+        where: {
+          id: assignmentId,
         },
-      },
-    });
+        data: {
+          status: RoleAssignmentStatus.REVOKED,
+          revokedAt: new Date(),
+          effectiveUntil: current.effectiveUntil ?? new Date(),
+          reason,
+        },
+      });
 
-    if (
-      !current ||
-      current.userId !== userId ||
-      current.status === RoleAssignmentStatus.REVOKED
-    ) {
-      return;
-    }
-
-    const updated = await transaction.userRole.update({
-      where: {
-        id: assignmentId,
-      },
-      data: {
-        status: RoleAssignmentStatus.REVOKED,
-        revokedAt: new Date(),
-        effectiveUntil: current.effectiveUntil ?? new Date(),
-        reason,
-      },
-    });
-
-    await transaction.auditEvent.create({
-      data: {
+      await recordAuditEvent(transaction, {
         userId: actor.actor.userId,
         moduleKey: "identity",
         action: "REVOKE_ROLE",
@@ -300,20 +338,54 @@ export async function revokeUserRole(formData: FormData): Promise<void> {
           effectiveUntil: current.effectiveUntil,
           revokedAt: current.revokedAt,
           reason: current.reason,
+          source: current.source,
         },
         newValues: {
           status: updated.status,
           effectiveUntil: updated.effectiveUntil,
           revokedAt: updated.revokedAt,
           reason: updated.reason,
+          source: updated.source,
         },
         ipAddress,
         userAgent,
         clientHostName,
-      },
-    });
-  });
+      });
 
-  revalidatePath("/administration/access");
-  revalidatePath(`/administration/access/users/${userId}`);
+      return {
+        outcome: "revoked" as const,
+      };
+    });
+
+    if (result.outcome === "missing") {
+      return {
+        status: "error",
+        message: "The role assignment no longer exists.",
+      };
+    }
+
+    if (result.outcome === "protected-administrator") {
+      return {
+        status: "error",
+        message: DEFAULT_ADMINISTRATOR_PROTECTION_MESSAGE,
+      };
+    }
+
+    revalidatePath("/administration/access");
+    revalidatePath(`/administration/access/users/${userId}`);
+    revalidatePath(`/administration/access/users/${userId}/edit`);
+
+    return {
+      status: "success",
+      message: "Role revoked successfully.",
+    };
+  } catch (error: unknown) {
+    console.error("Unable to revoke role:", error);
+
+    return {
+      status: "error",
+      message:
+        "The role could not be revoked. Check the server log and try again.",
+    };
+  }
 }

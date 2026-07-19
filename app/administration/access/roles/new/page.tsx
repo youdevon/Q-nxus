@@ -1,16 +1,40 @@
 import type { Metadata } from "next";
 
 import { RoleForm } from "@/src/modules/admin/components/role-form";
-import { getPermissionOptions } from "@/src/modules/admin/data/get-access-administration";
+import {
+  getPermissionOptions,
+  getRoleTemplates,
+} from "@/src/modules/admin/data/get-access-administration";
 
 export const metadata: Metadata = {
-  title: "New role",
+  title: "Create role",
 };
 
 export const dynamic = "force-dynamic";
 
-export default async function NewRolePage() {
-  const permissions = await getPermissionOptions();
+type NewRolePageProps = {
+  searchParams: Promise<{
+    from?: string;
+  }>;
+};
 
-  return <RoleForm permissions={permissions} />;
+export default async function NewRolePage({ searchParams }: NewRolePageProps) {
+  const { from } = await searchParams;
+  const [permissions, templates] = await Promise.all([
+    getPermissionOptions(),
+    getRoleTemplates(),
+  ]);
+
+  const initialTemplate =
+    from && from.length > 0
+      ? (templates.find((template) => template.id === from) ?? null)
+      : null;
+
+  return (
+    <RoleForm
+      permissions={permissions}
+      templates={templates}
+      initialTemplate={initialTemplate}
+    />
+  );
 }

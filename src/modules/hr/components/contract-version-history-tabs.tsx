@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { formatMoney } from "@/src/lib/format";
+import { employmentContractStatusBadgeVariant } from "@/src/config/ui-colors";
+import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import type { EmploymentContractProfile } from "@/src/modules/hr/data/get-employment-contracts";
 
 function label(value: string): string {
@@ -85,7 +86,13 @@ export function ContractVersionHistoryTabs({
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-medium">{version.jobTitle}</p>
                   <Badge variant="outline">{label(version.changeType)}</Badge>
-                  <Badge variant="secondary">{label(version.status)}</Badge>
+                  <Badge
+                    variant={employmentContractStatusBadgeVariant(
+                      version.status,
+                    )}
+                  >
+                    {label(version.status)}
+                  </Badge>
                   {version.collectedAt ? (
                     <Badge variant="secondary">Collected</Badge>
                   ) : null}
@@ -97,9 +104,14 @@ export function ContractVersionHistoryTabs({
 
               <div>
                 <p className="text-xs text-muted-foreground">Period</p>
-                <p className="mt-1 text-sm font-medium">{version.startDate}</p>
+                <p className="mt-1 text-sm font-medium">
+                  {formatDisplayDate(version.startDate)}
+                </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  to {version.endDate ?? "No end date"}
+                  to{" "}
+                  {version.endDate
+                    ? formatDisplayDate(version.endDate)
+                    : "No end date"}
                 </p>
               </div>
 

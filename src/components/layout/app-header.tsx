@@ -131,7 +131,7 @@ export function AppHeader() {
             </DropdownMenuItem>
             <form action={logout}>
               <DropdownMenuItem
-                nativeButton={false}
+                nativeButton
                 render={<button type="submit" className="w-full" />}
               >
                 Sign out

@@ -1,5 +1,11 @@
 "use server";
 
+/**
+ * DEPRECATED — Location admin UI routes were removed. Schema + this action
+ * remain quarantined. Do not rewire nav or restore save pages without an
+ * explicit product decision.
+ */
+
 import { revalidatePath } from "next/cache";
 
 import { ConfigurationStatus } from "@/generated/prisma/client";

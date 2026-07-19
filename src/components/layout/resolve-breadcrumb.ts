@@ -14,35 +14,41 @@ const STATIC_SEGMENT_LABELS: Record<string, string> = {
   appraisals: "Appraisals",
   assignments: "Assignments",
   audit: "Audit trail",
-  balances: "Leave balances",
-  "business-units": "Business units",
+  balances: "Balances",
   chart: "Chart",
   close: "Close",
   contracts: "Contracts",
+  credentials: "Credentials",
   departments: "Departments",
   documents: "Documents",
   edit: "Edit",
   employees: "Employees",
-  features: "Feature controls",
+  expiring: "Expiring",
   "job-description": "Job description",
   "job-descriptions": "Job descriptions",
   leave: "Leave",
-  locations: "Locations",
   me: "My Profile",
+  missing: "Missing documents",
   new: "New",
   notifications: "Notifications",
   "numbering-sequences": "Numbering sequences",
   organization: "Organization",
   payroll: "Payroll",
+  payslip: "Payslip",
   people: "Employees",
   positions: "Positions",
+  print: "Print",
+  qualifications: "Qualifications",
   reporting: "Reporting lines",
   reports: "Reports",
   roles: "Roles",
   settings: "Domain settings",
   structure: "Organization",
-  types: "Leave types",
+  "team-documents": "Team documents",
+  training: "Training",
+  types: "Types",
   users: "Users",
+  workflow: "Workflow",
   email: "System email",
 };
 
@@ -50,15 +56,17 @@ const STATIC_SEGMENT_LABELS: Record<string, string> = {
 const ENTITY_LABEL_BY_PARENT: Record<string, string> = {
   allowances: "Allowance",
   appraisals: "Appraisal",
-  "business-units": "Business unit",
   contracts: "Contract",
   departments: "Department",
+  documents: "Document",
   employees: "Employee",
+  credentials: "Credential",
   "job-descriptions": "Job description",
   leave: "Request",
-  locations: "Location",
   positions: "Position",
+  qualifications: "Qualification",
   roles: "Role",
+  training: "Training record",
   users: "User",
 };
 
@@ -67,29 +75,28 @@ const NEW_LABEL_BY_PARENT: Record<string, string> = {
   allowances: "New allowance",
   appraisals: "New appraisal",
   assignments: "New assignment",
-  "business-units": "New business unit",
   contracts: "New contract",
+  credentials: "New credential",
   departments: "New department",
+  documents: "New document",
   employees: "New employee",
   "job-descriptions": "New job description",
-  leave: "New request",
-  locations: "New location",
+  leave: "Request leave",
   positions: "New position",
+  qualifications: "New qualification",
   roles: "New role",
+  training: "New training record",
 };
 
 /** Segments that are route folders and should not appear as their own crumb. */
 const HIDDEN_SEGMENTS = new Set([
   "positions",
   "departments",
-  "contracts",
-  "appraisals",
-  "assignments",
+  "employees",
   "job-descriptions",
   "roles",
   "users",
   "allowances",
-  "business-units",
 ]);
 
 const ID_PATTERN =
@@ -126,9 +133,29 @@ function labelForSegment(
 function resolveNavRoot(pathname: string) {
   const items = navigationConfig.flatMap((section) => section.items);
 
+  // Keep all /people/* routes under the Employees root so nested modules
+  // (leave, documents, structure) share People breadcrumbs.
+  if (pathname === "/people" || pathname.startsWith("/people/")) {
+    const peopleItem = items.find((item) => item.href === "/people");
+    if (peopleItem) {
+      return peopleItem;
+    }
+  }
+
   const match = items
-    .filter((item) => item.href !== "/" && pathname.startsWith(item.href))
-    .sort((a, b) => b.href.length - a.href.length)[0];
+    .filter((item) => {
+      if (item.href === "/") {
+        return false;
+      }
+
+      const prefix = item.matchPrefix ?? item.href;
+      return pathname.startsWith(prefix);
+    })
+    .sort((a, b) => {
+      const aLen = (a.matchPrefix ?? a.href).length;
+      const bLen = (b.matchPrefix ?? b.href).length;
+      return bLen - aLen;
+    })[0];
 
   return match ?? null;
 }
@@ -152,7 +179,8 @@ export function resolveBreadcrumb(pathname: string): BreadcrumbCrumb[] {
   let index = 0;
 
   if (navRoot) {
-    const rootSegments = navRoot.href.split("/").filter(Boolean);
+    const rootPath = navRoot.matchPrefix ?? navRoot.href;
+    const rootSegments = rootPath.split("/").filter(Boolean);
     crumbs.push({
       label: navRoot.title,
       href: navRoot.href,

@@ -6,6 +6,7 @@ import { OrganizationStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 
 export type OrganizationFormState = {
   status: "idle" | "success" | "error" | "conflict";
@@ -156,8 +157,7 @@ export async function updateOrganization(
   }
 
   try {
-    const { ipAddress, userAgent, clientHostName } =
-      await getAuditRequestMetadata(formData);
+    const metadata = await getAuditRequestMetadata(formData);
 
     const result = await prisma.$transaction(async (transaction) => {
       const current = await transaction.organization.findUnique({
@@ -238,58 +238,58 @@ export async function updateOrganization(
         },
       });
 
+      // Legacy mirror for older ApplicationSetting readers. Organization is SoT
+      // for chrome (see getApplicationChrome); keep in sync to avoid stale fallbacks.
       await transaction.applicationSetting.updateMany({
         data: {
           organizationName: updated.name,
+          shortName: updated.shortName?.trim() || updated.code,
         },
       });
 
-      await transaction.auditEvent.create({
-        data: {
-          userId: actor.actor.userId,
-          moduleKey: "administration",
-          action: "UPDATE",
-          entityType: "Organization",
-          entityId: updated.id,
-          description: `Updated Organization profile for ${updated.name}.`,
-          oldValues: {
-            code: current.code,
-            name: current.name,
-            shortName: current.shortName,
-            legalName: current.legalName,
-            email: current.email,
-            phone: current.phone,
-            website: current.website,
-            status: current.status,
-            defaultTimeZone: current.defaultTimeZone,
-            defaultCurrency: current.defaultCurrency,
-            defaultLanguage: current.defaultLanguage,
-            dateFormat: current.dateFormat,
-            firstDayOfWeek: current.firstDayOfWeek,
-            isActive: current.isActive,
-            version: current.version,
-          },
-          newValues: {
-            code: updated.code,
-            name: updated.name,
-            shortName: updated.shortName,
-            legalName: updated.legalName,
-            email: updated.email,
-            phone: updated.phone,
-            website: updated.website,
-            status: updated.status,
-            defaultTimeZone: updated.defaultTimeZone,
-            defaultCurrency: updated.defaultCurrency,
-            defaultLanguage: updated.defaultLanguage,
-            dateFormat: updated.dateFormat,
-            firstDayOfWeek: updated.firstDayOfWeek,
-            isActive: updated.isActive,
-            version: updated.version,
-          },
-          ipAddress,
-          userAgent,
-          clientHostName,
+      await recordAuditEvent(transaction, {
+        userId: actor.actor.userId,
+        organizationId: updated.id,
+        moduleKey: "administration",
+        action: "UPDATE",
+        entityType: "Organization",
+        entityId: updated.id,
+        description: `Updated Organization profile for ${updated.name}.`,
+        oldValues: {
+          code: current.code,
+          name: current.name,
+          shortName: current.shortName,
+          legalName: current.legalName,
+          email: current.email,
+          phone: current.phone,
+          website: current.website,
+          status: current.status,
+          defaultTimeZone: current.defaultTimeZone,
+          defaultCurrency: current.defaultCurrency,
+          defaultLanguage: current.defaultLanguage,
+          dateFormat: current.dateFormat,
+          firstDayOfWeek: current.firstDayOfWeek,
+          isActive: current.isActive,
+          version: current.version,
         },
+        newValues: {
+          code: updated.code,
+          name: updated.name,
+          shortName: updated.shortName,
+          legalName: updated.legalName,
+          email: updated.email,
+          phone: updated.phone,
+          website: updated.website,
+          status: updated.status,
+          defaultTimeZone: updated.defaultTimeZone,
+          defaultCurrency: updated.defaultCurrency,
+          defaultLanguage: updated.defaultLanguage,
+          dateFormat: updated.dateFormat,
+          firstDayOfWeek: updated.firstDayOfWeek,
+          isActive: updated.isActive,
+          version: updated.version,
+        },
+        ...metadata,
       });
 
       return {
@@ -322,7 +322,8 @@ export async function updateOrganization(
       };
     }
 
-    revalidatePath("/");
+    revalidatePath("/", "layout");
+    revalidatePath("/login");
     revalidatePath("/administration");
     revalidatePath("/administration/organization");
 

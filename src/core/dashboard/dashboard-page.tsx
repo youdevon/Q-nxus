@@ -9,8 +9,9 @@ import {
 import { PageHeader } from "@/src/components/layout/page-header"
 import { PageShell } from "@/src/components/layout/page-shell"
 import { PageAlert } from "@/src/components/ui/page-alert"
-import { appConfig } from "@/src/config/app.config"
 import { getOperationalHomeDashboard } from "@/src/core/dashboard/get-operational-home"
+import { formatDisplayDate } from "@/src/lib/format"
+import { getApplicationChrome } from "@/src/modules/admin/data/get-application-chrome"
 import { cn } from "@/lib/utils"
 
 function StatLink({
@@ -71,14 +72,17 @@ function StatStatic({
 }
 
 export async function DashboardPage() {
-  const dashboard = await getOperationalHomeDashboard()
+  const [dashboard, chrome] = await Promise.all([
+    getOperationalHomeDashboard(),
+    getApplicationChrome(),
+  ])
 
   if (!dashboard) {
     return (
       <PageShell size="lg">
         <PageHeader
           title="Dashboard"
-          description={`Sign in to see operational work for ${appConfig.displayName}.`}
+          description={`Sign in to see operational work for ${chrome.organizationName}.`}
         />
       </PageShell>
     )
@@ -88,7 +92,7 @@ export async function DashboardPage() {
     dashboard.canViewLeave
       ? {
           key: "on-leave",
-          href: "/leave?view=on-leave",
+          href: "/people/leave?view=on-leave",
           label: "People currently on leave",
           value: dashboard.currentlyOnLeaveCount,
           icon: Users,
@@ -97,7 +101,7 @@ export async function DashboardPage() {
     dashboard.canApproveLeave
       ? {
           key: "pending-leave",
-          href: "/leave#approvals",
+          href: "/people/leave#approvals",
           label: "Pending leave approvals",
           value: dashboard.pendingLeaveCount,
           icon: ClipboardCheck,
@@ -127,7 +131,7 @@ export async function DashboardPage() {
     <PageShell size="lg">
       <PageHeader
         title="Dashboard"
-        description={`Welcome back, ${dashboard.userName}. Operational items that need attention across ${appConfig.displayName}.`}
+        description={`Welcome back, ${dashboard.userName}. Operational items that need attention across ${chrome.organizationName}.`}
       />
 
       {dashboard.vacationForfeitureWarning ? (
@@ -142,7 +146,7 @@ export async function DashboardPage() {
           <p>{dashboard.vacationForfeitureWarning.message}</p>
           <p className="mt-2">
             <Link
-              href="/leave/new"
+              href="/me/leave/new"
               className="font-medium underline underline-offset-2 hover:text-foreground"
             >
               Request vacation leave
@@ -192,7 +196,7 @@ export async function DashboardPage() {
                 Leave awaiting my decision
               </h2>
               <Link
-                href="/leave#approvals"
+                href="/people/leave#approvals"
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
                 Open leave
@@ -208,14 +212,15 @@ export async function DashboardPage() {
                 {dashboard.pendingLeaveForMe.map((request) => (
                   <li key={request.id}>
                     <Link
-                      href={`/leave/${request.id}`}
+                      href={`/people/leave/${request.id}`}
                       className="block py-3 hover:bg-muted/20"
                     >
                       <p className="text-sm font-medium">
                         {request.employeeName} · {request.leaveTypeName}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {request.startDate} to {request.endDate}
+                        {formatDisplayDate(request.startDate)} to{" "}
+                        {formatDisplayDate(request.endDate)}
                         {request.requestNumber
                           ? ` · ${request.requestNumber}`
                           : ""}
@@ -260,13 +265,13 @@ export async function DashboardPage() {
                           {contract.employeeName}
                         </p>
                         <p className="mt-1 text-xs text-muted-foreground">
-                          {contract.jobTitle}
+                          {contract.positionTitle}
                         </p>
                       </div>
                       <span className="shrink-0 text-xs text-muted-foreground">
                         {contract.daysUntilExpiry < 0
                           ? "Expired"
-                          : `${contract.daysUntilExpiry}d · ${contract.endDate}`}
+                          : `${contract.daysUntilExpiry}d · ${formatDisplayDate(contract.endDate)}`}
                       </span>
                     </Link>
                   </li>

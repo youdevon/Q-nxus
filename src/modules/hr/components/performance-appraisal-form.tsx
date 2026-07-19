@@ -7,13 +7,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { formatDisplayDate } from "@/src/lib/format";
 import {
   createPerformanceAppraisal,
   type PerformanceAppraisalFormState,
 } from "@/src/modules/hr/actions/create-performance-appraisal";
 import type { AppraisalCreationData } from "@/src/modules/hr/data/get-performance-appraisals";
-import { PeopleNav } from "./people-nav";
 
 const initialState: PerformanceAppraisalFormState = {
   status: "idle",
@@ -59,15 +60,11 @@ export function PerformanceAppraisalForm({
   }, [state]);
 
   return (
-    <form
-      action={action}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
+    <form action={action}>
+      <PageShell>
       <input type="hidden" name="employeeId" value={data.employee.id} />
 
-      <PageHeader
+      <PeoplePageHeader
         title="New Performance Appraisal"
         description={`${data.employee.firstName} ${data.employee.lastName} · ${data.employee.employeeNumber}`}
         backHref={`/people/employees/${data.employee.id}/appraisals`}
@@ -148,9 +145,11 @@ export function PerformanceAppraisalForm({
                   disabled={!assignment.jobDescription}
                 >
                   {assignment.positionTitle ?? assignment.departmentName}
-                  {" ·"}
-                  {assignment.startDate} to{" "}
-                  {assignment.endDate ?? "Present"}
+                  {" · "}
+                  {formatDisplayDate(assignment.startDate)} to{" "}
+                  {assignment.endDate
+                    ? formatDisplayDate(assignment.endDate)
+                    : "Present"}
                   {!assignment.jobDescription ? " · No job description" : ""}
                 </option>
               ))}
@@ -270,6 +269,7 @@ export function PerformanceAppraisalForm({
           </div>
         </div>
       </section>
+      </PageShell>
     </form>
   );
 }

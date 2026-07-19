@@ -2,10 +2,12 @@ import { CircleCheck, Download, FileText, MessageSquareText } from "lucide-react
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { leaveStatusBadgeVariant } from "@/src/config/ui-colors";
+import { formatDisplayDate, formatDisplayDateTime } from "@/src/lib/format";
+import { LeaveAcknowledgeForm } from "@/src/modules/hr/components/leave-acknowledge-form";
 import { LeaveDecisionForm } from "@/src/modules/hr/components/leave-decision-form";
 import { LeaveLifecycleActions } from "@/src/modules/hr/components/leave-lifecycle-actions";
 import type { LeaveRequestDetail } from "@/src/modules/hr/data/get-leave-requests";
@@ -18,9 +20,11 @@ function label(value: string): string {
 }
 
 function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-  }).format(new Date(`${value}T00:00:00.000Z`));
+  return formatDisplayDate(value);
+}
+
+function formatDateTime(value: string): string {
+  return formatDisplayDateTime(value);
 }
 
 function formatQuantity(value: string): string {
@@ -55,14 +59,14 @@ export function LeaveRequestDetailView({
 
   return (
     <PageShell>
-      <PageHeader
+      <PeoplePageHeader
         title={request.leaveTypeName}
         description={
           request.requestNumber
             ? `${request.requestNumber} · ${request.employeeName}`
             : request.employeeName
         }
-        backHref="/leave"
+        backHref="/people/leave"
         backLabel="Leave"
       />
 
@@ -95,16 +99,13 @@ export function LeaveRequestDetailView({
           <p className="text-xs text-muted-foreground">Submitted</p>
           <p className="mt-2 text-sm font-medium">
             {request.submittedAt
-              ? new Intl.DateTimeFormat("en-TT", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                }).format(new Date(request.submittedAt))
+              ? formatDateTime(request.submittedAt)
               : "—"}
           </p>
         </div>
       </section>
 
-      <section className="grid gap-6 border-b border-border py-6 md:grid-cols-2">
+      <section className="grid gap-6 border-b border-border py-6 md:grid-cols-3">
         <div>
           <p className="text-xs text-muted-foreground">Employee</p>
           <p className="mt-1 font-medium">{request.employeeName}</p>
@@ -116,9 +117,11 @@ export function LeaveRequestDetailView({
         <div>
           <p className="text-xs text-muted-foreground">Contract</p>
           <p className="mt-1 font-medium">{request.contractNumber ?? "—"}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {request.jobTitle}
-          </p>
+        </div>
+
+        <div>
+          <p className="text-xs text-muted-foreground">Position</p>
+          <p className="mt-1 font-medium">{request.positionTitle}</p>
         </div>
       </section>
 
@@ -175,10 +178,7 @@ export function LeaveRequestDetailView({
                       {[
                         attachment.mimeType,
                         sizeLabel || null,
-                        new Intl.DateTimeFormat("en-TT", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        }).format(new Date(attachment.uploadedAt)),
+                        formatDateTime(attachment.uploadedAt),
                       ]
                         .filter(Boolean)
                         .join(" · ")}
@@ -225,6 +225,41 @@ export function LeaveRequestDetailView({
         </div>
 
         <div className="space-y-5">
+          {request.acknowledgements.length > 0 ? (
+            <div className="space-y-4">
+              <p className="text-sm font-medium">Reporting-line acknowledgements</p>
+              {request.acknowledgements.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-wrap items-start justify-between gap-3"
+                >
+                  <div>
+                    <p className="font-medium">
+                      {item.acknowledgerName ?? item.positionTitle}
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {[
+                        item.positionTitle,
+                        item.acknowledgedAt
+                          ? formatDateTime(item.acknowledgedAt)
+                          : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                    {item.comment ? (
+                      <p className="mt-2 text-sm">{item.comment}</p>
+                    ) : null}
+                  </div>
+
+                  <Badge variant={leaveStatusBadgeVariant(item.status)}>
+                    {label(item.status)}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
           {request.approvalSteps.map((step) => {
             const isHrStep =
               step.stepNumber > 1 &&
@@ -268,6 +303,12 @@ export function LeaveRequestDetailView({
                 ? ` — ${request.finalDecisionComment}`
                 : ""}
             </p>
+          )}
+
+          {request.canAcknowledge && (
+            <div className="border-t border-border pt-5">
+              <LeaveAcknowledgeForm leaveRequestId={request.id} />
+            </div>
           )}
 
           {request.canDecide && (

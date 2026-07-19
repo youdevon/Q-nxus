@@ -10,13 +10,27 @@ import {
   Prisma,
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
-import { requireCurrentEmployeeUser } from "@/src/modules/auth/data/get-current-user";
+import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import {
   resolveEmployeeSupervisor,
   describeSupervisorResolutionIssue,
 } from "@/src/modules/hr/data/resolve-employee-supervisor";
+import { getLeaveWorkflowSettings } from "@/src/modules/hr/data/get-leave-workflow-settings";
+import {
+  describeLeaveReportingLineIssue,
+  resolveLeaveReportingLine,
+} from "@/src/modules/hr/data/resolve-leave-reporting-line";
 import { applyLeaveReserve } from "@/src/modules/hr/lib/leave-balance-math";
+import {
+  isLeaveRequestMode,
+  LEAVE_ON_BEHALF_PERMISSION,
+  resolveLeaveRequestTargetEmployeeId,
+} from "@/src/modules/hr/lib/leave-request-mode";
+import {
+  leaveWorkflowRequiresFinalApprover,
+  leaveWorkflowUsesAcknowledgements,
+} from "@/src/modules/hr/lib/leave-workflow-settings";
 import { storeLeaveAttachmentFile } from "@/src/modules/hr/lib/store-leave-attachment";
 import { validateContractLeaveRequest } from "@/src/modules/hr/services/validate-contract-leave-request";
 import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
@@ -57,12 +71,87 @@ export async function createLeaveRequest(
   _previousState: LeaveRequestFormState,
   formData: FormData,
 ): Promise<LeaveRequestFormState> {
-  const actor = await requireActor("leave.request");
+  const modeRaw = textValue(formData, "mode");
 
-  if (!actor.ok) {
+  if (!isLeaveRequestMode(modeRaw)) {
     return {
       status: "error",
-      message: actor.message,
+      message: "Invalid leave request mode.",
+    };
+  }
+
+  const mode = modeRaw;
+  const permissionCheck =
+    mode === "onBehalf"
+      ? await requireActor(LEAVE_ON_BEHALF_PERMISSION)
+      : await requireActor("leave.request");
+
+  if (!permissionCheck.ok) {
+    return {
+      status: "error",
+      message: permissionCheck.message,
+    };
+  }
+
+  const actorCapabilities = permissionCheck.actor;
+
+  let actorUser;
+
+  try {
+    actorUser = await requireCurrentUser();
+  } catch (error) {
+    return {
+      status: "error",
+      message:
+        error instanceof Error
+          ? error.message
+          : "An active user account is required.",
+    };
+  }
+
+  const targetResolution = resolveLeaveRequestTargetEmployeeId({
+    mode,
+    actorEmployeeId: actorCapabilities.employeeId,
+    submittedEmployeeId: nullableText(formData, "employeeId"),
+  });
+
+  if (!targetResolution.ok) {
+    return {
+      status: "error",
+      message: targetResolution.message,
+      fieldErrors:
+        mode === "onBehalf"
+          ? { employeeId: targetResolution.message }
+          : undefined,
+    };
+  }
+
+  const targetEmployee = await prisma.employee.findFirst({
+    where: {
+      id: targetResolution.employeeId,
+      organizationId: actorUser.organizationId,
+      isArchived: false,
+    },
+    select: {
+      id: true,
+      organizationId: true,
+      employeeNumber: true,
+      firstName: true,
+      lastName: true,
+    },
+  });
+
+  if (!targetEmployee) {
+    return {
+      status: "error",
+      message:
+        mode === "onBehalf"
+          ? "Select a valid employee in your organization."
+          : "Your employee record could not be found.",
+      fieldErrors:
+        mode === "onBehalf"
+          ? { employeeId: "Select a valid employee." }
+          : undefined,
     };
   }
 
@@ -103,25 +192,11 @@ export async function createLeaveRequest(
     };
   }
 
-  let user;
-
-  try {
-    user = await requireCurrentEmployeeUser();
-  } catch (error) {
-    return {
-      status: "error",
-      message:
-        error instanceof Error
-          ? error.message
-          : "An active employee-linked user is required.",
-    };
-  }
-
   let validated;
 
   try {
     validated = await validateContractLeaveRequest({
-      employeeId: user.employeeId,
+      employeeId: targetEmployee.id,
       contractId,
       leaveTypeId,
       startDate: startDate!,
@@ -139,10 +214,11 @@ export async function createLeaveRequest(
 
   const overlapping = await prisma.leaveRequest.findFirst({
     where: {
-      employeeId: user.employeeId,
+      employeeId: targetEmployee.id,
       status: {
         in: [
           LeaveRequestStatus.SUBMITTED,
+          LeaveRequestStatus.AWAITING_ACKNOWLEDGEMENT,
           LeaveRequestStatus.PENDING_APPROVAL,
           LeaveRequestStatus.MANAGER_APPROVED,
           LeaveRequestStatus.APPROVED,
@@ -187,12 +263,109 @@ export async function createLeaveRequest(
     };
   }
 
-  const supervisor = await resolveEmployeeSupervisor(user.employeeId);
+  const workflow = await getLeaveWorkflowSettings(targetEmployee.organizationId);
+  const needsFinalApprover = leaveWorkflowRequiresFinalApprover(workflow.mode);
+  const usesAcknowledgements = leaveWorkflowUsesAcknowledgements(workflow.mode);
 
-  if (!supervisor?.supervisorUserId) {
+  if (needsFinalApprover && !workflow.finalApproverPositionId) {
+    return {
+      status: "error",
+      message:
+        "Leave workflow requires a final approver position. Ask HR to configure it under People → Leave workflow.",
+    };
+  }
+
+  const supervisor =
+    workflow.mode === "FINAL_ONLY" || usesAcknowledgements
+      ? null
+      : await resolveEmployeeSupervisor(targetEmployee.id);
+
+  if (
+    workflow.mode !== "FINAL_ONLY" &&
+    !usesAcknowledgements &&
+    !supervisor?.supervisorUserId
+  ) {
     return {
       status: "error",
       message: describeSupervisorResolutionIssue(supervisor),
+    };
+  }
+
+  let reportingLine: Awaited<
+    ReturnType<typeof resolveLeaveReportingLine>
+  > | null = null;
+
+  if (needsFinalApprover && workflow.finalApproverPositionId) {
+    reportingLine = await resolveLeaveReportingLine({
+      employeeId: targetEmployee.id,
+      organizationId: targetEmployee.organizationId,
+      finalApproverPositionId: workflow.finalApproverPositionId,
+    });
+
+    if (reportingLine.issue) {
+      return {
+        status: "error",
+        message: describeLeaveReportingLineIssue(reportingLine),
+      };
+    }
+  }
+
+  const acknowledgementNodes =
+    usesAcknowledgements && reportingLine
+      ? reportingLine.acknowledgementChain.filter((node) => node.userId)
+      : [];
+
+  const initialStatus =
+    usesAcknowledgements && acknowledgementNodes.length > 0
+      ? LeaveRequestStatus.AWAITING_ACKNOWLEDGEMENT
+      : LeaveRequestStatus.PENDING_APPROVAL;
+
+  const finalApprover = reportingLine?.finalApprover ?? null;
+
+  type ApprovalStepCreate = {
+    stepNumber: number;
+    approverUserId: string | null;
+    approverPositionId: string | null;
+    status: "PENDING";
+  };
+
+  let approvalStepsCreate: ApprovalStepCreate[] = [];
+
+  if (usesAcknowledgements) {
+    if (acknowledgementNodes.length === 0 && finalApprover?.userId) {
+      approvalStepsCreate = [
+        {
+          stepNumber: 1,
+          approverUserId: finalApprover.userId,
+          approverPositionId: finalApprover.positionId,
+          status: "PENDING",
+        },
+      ];
+    }
+  } else if (workflow.mode === "FINAL_ONLY" && finalApprover?.userId) {
+    approvalStepsCreate = [
+      {
+        stepNumber: 1,
+        approverUserId: finalApprover.userId,
+        approverPositionId: finalApprover.positionId,
+        status: "PENDING",
+      },
+    ];
+  } else if (supervisor?.supervisorUserId) {
+    approvalStepsCreate = [
+      {
+        stepNumber: 1,
+        approverUserId: supervisor.supervisorUserId,
+        approverPositionId: supervisor.supervisorPositionId,
+        status: "PENDING",
+      },
+    ];
+  }
+
+  if (approvalStepsCreate.length === 0 && acknowledgementNodes.length === 0) {
+    return {
+      status: "error",
+      message: "No leave approver could be assigned for this request.",
     };
   }
 
@@ -203,7 +376,7 @@ export async function createLeaveRequest(
       const sequence =
         (await transaction.leaveRequest.count({
           where: {
-            organizationId: user.employee.organizationId,
+            organizationId: targetEmployee.organizationId,
           },
         })) + 1;
 
@@ -211,8 +384,8 @@ export async function createLeaveRequest(
 
       const created = await transaction.leaveRequest.create({
         data: {
-          organizationId: user.employee.organizationId,
-          employeeId: user.employeeId,
+          organizationId: targetEmployee.organizationId,
+          employeeId: targetEmployee.id,
           contractId: validated.contractId,
           leaveTypeId: validated.leaveTypeId,
           leaveBalanceId: validated.leaveBalanceId,
@@ -222,9 +395,9 @@ export async function createLeaveRequest(
           requestedQuantity: validated.requestedQuantity,
           reason,
           employeeComment,
-          status: LeaveRequestStatus.PENDING_APPROVAL,
+          status: initialStatus,
           submittedAt: new Date(),
-          createdByUserId: user.id,
+          createdByUserId: actorUser.id,
           days: {
             create: validated.days.map((day) => ({
               leaveDate: day.leaveDate,
@@ -233,14 +406,26 @@ export async function createLeaveRequest(
               isPublicHoliday: day.isPublicHoliday,
             })),
           },
-          approvalSteps: {
-            create: {
-              stepNumber: 1,
-              approverUserId: supervisor.supervisorUserId,
-              approverPositionId: supervisor.supervisorPositionId,
-              status: "PENDING",
-            },
-          },
+          ...(approvalStepsCreate.length > 0
+            ? {
+                approvalSteps: {
+                  create: approvalStepsCreate,
+                },
+              }
+            : {}),
+          ...(acknowledgementNodes.length > 0
+            ? {
+                acknowledgements: {
+                  create: acknowledgementNodes.map((node) => ({
+                    sequenceNumber: node.sequenceNumber,
+                    positionId: node.positionId,
+                    acknowledgerUserId: node.userId,
+                    acknowledgerEmployeeId: node.employeeId,
+                    status: "PENDING",
+                  })),
+                },
+              }
+            : {}),
         },
         include: {
           leaveType: {
@@ -265,7 +450,7 @@ export async function createLeaveRequest(
             storageKey: stored.storageKey,
             mimeType: stored.mimeType,
             fileSize: stored.fileSize,
-            uploadedByUserId: user.id,
+            uploadedByUserId: actorUser.id,
           },
         });
       }
@@ -323,7 +508,7 @@ export async function createLeaveRequest(
 
         await transaction.leaveBalanceTransaction.create({
           data: {
-            employeeId: user.employeeId,
+            employeeId: targetEmployee.id,
             contractId: validated.contractId,
             leaveTypeId: validated.leaveTypeId,
             leaveBalanceId: balance.id,
@@ -335,28 +520,47 @@ export async function createLeaveRequest(
             referenceType: "LeaveRequest",
             referenceId: created.id,
             description: `Reserved leave for request ${requestNumber}.`,
-            createdByUserId: user.id,
+            createdByUserId: actorUser.id,
           },
         });
       }
 
+      const actorLabel = `${actorUser.firstName} ${actorUser.lastName}`.trim();
+      const auditDescription =
+        mode === "onBehalf"
+          ? `Submitted leave request ${requestNumber} on behalf of ${targetEmployee.employeeNumber} by ${actorLabel}.`
+          : `Submitted leave request ${requestNumber} for ${targetEmployee.employeeNumber}.`;
+
       await transaction.auditEvent.create({
         data: {
-          userId: user.id,
+          userId: actorUser.id,
           moduleKey: "hr",
           action: "CREATE",
           entityType: "LeaveRequest",
           entityId: created.id,
-          description: `Submitted leave request ${requestNumber} for ${user.employee.employeeNumber}.`,
+          description: auditDescription,
           newValues: {
             requestNumber,
             leaveTypeId: validated.leaveTypeId,
             contractId: validated.contractId,
+            employeeId: targetEmployee.id,
+            mode,
+            requestedOnBehalf:
+              mode === "onBehalf"
+                ? {
+                    employeeId: targetEmployee.id,
+                    employeeNumber: targetEmployee.employeeNumber,
+                    byUserId: actorUser.id,
+                    byUserName: actorLabel,
+                  }
+                : null,
             startDate: startDate!.toISOString(),
             endDate: endDate!.toISOString(),
             requestedQuantity: validated.requestedQuantity.toString(),
-            status: LeaveRequestStatus.PENDING_APPROVAL,
-            approverUserId: supervisor.supervisorUserId,
+            status: initialStatus,
+            workflowMode: workflow.mode,
+            approverUserId: approvalStepsCreate[0]?.approverUserId ?? null,
+            acknowledgementCount: acknowledgementNodes.length,
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
@@ -367,45 +571,99 @@ export async function createLeaveRequest(
       return created;
     });
 
-    if (supervisor.supervisorUserId) {
-      const quantityLabel = leaveRequest.requestedQuantity.toString();
+    const quantityLabel = leaveRequest.requestedQuantity.toString();
+    const dateRange = `${startDate!.toISOString().slice(0, 10)} to ${endDate!.toISOString().slice(0, 10)}`;
+    const employeeDisplayName = `${targetEmployee.firstName} ${targetEmployee.lastName}`;
+    const requestSubject =
+      mode === "onBehalf"
+        ? `${employeeDisplayName} (requested by ${actorUser.firstName} ${actorUser.lastName})`
+        : employeeDisplayName;
 
+    if (acknowledgementNodes.length > 0) {
       try {
         await createSystemNotification({
-          title: "Leave approval required",
-          message: `${user.employee.firstName} ${user.employee.lastName} requested ${quantityLabel} day(s) of ${leaveRequest.leaveType.name} from ${startDate!.toISOString().slice(0, 10)} to ${endDate!.toISOString().slice(0, 10)}.`,
+          title: "Leave acknowledgement required",
+          message: `${requestSubject} requested ${quantityLabel} day(s) of ${leaveRequest.leaveType.name} from ${dateRange}. Please acknowledge before final approval.`,
           severity: NotificationSeverity.INFORMATION,
           moduleKey: "hr",
-          actionUrl: `/leave/${leaveRequest.id}`,
+          actionUrl: `/people/leave/${leaveRequest.id}`,
           relatedType: "LeaveRequest",
           relatedId: leaveRequest.id,
-          recipients: [
-            {
-              userId: supervisor.supervisorUserId,
-              email: supervisor.supervisorUserEmail,
-              name: supervisor.supervisorUserName,
-              sendEmail: Boolean(supervisor.supervisorUserEmail),
-            },
-          ],
+          recipients: acknowledgementNodes
+            .filter((node) => node.userId)
+            .map((node) => ({
+              userId: node.userId!,
+              email: node.userEmail,
+              name: node.userName,
+              sendEmail: Boolean(node.userEmail),
+            })),
           email: {
-            subject: `Leave approval required · ${leaveRequest.requestNumber}`,
+            subject: `Leave acknowledgement · ${leaveRequest.requestNumber}`,
             actionLabel: "Review leave request",
           },
         });
       } catch (notificationError) {
         console.error(
-          "Leave request created but supervisor notification failed:",
+          "Leave request created but acknowledgement notification failed:",
           notificationError,
         );
       }
+    } else {
+      const notifyUserId =
+        approvalStepsCreate[0]?.approverUserId ??
+        finalApprover?.userId ??
+        supervisor?.supervisorUserId ??
+        null;
+      const notifyEmail =
+        finalApprover?.userId === notifyUserId
+          ? finalApprover.userEmail
+          : supervisor?.supervisorUserEmail;
+      const notifyName =
+        finalApprover?.userId === notifyUserId
+          ? finalApprover.userName
+          : supervisor?.supervisorUserName;
+
+      if (notifyUserId) {
+        try {
+          await createSystemNotification({
+            title: "Leave approval required",
+            message: `${requestSubject} requested ${quantityLabel} day(s) of ${leaveRequest.leaveType.name} from ${dateRange}.`,
+            severity: NotificationSeverity.INFORMATION,
+            moduleKey: "hr",
+            actionUrl: `/people/leave/${leaveRequest.id}`,
+            relatedType: "LeaveRequest",
+            relatedId: leaveRequest.id,
+            recipients: [
+              {
+                userId: notifyUserId,
+                email: notifyEmail,
+                name: notifyName,
+                sendEmail: Boolean(notifyEmail),
+              },
+            ],
+            email: {
+              subject: `Leave approval required · ${leaveRequest.requestNumber}`,
+              actionLabel: "Review leave request",
+            },
+          });
+        } catch (notificationError) {
+          console.error(
+            "Leave request created but approver notification failed:",
+            notificationError,
+          );
+        }
+      }
     }
 
-    revalidatePath("/leave");
+    revalidatePath("/people/leave");
+    revalidatePath("/me/leave");
+    revalidatePath("/me/leave/new");
+    revalidatePath("/people/leave/new");
     revalidatePath("/people/leave/balances");
-    revalidatePath(`/leave/${leaveRequest.id}`);
+    revalidatePath(`/people/leave/${leaveRequest.id}`);
     revalidatePath("/notifications");
 
-    redirect(`/leave/${leaveRequest.id}`);
+    redirect(`/people/leave/${leaveRequest.id}`);
   } catch (error: unknown) {
     if (error instanceof Error && error.message === "NEXT_REDIRECT") {
       throw error;

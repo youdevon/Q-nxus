@@ -10,10 +10,10 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { activeStateBadgeVariant } from "@/src/config/ui-colors";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { DeleteDepartmentButton } from "@/src/modules/hr/components/delete-department-button";
 import { getDepartmentProfile } from "@/src/modules/hr/data/get-people-structure";
 import { requirePeopleDirectoryAccess } from "@/src/modules/hr/data/require-people-access";
 
@@ -30,7 +30,8 @@ export default async function DepartmentPage({
     id: string;
   }>;
 }) {
-  await requirePeopleDirectoryAccess();
+  const capabilities = await requirePeopleDirectoryAccess();
+  const canManage = capabilities.can("people.manage");
 
   const { id } = await params;
   const department = await getDepartmentProfile(id);
@@ -41,25 +42,31 @@ export default async function DepartmentPage({
 
   return (
     <PageShell size="lg">
-      <PeopleNav />
-
-      <PageHeader
+      <PeoplePageHeader
         title={department.name}
         description="Department profile, positions and assigned employees."
         backHref="/people/structure"
         backLabel="Organization"
         actions={
-          <Button
-            nativeButton={false}
-            render={
-              <Link
-                href={`/people/structure/departments/${department.id}/edit`}
+          canManage ? (
+            <div className="flex flex-wrap gap-2">
+              <Button
+                nativeButton={false}
+                render={
+                  <Link
+                    href={`/people/structure/departments/${department.id}/edit`}
+                  />
+                }
+              >
+                <Pencil />
+                Edit department
+              </Button>
+              <DeleteDepartmentButton
+                departmentId={department.id}
+                departmentName={department.name}
               />
-            }
-          >
-            <Pencil />
-            Edit department
-          </Button>
+            </div>
+          ) : undefined
         }
       />
 

@@ -137,6 +137,12 @@ export function FeatureControlsForm({ features }: FeatureControlsFormProps) {
           </h2>
         </div>
 
+        <p className="mb-4 text-sm text-muted-foreground">
+          These flags are enforced at module entry gates (for example payroll
+          access checks <code className="text-xs">isFeatureEnabled</code>).
+          Disabling a feature hides that module from authorized users.
+        </p>
+
         {features.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
             No feature controls are configured.

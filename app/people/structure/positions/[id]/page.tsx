@@ -12,13 +12,12 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import {
   activeStateBadgeVariant,
   employmentStatusBadgeVariant,
 } from "@/src/config/ui-colors";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 import { getPositionProfile } from "@/src/modules/hr/data/get-people-structure";
 import { requirePeopleDirectoryAccess } from "@/src/modules/hr/data/require-people-access";
 
@@ -51,9 +50,7 @@ export default async function PositionPage({
 
   return (
     <PageShell size="lg">
-      <PeopleNav />
-
-      <PageHeader
+      <PeoplePageHeader
         title={position.title}
         description={`${position.department.name} position profile.`}
         backHref="/people/structure"

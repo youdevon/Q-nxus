@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
-import { activeStateBadgeVariant } from "@/src/config/ui-colors";
-import { formatMoney } from "@/src/lib/format";
+import {
+  activeStateBadgeVariant,
+  employmentContractStatusBadgeVariant,
+} from "@/src/config/ui-colors";
+import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import type { EmploymentContractListRecord } from "@/src/modules/hr/data/get-employment-contracts";
 
 function label(value: string): string {
@@ -20,7 +23,7 @@ function formatCollectedAt(value: string | null): string | null {
     return null;
   }
 
-  return value.slice(0, 10);
+  return formatDisplayDate(value);
 }
 
 function ContractRow({
@@ -41,7 +44,13 @@ function ContractRow({
         <div className="flex flex-wrap items-center gap-2">
           <p className="font-medium">{contract.jobTitle}</p>
 
-          <Badge variant={activeStateBadgeVariant(contract.isCurrent)}>
+          <Badge
+            variant={
+              contract.isCurrent
+                ? activeStateBadgeVariant(true)
+                : employmentContractStatusBadgeVariant(contract.status)
+            }
+          >
             {contract.isCurrent ? "Current" : label(contract.status)}
           </Badge>
 
@@ -57,9 +66,14 @@ function ContractRow({
 
       <div>
         <p className="text-xs text-muted-foreground">Period</p>
-        <p className="mt-1 text-sm font-medium">{contract.startDate}</p>
+        <p className="mt-1 text-sm font-medium">
+          {formatDisplayDate(contract.startDate)}
+        </p>
         <p className="mt-1 text-xs text-muted-foreground">
-          to {contract.endDate ?? "No end date"}
+          to{" "}
+          {contract.endDate
+            ? formatDisplayDate(contract.endDate)
+            : "No end date"}
         </p>
       </div>
 

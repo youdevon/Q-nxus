@@ -6,13 +6,13 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import {
   updatePositionReporting,
   type PositionReportingFormState,
 } from "@/src/modules/hr/actions/update-position-reporting";
 import type { PositionReportingEditorData } from "@/src/modules/hr/data/get-organization-chart";
-import { PeopleNav } from "./people-nav";
 
 const initialState: PositionReportingFormState = {
   status: "idle",
@@ -40,19 +40,15 @@ export function PositionReportingForm({
   }, [state]);
 
   return (
-    <form
-      action={action}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
+    <form action={action}>
+      <PageShell size="md">
       <input type="hidden" name="positionId" value={data.position.id} />
 
       <input type="hidden" name="updatedAt" value={data.position.updatedAt} />
 
       <input type="hidden" name="returnTo" value="/people/structure" />
 
-      <PageHeader
+      <PeoplePageHeader
         title="Edit Reporting Relationship"
         description={`${data.position.title} · ${data.position.departmentName}`}
         backHref={`/people/structure/positions/${data.position.id}`}
@@ -138,6 +134,7 @@ export function PositionReportingForm({
           </div>
         </div>
       </section>
+      </PageShell>
     </form>
   );
 }

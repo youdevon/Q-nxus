@@ -3,11 +3,9 @@ import {
   ChevronLeft,
   ChevronRight,
   FileClock,
-  Monitor,
   ShieldCheck,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ListSearchFilters,
@@ -17,16 +15,13 @@ import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import {
-  buildAuditChangeRows,
   formatAuditAction,
-  formatAuditDateTime,
   formatAuditEntityType,
-  formatAuditHeadline,
   formatAuditModule,
-  formatWorkstationLabel,
 } from "@/src/lib/audit-display";
 import { buildListFilterUrl } from "@/src/lib/list-filter-url";
 import { AdministrationNav } from "./administration-nav";
+import { AuditEventsTable } from "./audit-events-table";
 import type {
   AuditFilters,
   AuditTrailData,
@@ -83,96 +78,6 @@ function buildFilterChips(filters: AuditFilters): ActiveFilterChip[] {
   return chips;
 }
 
-function ActorLine({
-  user,
-}: {
-  user: AuditTrailData["events"][number]["user"];
-}) {
-  if (!user) {
-    return (
-      <p className="mt-1 text-sm text-muted-foreground">
-        System or unknown user
-      </p>
-    );
-  }
-
-  return (
-    <p className="mt-1 text-sm text-muted-foreground">
-      <span className="font-medium text-foreground">
-        {user.firstName} {user.lastName}
-      </span>
-      <span className="text-muted-foreground"> · {user.email}</span>
-    </p>
-  );
-}
-
-function ChangeSummary({
-  oldValues,
-  newValues,
-}: {
-  oldValues: unknown;
-  newValues: unknown;
-}) {
-  const rows = buildAuditChangeRows(oldValues, newValues);
-  const changed = rows.filter((row) => row.changed);
-
-  if (rows.length === 0) {
-    return null;
-  }
-
-  const summaryRows = changed.length > 0 ? changed : rows;
-
-  return (
-    <details className="mt-4 border-t border-border pt-4">
-      <summary className="cursor-pointer text-sm font-medium">
-        {changed.length > 0
-          ? `${changed.length} change${changed.length === 1 ? "" : "s"} recorded`
-          : "View recorded values"}
-      </summary>
-
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[28rem] text-left text-sm">
-          <thead>
-            <tr className="border-b border-border text-xs tracking-wide text-muted-foreground uppercase">
-              <th className="py-2 pr-4 font-medium">Field</th>
-              <th className="py-2 pr-4 font-medium">Previous</th>
-              <th className="py-2 font-medium">New</th>
-            </tr>
-          </thead>
-          <tbody>
-            {summaryRows.map((row) => (
-              <tr
-                key={row.field}
-                className="border-b border-border/70 align-top"
-              >
-                <td className="py-2.5 pr-4 font-medium">{row.label}</td>
-                <td className="py-2.5 pr-4 text-muted-foreground">
-                  {row.before}
-                </td>
-                <td className="py-2.5">{row.after}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <details className="mt-4">
-        <summary className="cursor-pointer text-xs text-muted-foreground">
-          Technical JSON
-        </summary>
-        <div className="mt-3 grid gap-3 lg:grid-cols-2">
-          <pre className="max-h-64 overflow-auto border border-border bg-muted/30 p-3 text-[11px] leading-relaxed">
-            {JSON.stringify(oldValues ?? null, null, 2)}
-          </pre>
-          <pre className="max-h-64 overflow-auto border border-border bg-muted/30 p-3 text-[11px] leading-relaxed">
-            {JSON.stringify(newValues ?? null, null, 2)}
-          </pre>
-        </div>
-      </details>
-    </details>
-  );
-}
-
 export function AuditTrail({ data, currentFilters }: AuditTrailProps) {
   const filterValues = {
     query: currentFilters.query,
@@ -189,7 +94,7 @@ export function AuditTrail({ data, currentFilters }: AuditTrailProps) {
 
       <PageHeader
         title="Audit Trail"
-        description="Review immutable records of administrative and system activity across Q-NXUS."
+        description="Review immutable records of administrative and system activity across the platform."
         backHref="/administration"
         backLabel="Administration"
       />
@@ -302,70 +207,10 @@ export function AuditTrail({ data, currentFilters }: AuditTrailProps) {
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-border/70">
-            {data.events.map((event) => {
-              const workstation = formatWorkstationLabel({
-                clientHostName: event.clientHostName,
-                userAgent: event.userAgent,
-              });
-              const headline =
-                event.description?.trim() ||
-                formatAuditHeadline(event.action, event.entityType);
-
-              return (
-                <article key={event.id} className="py-5">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="outline">
-                          {formatAuditAction(event.action)}
-                        </Badge>
-                        <Badge variant="secondary">
-                          {formatAuditEntityType(event.entityType)}
-                        </Badge>
-                        <Badge variant="outline">
-                          {formatAuditModule(event.moduleKey)}
-                        </Badge>
-                      </div>
-
-                      <p className="mt-3 text-base font-medium tracking-tight">
-                        {headline}
-                      </p>
-
-                      <ActorLine user={event.user} />
-
-                      {event.entityId && (
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Record{" "}
-                          <span className="font-mono">{event.entityId}</span>
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="shrink-0 space-y-1 text-xs text-muted-foreground lg:text-right">
-                      <p className="text-sm text-foreground">
-                        {formatAuditDateTime(event.createdAt)}
-                      </p>
-                      {event.ipAddress && <p>IP {event.ipAddress}</p>}
-                      {workstation && (
-                        <p className="inline-flex items-center gap-1.5 lg:justify-end">
-                          <Monitor className="size-3.5 shrink-0" />
-                          <span>{workstation}</span>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {(event.oldValues !== null || event.newValues !== null) && (
-                    <ChangeSummary
-                      oldValues={event.oldValues}
-                      newValues={event.newValues}
-                    />
-                  )}
-                </article>
-              );
-            })}
-          </div>
+          <AuditEventsTable
+            events={data.events}
+            referenceLabels={data.referenceLabels}
+          />
         )}
       </section>
 

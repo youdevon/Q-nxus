@@ -5,10 +5,9 @@ import { useMemo, useState } from "react";
 import { Network } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { OrganizationVisualChart } from "@/src/modules/hr/components/organization-visual-chart";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 import type { OrganizationChartData } from "@/src/modules/hr/data/get-organization-chart";
 import type { DepartmentRecord } from "@/src/modules/hr/data/get-people-structure";
 import {
@@ -112,9 +111,7 @@ export function OrganizationChartWorkspace({
 
   return (
     <PageShell size="lg" className="max-w-[100rem]">
-      <PeopleNav />
-
-      <PageHeader
+      <PeoplePageHeader
         title="Organization chart"
         description={diagramView.description}
         backHref={structureHref}
@@ -131,7 +128,7 @@ export function OrganizationChartWorkspace({
               </h2>
               <p className="text-xs text-muted-foreground">
                 Colored by department · click a position to focus reporting
-                lines
+                lines · shared seats show a count until expanded
               </p>
             </div>
           </div>

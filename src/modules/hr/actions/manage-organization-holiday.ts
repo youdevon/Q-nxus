@@ -103,7 +103,8 @@ export async function createOrganizationHoliday(
     });
 
     revalidatePath("/people/leave/holidays");
-    revalidatePath("/leave/new");
+    revalidatePath("/people/leave/new");
+    revalidatePath("/me/leave/new");
 
     return {
       status: "success",
@@ -165,7 +166,8 @@ export async function deactivateOrganizationHoliday(
     });
 
     revalidatePath("/people/leave/holidays");
-    revalidatePath("/leave/new");
+    revalidatePath("/people/leave/new");
+    revalidatePath("/me/leave/new");
 
     return {
       status: "success",

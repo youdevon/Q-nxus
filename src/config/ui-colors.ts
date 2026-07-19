@@ -16,15 +16,18 @@ type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
  * - warning: cautionary actions (rare on buttons)
  * - secondary / ghost / link: low-emphasis toolbar and icon actions
  *
- * Badges
- * - success: approved, active, completed
- * - warning: pending, submitted, on leave
- * - destructive: rejected, cancelled, terminated
- * - default: primary emphasis when no semantic match
- * - secondary / outline: neutral or supplementary metadata
+ * Badges (semantic map — use helpers below; avoid ad-hoc colors)
+ * - success: Active / Approved / Completed / Posted / Issued
+ * - warning: Pending / Submitted / Draft / Expiring soon / On leave
+ * - destructive: Rejected / Cancelled / Failed / Terminated / Overdue / Missing
+ * - secondary: Inactive / Archived / Neutral meta (excluded, superseded, withdrawn)
+ * - outline: Supplementary labels (category, kind, IDs) — not lifecycle status
+ * - default: primary emphasis when no semantic match (rare)
  *
  * Typography — see `src/config/ui-typography.ts` and
  * `SectionHeading` / `EntityTitle` / `FieldLabel` components.
+ *
+ * Elevation — see `src/config/ui-elevation.ts`.
  */
 export const UI_COLOR_CONVENTIONS = {
   button: {
@@ -39,27 +42,31 @@ export const UI_COLOR_CONVENTIONS = {
     link: "Inline text navigation",
   },
   badge: {
-    success: "Approved, active, completed",
-    warning: "Pending, submitted, awaiting decision, on leave",
-    destructive: "Rejected, cancelled, terminated, error",
+    success: "Active, approved, completed, posted, issued",
+    warning: "Pending, submitted, draft, awaiting decision, on leave, expiring",
+    destructive: "Rejected, cancelled, terminated, failed, overdue, missing",
     default: "Primary emphasis when no semantic match",
-    secondary: "Neutral or inactive statuses",
-    outline: "Supplementary metadata labels",
+    secondary: "Inactive, archived, superseded, excluded, withdrawn",
+    outline: "Supplementary metadata labels (not lifecycle status)",
   },
 } as const;
 
 export function leaveStatusBadgeVariant(status: string): BadgeVariant {
   switch (status) {
     case "APPROVED":
+    case "ACKNOWLEDGED":
       return "success";
     case "REJECTED":
     case "CANCELLED":
       return "destructive";
     case "PENDING_APPROVAL":
+    case "AWAITING_ACKNOWLEDGEMENT":
     case "SUBMITTED":
     case "MANAGER_APPROVED":
+    case "PENDING":
       return "warning";
     case "WITHDRAWN":
+    case "SKIPPED":
       return "secondary";
     default:
       return "outline";
@@ -130,6 +137,108 @@ export function recordStatusBadgeVariant(status: string): BadgeVariant {
     case "SUSPENDED":
     case "TERMINATED":
       return "destructive";
+    default:
+      return "outline";
+  }
+}
+
+/** Employment contract lifecycle (ACTIVE, DRAFT, SUPERSEDED, …). */
+export function employmentContractStatusBadgeVariant(
+  status: string,
+): BadgeVariant {
+  switch (status) {
+    case "ACTIVE":
+      return "success";
+    case "DRAFT":
+    case "EXPIRED":
+      return "warning";
+    case "TERMINATED":
+    case "CANCELLED":
+      return "destructive";
+    case "SUPERSEDED":
+      return "secondary";
+    default:
+      return "outline";
+  }
+}
+
+/** Employee correspondence lifecycle. */
+export function correspondenceStatusBadgeVariant(status: string): BadgeVariant {
+  switch (status) {
+    case "ISSUED":
+    case "ACKNOWLEDGED":
+      return "success";
+    case "DRAFT":
+      return "warning";
+    case "ARCHIVED":
+    case "SUPERSEDED":
+      return "secondary";
+    default:
+      return "outline";
+  }
+}
+
+/** Correspondence employee-response thread status. */
+export function correspondenceResponseStatusBadgeVariant(
+  status: string,
+): BadgeVariant {
+  switch (status) {
+    case "OPEN":
+      return "warning";
+    case "REVIEWED":
+      return "secondary";
+    default:
+      return "outline";
+  }
+}
+
+/** Employee file checklist item status. */
+export function checklistItemStatusBadgeVariant(status: string): BadgeVariant {
+  switch (status) {
+    case "UPLOADED":
+    case "SIGNED":
+      return "success";
+    case "PENDING":
+      return "warning";
+    case "NOT_APPLICABLE":
+      return "secondary";
+    case "MISSING":
+      return "destructive";
+    default:
+      return "outline";
+  }
+}
+
+/** Pay run DRAFT / APPROVED / POSTED / RECONCILED / CLOSED (and related). */
+export function payRunStatusBadgeVariant(status: string): BadgeVariant {
+  switch (status) {
+    case "POSTED":
+    case "RECONCILED":
+    case "COMPLETED":
+      return "success";
+    case "CLOSED":
+      return "secondary";
+    case "APPROVED":
+      return "outline";
+    case "DRAFT":
+      return "warning";
+    case "FAILED":
+    case "CANCELLED":
+      return "destructive";
+    default:
+      return "outline";
+  }
+}
+
+/** Payslip membership within a pay run. */
+export function payslipStatusBadgeVariant(status: string): BadgeVariant {
+  switch (status) {
+    case "POSTED":
+      return "success";
+    case "DRAFT":
+      return "warning";
+    case "EXCLUDED":
+      return "secondary";
     default:
       return "outline";
   }

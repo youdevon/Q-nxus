@@ -217,6 +217,10 @@ export async function getLinkableEmployees(
   }));
 }
 
+/**
+ * Active roles available for assignment (built-in system roles and custom
+ * org roles). Includes organization-scoped roles and global (null org) roles.
+ */
 export async function getAssignableRoles(
   organizationId: string,
 ): Promise<AssignableRole[]> {

@@ -1,5 +1,8 @@
 import Link from "next/link";
 import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
   ChevronLeft,
   ChevronRight,
   Plus,
@@ -14,17 +17,26 @@ import {
   ListSearchFilters,
   type ActiveFilterChip,
 } from "@/src/components/list-search-filters";
-import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { employmentStatusBadgeVariant } from "@/src/config/ui-colors";
+import { cn } from "@/lib/utils";
 import { buildListFilterUrl } from "@/src/lib/list-filter-url";
+import { formatDisplayDate } from "@/src/lib/format";
 import type {
   EmployeeDirectoryData,
   EmployeeDirectoryFilters,
 } from "@/src/modules/hr/data/get-employees";
+import {
+  nextEmployeeDirectorySort,
+  type EmployeeDirectorySortField,
+} from "@/src/modules/hr/lib/employee-directory-sort";
+import {
+  WORKFORCE_CATEGORY_OPTIONS,
+  workforceCategoryBadgeLabel,
+} from "@/src/modules/hr/lib/workforce-category";
 import { EmployeeDirectoryRow } from "./employee-directory-row";
-import { PeopleNav } from "./people-nav";
+import { PeoplePageHeader } from "./people-page-header";
 
 type EmployeeDirectoryProps = {
   data: EmployeeDirectoryData;
@@ -78,6 +90,14 @@ function buildFilterChips(
     });
   }
 
+  if (filters.workforceCategory) {
+    chips.push({
+      key: "workforceCategory",
+      value: filters.workforceCategory,
+      label: `Category: ${label(filters.workforceCategory)}`,
+    });
+  }
+
   if (filters.departmentId) {
     const department = departments.find(
       (item) => item.id === filters.departmentId,
@@ -93,36 +113,101 @@ function buildFilterChips(
   return chips;
 }
 
+function SortableColumnHeader({
+  label: columnLabel,
+  field,
+  currentSort,
+  currentOrder,
+  filterValues,
+  className,
+}: {
+  label: string;
+  field: EmployeeDirectorySortField;
+  currentSort: EmployeeDirectorySortField;
+  currentOrder: "asc" | "desc";
+  filterValues: Record<string, string | undefined>;
+  className?: string;
+}) {
+  const isActive = currentSort === field;
+  const next = nextEmployeeDirectorySort(
+    { sort: currentSort, order: currentOrder },
+    field,
+  );
+  const href = buildListFilterUrl("/people", {
+    ...filterValues,
+    sort: next.sort,
+    order: next.order,
+  });
+  const ariaSort = isActive
+    ? currentOrder === "asc"
+      ? "ascending"
+      : "descending"
+    : "none";
+
+  return (
+    <th className={cn("px-3 py-3 font-medium", className)} aria-sort={ariaSort}>
+      <Link
+        href={href}
+        className={cn(
+          "inline-flex items-center gap-1 rounded-sm hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          isActive ? "text-foreground" : "text-muted-foreground",
+        )}
+      >
+        <span>{columnLabel}</span>
+        {isActive ? (
+          currentOrder === "asc" ? (
+            <ArrowUp className="size-3.5" aria-hidden />
+          ) : (
+            <ArrowDown className="size-3.5" aria-hidden />
+          )
+        ) : (
+          <ArrowUpDown className="size-3.5 opacity-50" aria-hidden />
+        )}
+        <span className="sr-only">
+          {isActive
+            ? `Sorted ${currentOrder === "asc" ? "ascending" : "descending"}. Activate to sort ${currentOrder === "asc" ? "descending" : "ascending"}.`
+            : `Sort by ${columnLabel}`}
+        </span>
+      </Link>
+    </th>
+  );
+}
+
 export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
+  const hasExplicitSort = Boolean(filters.sort || filters.order);
   const filterValues = {
     query: filters.query,
     status: filters.status,
     employmentType: filters.employmentType,
+    workforceCategory: filters.workforceCategory,
     departmentId: filters.departmentId,
     show: filters.show === "all" ? "all" : undefined,
+    sort: hasExplicitSort ? data.sort : undefined,
+    order: hasExplicitSort ? data.order : undefined,
   };
 
   const showAllHref = buildListFilterUrl("/people", {
     status: filters.status,
     employmentType: filters.employmentType,
+    workforceCategory: filters.workforceCategory,
     departmentId: filters.departmentId,
     show: "all",
+    sort: filterValues.sort,
+    order: filterValues.order,
   });
 
   return (
     <PageShell size="lg">
-      <PeopleNav />
-
-      <PageHeader
-        title="Employees"
-        description="Search for an employee, or show the full directory."
+      <PeoplePageHeader
+        title="People"
+        description="Search the workforce directory, including employees and non-employee payees."
         actions={
           <Button
             nativeButton={false}
             render={<Link href="/people/employees/new" />}
           >
             <Plus />
-            New employee
+            New person
           </Button>
         }
       />
@@ -131,7 +216,7 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
         <ListSearchFilters
           basePath="/people"
           clearHref="/people"
-          searchPlaceholder="Name, employee number or email"
+          searchPlaceholder="Name, number or email"
           searchValue={filters.query ?? ""}
           values={filterValues}
           chips={buildFilterChips(filters, data.departments)}
@@ -141,6 +226,16 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
               name: "status",
               label: "Status",
               options: [...STATUS_OPTIONS],
+              multi: false,
+            },
+            {
+              type: "checkbox",
+              name: "workforceCategory",
+              label: "Category",
+              options: WORKFORCE_CATEGORY_OPTIONS.map((option) => ({
+                value: option.value,
+                label: option.label,
+              })),
               multi: false,
             },
             {
@@ -165,8 +260,8 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            {data.summary.active} active employee
-            {data.summary.active === 1 ? "" : "s"}
+            {data.summary.active} active
+            {data.summary.active === 1 ? " person" : " people"}
           </p>
 
           {filters.show === "all" ? (
@@ -186,10 +281,10 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
       {!data.listing ? (
         <section className="py-14 text-center">
           <Search className="mx-auto size-7 text-muted-foreground" />
-          <p className="mt-3 text-sm font-medium">Find an employee</p>
+          <p className="mt-3 text-sm font-medium">Find someone</p>
           <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">
-            Search by name, employee number or email. Use Show all when you need
-            the full directory.
+            Search by name, number or email. Use Show all when you need the full
+            directory.
           </p>
           <div className="mt-5">
             <Button
@@ -208,7 +303,7 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="size-4 text-muted-foreground" />
-                <SectionHeading>Employee directory</SectionHeading>
+                <SectionHeading>Directory</SectionHeading>
               </div>
 
               <span className="text-xs text-muted-foreground">
@@ -220,7 +315,7 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
             {data.employees.length === 0 ? (
               <div className="py-12 text-center">
                 <Users className="mx-auto size-7 text-muted-foreground" />
-                <p className="mt-3 text-sm font-medium">No employees found</p>
+                <p className="mt-3 text-sm font-medium">No people found</p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Adjust the search or filters, or show the full directory.
                 </p>
@@ -230,21 +325,59 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
                 <table className="w-full min-w-[640px] text-left text-sm md:min-w-[900px]">
                   <thead className="border-b border-border text-xs uppercase text-muted-foreground">
                     <tr>
-                      <th className="px-3 py-3 font-medium">Employee</th>
-                      <th className="hidden px-3 py-3 font-medium sm:table-cell">
-                        Number
-                      </th>
-                      <th className="px-3 py-3 font-medium">Department</th>
-                      <th className="hidden px-3 py-3 font-medium md:table-cell">
-                        Position
-                      </th>
-                      <th className="hidden px-3 py-3 font-medium lg:table-cell">
-                        Type
-                      </th>
-                      <th className="px-3 py-3 font-medium">Status</th>
-                      <th className="hidden px-3 py-3 font-medium lg:table-cell">
-                        Hire date
-                      </th>
+                      <SortableColumnHeader
+                        label="Name"
+                        field="name"
+                        currentSort={data.sort}
+                        currentOrder={data.order}
+                        filterValues={filterValues}
+                      />
+                      <SortableColumnHeader
+                        label="Number"
+                        field="number"
+                        currentSort={data.sort}
+                        currentOrder={data.order}
+                        filterValues={filterValues}
+                        className="hidden sm:table-cell"
+                      />
+                      <SortableColumnHeader
+                        label="Department"
+                        field="department"
+                        currentSort={data.sort}
+                        currentOrder={data.order}
+                        filterValues={filterValues}
+                      />
+                      <SortableColumnHeader
+                        label="Position"
+                        field="position"
+                        currentSort={data.sort}
+                        currentOrder={data.order}
+                        filterValues={filterValues}
+                        className="hidden md:table-cell"
+                      />
+                      <SortableColumnHeader
+                        label="Type"
+                        field="type"
+                        currentSort={data.sort}
+                        currentOrder={data.order}
+                        filterValues={filterValues}
+                        className="hidden lg:table-cell"
+                      />
+                      <SortableColumnHeader
+                        label="Status"
+                        field="status"
+                        currentSort={data.sort}
+                        currentOrder={data.order}
+                        filterValues={filterValues}
+                      />
+                      <SortableColumnHeader
+                        label="Hire date"
+                        field="hireDate"
+                        currentSort={data.sort}
+                        currentOrder={data.order}
+                        filterValues={filterValues}
+                        className="hidden lg:table-cell"
+                      />
                     </tr>
                   </thead>
 
@@ -255,6 +388,9 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
                         employee.lastName,
                       ].join(" ");
                       const href = `/people/employees/${employee.id}`;
+                      const categoryBadge = workforceCategoryBadgeLabel(
+                        employee.workforceCategory,
+                      );
 
                       return (
                         <EmployeeDirectoryRow
@@ -266,9 +402,14 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
                             <span className="font-medium group-hover:underline">
                               {displayName}
                             </span>
-                            <p className="mt-1 text-xs text-muted-foreground">
-                              {employee.workEmail ?? "No work email"}
-                            </p>
+                            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                              {categoryBadge ? (
+                                <Badge variant="secondary">{categoryBadge}</Badge>
+                              ) : null}
+                              <p className="text-xs text-muted-foreground">
+                                {employee.workEmail ?? "No work email"}
+                              </p>
+                            </div>
                           </td>
 
                           <td className="hidden px-3 py-4 font-mono text-xs sm:table-cell">
@@ -298,7 +439,7 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
                           </td>
 
                           <td className="hidden px-3 py-4 lg:table-cell">
-                            {employee.hireDate.slice(0, 10)}
+                            {formatDisplayDate(employee.hireDate)}
                           </td>
                         </EmployeeDirectoryRow>
                       );

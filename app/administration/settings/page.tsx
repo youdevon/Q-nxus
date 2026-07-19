@@ -7,10 +7,12 @@ import { recordStatusBadgeVariant } from "@/src/config/ui-colors";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
+import { DemoDataDangerZone } from "@/src/modules/admin/components/demo-data-danger-zone";
 import {
   getDomainSettings,
   type DomainSettingRecord,
 } from "@/src/modules/admin/data/get-domain-settings";
+import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 
 export const metadata: Metadata = {
   title: "Domain Settings",
@@ -46,7 +48,10 @@ function settingValue(setting: DomainSettingRecord): string {
 }
 
 export default async function DomainSettingsPage() {
-  const settings = await getDomainSettings();
+  const [settings, capabilities] = await Promise.all([
+    getDomainSettings(),
+    getUserCapabilities(),
+  ]);
 
   const groupedSettings = settings.reduce<
     Record<string, DomainSettingRecord[]>
@@ -63,6 +68,8 @@ export default async function DomainSettingsPage() {
   const sensitiveCount = settings.filter(
     (setting) => setting.isSensitive,
   ).length;
+
+  const canClearDemoData = Boolean(capabilities?.isSystemAdmin);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -225,6 +232,8 @@ export default async function DomainSettingsPage() {
           Edit settings
         </Button>
       </footer>
+
+      {canClearDemoData ? <DemoDataDangerZone /> : null}
     </div>
   );
 }

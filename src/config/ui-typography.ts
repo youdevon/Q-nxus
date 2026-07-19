@@ -1,7 +1,8 @@
 /**
  * Workforce Hub typography conventions.
  *
- * Page title — PageHeader h1: text-2xl font-semibold tracking-tight
+ * Page title — PageHeader / PeoplePageHeader h1: text-2xl font-semibold tracking-tight
+ * Page description — shared subtitle under the title
  * Entity title — detail hero name under PageHeader: text-xl …
  * Section heading — in-page section titles: text-sm … uppercase
  * Field label — form labels: text-sm font-medium
@@ -12,6 +13,7 @@
  */
 export const UI_TYPOGRAPHY = {
   pageTitle: "text-2xl font-semibold tracking-tight text-foreground",
+  pageDescription: "max-w-2xl text-sm text-muted-foreground",
   entityTitle: "text-xl font-semibold tracking-tight text-foreground",
   sectionHeading:
     "text-sm font-semibold tracking-wide uppercase text-foreground",
@@ -25,6 +27,7 @@ export const UI_TYPOGRAPHY = {
 /**
  * Soft surface tokens for app chrome and content blocks.
  * Prefer spacing + subtle dividers over stacked border-y frames.
+ * Elevation (shadow vs flat panels) — see `src/config/ui-elevation.ts`.
  */
 export const UI_SURFACE = {
   appHeader:

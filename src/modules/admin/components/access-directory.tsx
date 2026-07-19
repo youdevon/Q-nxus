@@ -47,7 +47,7 @@ export function AccessDirectory({
             render={<Link href="/administration/access/roles/new" />}
           >
             <Plus />
-            New role
+            Create role
           </Button>
         }
       />
@@ -136,14 +136,11 @@ export function AccessDirectory({
 
               <tbody className="divide-y divide-border">
                 {roles.map((role) => (
-                  <tr
-                    key={role.id}
-                    className="relative hover:bg-muted/30 focus-within:bg-muted/30"
-                  >
+                  <tr key={role.id} className="hover:bg-muted/30">
                     <td className="px-3 py-3">
                       <Link
                         href={`/administration/access/roles/${role.id}`}
-                        className="font-medium after:absolute after:inset-0 hover:underline focus-visible:outline-none"
+                        className="font-medium text-primary hover:underline"
                       >
                         {role.name}
                       </Link>
@@ -184,12 +181,17 @@ export function AccessDirectory({
 
       <section aria-labelledby="users-heading">
         <div className="mb-3 flex items-baseline justify-between gap-3">
-          <h2
-            id="users-heading"
-            className="text-sm font-semibold tracking-wide uppercase"
-          >
-            Users
-          </h2>
+          <div>
+            <h2
+              id="users-heading"
+              className="text-sm font-semibold tracking-wide uppercase"
+            >
+              Users
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Open a user to assign built-in or custom roles.
+            </p>
+          </div>
           <span className="text-xs text-muted-foreground">
             {users.length} account{users.length === 1 ? "" : "s"}
           </span>
@@ -217,21 +219,23 @@ export function AccessDirectory({
 
               <tbody className="divide-y divide-border">
                 {users.map((user) => (
-                  <tr
-                    key={user.id}
-                    className="relative hover:bg-muted/30 focus-within:bg-muted/30"
-                  >
-                    <td className="px-3 py-3 font-medium">
+                  <tr key={user.id} className="hover:bg-muted/30">
+                    <td className="px-3 py-3">
                       <Link
                         href={`/administration/access/users/${user.id}`}
-                        className="after:absolute after:inset-0 hover:underline focus-visible:outline-none"
+                        className="font-medium text-primary hover:underline"
                       >
                         {user.firstName} {user.lastName}
                       </Link>
                     </td>
 
-                    <td className="px-3 py-3 text-muted-foreground">
-                      {user.email}
+                    <td className="px-3 py-3">
+                      <Link
+                        href={`/administration/access/users/${user.id}`}
+                        className="hover:underline"
+                      >
+                        {user.email}
+                      </Link>
                     </td>
 
                     <td className="px-3 py-3">

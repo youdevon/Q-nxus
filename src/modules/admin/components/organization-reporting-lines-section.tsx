@@ -3,10 +3,10 @@ import { Network } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { OrganizationReportingLinesData } from "@/src/modules/admin/data/get-organization-reporting-lines";
+import type { OrganizationReportingLinesPreviewData } from "@/src/modules/admin/data/get-organization-reporting-lines";
 
 type OrganizationReportingLinesSectionProps = {
-  data: OrganizationReportingLinesData;
+  data: OrganizationReportingLinesPreviewData;
   canManage: boolean;
 };
 
@@ -14,7 +14,7 @@ export function OrganizationReportingLinesSection({
   data,
   canManage,
 }: OrganizationReportingLinesSectionProps) {
-  const preview = data.positions.slice(0, 8);
+  const preview = data.positions;
 
   return (
     <section id="reporting-lines" aria-labelledby="reporting-lines-heading">
@@ -63,7 +63,7 @@ export function OrganizationReportingLinesSection({
         updates.
       </p>
 
-      {data.positions.length === 0 ? (
+      {data.totals.positions === 0 ? (
         <p className="text-sm text-muted-foreground">
           No positions exist yet. Create departments and positions under
           Employees → Organization, then return here to set reporting lines.
@@ -105,15 +105,15 @@ export function OrganizationReportingLinesSection({
         </div>
       )}
 
-      {data.positions.length > preview.length ? (
+      {data.totals.positions > preview.length ? (
         <p className="mt-3 text-xs text-muted-foreground">
-          Showing {preview.length} of {data.positions.length} positions. Manage
+          Showing {preview.length} of {data.totals.positions} positions. Manage
           lines in People → Organization, or use Bulk edit for the full list
           here.
         </p>
       ) : null}
 
-      {!canManage && data.positions.length > 0 ? (
+      {!canManage && data.totals.positions > 0 ? (
         <p className="mt-3 text-xs text-muted-foreground">
           Editing reporting lines requires the people.manage capability.
         </p>

@@ -3,6 +3,7 @@ import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 
 import { revalidatePath } from "next/cache";
 
+import { getApplicationChrome } from "@/src/modules/admin/data/get-application-chrome";
 import { queueEmail } from "@/src/modules/notifications/services/email-queue";
 import { processEmailQueue } from "@/src/modules/notifications/services/process-email-queue";
 import { wrapSystemEmailHtml } from "@/src/modules/notifications/services/render-email-template";
@@ -46,17 +47,19 @@ export async function sendSystemTestEmail(
   try {
     await verifySmtpConnection();
 
+    const chrome = await getApplicationChrome();
+    const brandName = chrome.organizationName;
+
     await queueEmail({
       moduleKey: "administration",
       relatedType: "SMTP_TEST",
       recipientEmail,
-      subject: "Q-NXUS SMTP test",
-      textBody:
-        "This message confirms that Q-NXUS SMTP delivery is configured.",
+      subject: `${brandName} SMTP test`,
+      textBody: `This message confirms that ${brandName} SMTP delivery is configured.`,
       htmlBody: wrapSystemEmailHtml({
         heading: "SMTP test successful",
-        bodyHtml:
-          "<p>This message confirms that Q-NXUS can connect to the configured SMTP service and deliver system notifications.</p>",
+        brandName,
+        bodyHtml: `<p>This message confirms that ${brandName} can connect to the configured SMTP service and deliver system notifications.</p>`,
       }),
       priority: "HIGH",
       maximumAttempts: 1,

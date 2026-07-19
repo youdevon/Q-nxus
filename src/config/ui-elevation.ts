@@ -22,6 +22,13 @@ export const UI_ELEVATION = {
    * Modal / dialog / sheet elevation above the page.
    */
   overlay: "shadow-lg ring-1 ring-foreground/10",
+
+  /**
+   * Auth sign-in panel — floating card clearly lifted from the page canvas.
+   * Uses theme tokens so light and dark both keep readable contrast.
+   */
+  authCard:
+    "rounded-2xl border border-border/80 bg-card text-card-foreground shadow-xl shadow-black/10 ring-1 ring-black/5 dark:border-border dark:bg-card dark:shadow-black/50 dark:ring-white/10",
 } as const;
 
 /** Class string type for elevation tokens. */

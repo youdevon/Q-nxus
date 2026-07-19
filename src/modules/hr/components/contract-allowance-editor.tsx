@@ -30,7 +30,7 @@ function newAllowance(): ContractAllowanceInput {
     customCategoryName: "",
     amount: "",
     frequency: "MONTHLY",
-    isTaxable: true,
+    isTaxable: false,
     includedInGratuity: false,
     notes: "",
   };
@@ -239,7 +239,7 @@ export function ContractAllowanceEditor({
                 />
               </div>
 
-              <label className="flex items-center gap-3 pt-8">
+              <label className="flex items-start gap-3 pt-8">
                 <input
                   type="checkbox"
                   checked={allowance.isTaxable}
@@ -248,10 +248,18 @@ export function ContractAllowanceEditor({
                       isTaxable: event.target.checked,
                     })
                   }
-                  className="size-4"
+                  className="mt-0.5 size-4"
                 />
 
-                <span className="text-sm font-medium">Taxable allowance</span>
+                <span>
+                  <span className="block text-sm font-medium">
+                    Taxable allowance
+                  </span>
+                  <span className="mt-1 block text-xs text-muted-foreground">
+                    Off by default. Check only if this amount should enter
+                    PAYE / NIS / Health taxable pay.
+                  </span>
+                </span>
               </label>
 
               <label className="flex items-center gap-3">

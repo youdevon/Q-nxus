@@ -4,13 +4,19 @@ import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { parsePositionSystemRoleCode } from "@/src/modules/auth/lib/position-system-roles";
 import { syncEmployeeAccessRoles } from "@/src/modules/auth/services/provision-employee-user";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 
 export type StructureFormState = {
   status: "idle" | "success" | "error" | "conflict";
   message: string;
   entityId?: string;
+  fieldErrors?: {
+    name?: string;
+    code?: string;
+  };
 };
 
 function textValue(formData: FormData, key: string): string {
@@ -21,6 +27,71 @@ function textValue(formData: FormData, key: string): string {
 function nullableText(formData: FormData, key: string): string | null {
   const value = textValue(formData, key);
   return value.length > 0 ? value : null;
+}
+
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: string }).code === "P2002"
+  );
+}
+
+async function findDepartmentNameConflict(input: {
+  organizationId: string;
+  name: string;
+  excludeId?: string;
+}): Promise<boolean> {
+  const duplicate = await prisma.department.findFirst({
+    where: {
+      organizationId: input.organizationId,
+      ...(input.excludeId
+        ? {
+            id: {
+              not: input.excludeId,
+            },
+          }
+        : {}),
+      name: {
+        equals: input.name,
+        mode: "insensitive",
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return Boolean(duplicate);
+}
+
+async function findDepartmentCodeConflict(input: {
+  organizationId: string;
+  code: string;
+  excludeId?: string;
+}): Promise<boolean> {
+  const duplicate = await prisma.department.findFirst({
+    where: {
+      organizationId: input.organizationId,
+      ...(input.excludeId
+        ? {
+            id: {
+              not: input.excludeId,
+            },
+          }
+        : {}),
+      code: {
+        equals: input.code,
+        mode: "insensitive",
+      },
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return Boolean(duplicate);
 }
 
 export async function createDepartment(
@@ -44,6 +115,9 @@ export async function createDepartment(
     return {
       status: "error",
       message: "Department name must contain at least two characters.",
+      fieldErrors: {
+        name: "Department name must contain at least two characters.",
+      },
     };
   }
 
@@ -64,23 +138,35 @@ export async function createDepartment(
       };
     }
 
-    const duplicate = await prisma.department.findFirst({
-      where: {
-        organizationId: organization.id,
-        name: {
-          equals: name,
-          mode: "insensitive",
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
+    const fieldErrors: NonNullable<StructureFormState["fieldErrors"]> = {};
 
-    if (duplicate) {
+    if (
+      await findDepartmentNameConflict({
+        organizationId: organization.id,
+        name,
+      })
+    ) {
+      fieldErrors.name = "A department with this name already exists.";
+    }
+
+    if (
+      code &&
+      (await findDepartmentCodeConflict({
+        organizationId: organization.id,
+        code,
+      }))
+    ) {
+      fieldErrors.code = "A department with this code already exists.";
+    }
+
+    if (fieldErrors.name || fieldErrors.code) {
       return {
         status: "error",
-        message: "A department with this name already exists.",
+        message:
+          fieldErrors.name ??
+          fieldErrors.code ??
+          "A department with these details already exists.",
+        fieldErrors,
       };
     }
 
@@ -131,6 +217,16 @@ export async function createDepartment(
   } catch (error: unknown) {
     console.error("Unable to create department:", error);
 
+    if (isUniqueConstraintError(error)) {
+      return {
+        status: "error",
+        message: "A department with this name or code already exists.",
+        fieldErrors: {
+          name: "A department with this name already exists.",
+        },
+      };
+    }
+
     return {
       status: "error",
       message: "The department could not be created.",
@@ -162,6 +258,12 @@ export async function updateDepartment(
     return {
       status: "error",
       message: "The department information is incomplete.",
+      fieldErrors:
+        name.length < 2
+          ? {
+              name: "Department name must contain at least two characters.",
+            }
+          : undefined,
     };
   }
 
@@ -187,26 +289,37 @@ export async function updateDepartment(
       };
     }
 
-    const duplicate = await prisma.department.findFirst({
-      where: {
-        organizationId: current.organizationId,
-        id: {
-          not: id,
-        },
-        name: {
-          equals: name,
-          mode: "insensitive",
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
+    const fieldErrors: NonNullable<StructureFormState["fieldErrors"]> = {};
 
-    if (duplicate) {
+    if (
+      await findDepartmentNameConflict({
+        organizationId: current.organizationId,
+        name,
+        excludeId: id,
+      })
+    ) {
+      fieldErrors.name = "A department with this name already exists.";
+    }
+
+    if (
+      code &&
+      (await findDepartmentCodeConflict({
+        organizationId: current.organizationId,
+        code,
+        excludeId: id,
+      }))
+    ) {
+      fieldErrors.code = "A department with this code already exists.";
+    }
+
+    if (fieldErrors.name || fieldErrors.code) {
       return {
         status: "error",
-        message: "A department with this name already exists.",
+        message:
+          fieldErrors.name ??
+          fieldErrors.code ??
+          "A department with these details already exists.",
+        fieldErrors,
       };
     }
 
@@ -286,6 +399,16 @@ export async function updateDepartment(
   } catch (error: unknown) {
     console.error("Unable to update department:", error);
 
+    if (isUniqueConstraintError(error)) {
+      return {
+        status: "error",
+        message: "A department with this name or code already exists.",
+        fieldErrors: {
+          name: "A department with this name already exists.",
+        },
+      };
+    }
+
     return {
       status: "error",
       message: "The department could not be updated.",
@@ -310,12 +433,23 @@ export async function createPosition(
   const title = textValue(formData, "title");
   const code = nullableText(formData, "code");
   const description = nullableText(formData, "description");
-  const systemRoleCode = nullableText(formData, "systemRoleCode");
+  const systemRoleParsed = parsePositionSystemRoleCode(
+    nullableText(formData, "systemRoleCode"),
+  );
+
+  if (!systemRoleParsed.ok) {
+    return {
+      status: "error",
+      message: systemRoleParsed.message,
+    };
+  }
+
+  const systemRoleCode = systemRoleParsed.code;
 
   if (!departmentId || title.length < 2) {
     return {
       status: "error",
-      message: "Select a department and enter a valid position title.",
+      message: "Select a department and enter a valid title.",
     };
   }
 
@@ -371,26 +505,22 @@ export async function createPosition(
         },
       });
 
-      await transaction.auditEvent.create({
-        data: {
-          userId: actor.actor.userId,
-          moduleKey: "hr",
-          action: "CREATE",
-          entityType: "Position",
-          entityId: position.id,
-          description: `Created position ${position.title} in ${department.name}.`,
-          newValues: {
-            departmentId,
-            title: position.title,
-            code: position.code,
-            description: position.description,
-            systemRoleCode: position.systemRoleCode,
-            isActive: position.isActive,
-          },
-          ipAddress: metadata.ipAddress,
-          userAgent: metadata.userAgent,
-          clientHostName: metadata.clientHostName,
+      await recordAuditEvent(transaction, {
+        userId: actor.actor.userId,
+        moduleKey: "hr",
+        action: "CREATE",
+        entityType: "Position",
+        entityId: position.id,
+        description: `Created position ${position.title} in ${department.name}.`,
+        newValues: {
+          departmentId,
+          title: position.title,
+          code: position.code,
+          description: position.description,
+          systemRoleCode: position.systemRoleCode,
+          isActive: position.isActive,
         },
+        ...metadata,
       });
 
       return position.id;
@@ -432,8 +562,19 @@ export async function updatePosition(
   const title = textValue(formData, "title");
   const code = nullableText(formData, "code");
   const description = nullableText(formData, "description");
-  const systemRoleCode = nullableText(formData, "systemRoleCode");
+  const systemRoleParsed = parsePositionSystemRoleCode(
+    nullableText(formData, "systemRoleCode"),
+  );
   const isActive = formData.get("isActive") === "on";
+
+  if (!systemRoleParsed.ok) {
+    return {
+      status: "error",
+      message: systemRoleParsed.message,
+    };
+  }
+
+  const systemRoleCode = systemRoleParsed.code;
 
   if (!id || !submittedUpdatedAt || title.length < 2) {
     return {
@@ -521,32 +662,28 @@ export async function updatePosition(
         },
       });
 
-      await transaction.auditEvent.create({
-        data: {
-          userId: actor.actor.userId,
-          moduleKey: "hr",
-          action: "UPDATE",
-          entityType: "Position",
-          entityId: updated.id,
-          description: `Updated position ${updated.title}.`,
-          oldValues: {
-            title: current.title,
-            code: current.code,
-            description: current.description,
-            systemRoleCode: current.systemRoleCode,
-            isActive: current.isActive,
-          },
-          newValues: {
-            title: updated.title,
-            code: updated.code,
-            description: updated.description,
-            systemRoleCode: updated.systemRoleCode,
-            isActive: updated.isActive,
-          },
-          ipAddress: metadata.ipAddress,
-          userAgent: metadata.userAgent,
-          clientHostName: metadata.clientHostName,
+      await recordAuditEvent(transaction, {
+        userId: actor.actor.userId,
+        moduleKey: "hr",
+        action: "UPDATE",
+        entityType: "Position",
+        entityId: updated.id,
+        description: `Updated position ${updated.title}.`,
+        oldValues: {
+          title: current.title,
+          code: current.code,
+          description: current.description,
+          systemRoleCode: current.systemRoleCode,
+          isActive: current.isActive,
         },
+        newValues: {
+          title: updated.title,
+          code: updated.code,
+          description: updated.description,
+          systemRoleCode: updated.systemRoleCode,
+          isActive: updated.isActive,
+        },
+        ...metadata,
       });
 
       return true;

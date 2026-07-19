@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { KeyRound, Save, ShieldOff, UserRound } from "lucide-react";
 import { toast } from "sonner";
 
@@ -9,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { recordStatusBadgeVariant } from "@/src/config/ui-colors";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { PageActionsStart } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { AdministrationNav } from "./administration-nav";
@@ -18,10 +18,10 @@ import {
   type UserAccessFormState,
 } from "@/src/modules/admin/actions/save-user-access";
 import {
-  assignUserRole,
   revokeUserRole,
   type RoleAssignmentState,
 } from "@/src/modules/admin/actions/manage-user-role";
+import { AssignUserRoleForm } from "@/src/modules/admin/components/assign-user-role-form";
 import { ResetUserPasswordForm } from "@/src/modules/admin/components/reset-user-password-form";
 import type {
   AssignableRole,
@@ -63,20 +63,29 @@ export function UserAccessForm({
   roles,
   linkableEmployees,
 }: UserAccessFormProps) {
+  const router = useRouter();
   const { user: actor } = useAuth();
   const [userState, userAction, userPending] = useActionState(
     saveUserAccess,
     initialUserState,
   );
 
-  const [assignmentState, assignmentAction, assignmentPending] = useActionState(
-    assignUserRole,
+  const [revokeState, revokeAction, revokePending] = useActionState(
+    revokeUserRole,
     initialAssignmentState,
   );
+
+  const activeAssignedRoleIds = user.assignments
+    .filter(
+      (assignment) =>
+        assignment.status === "ACTIVE" || assignment.status === "PENDING",
+    )
+    .map((assignment) => assignment.roleId);
 
   useEffect(() => {
     if (userState.status === "success") {
       toast.success(userState.message);
+      router.refresh();
     }
 
     if (userState.status === "error") {
@@ -86,17 +95,18 @@ export function UserAccessForm({
     if (userState.status === "conflict") {
       toast.warning(userState.message);
     }
-  }, [userState]);
+  }, [userState, router]);
 
   useEffect(() => {
-    if (assignmentState.status === "success") {
-      toast.success(assignmentState.message);
+    if (revokeState.status === "success") {
+      toast.success(revokeState.message);
+      router.refresh();
     }
 
-    if (assignmentState.status === "error") {
-      toast.error(assignmentState.message);
+    if (revokeState.status === "error") {
+      toast.error(revokeState.message);
     }
-  }, [assignmentState]);
+  }, [revokeState, router]);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -327,7 +337,7 @@ export function UserAccessForm({
                     <td className="px-3 py-3">
                       {assignment.status === "ACTIVE" ||
                       assignment.status === "PENDING" ? (
-                        <form action={revokeUserRole}>
+                        <form action={revokeAction}>
                           <input
                             type="hidden"
                             name="assignmentId"
@@ -339,7 +349,12 @@ export function UserAccessForm({
                             name="revocationReason"
                             value="Revoked through Access Administration."
                           />
-                          <Button type="submit" variant="destructive" size="sm">
+                          <Button
+                            type="submit"
+                            variant="destructive"
+                            size="sm"
+                            disabled={revokePending}
+                          >
                             <ShieldOff />
                             Revoke
                           </Button>
@@ -358,95 +373,11 @@ export function UserAccessForm({
         )}
       </section>
 
-      <form action={assignmentAction}>
-        <input type="hidden" name="userId" value={user.id} />
-
-        <section>
-          <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
-            Assign a role
-          </h2>
-
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="md:col-span-2">
-              <label htmlFor="roleId" className="text-sm font-medium">
-                Role
-              </label>
-              <select
-                id="roleId"
-                name="roleId"
-                defaultValue=""
-                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-              >
-                <option value="">Select a role</option>
-                {roles.map((role) => (
-                  <option key={role.id} value={role.id}>
-                    {role.name} ({role.code})
-                  </option>
-                ))}
-              </select>
-              <FieldError message={assignmentState.errors?.roleId} />
-            </div>
-
-            <div>
-              <label htmlFor="effectiveFrom" className="text-sm font-medium">
-                Effective from
-              </label>
-              <Input
-                id="effectiveFrom"
-                name="effectiveFrom"
-                type="date"
-                defaultValue={dateValue(new Date())}
-                className="mt-2"
-              />
-              <FieldError message={assignmentState.errors?.effectiveFrom} />
-            </div>
-
-            <div>
-              <label htmlFor="effectiveUntil" className="text-sm font-medium">
-                Effective until
-              </label>
-              <Input
-                id="effectiveUntil"
-                name="effectiveUntil"
-                type="date"
-                className="mt-2"
-              />
-              <FieldError message={assignmentState.errors?.effectiveUntil} />
-            </div>
-
-            <div className="md:col-span-2">
-              <label htmlFor="reason" className="text-sm font-medium">
-                Assignment reason
-              </label>
-              <Textarea
-                id="reason"
-                name="reason"
-                placeholder="Explain why this role is being assigned."
-                className="mt-2 min-h-24"
-              />
-            </div>
-          </div>
-
-          {assignmentState.status !== "idle" && (
-            <p
-              className={
-                assignmentState.status === "success"
-                  ? "mt-3 text-sm"
-                  : "mt-3 text-sm text-destructive"
-              }
-            >
-              {assignmentState.message}
-            </p>
-          )}
-
-          <div className="mt-4 flex justify-end">
-            <Button type="submit" disabled={assignmentPending}>
-              <KeyRound />
-              {assignmentPending ? "Assigning…" : "Assign role"}
-            </Button>
-          </div>
-        </section>
-      </form>
+      <AssignUserRoleForm
+        userId={user.id}
+        roles={roles}
+        assignedRoleIds={activeAssignedRoleIds}
+      />
     </div>
   );
 }

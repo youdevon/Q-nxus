@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   Building2,
   CalendarDays,
@@ -12,7 +13,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { prisma } from "@/lib/prisma";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/src/components/layout/page-header";
 import {
   PageActionsEnd,
@@ -22,7 +23,8 @@ import { PageShell } from "@/src/components/layout/page-shell";
 import { employmentStatusBadgeVariant } from "@/src/config/ui-colors";
 import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
 import { OrganizationReportingLinesSection } from "@/src/modules/admin/components/organization-reporting-lines-section";
-import { getOrganizationReportingLines } from "@/src/modules/admin/data/get-organization-reporting-lines";
+import { getOrganizationProfile } from "@/src/modules/admin/data/get-organization-profile";
+import { getOrganizationReportingLinesPreview } from "@/src/modules/admin/data/get-organization-reporting-lines";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 
 export const metadata: Metadata = {
@@ -55,14 +57,63 @@ function formatStatus(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-export default async function OrganizationPage() {
-  const [organization, reportingLines, capabilities] = await Promise.all([
-    prisma.organization.findFirst({
-      orderBy: {
-        createdAt: "asc",
-      },
-    }),
-    getOrganizationReportingLines(),
+function OrganizationContentFallback() {
+  return (
+    <>
+      <div className="space-y-3">
+        <Skeleton className="h-8 w-56 max-w-full" />
+        <Skeleton className="h-4 w-96 max-w-full" />
+      </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+      </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
+      </div>
+    </>
+  );
+}
+
+function ReportingLinesFallback() {
+  return (
+    <section aria-busy="true" aria-label="Loading reporting lines">
+      <Skeleton className="mb-4 h-5 w-40" />
+      <Skeleton className="mb-3 h-4 w-full max-w-xl" />
+      <Skeleton className="h-40 w-full" />
+    </section>
+  );
+}
+
+async function OrganizationReportingPreview({
+  organizationId,
+  canManage,
+}: {
+  organizationId: string;
+  canManage: boolean;
+}) {
+  const reportingLines =
+    await getOrganizationReportingLinesPreview(organizationId);
+
+  if (!reportingLines) {
+    return null;
+  }
+
+  return (
+    <OrganizationReportingLinesSection
+      data={reportingLines}
+      canManage={canManage}
+    />
+  );
+}
+
+async function OrganizationPageContent() {
+  const [organization, capabilities] = await Promise.all([
+    getOrganizationProfile(),
     getUserCapabilities(),
   ]);
 
@@ -70,21 +121,15 @@ export default async function OrganizationPage() {
 
   if (!organization) {
     return (
-      <PageShell>
-        <AdministrationNav />
-
-        <PageHeader
-          title="Organization"
-          description="No organization profile has been configured."
-        />
-      </PageShell>
+      <PageHeader
+        title="Organization"
+        description="No organization profile has been configured."
+      />
     );
   }
 
   return (
-    <PageShell>
-      <AdministrationNav />
-
+    <>
       <PageHeader
         title={organization.name}
         description="Organization identity, contact information, and regional defaults. Day-to-day departments, positions, and reporting live under People → Organization."
@@ -217,12 +262,12 @@ export default async function OrganizationPage() {
         </div>
       </section>
 
-      {reportingLines ? (
-        <OrganizationReportingLinesSection
-          data={reportingLines}
+      <Suspense fallback={<ReportingLinesFallback />}>
+        <OrganizationReportingPreview
+          organizationId={organization.id}
           canManage={canManageReporting}
         />
-      ) : null}
+      </Suspense>
 
       <section>
         <div className="mb-4 flex items-center gap-2">
@@ -298,6 +343,20 @@ export default async function OrganizationPage() {
           </Button>
         </div>
       </footer>
+    </>
+  );
+}
+
+/**
+ * Sync shell: AdministrationNav paints immediately; profile + reporting stream.
+ */
+export default function OrganizationPage() {
+  return (
+    <PageShell>
+      <AdministrationNav />
+      <Suspense fallback={<OrganizationContentFallback />}>
+        <OrganizationPageContent />
+      </Suspense>
     </PageShell>
   );
 }

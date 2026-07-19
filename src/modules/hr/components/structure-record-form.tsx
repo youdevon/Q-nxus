@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { FieldError } from "@/src/components/ui/field";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import {
   createDepartment,
@@ -22,7 +23,6 @@ import type {
   DepartmentRecord,
   PositionProfileRecord,
 } from "@/src/modules/hr/data/get-people-structure";
-import { PeopleNav } from "./people-nav";
 import { POSITION_SYSTEM_ROLE_OPTIONS } from "@/src/modules/auth/lib/position-system-roles";
 
 const initialState: StructureFormState = {
@@ -60,9 +60,7 @@ export function DepartmentRecordForm({
   return (
     <form action={formAction}>
       <PageShell>
-        <PeopleNav />
-
-        <PageHeader
+        <PeoplePageHeader
           title={department ? "Edit department" : "New department"}
           description="Configure the department identity and status."
           backHref={
@@ -116,8 +114,12 @@ export function DepartmentRecordForm({
                 name="name"
                 defaultValue={department?.name ?? ""}
                 className="mt-2"
+                aria-invalid={Boolean(state.fieldErrors?.name)}
                 required
               />
+              {state.fieldErrors?.name ? (
+                <FieldError className="mt-1.5">{state.fieldErrors.name}</FieldError>
+              ) : null}
             </div>
 
             <div>
@@ -129,7 +131,11 @@ export function DepartmentRecordForm({
                 name="code"
                 defaultValue={department?.code ?? ""}
                 className="mt-2 font-mono"
+                aria-invalid={Boolean(state.fieldErrors?.code)}
               />
+              {state.fieldErrors?.code ? (
+                <FieldError className="mt-1.5">{state.fieldErrors.code}</FieldError>
+              ) : null}
             </div>
 
             <div className="md:col-span-2">
@@ -181,9 +187,7 @@ export function PositionRecordForm({
   return (
     <form action={formAction}>
       <PageShell>
-        <PeopleNav />
-
-        <PageHeader
+        <PeoplePageHeader
           title={position ? "Edit position" : "New position"}
           description="Configure the position identity and department."
           backHref={
@@ -256,7 +260,7 @@ export function PositionRecordForm({
 
             <div>
               <label htmlFor="title" className="text-sm font-medium">
-                Position title
+                Position
               </label>
               <Input
                 id="title"

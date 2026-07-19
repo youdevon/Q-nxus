@@ -1,5 +1,6 @@
 import { EmailPriority, NotificationSeverity } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getApplicationChrome } from "@/src/modules/admin/data/get-application-chrome";
 
 import { queueEmail } from "./email-queue";
 import { wrapSystemEmailHtml } from "./render-email-template";
@@ -81,6 +82,8 @@ export async function createSystemNotification(
 
   if (input.email) {
     const actionUrl = absoluteActionUrl(input.actionUrl);
+    const chrome = await getApplicationChrome();
+    const brandName = chrome.organizationName;
 
     for (const recipient of uniqueRecipients) {
       if (recipient.sendEmail === false || !recipient.email) {
@@ -102,8 +105,10 @@ export async function createSystemNotification(
         htmlBody: wrapSystemEmailHtml({
           heading: input.title,
           bodyHtml,
+          brandName,
           actionLabel:
-            input.email.actionLabel ?? (actionUrl ? "Open in Q-NXUS" : null),
+            input.email.actionLabel ??
+            (actionUrl ? `Open in ${chrome.shortName}` : null),
           actionUrl,
         }),
         priority: input.email.priority ?? EmailPriority.NORMAL,

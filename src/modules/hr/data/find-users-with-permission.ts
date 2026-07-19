@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
+import { effectiveUserRoleWhere } from "@/src/modules/auth/lib/effective-user-role";
 
 /**
- * Active users in an organization who hold a permission via an active role,
- * or who are SYSTEM_ADMINISTRATOR (implicit full access).
+ * Active users in an organization who hold a permission via an currently
+ * effective role, or who are SYSTEM_ADMINISTRATOR (implicit full access).
  */
 export async function findUsersWithPermission(
   organizationId: string,
@@ -14,7 +15,7 @@ export async function findUsersWithPermission(
       isActive: true,
       roles: {
         some: {
-          status: "ACTIVE",
+          ...effectiveUserRoleWhere(),
           role: {
             isActive: true,
             OR: [

@@ -30,9 +30,11 @@ export function renderTemplate(
 export function wrapSystemEmailHtml(options: {
   heading: string;
   bodyHtml: string;
+  brandName: string;
   actionLabel?: string | null;
   actionUrl?: string | null;
 }): string {
+  const brandName = options.brandName.trim() || "Workforce Hub";
   const action =
     options.actionLabel && options.actionUrl
       ? `
@@ -69,7 +71,7 @@ export function wrapSystemEmailHtml(options: {
  >
  <tr>
  <td style="padding:22px 28px;border-bottom:1px solid #e5e7eb">
- <strong style="font-size:18px">Q-NXUS</strong>
+ <strong style="font-size:18px">${escapedHtml(brandName)}</strong>
  </td>
  </tr>
 
@@ -89,7 +91,7 @@ export function wrapSystemEmailHtml(options: {
 
  <tr>
  <td style="padding:18px 28px;border-top:1px solid #e5e7eb;font-size:12px;color:#6b7280">
- This is an automated message from Q-NXUS.
+ This is an automated message from ${escapedHtml(brandName)}.
  </td>
  </tr>
  </table>

@@ -1,3 +1,5 @@
+import { appConfig } from "@/src/config/app.config";
+
 export type SmtpConfiguration = {
   enabled: boolean;
   host: string;
@@ -41,7 +43,7 @@ export function getSmtpConfiguration(): SmtpConfiguration {
     secure: booleanValue(process.env.SMTP_SECURE),
     username: process.env.SMTP_USERNAME?.trim() ?? "",
     password: process.env.SMTP_PASSWORD ?? "",
-    fromName: process.env.SMTP_FROM_NAME?.trim() || "Q-NXUS",
+    fromName: process.env.SMTP_FROM_NAME?.trim() || appConfig.displayName,
     fromEmail: process.env.SMTP_FROM_EMAIL?.trim() ?? "",
     replyTo: process.env.SMTP_REPLY_TO?.trim() || null,
     connectionTimeoutMs: positiveInteger(

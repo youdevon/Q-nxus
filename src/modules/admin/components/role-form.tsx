@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -19,11 +19,23 @@ import {
 import type {
   PermissionOption,
   RoleRecord,
+  RoleTemplateOption,
 } from "@/src/modules/admin/data/get-access-administration";
+import {
+  PERMISSION_GROUP_ORDER,
+  permissionGroupKey,
+  permissionGroupLabel,
+  type PermissionGroupKey,
+} from "@/src/modules/admin/lib/permission-groups";
+import { slugifyRoleCode } from "@/src/modules/admin/lib/role-code";
 
 type RoleFormProps = {
   role?: RoleRecord | null;
   permissions: PermissionOption[];
+  /** Existing roles that can seed the permission picker (create only). */
+  templates?: RoleTemplateOption[];
+  /** Prefill from `?from=` when creating. */
+  initialTemplate?: RoleTemplateOption | null;
 };
 
 const initialState: RoleFormState = {
@@ -43,19 +55,53 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-export function RoleForm({ role, permissions }: RoleFormProps) {
+export function RoleForm({
+  role,
+  permissions,
+  templates = [],
+  initialTemplate = null,
+}: RoleFormProps) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(saveRole, initialState);
 
-  const selectedPermissions = new Set(role?.permissionIds ?? []);
+  const [name, setName] = useState(
+    role?.name ??
+      (initialTemplate ? `${initialTemplate.name} (custom)` : ""),
+  );
+  const [code, setCode] = useState(
+    role?.code ??
+      (initialTemplate
+        ? slugifyRoleCode(`${initialTemplate.code}_CUSTOM`)
+        : ""),
+  );
+  const [codeTouched, setCodeTouched] = useState(Boolean(role?.code));
+  const [selectedPermissionIds, setSelectedPermissionIds] = useState<
+    Set<string>
+  >(
+    () =>
+      new Set(
+        role?.permissionIds ?? initialTemplate?.permissionIds ?? [],
+      ),
+  );
 
-  const groupedPermissions = permissions.reduce<
-    Record<string, PermissionOption[]>
-  >((groups, permission) => {
-    groups[permission.moduleKey] ??= [];
-    groups[permission.moduleKey].push(permission);
-    return groups;
-  }, {});
+  const groupedPermissions = useMemo(() => {
+    const groups = new Map<PermissionGroupKey, PermissionOption[]>();
+
+    for (const permission of permissions) {
+      const key = permissionGroupKey(permission);
+      const list = groups.get(key) ?? [];
+      list.push(permission);
+      groups.set(key, list);
+    }
+
+    return PERMISSION_GROUP_ORDER.filter((key) => groups.has(key)).map(
+      (key) => ({
+        key,
+        label: permissionGroupLabel(key),
+        permissions: groups.get(key) ?? [],
+      }),
+    );
+  }, [permissions]);
 
   useEffect(() => {
     if (state.status === "success") {
@@ -76,6 +122,55 @@ export function RoleForm({ role, permissions }: RoleFormProps) {
     }
   }, [router, state]);
 
+  function applyTemplate(templateId: string) {
+    if (!templateId) {
+      return;
+    }
+
+    const template = templates.find((item) => item.id === templateId);
+
+    if (!template) {
+      return;
+    }
+
+    setName(`${template.name} (custom)`);
+    setCode(slugifyRoleCode(`${template.code}_CUSTOM`));
+    setCodeTouched(true);
+    setSelectedPermissionIds(new Set(template.permissionIds));
+  }
+
+  function togglePermission(permissionId: string, checked: boolean) {
+    setSelectedPermissionIds((current) => {
+      const next = new Set(current);
+
+      if (checked) {
+        next.add(permissionId);
+      } else {
+        next.delete(permissionId);
+      }
+
+      return next;
+    });
+  }
+
+  if (role?.isSystem) {
+    return (
+      <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
+        <AdministrationNav />
+        <PageHeader
+          title="System role"
+          description="Built-in roles are managed by the platform and cannot be edited."
+          backHref={`/administration/access/roles/${role.id}`}
+          backLabel="Role"
+        />
+        <p className="text-sm text-muted-foreground">
+          Use <strong>Duplicate as custom role</strong> on the role page to
+          create an editable copy with the same permissions.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <form
       action={formAction}
@@ -91,8 +186,8 @@ export function RoleForm({ role, permissions }: RoleFormProps) {
       <AdministrationNav />
 
       <PageHeader
-        title={role ? "Edit role" : "New role"}
-        description="Configure the role identity and the permissions granted to its members."
+        title={role ? "Edit role" : "Create role"}
+        description="Compose a custom role from platform permissions. Assigning the role grants those capabilities."
         backHref={
           role
             ? `/administration/access/roles/${role.id}`
@@ -134,8 +229,35 @@ export function RoleForm({ role, permissions }: RoleFormProps) {
           <h2 className="text-sm font-semibold tracking-wide uppercase">
             Role details
           </h2>
-          {role?.isSystem && <Badge variant="outline">System role</Badge>}
+          <Badge variant="outline">Custom role</Badge>
         </div>
+
+        {!role && templates.length > 0 && (
+          <div className="mb-5">
+            <label htmlFor="templateId" className="text-sm font-medium">
+              Start from an existing role
+            </label>
+            <select
+              id="templateId"
+              className="mt-2 flex h-9 w-full max-w-md rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              defaultValue={initialTemplate?.id ?? ""}
+              onChange={(event) => applyTemplate(event.target.value)}
+            >
+              <option value="">Blank role</option>
+              {templates.map((template) => (
+                <option key={template.id} value={template.id}>
+                  {template.name}
+                  {template.isSystem ? " (system)" : ""} —{" "}
+                  {template.permissionIds.length} permissions
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Prefills name, code, and permissions. You can change anything
+              before saving.
+            </p>
+          </div>
+        )}
 
         <div className="grid gap-5 md:grid-cols-2">
           <div>
@@ -145,7 +267,15 @@ export function RoleForm({ role, permissions }: RoleFormProps) {
             <Input
               id="name"
               name="name"
-              defaultValue={role?.name ?? ""}
+              value={name}
+              onChange={(event) => {
+                const nextName = event.target.value;
+                setName(nextName);
+
+                if (!codeTouched) {
+                  setCode(slugifyRoleCode(nextName));
+                }
+              }}
               required
               className="mt-2"
             />
@@ -159,14 +289,17 @@ export function RoleForm({ role, permissions }: RoleFormProps) {
             <Input
               id="code"
               name="code"
-              defaultValue={role?.code ?? ""}
-              required
-              disabled={role?.isSystem}
+              value={code}
+              onChange={(event) => {
+                setCodeTouched(true);
+                setCode(event.target.value.toUpperCase());
+              }}
+              placeholder="Auto-generated from name"
               className="mt-2 font-mono uppercase"
             />
-            {role?.isSystem && (
-              <input type="hidden" name="code" value={role.code} />
-            )}
+            <p className="mt-1 text-xs text-muted-foreground">
+              Optional. Leave blank or edit the suggested slug.
+            </p>
             <FieldError id="code-error" message={state.errors?.code} />
           </div>
 
@@ -177,7 +310,9 @@ export function RoleForm({ role, permissions }: RoleFormProps) {
             <Textarea
               id="description"
               name="description"
-              defaultValue={role?.description ?? ""}
+              defaultValue={
+                role?.description ?? initialTemplate?.description ?? ""
+              }
               maxLength={1000}
               className="mt-2 min-h-28"
             />
@@ -214,51 +349,53 @@ export function RoleForm({ role, permissions }: RoleFormProps) {
             Permissions
           </h2>
           <span className="text-xs text-muted-foreground">
-            {permissions.length} available
+            {selectedPermissionIds.size} selected · {permissions.length}{" "}
+            available
           </span>
         </div>
 
         <div className="divide-y divide-border/70">
-          {Object.entries(groupedPermissions).map(
-            ([moduleKey, modulePermissions]) => (
-              <fieldset key={moduleKey} className="py-5">
-                <legend className="mb-3 text-sm font-semibold capitalize">
-                  {moduleKey.replaceAll("_", " ")}
-                </legend>
+          {groupedPermissions.map((group) => (
+            <fieldset key={group.key} className="py-5">
+              <legend className="mb-3 text-sm font-semibold">
+                {group.label}
+              </legend>
 
-                <div className="grid gap-3 md:grid-cols-2">
-                  {modulePermissions.map((permission) => (
-                    <label
-                      key={permission.id}
-                      className="flex items-start gap-3 border border-border p-3"
-                    >
-                      <input
-                        type="checkbox"
-                        name="permissionIds"
-                        value={permission.id}
-                        defaultChecked={selectedPermissions.has(permission.id)}
-                        className="mt-0.5 size-4"
-                      />
+              <div className="grid gap-3 md:grid-cols-2">
+                {group.permissions.map((permission) => (
+                  <label
+                    key={permission.id}
+                    className="flex items-start gap-3 border border-border p-3"
+                  >
+                    <input
+                      type="checkbox"
+                      name="permissionIds"
+                      value={permission.id}
+                      checked={selectedPermissionIds.has(permission.id)}
+                      onChange={(event) =>
+                        togglePermission(permission.id, event.target.checked)
+                      }
+                      className="mt-0.5 size-4"
+                    />
 
-                      <span className="min-w-0">
-                        <span className="block text-sm font-medium">
-                          {permission.name}
-                        </span>
-                        <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
-                          {permission.code}
-                        </span>
-                        {permission.description && (
-                          <span className="mt-1 block text-xs text-muted-foreground">
-                            {permission.description}
-                          </span>
-                        )}
+                    <span className="min-w-0">
+                      <span className="block text-sm font-medium">
+                        {permission.name}
                       </span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            ),
-          )}
+                      <span className="mt-0.5 block font-mono text-[11px] text-muted-foreground">
+                        {permission.code}
+                      </span>
+                      {permission.description && (
+                        <span className="mt-1 block text-xs text-muted-foreground">
+                          {permission.description}
+                        </span>
+                      )}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
         </div>
       </section>
     </form>

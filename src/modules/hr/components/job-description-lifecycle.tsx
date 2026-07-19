@@ -4,7 +4,8 @@ import { CheckCircle2, Copy, FileText, Plus, RotateCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { jobDescriptionStatusBadgeVariant } from "@/src/config/ui-colors";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import {
   activateJobDescription,
@@ -12,7 +13,6 @@ import {
   retireJobDescription,
 } from "@/src/modules/hr/actions/save-job-description";
 import type { JobDescriptionLifecycleData } from "@/src/modules/hr/data/get-job-descriptions";
-import { PeopleNav } from "./people-nav";
 
 type JobDescriptionLifecycleProps = {
   data: JobDescriptionLifecycleData;
@@ -31,10 +31,8 @@ export function JobDescriptionLifecycle({
   const currentVersion = data.versions.find((version) => version.isCurrent);
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
-      <PeopleNav />
-
-      <PageHeader
+    <PageShell size="lg">
+      <PeoplePageHeader
         title="Job Description Versions"
         description={`${data.position.title} · ${data.position.department.name}`}
         backHref={`/people/structure/positions/${data.position.id}`}
@@ -232,6 +230,6 @@ export function JobDescriptionLifecycle({
           </div>
         </section>
       )}
-    </div>
+    </PageShell>
   );
 }

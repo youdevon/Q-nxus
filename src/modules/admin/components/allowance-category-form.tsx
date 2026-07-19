@@ -141,7 +141,7 @@ export function AllowanceCategoryForm({
             <input
               type="checkbox"
               name="isTaxableDefault"
-              defaultChecked={category?.isTaxableDefault ?? true}
+              defaultChecked={category?.isTaxableDefault ?? false}
               className="mt-0.5 size-4"
             />
             <span>

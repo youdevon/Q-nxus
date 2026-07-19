@@ -162,7 +162,7 @@ A requisition should contain:
 
 - Department ID
 
-- Position title
+- Position
 
 - Number of vacancies
 

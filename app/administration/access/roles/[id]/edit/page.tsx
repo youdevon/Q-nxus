@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { RoleForm } from "@/src/modules/admin/components/role-form";
 import {
@@ -27,6 +27,10 @@ export default async function EditRolePage({
 
   if (!role) {
     notFound();
+  }
+
+  if (role.isSystem) {
+    redirect(`/administration/access/roles/${role.id}`);
   }
 
   return <RoleForm role={role} permissions={permissions} />;

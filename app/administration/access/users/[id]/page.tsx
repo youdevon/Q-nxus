@@ -17,8 +17,13 @@ import {
   activeStateBadgeVariant,
   recordStatusBadgeVariant,
 } from "@/src/config/ui-colors";
+import { formatDisplayDate, formatDisplayDateTime } from "@/src/lib/format";
 import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
-import { getUserAccess } from "@/src/modules/admin/data/get-user-access";
+import { AssignUserRoleForm } from "@/src/modules/admin/components/assign-user-role-form";
+import {
+  getAssignableRoles,
+  getUserAccess,
+} from "@/src/modules/admin/data/get-user-access";
 
 export const metadata: Metadata = {
   title: "User Account",
@@ -40,15 +45,11 @@ function label(value: string): string {
 }
 
 function dateTime(value: Date | null): string {
-  if (!value) {
-    return "Not recorded";
-  }
-
-  return value.toISOString().replace("T", " ").slice(0, 19);
+  return formatDisplayDateTime(value, { fallback: "Not recorded" });
 }
 
 function dateOnly(value: Date | null): string {
-  return value ? value.toISOString().slice(0, 10) : "Open-ended";
+  return formatDisplayDate(value, { fallback: "Open-ended" });
 }
 
 function Detail({ labelText, value }: { labelText: string; value: string }) {
@@ -69,6 +70,8 @@ export default async function UserAccountPage({
   if (!user) {
     notFound();
   }
+
+  const roles = await getAssignableRoles(user.organizationId);
 
   const activeAssignments = user.assignments.filter(
     (assignment) =>
@@ -101,6 +104,15 @@ export default async function UserAccountPage({
 
             <Button
               nativeButton={false}
+              variant="outline"
+              render={<Link href="#assign-role" />}
+            >
+              <KeyRound />
+              Assign role
+            </Button>
+
+            <Button
+              nativeButton={false}
               render={
                 <Link href={`/administration/access/users/${user.id}/edit`} />
               }
@@ -124,6 +136,22 @@ export default async function UserAccountPage({
                 {user.firstName} {user.lastName}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
+              {user.employee ? (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Linked employee:{" "}
+                  <Link
+                    href={`/people/employees/${user.employee.id}`}
+                    className="font-medium text-foreground hover:underline"
+                  >
+                    {user.employee.lastName}, {user.employee.firstName} ·{" "}
+                    {user.employee.employeeNumber}
+                  </Link>
+                </p>
+              ) : (
+                <p className="mt-2 text-sm text-muted-foreground">
+                  No linked employee record.
+                </p>
+              )}
             </div>
           </div>
 
@@ -210,7 +238,8 @@ export default async function UserAccountPage({
 
         {user.assignments.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No role assignments exist for this user.
+            No role assignments exist for this user. Use Assign a role below to
+            grant access.
           </p>
         ) : (
           <div className="overflow-x-auto">
@@ -228,14 +257,11 @@ export default async function UserAccountPage({
 
               <tbody className="divide-y divide-border">
                 {user.assignments.map((assignment) => (
-                  <tr
-                    key={assignment.id}
-                    className="relative hover:bg-muted/30 focus-within:bg-muted/30"
-                  >
+                  <tr key={assignment.id} className="hover:bg-muted/30">
                     <td className="px-3 py-3">
                       <Link
                         href={`/administration/access/roles/${assignment.roleId}`}
-                        className="font-medium after:absolute after:inset-0 hover:underline focus-visible:outline-none"
+                        className="font-medium text-primary hover:underline"
                       >
                         {assignment.roleName}
                       </Link>
@@ -275,15 +301,24 @@ export default async function UserAccountPage({
         )}
       </section>
 
+      <AssignUserRoleForm
+        userId={user.id}
+        roles={roles}
+        assignedRoleIds={activeAssignments.map(
+          (assignment) => assignment.roleId,
+        )}
+      />
+
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-5">
         <p className="flex items-center gap-2 text-xs text-muted-foreground">
           <CalendarDays className="size-3.5" />
-          Role assignment and revocation controls are available only after
-          selecting Edit.
+          Account details and role revocation are available under Edit user
+          access.
         </p>
 
         <Button
           nativeButton={false}
+          variant="outline"
           render={
             <Link href={`/administration/access/users/${user.id}/edit`} />
           }

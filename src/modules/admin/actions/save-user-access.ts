@@ -4,7 +4,12 @@ import { revalidatePath } from "next/cache";
 
 import { UserAccountStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  DEFAULT_ADMINISTRATOR_PROTECTION_MESSAGE,
+  isDefaultAdministratorUser,
+} from "@/src/modules/admin/lib/protected-administrator";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { buildEmployeeUserEmail } from "@/src/modules/auth/lib/employee-login-email";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
 export type UserAccessFormState = {
@@ -106,23 +111,36 @@ export async function saveUserAccess(
         };
       }
 
-      const duplicateEmail = await transaction.user.findFirst({
-        where: {
-          email,
-          id: {
-            not: id,
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
+      if (isDefaultAdministratorUser(current)) {
+        if (status === UserAccountStatus.ARCHIVED) {
+          return {
+            outcome: "protected-administrator" as const,
+          };
+        }
 
-      if (duplicateEmail) {
-        return {
-          outcome: "duplicate-email" as const,
-        };
+        if (!isActive) {
+          return {
+            outcome: "protected-administrator" as const,
+          };
+        }
+
+        if (
+          status === UserAccountStatus.DISABLED ||
+          status === UserAccountStatus.SUSPENDED
+        ) {
+          return {
+            outcome: "protected-administrator" as const,
+          };
+        }
+
+        if (email !== current.email) {
+          return {
+            outcome: "protected-administrator-email" as const,
+          };
+        }
       }
+
+      let loginEmail = email;
 
       if (employeeId) {
         const employee = await transaction.employee.findFirst({
@@ -133,6 +151,7 @@ export async function saveUserAccess(
           },
           select: {
             id: true,
+            personalEmail: true,
             user: {
               select: {
                 id: true,
@@ -152,6 +171,41 @@ export async function saveUserAccess(
             outcome: "employee-linked" as const,
           };
         }
+
+        try {
+          loginEmail = buildEmployeeUserEmail(employee);
+        } catch {
+          return {
+            outcome: "employee-personal-email-required" as const,
+          };
+        }
+      }
+
+      if (
+        isDefaultAdministratorUser(current) &&
+        loginEmail !== current.email
+      ) {
+        return {
+          outcome: "protected-administrator-email" as const,
+        };
+      }
+
+      const duplicateEmail = await transaction.user.findFirst({
+        where: {
+          email: loginEmail,
+          id: {
+            not: id,
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (duplicateEmail) {
+        return {
+          outcome: "duplicate-email" as const,
+        };
       }
 
       const updateResult = await transaction.user.updateMany({
@@ -162,7 +216,7 @@ export async function saveUserAccess(
         data: {
           firstName,
           lastName,
-          email,
+          email: loginEmail,
           status: status as UserAccountStatus,
           isActive,
           employeeId,
@@ -250,6 +304,24 @@ export async function saveUserAccess(
       };
     }
 
+    if (result.outcome === "protected-administrator") {
+      return {
+        status: "error",
+        message: DEFAULT_ADMINISTRATOR_PROTECTION_MESSAGE,
+      };
+    }
+
+    if (result.outcome === "protected-administrator-email") {
+      return {
+        status: "error",
+        message:
+          "The default system administrator login email cannot be changed.",
+        errors: {
+          email: "This account must keep admin@q-nxus.local.",
+        },
+      };
+    }
+
     if (result.outcome === "duplicate-email") {
       return {
         status: "error",
@@ -280,9 +352,21 @@ export async function saveUserAccess(
       };
     }
 
+    if (result.outcome === "employee-personal-email-required") {
+      return {
+        status: "error",
+        message:
+          "The linked employee needs a personal email before it can be used as the login email.",
+        errors: {
+          employeeId:
+            "Add a personal email on the employee record, then save access again.",
+        },
+      };
+    }
+
     revalidatePath("/administration/access");
     revalidatePath(`/administration/access/users/${id}`);
-    revalidatePath("/leave");
+    revalidatePath("/people/leave");
 
     return {
       status: "success",

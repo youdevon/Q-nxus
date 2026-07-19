@@ -4,6 +4,13 @@ import {
   Prisma,
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  employeeDirectoryOrderBy,
+  parseEmployeeDirectorySort,
+  type EmployeeDirectorySortField,
+  type EmployeeDirectorySortOrder,
+} from "@/src/modules/hr/lib/employee-directory-sort";
+import { parseWorkforceCategory } from "@/src/modules/hr/lib/workforce-category";
 
 const PAGE_SIZE = 25;
 
@@ -11,9 +18,12 @@ export type EmployeeDirectoryFilters = {
   query?: string;
   status?: string;
   employmentType?: string;
+  workforceCategory?: string;
   departmentId?: string;
   page?: number;
   show?: string;
+  sort?: string;
+  order?: string;
 };
 
 export type EmployeeDirectoryItem = {
@@ -25,6 +35,7 @@ export type EmployeeDirectoryItem = {
   preferredName: string | null;
   workEmail: string | null;
   phone: string | null;
+  workforceCategory: string;
   employmentStatus: string;
   employmentType: string;
   hireDate: string;
@@ -45,6 +56,8 @@ export type EmployeeDirectoryData = {
   pageSize: number;
   totalPages: number;
   listing: boolean;
+  sort: EmployeeDirectorySortField;
+  order: EmployeeDirectorySortOrder;
   departments: {
     id: string;
     name: string;
@@ -62,6 +75,7 @@ export function isEmployeeDirectoryListing(
     Boolean(filters.query?.trim()) ||
     Boolean(filters.status) ||
     Boolean(filters.employmentType) ||
+    Boolean(filters.workforceCategory) ||
     Boolean(filters.departmentId)
   );
 }
@@ -78,6 +92,8 @@ export async function getEmployees(
     },
   });
 
+  const { sort, order } = parseEmployeeDirectorySort(filters);
+
   if (!organization) {
     return {
       employees: [],
@@ -86,6 +102,8 @@ export async function getEmployees(
       pageSize: PAGE_SIZE,
       totalPages: 1,
       listing: false,
+      sort,
+      order,
       departments: [],
       summary: {
         active: 0,
@@ -113,6 +131,10 @@ export async function getEmployees(
     ? (filters.employmentType as EmploymentType)
     : undefined;
 
+  const validWorkforceCategory = parseWorkforceCategory(
+    filters.workforceCategory,
+  );
+
   const where: Prisma.EmployeeWhereInput = {
     organizationId: organization.id,
     isArchived: false,
@@ -124,6 +146,11 @@ export async function getEmployees(
     ...(validEmploymentType
       ? {
           employmentType: validEmploymentType,
+        }
+      : {}),
+    ...(validWorkforceCategory
+      ? {
+          workforceCategory: validWorkforceCategory,
         }
       : {}),
     ...(filters.departmentId
@@ -185,14 +212,7 @@ export async function getEmployees(
     listing
       ? prisma.employee.findMany({
           where,
-          orderBy: [
-            {
-              lastName: "asc",
-            },
-            {
-              firstName: "asc",
-            },
-          ],
+          orderBy: employeeDirectoryOrderBy(sort, order),
           skip: (page - 1) * PAGE_SIZE,
           take: PAGE_SIZE,
           select: {
@@ -204,6 +224,7 @@ export async function getEmployees(
             preferredName: true,
             workEmail: true,
             phone: true,
+            workforceCategory: true,
             employmentStatus: true,
             employmentType: true,
             hireDate: true,
@@ -255,6 +276,7 @@ export async function getEmployees(
   return {
     employees: employees.map((employee) => ({
       ...employee,
+      workforceCategory: employee.workforceCategory,
       employmentStatus: employee.employmentStatus,
       employmentType: employee.employmentType,
       hireDate: employee.hireDate.toISOString(),
@@ -264,6 +286,8 @@ export async function getEmployees(
     pageSize: PAGE_SIZE,
     totalPages: Math.max(1, Math.ceil(total / PAGE_SIZE)),
     listing,
+    sort,
+    order,
     departments,
     summary: {
       active,

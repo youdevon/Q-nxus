@@ -1,5 +1,15 @@
+import { cache } from "react";
+
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
+import { effectiveUserRoleWhere } from "@/src/modules/auth/lib/effective-user-role";
+import {
+  aggregatePermissionsFromRoles,
+  collectRoleCodes,
+  isEmployeeOnlyAccess,
+  isHrAdministrator,
+  isSystemAdministrator,
+} from "@/src/modules/auth/lib/role-capabilities";
 
 export type UserCapabilities = {
   userId: string;
@@ -13,21 +23,24 @@ export type UserCapabilities = {
   canAny: (...permissions: string[]) => boolean;
 };
 
-export async function getUserCapabilities(
+async function loadUserCapabilities(
   userId?: string,
 ): Promise<UserCapabilities | null> {
-  const current = userId
-    ? await prisma.user.findUnique({
-        where: {
-          id: userId,
-        },
-        select: {
-          id: true,
-          employeeId: true,
-          isActive: true,
-        },
-      })
-    : await getCurrentUser();
+  // Prefer the cached session user so layout + page share one DB round-trip.
+  const sessionUser = await getCurrentUser();
+  const current =
+    userId && sessionUser?.id !== userId
+      ? await prisma.user.findUnique({
+          where: {
+            id: userId,
+          },
+          select: {
+            id: true,
+            employeeId: true,
+            isActive: true,
+          },
+        })
+      : sessionUser;
 
   if (!current?.isActive) {
     return null;
@@ -36,7 +49,7 @@ export async function getUserCapabilities(
   const assignments = await prisma.userRole.findMany({
     where: {
       userId: current.id,
-      status: "ACTIVE",
+      ...effectiveUserRoleWhere(),
       role: {
         isActive: true,
       },
@@ -60,32 +73,18 @@ export async function getUserCapabilities(
     },
   });
 
-  const roleCodes = [...new Set(assignments.map((item) => item.role.code))];
+  const grants = assignments.map((item) => ({
+    roleCode: item.role.code,
+    permissionCodes: item.role.permissions
+      .filter((entry) => entry.permission.isActive)
+      .map((entry) => entry.permission.code),
+  }));
 
-  const permissions = [
-    ...new Set(
-      assignments.flatMap((item) =>
-        item.role.permissions
-          .filter((entry) => entry.permission.isActive)
-          .map((entry) => entry.permission.code),
-      ),
-    ),
-  ];
+  const roleCodes = collectRoleCodes(grants);
+  const permissions = aggregatePermissionsFromRoles(grants);
 
-  const isSystemAdmin = roleCodes.includes("SYSTEM_ADMINISTRATOR");
-  const isHrAdmin =
-    roleCodes.includes("HR_ADMINISTRATOR") ||
-    roleCodes.includes("HR_PAYROLL_ADMINISTRATOR");
-  const staffRoleCodes = new Set([
-    "SYSTEM_ADMINISTRATOR",
-    "HR_ADMINISTRATOR",
-    "HR_PAYROLL_ADMINISTRATOR",
-    "HR_CLERK",
-    "HR_LEAVE_OFFICER",
-    "PAYROLL_CLERK",
-    "PAYROLL_OFFICER",
-    "LEAVE_APPROVER",
-  ]);
+  const isSystemAdmin = isSystemAdministrator(roleCodes);
+  const isHrAdmin = isHrAdministrator(roleCodes);
 
   return {
     userId: current.id,
@@ -94,9 +93,7 @@ export async function getUserCapabilities(
     roleCodes,
     isSystemAdmin,
     isHrAdmin,
-    isEmployeeOnly:
-      !roleCodes.some((code) => staffRoleCodes.has(code)) &&
-      roleCodes.includes("EMPLOYEE"),
+    isEmployeeOnly: isEmployeeOnlyAccess(roleCodes, permissions),
     can(permission: string) {
       return isSystemAdmin || permissions.includes(permission);
     },
@@ -108,6 +105,15 @@ export async function getUserCapabilities(
     },
   };
 }
+
+/**
+ * Deduped per React request. Prefer calling without args so layout + pages
+ * share the same cache entry as the root layout session path.
+ */
+export const getUserCapabilities = cache(
+  async (userId?: string): Promise<UserCapabilities | null> =>
+    loadUserCapabilities(userId),
+);
 
 export async function requireCapability(
   ...permissions: string[]

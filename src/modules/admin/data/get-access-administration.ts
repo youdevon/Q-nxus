@@ -43,6 +43,15 @@ export type RoleRecord = {
   permissionIds: string[];
 };
 
+export type RoleTemplateOption = {
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  isSystem: boolean;
+  permissionIds: string[];
+};
+
 async function getOrganizationId(): Promise<string | null> {
   const organization = await prisma.organization.findFirst({
     orderBy: {
@@ -233,6 +242,58 @@ export async function getPermissionOptions(): Promise<PermissionOption[]> {
       moduleKey: true,
     },
   });
+}
+
+/** Roles that can seed a new custom role (system + custom templates). */
+export async function getRoleTemplates(): Promise<RoleTemplateOption[]> {
+  const organizationId = await getOrganizationId();
+
+  if (!organizationId) {
+    return [];
+  }
+
+  const roles = await prisma.role.findMany({
+    where: {
+      isActive: true,
+      OR: [
+        {
+          organizationId,
+        },
+        {
+          organizationId: null,
+        },
+      ],
+    },
+    orderBy: [
+      {
+        isSystem: "desc",
+      },
+      {
+        name: "asc",
+      },
+    ],
+    select: {
+      id: true,
+      code: true,
+      name: true,
+      description: true,
+      isSystem: true,
+      permissions: {
+        select: {
+          permissionId: true,
+        },
+      },
+    },
+  });
+
+  return roles.map((role) => ({
+    id: role.id,
+    code: role.code,
+    name: role.name,
+    description: role.description,
+    isSystem: role.isSystem,
+    permissionIds: role.permissions.map((entry) => entry.permissionId),
+  }));
 }
 
 export type RoleProfileRecord = {

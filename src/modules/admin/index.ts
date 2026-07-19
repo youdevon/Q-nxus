@@ -3,6 +3,11 @@ export { OrganizationReportingLinesEditor } from "./components/organization-repo
 export { OrganizationReportingLinesSection } from "./components/organization-reporting-lines-section";
 
 export {
+  getApplicationChrome,
+  type ApplicationChrome,
+} from "./data/get-application-chrome";
+
+export {
   getAdministrationDashboard,
   type AdministrationDashboardData,
 } from "./data/get-administration-dashboard";
@@ -14,8 +19,11 @@ export {
 
 export {
   getOrganizationReportingLines,
+  getOrganizationReportingLinesPreview,
   type OrganizationReportingLinesData,
   type OrganizationReportingLinePosition,
+  type OrganizationReportingLinesPreviewData,
+  type OrganizationReportingLinesPreviewPosition,
 } from "./data/get-organization-reporting-lines";
 
 export {

@@ -23,11 +23,17 @@ const prisma = new PrismaClient({
 const DEFAULT_PASSWORD = "ChangeMe123!"
 
 function emailForEmployee(employee: {
+  personalEmail: string | null
   workEmail: string | null
   employeeNumber: string
   firstName: string
   lastName: string
 }): string {
+  if (employee.personalEmail?.trim()) {
+    return employee.personalEmail.trim().toLowerCase()
+  }
+
+  // Legacy fallback for older demo rows that never had a personal email.
   if (employee.workEmail?.trim()) {
     return employee.workEmail.trim().toLowerCase()
   }
@@ -137,6 +143,7 @@ async function main() {
       employeeNumber: true,
       firstName: true,
       lastName: true,
+      personalEmail: true,
       workEmail: true,
       position: {
         select: {

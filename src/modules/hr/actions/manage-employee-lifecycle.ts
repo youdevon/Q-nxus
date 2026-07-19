@@ -127,6 +127,98 @@ export async function markOnboardingTaskComplete(
   const taskId = textValue(formData, "taskId");
   const employeeId = textValue(formData, "employeeId");
 
+  const task = await prisma.employeeOnboardingTask.findUnique({
+    where: { id: taskId },
+    select: {
+      id: true,
+      code: true,
+      case: {
+        select: {
+          employeeId: true,
+        },
+      },
+    },
+  });
+
+  if (!task || task.case.employeeId !== employeeId) {
+    return { status: "error", message: "Onboarding task not found." };
+  }
+
+  if (task.code === "CREATE_DRAFT_CONTRACT") {
+    const draft = await prisma.employmentContract.findFirst({
+      where: {
+        employeeId,
+        status: {
+          in: ["DRAFT", "PENDING_APPROVAL", "APPROVED", "AWAITING_SIGNATURE"],
+        },
+      },
+      select: { id: true },
+    });
+
+    if (!draft) {
+      return {
+        status: "error",
+        message:
+          "Create a draft contract first (or submit one for approval), then mark this done.",
+      };
+    }
+  }
+
+  if (task.code === "ACTIVATE_CONTRACT") {
+    const active = await prisma.employmentContract.findFirst({
+      where: {
+        employeeId,
+        isCurrent: true,
+        status: "ACTIVE",
+      },
+      select: { id: true },
+    });
+
+    if (!active) {
+      return {
+        status: "error",
+        message:
+          "Activate an employment contract on the contract page before marking this done.",
+      };
+    }
+  }
+
+  if (task.code === "PAYROLL_READINESS") {
+    const { getEmployeePayrollSetup } = await import(
+      "@/src/modules/payroll/data/get-employee-payroll-setup"
+    );
+    const setup = await getEmployeePayrollSetup(employeeId);
+    const ready = setup?.readiness?.isReady === true;
+
+    if (!ready) {
+      const issues =
+        setup?.readiness?.blockingIssues?.slice(0, 3).join("; ") ||
+        "Payroll setup is not ready.";
+      return {
+        status: "error",
+        message: `Payroll is not ready yet: ${issues}`,
+      };
+    }
+  }
+
+  if (task.code === "COMPLETE_REQUIRED_DOCS") {
+    const { getEmployeeFileChecklist } = await import(
+      "@/src/modules/hr/data/get-employee-file-checklist"
+    );
+    const { assessStandingEmployeeFileDocs } = await import(
+      "@/src/modules/hr/lib/employee-file-checklist"
+    );
+    const checklist = await getEmployeeFileChecklist(employeeId);
+    const standing = assessStandingEmployeeFileDocs(checklist?.items ?? []);
+
+    if (!standing.standingDocsComplete) {
+      return {
+        status: "error",
+        message: `Standing file documents still missing: ${standing.missingLabels.join(", ") || "required items"}.`,
+      };
+    }
+  }
+
   await completeOnboardingTask({
     taskId,
     completedByUserId: actor.actor.userId,

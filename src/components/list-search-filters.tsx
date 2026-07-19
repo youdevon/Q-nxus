@@ -141,6 +141,12 @@ export function ListSearchFilters({
     <section aria-label="Search and filters" className="pb-1">
       <form method="get" action={basePath} className="space-y-4">
         {showMode ? <input type="hidden" name="show" value={showMode} /> : null}
+        {typeof values.sort === "string" && values.sort ? (
+          <input type="hidden" name="sort" value={values.sort} />
+        ) : null}
+        {typeof values.order === "string" && values.order ? (
+          <input type="hidden" name="order" value={values.order} />
+        ) : null}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative min-w-0 flex-1">

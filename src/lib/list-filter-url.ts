@@ -65,7 +65,13 @@ export function countActiveFilters(
   searchParam = "query",
 ): number {
   return Object.entries(values).reduce((count, [key, value]) => {
-    if (key === searchParam || key === "page" || key === "show") {
+    if (
+      key === searchParam ||
+      key === "page" ||
+      key === "show" ||
+      key === "sort" ||
+      key === "order"
+    ) {
       return count;
     }
 

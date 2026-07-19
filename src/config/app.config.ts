@@ -1,16 +1,17 @@
 /**
- * Centralized customer-facing application identity.
- * All UI surfaces should consume these values — never hard-code the display name.
+ * Build-time defaults for product chrome.
+ * Live sidebar/org branding resolves via getApplicationChrome()
+ * (Organization + ApplicationSetting), not these hardcoded values.
  */
 export const appConfig = {
   /** Internal platform codename — not typically shown to end users */
   codename: "Q-NXUS",
-  /** Primary name shown in the UI chrome and browser title */
+  /** Primary product/software name (not the customer organization) */
   displayName: "Workforce Hub",
-  /** Owning organization */
-  organizationName: "Acme Corporation",
-  /** Compact label for collapsed sidebar and tight spaces */
-  shortName: "WH",
+  /** Fallback owning organization when DB org is missing */
+  organizationName: "Organization",
+  /** Compact fallback when org short name / code are unavailable */
+  shortName: "Org",
   /** Default browser metadata description */
   description:
     "Modular enterprise platform for human resources, payroll, and operations.",

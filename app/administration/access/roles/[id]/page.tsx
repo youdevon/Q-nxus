@@ -16,7 +16,14 @@ import {
   recordStatusBadgeVariant,
 } from "@/src/config/ui-colors";
 import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
+import { RoleActions } from "@/src/modules/admin/components/role-actions";
 import { getRoleProfile } from "@/src/modules/admin/data/get-access-administration";
+import {
+  PERMISSION_GROUP_ORDER,
+  permissionGroupKey,
+  permissionGroupLabel,
+  type PermissionGroupKey,
+} from "@/src/modules/admin/lib/permission-groups";
 
 export const metadata: Metadata = {
   title: "Role",
@@ -49,13 +56,32 @@ export default async function RolePage({ params }: RolePageProps) {
     notFound();
   }
 
-  const groupedPermissions = role.permissions.reduce<
-    Record<string, typeof role.permissions>
-  >((groups, permission) => {
-    groups[permission.moduleKey] ??= [];
-    groups[permission.moduleKey].push(permission);
-    return groups;
-  }, {});
+  const activeAssignments = role.assignments.filter(
+    (assignment) =>
+      assignment.status === "ACTIVE" || assignment.status === "PENDING",
+  );
+
+  const groupedPermissions = (() => {
+    const groups = new Map<
+      PermissionGroupKey,
+      typeof role.permissions
+    >();
+
+    for (const permission of role.permissions) {
+      const key = permissionGroupKey(permission);
+      const list = groups.get(key) ?? [];
+      list.push(permission);
+      groups.set(key, list);
+    }
+
+    return PERMISSION_GROUP_ORDER.filter((key) => groups.has(key)).map(
+      (key) => ({
+        key,
+        label: permissionGroupLabel(key),
+        permissions: groups.get(key) ?? [],
+      }),
+    );
+  })();
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
@@ -67,15 +93,25 @@ export default async function RolePage({ params }: RolePageProps) {
         backHref="/administration/access"
         backLabel="Users and roles"
         actions={
-          <Button
-            nativeButton={false}
-            render={
-              <Link href={`/administration/access/roles/${role.id}/edit`} />
-            }
-          >
-            <Pencil />
-            Edit role
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            {!role.isSystem && (
+              <Button
+                nativeButton={false}
+                render={
+                  <Link href={`/administration/access/roles/${role.id}/edit`} />
+                }
+              >
+                <Pencil />
+                Edit role
+              </Button>
+            )}
+            <RoleActions
+              roleId={role.id}
+              roleName={role.name}
+              isSystem={role.isSystem}
+              assignmentCount={activeAssignments.length}
+            />
+          </div>
         }
       />
 
@@ -96,6 +132,12 @@ export default async function RolePage({ params }: RolePageProps) {
               {role.description && (
                 <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
                   {role.description}
+                </p>
+              )}
+              {role.isSystem && (
+                <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+                  Built-in system role — not editable or deletable. Duplicate
+                  as a custom role to customize permissions.
                 </p>
               )}
             </div>
@@ -153,34 +195,32 @@ export default async function RolePage({ params }: RolePageProps) {
           </p>
         ) : (
           <div className="space-y-8">
-            {Object.entries(groupedPermissions).map(
-              ([moduleKey, permissions]) => (
-                <section key={moduleKey}>
-                  <h3 className="mb-3 text-sm font-semibold tracking-wide uppercase">
-                    {label(moduleKey)}
-                  </h3>
+            {groupedPermissions.map((group) => (
+              <section key={group.key}>
+                <h3 className="mb-3 text-sm font-semibold tracking-wide uppercase">
+                  {group.label}
+                </h3>
 
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {permissions.map((permission) => (
-                      <article
-                        key={permission.id}
-                        className="border border-border p-4"
-                      >
-                        <p className="text-sm font-medium">{permission.name}</p>
-                        <p className="mt-1 font-mono text-xs text-muted-foreground">
-                          {permission.code}
+                <div className="grid gap-3 md:grid-cols-2">
+                  {group.permissions.map((permission) => (
+                    <article
+                      key={permission.id}
+                      className="border border-border p-4"
+                    >
+                      <p className="text-sm font-medium">{permission.name}</p>
+                      <p className="mt-1 font-mono text-xs text-muted-foreground">
+                        {permission.code}
+                      </p>
+                      {permission.description && (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          {permission.description}
                         </p>
-                        {permission.description && (
-                          <p className="mt-2 text-xs text-muted-foreground">
-                            {permission.description}
-                          </p>
-                        )}
-                      </article>
-                    ))}
-                  </div>
-                </section>
-              ),
-            )}
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
         )}
       </section>
@@ -194,9 +234,22 @@ export default async function RolePage({ params }: RolePageProps) {
         </div>
 
         {role.assignments.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            This role is not assigned to any users.
-          </p>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              This role is not assigned to any users.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              To grant this role, open a user under{" "}
+              <Link
+                href="/administration/access"
+                className="font-medium text-foreground hover:underline"
+              >
+                Users and Roles
+              </Link>{" "}
+              and use Assign a role (built-in and custom roles appear in the
+              picker).
+            </p>
+          </div>
         ) : (
           <div className="divide-y divide-border/70">
             {role.assignments.map((assignment) => (
@@ -207,9 +260,7 @@ export default async function RolePage({ params }: RolePageProps) {
               >
                 <div>
                   <p className="text-sm font-medium">
-                    {assignment.user.firstName}
-                    {" "}
-                    {assignment.user.lastName}
+                    {assignment.user.firstName} {assignment.user.lastName}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {assignment.user.email}
@@ -224,18 +275,6 @@ export default async function RolePage({ params }: RolePageProps) {
           </div>
         )}
       </section>
-
-      <footer className="flex justify-end border-t border-border pt-5">
-        <Button
-          nativeButton={false}
-          render={
-            <Link href={`/administration/access/roles/${role.id}/edit`} />
-          }
-        >
-          <Pencil />
-          Edit role
-        </Button>
-      </footer>
     </div>
   );
 }

@@ -64,7 +64,7 @@ A Position should contain:
 
 - Department ID
 
-- Position title
+- Title
 
 - Position code
 

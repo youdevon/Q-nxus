@@ -180,12 +180,24 @@ export function parsePayslipSnapshot(
     return null;
   }
 
-  if (raw.version !== 1) {
+  const version = raw.version;
+  if (version !== 1 && version !== 2) {
     return null;
   }
 
   if (!isPayslipPreview(raw.payslip) || !isPayslipDocumentMeta(raw.meta)) {
     return null;
+  }
+
+  if (version === 2) {
+    return {
+      version: 2,
+      payslip: raw.payslip,
+      meta: raw.meta,
+      statutory: isRecord(raw.statutory)
+        ? (raw.statutory as PayslipStatutorySnapshot)
+        : undefined,
+    };
   }
 
   return {

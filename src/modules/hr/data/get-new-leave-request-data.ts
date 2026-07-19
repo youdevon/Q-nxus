@@ -1,18 +1,57 @@
 import { prisma } from "@/lib/prisma";
-import { requireCurrentEmployeeUser } from "@/src/modules/auth/data/get-current-user";
+import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import {
   describeSupervisorResolutionIssue,
   resolveEmployeeSupervisor,
 } from "@/src/modules/hr/data/resolve-employee-supervisor";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
+import type { LeaveRequestMode } from "@/src/modules/hr/lib/leave-request-mode";
 import { createContractLeaveBalances } from "@/src/modules/hr/services/create-contract-leave-balances";
 
-export async function getNewLeaveRequestData() {
-  const user = await requireCurrentEmployeeUser();
+export type GetNewLeaveRequestDataOptions = {
+  /** Employee the leave request is for. */
+  employeeId: string;
+  /** Actor creating the request (for balance generation audit). */
+  actingUserId: string;
+  /** Must match the employee's organization. */
+  organizationId: string;
+  mode: LeaveRequestMode;
+};
+
+export async function getNewLeaveRequestData(
+  options: GetNewLeaveRequestDataOptions,
+) {
+  const employee = await prisma.employee.findFirst({
+    where: {
+      id: options.employeeId,
+      organizationId: options.organizationId,
+      isArchived: false,
+    },
+    select: {
+      id: true,
+      employeeNumber: true,
+      firstName: true,
+      lastName: true,
+      organizationId: true,
+      position: { select: { title: true } },
+      assignments: {
+        where: { isCurrent: true },
+        take: 1,
+        select: {
+          position: { select: { title: true } },
+        },
+      },
+    },
+  });
+
+  if (!employee) {
+    return null;
+  }
 
   async function loadBalances() {
     return prisma.employeeLeaveBalance.findMany({
       where: {
-        employeeId: user.employeeId,
+        employeeId: employee!.id,
         contract: {
           isCurrent: true,
         },
@@ -64,7 +103,7 @@ export async function getNewLeaveRequestData() {
   if (balances.length === 0) {
     const currentContract = await prisma.employmentContract.findFirst({
       where: {
-        employeeId: user.employeeId,
+        employeeId: employee.id,
         isCurrent: true,
         endDate: {
           not: null,
@@ -77,7 +116,10 @@ export async function getNewLeaveRequestData() {
 
     if (currentContract) {
       try {
-        await createContractLeaveBalances(currentContract.id, user.id);
+        await createContractLeaveBalances(
+          currentContract.id,
+          options.actingUserId,
+        );
         balances = await loadBalances();
       } catch (error) {
         console.error(
@@ -91,7 +133,7 @@ export async function getNewLeaveRequestData() {
   const [currentContract, supervisor, holidays] = await Promise.all([
     prisma.employmentContract.findFirst({
       where: {
-        employeeId: user.employeeId,
+        employeeId: employee.id,
         isCurrent: true,
       },
       select: {
@@ -101,10 +143,10 @@ export async function getNewLeaveRequestData() {
         jobTitle: true,
       },
     }),
-    resolveEmployeeSupervisor(user.employeeId),
+    resolveEmployeeSupervisor(employee.id),
     prisma.organizationHoliday.findMany({
       where: {
-        organizationId: user.employee.organizationId,
+        organizationId: employee.organizationId,
         isActive: true,
       },
       select: {
@@ -113,6 +155,12 @@ export async function getNewLeaveRequestData() {
       },
     }),
   ]);
+
+  const positionTitle = resolveEmployeePositionTitle({
+    assignmentPositionTitle: employee.assignments[0]?.position?.title,
+    positionTitle: employee.position?.title,
+    contractJobTitle: currentContract?.jobTitle,
+  });
 
   const holidayDates = [
     ...new Set(
@@ -148,17 +196,17 @@ export async function getNewLeaveRequestData() {
   }
 
   return {
-    user: {
-      id: user.id,
-      employeeId: user.employeeId,
-      employeeNumber: user.employee.employeeNumber,
-      employeeName: `${user.employee.firstName} ${user.employee.lastName}`,
+    mode: options.mode,
+    employee: {
+      id: employee.id,
+      employeeNumber: employee.employeeNumber,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
     },
     currentContract: currentContract
       ? {
           id: currentContract.id,
           contractNumber: currentContract.contractNumber,
-          jobTitle: currentContract.jobTitle,
+          positionTitle: positionTitle ?? currentContract.jobTitle,
           hasEndDate: Boolean(currentContract.endDate),
         }
       : null,
@@ -185,7 +233,7 @@ export async function getNewLeaveRequestData() {
       contractId: balance.contractId,
       leaveTypeId: balance.leaveTypeId,
       contractNumber: balance.contract.contractNumber,
-      jobTitle: balance.contract.jobTitle,
+      positionTitle: positionTitle ?? balance.contract.jobTitle,
       cycleStart: balance.cycleStart.toISOString(),
       cycleEnd: balance.cycleEnd.toISOString(),
       leaveTypeCode: balance.leaveType.code,
@@ -201,6 +249,22 @@ export async function getNewLeaveRequestData() {
   };
 }
 
-export type NewLeaveRequestData = Awaited<
-  ReturnType<typeof getNewLeaveRequestData>
+/** Convenience loader for the authenticated employee's own leave form. */
+export async function getSelfNewLeaveRequestData() {
+  const user = await requireCurrentUser();
+
+  if (!user.employeeId || !user.organizationId) {
+    return null;
+  }
+
+  return getNewLeaveRequestData({
+    employeeId: user.employeeId,
+    actingUserId: user.id,
+    organizationId: user.organizationId,
+    mode: "self",
+  });
+}
+
+export type NewLeaveRequestData = NonNullable<
+  Awaited<ReturnType<typeof getNewLeaveRequestData>>
 >;

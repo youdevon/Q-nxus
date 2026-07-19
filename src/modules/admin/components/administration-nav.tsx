@@ -8,10 +8,7 @@ import {
   Hash,
   KeyRound,
   Mail,
-  MapPin,
-  Network,
   Settings2,
-  SlidersHorizontal,
 } from "lucide-react";
 
 const items = [
@@ -21,24 +18,9 @@ const items = [
     icon: Building2,
   },
   {
-    title: "Locations",
-    href: "/administration/locations",
-    icon: MapPin,
-  },
-  {
-    title: "Business Units",
-    href: "/administration/business-units",
-    icon: Network,
-  },
-  {
     title: "Users and Roles",
     href: "/administration/access",
     icon: KeyRound,
-  },
-  {
-    title: "Feature Controls",
-    href: "/administration/features",
-    icon: SlidersHorizontal,
   },
   {
     title: "Numbering Sequences",

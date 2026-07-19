@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isLeaveAwaitingApprovalDecision,
   isLeaveAwaitingDecision,
   resolveLeaveDecisionOutcome,
 } from "@/src/modules/hr/lib/leave-decision-outcome";
@@ -38,6 +39,7 @@ describe("resolveLeaveDecisionOutcome", () => {
         decision: "APPROVE",
         stepNumber: 1,
         canManageLeave: false,
+        mode: "MANAGER_THEN_HR",
       }),
     ).toEqual({
       kind: "advance_to_hr",
@@ -51,6 +53,7 @@ describe("resolveLeaveDecisionOutcome", () => {
         decision: "APPROVE",
         stepNumber: 1,
         canManageLeave: true,
+        mode: "MANAGER_THEN_HR",
       }),
     ).toEqual({
       kind: "finalize",
@@ -65,6 +68,51 @@ describe("resolveLeaveDecisionOutcome", () => {
         decision: "APPROVE",
         stepNumber: 2,
         canManageLeave: true,
+        mode: "MANAGER_THEN_HR",
+      }),
+    ).toEqual({
+      kind: "finalize",
+      requestStatus: "APPROVED",
+      applyBalance: "approve",
+    });
+  });
+
+  it("finalizes directly for DIRECT_MANAGER", () => {
+    expect(
+      resolveLeaveDecisionOutcome({
+        decision: "APPROVE",
+        stepNumber: 1,
+        canManageLeave: false,
+        mode: "DIRECT_MANAGER",
+      }),
+    ).toEqual({
+      kind: "finalize",
+      requestStatus: "APPROVED",
+      applyBalance: "approve",
+    });
+  });
+
+  it("advances to final for MANAGER_THEN_FINAL", () => {
+    expect(
+      resolveLeaveDecisionOutcome({
+        decision: "APPROVE",
+        stepNumber: 1,
+        canManageLeave: false,
+        mode: "MANAGER_THEN_FINAL",
+      }),
+    ).toEqual({
+      kind: "advance_to_final",
+      requestStatus: "PENDING_APPROVAL",
+    });
+  });
+
+  it("finalizes for REPORTING_LINE_ACK_THEN_FINAL", () => {
+    expect(
+      resolveLeaveDecisionOutcome({
+        decision: "APPROVE",
+        stepNumber: 1,
+        canManageLeave: false,
+        mode: "REPORTING_LINE_ACK_THEN_FINAL",
       }),
     ).toEqual({
       kind: "finalize",
@@ -75,10 +123,18 @@ describe("resolveLeaveDecisionOutcome", () => {
 });
 
 describe("isLeaveAwaitingDecision", () => {
-  it("includes manager and HR pending statuses", () => {
+  it("includes acknowledgement and approval pending statuses", () => {
     expect(isLeaveAwaitingDecision("PENDING_APPROVAL")).toBe(true);
+    expect(isLeaveAwaitingDecision("AWAITING_ACKNOWLEDGEMENT")).toBe(true);
     expect(isLeaveAwaitingDecision("MANAGER_APPROVED")).toBe(true);
     expect(isLeaveAwaitingDecision("SUBMITTED")).toBe(true);
     expect(isLeaveAwaitingDecision("APPROVED")).toBe(false);
+  });
+
+  it("excludes acknowledgement from approval decisions", () => {
+    expect(isLeaveAwaitingApprovalDecision("AWAITING_ACKNOWLEDGEMENT")).toBe(
+      false,
+    );
+    expect(isLeaveAwaitingApprovalDecision("PENDING_APPROVAL")).toBe(true);
   });
 });

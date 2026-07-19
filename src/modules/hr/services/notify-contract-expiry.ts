@@ -1,5 +1,6 @@
 import { NotificationSeverity } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
 
 function startOfUtcDay(value = new Date()): Date {
@@ -52,6 +53,16 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
           lastName: true,
           employeeNumber: true,
           organizationId: true,
+          position: {
+            select: { title: true },
+          },
+          assignments: {
+            where: { isCurrent: true },
+            take: 1,
+            select: {
+              position: { select: { title: true } },
+            },
+          },
         },
       },
     },
@@ -152,7 +163,14 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
 
     await createSystemNotification({
       title,
-      message: `${contract.employee.employeeNumber} · ${contract.jobTitle} ends ${endIso}${contract.contractNumber ? ` (${contract.contractNumber})` : ""}.`,
+      message: `${contract.employee.employeeNumber} · ${
+        resolveEmployeePositionTitle({
+          assignmentPositionTitle:
+            contract.employee.assignments[0]?.position?.title,
+          positionTitle: contract.employee.position?.title,
+          contractJobTitle: contract.jobTitle,
+        }) ?? contract.jobTitle
+      } ends ${endIso}${contract.contractNumber ? ` (${contract.contractNumber})` : ""}.`,
       severity:
         daysUntil < 0 || daysUntil <= 30
           ? NotificationSeverity.WARNING

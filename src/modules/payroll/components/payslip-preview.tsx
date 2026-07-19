@@ -1,5 +1,3 @@
-"use client";
-
 import { CircleCheck, Printer } from "lucide-react";
 import Link from "next/link";
 

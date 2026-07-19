@@ -8,12 +8,11 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PageHeader } from "@/src/components/layout/page-header";
-import {
-  PageActionsEnd,
-  PageActionsStart,
-} from "@/src/components/layout/page-actions";
+import { Textarea } from "@/components/ui/textarea";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { FormPageActions } from "@/src/components/layout/page-actions";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { ageFromDateOfBirth } from "@/src/lib/age";
 import {
   createEmployee,
   updateEmployee,
@@ -23,7 +22,10 @@ import type {
   EmployeeFormDepartment,
   EmployeeFormRecord,
 } from "@/src/modules/hr/data/get-employee-form-data";
-import { PeopleNav } from "./people-nav";
+import {
+  isFullEmployee,
+  WORKFORCE_CATEGORY_OPTIONS,
+} from "@/src/modules/hr/lib/workforce-category";
 
 type EmployeeFormProps = {
   employee?: EmployeeFormRecord;
@@ -42,12 +44,23 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
   const [departmentId, setDepartmentId] = useState(
     employee?.departmentId ?? "",
   );
+  const [dateOfBirth, setDateOfBirth] = useState(
+    employee?.dateOfBirth ?? "",
+  );
+  const [workforceCategory, setWorkforceCategory] = useState(
+    employee?.workforceCategory ?? "EMPLOYEE",
+  );
+  const showOrgAssignment = isFullEmployee(workforceCategory);
 
   const positions = useMemo(
     () =>
       departments.find((department) => department.id === departmentId)
         ?.positions ?? [],
     [departmentId, departments],
+  );
+  const dateOfBirthAge = useMemo(
+    () => ageFromDateOfBirth(dateOfBirth),
+    [dateOfBirth],
   );
 
   useEffect(() => {
@@ -63,66 +76,43 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
   return (
     <form action={formAction}>
       <PageShell>
-        <PeopleNav />
-
-        <PageHeader
+        <PeoplePageHeader
           title={
             employee
               ? `${employee.firstName} ${employee.lastName}`
-              : "New Employee"
+              : "New person"
           }
           description={
             employee
-              ? `Manage employee ${employee.employeeNumber}.`
-              : "Create a workforce profile and assign an employment classification."
+              ? `Manage ${employee.employeeNumber}.`
+              : "Create a workforce profile. Personal email becomes their login for self-service."
           }
           backHref={employee ? `/people/employees/${employee.id}` : "/people"}
-          backLabel={employee ? "Employee" : "Employees"}
+          backLabel={employee ? "Profile" : "People"}
           actions={
-            <>
-              <PageActionsStart>
+            <FormPageActions
+              cancelHref={
+                employee ? `/people/employees/${employee.id}` : "/people"
+              }
+            >
+              {employee && showOrgAssignment ? (
                 <Button
                   nativeButton={false}
                   variant="outline"
                   render={
                     <Link
-                      href={
-                        employee
-                          ? `/people/employees/${employee.id}`
-                          : "/people"
-                      }
+                      href={`/people/employees/${employee.id}/job-description`}
                     />
                   }
                 >
-                  {employee ? "Cancel" : "Directory"}
+                  Job description
                 </Button>
-
-                {employee && (
-                  <Button
-                    nativeButton={false}
-                    variant="outline"
-                    render={
-                      <Link
-                        href={`/people/employees/${employee.id}/job-description`}
-                      />
-                    }
-                  >
-                    Job description
-                  </Button>
-                )}
-              </PageActionsStart>
-
-              <PageActionsEnd>
-                <Button type="submit" disabled={pending}>
-                  <Save />
-                  {pending
-                    ? "Saving…"
-                    : employee
-                      ? "Save employee"
-                      : "Create employee"}
-                </Button>
-              </PageActionsEnd>
-            </>
+              ) : null}
+              <Button type="submit" disabled={pending}>
+                <Save />
+                {pending ? "Saving…" : employee ? "Save" : "Create"}
+              </Button>
+            </FormPageActions>
           }
         />
 
@@ -219,14 +209,23 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
             </div>
 
             <div>
-              <label htmlFor="dateOfBirth" className="text-sm font-medium">
-                Date of birth
+              <label
+                htmlFor="dateOfBirth"
+                className="flex items-baseline gap-1 text-sm font-medium"
+              >
+                <span>Date of birth</span>
+                {dateOfBirthAge === null ? null : (
+                  <span className="text-muted-foreground">
+                    ({dateOfBirthAge})
+                  </span>
+                )}
               </label>
               <Input
                 id="dateOfBirth"
                 name="dateOfBirth"
                 type="date"
-                defaultValue={employee?.dateOfBirth ?? ""}
+                value={dateOfBirth}
+                onChange={(event) => setDateOfBirth(event.target.value)}
                 className="mt-2"
               />
               {state.fieldErrors?.dateOfBirth && (
@@ -249,9 +248,75 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               />
             </div>
 
+            <div className="md:col-span-2">
+              <label htmlFor="address" className="text-sm font-medium">
+                Address
+              </label>
+              <Textarea
+                id="address"
+                name="address"
+                rows={3}
+                defaultValue={employee?.address ?? ""}
+                className="mt-2"
+                autoComplete="street-address"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="emergencyContactName"
+                className="text-sm font-medium"
+              >
+                Emergency contact name
+              </label>
+              <Input
+                id="emergencyContactName"
+                name="emergencyContactName"
+                defaultValue={employee?.emergencyContactName ?? ""}
+                className="mt-2"
+                autoComplete="name"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="emergencyContactPhone"
+                className="text-sm font-medium"
+              >
+                Emergency contact phone
+              </label>
+              <Input
+                id="emergencyContactPhone"
+                name="emergencyContactPhone"
+                type="tel"
+                defaultValue={employee?.emergencyContactPhone ?? ""}
+                className="mt-2"
+                autoComplete="tel"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="emergencyContactRelationship"
+                className="text-sm font-medium"
+              >
+                Emergency contact relationship
+              </label>
+              <Input
+                id="emergencyContactRelationship"
+                name="emergencyContactRelationship"
+                defaultValue={employee?.emergencyContactRelationship ?? ""}
+                placeholder="e.g. Spouse, Parent"
+                className="mt-2"
+              />
+            </div>
+
             <div>
               <label htmlFor="personalEmail" className="text-sm font-medium">
                 Personal email
+                {!employee ? (
+                  <span className="text-destructive"> *</span>
+                ) : null}
               </label>
               <Input
                 id="personalEmail"
@@ -259,7 +324,14 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
                 type="email"
                 defaultValue={employee?.personalEmail ?? ""}
                 className="mt-2"
+                required={!employee}
+                autoComplete="email"
               />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Used as the login email for this person&apos;s account. They get
+                self-service access only (profile and payslips); broader roles
+                are assigned later under Administration → Access.
+              </p>
               {state.fieldErrors?.personalEmail && (
                 <p className="mt-1 text-xs text-destructive">
                   {state.fieldErrors.personalEmail}
@@ -271,10 +343,126 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
 
         <section>
           <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
-            Employment details
+            Identity &amp; statutory
+          </h2>
+          <p className="mb-4 text-xs text-muted-foreground">
+            NIS and BIR are the source of truth. They are auto-filled into
+            payroll setup, payslips, and letter templates.
+          </p>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label htmlFor="nisNumber" className="text-sm font-medium">
+                NIS number
+              </label>
+              <Input
+                id="nisNumber"
+                name="nisNumber"
+                defaultValue={employee?.nisNumber ?? ""}
+                placeholder="National insurance number"
+                className="mt-2"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="birNumber" className="text-sm font-medium">
+                BIR number
+              </label>
+              <Input
+                id="birNumber"
+                name="birNumber"
+                defaultValue={employee?.birNumber ?? ""}
+                placeholder="Board of Inland Revenue file number"
+                className="mt-2"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="idType" className="text-sm font-medium">
+                ID type
+              </label>
+              <select
+                id="idType"
+                name="idType"
+                defaultValue={employee?.idType ?? ""}
+                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+              >
+                <option value="">Not set</option>
+                <option value="NATIONAL_ID">National ID</option>
+                <option value="DRIVERS_PERMIT">Driver&apos;s Permit</option>
+                <option value="NON_NATIONAL">
+                  Non-national ID (passport / foreign ID)
+                </option>
+              </select>
+              {state.fieldErrors?.idType && (
+                <p className="mt-1 text-xs text-destructive">
+                  {state.fieldErrors.idType}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="idNumber" className="text-sm font-medium">
+                ID number
+              </label>
+              <Input
+                id="idNumber"
+                name="idNumber"
+                defaultValue={employee?.idNumber ?? ""}
+                className="mt-2"
+              />
+              {state.fieldErrors?.idNumber && (
+                <p className="mt-1 text-xs text-destructive">
+                  {state.fieldErrors.idNumber}
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
+            Workforce details
           </h2>
 
           <div className="grid gap-5 md:grid-cols-2">
+            <div>
+              <label
+                htmlFor="workforceCategory"
+                className="text-sm font-medium"
+              >
+                Workforce category
+              </label>
+              <select
+                id="workforceCategory"
+                name="workforceCategory"
+                value={workforceCategory}
+                onChange={(event) => {
+                  setWorkforceCategory(event.target.value);
+                  if (!isFullEmployee(event.target.value)) {
+                    setDepartmentId("");
+                  }
+                }}
+                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+                required
+              >
+                {WORKFORCE_CATEGORY_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Agents, board members, and contractors are payees with
+                time-bounded contracts. They do not get an employee file.
+              </p>
+              {state.fieldErrors?.workforceCategory && (
+                <p className="mt-1 text-xs text-destructive">
+                  {state.fieldErrors.workforceCategory}
+                </p>
+              )}
+            </div>
+
             <div>
               <label htmlFor="workEmail" className="text-sm font-medium">
                 Work email
@@ -286,6 +474,10 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
                 defaultValue={employee?.workEmail ?? ""}
                 className="mt-2"
               />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Optional contact address. Login uses personal email, not work
+                email.
+              </p>
               {state.fieldErrors?.workEmail && (
                 <p className="mt-1 text-xs text-destructive">
                   {state.fieldErrors.workEmail}
@@ -300,7 +492,10 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               <select
                 id="employmentType"
                 name="employmentType"
-                defaultValue={employee?.employmentType ?? "PERMANENT"}
+                defaultValue={
+                  employee?.employmentType ??
+                  (showOrgAssignment ? "PERMANENT" : "CONSULTANT")
+                }
                 className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
                 required
               >
@@ -315,7 +510,7 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
 
             <div>
               <label htmlFor="employmentStatus" className="text-sm font-medium">
-                Employment status
+                Status
               </label>
               <select
                 id="employmentStatus"
@@ -335,7 +530,7 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
 
             <div>
               <label htmlFor="hireDate" className="text-sm font-medium">
-                Hire date
+                {showOrgAssignment ? "Hire date" : "Engagement start"}
               </label>
               <Input
                 id="hireDate"
@@ -352,27 +547,35 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               )}
             </div>
 
-            <div>
-              <label htmlFor="terminationDate" className="text-sm font-medium">
-                Termination date
-              </label>
-              <Input
-                id="terminationDate"
-                name="terminationDate"
-                type="date"
-                defaultValue={employee?.terminationDate ?? ""}
-                className="mt-2"
-              />
-              {state.fieldErrors?.terminationDate && (
-                <p className="mt-1 text-xs text-destructive">
-                  {state.fieldErrors.terminationDate}
+            {employee ? (
+              <div>
+                <label
+                  htmlFor="terminationDate"
+                  className="text-sm font-medium"
+                >
+                  Termination date
+                </label>
+                <Input
+                  id="terminationDate"
+                  name="terminationDate"
+                  type="date"
+                  defaultValue={employee.terminationDate ?? ""}
+                  className="mt-2"
+                />
+                {state.fieldErrors?.terminationDate && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {state.fieldErrors.terminationDate}
+                  </p>
+                )}
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Use for leavers. Engagement end dates are set on the contract.
                 </p>
-              )}
-            </div>
+              </div>
+            ) : null}
           </div>
         </section>
 
-        {!employee && (
+        {!employee && showOrgAssignment ? (
           <section>
             <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
               Initial organizational assignment
@@ -421,18 +624,7 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               </div>
             </div>
           </section>
-        )}
-
-        <footer className="flex justify-end border-t border-border pt-5">
-          <Button type="submit" disabled={pending}>
-            <Save />
-            {pending
-              ? "Saving…"
-              : employee
-                ? "Save employee"
-                : "Create employee"}
-          </Button>
-        </footer>
+        ) : null}
       </PageShell>
     </form>
   );

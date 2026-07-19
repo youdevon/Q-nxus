@@ -111,6 +111,7 @@ export function OrganizationForm({
       />
 
       <form
+        key={`${organization.id}-v${organization.version}`}
         id="organization-profile-form"
         action={formAction}
         className="flex flex-col gap-8"
@@ -215,6 +216,7 @@ export function OrganizationForm({
                 defaultValue={organization.shortName ?? ""}
                 maxLength={50}
                 className="mt-2"
+                placeholder="Shown in the sidebar"
                 aria-invalid={Boolean(state.errors?.shortName)}
                 aria-describedby={
                   state.errors?.shortName ? "short-name-error" : undefined

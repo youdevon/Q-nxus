@@ -45,7 +45,7 @@ export function NotificationItem({
         <div className="flex items-start gap-2">
           <p
             className={cn(
-              "min-w-0 flex-1 text-sm leading-snug",
+              "min-w-0 flex-1 break-words text-sm leading-snug",
               notification.read ? "font-normal" : "font-semibold",
             )}
           >
@@ -58,7 +58,7 @@ export function NotificationItem({
             />
           )}
         </div>
-        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-0.5 break-words text-xs leading-relaxed text-muted-foreground">
           {notification.message}
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-2">

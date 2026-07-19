@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { appConfig } from "@/src/config/app.config";
 import { filterNavigationForCapabilities } from "@/src/config/navigation.config";
+import { useApplicationChrome } from "@/src/core/providers/application-chrome-provider";
 import { useAuth } from "@/src/modules/auth/context/auth-provider";
 import {
   Sidebar,
@@ -23,6 +23,7 @@ import {
 export function AppSidebar() {
   const pathname = usePathname();
   const { canAny } = useAuth();
+  const chrome = useApplicationChrome();
   const sections = filterNavigationForCapabilities(canAny);
 
   return (
@@ -34,18 +35,10 @@ export function AppSidebar() {
               size="lg"
               render={<Link href="/" />}
               className="data-[slot=sidebar-menu-button]:p-2"
-              tooltip={appConfig.displayName}
+              tooltip={chrome.organizationName}
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-xs font-semibold tracking-wide text-sidebar-primary-foreground">
-                {appConfig.shortName}
-              </span>
-              <span className="flex min-w-0 flex-col gap-0.5 leading-none">
-                <span className="truncate font-semibold">
-                  {appConfig.displayName}
-                </span>
-                <span className="truncate text-[11px] text-muted-foreground">
-                  {appConfig.organizationName}
-                </span>
+              <span className="truncate font-semibold">
+                {chrome.shortName}
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -63,10 +56,11 @@ export function AppSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {section.items.map((item) => {
+                    const activePrefix = item.matchPrefix ?? item.href;
                     const isActive =
                       item.href === "/"
                         ? pathname === "/"
-                        : pathname.startsWith(item.href);
+                        : pathname.startsWith(activePrefix);
                     const Icon = item.icon;
 
                     return (
@@ -88,7 +82,6 @@ export function AppSidebar() {
           </div>
         ))}
       </SidebarContent>
-
       <SidebarRail />
     </Sidebar>
   );

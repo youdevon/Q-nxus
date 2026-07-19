@@ -6,6 +6,10 @@ import { SequenceResetFrequency } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import {
+  currentNumberFromNextNumber,
+  parseNonNegativeBigInt,
+} from "@/src/modules/admin/lib/numbering-sequence";
 
 export type NumberingSequenceFormState = {
   status: "idle" | "success" | "error" | "conflict";
@@ -90,6 +94,24 @@ export async function saveNumberingSequences(
           `resetFrequency:${sequenceId}`,
         );
         const isActive = formData.get(`isActive:${sequenceId}`) === "on";
+        const nextNumberRaw = textValue(formData, `nextNumber:${sequenceId}`);
+        const parsedNext = parseNonNegativeBigInt(nextNumberRaw);
+
+        if (parsedNext === null || parsedNext < BigInt(1)) {
+          return {
+            outcome: "invalid-next" as const,
+          };
+        }
+
+        let nextCurrentNumber: bigint;
+
+        try {
+          nextCurrentNumber = currentNumberFromNextNumber(parsedNext);
+        } catch {
+          return {
+            outcome: "invalid-next" as const,
+          };
+        }
 
         if (
           !Number.isInteger(minimumLength) ||
@@ -128,6 +150,7 @@ export async function saveNumberingSequences(
             minimumLength,
             resetFrequency: resetFrequencyValue as SequenceResetFrequency,
             isActive,
+            currentNumber: nextCurrentNumber,
             version: {
               increment: 1,
             },
@@ -151,7 +174,8 @@ export async function saveNumberingSequences(
           current.suffix !== updated.suffix ||
           current.minimumLength !== updated.minimumLength ||
           current.resetFrequency !== updated.resetFrequency ||
-          current.isActive !== updated.isActive;
+          current.isActive !== updated.isActive ||
+          current.currentNumber !== updated.currentNumber;
 
         if (changed) {
           await transaction.auditEvent.create({
@@ -231,7 +255,15 @@ export async function saveNumberingSequences(
       };
     }
 
+    if (result.outcome === "invalid-next") {
+      return {
+        status: "error",
+        message: "Next number must be a whole number of at least 1.",
+      };
+    }
+
     revalidatePath("/administration/numbering-sequences");
+    revalidatePath("/administration/numbering-sequences/edit");
 
     return {
       status: "success",
@@ -249,86 +281,133 @@ export async function saveNumberingSequences(
 }
 
 export async function resetNumberingSequence(
+  _previousState: NumberingSequenceFormState,
   formData: FormData,
-): Promise<void> {
+): Promise<NumberingSequenceFormState> {
   const actor = await requireActor(
     "administration.manage",
     "administration.manage_sequence",
   );
 
   if (!actor.ok) {
-    throw new Error(actor.message);
+    return {
+      status: "error",
+      message: actor.message,
+    };
   }
 
   const id = textValue(formData, "id");
   const submittedVersion = Number(textValue(formData, "version"));
 
   if (!id || !Number.isInteger(submittedVersion)) {
-    return;
+    return {
+      status: "error",
+      message: "A valid numbering sequence was not submitted.",
+    };
   }
 
-  const { ipAddress, userAgent, clientHostName } =
-    await getAuditRequestMetadata(formData);
+  try {
+    const { ipAddress, userAgent, clientHostName } =
+      await getAuditRequestMetadata(formData);
 
-  await prisma.$transaction(async (transaction) => {
-    const current = await transaction.numberingSequence.findUnique({
-      where: {
-        id,
-      },
+    const result = await prisma.$transaction(async (transaction) => {
+      const current = await transaction.numberingSequence.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!current) {
+        return { outcome: "missing" as const };
+      }
+
+      if (current.version !== submittedVersion) {
+        return { outcome: "conflict" as const };
+      }
+
+      const updateResult = await transaction.numberingSequence.updateMany({
+        where: {
+          id,
+          version: submittedVersion,
+        },
+        data: {
+          currentNumber: BigInt(0),
+          lastResetAt: new Date(),
+          version: {
+            increment: 1,
+          },
+        },
+      });
+
+      if (updateResult.count !== 1) {
+        return { outcome: "conflict" as const };
+      }
+
+      const updated = await transaction.numberingSequence.findUniqueOrThrow({
+        where: {
+          id,
+        },
+      });
+
+      await transaction.auditEvent.create({
+        data: {
+          userId: actor.actor.userId,
+          moduleKey: "administration",
+          action: "RESET",
+          entityType: "NumberingSequence",
+          entityId: updated.id,
+          description: `Reset numbering sequence ${updated.sequenceCode} to zero.`,
+          oldValues: {
+            currentNumber: current.currentNumber.toString(),
+            lastResetAt: current.lastResetAt,
+            version: current.version,
+          },
+          newValues: {
+            currentNumber: updated.currentNumber.toString(),
+            lastResetAt: updated.lastResetAt,
+            version: updated.version,
+          },
+          ipAddress,
+          userAgent,
+          clientHostName,
+        },
+      });
+
+      return {
+        outcome: "reset" as const,
+        sequenceCode: updated.sequenceCode,
+      };
     });
 
-    if (!current || current.version !== submittedVersion) {
-      return;
+    if (result.outcome === "missing") {
+      return {
+        status: "error",
+        message: "A numbering sequence no longer exists.",
+      };
     }
 
-    const updateResult = await transaction.numberingSequence.updateMany({
-      where: {
-        id,
-        version: submittedVersion,
-      },
-      data: {
-        currentNumber: BigInt(0),
-        lastResetAt: new Date(),
-        version: {
-          increment: 1,
-        },
-      },
-    });
-
-    if (updateResult.count !== 1) {
-      return;
+    if (result.outcome === "conflict") {
+      return {
+        status: "conflict",
+        message:
+          "This numbering sequence was updated elsewhere. Refresh the page before resetting again.",
+      };
     }
 
-    const updated = await transaction.numberingSequence.findUniqueOrThrow({
-      where: {
-        id,
-      },
-    });
+    revalidatePath("/administration/numbering-sequences");
+    revalidatePath("/administration/numbering-sequences/edit");
 
-    await transaction.auditEvent.create({
-      data: {
-        userId: actor.actor.userId,
-        moduleKey: "administration",
-        action: "RESET",
-        entityType: "NumberingSequence",
-        entityId: updated.id,
-        description: `Reset numbering sequence ${updated.sequenceCode}.`,
-        oldValues: {
-          currentNumber: current.currentNumber.toString(),
-          lastResetAt: current.lastResetAt,
-          version: current.version,
-        },
-        newValues: {
-          currentNumber: updated.currentNumber.toString(),
-          lastResetAt: updated.lastResetAt,
-          version: updated.version,
-        },
-        ipAddress,
-        userAgent,
-        clientHostName,
-      },
-    });
-  });
+    return {
+      status: "success",
+      message: `Sequence ${result.sequenceCode} reset to zero. The next issued number will be 1.`,
+    };
+  } catch (error: unknown) {
+    console.error("Unable to reset numbering sequence:", error);
 
-  revalidatePath("/administration/numbering-sequences");
+    return {
+      status: "error",
+      message:
+        "The numbering sequence could not be reset. Check the server log and try again.",
+    };
+  }
 }

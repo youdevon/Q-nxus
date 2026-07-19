@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
+import { getApplicationChrome } from "@/src/modules/admin/data/get-application-chrome";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
 
@@ -29,8 +30,11 @@ export async function createTestNotification(): Promise<void> {
     return;
   }
 
+  const chrome = await getApplicationChrome();
+  const brandName = chrome.organizationName;
+
   await createSystemNotification({
-    title: "Q-NXUS notification test",
+    title: `${brandName} notification test`,
     message:
       "The system-wide notification service is working. Future leave requests, approvals and workflow alerts will appear here.",
     severity: "INFORMATION",
@@ -46,10 +50,9 @@ export async function createTestNotification(): Promise<void> {
       },
     ],
     email: {
-      subject: "Q-NXUS notification test",
-      textBody: "The Q-NXUS notification and SMTP service is working.",
-      bodyHtml:
-        "<p>The Q-NXUS notification and SMTP service is working.</p><p>Future leave requests, approval tasks and workflow alerts can use this shared service.</p>",
+      subject: `${brandName} notification test`,
+      textBody: `The ${brandName} notification and SMTP service is working.`,
+      bodyHtml: `<p>The ${brandName} notification and SMTP service is working.</p><p>Future leave requests, approval tasks and workflow alerts can use this shared service.</p>`,
       actionLabel: "Open notifications",
       priority: "NORMAL",
     },

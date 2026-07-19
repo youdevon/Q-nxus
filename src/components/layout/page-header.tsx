@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, type LucideIcon } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { PageActions } from "@/src/components/layout/page-actions";
 import { UI_SURFACE, UI_TYPOGRAPHY } from "@/src/config/ui-typography";
 
@@ -22,11 +23,14 @@ type PageHeaderProps = {
    */
   backHref?: string;
   backLabel?: string;
+  /** Lucide icon beside the title (same visual language as sidebar). */
+  icon?: LucideIcon;
   /**
    * Header actions. Forms: FormPageActions (Cancel left, Save right).
    * Detail pages: PageActionsEnd for Edit / primary only — back lives in backHref.
    */
   actions?: ReactNode;
+  className?: string;
 };
 
 export function PageHeader({
@@ -34,11 +38,17 @@ export function PageHeader({
   description,
   backHref,
   backLabel = "Back",
+  icon: Icon,
   actions,
+  className,
 }: PageHeaderProps) {
   return (
     <div
-      className={`flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between ${UI_SURFACE.pageHeaderBand}`}
+      data-slot="page-header"
+      className={cn(
+        `flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between ${UI_SURFACE.pageHeaderBand}`,
+        className,
+      )}
     >
       <div className={`min-w-0 space-y-1.5 ${UI_SURFACE.pageTitleAccent}`}>
         {backHref ? (
@@ -50,11 +60,17 @@ export function PageHeader({
             {backLabel}
           </Link>
         ) : null}
-        <h1 className={UI_TYPOGRAPHY.pageTitle}>{title}</h1>
+        <div className="flex items-center gap-2.5">
+          {Icon ? (
+            <Icon
+              className="size-5 shrink-0 text-muted-foreground"
+              aria-hidden
+            />
+          ) : null}
+          <h1 className={UI_TYPOGRAPHY.pageTitle}>{title}</h1>
+        </div>
         {description ? (
-          <p className="max-w-2xl text-sm text-muted-foreground">
-            {description}
-          </p>
+          <p className={UI_TYPOGRAPHY.pageDescription}>{description}</p>
         ) : null}
       </div>
       {actions != null ? <PageActions>{actions}</PageActions> : null}

@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { PayslipPrintView } from "@/src/modules/payroll/components/payslip-print-view";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
-import { getStoredPayslip } from "@/src/modules/payroll/data/get-pay-runs";
+import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";
 import {
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,

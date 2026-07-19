@@ -5,6 +5,7 @@ import {
   matchesCredentialForChecklistItem,
   resolveEmployeeFileChecklist,
   summarizeChecklistCompleteness,
+  assessStandingEmployeeFileDocs,
 } from "@/src/modules/hr/lib/employee-file-checklist";
 
 describe("matchesCredentialForChecklistItem", () => {
@@ -269,5 +270,65 @@ describe("summarizeChecklistCompleteness", () => {
     expect(summary.completeCount).toBe(0);
     expect(summary.percentComplete).toBe(0);
     expect(summary.missingLabels).toContain("Signed Assumption of Duty forms");
+  });
+});
+
+describe("assessStandingEmployeeFileDocs", () => {
+  it("treats standing docs as complete even when assumption of duty is missing", () => {
+    const assessment = assessStandingEmployeeFileDocs([
+      {
+        itemType: "ACADEMIC_CERTIFICATES",
+        label: "Academic",
+        status: "UPLOADED",
+      },
+      { itemType: "COPY_OF_ID", label: "ID", status: "UPLOADED" },
+      {
+        itemType: "BIRTH_CERTIFICATE",
+        label: "Birth",
+        status: "UPLOADED",
+      },
+      {
+        itemType: "MARRIAGE_CERTIFICATE",
+        label: "Marriage",
+        status: "NOT_APPLICABLE",
+      },
+      {
+        itemType: "ASSUMPTION_OF_DUTY",
+        label: "Assumption",
+        status: "MISSING",
+      },
+    ]);
+
+    expect(assessment.standingDocsComplete).toBe(true);
+    expect(assessment.missingLabels).toEqual([]);
+  });
+
+  it("reports missing standing docs", () => {
+    const assessment = assessStandingEmployeeFileDocs([
+      {
+        itemType: "ACADEMIC_CERTIFICATES",
+        label: "Academic",
+        status: "MISSING",
+      },
+      { itemType: "COPY_OF_ID", label: "ID", status: "UPLOADED" },
+      {
+        itemType: "BIRTH_CERTIFICATE",
+        label: "Birth",
+        status: "MISSING",
+      },
+      {
+        itemType: "MARRIAGE_CERTIFICATE",
+        label: "Marriage",
+        status: "NOT_APPLICABLE",
+      },
+      {
+        itemType: "ASSUMPTION_OF_DUTY",
+        label: "Assumption",
+        status: "SIGNED",
+      },
+    ]);
+
+    expect(assessment.standingDocsComplete).toBe(false);
+    expect(assessment.missingLabels).toEqual(["Academic", "Birth"]);
   });
 });

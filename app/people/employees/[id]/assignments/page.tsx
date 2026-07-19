@@ -5,9 +5,9 @@ import { BriefcaseBusiness, Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { formatDisplayDate } from "@/src/lib/format";
 import { getEmployeeAssignmentHistory } from "@/src/modules/hr/data/get-employee-assignments";
 import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
@@ -42,9 +42,7 @@ export default async function EmployeeAssignmentsPage({
 
   return (
     <PageShell size="lg">
-      <PeopleNav />
-
-      <PageHeader
+      <PeoplePageHeader
         title="Assignment History"
         description={`${data.employee.firstName} ${data.employee.lastName} · ${data.employee.employeeNumber}`}
         backHref={`/people/employees/${data.employee.id}`}
@@ -85,7 +83,9 @@ export default async function EmployeeAssignmentsPage({
 
         <div>
           <p className="text-xs text-muted-foreground">Hire date</p>
-          <p className="mt-1 text-sm font-medium">{data.employee.hireDate}</p>
+          <p className="mt-1 text-sm font-medium">
+            {formatDisplayDate(data.employee.hireDate)}
+          </p>
         </div>
       </section>
 
@@ -133,8 +133,10 @@ export default async function EmployeeAssignmentsPage({
                     </p>
 
                     <p className="mt-2 text-xs text-muted-foreground">
-                      {assignment.startDate} to{" "}
-                      {assignment.endDate ?? "Present"}
+                      {formatDisplayDate(assignment.startDate)} to{" "}
+                      {assignment.endDate
+                        ? formatDisplayDate(assignment.endDate)
+                        : "Present"}
                     </p>
 
                     {assignment.referenceNumber && (

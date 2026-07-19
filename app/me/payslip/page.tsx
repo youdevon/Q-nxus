@@ -6,7 +6,7 @@ import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employ
 import {
   getMostRecentPostedPayslip,
   getStoredPayslip,
-} from "@/src/modules/payroll/data/get-pay-runs";
+} from "@/src/modules/payroll/data/get-stored-payslip";
 import {
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,

@@ -1,5 +1,7 @@
 "use client";
 
+/** DEPRECATED — BusinessUnit admin UI is quarantined; routes removed. Keep for possible restore. */
+
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";

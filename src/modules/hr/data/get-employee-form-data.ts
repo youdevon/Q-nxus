@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 
 export type EmployeeFormDepartment = {
   id: string;
@@ -19,7 +20,16 @@ export type EmployeeFormRecord = {
   workEmail: string | null;
   personalEmail: string | null;
   phone: string | null;
+  address: string | null;
+  emergencyContactName: string | null;
+  emergencyContactPhone: string | null;
+  emergencyContactRelationship: string | null;
   dateOfBirth: string | null;
+  nisNumber: string | null;
+  birNumber: string | null;
+  idType: string | null;
+  idNumber: string | null;
+  workforceCategory: string;
   employmentStatus: string;
   employmentType: string;
   hireDate: string;
@@ -90,7 +100,16 @@ export async function getEmployeeById(
       workEmail: true,
       personalEmail: true,
       phone: true,
+      address: true,
+      emergencyContactName: true,
+      emergencyContactPhone: true,
+      emergencyContactRelationship: true,
       dateOfBirth: true,
+      nisNumber: true,
+      birNumber: true,
+      idType: true,
+      idNumber: true,
+      workforceCategory: true,
       employmentStatus: true,
       employmentType: true,
       hireDate: true,
@@ -108,8 +127,10 @@ export async function getEmployeeById(
 
   return {
     ...employee,
+    workforceCategory: employee.workforceCategory,
     employmentStatus: employee.employmentStatus,
     employmentType: employee.employmentType,
+    idType: employee.idType,
     dateOfBirth: employee.dateOfBirth?.toISOString().slice(0, 10) ?? null,
     hireDate: employee.hireDate.toISOString().slice(0, 10),
     terminationDate:
@@ -119,6 +140,7 @@ export async function getEmployeeById(
 }
 
 export type EmployeeProfileRecord = EmployeeFormRecord & {
+  userId: string | null;
   department: {
     id: string;
     name: string;
@@ -132,7 +154,7 @@ export type EmployeeProfileRecord = EmployeeFormRecord & {
   } | null;
   currentContract: {
     id: string;
-    jobTitle: string;
+    positionTitle: string;
     startDate: string;
     endDate: string | null;
     baseSalary: string;
@@ -158,7 +180,16 @@ export async function getEmployeeProfile(
       workEmail: true,
       personalEmail: true,
       phone: true,
+      address: true,
+      emergencyContactName: true,
+      emergencyContactPhone: true,
+      emergencyContactRelationship: true,
       dateOfBirth: true,
+      nisNumber: true,
+      birNumber: true,
+      idType: true,
+      idNumber: true,
+      workforceCategory: true,
       employmentStatus: true,
       employmentType: true,
       hireDate: true,
@@ -167,6 +198,11 @@ export async function getEmployeeProfile(
       positionId: true,
       isArchived: true,
       updatedAt: true,
+      user: {
+        select: {
+          id: true,
+        },
+      },
       department: {
         select: {
           id: true,
@@ -180,6 +216,19 @@ export async function getEmployeeProfile(
           title: true,
           code: true,
           description: true,
+        },
+      },
+      assignments: {
+        where: {
+          isCurrent: true,
+        },
+        take: 1,
+        select: {
+          position: {
+            select: {
+              title: true,
+            },
+          },
         },
       },
       contracts: {
@@ -216,7 +265,16 @@ export async function getEmployeeProfile(
     workEmail: employee.workEmail,
     personalEmail: employee.personalEmail,
     phone: employee.phone,
+    address: employee.address,
+    emergencyContactName: employee.emergencyContactName,
+    emergencyContactPhone: employee.emergencyContactPhone,
+    emergencyContactRelationship: employee.emergencyContactRelationship,
     dateOfBirth: employee.dateOfBirth?.toISOString().slice(0, 10) ?? null,
+    nisNumber: employee.nisNumber,
+    birNumber: employee.birNumber,
+    idType: employee.idType,
+    idNumber: employee.idNumber,
+    workforceCategory: employee.workforceCategory,
     employmentStatus: employee.employmentStatus,
     employmentType: employee.employmentType,
     hireDate: employee.hireDate.toISOString().slice(0, 10),
@@ -226,12 +284,19 @@ export async function getEmployeeProfile(
     positionId: employee.positionId,
     isArchived: employee.isArchived,
     updatedAt: employee.updatedAt.toISOString(),
+    userId: employee.user?.id ?? null,
     department: employee.department,
     position: employee.position,
     currentContract: currentContract
       ? {
           id: currentContract.id,
-          jobTitle: currentContract.jobTitle,
+          positionTitle:
+            resolveEmployeePositionTitle({
+              assignmentPositionTitle:
+                employee.assignments[0]?.position?.title,
+              positionTitle: employee.position?.title,
+              contractJobTitle: currentContract.jobTitle,
+            }) ?? currentContract.jobTitle,
           startDate: currentContract.startDate.toISOString().slice(0, 10),
           endDate: currentContract.endDate?.toISOString().slice(0, 10) ?? null,
           baseSalary: currentContract.baseSalary.toString(),

@@ -4,15 +4,19 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { EmployeeAssignmentType } from "@/generated/prisma/client";
-import { prisma } from "@/lib/prisma";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
-import { syncEmployeeAccessRoles } from "@/src/modules/auth/services/provision-employee-user";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
+import {
+  AssignEmployeeError,
+  assignEmployeeToPosition,
+  isEmployeeAssignmentType,
+} from "@/src/modules/hr/services/assign-employee-to-position";
 
 export type EmployeeAssignmentFormState = {
-  status: "idle" | "error" | "conflict";
+  status: "idle" | "error" | "conflict" | "success";
   message: string;
   fieldErrors?: Record<string, string>;
+  entityId?: string;
 };
 
 function textValue(formData: FormData, key: string): string {
@@ -32,6 +36,26 @@ function parseDate(value: string): Date | null {
 
   const parsed = new Date(`${value}T00:00:00.000Z`);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function revalidateAssignmentPaths(input: {
+  employeeId: string;
+  departmentId: string;
+  positionId: string | null;
+}) {
+  revalidatePath("/people");
+  revalidatePath(`/people/employees/${input.employeeId}`);
+  revalidatePath(`/people/employees/${input.employeeId}/assignments`);
+  revalidatePath("/people/structure");
+  revalidatePath("/people/structure/chart");
+
+  if (input.positionId) {
+    revalidatePath(`/people/structure/positions/${input.positionId}`);
+  }
+
+  if (input.departmentId) {
+    revalidatePath(`/people/structure/departments/${input.departmentId}`);
+  }
 }
 
 export async function createEmployeeAssignment(
@@ -58,6 +82,7 @@ export async function createEmployeeAssignment(
   const notes = nullableText(formData, "notes");
   const isActing = formData.get("isActing") === "on";
   const returnTo = nullableText(formData, "returnTo");
+  const stayOnPage = formData.get("redirect") === "false";
 
   const fieldErrors: Record<string, string> = {};
 
@@ -73,11 +98,7 @@ export async function createEmployeeAssignment(
     fieldErrors.startDate = "Enter a valid start date.";
   }
 
-  if (
-    !Object.values(EmployeeAssignmentType).includes(
-      assignmentTypeValue as EmployeeAssignmentType,
-    )
-  ) {
+  if (!isEmployeeAssignmentType(assignmentTypeValue)) {
     fieldErrors.assignmentType = "Select a valid assignment type.";
   }
 
@@ -89,238 +110,38 @@ export async function createEmployeeAssignment(
     };
   }
 
-  const employee = await prisma.employee.findUnique({
-    where: {
-      id: employeeId,
-    },
-    select: {
-      id: true,
-      organizationId: true,
-      employeeNumber: true,
-      firstName: true,
-      lastName: true,
-      hireDate: true,
-      updatedAt: true,
-    },
-  });
-
-  if (!employee) {
-    return {
-      status: "error",
-      message: "The employee record no longer exists.",
-    };
-  }
-
-  if (
-    !submittedUpdatedAt ||
-    employee.updatedAt.toISOString() !== submittedUpdatedAt
-  ) {
-    return {
-      status: "conflict",
-      message:
-        "The employee record changed elsewhere. Refresh before continuing.",
-    };
-  }
-
-  if (startDate! < employee.hireDate) {
-    return {
-      status: "error",
-      message:
-        "The assignment start date cannot be before the employee’s hire date.",
-    };
-  }
-
-  const department = await prisma.department.findFirst({
-    where: {
-      id: departmentId,
-      organizationId: employee.organizationId,
-      isActive: true,
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-  });
-
-  if (!department) {
-    return {
-      status: "error",
-      message: "The selected department is invalid or inactive.",
-    };
-  }
-
-  let position: {
-    id: string;
-    title: string;
-  } | null = null;
-
-  if (positionId) {
-    position = await prisma.position.findFirst({
-      where: {
-        id: positionId,
-        departmentId,
-        isActive: true,
-      },
-      select: {
-        id: true,
-        title: true,
-      },
-    });
-
-    if (!position) {
-      return {
-        status: "error",
-        message: "The selected position does not belong to the department.",
-      };
-    }
-  }
-
   const metadata = await getAuditRequestMetadata(formData);
 
   try {
-    await prisma.$transaction(async (transaction) => {
-      const currentAssignment = await transaction.employeeAssignment.findFirst({
-        where: {
-          employeeId,
-          isCurrent: true,
-        },
-        orderBy: {
-          startDate: "desc",
-        },
-      });
-
-      if (currentAssignment && startDate! <= currentAssignment.startDate) {
-        throw new Error(
-          "The new assignment must begin after the current assignment started.",
-        );
-      }
-
-      if (currentAssignment) {
-        const previousEndDate = new Date(startDate!);
-        previousEndDate.setUTCDate(previousEndDate.getUTCDate() - 1);
-
-        await transaction.employeeAssignment.update({
-          where: {
-            id: currentAssignment.id,
-          },
-          data: {
-            isCurrent: false,
-            endDate: previousEndDate,
-          },
-        });
-      }
-
-      let jobDescriptionId: string | null = null;
-
-      if (positionId) {
-        const currentJobDescription =
-          await transaction.positionJobDescription.findFirst({
-            where: {
-              positionId,
-              isCurrent: true,
-              status: "ACTIVE",
-              effectiveFrom: {
-                lte: startDate!,
-              },
-              OR: [
-                {
-                  effectiveUntil: null,
-                },
-                {
-                  effectiveUntil: {
-                    gte: startDate!,
-                  },
-                },
-              ],
-            },
-            orderBy: {
-              versionNumber: "desc",
-            },
-            select: {
-              id: true,
-            },
-          });
-
-        jobDescriptionId = currentJobDescription?.id ?? null;
-      }
-
-      const assignment = await transaction.employeeAssignment.create({
-        data: {
-          employeeId,
-          departmentId,
-          positionId,
-          jobDescriptionId,
-          assignmentType: assignmentTypeValue as EmployeeAssignmentType,
-          startDate: startDate!,
-          isCurrent: true,
-          isActing,
-          referenceNumber,
-          reason,
-          notes,
-        },
-      });
-
-      await transaction.employee.update({
-        where: {
-          id: employeeId,
-        },
-        data: {
-          departmentId,
-          positionId,
-        },
-      });
-
-      await transaction.auditEvent.create({
-        data: {
-          userId: actor.actor.userId,
-          moduleKey: "hr",
-          action: "ASSIGN",
-          entityType: "EmployeeAssignment",
-          entityId: assignment.id,
-          description: `Assigned ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName} to ${position?.title ?? department.name}.`,
-          newValues: {
-            employeeId,
-            departmentId,
-            positionId,
-            jobDescriptionId,
-            assignmentType: assignment.assignmentType,
-            startDate: assignment.startDate,
-            isActing: assignment.isActing,
-            referenceNumber: assignment.referenceNumber,
-            reason: assignment.reason,
-          },
-          ipAddress: metadata.ipAddress,
-          userAgent: metadata.userAgent,
-          clientHostName: metadata.clientHostName,
-        },
-      });
+    const result = await assignEmployeeToPosition({
+      employeeId,
+      departmentId,
+      positionId,
+      assignmentType: assignmentTypeValue as EmployeeAssignmentType,
+      startDate: startDate!,
+      isActing,
+      referenceNumber,
+      reason,
+      notes,
+      expectedEmployeeUpdatedAt: submittedUpdatedAt || null,
+      actorUserId: actor.actor.userId,
+      audit: metadata,
     });
 
-    const linkedUser = await prisma.user.findFirst({
-      where: {
-        employeeId,
-      },
-      select: {
-        id: true,
-      },
+    revalidateAssignmentPaths({
+      employeeId: result.employeeId,
+      departmentId: result.departmentId,
+      positionId: result.positionId,
     });
 
-    if (linkedUser) {
-      await syncEmployeeAccessRoles(linkedUser.id, employeeId);
-    }
-
-    revalidatePath("/people");
-    revalidatePath(`/people/employees/${employeeId}`);
-    revalidatePath(`/people/employees/${employeeId}/assignments`);
-
-    if (positionId) {
-      revalidatePath(`/people/structure/positions/${positionId}`);
-      revalidatePath("/people/structure");
-      revalidatePath("/people/structure/chart");
-    }
-
-    if (departmentId) {
-      revalidatePath(`/people/structure/departments/${departmentId}`);
+    if (stayOnPage) {
+      return {
+        status: "success",
+        message: result.created
+          ? `Assigned to ${result.positionTitle ?? result.departmentName}.`
+          : "Employee is already on this position.",
+        entityId: result.assignmentId || undefined,
+      };
     }
 
     const safeReturnTo =
@@ -334,15 +155,25 @@ export async function createEmployeeAssignment(
       throw error;
     }
 
+    if (error instanceof AssignEmployeeError) {
+      if (error.code === "conflict") {
+        return {
+          status: "conflict",
+          message: error.message,
+        };
+      }
+
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
+
     console.error("Unable to create employee assignment:", error);
 
     return {
       status: "error",
-      message:
-        error instanceof Error &&
-        error.message.includes("must begin after the current assignment")
-          ? error.message
-          : "The employee assignment could not be created.",
+      message: "The employee assignment could not be created.",
     };
   }
 }

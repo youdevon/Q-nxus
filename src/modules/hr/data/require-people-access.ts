@@ -4,6 +4,7 @@ import {
   getUserCapabilities,
   type UserCapabilities,
 } from "@/src/modules/auth/data/get-user-capabilities";
+import { resolveEmployeeSupervisor } from "@/src/modules/hr/data/resolve-employee-supervisor";
 
 export async function requireAuthenticatedCapabilities(): Promise<UserCapabilities> {
   const capabilities = await getUserCapabilities();
@@ -179,6 +180,75 @@ export async function resolveEmployeeContractAccess(
       showPeopleNav: false,
       isSelfService: true,
     };
+  }
+
+  notFound();
+}
+
+export type EmployeeCorrespondenceAccess = {
+  capabilities: UserCapabilities;
+  isOwnProfile: boolean;
+  canManage: boolean;
+  showPeopleNav: boolean;
+  isSelfService: boolean;
+  /** Read-only supervisor access to managerVisible issued items. */
+  isManagerView: boolean;
+};
+
+/**
+ * Employee file / correspondence: HR via people.manage, own
+ * employee with people.profile.view_own, or reporting officer for
+ * managerVisible issued items (read-only).
+ */
+export async function resolveEmployeeCorrespondenceAccess(
+  employeeId: string,
+): Promise<EmployeeCorrespondenceAccess> {
+  const capabilities = await requireAuthenticatedCapabilities();
+  const isOwnProfile = capabilities.employeeId === employeeId;
+  const canManage = capabilities.can("people.manage");
+  const showPeopleNav = capabilities.canAny(
+    "people.directory.view",
+    "people.manage",
+  );
+
+  if (canManage) {
+    return {
+      capabilities,
+      isOwnProfile,
+      canManage: true,
+      showPeopleNav,
+      isSelfService: false,
+      isManagerView: false,
+    };
+  }
+
+  if (isOwnProfile && capabilities.can("people.profile.view_own")) {
+    return {
+      capabilities,
+      isOwnProfile: true,
+      canManage: false,
+      showPeopleNav: false,
+      isSelfService: true,
+      isManagerView: false,
+    };
+  }
+
+  if (capabilities.employeeId) {
+    const supervisor = await resolveEmployeeSupervisor(employeeId);
+
+    if (
+      supervisor?.supervisorEmployeeId === capabilities.employeeId &&
+      capabilities.can("people.profile.view_own")
+    ) {
+      return {
+        capabilities,
+        isOwnProfile: false,
+        canManage: false,
+        showPeopleNav,
+        isSelfService: false,
+        isManagerView: true,
+      };
+    }
   }
 
   notFound();

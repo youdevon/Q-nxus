@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import {
+  LeaveAcknowledgementStatus,
   LeaveApprovalStatus,
   LeaveBalanceTransactionType,
   LeaveRequestStatus,
@@ -17,6 +18,7 @@ import {
   applyLeaveCancelTaken,
   applyLeaveRelease,
 } from "@/src/modules/hr/lib/leave-balance-math";
+import { leaveRequestAuditSuffix } from "@/src/modules/hr/lib/leave-request-audit-label";
 
 export type LeaveLifecycleFormState = {
   status: "idle" | "error" | "success";
@@ -133,7 +135,7 @@ async function notifyApprovers({
     message,
     severity,
     moduleKey: "hr",
-    actionUrl: `/leave/${requestId}`,
+    actionUrl: `/people/leave/${requestId}`,
     relatedType: "LeaveRequest",
     relatedId: requestId,
     recipients: uniqueRecipients.map((recipient) => ({
@@ -188,6 +190,7 @@ export async function withdrawLeaveRequest(
 
   if (
     request.status !== LeaveRequestStatus.SUBMITTED &&
+    request.status !== LeaveRequestStatus.AWAITING_ACKNOWLEDGEMENT &&
     request.status !== LeaveRequestStatus.PENDING_APPROVAL &&
     request.status !== LeaveRequestStatus.MANAGER_APPROVED
   ) {
@@ -209,6 +212,7 @@ export async function withdrawLeaveRequest(
           status: {
             in: [
               LeaveRequestStatus.SUBMITTED,
+              LeaveRequestStatus.AWAITING_ACKNOWLEDGEMENT,
               LeaveRequestStatus.PENDING_APPROVAL,
               LeaveRequestStatus.MANAGER_APPROVED,
             ],
@@ -234,6 +238,17 @@ export async function withdrawLeaveRequest(
           status: LeaveApprovalStatus.CANCELLED,
           decidedAt: now,
           decisionComment: comment ?? "Request withdrawn by employee.",
+        },
+      });
+
+      await transaction.leaveRequestAcknowledgement.updateMany({
+        where: {
+          leaveRequestId: request.id,
+          status: LeaveAcknowledgementStatus.PENDING,
+        },
+        data: {
+          status: LeaveAcknowledgementStatus.CANCELLED,
+          comment: comment ?? "Request withdrawn by employee.",
         },
       });
 
@@ -301,7 +316,7 @@ export async function withdrawLeaveRequest(
             effectiveDate: now,
             referenceType: "LeaveRequest",
             referenceId: request.id,
-            description: `Released reserved leave for withdrawn request ${request.requestNumber ?? request.id}.`,
+            description: `Released reserved leave for withdrawn request${leaveRequestAuditSuffix(request.requestNumber)}.`,
             createdByUserId: user.id,
           },
         });
@@ -314,7 +329,7 @@ export async function withdrawLeaveRequest(
           action: "WITHDRAW",
           entityType: "LeaveRequest",
           entityId: request.id,
-          description: `Withdrew leave request ${request.requestNumber ?? request.id}.`,
+          description: `Withdrew leave request${leaveRequestAuditSuffix(request.requestNumber)}.`,
           newValues: {
             status: LeaveRequestStatus.WITHDRAWN,
             comment,
@@ -347,8 +362,8 @@ export async function withdrawLeaveRequest(
       );
     }
 
-    revalidatePath("/leave");
-    revalidatePath(`/leave/${request.id}`);
+    revalidatePath("/people/leave");
+    revalidatePath(`/people/leave/${request.id}`);
     revalidatePath("/people/leave/balances");
     revalidatePath("/notifications");
 
@@ -517,7 +532,7 @@ export async function cancelLeaveRequest(
             effectiveDate: now,
             referenceType: "LeaveRequest",
             referenceId: request.id,
-            description: `Reversed taken leave for cancelled request ${request.requestNumber ?? request.id}.`,
+            description: `Reversed taken leave for cancelled request${leaveRequestAuditSuffix(request.requestNumber)}.`,
             createdByUserId: user.id,
           },
         });
@@ -530,7 +545,7 @@ export async function cancelLeaveRequest(
           action: "CANCEL",
           entityType: "LeaveRequest",
           entityId: request.id,
-          description: `Cancelled approved leave request ${request.requestNumber ?? request.id}.`,
+          description: `Cancelled approved leave request${leaveRequestAuditSuffix(request.requestNumber)}.`,
           newValues: {
             status: LeaveRequestStatus.CANCELLED,
             comment,
@@ -563,8 +578,8 @@ export async function cancelLeaveRequest(
       );
     }
 
-    revalidatePath("/leave");
-    revalidatePath(`/leave/${request.id}`);
+    revalidatePath("/people/leave");
+    revalidatePath(`/people/leave/${request.id}`);
     revalidatePath("/people/leave/balances");
     revalidatePath("/notifications");
 

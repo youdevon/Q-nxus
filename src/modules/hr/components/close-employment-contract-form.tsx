@@ -7,14 +7,15 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { FormPageActions } from "@/src/components/layout/page-actions";
+import { PageShell } from "@/src/components/layout/page-shell";
 import {
   closeEmploymentContract,
   type CloseContractFormState,
 } from "@/src/modules/hr/actions/close-employment-contract";
 import type { EmploymentContractProfile } from "@/src/modules/hr/data/get-employment-contracts";
-import { PeopleNav } from "./people-nav";
+import { isNonEmployeePayee } from "@/src/modules/hr/lib/workforce-category";
 
 const initialState: CloseContractFormState = {
   status: "idle",
@@ -26,12 +27,18 @@ export function CloseEmploymentContractForm({
 }: {
   contract: EmploymentContractProfile;
 }) {
+  const nonEmployeePayee = isNonEmployeePayee(
+    contract.employee.workforceCategory,
+  );
   const [state, action, pending] = useActionState(
     closeEmploymentContract,
     initialState,
   );
 
-  const [updateEmployeeStatus, setUpdateEmployeeStatus] = useState(false);
+  // Closing a payee engagement should mark them inactive so they leave payroll
+  // (payroll only includes ACTIVE / ON_LEAVE with a current ACTIVE contract).
+  const [updateEmployeeStatus, setUpdateEmployeeStatus] =
+    useState(nonEmployeePayee);
 
   useEffect(() => {
     if (state.status === "error") {
@@ -44,19 +51,15 @@ export function CloseEmploymentContractForm({
   }, [state]);
 
   return (
-    <form
-      action={action}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
+    <form action={action}>
+      <PageShell>
       <input type="hidden" name="employeeId" value={contract.employee.id} />
 
       <input type="hidden" name="contractId" value={contract.id} />
 
       <input type="hidden" name="updatedAt" value={contract.updatedAt} />
 
-      <PageHeader
+      <PeoplePageHeader
         title="Close Employment Contract"
         description={`${contract.employee.firstName} ${contract.employee.lastName} · ${contract.employee.employeeNumber}`}
         backHref={`/people/employees/${contract.employee.id}/contracts/${contract.id}`}
@@ -160,14 +163,25 @@ export function CloseEmploymentContractForm({
             />
 
             <span className="text-sm font-medium">
-              Update the employee’s employment status
+              Update employment status
+              {nonEmployeePayee
+                ? " (recommended — marks the payee inactive)"
+                : ""}
             </span>
           </label>
+
+          {nonEmployeePayee ? (
+            <p className="md:col-span-2 text-xs text-muted-foreground">
+              Closing the contract already removes the current ACTIVE engagement
+              from payroll. Setting status to Inactive also excludes them from
+              active workforce lists.
+            </p>
+          ) : null}
 
           {updateEmployeeStatus && (
             <div>
               <label htmlFor="employeeStatus" className="text-sm font-medium">
-                New employee status
+                New status
               </label>
 
               <select
@@ -195,12 +209,13 @@ export function CloseEmploymentContractForm({
 
             <span className="text-sm">
               I confirm that this contract should be closed. This record will
-              remain in the employee’s contract history and will no longer be
-              marked as current.
+              remain in contract history and will no longer be marked as
+              current.
             </span>
           </label>
         </div>
       </section>
+      </PageShell>
     </form>
   );
 }

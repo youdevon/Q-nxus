@@ -12,6 +12,9 @@ export const PAYROLL_VIEW_CAPABILITIES = [
 export const PAYROLL_SETUP_CAPABILITIES = [
   "payroll.setup",
   "payroll.manage",
+  "payroll.bank_accounts.create",
+  "payroll.bank_accounts.update",
+  "payroll.allocations.manage",
 ] as const;
 
 export function hasCapability(

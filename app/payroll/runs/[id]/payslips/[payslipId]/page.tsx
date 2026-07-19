@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PayslipPreviewView } from "@/src/modules/payroll/components/payslip-preview";
-import { getStoredPayslip } from "@/src/modules/payroll/data/get-pay-runs";
+import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
 
 export const metadata: Metadata = {

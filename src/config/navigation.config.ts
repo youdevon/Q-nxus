@@ -1,9 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import {
   Briefcase,
-  CalendarDays,
   ClipboardList,
-  FileText,
   LayoutDashboard,
   Settings,
   Users,
@@ -21,6 +19,11 @@ export type NavItem = {
   module?: "core" | "hr" | "payroll" | "admin";
   /** Permission codes that grant access to this item. Empty = authenticated only. */
   anyOf?: string[];
+  /**
+   * Path prefix used for sidebar active state when `href` points at a
+   * nested default route (e.g. Administration → /administration/organization).
+   */
+  matchPrefix?: string;
 };
 
 export type NavSection = {
@@ -33,6 +36,8 @@ export type NavSection = {
 /**
  * Sidebar navigation is declared once here so Core owns the chrome
  * while modules only contribute routes as they come online.
+ *
+ * Leave and Documents live under People (hamburger), not as sidebar tabs.
  */
 export const navigationConfig: NavSection[] = [
   {
@@ -80,25 +85,11 @@ export const navigationConfig: NavSection[] = [
         anyOf: ["payroll.view", "payroll.setup", "payroll.manage"],
       },
       {
-        title: "Leave",
-        href: "/leave",
-        icon: CalendarDays,
-        module: "hr",
-        anyOf: ["leave.request", "leave.manage", "leave.approve"],
-      },
-      {
         title: "Contracts",
         href: "/contracts",
         icon: Briefcase,
         module: "hr",
         anyOf: ["contracts.view", "contracts.manage"],
-      },
-      {
-        title: "Documents",
-        href: "/documents",
-        icon: FileText,
-        module: "hr",
-        anyOf: ["documents.view"],
       },
     ],
   },
@@ -123,7 +114,8 @@ export const navigationConfig: NavSection[] = [
     items: [
       {
         title: "Administration",
-        href: "/administration",
+        href: "/administration/organization",
+        matchPrefix: "/administration",
         icon: Settings,
         module: "admin",
         anyOf: ["administration.view"],

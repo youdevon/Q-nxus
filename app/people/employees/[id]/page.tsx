@@ -28,7 +28,7 @@ export default async function EmployeePage({ params }: EmployeePageProps) {
   const { id } = await params;
   const access = await resolveEmployeeProfileAccess(id);
 
-  const [employee, extras, checklist, lifecycle, activeContractCount] =
+  const [employee, extras, checklist, lifecycle, activeContractCount, contracts] =
     await Promise.all([
       getEmployeeProfile(id),
       getSelfServiceProfileExtras(id),
@@ -45,11 +45,31 @@ export default async function EmployeePage({ params }: EmployeePageProps) {
             },
           })
         : Promise.resolve(0),
+      access.canManage
+        ? prisma.employmentContract.findMany({
+            where: { employeeId: id },
+            orderBy: [{ isCurrent: "desc" }, { updatedAt: "desc" }],
+            select: {
+              id: true,
+              status: true,
+              isCurrent: true,
+            },
+          })
+        : Promise.resolve([]),
     ]);
 
   if (!employee) {
     notFound();
   }
+
+  const activatableContractId =
+    contracts.find((row) =>
+      ["DRAFT", "APPROVED", "AWAITING_SIGNATURE", "PENDING_APPROVAL"].includes(
+        row.status,
+      ),
+    )?.id ?? null;
+  const currentContractId =
+    contracts.find((row) => row.isCurrent)?.id ?? null;
 
   const showFileCompleteness =
     access.canManage &&
@@ -96,26 +116,30 @@ export default async function EmployeePage({ params }: EmployeePageProps) {
           <EmployeeLifecyclePanel
             employeeId={id}
             canManage
+            activatableContractId={activatableContractId}
+            currentContractId={currentContractId}
             onboarding={lifecycle.onboarding.map((row) => ({
               id: row.id,
               status: row.status,
-              tasks: row.tasks.map((task) => ({
-                id: task.id,
-                code: task.code,
-                label: task.label,
-                status: task.status,
-              })),
-            }))}
-            offboarding={lifecycle.offboarding.map((row) => ({
-              id: row.id,
-              status: row.status,
-              tasks: row.tasks.map((task) => ({
-                id: task.id,
-                code: task.code,
-                label: task.label,
-                status: task.status,
-              })),
-            }))}
+            tasks: row.tasks.map((task) => ({
+              id: task.id,
+              code: task.code,
+              label: task.label,
+              status: task.status,
+              notes: task.notes,
+            })),
+          }))}
+          offboarding={lifecycle.offboarding.map((row) => ({
+            id: row.id,
+            status: row.status,
+            tasks: row.tasks.map((task) => ({
+              id: task.id,
+              code: task.code,
+              label: task.label,
+              status: task.status,
+              notes: task.notes,
+            })),
+          }))}
           />
 
           {suggestions.length > 0 ? (

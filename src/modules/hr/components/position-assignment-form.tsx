@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import {
   createEmployeeAssignment,
   type EmployeeAssignmentFormState,
 } from "@/src/modules/hr/actions/create-employee-assignment";
 import type { PositionAssignmentFormData } from "@/src/modules/hr/data/get-employee-assignments";
-import { PeopleNav } from "./people-nav";
 
 const initialState: EmployeeAssignmentFormState = {
   status: "idle",
@@ -48,12 +48,8 @@ export function PositionAssignmentForm({
   }, [state]);
 
   return (
-    <form
-      action={action}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
+    <form action={action}>
+      <PageShell size="md">
       <input
         type="hidden"
         name="departmentId"
@@ -72,7 +68,7 @@ export function PositionAssignmentForm({
         value={`/people/structure/positions/${data.position.id}`}
       />
 
-      <PageHeader
+      <PeoplePageHeader
         title="Assign Employee"
         description={`${data.position.title} · ${data.position.departmentName}`}
         backHref={`/people/structure/positions/${data.position.id}`}
@@ -243,6 +239,7 @@ export function PositionAssignmentForm({
           </div>
         </section>
       )}
+      </PageShell>
     </form>
   );
 }

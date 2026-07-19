@@ -83,7 +83,7 @@ describe("contract non-overlap date rules", () => {
   });
 
   it("calculates fixed-period end dates without anniversary overlap", () => {
-    expect(calculateContractEndDate("2026-01-15", 1)).toBe("2027-01-14");
-    expect(calculateContractEndDate("2026-03-01", 1)).toBe("2027-02-28");
+    expect(calculateContractEndDate("2026-01-15", "1Y")).toBe("2027-01-14");
+    expect(calculateContractEndDate("2026-03-01", "1Y")).toBe("2027-02-28");
   });
 });

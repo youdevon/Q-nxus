@@ -102,6 +102,7 @@ describe("payslip-snapshot", () => {
   it("rejects malformed snapshots", () => {
     expect(parsePayslipSnapshot(null)).toBeNull();
     expect(parsePayslipSnapshot({ version: 2 })).toBeNull();
+    expect(parsePayslipSnapshot({ version: 3, payslip: samplePayslip, meta: sampleMeta })).toBeNull();
     expect(
       parsePayslipSnapshot({
         version: 1,
@@ -109,6 +110,23 @@ describe("payslip-snapshot", () => {
         meta: sampleMeta,
       }),
     ).toBeNull();
+  });
+
+  it("parses version 2 snapshots with statutory pin", () => {
+    const statutory = {
+      payeConfigId: "paye-1",
+      payeVersionLabel: "2026",
+      payeEffectiveFrom: "2026-01-01",
+      healthConfigId: "health-1",
+      healthVersionLabel: "2026",
+      healthEffectiveFrom: "2026-01-01",
+      nisVersionLabel: "2026",
+      nisEffectiveFrom: "2026-01-01",
+      nisClassCount: 16,
+    };
+    const snapshot = buildPayslipSnapshot(samplePayslip, sampleMeta, statutory);
+    expect(snapshot.version).toBe(2);
+    expect(parsePayslipSnapshot(snapshot)).toEqual(snapshot);
   });
 
   it("extracts denormalized totals for pay-run rows", () => {

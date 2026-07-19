@@ -1,5 +1,12 @@
 "use server";
 
+/**
+ * DEPRECATED — BusinessUnit admin UI routes were removed. Schema + this action
+ * remain quarantined for possible future org hierarchy work. Do not rewire nav
+ * or restore save pages without an explicit product decision. Prefer Department
+ * under People → Organization for day-to-day structure.
+ */
+
 import { revalidatePath } from "next/cache";
 
 import { ConfigurationStatus } from "@/generated/prisma/client";

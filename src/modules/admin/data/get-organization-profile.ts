@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { prisma } from "@/lib/prisma";
 
 export type OrganizationProfile = {
@@ -17,32 +19,39 @@ export type OrganizationProfile = {
   firstDayOfWeek: number;
   version: number;
   isActive: boolean;
+  createdAt: Date;
   updatedAt: Date;
+  archivedAt: Date | null;
 };
 
-export async function getOrganizationProfile(): Promise<OrganizationProfile | null> {
-  return prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-      code: true,
-      name: true,
-      shortName: true,
-      legalName: true,
-      email: true,
-      phone: true,
-      website: true,
-      status: true,
-      defaultTimeZone: true,
-      defaultCurrency: true,
-      defaultLanguage: true,
-      dateFormat: true,
-      firstDayOfWeek: true,
-      version: true,
-      isActive: true,
-      updatedAt: true,
-    },
-  });
-}
+/** Deduped per React request — layout chrome + org page share one lookup. */
+export const getOrganizationProfile = cache(
+  async (): Promise<OrganizationProfile | null> => {
+    return prisma.organization.findFirst({
+      orderBy: {
+        createdAt: "asc",
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        shortName: true,
+        legalName: true,
+        email: true,
+        phone: true,
+        website: true,
+        status: true,
+        defaultTimeZone: true,
+        defaultCurrency: true,
+        defaultLanguage: true,
+        dateFormat: true,
+        firstDayOfWeek: true,
+        version: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+        archivedAt: true,
+      },
+    });
+  },
+);

@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
 import {
   createEmployeeAssignment,
   type EmployeeAssignmentFormState,
 } from "@/src/modules/hr/actions/create-employee-assignment";
 import type { EmployeeAssignmentHistory } from "@/src/modules/hr/data/get-employee-assignments";
 import type { EmployeeFormDepartment } from "@/src/modules/hr/data/get-employee-form-data";
-import { PeopleNav } from "./people-nav";
 
 const initialState: EmployeeAssignmentFormState = {
   status: "idle",
@@ -58,12 +58,8 @@ export function EmployeeAssignmentForm({
   const hasCurrentPosition = Boolean(history.employee.positionId);
 
   return (
-    <form
-      action={action}
-      className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
+    <form action={action}>
+      <PageShell>
       <input type="hidden" name="employeeId" value={history.employee.id} />
 
       <input
@@ -78,7 +74,7 @@ export function EmployeeAssignmentForm({
         value={`/people/employees/${history.employee.id}`}
       />
 
-      <PageHeader
+      <PeoplePageHeader
         title={hasCurrentPosition ? "Change Assignment" : "Assign to Position"}
         description={`${history.employee.firstName} ${history.employee.lastName} · ${history.employee.employeeNumber}`}
         backHref={`/people/employees/${history.employee.id}`}
@@ -249,6 +245,7 @@ export function EmployeeAssignmentForm({
           </div>
         </div>
       </section>
+      </PageShell>
     </form>
   );
 }

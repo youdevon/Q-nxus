@@ -9,8 +9,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FieldError, FieldHint, FieldLabel } from "@/src/components/ui/field";
-import { appConfig } from "@/src/config/app.config";
 import { UI_TYPOGRAPHY } from "@/src/config/ui-typography";
+import { useApplicationChrome } from "@/src/core/providers/application-chrome-provider";
 import {
   changePassword,
   type ChangePasswordFormState,
@@ -26,6 +26,7 @@ export function ChangePasswordForm({ forced = false }: { forced?: boolean }) {
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") ?? "/";
   const [state, action, pending] = useActionState(changePassword, initialState);
+  const chrome = useApplicationChrome();
 
   useEffect(() => {
     if (state.status === "error" && state.message) {
@@ -43,7 +44,7 @@ export function ChangePasswordForm({ forced = false }: { forced?: boolean }) {
 
         <div className="space-y-2 text-center">
           <p className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
-            {appConfig.shortName}
+            {chrome.shortName}
           </p>
           <h1 className={UI_TYPOGRAPHY.authHero}>
             {forced ? "Set a new password" : "Change password"}

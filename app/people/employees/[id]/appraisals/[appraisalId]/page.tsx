@@ -13,8 +13,8 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
 import {
   acknowledgePerformanceAppraisal,
   cancelPerformanceAppraisal,
@@ -60,10 +60,8 @@ export default async function PerformanceAppraisalPage({
     appraisal.status === "DRAFT" || appraisal.status === "IN_PROGRESS";
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
-      <PeopleNav />
-
-      <PageHeader
+    <PageShell size="lg">
+      <PeoplePageHeader
         title={appraisal.title}
         description={`${appraisal.employee.firstName} ${appraisal.employee.lastName} · ${appraisal.employee.employeeNumber}`}
         backHref={`/people/employees/${id}/appraisals`}
@@ -349,6 +347,6 @@ export default async function PerformanceAppraisalPage({
           </div>
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }

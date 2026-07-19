@@ -5,8 +5,8 @@ import { ClipboardCheck, Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
 import { getEmployeeAppraisalHistory } from "@/src/modules/hr/data/get-performance-appraisals";
 import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
@@ -40,10 +40,8 @@ export default async function EmployeeAppraisalsPage({
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
-      <PeopleNav />
-
-      <PageHeader
+    <PageShell size="lg">
+      <PeoplePageHeader
         title="Performance Appraisals"
         description={`${history.employee.firstName} ${history.employee.lastName} · ${history.employee.employeeNumber}`}
         backHref={`/people/employees/${history.employee.id}`}
@@ -185,6 +183,6 @@ export default async function EmployeeAppraisalsPage({
           </div>
         )}
       </section>
-    </div>
+    </PageShell>
   );
 }

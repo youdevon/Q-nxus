@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { activeStateBadgeVariant } from "@/src/config/ui-colors";
 import { AdministrationNav } from "@/src/modules/admin/components/administration-nav";
-import {
-  getNumberingSequences,
-  type NumberingSequenceRecord,
-} from "@/src/modules/admin/data/get-numbering-sequences";
+import { getNumberingSequences } from "@/src/modules/admin/data/get-numbering-sequences";
+import { previewNextReference } from "@/src/modules/admin/lib/numbering-sequence";
 
 export const metadata: Metadata = {
   title: "Numbering Sequences",
@@ -25,14 +23,6 @@ function label(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function previewNext(sequence: NumberingSequenceRecord): string {
-  const nextNumber = (BigInt(sequence.currentNumber) + BigInt(1))
-    .toString()
-    .padStart(sequence.minimumLength, "0");
-
-  return `${sequence.prefix ?? ""}${nextNumber}${sequence.suffix ?? ""}`;
-}
-
 export default async function NumberingSequencesPage() {
   const sequences = await getNumberingSequences();
 
@@ -44,7 +34,7 @@ export default async function NumberingSequencesPage() {
 
       <PageHeader
         title="Numbering Sequences"
-        description="Current prefixes, number lengths, reset rules and reference previews."
+        description="Current prefixes, starting values, number lengths, reset rules and reference previews."
         backHref="/administration"
         backLabel="Administration"
         actions={
@@ -113,14 +103,19 @@ export default async function NumberingSequencesPage() {
                       Next reference preview
                     </p>
                     <p className="mt-1 font-mono text-lg font-semibold">
-                      {previewNext(sequence)}
+                      {previewNextReference({
+                        currentNumber: sequence.currentNumber,
+                        minimumLength: sequence.minimumLength,
+                        prefix: sequence.prefix,
+                        suffix: sequence.suffix,
+                      })}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Current number
+                        Last issued number
                       </p>
                       <p className="mt-1 font-mono text-sm font-medium">
                         {sequence.currentNumber}

@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { Network, Plus } from "lucide-react";
 
+/** DEPRECATED — BusinessUnit directory UI is quarantined; routes removed. */
+
 import { Badge } from "@/components/ui/badge";
 import { recordStatusBadgeVariant } from "@/src/config/ui-colors";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
+import { formatDisplayDate } from "@/src/lib/format";
 import { AdministrationNav } from "./administration-nav";
 import type { BusinessUnitListItem } from "@/src/modules/admin/data/get-business-units";
 
@@ -101,10 +104,10 @@ export function BusinessUnitsDirectory({
                     </td>
 
                     <td className="px-3 py-3 text-xs text-muted-foreground">
-                      {unit.effectiveFrom.toISOString().slice(0, 10)}
-                      {" —"}
+                      {formatDisplayDate(unit.effectiveFrom)}
+                      {" — "}
                       {unit.effectiveUntil
-                        ? unit.effectiveUntil.toISOString().slice(0, 10)
+                        ? formatDisplayDate(unit.effectiveUntil)
                         : "Open-ended"}
                     </td>
 

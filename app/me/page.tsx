@@ -3,13 +3,14 @@ import { notFound, redirect } from "next/navigation";
 
 import { EmployeeProfile } from "@/src/modules/hr/components/employee-profile";
 import { getEmployeeProfile } from "@/src/modules/hr/data/get-employee-form-data";
+import { countPendingCorrespondenceAcknowledgements } from "@/src/modules/hr/data/get-employee-correspondence";
+import { countExpiringEmployeeFileItems } from "@/src/modules/hr/data/get-employee-file-extras";
 import { getSelfServiceProfileExtras } from "@/src/modules/hr/data/get-self-service-profile-extras";
 import { requireAuthenticatedCapabilities } from "@/src/modules/hr/data/require-people-access";
-import { notifyVacationForfeitureReminders } from "@/src/modules/hr/services/notify-vacation-forfeiture";
 import { getMostRecentPostedPayslip } from "@/src/modules/payroll/data/get-pay-runs";
 import {
   formatPayslipPeriodLabel,
-  getPreviousPayslipPeriod,
+  resolveDefaultLivePayslipPeriod,
 } from "@/src/modules/payroll/lib/payslip-preview";
 
 export const metadata: Metadata = {
@@ -29,31 +30,34 @@ export default async function MyProfilePage() {
     redirect("/");
   }
 
-  try {
-    await notifyVacationForfeitureReminders({
-      employeeId: capabilities.employeeId,
-    });
-  } catch (error) {
-    console.error("Vacation forfeiture reminder pass failed:", error);
-  }
-
-  const [employee, extras, postedPayslip] = await Promise.all([
-    getEmployeeProfile(capabilities.employeeId),
-    getSelfServiceProfileExtras(capabilities.employeeId),
-    getMostRecentPostedPayslip(capabilities.employeeId),
-  ]);
+  const [employee, extras, postedPayslip, pendingCorrespondenceCount, expiringFileCount] =
+    await Promise.all([
+      getEmployeeProfile(capabilities.employeeId),
+      getSelfServiceProfileExtras(capabilities.employeeId),
+      getMostRecentPostedPayslip(capabilities.employeeId),
+      countPendingCorrespondenceAcknowledgements(capabilities.employeeId),
+      countExpiringEmployeeFileItems(capabilities.employeeId),
+    ]);
 
   if (!employee) {
     notFound();
   }
 
-  const previewPeriod = getPreviousPayslipPeriod();
+  const coverageStartCandidates = [
+    employee.hireDate,
+    employee.currentContract?.startDate,
+  ].filter((value): value is string => Boolean(value));
+  const coverageStartDate =
+    coverageStartCandidates.sort((a, b) => b.localeCompare(a))[0] ?? null;
+  const previewPeriod = resolveDefaultLivePayslipPeriod({
+    coverageStartDate,
+  });
   const mostRecentPayslipHref = postedPayslip
     ? "/me/payslip"
     : `/me/payslip?period=${previewPeriod}&preview=1`;
   const mostRecentPayslipPeriodLabel = postedPayslip
     ? `${postedPayslip.periodName} (posted)`
-    : `${formatPayslipPeriodLabel(previewPeriod) ?? "previous month"} (preview)`;
+    : `${formatPayslipPeriodLabel(previewPeriod) ?? "current period"} (preview)`;
 
   return (
     <EmployeeProfile
@@ -69,6 +73,8 @@ export default async function MyProfilePage() {
       supervisor={extras.supervisor}
       leaveBalances={extras.leaveBalances}
       vacationForfeitureWarning={extras.vacationForfeitureWarning}
+      pendingCorrespondenceCount={pendingCorrespondenceCount}
+      expiringFileCount={expiringFileCount}
     />
   );
 }

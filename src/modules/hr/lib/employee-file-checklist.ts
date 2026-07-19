@@ -482,6 +482,52 @@ export function isChecklistItemSatisfied(
   );
 }
 
+/**
+ * Identity / standing file docs that carry across contracts.
+ * Assumption of duty is excluded — a new engagement often needs a fresh letter
+ * (tracked separately as ISSUE_ASSUMPTION_OF_DUTY).
+ */
+export const CROSS_CONTRACT_FILE_ITEM_TYPES = [
+  "ACADEMIC_CERTIFICATES",
+  "COPY_OF_ID",
+  "BIRTH_CERTIFICATE",
+  "MARRIAGE_CERTIFICATE",
+] as const satisfies ReadonlyArray<EmployeeFileChecklistItemType>;
+
+export type CrossContractFileAssessment = {
+  /** All standing file slots satisfied (excl. assumption of duty). */
+  standingDocsComplete: boolean;
+  missingLabels: string[];
+  missingItemTypes: EmployeeFileChecklistItemType[];
+};
+
+/**
+ * Whether standing employee-file documents are already on file for a
+ * continuing employee (renewal / subsequent contract onboarding).
+ */
+export function assessStandingEmployeeFileDocs(
+  items: Array<{
+    itemType: EmployeeFileChecklistItemType;
+    label: string;
+    status: EmployeeFileChecklistStatus;
+  }>,
+): CrossContractFileAssessment {
+  const standing = items.filter((item) =>
+    (CROSS_CONTRACT_FILE_ITEM_TYPES as readonly string[]).includes(
+      item.itemType,
+    ),
+  );
+  const missing = standing.filter(
+    (item) => !isChecklistItemSatisfied(item.status),
+  );
+
+  return {
+    standingDocsComplete: standing.length > 0 && missing.length === 0,
+    missingLabels: missing.map((item) => item.label),
+    missingItemTypes: missing.map((item) => item.itemType),
+  };
+}
+
 export type ChecklistCompletenessSummary = {
   /** Items that count as done (incl. N/A). */
   completeCount: number;

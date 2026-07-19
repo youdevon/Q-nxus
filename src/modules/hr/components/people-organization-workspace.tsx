@@ -10,27 +10,25 @@ import {
   Pencil,
   Plus,
   Save,
+  UserPlus,
 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
-import {
-  PageActionsEnd,
-  PageActionsStart,
-} from "@/src/components/layout/page-actions";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { FieldHint, FieldLabel, MetaLabel } from "@/src/components/ui/field";
 import {
   updatePositionReporting,
   type PositionReportingFormState,
 } from "@/src/modules/hr/actions/update-position-reporting";
+import { AttachEmployeeToPositionDialog } from "@/src/modules/hr/components/attach-employee-to-position-dialog";
+import { DeleteDepartmentButton } from "@/src/modules/hr/components/delete-department-button";
 import { OrganizationStructureTree } from "@/src/modules/hr/components/organization-structure-tree";
 import {
   DepartmentStructureDialog,
   PositionStructureDialog,
 } from "@/src/modules/hr/components/organization-structure-dialogs";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import type { OrganizationChartData } from "@/src/modules/hr/data/get-organization-chart";
 import type { DepartmentRecord } from "@/src/modules/hr/data/get-people-structure";
 import {
@@ -190,6 +188,7 @@ export function PeopleOrganizationWorkspace({
   const [positionDialogDepartmentId, setPositionDialogDepartmentId] = useState<
     string | undefined
   >();
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [editingPosition, setEditingPosition] = useState<{
     id: string;
     title: string;
@@ -200,9 +199,9 @@ export function PeopleOrganizationWorkspace({
     updatedAt: string;
     departmentName: string;
   } | null>(null);
-
   function updateSelection(nextSelection: OrganizationSelection) {
     setSelection(nextSelection);
+    setAssignDialogOpen(false);
 
     const params = new URLSearchParams();
 
@@ -367,46 +366,38 @@ export function PeopleOrganizationWorkspace({
   }
 
   return (
-    <PageShell size="lg" className="max-w-7xl">
-      <PeopleNav />
-
-      <PageHeader
+    <PageShell size="lg">
+      <PeoplePageHeader
         title="Organization"
         description="Create departments and positions, and set who reports where — all in one place."
-        backHref="/people"
-        backLabel="Employees"
         actions={
           <>
-            <PageActionsStart>
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={<Link href={chartHref} />}
-              >
-                <Network />
-                View chart
-              </Button>
-
-              {canManage ? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={departments.length === 0}
-                  onClick={() => openNewPosition()}
-                >
-                  <BriefcaseBusiness />
-                  New position
-                </Button>
-              ) : null}
-            </PageActionsStart>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={<Link href={chartHref} />}
+            >
+              <Network />
+              View chart
+            </Button>
 
             {canManage ? (
-              <PageActionsEnd>
-                <Button type="button" onClick={openNewDepartment}>
-                  <Plus />
-                  New department
-                </Button>
-              </PageActionsEnd>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={departments.length === 0}
+                onClick={() => openNewPosition()}
+              >
+                <BriefcaseBusiness />
+                New position
+              </Button>
+            ) : null}
+
+            {canManage ? (
+              <Button type="button" onClick={openNewDepartment}>
+                <Plus />
+                New department
+              </Button>
             ) : null}
           </>
         }
@@ -656,6 +647,11 @@ export function PeopleOrganizationWorkspace({
                       <Plus />
                       New position
                     </Button>
+                    <DeleteDepartmentButton
+                      departmentId={selectedDepartment.id}
+                      departmentName={selectedDepartment.name}
+                      size="sm"
+                    />
                   </div>
                 ) : null}
               </div>
@@ -747,6 +743,16 @@ export function PeopleOrganizationWorkspace({
 
                 {canManage ? (
                   <div className="flex flex-wrap gap-2">
+                    {selectedPosition.isActive ? (
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => setAssignDialogOpen(true)}
+                      >
+                        <UserPlus />
+                        Assign employee
+                      </Button>
+                    ) : null}
                     {selectedDepartment ? (
                       <Button
                         type="button"
@@ -772,6 +778,16 @@ export function PeopleOrganizationWorkspace({
                   </div>
                 ) : null}
               </div>
+
+              <p className="mt-3 text-sm text-muted-foreground">
+                {selectedPosition.employeeCount}{" "}
+                employee
+                {selectedPosition.employeeCount === 1 ? "" : "s"} currently
+                assigned
+                {canManage && selectedPosition.isActive
+                  ? ". Use Assign employee to attach someone to this seat."
+                  : "."}
+              </p>
 
               <div className="mt-5 border border-border p-4">
                 <div className="mb-3 flex items-center gap-2">
@@ -845,6 +861,17 @@ export function PeopleOrganizationWorkspace({
               handleStructureSaved("position", entityId)
             }
           />
+
+          {selectedPosition ? (
+            <AttachEmployeeToPositionDialog
+              open={assignDialogOpen}
+              onOpenChange={setAssignDialogOpen}
+              positionId={selectedPosition.id}
+              positionTitle={selectedPosition.title}
+              departmentName={selectedPosition.departmentName}
+              onSuccess={() => router.refresh()}
+            />
+          ) : null}
         </>
       ) : null}
     </PageShell>

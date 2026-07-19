@@ -4,9 +4,9 @@ import { CalendarDays, FileCheck2, Plus, ShieldCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { activeStateBadgeVariant } from "@/src/config/ui-colors";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 import { getLeaveTypes } from "@/src/modules/hr/data/get-leave-types";
 import { requireLeaveManageAccess } from "@/src/modules/hr/data/require-people-access";
 
@@ -22,14 +22,10 @@ export default async function LeaveTypesPage() {
   const leaveTypes = await getLeaveTypes();
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
-      <PeopleNav />
-
-      <PageHeader
+    <PageShell size="lg">
+      <PeoplePageHeader
         title="Leave Types"
-        description="Configure the leave categories, balance requirements and supporting-document rules used throughout Q-NXUS."
-        backHref="/people"
-        backLabel="Employees"
+        description="Configure the leave categories, balance requirements and supporting-document rules used throughout the platform."
         actions={
           <Button
             nativeButton={false}
@@ -157,6 +153,6 @@ export default async function LeaveTypesPage() {
           </div>
         )}
       </section>
-    </div>
+    </PageShell>
   );
 }

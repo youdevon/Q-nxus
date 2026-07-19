@@ -74,6 +74,22 @@ Core Platform owns shared capabilities required by all domains.
 
 Business domains must not recreate shared platform capabilities independently.
 
+### Application chrome
+
+Live product/org branding resolves via `getApplicationChrome()`: prefer
+**Organization** for customer org name, short name, and code; use
+`appConfig.displayName` only as the generic product/software label. Do not treat
+hardcoded “Acme” / “Q-NXUS” defaults as the live sidebar source when a DB org exists.
+
+### FeatureControl and ReferenceData
+
+- **FeatureControl** — runtime flags enforced through `isFeatureEnabled` at
+  module entry gates (e.g. payroll access). Admin UI remains the editor for
+  those flags.
+- **ReferenceData** — used for typed catalogs such as LOCATION_TYPE. Do not
+  present unused reference-data sets as fully platform-ready until consumers
+  exist.
+
 ---
 
 ## 4. Identity and Security Domain
@@ -178,6 +194,16 @@ Other domains reference employees by stable internal ID.
 
 - Historical salary change: People
 
+### Department vs BusinessUnit
+
+**Department (People)** is the operational org structure used by employees,
+positions, leave routing, and payroll. It is the source of truth for people
+hierarchy.
+
+**BusinessUnit (Administration / Core)** is optional cost/admin structure and
+must not be treated as interchangeable with Department. Do not merge the tables
+unless a future migration explicitly consolidates them.
+
 ---
 
 ## 6. Payroll Domain
@@ -212,7 +238,9 @@ Payroll owns payroll-specific configuration, calculations, processing and histor
 
 - Payslips
 
-- Bank files
+- Bank files / payment batches (payment layer — see `PAYROLL-BANKING.md`)
+
+- Payroll payment snapshots (Calc ≠ Payment)
 
 - Payroll reports
 
@@ -735,6 +763,20 @@ Archived records may be restorable.
 Temporarily prevents a record from being used in new transactions while preserving it for possible reactivation.
 
 A record may be inactive without being archived.
+
+### Soft-delete matrix (current platform)
+
+There is no generic `deletedAt` column. Prefer status / archive fields:
+
+| Entity family | Prefer | Notes |
+| --- | --- | --- |
+| Employee / User | Archive / deactivate (`isArchived`, `archivedAt`, account status) | Hard delete only via controlled demo reset |
+| Department / Position | Deactivate (`isActive`) | Hard delete only when safe (no dependents) |
+| Employment contracts | Lifecycle statuses (SUPERSEDED, TERMINATED, …) | Do not hard-delete posted history |
+| Pay runs / Payslips | Draft delete only; POSTED is immutable | Snapshot JSON + denormalized columns freeze together |
+| Roles / UserRoles | Revoke (`REVOKED`) with effective window | Do not delete assignment history casually |
+| Correspondence | Archive / retention jobs | Keep audit trail |
+| Core config (BusinessUnit, FeatureControl, ReferenceData) | `ConfigurationStatus` / `isEnabled` | ReferenceData is used for LOCATION_TYPE; FeatureControl is gated via `isFeatureEnabled` |
 
 ---
 

@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import {
   createJobDescription,
   updateJobDescription,
@@ -18,7 +19,6 @@ import type {
   JobDescriptionRecord,
   PositionJobDescriptionData,
 } from "@/src/modules/hr/data/get-job-descriptions";
-import { PeopleNav } from "./people-nav";
 
 type CriterionRow = {
   rowId: string;
@@ -110,13 +110,9 @@ export function JobDescriptionForm({
   }
 
   return (
-    <form
-      action={formAction}
-      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
-      <PageHeader
+    <form action={formAction}>
+      <PageShell size="lg">
+      <PeoplePageHeader
         title={
           jobDescription
             ? `Job Description Version ${jobDescription.versionNumber}`
@@ -474,6 +470,7 @@ export function JobDescriptionForm({
               : "Save job description"}
         </Button>
       </footer>
+      </PageShell>
     </form>
   );
 }

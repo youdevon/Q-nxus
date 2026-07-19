@@ -88,12 +88,36 @@ export async function openEmployeeOnboardingCase(input: {
     return existing;
   }
 
-  return client.employeeOnboardingCase.create({
+  const [employee, priorContractCount] = await Promise.all([
+    client.employee.findUnique({
+      where: { id: input.employeeId },
+      select: {
+        workforceCategory: true,
+        nisNumber: true,
+        birNumber: true,
+      },
+    }),
+    client.employmentContract.count({
+      where: { employeeId: input.employeeId },
+    }),
+  ]);
+
+  const continuingEmployee = priorContractCount > 0;
+  const caseNotes = [
+    input.notes?.trim() || null,
+    continuingEmployee
+      ? "Continuing employee: standing file documents may already be on file from a prior contract."
+      : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const created = await client.employeeOnboardingCase.create({
     data: {
       organizationId: input.organizationId,
       employeeId: input.employeeId,
       openedByUserId: input.openedByUserId,
-      notes: input.notes ?? null,
+      notes: caseNotes || null,
       tasks: {
         create: ONBOARDING_TASKS.map((task) => ({
           code: task.code,
@@ -102,8 +126,122 @@ export async function openEmployeeOnboardingCase(input: {
         })),
       },
     },
+    select: {
+      id: true,
+      tasks: { select: { id: true, code: true } },
+    },
+  });
+
+  await applyExistingFileStateToOnboardingCase({
+    caseId: created.id,
+    organizationId: input.organizationId,
+    employeeId: input.employeeId,
+    workforceCategory: employee?.workforceCategory ?? null,
+    openedByUserId: input.openedByUserId,
+    continuingEmployee,
+    hasNis: Boolean(employee?.nisNumber?.trim()),
+    hasBir: Boolean(employee?.birNumber?.trim()),
+    client,
+  });
+
+  return { id: created.id };
+}
+
+/**
+ * Seed checklist slots and auto-complete file tasks that are already satisfied
+ * for continuing employees (ID, birth cert, etc. carry across contracts).
+ * Assumption of duty stays pending — often needed for a new engagement.
+ */
+async function applyExistingFileStateToOnboardingCase(input: {
+  caseId: string;
+  organizationId: string;
+  employeeId: string;
+  workforceCategory: import("@/generated/prisma/client").WorkforceCategory | null;
+  openedByUserId: string | null;
+  continuingEmployee: boolean;
+  hasNis: boolean;
+  hasBir: boolean;
+  client: Tx;
+}) {
+  const { seedChecklistFromPack } = await import(
+    "@/src/modules/hr/services/employee-file-packs"
+  );
+  const { getEmployeeFileChecklist } = await import(
+    "@/src/modules/hr/data/get-employee-file-checklist"
+  );
+  const { assessStandingEmployeeFileDocs } = await import(
+    "@/src/modules/hr/lib/employee-file-checklist"
+  );
+
+  await seedChecklistFromPack({
+    organizationId: input.organizationId,
+    employeeId: input.employeeId,
+    workforceCategory: input.workforceCategory,
+  });
+
+  const checklist = await getEmployeeFileChecklist(input.employeeId);
+  const standing = assessStandingEmployeeFileDocs(checklist?.items ?? []);
+  const completedAt = new Date();
+  const actorId = input.openedByUserId;
+
+  const seedTask = await input.client.employeeOnboardingTask.findFirst({
+    where: { caseId: input.caseId, code: "SEED_FILE_CHECKLIST" },
     select: { id: true },
   });
+
+  if (seedTask) {
+    await input.client.employeeOnboardingTask.update({
+      where: { id: seedTask.id },
+      data: {
+        status: "COMPLETED",
+        completedAt,
+        completedByUserId: actorId,
+        notes: input.continuingEmployee
+          ? "Checklist seeded; existing employee-file slots preserved."
+          : "Checklist seeded from the default document pack.",
+      },
+    });
+  }
+
+  if (standing.standingDocsComplete) {
+    const docsTask = await input.client.employeeOnboardingTask.findFirst({
+      where: { caseId: input.caseId, code: "COMPLETE_REQUIRED_DOCS" },
+      select: { id: true },
+    });
+
+    if (docsTask) {
+      const statutoryNote =
+        input.hasNis && input.hasBir
+          ? " NIS and BIR are already on the employee record."
+          : input.hasNis || input.hasBir
+            ? ` ${input.hasNis ? "NIS" : "BIR"} is on file; confirm the other statutory number if required for payroll.`
+            : " Confirm NIS/BIR on the employee record before payroll readiness.";
+
+      await input.client.employeeOnboardingTask.update({
+        where: { id: docsTask.id },
+        data: {
+          status: "COMPLETED",
+          completedAt,
+          completedByUserId: actorId,
+          notes: `Standing file documents already on file from prior employment.${statutoryNote} Assumption of duty remains a separate task if a new letter is required.`,
+        },
+      });
+    }
+  } else if (standing.missingLabels.length > 0) {
+    const docsTask = await input.client.employeeOnboardingTask.findFirst({
+      where: { caseId: input.caseId, code: "COMPLETE_REQUIRED_DOCS" },
+      select: { id: true },
+    });
+
+    if (docsTask) {
+      await input.client.employeeOnboardingTask.update({
+        where: { id: docsTask.id },
+        data: {
+          notes: `Still missing: ${standing.missingLabels.join(", ")}.`,
+        },
+      });
+    }
+  }
 }
 
 export async function openEmployeeOffboardingCase(input: {

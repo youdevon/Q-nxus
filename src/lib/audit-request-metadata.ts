@@ -5,50 +5,13 @@ import {
   CLIENT_HOSTNAME_FIELD,
   CLIENT_HOSTNAME_HEADER,
 } from "@/src/lib/audit-constants";
+import { normalizeClientIp } from "@/src/lib/audit-display";
 
 export type AuditRequestMetadata = {
   ipAddress: string | null;
   userAgent: string | null;
   clientHostName: string | null;
 };
-
-const IPV4_PATTERN =
-  /^(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)$/;
-
-/**
- * Prefer a public/client IPv4 address from proxy headers.
- * Strips IPv6-mapped IPv4 (`::ffff:a.b.c.d`) and skips pure IPv6.
- */
-export function normalizeClientIp(
-  raw: string | null | undefined,
-): string | null {
-  if (!raw) {
-    return null;
-  }
-
-  for (const part of raw.split(",")) {
-    let candidate = part.trim();
-
-    if (!candidate) {
-      continue;
-    }
-
-    if (candidate.startsWith("[") && candidate.endsWith("]")) {
-      candidate = candidate.slice(1, -1);
-    }
-
-    const mappedPrefix = "::ffff:";
-    if (candidate.toLowerCase().startsWith(mappedPrefix)) {
-      candidate = candidate.slice(mappedPrefix.length);
-    }
-
-    if (IPV4_PATTERN.test(candidate)) {
-      return candidate;
-    }
-  }
-
-  return null;
-}
 
 function cleanHostName(value: string | null | undefined): string | null {
   if (!value) {

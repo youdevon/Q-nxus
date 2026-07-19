@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { OrganizationForm } from "@/src/modules/admin/components/organization-form";
 import { getOrganizationProfile } from "@/src/modules/admin/data/get-organization-profile";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
+import { formatDisplayDateTime } from "@/src/lib/format";
 
 export const metadata: Metadata = {
   title: "Edit Organization",
@@ -21,11 +22,7 @@ export default async function OrganizationPage() {
     notFound();
   }
 
-  const updatedAtLabel = new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: organization.defaultTimeZone,
-  }).format(organization.updatedAt);
+  const updatedAtLabel = formatDisplayDateTime(organization.updatedAt);
 
   return (
     <OrganizationForm

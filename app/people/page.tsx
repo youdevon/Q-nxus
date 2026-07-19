@@ -8,7 +8,7 @@ import {
 import { requirePeopleDirectoryAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
-  title: "Employees",
+  title: "People",
 };
 
 export const dynamic = "force-dynamic";
@@ -17,9 +17,12 @@ type SearchParams = Promise<{
   query?: string;
   status?: string;
   employmentType?: string;
+  workforceCategory?: string;
   departmentId?: string;
   page?: string;
   show?: string;
+  sort?: string;
+  order?: string;
 }>;
 
 export default async function PeoplePage({
@@ -35,9 +38,12 @@ export default async function PeoplePage({
     query: params.query,
     status: params.status,
     employmentType: params.employmentType,
+    workforceCategory: params.workforceCategory,
     departmentId: params.departmentId,
     page: params.page ? Number(params.page) : 1,
     show: params.show === "all" ? "all" : undefined,
+    sort: params.sort,
+    order: params.order,
   };
 
   const data = await getEmployees(filters);

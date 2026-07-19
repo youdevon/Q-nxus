@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FieldHint, FieldLabel } from "@/src/components/ui/field";
+import { FieldError, FieldHint, FieldLabel } from "@/src/components/ui/field";
 import {
   createDepartment,
   createPosition,
@@ -92,8 +92,12 @@ function DepartmentDialogForm({
           name="name"
           defaultValue={department?.name ?? ""}
           className="mt-2"
+          aria-invalid={Boolean(state.fieldErrors?.name)}
           required
         />
+        {state.fieldErrors?.name ? (
+          <FieldError className="mt-1.5">{state.fieldErrors.name}</FieldError>
+        ) : null}
       </div>
 
       <div>
@@ -103,7 +107,11 @@ function DepartmentDialogForm({
           name="code"
           defaultValue={department?.code ?? ""}
           className="mt-2 font-mono"
+          aria-invalid={Boolean(state.fieldErrors?.code)}
         />
+        {state.fieldErrors?.code ? (
+          <FieldError className="mt-1.5">{state.fieldErrors.code}</FieldError>
+        ) : null}
       </div>
 
       <div>
@@ -276,7 +284,7 @@ function PositionDialogForm({
       )}
 
       <div>
-        <FieldLabel htmlFor={`${formId}-title`}>Position title</FieldLabel>
+        <FieldLabel htmlFor={`${formId}-title`}>Position</FieldLabel>
         <Input
           id={`${formId}-title`}
           name="title"
@@ -373,7 +381,7 @@ export function PositionStructureDialog({
           </DialogTitle>
           <DialogDescription>
             {position
-              ? "Update the position title, code, and access role."
+              ? "Update the title, code, and access role."
               : "Create a position within a department, then set who it reports to."}
           </DialogDescription>
         </DialogHeader>

@@ -1,10 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { getVacationForfeitureWarningForEmployee } from "@/src/modules/hr/data/get-vacation-forfeiture-warning";
 import type { VacationForfeitureWarning } from "@/src/modules/hr/data/get-vacation-forfeiture-warning";
-import { notifyContractExpiryReminders } from "@/src/modules/hr/services/notify-contract-expiry";
-import { notifyVacationForfeitureReminders } from "@/src/modules/hr/services/notify-vacation-forfeiture";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 
 function startOfUtcDay(value = new Date()): Date {
   return new Date(
@@ -35,7 +35,7 @@ export type OperationalHomeDashboard = {
     employeeName: string;
     endDate: string;
     daysUntilExpiry: number;
-    jobTitle: string;
+    positionTitle: string;
   }[];
   contractsExpiringCount: number;
   currentlyOnLeaveCount: number;
@@ -59,7 +59,12 @@ type ContractExpiringRow = {
   endDate: Date | null;
   jobTitle: string;
   employeeId: string;
-  employee: { firstName: string; lastName: string };
+  employee: {
+    firstName: string;
+    lastName: string;
+    position: { title: string } | null;
+    assignments: { position: { title: string } | null }[];
+  };
 };
 
 export async function getOperationalHomeDashboard(): Promise<OperationalHomeDashboard | null> {
@@ -69,19 +74,12 @@ export async function getOperationalHomeDashboard(): Promise<OperationalHomeDash
     return null;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: capabilities.userId },
-    select: {
-      firstName: true,
-      lastName: true,
-      employeeId: true,
-      employee: {
-        select: { organizationId: true },
-      },
-    },
-  });
+  // Reuse the per-request cached session user instead of a fresh query.
+  // Reminder notifications (contract expiry, vacation forfeiture) are handled
+  // by the scheduled jobs runner — this read path stays side-effect free.
+  const user = await getCurrentUser();
 
-  if (!user) {
+  if (!user || user.id !== capabilities.userId) {
     return null;
   }
 
@@ -96,31 +94,6 @@ export async function getOperationalHomeDashboard(): Promise<OperationalHomeDash
     "contracts.manage",
     "people.manage",
   );
-  const canManageContracts = capabilities.canAny(
-    "contracts.manage",
-    "people.manage",
-  );
-  const canManageLeave = capabilities.can("leave.manage");
-
-  if (canManageContracts) {
-    try {
-      await notifyContractExpiryReminders();
-    } catch (error) {
-      console.error("Contract expiry reminder pass failed:", error);
-    }
-  }
-
-  try {
-    if (canManageLeave || canManageContracts) {
-      await notifyVacationForfeitureReminders();
-    } else if (user.employeeId) {
-      await notifyVacationForfeitureReminders({
-        employeeId: user.employeeId,
-      });
-    }
-  } catch (error) {
-    console.error("Vacation forfeiture reminder pass failed:", error);
-  }
 
   const today = startOfUtcDay();
   const in90Days = addUtcDays(today, 90);
@@ -210,7 +183,20 @@ export async function getOperationalHomeDashboard(): Promise<OperationalHomeDash
             jobTitle: true,
             employeeId: true,
             employee: {
-              select: { firstName: true, lastName: true },
+              select: {
+                firstName: true,
+                lastName: true,
+                position: {
+                  select: { title: true },
+                },
+                assignments: {
+                  where: { isCurrent: true },
+                  take: 1,
+                  select: {
+                    position: { select: { title: true } },
+                  },
+                },
+              },
             },
           },
         }),
@@ -279,7 +265,13 @@ export async function getOperationalHomeDashboard(): Promise<OperationalHomeDash
           employeeName: `${contract.employee.firstName} ${contract.employee.lastName}`,
           endDate: endDate.toISOString().slice(0, 10),
           daysUntilExpiry,
-          jobTitle: contract.jobTitle,
+          positionTitle:
+            resolveEmployeePositionTitle({
+              assignmentPositionTitle:
+                contract.employee.assignments[0]?.position?.title,
+              positionTitle: contract.employee.position?.title,
+              contractJobTitle: contract.jobTitle,
+            }) ?? contract.jobTitle,
         };
       }),
     vacationForfeitureWarning,

@@ -3,19 +3,22 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 
-import { fetchNotificationBellState } from "@/src/modules/notifications/actions/fetch-notification-bell";
 import {
   markAllNotificationsRead,
   markNotificationReadById,
 } from "@/src/modules/notifications/actions/manage-user-notifications";
+import type { NotificationBellState } from "@/src/modules/notifications/data/get-notification-bell-state";
 import { useAuth } from "@/src/modules/auth/context/auth-provider";
 import type { AppNotification } from "@/src/types/notifications";
 
 const POLL_INTERVAL_MS = 30_000;
+const BELL_ENDPOINT = "/api/notifications/bell";
 
 type NotificationContextValue = {
   notifications: AppNotification[];
   unreadCount: number;
+  /** Unread notification action URLs for section badge aggregation. */
+  unreadActionUrls: Array<string | null>;
   isLoading: boolean;
   refresh: () => Promise<void>;
   markAsRead: (id: string) => Promise<void>;
@@ -24,6 +27,23 @@ type NotificationContextValue = {
 
 const NotificationContext =
   React.createContext<NotificationContextValue | null>(null);
+
+async function fetchBellState(
+  signal?: AbortSignal,
+): Promise<NotificationBellState> {
+  const response = await fetch(BELL_ENDPOINT, {
+    method: "GET",
+    credentials: "same-origin",
+    cache: "no-store",
+    signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Notification bell request failed (${response.status})`);
+  }
+
+  return (await response.json()) as NotificationBellState;
+}
 
 export function NotificationProvider({
   children,
@@ -36,12 +56,16 @@ export function NotificationProvider({
     [],
   );
   const [unreadCount, setUnreadCount] = React.useState(0);
+  const [unreadActionUrls, setUnreadActionUrls] = React.useState<
+    Array<string | null>
+  >([]);
   const [isLoading, setIsLoading] = React.useState(Boolean(user));
   const refreshRequestId = React.useRef(0);
   /** Bumped on local mutations so in-flight refreshes cannot overwrite them. */
   const mutationEpoch = React.useRef(0);
   const hasLoadedOnce = React.useRef(false);
   const notificationsRef = React.useRef(notifications);
+  const abortRef = React.useRef<AbortController | null>(null);
 
   React.useEffect(() => {
     notificationsRef.current = notifications;
@@ -51,10 +75,15 @@ export function NotificationProvider({
     if (!user) {
       setNotifications([]);
       setUnreadCount(0);
+      setUnreadActionUrls([]);
       setIsLoading(false);
       hasLoadedOnce.current = false;
       return;
     }
+
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
     const requestId = ++refreshRequestId.current;
     const epochAtStart = mutationEpoch.current;
@@ -64,7 +93,7 @@ export function NotificationProvider({
     }
 
     try {
-      const state = await fetchNotificationBellState();
+      const state = await fetchBellState(controller.signal);
 
       if (requestId !== refreshRequestId.current) {
         return;
@@ -77,8 +106,14 @@ export function NotificationProvider({
 
       setNotifications(state.notifications);
       setUnreadCount(state.unreadCount);
+      setUnreadActionUrls(
+        Array.isArray(state.unreadActionUrls) ? state.unreadActionUrls : [],
+      );
       hasLoadedOnce.current = true;
     } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
       console.error("Failed to refresh notifications:", error);
     } finally {
       if (requestId === refreshRequestId.current) {
@@ -93,7 +128,10 @@ export function NotificationProvider({
       void refresh();
     }, 0);
 
-    return () => window.clearTimeout(timeoutId);
+    return () => {
+      window.clearTimeout(timeoutId);
+      abortRef.current?.abort();
+    };
   }, [refresh, pathname]);
 
   React.useEffect(() => {
@@ -141,6 +179,15 @@ export function NotificationProvider({
         current.filter((notification) => notification.id !== id),
       );
       setUnreadCount((current) => Math.max(0, current - 1));
+      if (target.href !== undefined) {
+        setUnreadActionUrls((current) => {
+          const index = current.findIndex((url) => url === target.href);
+          if (index < 0) {
+            return current;
+          }
+          return [...current.slice(0, index), ...current.slice(index + 1)];
+        });
+      }
 
       try {
         await markNotificationReadById(id);
@@ -162,6 +209,7 @@ export function NotificationProvider({
     // Bell preview is unread-only — clear the list on mark-all-read.
     setNotifications([]);
     setUnreadCount(0);
+    setUnreadActionUrls([]);
 
     try {
       await markAllNotificationsRead();
@@ -176,12 +224,21 @@ export function NotificationProvider({
     () => ({
       notifications,
       unreadCount,
+      unreadActionUrls,
       isLoading,
       refresh,
       markAsRead,
       markAllAsRead,
     }),
-    [notifications, unreadCount, isLoading, refresh, markAsRead, markAllAsRead],
+    [
+      notifications,
+      unreadCount,
+      unreadActionUrls,
+      isLoading,
+      refresh,
+      markAsRead,
+      markAllAsRead,
+    ],
   );
 
   return (

@@ -27,6 +27,25 @@ export type UserNotificationInbox = {
   notifications: UserNotificationRecord[];
 };
 
+function unreadRecipientWhere(userId: string) {
+  return {
+    userId,
+    status: "UNREAD" as const,
+    notification: {
+      OR: [
+        {
+          expiresAt: null,
+        },
+        {
+          expiresAt: {
+            gt: new Date(),
+          },
+        },
+      ],
+    },
+  };
+}
+
 export async function getUnreadNotificationCount(): Promise<number> {
   const user = await getCurrentUser();
 
@@ -35,23 +54,32 @@ export async function getUnreadNotificationCount(): Promise<number> {
   }
 
   return prisma.notificationRecipient.count({
-    where: {
-      userId: user.id,
-      status: "UNREAD",
+    where: unreadRecipientWhere(user.id),
+  });
+}
+
+/** Lightweight unread action URLs for section badge aggregation (no message bodies). */
+export async function getUnreadNotificationActionUrls(): Promise<
+  Array<string | null>
+> {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return [];
+  }
+
+  const recipients = await prisma.notificationRecipient.findMany({
+    where: unreadRecipientWhere(user.id),
+    select: {
       notification: {
-        OR: [
-          {
-            expiresAt: null,
-          },
-          {
-            expiresAt: {
-              gt: new Date(),
-            },
-          },
-        ],
+        select: {
+          actionUrl: true,
+        },
       },
     },
   });
+
+  return recipients.map((recipient) => recipient.notification.actionUrl);
 }
 
 export async function getUserNotifications(

@@ -23,7 +23,7 @@ export function PageShell({
   return (
     <div
       className={cn(
-        "mx-auto flex w-full min-w-0 flex-1 flex-col gap-6 overflow-x-hidden p-4 sm:gap-8 md:p-6 lg:p-8",
+        "mx-auto flex w-full min-w-0 flex-1 flex-col gap-6 p-4 sm:gap-8 md:p-6 lg:p-8",
         sizeClass[size],
         className,
       )}

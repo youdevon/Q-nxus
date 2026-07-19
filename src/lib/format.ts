@@ -22,6 +22,139 @@ const moneyNumberFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
+const MONTH_SHORT = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
+
+type DisplayDateOptions = {
+  /** Returned when the value is empty or unparseable. Defaults to "". */
+  fallback?: string;
+};
+
+function parseDisplayDateParts(
+  value: string | Date,
+): { year: number; month: number; day: number } | null {
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) {
+      return null;
+    }
+
+    return {
+      year: value.getUTCFullYear(),
+      month: value.getUTCMonth() + 1,
+      day: value.getUTCDate(),
+    };
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const dateOnly = trimmed.slice(0, 10);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateOnly);
+
+  if (match) {
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+
+    if (
+      !Number.isFinite(year) ||
+      month < 1 ||
+      month > 12 ||
+      day < 1 ||
+      day > 31
+    ) {
+      return null;
+    }
+
+    return { year, month, day };
+  }
+
+  const parsed = new Date(trimmed);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return {
+    year: parsed.getUTCFullYear(),
+    month: parsed.getUTCMonth() + 1,
+    day: parsed.getUTCDate(),
+  };
+}
+
+/**
+ * Display dates as `2025 Jan 20` (year, short month, day).
+ * Accepts ISO date strings (`2025-01-20`), ISO datetimes, or Date values.
+ * Form inputs and stored values should keep ISO; use this only for UI display.
+ */
+export function formatDisplayDate(
+  value: string | Date | null | undefined,
+  options?: DisplayDateOptions,
+): string {
+  const fallback = options?.fallback ?? "";
+
+  if (value == null || value === "") {
+    return fallback;
+  }
+
+  const parts = parseDisplayDateParts(value);
+  if (!parts) {
+    return fallback || (typeof value === "string" ? value : fallback);
+  }
+
+  return `${parts.year} ${MONTH_SHORT[parts.month - 1]} ${parts.day}`;
+}
+
+/**
+ * Display date-times as `2025 Jan 20, 14:32` (UTC clock time from the value).
+ */
+export function formatDisplayDateTime(
+  value: string | Date | null | undefined,
+  options?: DisplayDateOptions,
+): string {
+  const fallback = options?.fallback ?? "";
+
+  if (value == null || value === "") {
+    return fallback;
+  }
+
+  const date =
+    value instanceof Date
+      ? value
+      : new Date(
+          /^\d{4}-\d{2}-\d{2}$/.test(value.trim())
+            ? `${value.trim()}T00:00:00.000Z`
+            : value,
+        );
+
+  if (Number.isNaN(date.getTime())) {
+    return fallback || (typeof value === "string" ? value : fallback);
+  }
+
+  const datePart = formatDisplayDate(date, { fallback });
+  if (!datePart) {
+    return fallback;
+  }
+
+  const hours = String(date.getUTCHours()).padStart(2, "0");
+  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+
+  return `${datePart}, ${hours}:${minutes}`;
+}
+
 /**
  * Display-only money formatting: thousand separators and exactly 2 decimals
  * (e.g. `1,234.00`). Optionally prefixes a currency code (`GYD 1,234.00`).

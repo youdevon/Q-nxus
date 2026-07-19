@@ -16,11 +16,7 @@ export type AdministrationDashboardData = {
     users: number;
     activeUsers: number;
     roles: number;
-    locations: number;
-    businessUnits: number;
     permissions: number;
-    enabledFeatures: number;
-    totalFeatures: number;
   };
   moduleStatuses: Array<{
     id: string;
@@ -29,12 +25,6 @@ export type AdministrationDashboardData = {
     health: string;
     message: string | null;
     checkedAt: Date;
-  }>;
-  features: Array<{
-    id: string;
-    featureCode: string;
-    isEnabled: boolean;
-    status: string;
   }>;
   readiness: Array<{
     key: string;
@@ -69,14 +59,9 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
         users: 0,
         activeUsers: 0,
         roles: 0,
-        locations: 0,
-        businessUnits: 0,
         permissions: 0,
-        enabledFeatures: 0,
-        totalFeatures: 0,
       },
       moduleStatuses: [],
-      features: [],
       readiness: [
         {
           key: "organization",
@@ -92,13 +77,8 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
     users,
     activeUsers,
     roles,
-    locations,
-    businessUnits,
     permissions,
-    enabledFeatures,
-    totalFeatures,
     moduleStatuses,
-    features,
     numberingSequences,
     applicationSettings,
   ] = await Promise.all([
@@ -125,30 +105,9 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
         ],
       },
     }),
-    prisma.location.count({
-      where: {
-        organizationId: organization.id,
-      },
-    }),
-    prisma.businessUnit.count({
-      where: {
-        organizationId: organization.id,
-      },
-    }),
     prisma.permission.count({
       where: {
         isActive: true,
-      },
-    }),
-    prisma.featureControl.count({
-      where: {
-        organizationId: organization.id,
-        isEnabled: true,
-      },
-    }),
-    prisma.featureControl.count({
-      where: {
-        organizationId: organization.id,
       },
     }),
     prisma.moduleStatus.findMany({
@@ -162,20 +121,6 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
         health: true,
         message: true,
         checkedAt: true,
-      },
-    }),
-    prisma.featureControl.findMany({
-      where: {
-        organizationId: organization.id,
-      },
-      orderBy: {
-        featureCode: "asc",
-      },
-      select: {
-        id: true,
-        featureCode: true,
-        isEnabled: true,
-        status: true,
       },
     }),
     prisma.numberingSequence.count({
@@ -216,24 +161,6 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
           : "Roles or permissions are missing.",
     },
     {
-      key: "locations",
-      label: "Locations",
-      ready: locations > 0,
-      detail:
-        locations > 0
-          ? `${locations} location${locations === 1 ? "" : "s"} configured.`
-          : "No locations are configured.",
-    },
-    {
-      key: "business-units",
-      label: "Business units",
-      ready: businessUnits > 0,
-      detail:
-        businessUnits > 0
-          ? `${businessUnits} business unit${businessUnits === 1 ? "" : "s"} configured.`
-          : "No business units are configured.",
-    },
-    {
       key: "numbering",
       label: "Numbering sequences",
       ready: numberingSequences > 0,
@@ -259,14 +186,9 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
       users,
       activeUsers,
       roles,
-      locations,
-      businessUnits,
       permissions,
-      enabledFeatures,
-      totalFeatures,
     },
     moduleStatuses,
-    features,
     readiness,
   };
 }

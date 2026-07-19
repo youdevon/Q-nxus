@@ -1,6 +1,5 @@
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
-import { getStoredPayslip } from "@/src/modules/payroll/data/get-pay-runs";
-import { renderPayslipsPdf } from "@/src/modules/payroll/lib/payslip-pdf";
+import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";import { renderPayslipsPdf } from "@/src/modules/payroll/lib/payslip-pdf";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

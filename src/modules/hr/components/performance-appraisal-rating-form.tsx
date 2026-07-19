@@ -9,13 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { PageShell } from "@/src/components/layout/page-shell";
 import {
   savePerformanceAppraisalRatings,
   type PerformanceAppraisalRatingState,
 } from "@/src/modules/hr/actions/manage-performance-appraisal";
 import type { PerformanceAppraisalProfile } from "@/src/modules/hr/data/get-performance-appraisals";
-import { PeopleNav } from "./people-nav";
 
 const initialState: PerformanceAppraisalRatingState = {
   status: "idle",
@@ -104,12 +104,8 @@ export function PerformanceAppraisalRatingForm({
   }, [state]);
 
   return (
-    <form
-      action={action}
-      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8"
-    >
-      <PeopleNav />
-
+    <form action={action}>
+      <PageShell size="lg">
       <input type="hidden" name="employeeId" value={appraisal.employee.id} />
 
       <input type="hidden" name="appraisalId" value={appraisal.id} />
@@ -118,7 +114,7 @@ export function PerformanceAppraisalRatingForm({
 
       <input type="hidden" name="criteriaJson" value={JSON.stringify(rows)} />
 
-      <PageHeader
+      <PeoplePageHeader
         title="Enter Appraisal Ratings"
         description={`${appraisal.employee.firstName} ${appraisal.employee.lastName} · ${appraisal.title}`}
         backHref={`/people/employees/${appraisal.employee.id}/appraisals/${appraisal.id}`}
@@ -393,6 +389,7 @@ export function PerformanceAppraisalRatingForm({
           </div>
         </div>
       </section>
+      </PageShell>
     </form>
   );
 }

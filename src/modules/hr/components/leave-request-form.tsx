@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useEffect, useMemo, useState } from "react";
 import { CalendarDays, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -8,13 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import {
   createLeaveRequest,
   type LeaveRequestFormState,
 } from "@/src/modules/hr/actions/create-leave-request";
 import type { NewLeaveRequestData } from "@/src/modules/hr/data/get-new-leave-request-data";
+import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { countWorkingDaysInclusive } from "@/src/modules/hr/lib/leave-day-math";
 
 const initialState: LeaveRequestFormState = {
@@ -30,6 +32,10 @@ function formatQuantity(value: string): string {
 }
 
 export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
+  const isOnBehalf = data.mode === "onBehalf";
+  const backHref = isOnBehalf ? "/people/leave" : "/me/leave";
+  const backLabel = isOnBehalf ? "Leave" : "My leave";
+  const cancelHref = backHref;
   const [state, action, pending] = useActionState(
     createLeaveRequest,
     initialState,
@@ -62,30 +68,62 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
     }
   }, [state]);
 
+  const headerTitle = isOnBehalf
+    ? "Request leave for an employee"
+    : "Request leave";
+  const headerDescription = isOnBehalf
+    ? `On behalf of ${data.employee.employeeName} · ${data.employee.employeeNumber}`
+    : `${data.employee.employeeName} · ${data.employee.employeeNumber}`;
+  const headerActions = (
+    <FormPageActions cancelHref={cancelHref}>
+      <Button
+        type="submit"
+        disabled={
+          pending ||
+          data.balances.length === 0 ||
+          !data.supervisor.canApprove
+        }
+      >
+        <Send />
+        {pending ? "Submitting…" : "Submit request"}
+      </Button>
+    </FormPageActions>
+  );
+
   return (
-    <form action={action} encType="multipart/form-data">
+    <form action={action}>
+      <input type="hidden" name="mode" value={data.mode} />
+      <input type="hidden" name="employeeId" value={data.employee.id} />
+
       <PageShell>
-        <PageHeader
-          title="Request Leave"
-          description={`${data.user.employeeName} · ${data.user.employeeNumber}`}
-          backHref="/leave"
-          backLabel="Leave"
-          actions={
-            <FormPageActions cancelHref="/leave">
-              <Button
-                type="submit"
-                disabled={
-                  pending ||
-                  data.balances.length === 0 ||
-                  !data.supervisor.canApprove
-                }
-              >
-                <Send />
-                {pending ? "Submitting…" : "Submit request"}
-              </Button>
-            </FormPageActions>
-          }
-        />
+        {isOnBehalf ? (
+          <PeoplePageHeader
+            title={headerTitle}
+            description={headerDescription}
+            backHref={backHref}
+            backLabel={backLabel}
+            actions={headerActions}
+          />
+        ) : (
+          <MePageHeader
+            title={headerTitle}
+            description={headerDescription}
+            backHref={backHref}
+            backLabel={backLabel}
+            actions={headerActions}
+          />
+        )}
+
+        {isOnBehalf ? (
+          <p className="text-sm text-muted-foreground">
+            <Link
+              href="/people/leave/new"
+              className="font-medium text-foreground underline-offset-4 hover:underline"
+            >
+              Change employee
+            </Link>
+          </p>
+        ) : null}
 
         {!data.supervisor.canApprove && (
           <div className="border-y border-amber-500/40 bg-amber-500/5 py-4 text-sm text-amber-900 dark:text-amber-200">
@@ -124,10 +162,16 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
             <p className="text-sm font-medium">No leave balances available</p>
             <p className="mt-1 text-xs text-muted-foreground">
               {!data.currentContract
-                ? "Create a current employment contract first."
+                ? isOnBehalf
+                  ? "This employee needs a current employment contract first."
+                  : "Create a current employment contract first."
                 : !data.currentContract.hasEndDate
-                  ? "Your current contract needs an end date before leave balances can be generated. Amend the contract and set an end date."
-                  : "Leave entitlement rules may be missing, or balances could not be generated for this contract. Check the employment contract and its leave entitlement setup."}
+                  ? isOnBehalf
+                    ? "This employee’s current contract needs an end date before leave balances can be generated."
+                    : "Your current contract needs an end date before leave balances can be generated. Amend the contract and set an end date."
+                  : isOnBehalf
+                    ? "Leave entitlement rules may be missing, or balances could not be generated for this contract."
+                    : "Leave entitlement rules may be missing, or balances could not be generated for this contract. Check the employment contract and its leave entitlement setup."}
             </p>
           </div>
         ) : (
@@ -302,7 +346,11 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
                     name="employeeComment"
                     rows={3}
                     className="mt-2"
-                    placeholder="Optional note for your supervisor"
+                    placeholder={
+                      isOnBehalf
+                        ? "Optional note for the approver"
+                        : "Optional note for your supervisor"
+                    }
                   />
                 </div>
               </div>

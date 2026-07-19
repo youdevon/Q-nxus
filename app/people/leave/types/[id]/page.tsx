@@ -5,11 +5,10 @@ import { Pencil, Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { activeStateBadgeVariant } from "@/src/config/ui-colors";
 import { LeaveEntitlementRuleForm } from "@/src/modules/hr/components/leave-entitlement-rule-form";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 import { RebuildLeaveBalancesButton } from "@/src/modules/hr/components/rebuild-leave-balances-button";
 import { getLeaveTypeDetail } from "@/src/modules/hr/data/get-leave-types";
 import { requireLeaveManageAccess } from "@/src/modules/hr/data/require-people-access";
@@ -35,10 +34,8 @@ export default async function LeaveTypeDetailPage({
   }
 
   return (
-    <PageShell>
-      <PeopleNav />
-
-      <PageHeader
+    <PageShell size="md">
+      <PeoplePageHeader
         title={leaveType.name}
         description={
           leaveType.description ??

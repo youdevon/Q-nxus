@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormPageActions } from "@/src/components/layout/page-actions";
-import { PageHeader } from "@/src/components/layout/page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import {
   createLeaveType,
@@ -16,7 +16,6 @@ import {
   type LeaveTypeFormState,
 } from "@/src/modules/hr/actions/manage-leave-type";
 import type { LeaveTypeDetailRecord } from "@/src/modules/hr/data/get-leave-types";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
 
 const initialState: LeaveTypeFormState = {
   status: "idle",
@@ -62,11 +61,10 @@ export function LeaveTypeForm({
   return (
     <form action={formAction}>
       <PageShell>
-        <PeopleNav />
 
         {leaveType && <input type="hidden" name="id" value={leaveType.id} />}
 
-        <PageHeader
+        <PeoplePageHeader
           title={leaveType ? "Edit Leave Type" : "New Leave Type"}
           description="Configure leave categories, balance requirements, and document rules."
           backHref={

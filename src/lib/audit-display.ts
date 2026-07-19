@@ -1,3 +1,51 @@
+const IPV4_PATTERN =
+  /^(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)$/;
+
+/**
+ * Prefer a public/client IPv4 address from proxy headers or stored values.
+ * Strips IPv6-mapped IPv4 (`::ffff:a.b.c.d`) and skips pure IPv6.
+ */
+export function normalizeClientIp(
+  raw: string | null | undefined,
+): string | null {
+  if (!raw) {
+    return null;
+  }
+
+  for (const part of raw.split(",")) {
+    let candidate = part.trim();
+
+    if (!candidate) {
+      continue;
+    }
+
+    if (candidate.startsWith("[") && candidate.endsWith("]")) {
+      candidate = candidate.slice(1, -1);
+    }
+
+    const mappedPrefix = "::ffff:";
+    if (candidate.toLowerCase().startsWith(mappedPrefix)) {
+      candidate = candidate.slice(mappedPrefix.length);
+    }
+
+    if (IPV4_PATTERN.test(candidate)) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Prefer IPv4 for display. Pure IPv6 (including ::1) is omitted.
+ * IPv6-mapped IPv4 (`::ffff:a.b.c.d`) is shown as IPv4.
+ */
+export function formatAuditIpAddress(
+  ipAddress: string | null | undefined,
+): string | null {
+  return normalizeClientIp(ipAddress);
+}
+
 export function formatAuditLabel(value: string): string {
   return value
     .replaceAll(/[_-]+/g, "")
@@ -8,6 +56,53 @@ export function formatAuditLabel(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
+/** Prisma CUID / similar opaque record ids — not for primary UI labels. */
+export function looksLikeOpaqueId(value: string): boolean {
+  return /^c[a-z0-9]{20,}$/i.test(value.trim());
+}
+
+/**
+ * Replace opaque entity ids in free-text descriptions with a resolved label.
+ */
+export function humanizeAuditDescription(
+  description: string | null | undefined,
+  options: {
+    entityId?: string | null;
+    entityLabel?: string | null;
+    referenceLabels?: ReadonlyMap<string, string> | Record<string, string>;
+  } = {},
+): string | null {
+  const text = description?.trim();
+  if (!text) {
+    return null;
+  }
+
+  let result = text;
+  const labelFor = (id: string): string | undefined => {
+    if (options.entityId === id && options.entityLabel) {
+      return options.entityLabel;
+    }
+    return resolveReferenceLabel(id, options.referenceLabels);
+  };
+
+  if (options.entityId && options.entityLabel && result.includes(options.entityId)) {
+    result = result.replaceAll(options.entityId, options.entityLabel);
+  }
+
+  result = result.replace(/\bc[a-z0-9]{20,}\b/gi, (match) => {
+    return labelFor(match) ?? match;
+  });
+
+  // Drop any remaining unresolved opaque ids rather than showing them.
+  result = result
+    .replace(/\bc[a-z0-9]{20,}\b/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s+([.,;:])/g, "$1")
+    .trim();
+
+  return result || null;
+}
+
 const MODULE_LABELS: Record<string, string> = {
   core: "Core",
   hr: "HR",
@@ -15,6 +110,7 @@ const MODULE_LABELS: Record<string, string> = {
   admin: "Admin",
   administration: "Administration",
   identity: "Identity",
+  auth: "Auth",
   notifications: "Notifications",
   audit: "Audit",
 };
@@ -31,9 +127,15 @@ const ACTION_LABELS: Record<string, string> = {
   SUBMIT: "Submitted",
   REVIEW: "Reviewed",
   ACKNOWLEDGE: "Acknowledged",
+  ISSUE: "Issued",
+  DOWNLOAD: "Downloaded",
+  VIEW: "Viewed",
   COMPLETE: "Completed",
   CANCEL: "Cancelled",
   CLOSE: "Closed",
+  LOGIN: "Signed in",
+  LOGIN_FAILED: "Sign-in failed",
+  LOGOUT: "Signed out",
 };
 
 const ENTITY_LABELS: Record<string, string> = {
@@ -42,6 +144,15 @@ const ENTITY_LABELS: Record<string, string> = {
   EmployeeAssignment: "Employee assignment",
   LeaveRequest: "Leave request",
   LeaveType: "Leave type",
+  EmployeeCorrespondence: "Employee correspondence",
+  EmployeeCorrespondenceAttachment: "Correspondence attachment",
+  EmployeeCorrespondenceResponse: "Employee letter response",
+  CorrespondenceTemplate: "Correspondence template",
+  EmployeeCredential: "Employee credential",
+  EmployeeTrainingRecord: "Training record",
+  EmployeeQualificationDocument: "Employee qualification",
+  EmployeeQualificationEntry: "Qualification subject",
+  EmployeeFileChecklistItem: "Employee file checklist item",
   PerformanceAppraisal: "Performance appraisal",
   Position: "Position",
   Department: "Department",
@@ -58,6 +169,7 @@ const ENTITY_LABELS: Record<string, string> = {
   DomainSetting: "Domain setting",
   JobDescription: "Job description",
   PositionJobDescription: "Job description",
+  DemoData: "Demo data",
 };
 
 const FIELD_LABELS: Record<string, string> = {
@@ -99,6 +211,7 @@ const FIELD_LABELS: Record<string, string> = {
   endDate: "End date",
   baseSalary: "Base salary",
   currency: "Currency",
+  jobTitle: "Position",
   sequenceCode: "Sequence code",
   prefix: "Prefix",
   nextNumber: "Next number",
@@ -146,7 +259,30 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export function formatAuditDisplayValue(value: unknown): string {
+export type FormatAuditDisplayOptions = {
+  /** Resolved labels keyed by opaque entity id. */
+  referenceLabels?: ReadonlyMap<string, string> | Record<string, string>;
+};
+
+function resolveReferenceLabel(
+  id: string,
+  labels?: ReadonlyMap<string, string> | Record<string, string>,
+): string | undefined {
+  if (!labels) {
+    return undefined;
+  }
+  if (labels instanceof Map) {
+    return labels.get(id);
+  }
+  return Object.hasOwn(labels, id)
+    ? (labels as Record<string, string>)[id]
+    : undefined;
+}
+
+export function formatAuditDisplayValue(
+  value: unknown,
+  options: FormatAuditDisplayOptions = {},
+): string {
   if (value === null || typeof value === "undefined") {
     return "—";
   }
@@ -175,6 +311,10 @@ export function formatAuditDisplayValue(value: unknown): string {
       return formatAuditLabel(value);
     }
 
+    if (looksLikeOpaqueId(value)) {
+      return resolveReferenceLabel(value, options.referenceLabels) ?? "—";
+    }
+
     return value;
   }
 
@@ -187,7 +327,9 @@ export function formatAuditDisplayValue(value: unknown): string {
       return "None";
     }
 
-    return value.map((item) => formatAuditDisplayValue(item)).join(",");
+    return value
+      .map((item) => formatAuditDisplayValue(item, options))
+      .join(", ");
   }
 
   if (isPlainObject(value)) {
@@ -263,6 +405,7 @@ export type AuditChangeRow = {
 export function buildAuditChangeRows(
   oldValues: unknown,
   newValues: unknown,
+  options: FormatAuditDisplayOptions = {},
 ): AuditChangeRow[] {
   const oldObject = isPlainObject(oldValues) ? oldValues : {};
   const newObject = isPlainObject(newValues) ? newValues : {};
@@ -273,8 +416,8 @@ export function buildAuditChangeRows(
   return keys.map((field) => {
     const beforeRaw = oldObject[field];
     const afterRaw = newObject[field];
-    const before = formatAuditDisplayValue(beforeRaw);
-    const after = formatAuditDisplayValue(afterRaw);
+    const before = formatAuditDisplayValue(beforeRaw, options);
+    const after = formatAuditDisplayValue(afterRaw, options);
 
     return {
       field,

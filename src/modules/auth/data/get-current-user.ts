@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import { prisma } from "@/lib/prisma";
 import { readSessionUserId } from "@/src/modules/auth/lib/session-cookie";
 
@@ -17,6 +19,7 @@ const currentUserSelect = {
       employeeNumber: true,
       firstName: true,
       lastName: true,
+      workforceCategory: true,
     },
   },
 } as const;
@@ -30,7 +33,8 @@ export type CurrentEmployeeUser = CurrentUser & {
   employee: NonNullable<CurrentUser["employee"]>;
 };
 
-export async function getCurrentUser() {
+/** Deduped per React request — layout + page share one session user lookup. */
+export const getCurrentUser = cache(async () => {
   const userId = await readSessionUserId();
 
   if (!userId) {
@@ -43,7 +47,7 @@ export async function getCurrentUser() {
     },
     select: currentUserSelect,
   });
-}
+});
 
 export async function requireCurrentUser() {
   const user = await getCurrentUser();

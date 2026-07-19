@@ -2,9 +2,12 @@
 
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-export type ContractPeriodYears = 1 | 2 | 3;
+/** Fixed-term length presets used by the employment contract form. */
+export type ContractLengthPreset = "6M" | "1Y" | "3Y";
 
-export type ContractPeriodOption = ContractPeriodYears | "custom";
+export type ContractPeriodOption = ContractLengthPreset | "custom";
+
+const PRESET_ORDER: ContractLengthPreset[] = ["6M", "1Y", "3Y"];
 
 function parseIsoDate(
   value: string,
@@ -73,6 +76,29 @@ export function addCalendarYears(
   return formatIsoDate(year, parts.month, day);
 }
 
+/**
+ * Add calendar months to an ISO date, clamping the day when the
+ * target month is shorter (e.g. Jan 31 + 1m → Feb 28/29).
+ */
+export function addCalendarMonths(
+  isoDate: string,
+  months: number,
+): string | null {
+  const parts = parseIsoDate(isoDate);
+
+  if (!parts || !Number.isInteger(months)) {
+    return null;
+  }
+
+  const totalMonths = parts.month - 1 + months;
+  const year = parts.year + Math.floor(totalMonths / 12);
+  const monthIndex = ((totalMonths % 12) + 12) % 12;
+  const month = monthIndex + 1;
+  const day = Math.min(parts.day, daysInMonth(year, month));
+
+  return formatIsoDate(year, month, day);
+}
+
 /** Subtract one calendar day from an ISO date. */
 export function subtractOneCalendarDay(isoDate: string): string | null {
   const parts = parseIsoDate(isoDate);
@@ -135,19 +161,36 @@ export function earliestRenewalStartDate(previous: {
   return addOneCalendarDay(anchor);
 }
 
+function periodAnniversary(
+  startDate: string,
+  preset: ContractLengthPreset,
+): string | null {
+  switch (preset) {
+    case "6M":
+      return addCalendarMonths(startDate, 6);
+    case "1Y":
+      return addCalendarYears(startDate, 1);
+    case "3Y":
+      return addCalendarYears(startDate, 3);
+  }
+}
+
 /**
  * Contract end date for a fixed period: the day before the
- * N-year anniversary of the start date.
+ * period anniversary of the start date.
  *
  * Examples:
- * - 2026-01-15 + 1y → 2027-01-14
- * - 2026-03-01 + 1y → 2027-02-28
+ * - 2026-01-01 + 6M → 2026-06-30
+ * - 2026-01-01 + 1Y → 2026-12-31
+ * - 2026-01-15 + 1Y → 2027-01-14
+ * - 2026-03-01 + 1Y → 2027-02-28
+ * - 2026-01-01 + 3Y → 2028-12-31
  */
 export function calculateContractEndDate(
   startDate: string,
-  years: ContractPeriodYears,
+  preset: ContractLengthPreset,
 ): string | null {
-  const anniversary = addCalendarYears(startDate, years);
+  const anniversary = periodAnniversary(startDate, preset);
 
   if (!anniversary) {
     return null;
@@ -160,9 +203,9 @@ export function inferContractPeriod(
   startDate: string,
   endDate: string,
 ): ContractPeriodOption {
-  for (const years of [1, 2, 3] as const) {
-    if (calculateContractEndDate(startDate, years) === endDate) {
-      return years;
+  for (const preset of PRESET_ORDER) {
+    if (calculateContractEndDate(startDate, preset) === endDate) {
+      return preset;
     }
   }
 

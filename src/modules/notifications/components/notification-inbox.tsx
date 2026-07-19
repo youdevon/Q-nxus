@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
+import { formatDisplayDateTime } from "@/src/lib/format";
 import {
   markAllNotificationsRead,
   markNotificationRead,
@@ -49,10 +50,7 @@ function severityIcon(severity: string) {
 }
 
 function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
+  return formatDisplayDateTime(value);
 }
 
 export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
