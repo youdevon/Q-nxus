@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Q-NXUS
 
-## Getting Started
+HR, payroll, and administration platform for Tobago Urban and Rural Housing Corporation (TURHC).
 
-First, run the development server:
+Remote: https://github.com/youdevon/Q-nxus
+
+## Clone and run
 
 ```bash
+git clone https://github.com/youdevon/Q-nxus.git
+cd Q-nxus
+git checkout main
+npm install
+cp .env.example .env
+# Edit .env — set DATABASE_URL and AUTH_SECRET (min 16 chars). Keep .env local; never commit it.
+npx prisma migrate deploy
+npx prisma generate
+npm run seed:access   # optional: access roles
+# Optional full demo seed: npx tsx prisma/seed.ts
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Default seeded admin (after seed): `admin@q-nxus.local` / `ChangeMe123!`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run typecheck
+npm test
+npm run build
+```
 
-## Learn More
+## Background jobs (ops)
 
-To learn more about Next.js, take a look at the following resources:
+Jobs cover email delivery, correspondence ack reminders, contract expiry, vacation forfeiture, and retention archives.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Mode | How |
+|------|-----|
+| On demand | `npm run jobs:run` |
+| In-process (15 min) | `ENABLE_BACKGROUND_JOBS=true` in `.env` (see `instrumentation.ts`) |
+| External cron | Leave `ENABLE_BACKGROUND_JOBS` unset/false and schedule `npm run jobs:run` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Single-job scripts also exist (`notify:vacation-forfeiture`, `archive:correspondence-retention`, etc.).
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`main` is protected: use a feature branch and open a pull request (force-push and direct pushes to `main` are blocked for admins too).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Smoke QA (manual)
+
+After migrate/seed on a fresh DB:
+
+1. Sign in as admin
+2. Create/activate a contract with vacation off for a short-term person
+3. People → Leave → Balances → adjust vacation/sick entitlements
+4. People → Leave → Workflow → confirm forfeiture recipients + email toggle
+5. Activate a contract and confirm payroll readiness notification or auto-complete when ready
+
+More domain notes live under `docs/`.
