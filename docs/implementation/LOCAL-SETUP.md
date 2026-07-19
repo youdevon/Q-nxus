@@ -30,4 +30,6 @@ npx prisma generate
 
 Run all once: `npm run jobs:run`.
 
+Contract/leave/payroll activate smoke: `npm run smoke:hr` (expects `SMOKE_OK`).
+
 For production, prefer external cron calling `jobs:run` over `ENABLE_BACKGROUND_JOBS=true` unless you intentionally want the Next.js process to own the schedule.

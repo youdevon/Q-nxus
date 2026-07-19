@@ -1,5 +1,6 @@
 /**
- * Smoke checks for contract governance, leave overrides, rebuild, and lifecycle.
+ * Smoke checks for contract governance, leave overrides, rebuild, payroll
+ * readiness after activate, and vacation forfeiture queue.
  * Run: npx tsx scripts/smoke-hr-contract-spine.ts
  */
 import "dotenv/config";
@@ -11,13 +12,16 @@ import {
 } from "../src/modules/hr/services/employee-lifecycle-cases";
 import { createContractLeaveBalances } from "../src/modules/hr/services/create-contract-leave-balances";
 import { rebuildCurrentContractLeaveBalances } from "../src/modules/hr/services/rebuild-leave-balances";
+import { syncPayrollReadinessAfterContractActivate } from "../src/modules/hr/services/sync-payroll-readiness-after-activate";
+import { getVacationForfeitureQueue } from "../src/modules/hr/data/get-vacation-forfeiture-queue";
+import { notifyVacationForfeitureReminders } from "../src/modules/hr/services/notify-vacation-forfeiture";
 
 async function main() {
   const org = await prisma.organization.findFirst({
     orderBy: { createdAt: "asc" },
     select: { id: true },
   });
-  if (!org) throw new Error("No organization");
+  if (!org) throw new Error("No organization — run seed first");
 
   const employee = await prisma.employee.findFirst({
     where: {
@@ -34,13 +38,13 @@ async function main() {
       position: { select: { title: true } },
     },
   });
-  if (!employee) throw new Error("No employee");
+  if (!employee) throw new Error("No employee — run seed first");
 
   const actor = await prisma.user.findFirst({
     where: { organizationId: org.id, isActive: true },
     select: { id: true },
   });
-  if (!actor) throw new Error("No user");
+  if (!actor) throw new Error("No user — run seed first");
 
   // Temporarily clear current flag so activate can claim isCurrent; restore after.
   const priorCurrent = await prisma.employmentContract.findMany({
@@ -54,6 +58,29 @@ async function main() {
       data: { isCurrent: false },
     });
   }
+
+  // Cancel any open onboarding so smoke gets a fresh ACTIVATE_CONTRACT task.
+  const openCases = await prisma.employeeOnboardingCase.findMany({
+    where: {
+      employeeId: employee.id,
+      status: { in: ["OPEN", "READY"] },
+    },
+    select: { id: true },
+  });
+  for (const openCase of openCases) {
+    await cancelEmployeeOnboardingCase({
+      caseId: openCase.id,
+      cancelledByUserId: actor.id,
+      notes: "smoke reset",
+    });
+  }
+
+  const onboarding = await openEmployeeOnboardingCase({
+    organizationId: org.id,
+    employeeId: employee.id,
+    openedByUserId: actor.id,
+    notes: "smoke open before activate",
+  });
 
   const end = new Date(employee.hireDate);
   end.setUTCFullYear(end.getUTCFullYear() + 1);
@@ -186,7 +213,36 @@ async function main() {
     );
   }
 
-  // Mid-contract entitlement change + regenerate must keep overrides
+  const payrollSync = await syncPayrollReadinessAfterContractActivate({
+    employeeId: employee.id,
+    organizationId: org.id,
+    actorUserId: actor.id,
+    contractId: draft.id,
+  });
+
+  console.log("payrollSync", payrollSync);
+
+  if (!payrollSync.activateTaskCompleted) {
+    throw new Error(
+      "Expected ACTIVATE_CONTRACT onboarding task to auto-complete after activate",
+    );
+  }
+
+  const activateTask = await prisma.employeeOnboardingTask.findFirst({
+    where: {
+      caseId: onboarding.id,
+      code: "ACTIVATE_CONTRACT",
+    },
+    select: { status: true },
+  });
+
+  if (activateTask?.status !== "COMPLETED") {
+    throw new Error(
+      `ACTIVATE_CONTRACT task status expected COMPLETED, got ${activateTask?.status}`,
+    );
+  }
+
+  // Mid-contract entitlement change + rebuild must keep overrides
   await prisma.employmentContract.update({
     where: { id: draft.id },
     data: { vacationLeaveDaysOverride: 7 },
@@ -232,11 +288,52 @@ async function main() {
     );
   }
 
-  // Cleanup smoke contract
+  // Forfeiture queue: contract ends within 30 days + available VAC > 0
+  const forfeitureEnd = new Date();
+  forfeitureEnd.setUTCDate(forfeitureEnd.getUTCDate() + 15);
+  await prisma.employmentContract.update({
+    where: { id: draft.id },
+    data: { endDate: forfeitureEnd },
+  });
+
+  const queue = await getVacationForfeitureQueue(org.id, new Date(), 50);
+  const inQueue = queue.find((item) => item.contractId === draft.id);
+
+  console.log("forfeitureQueue", {
+    size: queue.length,
+    smokeInQueue: Boolean(inQueue),
+    daysUntilEnd: inQueue?.daysUntilEnd ?? null,
+    availableDays: inQueue?.availableDays ?? null,
+  });
+
+  if (!inQueue) {
+    throw new Error(
+      "Expected smoke contract in vacation forfeiture queue (15 days left, VAC>0)",
+    );
+  }
+
+  if (inQueue.availableDays <= 0) {
+    throw new Error("Forfeiture queue item must have availableDays > 0");
+  }
+
+  const notifyResult = await notifyVacationForfeitureReminders({
+    employeeId: employee.id,
+    asOf: new Date(),
+  });
+
+  console.log("forfeitureNotify", notifyResult);
+
+  if (notifyResult.considered < 1) {
+    throw new Error("Forfeiture notify considered 0 contracts for smoke employee");
+  }
+
+  // Cleanup smoke contract + related rows
   await prisma.leaveBalanceTransaction.deleteMany({
     where: { contractId: draft.id },
   });
-  await prisma.employeeLeaveBalance.deleteMany({ where: { contractId: draft.id } });
+  await prisma.employeeLeaveBalance.deleteMany({
+    where: { contractId: draft.id },
+  });
   await prisma.employmentContract.delete({ where: { id: draft.id } });
 
   // Restore prior current contracts (smoke only cleared isCurrent, not status).
@@ -247,21 +344,14 @@ async function main() {
     });
   }
 
-  const opened = await openEmployeeOnboardingCase({
-    organizationId: org.id,
-    employeeId: employee.id,
-    openedByUserId: actor.id,
-    notes: "smoke open",
-  });
-
   await cancelEmployeeOnboardingCase({
-    caseId: opened.id,
+    caseId: onboarding.id,
     cancelledByUserId: actor.id,
     notes: "smoke cancel",
   });
 
   const cancelled = await prisma.employeeOnboardingCase.findUniqueOrThrow({
-    where: { id: opened.id },
+    where: { id: onboarding.id },
     select: {
       status: true,
       tasks: { select: { status: true } },

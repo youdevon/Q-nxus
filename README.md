@@ -46,9 +46,16 @@ Single-job scripts also exist (`notify:vacation-forfeiture`, `archive:correspond
 
 `main` is protected: use a feature branch and open a pull request (force-push and direct pushes to `main` are blocked for admins too).
 
-## Smoke QA (manual)
+## Smoke QA
 
-After migrate/seed on a fresh DB:
+Automated spine (activate, leave overrides/rebuild, payroll sync, forfeiture queue):
+
+```bash
+npx tsx scripts/smoke-hr-contract-spine.ts
+# expects SMOKE_OK
+```
+
+Manual UI check after migrate/seed:
 
 1. Sign in as admin
 2. Create/activate a contract with vacation off for a short-term person
