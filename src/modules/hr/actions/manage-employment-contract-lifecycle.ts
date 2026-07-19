@@ -17,8 +17,10 @@ import {
   canApproveContract,
   canSignContract,
   canSubmitContract,
+  statusAfterSignatureStarted,
 } from "@/src/modules/hr/lib/contract-lifecycle";
 import { createStoredFileRecord } from "@/src/modules/hr/lib/create-stored-file-record";
+import { disposeContractStoredDocument } from "@/src/modules/hr/lib/dispose-contract-stored-document";
 import {
   CONTRACT_WORKFLOW_SETTING_CODE,
   parseContractWorkflowSettings,
@@ -134,10 +136,11 @@ export async function submitEmploymentContract(
           data: { status: "PENDING_APPROVAL" },
         });
       } else {
+        // Auto-approve (PEOPLE_MANAGE_AUTO) → APPROVED until first signature.
         await transaction.employmentContract.update({
           where: { id: contractId },
           data: {
-            status: "AWAITING_SIGNATURE",
+            status: "APPROVED",
             approvedAt: new Date(),
             approvedByUserId: actor.actor.userId,
           },
@@ -220,7 +223,7 @@ export async function decideEmploymentContract(
         await transaction.employmentContract.update({
           where: { id: contractId },
           data: {
-            status: "AWAITING_SIGNATURE",
+            status: "APPROVED",
             approvedAt: new Date(),
             approvedByUserId: actor.actor.userId,
           },
@@ -303,7 +306,7 @@ export async function signEmploymentContract(
         where: { id: contractId },
         data: {
           employeeSignedAt: new Date(),
-          status: "AWAITING_SIGNATURE",
+          status: statusAfterSignatureStarted(contract.status),
           signedDate: new Date(),
         },
       });
@@ -341,7 +344,7 @@ export async function signEmploymentContract(
         where: { id: contractId },
         data: {
           orgSignedAt: new Date(),
-          status: "AWAITING_SIGNATURE",
+          status: statusAfterSignatureStarted(contract.status),
         },
       });
 
@@ -441,8 +444,38 @@ export async function activateEmploymentContract(
       }
     }
 
+    let payrollMessage = "";
+    try {
+      const { syncPayrollReadinessAfterContractActivate } = await import(
+        "@/src/modules/hr/services/sync-payroll-readiness-after-activate"
+      );
+      const payrollSync = await syncPayrollReadinessAfterContractActivate({
+        employeeId: contract.employeeId,
+        organizationId: contract.employee.organizationId,
+        actorUserId: actor.actor.userId,
+        contractId,
+      });
+
+      if (payrollSync.payrollTaskCompleted) {
+        payrollMessage = " Payroll readiness onboarding task completed.";
+      } else if (!payrollSync.payrollReady) {
+        payrollMessage =
+          " Payroll setup still needs attention — check your notifications.";
+      }
+    } catch (payrollError) {
+      console.error(
+        "Payroll readiness sync failed after activate:",
+        payrollError,
+      );
+    }
+
     revalidateContractPaths(contract.employeeId, contractId);
-    return { status: "success", message: "Contract activated." };
+    revalidatePath(`/people/employees/${contract.employeeId}`);
+    revalidatePath(`/payroll/employees/${contract.employeeId}`);
+    return {
+      status: "success",
+      message: `Contract activated.${payrollMessage}`,
+    };
   } catch (error) {
     unstable_rethrow(error);
     console.error(error);
@@ -473,6 +506,7 @@ export async function uploadEmploymentContractDocument(
       id: true,
       employeeId: true,
       documentStorageKey: true,
+      storedFileId: true,
       employee: {
         select: {
           organizationId: true,
@@ -494,6 +528,8 @@ export async function uploadEmploymentContractDocument(
     };
   }
 
+  const previousStorageKey = contract.documentStorageKey;
+  const previousStoredFileId = contract.storedFileId;
   const metadata = await getAuditRequestMetadata(formData);
   const storageKey = `employee-file/${contract.employeeId}/contracts/${contractId}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}`;
 
@@ -540,6 +576,32 @@ export async function uploadEmploymentContractDocument(
         clientHostName: metadata.clientHostName,
       },
     });
+
+    // Best-effort cleanup of the superseded file (respect legal hold).
+    if (
+      (previousStoredFileId && previousStoredFileId !== storedFileId) ||
+      (previousStorageKey && previousStorageKey !== stored.storageKey)
+    ) {
+      try {
+        await disposeContractStoredDocument({
+          storedFileId:
+            previousStoredFileId && previousStoredFileId !== storedFileId
+              ? previousStoredFileId
+              : null,
+          storageKey:
+            !previousStoredFileId &&
+            previousStorageKey &&
+            previousStorageKey !== stored.storageKey
+              ? previousStorageKey
+              : null,
+        });
+      } catch (cleanupError) {
+        console.error(
+          "Failed to clean up previous contract document:",
+          cleanupError,
+        );
+      }
+    }
 
     revalidateContractPaths(contract.employeeId, contractId);
     return { status: "success", message: "Document uploaded." };

@@ -6,6 +6,7 @@ import {
   createContractLeaveBalances,
   type LeaveEntitlementOverride,
 } from "@/src/modules/hr/services/create-contract-leave-balances";
+import { entitlementOverridesFromContractFields } from "@/src/modules/hr/lib/contract-leave-overrides";
 import {
   assignEmployeeToPosition,
 } from "@/src/modules/hr/services/assign-employee-to-position";
@@ -16,6 +17,7 @@ type Tx = Prisma.TransactionClient;
 /**
  * Make a draft/approved/signed contract the current ACTIVE contract:
  * supersede prior current, optional seat assignment, leave balances.
+ * Does not activate contracts that are still PENDING_APPROVAL.
  */
 export async function activateEmploymentContractInTransaction(
   input: {
@@ -63,8 +65,7 @@ export async function activateEmploymentContractInTransaction(
   if (
     contract.status !== "DRAFT" &&
     contract.status !== "APPROVED" &&
-    contract.status !== "AWAITING_SIGNATURE" &&
-    contract.status !== "PENDING_APPROVAL"
+    contract.status !== "AWAITING_SIGNATURE"
   ) {
     throw new Error("CONTRACT_NOT_ACTIVATABLE");
   }
@@ -183,21 +184,8 @@ export async function activateEmploymentContractInTransaction(
     },
   });
 
-  const entitlementOverrides: LeaveEntitlementOverride[] = [];
-
-  if (contract.vacationLeaveDaysOverride != null) {
-    entitlementOverrides.push({
-      leaveTypeCode: "VAC",
-      entitlementDays: Number(contract.vacationLeaveDaysOverride),
-    });
-  }
-
-  if (contract.sickLeaveDaysOverride != null) {
-    entitlementOverrides.push({
-      leaveTypeCode: "SICK",
-      entitlementDays: Number(contract.sickLeaveDaysOverride),
-    });
-  }
+  const entitlementOverrides: LeaveEntitlementOverride[] =
+    entitlementOverridesFromContractFields(contract);
 
   const existingBalances = await transaction.employeeLeaveBalance.count({
     where: { contractId: contract.id },

@@ -1936,7 +1936,7 @@ model EmploymentContract {
   updatedAt         DateTime                 @updatedAt
 
   employee       Employee                      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  sourceContract EmploymentContract?           @relation("ContractHistory", fields: [sourceContractId], references: [id])
+  sourceContract EmploymentContract?           @relation("ContractHistory", fields: [sourceContractId], references: [id], onDelete: SetNull)
   amendments     EmploymentContract[]          @relation("ContractHistory")
   allowances     EmploymentContractAllowance[]
   approvalSteps  EmploymentContractApprovalStep[]

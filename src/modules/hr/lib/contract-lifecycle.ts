@@ -45,6 +45,13 @@ export function canActivateContract(
   );
 }
 
+/** First signature moves APPROVED → AWAITING_SIGNATURE; later signs stay there. */
+export function statusAfterSignatureStarted(
+  _status: EmploymentContractStatus | string,
+): EmploymentContractStatus {
+  return "AWAITING_SIGNATURE";
+}
+
 export function contractStatusLabel(
   status: EmploymentContractStatus | string,
 ): string {

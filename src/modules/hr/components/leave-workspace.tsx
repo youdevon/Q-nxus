@@ -3,13 +3,15 @@ import { ClipboardList, Plus, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
-import { SectionHeading } from "@/src/components/ui/section-heading";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { PageAlert } from "@/src/components/ui/page-alert";
+import { SectionHeading } from "@/src/components/ui/section-heading";
 import { leaveStatusBadgeVariant } from "@/src/config/ui-colors";
 import type { LeaveWorkspaceData } from "@/src/modules/hr/data/get-leave-requests";
 import type { VacationForfeitureWarning } from "@/src/modules/hr/data/get-vacation-forfeiture-warning";
+import type { VacationForfeitureQueueItem } from "@/src/modules/hr/data/get-vacation-forfeiture-queue";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { formatDisplayDate } from "@/src/lib/format";
 
 function label(value: string): string {
   return value
@@ -19,9 +21,7 @@ function label(value: string): string {
 }
 
 function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-  }).format(new Date(`${value}T00:00:00.000Z`));
+  return formatDisplayDate(value);
 }
 
 function formatQuantity(value: string): string {
@@ -42,7 +42,7 @@ function RequestList({
   title: string;
   description?: string;
   emptyMessage: string;
-  requests: LeaveWorkspaceData["myRequests"];
+  requests: LeaveWorkspaceData["allRequests"];
   showEmployee?: boolean;
   anchorId?: string;
 }) {
@@ -68,7 +68,7 @@ function RequestList({
           {requests.map((request) => (
             <Link
               key={request.id}
-              href={`/leave/${request.id}`}
+              href={`/people/leave/${request.id}`}
               className="grid gap-4 py-5 hover:bg-muted/20 md:grid-cols-[1fr_11rem_6rem]"
             >
               <div>
@@ -128,7 +128,7 @@ function CurrentlyOnLeaveToggle({
         aria-pressed={selected}
         render={
           <Link
-            href={selected ? "/leave" : "/leave?view=on-leave"}
+            href={selected ? "/people/leave" : "/people/leave?view=on-leave"}
             scroll={false}
           />
         }
@@ -166,7 +166,7 @@ function CurrentlyOnLeaveRoster({
           {entries.map((entry) => (
             <Link
               key={entry.id}
-              href={`/leave/${entry.id}`}
+              href={`/people/leave/${entry.id}`}
               className="grid gap-4 py-5 hover:bg-muted/20 md:grid-cols-[1fr_12rem_14rem]"
             >
               <div>
@@ -202,30 +202,21 @@ export function LeaveWorkspace({
   data,
   view = "default",
   vacationForfeitureWarning = null,
+  vacationForfeitureQueue = [],
 }: {
   data: LeaveWorkspaceData;
   view?: "default" | "on-leave";
   vacationForfeitureWarning?: VacationForfeitureWarning | null;
+  vacationForfeitureQueue?: VacationForfeitureQueueItem[];
 }) {
   const isOnLeaveView = view === "on-leave";
-  const isOrgView = data.statsScope === "org";
-  const daysTakenLabel = isOrgView
-    ? "Days taken (organization)"
-    : "Your days taken";
-  const pendingLabel = isOrgView
-    ? "Pending requests (organization)"
-    : "Your requests awaiting decision";
-  const approvedLabel = isOrgView
-    ? "Approved YTD (organization)"
-    : "Your approved days YTD";
-
   const pageDescription = isOnLeaveView
     ? "People with approved leave overlapping today"
     : data.canManageLeave
-      ? "Organization leave queues: awaiting manager, needs HR confirmation, and your requests"
+      ? "Manage organization leave: queues, people currently out, and all employee requests."
       : data.canApprove
-        ? "Your leave requests and requests awaiting your approval"
-        : "Your leave requests and summary";
+        ? "Review team approvals and browse all employee leave requests."
+        : "Browse and manage leave requests across the organization.";
 
   const showHrQueues = data.canManageLeave;
   const showManagerQueue = data.canApprove && !showHrQueues;
@@ -234,22 +225,30 @@ export function LeaveWorkspace({
   const attentionCount = showHrQueues
     ? data.stats.pendingHrConfirmationCount
     : data.stats.pendingMyApprovalCount;
-  const attentionHref = showHrQueues ? "/leave#hr-queue" : "/leave#approvals";
+  const attentionHref = showHrQueues
+    ? "/people/leave#hr-queue"
+    : "/people/leave#approvals";
   const attentionLabel = showHrQueues
     ? "Needs HR confirmation"
     : "Awaiting my approval";
-  const statColumns = data.canApprove || data.canManageLeave ? 4 : 3;
+  const showAttentionStat = data.canApprove || data.canManageLeave;
+  const statColumns = showAttentionStat ? 4 : 3;
 
   return (
     <PageShell size="lg">
-      <PageHeader
+      <PeoplePageHeader
         title="Leave"
         description={pageDescription}
         actions={
-          <Button nativeButton={false} render={<Link href="/leave/new" />}>
-            <Plus />
-            Request leave
-          </Button>
+          data.canManageLeave ? (
+            <Button
+              nativeButton={false}
+              render={<Link href="/people/leave/new" />}
+            >
+              <Plus />
+              Request leave for employee
+            </Button>
+          ) : undefined
         }
       />
 
@@ -261,7 +260,7 @@ export function LeaveWorkspace({
           <p>{vacationForfeitureWarning.message}</p>
           <p className="mt-2">
             <Link
-              href="/leave/new"
+              href="/me/leave/new"
               className="font-medium underline underline-offset-2 hover:text-foreground"
             >
               Request vacation leave
@@ -288,30 +287,36 @@ export function LeaveWorkspace({
             ].join(" ")}
           >
             <div>
-              <p className="text-xs text-muted-foreground">{daysTakenLabel}</p>
+              <p className="text-xs text-muted-foreground">
+                Days taken (organization)
+              </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums">
                 {formatQuantity(data.stats.daysTaken)}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">{pendingLabel}</p>
+              <p className="text-xs text-muted-foreground">
+                Pending requests (organization)
+              </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums">
                 {data.stats.pendingRequestsCount}
               </p>
             </div>
 
             <div>
-              <p className="text-xs text-muted-foreground">{approvedLabel}</p>
+              <p className="text-xs text-muted-foreground">
+                Approved YTD (organization)
+              </p>
               <p className="mt-1 text-2xl font-semibold tabular-nums">
                 {formatQuantity(data.stats.approvedYtdDays)}
               </p>
             </div>
 
-            {data.canApprove || data.canManageLeave ? (
+            {showAttentionStat ? (
               <Link
                 href={attentionHref}
-                className="block rounded-lg border border-transparent px-3 py-2 -mx-3 transition-colors hover:border-border/80 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="-mx-3 block rounded-lg border border-transparent px-3 py-2 transition-colors hover:border-border/80 hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
               >
                 <p className="text-xs text-muted-foreground">{attentionLabel}</p>
                 <p className="mt-1 text-2xl font-semibold tabular-nums">
@@ -323,6 +328,79 @@ export function LeaveWorkspace({
 
           {showHrQueues ? (
             <>
+              {vacationForfeitureQueue.length > 0 ? (
+                <section id="vacation-forfeiture">
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="size-4 text-muted-foreground" />
+                      <SectionHeading>Vacation use-or-lose</SectionHeading>
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Current contracts ending within 30 days with unused
+                      vacation that cannot roll over.
+                    </p>
+                  </div>
+
+                  <div className="divide-y divide-border/70">
+                    {vacationForfeitureQueue.map((item) => (
+                      <div
+                        key={item.contractId}
+                        className="grid gap-3 py-4 md:grid-cols-[1fr_8rem_8rem_auto]"
+                      >
+                        <div>
+                          <p className="font-medium">{item.employeeName}</p>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {item.employeeNumber}
+                            {item.contractNumber
+                              ? ` · ${item.contractNumber}`
+                              : ""}
+                            {" · "}
+                            {item.jobTitle}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            Days left
+                          </p>
+                          <p className="mt-1 text-sm font-medium tabular-nums">
+                            {item.daysUntilEnd < 0
+                              ? "Ended"
+                              : item.daysUntilEnd}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            Available VAC
+                          </p>
+                          <p className="mt-1 text-sm font-medium tabular-nums">
+                            {formatQuantity(String(item.availableDays))}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 md:justify-end">
+                          <Badge
+                            variant={item.isUrgent ? "destructive" : "outline"}
+                          >
+                            Ends {formatDate(item.contractEndDateIso)}
+                          </Badge>
+                          <Button
+                            nativeButton={false}
+                            variant="outline"
+                            size="sm"
+                            render={
+                              <Link
+                                href={`/people/leave/balances?employeeId=${item.employeeId}`}
+                              />
+                            }
+                          >
+                            Balances
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
               <RequestList
                 anchorId="hr-queue"
                 title="Needs HR confirmation"
@@ -355,21 +433,46 @@ export function LeaveWorkspace({
           ) : null}
 
           {showManagerQueue ? (
+            <>
+              {data.pendingMyAcknowledgements.length > 0 ? (
+                <RequestList
+                  anchorId="acknowledgements"
+                  title="Awaiting my acknowledgement"
+                  description="Leave in your reporting line that needs acknowledgement before final approval."
+                  emptyMessage="No leave requests are waiting for your acknowledgement."
+                  requests={data.pendingMyAcknowledgements}
+                  showEmployee
+                />
+              ) : null}
+
+              <RequestList
+                anchorId="approvals"
+                title="Awaiting my approval"
+                description="Leave requests from your team that need your decision."
+                emptyMessage="No leave requests are waiting for your approval."
+                requests={data.pendingMyApprovals}
+                showEmployee
+              />
+            </>
+          ) : null}
+
+          {showHrQueues && data.pendingMyAcknowledgements.length > 0 ? (
             <RequestList
-              anchorId="approvals"
-              title="Awaiting my approval"
-              description="Leave requests from your team that need your decision."
-              emptyMessage="No leave requests are waiting for your approval."
-              requests={data.pendingMyApprovals}
+              anchorId="acknowledgements"
+              title="Awaiting my acknowledgement"
+              description="Leave in your reporting line that needs acknowledgement before final approval."
+              emptyMessage="No leave requests are waiting for your acknowledgement."
+              requests={data.pendingMyAcknowledgements}
               showEmployee
             />
           ) : null}
 
           <RequestList
-            title="My leave requests"
-            description="Requests you have submitted."
-            emptyMessage="You have not submitted any leave requests yet."
-            requests={data.myRequests}
+            title="All leave requests"
+            description="Every employee leave request in the organization, including your own."
+            emptyMessage="No leave requests have been submitted yet."
+            requests={data.allRequests}
+            showEmployee
           />
         </>
       )}

@@ -741,16 +741,16 @@ export async function createEmploymentContract(
 
             return { ...created, status: finalStatus, _needsSync: activation.needsAccessRoleSync };
           } else {
-            // Auto-approve path → awaiting signature (or approved if dual sign off)
+            // Auto-approve path → APPROVED until first signature
             await transaction.employmentContract.update({
               where: { id: created.id },
               data: {
-                status: "AWAITING_SIGNATURE",
+                status: "APPROVED",
                 approvedAt: new Date(),
                 approvedByUserId: actor.actor.userId,
               },
             });
-            finalStatus = "AWAITING_SIGNATURE";
+            finalStatus = "APPROVED";
           }
         }
 
@@ -803,10 +803,30 @@ export async function createEmploymentContract(
       }
     }
 
+    if (contract.status === "ACTIVE") {
+      try {
+        const { syncPayrollReadinessAfterContractActivate } = await import(
+          "@/src/modules/hr/services/sync-payroll-readiness-after-activate"
+        );
+        await syncPayrollReadinessAfterContractActivate({
+          employeeId,
+          organizationId: employee.organizationId,
+          actorUserId: actor.actor.userId,
+          contractId: contract.id,
+        });
+      } catch (payrollError) {
+        console.error(
+          "Payroll readiness sync failed after create-activate:",
+          payrollError,
+        );
+      }
+    }
+
     revalidatePath("/people");
     revalidatePath(`/people/employees/${employeeId}`);
     revalidatePath(`/people/employees/${employeeId}/contracts`);
     revalidatePath(`/people/employees/${employeeId}/assignments`);
+    revalidatePath(`/payroll/employees/${employeeId}`);
     revalidatePath("/people/structure");
     revalidatePath("/people/leave/balances");
     revalidatePath("/people/leave");

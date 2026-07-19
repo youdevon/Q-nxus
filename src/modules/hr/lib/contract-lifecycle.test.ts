@@ -8,11 +8,13 @@ import {
   canSubmitContract,
   contractStatusLabel,
   isContractEditable,
+  statusAfterSignatureStarted,
 } from "@/src/modules/hr/lib/contract-lifecycle";
 import {
   DEFAULT_CONTRACT_WORKFLOW_SETTINGS,
   parseContractWorkflowSettings,
 } from "@/src/modules/hr/lib/contract-workflow-settings";
+import { ContractWorkflowMode } from "@/generated/prisma/client";
 
 describe("contract lifecycle gates", () => {
   it("only drafts are editable and submittable", () => {
@@ -30,10 +32,19 @@ describe("contract lifecycle gates", () => {
     expect(canSignContract("ACTIVE")).toBe(false);
   });
 
-  it("activation allowed for draft shortcut and post-signature statuses", () => {
+  it("activation allowed for draft shortcut and post-approval statuses", () => {
     expect(canActivateContract("DRAFT")).toBe(true);
+    expect(canActivateContract("APPROVED")).toBe(true);
     expect(canActivateContract("AWAITING_SIGNATURE")).toBe(true);
+    expect(canActivateContract("PENDING_APPROVAL")).toBe(false);
     expect(canActivateContract("ACTIVE")).toBe(false);
+  });
+
+  it("first signature moves approved contracts to awaiting signature", () => {
+    expect(statusAfterSignatureStarted("APPROVED")).toBe("AWAITING_SIGNATURE");
+    expect(statusAfterSignatureStarted("AWAITING_SIGNATURE")).toBe(
+      "AWAITING_SIGNATURE",
+    );
   });
 
   it("dual signature helper respects policy", () => {
@@ -80,12 +91,12 @@ describe("contract workflow settings", () => {
   it("parses final approver mode", () => {
     expect(
       parseContractWorkflowSettings({
-        mode: "FINAL_APPROVER_POSITION",
+        mode: ContractWorkflowMode.FINAL_APPROVER_POSITION,
         finalApproverPositionId: "pos_1",
         requireDualSignature: false,
       }),
     ).toEqual({
-      mode: "FINAL_APPROVER_POSITION",
+      mode: ContractWorkflowMode.FINAL_APPROVER_POSITION,
       finalApproverPositionId: "pos_1",
       requireDualSignature: false,
     });

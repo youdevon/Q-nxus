@@ -256,6 +256,8 @@ export type EmploymentContractProfile = EmploymentContractListRecord & {
   documentFileName: string | null;
   documentMimeType: string | null;
   documentSize: number | null;
+  vacationLeaveDaysOverride: string | null;
+  sickLeaveDaysOverride: string | null;
   allowances: {
     id: string;
     categoryId: string;
@@ -312,6 +314,8 @@ export async function getEmploymentContractProfile(
       documentFileName: true,
       documentMimeType: true,
       documentSize: true,
+      vacationLeaveDaysOverride: true,
+      sickLeaveDaysOverride: true,
       employee: {
         select: {
           id: true,
@@ -446,6 +450,9 @@ export async function getEmploymentContractProfile(
     documentFileName: contract.documentFileName,
     documentMimeType: contract.documentMimeType,
     documentSize: contract.documentSize,
+    vacationLeaveDaysOverride:
+      contract.vacationLeaveDaysOverride?.toString() ?? null,
+    sickLeaveDaysOverride: contract.sickLeaveDaysOverride?.toString() ?? null,
     previousVersions,
     allowances: contract.allowances.map((allowance) => ({
       id: allowance.id,
@@ -745,7 +752,9 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
         (contract) => contract.status === "PENDING_APPROVAL",
       ).length,
       awaitingSignature: records.filter(
-        (contract) => contract.status === "AWAITING_SIGNATURE",
+        (contract) =>
+          contract.status === "APPROVED" ||
+          contract.status === "AWAITING_SIGNATURE",
       ).length,
       draft: records.filter((contract) => contract.status === "DRAFT").length,
       expiringWithin30Days: currentRecords.filter(

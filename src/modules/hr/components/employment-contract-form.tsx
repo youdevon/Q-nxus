@@ -284,26 +284,57 @@ export function EmploymentContractForm({
     createDefaults?.endDate ??
     "";
 
-  const [vacationLeaveDays, setVacationLeaveDays] = useState(() =>
-    previewLeaveDays(vacationRule, initialStart, initialEnd),
+  const sourceVacationOverride = sourceContract?.vacationLeaveDaysOverride;
+  const sourceSickOverride = sourceContract?.sickLeaveDaysOverride;
+  const hasSourceVacationOverride = sourceVacationOverride != null;
+  const hasSourceSickOverride = sourceSickOverride != null;
+
+  const [vacationLeaveDays, setVacationLeaveDays] = useState(() => {
+    if (hasSourceVacationOverride) {
+      return formatLeaveDays(Number(sourceVacationOverride));
+    }
+
+    return previewLeaveDays(vacationRule, initialStart, initialEnd);
+  });
+  const [sickLeaveDays, setSickLeaveDays] = useState(() => {
+    if (hasSourceSickOverride) {
+      return formatLeaveDays(Number(sourceSickOverride));
+    }
+
+    return previewLeaveDays(sickRule, initialStart, initialEnd);
+  });
+  const [vacationLeaveEnabled, setVacationLeaveEnabled] = useState(() => {
+    if (hasSourceVacationOverride) {
+      return Number(sourceVacationOverride) > 0;
+    }
+
+    return true;
+  });
+  const [sickLeaveEnabled, setSickLeaveEnabled] = useState(() => {
+    if (hasSourceSickOverride) {
+      return Number(sourceSickOverride) > 0;
+    }
+
+    return true;
+  });
+  const [vacationLeaveTouched, setVacationLeaveTouched] = useState(
+    hasSourceVacationOverride,
   );
-  const [sickLeaveDays, setSickLeaveDays] = useState(() =>
-    previewLeaveDays(sickRule, initialStart, initialEnd),
+  const [sickLeaveTouched, setSickLeaveTouched] = useState(
+    hasSourceSickOverride,
   );
-  const [vacationLeaveTouched, setVacationLeaveTouched] = useState(false);
-  const [sickLeaveTouched, setSickLeaveTouched] = useState(false);
 
   const isCustomPeriod = contractPeriod === "custom";
   const sourceWasCollected = Boolean(sourceContract?.collectedAt);
 
   function syncLeaveDayDefaults(nextStartDate: string, nextEndDate: string) {
-    if (!vacationLeaveTouched) {
+    if (vacationLeaveEnabled && !vacationLeaveTouched) {
       setVacationLeaveDays(
         previewLeaveDays(vacationRule, nextStartDate, nextEndDate),
       );
     }
 
-    if (!sickLeaveTouched) {
+    if (sickLeaveEnabled && !sickLeaveTouched) {
       setSickLeaveDays(previewLeaveDays(sickRule, nextStartDate, nextEndDate));
     }
   }
@@ -818,61 +849,144 @@ export function EmploymentContractForm({
             )}
           </div>
 
-          <div>
-            <FieldLabel htmlFor="vacationLeaveDays">
-              Vacation leave (days)
-            </FieldLabel>
-            <Input
-              id="vacationLeaveDays"
-              name="vacationLeaveDays"
-              type="number"
-              min="0"
-              step="0.01"
-              className="mt-2"
-              value={vacationLeaveDays}
-              onChange={(event) => {
-                setVacationLeaveTouched(true);
-                setVacationLeaveDays(event.target.value);
-              }}
-            />
-            {state.fieldErrors?.vacationLeaveDays ? (
-              <FieldError>{state.fieldErrors.vacationLeaveDays}</FieldError>
+          <div className="space-y-3 md:col-span-2">
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={vacationLeaveEnabled}
+                onChange={(event) => {
+                  const enabled = event.target.checked;
+                  setVacationLeaveEnabled(enabled);
+
+                  if (!enabled) {
+                    setVacationLeaveTouched(true);
+                    return;
+                  }
+
+                  if (!vacationLeaveTouched || vacationLeaveDays === "") {
+                    setVacationLeaveTouched(false);
+                    setVacationLeaveDays(
+                      previewLeaveDays(vacationRule, startDate, endDate),
+                    );
+                  }
+                }}
+                className="mt-0.5 size-4"
+              />
+              <span>
+                <span className="block text-sm font-medium">
+                  Include vacation leave
+                </span>
+                <span className="mt-0.5 block text-xs text-muted-foreground">
+                  Uncheck for short-term or other contracts with no vacation
+                  entitlement.
+                </span>
+              </span>
+            </label>
+
+            {vacationLeaveEnabled ? (
+              <div>
+                <FieldLabel htmlFor="vacationLeaveDays">
+                  Vacation leave (days)
+                </FieldLabel>
+                <Input
+                  id="vacationLeaveDays"
+                  name="vacationLeaveDays"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="mt-2 max-w-xs"
+                  value={vacationLeaveDays}
+                  onChange={(event) => {
+                    setVacationLeaveTouched(true);
+                    setVacationLeaveDays(event.target.value);
+                  }}
+                />
+                {state.fieldErrors?.vacationLeaveDays ? (
+                  <FieldError>{state.fieldErrors.vacationLeaveDays}</FieldError>
+                ) : (
+                  <FieldHint>
+                    {vacationRule
+                      ? `For this contract period${
+                          startDate && endDate
+                            ? ` (${startDate} → ${endDate})`
+                            : ""
+                        }. Prefills from ${vacationRule.leaveTypeName} rules (${vacationRule.annualEntitlement} days/year${vacationRule.prorateFirstYear ? ", prorated" : ""}). You can override.`
+                      : "No active vacation entitlement rule found. Enter days for this contract, or leave blank to skip an override."}
+                  </FieldHint>
+                )}
+              </div>
             ) : (
-              <FieldHint>
-                {vacationRule
-                  ? `For this contract period${
-                      startDate && endDate ? ` (${startDate} → ${endDate})` : ""
-                    }. Prefills from ${vacationRule.leaveTypeName} rules (${vacationRule.annualEntitlement} days/year${vacationRule.prorateFirstYear ? ", prorated" : ""}). You can override.`
-                  : "No active vacation entitlement rule found. Enter days for this contract, or leave blank."}
-              </FieldHint>
+              <input type="hidden" name="vacationLeaveDays" value="0" />
             )}
           </div>
 
-          <div>
-            <FieldLabel htmlFor="sickLeaveDays">Sick leave (days)</FieldLabel>
-            <Input
-              id="sickLeaveDays"
-              name="sickLeaveDays"
-              type="number"
-              min="0"
-              step="0.01"
-              className="mt-2"
-              value={sickLeaveDays}
-              onChange={(event) => {
-                setSickLeaveTouched(true);
-                setSickLeaveDays(event.target.value);
-              }}
-            />
-            {state.fieldErrors?.sickLeaveDays ? (
-              <FieldError>{state.fieldErrors.sickLeaveDays}</FieldError>
+          <div className="space-y-3 md:col-span-2">
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={sickLeaveEnabled}
+                onChange={(event) => {
+                  const enabled = event.target.checked;
+                  setSickLeaveEnabled(enabled);
+
+                  if (!enabled) {
+                    setSickLeaveTouched(true);
+                    return;
+                  }
+
+                  if (!sickLeaveTouched || sickLeaveDays === "") {
+                    setSickLeaveTouched(false);
+                    setSickLeaveDays(
+                      previewLeaveDays(sickRule, startDate, endDate),
+                    );
+                  }
+                }}
+                className="mt-0.5 size-4"
+              />
+              <span>
+                <span className="block text-sm font-medium">
+                  Include sick leave
+                </span>
+                <span className="mt-0.5 block text-xs text-muted-foreground">
+                  Uncheck for contracts with no sick leave entitlement.
+                </span>
+              </span>
+            </label>
+
+            {sickLeaveEnabled ? (
+              <div>
+                <FieldLabel htmlFor="sickLeaveDays">
+                  Sick leave (days)
+                </FieldLabel>
+                <Input
+                  id="sickLeaveDays"
+                  name="sickLeaveDays"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  className="mt-2 max-w-xs"
+                  value={sickLeaveDays}
+                  onChange={(event) => {
+                    setSickLeaveTouched(true);
+                    setSickLeaveDays(event.target.value);
+                  }}
+                />
+                {state.fieldErrors?.sickLeaveDays ? (
+                  <FieldError>{state.fieldErrors.sickLeaveDays}</FieldError>
+                ) : (
+                  <FieldHint>
+                    {sickRule
+                      ? `For this contract period${
+                          startDate && endDate
+                            ? ` (${startDate} → ${endDate})`
+                            : ""
+                        }. Prefills from ${sickRule.leaveTypeName} rules (${sickRule.annualEntitlement} days/year${sickRule.prorateFirstYear ? ", prorated" : ""}). You can override.`
+                      : "No active sick entitlement rule found. Enter days for this contract, or leave blank to skip an override."}
+                  </FieldHint>
+                )}
+              </div>
             ) : (
-              <FieldHint>
-                {sickRule
-                  ? `For this contract period${
-                      startDate && endDate ? ` (${startDate} → ${endDate})` : ""
-                    }. Prefills from ${sickRule.leaveTypeName} rules (${sickRule.annualEntitlement} days/year${sickRule.prorateFirstYear ? ", prorated" : ""}). You can override.`
-                  : "No active sick entitlement rule found. Enter days for this contract, or leave blank."}
-              </FieldHint>
+              <input type="hidden" name="sickLeaveDays" value="0" />
             )}
           </div>
 

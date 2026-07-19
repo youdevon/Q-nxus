@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { formatMoney, formatDisplayDate } from "@/src/lib/format";
@@ -186,7 +187,10 @@ export default async function ContractsPage({
           return contract.status === "PENDING_APPROVAL";
         }
         if (statusFilter === "signature") {
-          return contract.status === "AWAITING_SIGNATURE";
+          return (
+            contract.status === "APPROVED" ||
+            contract.status === "AWAITING_SIGNATURE"
+          );
         }
         return contract.status === "DRAFT";
       })
@@ -229,6 +233,15 @@ export default async function ContractsPage({
       <PeoplePageHeader
         title="Contract Monitoring"
         description="Monitor current employment contracts, upcoming expirations and estimated gratuity exposure."
+        actions={
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/contracts/workflow" />}
+          >
+            Workflow settings
+          </Button>
+        }
       />
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

@@ -11,19 +11,22 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ListSearchFilters } from "@/src/components/list-search-filters";
-import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { activeStateBadgeVariant } from "@/src/config/ui-colors";
+import { formatDisplayDate } from "@/src/lib/format";
 import {
   getContractLeaveBalances,
+  getCurrentContractLeaveEntitlementData,
   getLeaveBalanceEmployee,
   LEAVE_BALANCE_EMPLOYEE_SEARCH_LIMIT,
   searchEmployeesForLeaveBalances,
   type ContractLeaveBalanceRecord,
+  type CurrentContractLeaveEntitlementData,
   type LeaveBalanceEmployeeMatch,
 } from "@/src/modules/hr/data/get-contract-leave-balances";
 import { requireLeaveBalancesAccess } from "@/src/modules/hr/data/require-people-access";
-import { PeopleNav } from "@/src/modules/hr/components/people-nav";
+import { CurrentContractLeaveEntitlementForm } from "@/src/modules/hr/components/current-contract-leave-entitlement-form";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 
 export const metadata: Metadata = {
   title: "Leave Balances",
@@ -37,9 +40,7 @@ type SearchParams = Promise<{
 }>;
 
 function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("en-TT", {
-    dateStyle: "medium",
-  }).format(new Date(value));
+  return formatDisplayDate(value);
 }
 
 function formatQuantity(value: string): string {
@@ -109,9 +110,11 @@ function EmployeeMatchList({
 function LeaveBalancesTable({
   employee,
   balances,
+  entitlementEditor,
 }: {
   employee: LeaveBalanceEmployeeMatch;
   balances: ContractLeaveBalanceRecord[];
+  entitlementEditor: CurrentContractLeaveEntitlementData | null;
 }) {
   const contractCount = new Set(
     balances.map((balance) => balance.contractId),
@@ -301,6 +304,10 @@ function LeaveBalancesTable({
           </div>
         )}
       </section>
+
+      {entitlementEditor ? (
+        <CurrentContractLeaveEntitlementForm contract={entitlementEditor} />
+      ) : null}
     </>
   );
 }
@@ -310,15 +317,21 @@ export default async function LeaveBalancesPage({
 }: {
   searchParams: SearchParams;
 }) {
-  await requireLeaveBalancesAccess();
+  const capabilities = await requireLeaveBalancesAccess();
 
   const params = await searchParams;
   const query = params.query?.trim() ?? "";
   const employeeId = params.employeeId?.trim() ?? "";
+  const canEditEntitlements = capabilities.canAny(
+    "leave.manage",
+    "people.manage",
+    "contracts.manage",
+  );
 
   let selectedEmployee: LeaveBalanceEmployeeMatch | null = null;
   let balances: ContractLeaveBalanceRecord[] = [];
   let matches: LeaveBalanceEmployeeMatch[] = [];
+  let entitlementEditor: CurrentContractLeaveEntitlementData | null = null;
 
   if (employeeId) {
     selectedEmployee = await getLeaveBalanceEmployee(employeeId);
@@ -327,6 +340,12 @@ export default async function LeaveBalancesPage({
       balances = await getContractLeaveBalances({
         employeeId: selectedEmployee.id,
       });
+
+      if (canEditEntitlements) {
+        entitlementEditor = await getCurrentContractLeaveEntitlementData(
+          selectedEmployee.id,
+        );
+      }
     }
   } else if (query) {
     matches = await searchEmployeesForLeaveBalances(query);
@@ -337,6 +356,12 @@ export default async function LeaveBalancesPage({
         employeeId: selectedEmployee.id,
       });
       matches = [];
+
+      if (canEditEntitlements) {
+        entitlementEditor = await getCurrentContractLeaveEntitlementData(
+          selectedEmployee.id,
+        );
+      }
     }
   }
 
@@ -347,13 +372,9 @@ export default async function LeaveBalancesPage({
 
   return (
     <PageShell size="lg">
-      <PeopleNav />
-
-      <PageHeader
+      <PeoplePageHeader
         title="Leave Balances"
-        description="Look up an employee to review leave entitlements and usage for their current employment contract. Amended or superseded contract versions are not listed."
-        backHref="/people"
-        backLabel="Employees"
+        description="Look up an employee to review leave entitlements and usage for their current employment contract. Adjust vacation or sick days for the active contract when needed. Amended or superseded contract versions are not listed."
       />
 
       <ListSearchFilters
@@ -401,7 +422,11 @@ export default async function LeaveBalancesPage({
       ) : null}
 
       {selectedEmployee ? (
-        <LeaveBalancesTable employee={selectedEmployee} balances={balances} />
+        <LeaveBalancesTable
+          employee={selectedEmployee}
+          balances={balances}
+          entitlementEditor={entitlementEditor}
+        />
       ) : null}
     </PageShell>
   );

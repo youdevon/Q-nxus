@@ -12,6 +12,7 @@ export type RebuildLeaveBalancesResult = {
 /**
  * Recomputes leave entitlements for current contracts with an end date,
  * preserving taken / reserved / adjustments via createContractLeaveBalances.
+ * Contract vacation/sick day overrides are re-applied automatically.
  */
 export async function rebuildCurrentContractLeaveBalances(options: {
   organizationId: string;

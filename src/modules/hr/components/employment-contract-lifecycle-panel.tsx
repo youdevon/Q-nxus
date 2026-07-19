@@ -193,11 +193,7 @@ export function EmploymentContractLifecyclePanel({
       ) : null}
 
       {canManage ? (
-        <form
-          action={uploadAction}
-          className="flex flex-wrap items-end gap-3"
-          encType="multipart/form-data"
-        >
+        <form action={uploadAction} className="flex flex-wrap items-end gap-3">
           <input type="hidden" name="contractId" value={contractId} />
           <div>
             <label className="text-xs text-muted-foreground" htmlFor="document">

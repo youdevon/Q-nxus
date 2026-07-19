@@ -1,11 +1,12 @@
 import { LeaveBalanceTransactionType, Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  entitlementOverridesFromContractFields,
+  type LeaveEntitlementOverride,
+} from "@/src/modules/hr/lib/contract-leave-overrides";
 import { calculateContractLeaveEntitlement } from "@/src/modules/hr/services/calculate-contract-leave-entitlement";
 
-export type LeaveEntitlementOverride = {
-  leaveTypeCode: string;
-  entitlementDays: number;
-};
+export type { LeaveEntitlementOverride };
 
 export type CreateContractLeaveBalancesOptions = {
   entitlementOverrides?: LeaveEntitlementOverride[];
@@ -40,6 +41,8 @@ export async function createContractLeaveBalances(
       employeeId: true,
       startDate: true,
       endDate: true,
+      vacationLeaveDaysOverride: true,
+      sickLeaveDaysOverride: true,
       employee: {
         select: {
           organizationId: true,
@@ -61,11 +64,19 @@ export async function createContractLeaveBalances(
 
   const contractEndDate = contract.endDate;
   const overrideByCode = new Map(
-    (options?.entitlementOverrides ?? []).map((override) => [
+    entitlementOverridesFromContractFields(contract).map((override) => [
       override.leaveTypeCode.toUpperCase(),
       override.entitlementDays,
     ]),
   );
+
+  // Explicit options win over stored contract columns (same codes).
+  for (const override of options?.entitlementOverrides ?? []) {
+    overrideByCode.set(
+      override.leaveTypeCode.toUpperCase(),
+      override.entitlementDays,
+    );
+  }
 
   const rules = await db.leaveEntitlementRule.findMany({
     where: {

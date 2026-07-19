@@ -203,6 +203,49 @@ export async function getLeaveBalanceEmployee(
   return mapEmployeeMatch(employee);
 }
 
+export type CurrentContractLeaveEntitlementData = {
+  employeeId: string;
+  contractId: string;
+  contractNumber: string | null;
+  vacationLeaveDaysOverride: string | null;
+  sickLeaveDaysOverride: string | null;
+};
+
+export async function getCurrentContractLeaveEntitlementData(
+  employeeId: string,
+): Promise<CurrentContractLeaveEntitlementData | null> {
+  const contract = await prisma.employmentContract.findFirst({
+    where: {
+      employeeId,
+      isCurrent: true,
+      status: "ACTIVE",
+      endDate: { not: null },
+    },
+    select: {
+      id: true,
+      contractNumber: true,
+      vacationLeaveDaysOverride: true,
+      sickLeaveDaysOverride: true,
+    },
+    orderBy: {
+      startDate: "desc",
+    },
+  });
+
+  if (!contract) {
+    return null;
+  }
+
+  return {
+    employeeId,
+    contractId: contract.id,
+    contractNumber: contract.contractNumber,
+    vacationLeaveDaysOverride:
+      contract.vacationLeaveDaysOverride?.toString() ?? null,
+    sickLeaveDaysOverride: contract.sickLeaveDaysOverride?.toString() ?? null,
+  };
+}
+
 function contractLeaveTypeKey(contractId: string, leaveTypeId: string): string {
   return `${contractId}:${leaveTypeId}`;
 }

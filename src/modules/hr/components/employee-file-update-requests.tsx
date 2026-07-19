@@ -50,11 +50,7 @@ export function QualificationUpdateRequestForm() {
         Request an HR update and optionally attach a supporting document. You
         cannot edit file records yourself.
       </p>
-      <form
-        action={action}
-        className="grid max-w-xl gap-3"
-        encType="multipart/form-data"
-      >
+      <form action={action} className="grid max-w-xl gap-3">
         <div className="space-y-1.5">
           <label className="text-sm font-medium" htmlFor="requestType">
             Request type
