@@ -347,8 +347,13 @@ export type UserWhereInput = {
   uploadedStoredFiles?: Prisma.StoredFileListRelationFilter
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskListRelationFilter
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskListRelationFilter
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskListRelationFilter
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskListRelationFilter
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemListRelationFilter
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }
 
@@ -394,8 +399,13 @@ export type UserOrderByWithRelationInput = {
   uploadedStoredFiles?: Prisma.StoredFileOrderByRelationAggregateInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseOrderByRelationAggregateInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseOrderByRelationAggregateInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseOrderByRelationAggregateInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseOrderByRelationAggregateInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskOrderByRelationAggregateInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskOrderByRelationAggregateInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskOrderByRelationAggregateInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskOrderByRelationAggregateInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemOrderByRelationAggregateInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
 }
 
@@ -444,8 +454,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   uploadedStoredFiles?: Prisma.StoredFileListRelationFilter
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskListRelationFilter
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskListRelationFilter
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskListRelationFilter
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskListRelationFilter
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemListRelationFilter
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }, "id" | "email" | "employeeId">
 
@@ -539,8 +554,13 @@ export type UserCreateInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -585,8 +605,13 @@ export type UserUncheckedCreateInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -629,8 +654,13 @@ export type UserUpdateInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -675,8 +705,13 @@ export type UserUncheckedUpdateInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1201,6 +1236,12 @@ export type UserCreateNestedOneWithoutOpenedOnboardingCasesInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
+export type UserCreateNestedOneWithoutOwnedOnboardingCasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedOnboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOnboardingCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedOnboardingCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserUpdateOneWithoutOpenedOnboardingCasesNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutOpenedOnboardingCasesInput, Prisma.UserUncheckedCreateWithoutOpenedOnboardingCasesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutOpenedOnboardingCasesInput
@@ -1211,10 +1252,36 @@ export type UserUpdateOneWithoutOpenedOnboardingCasesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOpenedOnboardingCasesInput, Prisma.UserUpdateWithoutOpenedOnboardingCasesInput>, Prisma.UserUncheckedUpdateWithoutOpenedOnboardingCasesInput>
 }
 
+export type UserUpdateOneWithoutOwnedOnboardingCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedOnboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOnboardingCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedOnboardingCasesInput
+  upsert?: Prisma.UserUpsertWithoutOwnedOnboardingCasesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedOnboardingCasesInput, Prisma.UserUpdateWithoutOwnedOnboardingCasesInput>, Prisma.UserUncheckedUpdateWithoutOwnedOnboardingCasesInput>
+}
+
+export type UserCreateNestedOneWithoutAssignedOnboardingTasksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedOnboardingTasksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserCreateNestedOneWithoutCompletedOnboardingTasksInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCompletedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutCompletedOnboardingTasksInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompletedOnboardingTasksInput
   connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAssignedOnboardingTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedOnboardingTasksInput
+  upsert?: Prisma.UserUpsertWithoutAssignedOnboardingTasksInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedOnboardingTasksInput, Prisma.UserUpdateWithoutAssignedOnboardingTasksInput>, Prisma.UserUncheckedUpdateWithoutAssignedOnboardingTasksInput>
 }
 
 export type UserUpdateOneWithoutCompletedOnboardingTasksNestedInput = {
@@ -1233,6 +1300,12 @@ export type UserCreateNestedOneWithoutOpenedOffboardingCasesInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
+export type UserCreateNestedOneWithoutOwnedOffboardingCasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedOffboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOffboardingCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedOffboardingCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserUpdateOneWithoutOpenedOffboardingCasesNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutOpenedOffboardingCasesInput, Prisma.UserUncheckedCreateWithoutOpenedOffboardingCasesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutOpenedOffboardingCasesInput
@@ -1243,10 +1316,36 @@ export type UserUpdateOneWithoutOpenedOffboardingCasesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOpenedOffboardingCasesInput, Prisma.UserUpdateWithoutOpenedOffboardingCasesInput>, Prisma.UserUncheckedUpdateWithoutOpenedOffboardingCasesInput>
 }
 
+export type UserUpdateOneWithoutOwnedOffboardingCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedOffboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOffboardingCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedOffboardingCasesInput
+  upsert?: Prisma.UserUpsertWithoutOwnedOffboardingCasesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedOffboardingCasesInput, Prisma.UserUpdateWithoutOwnedOffboardingCasesInput>, Prisma.UserUncheckedUpdateWithoutOwnedOffboardingCasesInput>
+}
+
+export type UserCreateNestedOneWithoutAssignedOffboardingTasksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedOffboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOffboardingTasksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedOffboardingTasksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserCreateNestedOneWithoutCompletedOffboardingTasksInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCompletedOffboardingTasksInput, Prisma.UserUncheckedCreateWithoutCompletedOffboardingTasksInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompletedOffboardingTasksInput
   connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAssignedOffboardingTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedOffboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOffboardingTasksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedOffboardingTasksInput
+  upsert?: Prisma.UserUpsertWithoutAssignedOffboardingTasksInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedOffboardingTasksInput, Prisma.UserUpdateWithoutAssignedOffboardingTasksInput>, Prisma.UserUncheckedUpdateWithoutAssignedOffboardingTasksInput>
 }
 
 export type UserUpdateOneWithoutCompletedOffboardingTasksNestedInput = {
@@ -1257,6 +1356,22 @@ export type UserUpdateOneWithoutCompletedOffboardingTasksNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCompletedOffboardingTasksInput, Prisma.UserUpdateWithoutCompletedOffboardingTasksInput>, Prisma.UserUncheckedUpdateWithoutCompletedOffboardingTasksInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedPayrollRecurringItemsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedPayrollRecurringItemsInput, Prisma.UserUncheckedCreateWithoutCreatedPayrollRecurringItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedPayrollRecurringItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedPayrollRecurringItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedPayrollRecurringItemsInput, Prisma.UserUncheckedCreateWithoutCreatedPayrollRecurringItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedPayrollRecurringItemsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedPayrollRecurringItemsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedPayrollRecurringItemsInput, Prisma.UserUpdateWithoutCreatedPayrollRecurringItemsInput>, Prisma.UserUncheckedUpdateWithoutCreatedPayrollRecurringItemsInput>
 }
 
 export type UserCreateNestedOneWithoutNotificationsInput = {
@@ -1328,8 +1443,13 @@ export type UserCreateWithoutOrganizationInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1373,8 +1493,13 @@ export type UserUncheckedCreateWithoutOrganizationInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOrganizationInput = {
@@ -1466,8 +1591,13 @@ export type UserCreateWithoutRolesInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1511,8 +1641,13 @@ export type UserUncheckedCreateWithoutRolesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutRolesInput = {
@@ -1570,8 +1705,13 @@ export type UserUpdateWithoutRolesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1615,8 +1755,13 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutEmployeeInput = {
@@ -1659,8 +1804,13 @@ export type UserCreateWithoutEmployeeInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutEmployeeInput = {
@@ -1703,8 +1853,13 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutEmployeeInput = {
@@ -1763,8 +1918,13 @@ export type UserUpdateWithoutEmployeeInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmployeeInput = {
@@ -1807,8 +1967,13 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCreatedLeaveTransactionsInput = {
@@ -1850,8 +2015,13 @@ export type UserCreateWithoutCreatedLeaveTransactionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -1895,8 +2065,13 @@ export type UserUncheckedCreateWithoutCreatedLeaveTransactionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedLeaveTransactionsInput = {
@@ -1954,8 +2129,13 @@ export type UserUpdateWithoutCreatedLeaveTransactionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -1999,8 +2179,13 @@ export type UserUncheckedUpdateWithoutCreatedLeaveTransactionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutFinalLeaveDecisionsInput = {
@@ -2042,8 +2227,13 @@ export type UserCreateWithoutFinalLeaveDecisionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2087,8 +2277,13 @@ export type UserUncheckedCreateWithoutFinalLeaveDecisionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFinalLeaveDecisionsInput = {
@@ -2135,8 +2330,13 @@ export type UserCreateWithoutCreatedLeaveRequestsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2180,8 +2380,13 @@ export type UserUncheckedCreateWithoutCreatedLeaveRequestsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedLeaveRequestsInput = {
@@ -2239,8 +2444,13 @@ export type UserUpdateWithoutFinalLeaveDecisionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2284,8 +2494,13 @@ export type UserUncheckedUpdateWithoutFinalLeaveDecisionsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutCreatedLeaveRequestsInput = {
@@ -2338,8 +2553,13 @@ export type UserUpdateWithoutCreatedLeaveRequestsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2383,8 +2603,13 @@ export type UserUncheckedUpdateWithoutCreatedLeaveRequestsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutLeaveApprovalStepsInput = {
@@ -2426,8 +2651,13 @@ export type UserCreateWithoutLeaveApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2471,8 +2701,13 @@ export type UserUncheckedCreateWithoutLeaveApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutLeaveApprovalStepsInput = {
@@ -2530,8 +2765,13 @@ export type UserUpdateWithoutLeaveApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2575,8 +2815,13 @@ export type UserUncheckedUpdateWithoutLeaveApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutLeaveAcknowledgementsInput = {
@@ -2618,8 +2863,13 @@ export type UserCreateWithoutLeaveAcknowledgementsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2663,8 +2913,13 @@ export type UserUncheckedCreateWithoutLeaveAcknowledgementsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutLeaveAcknowledgementsInput = {
@@ -2722,8 +2977,13 @@ export type UserUpdateWithoutLeaveAcknowledgementsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2767,8 +3027,13 @@ export type UserUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutUploadedLeaveAttachmentsInput = {
@@ -2810,8 +3075,13 @@ export type UserCreateWithoutUploadedLeaveAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -2855,8 +3125,13 @@ export type UserUncheckedCreateWithoutUploadedLeaveAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedLeaveAttachmentsInput = {
@@ -2914,8 +3189,13 @@ export type UserUpdateWithoutUploadedLeaveAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -2959,8 +3239,13 @@ export type UserUncheckedUpdateWithoutUploadedLeaveAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutIssuedCorrespondencesInput = {
@@ -3002,8 +3287,13 @@ export type UserCreateWithoutIssuedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -3047,8 +3337,13 @@ export type UserUncheckedCreateWithoutIssuedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutIssuedCorrespondencesInput = {
@@ -3095,8 +3390,13 @@ export type UserCreateWithoutAcknowledgedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -3140,8 +3440,13 @@ export type UserUncheckedCreateWithoutAcknowledgedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAcknowledgedCorrespondencesInput = {
@@ -3199,8 +3504,13 @@ export type UserUpdateWithoutIssuedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -3244,8 +3554,13 @@ export type UserUncheckedUpdateWithoutIssuedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutAcknowledgedCorrespondencesInput = {
@@ -3298,8 +3613,13 @@ export type UserUpdateWithoutAcknowledgedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -3343,8 +3663,13 @@ export type UserUncheckedUpdateWithoutAcknowledgedCorrespondencesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutConfirmedAssumptionOfDutyItemsInput = {
@@ -3386,8 +3711,13 @@ export type UserCreateWithoutConfirmedAssumptionOfDutyItemsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -3431,8 +3761,13 @@ export type UserUncheckedCreateWithoutConfirmedAssumptionOfDutyItemsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutConfirmedAssumptionOfDutyItemsInput = {
@@ -3490,8 +3825,13 @@ export type UserUpdateWithoutConfirmedAssumptionOfDutyItemsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -3535,8 +3875,13 @@ export type UserUncheckedUpdateWithoutConfirmedAssumptionOfDutyItemsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutRequestedFileUpdatesInput = {
@@ -3578,8 +3923,13 @@ export type UserCreateWithoutRequestedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -3623,8 +3973,13 @@ export type UserUncheckedCreateWithoutRequestedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutRequestedFileUpdatesInput = {
@@ -3671,8 +4026,13 @@ export type UserCreateWithoutResolvedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -3716,8 +4076,13 @@ export type UserUncheckedCreateWithoutResolvedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutResolvedFileUpdatesInput = {
@@ -3775,8 +4140,13 @@ export type UserUpdateWithoutRequestedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -3820,8 +4190,13 @@ export type UserUncheckedUpdateWithoutRequestedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutResolvedFileUpdatesInput = {
@@ -3874,8 +4249,13 @@ export type UserUpdateWithoutResolvedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -3919,8 +4299,13 @@ export type UserUncheckedUpdateWithoutResolvedFileUpdatesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutUploadedCorrespondenceAttachmentsInput = {
@@ -3962,8 +4347,13 @@ export type UserCreateWithoutUploadedCorrespondenceAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -4007,8 +4397,13 @@ export type UserUncheckedCreateWithoutUploadedCorrespondenceAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedCorrespondenceAttachmentsInput = {
@@ -4066,8 +4461,13 @@ export type UserUpdateWithoutUploadedCorrespondenceAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -4111,8 +4511,13 @@ export type UserUncheckedUpdateWithoutUploadedCorrespondenceAttachmentsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutReviewedCorrespondenceResponsesInput = {
@@ -4154,8 +4559,13 @@ export type UserCreateWithoutReviewedCorrespondenceResponsesInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -4199,8 +4609,13 @@ export type UserUncheckedCreateWithoutReviewedCorrespondenceResponsesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutReviewedCorrespondenceResponsesInput = {
@@ -4258,8 +4673,13 @@ export type UserUpdateWithoutReviewedCorrespondenceResponsesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -4303,8 +4723,13 @@ export type UserUncheckedUpdateWithoutReviewedCorrespondenceResponsesInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutSupervisedAppraisalsInput = {
@@ -4346,8 +4771,13 @@ export type UserCreateWithoutSupervisedAppraisalsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -4391,8 +4821,13 @@ export type UserUncheckedCreateWithoutSupervisedAppraisalsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSupervisedAppraisalsInput = {
@@ -4450,8 +4885,13 @@ export type UserUpdateWithoutSupervisedAppraisalsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -4495,8 +4935,13 @@ export type UserUncheckedUpdateWithoutSupervisedAppraisalsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutApprovedEmploymentContractsInput = {
@@ -4538,8 +4983,13 @@ export type UserCreateWithoutApprovedEmploymentContractsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -4583,8 +5033,13 @@ export type UserUncheckedCreateWithoutApprovedEmploymentContractsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedEmploymentContractsInput = {
@@ -4642,8 +5097,13 @@ export type UserUpdateWithoutApprovedEmploymentContractsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -4687,8 +5147,13 @@ export type UserUncheckedUpdateWithoutApprovedEmploymentContractsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContractApprovalStepsInput = {
@@ -4730,8 +5195,13 @@ export type UserCreateWithoutContractApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -4775,8 +5245,13 @@ export type UserUncheckedCreateWithoutContractApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContractApprovalStepsInput = {
@@ -4834,8 +5309,13 @@ export type UserUpdateWithoutContractApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -4879,8 +5359,13 @@ export type UserUncheckedUpdateWithoutContractApprovalStepsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutUploadedStoredFilesInput = {
@@ -4922,8 +5407,13 @@ export type UserCreateWithoutUploadedStoredFilesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -4967,8 +5457,13 @@ export type UserUncheckedCreateWithoutUploadedStoredFilesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedStoredFilesInput = {
@@ -5026,8 +5521,13 @@ export type UserUpdateWithoutUploadedStoredFilesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -5071,8 +5571,13 @@ export type UserUncheckedUpdateWithoutUploadedStoredFilesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOpenedOnboardingCasesInput = {
@@ -5114,8 +5619,13 @@ export type UserCreateWithoutOpenedOnboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -5159,13 +5669,121 @@ export type UserUncheckedCreateWithoutOpenedOnboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOpenedOnboardingCasesInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutOpenedOnboardingCasesInput, Prisma.UserUncheckedCreateWithoutOpenedOnboardingCasesInput>
+}
+
+export type UserCreateWithoutOwnedOnboardingCasesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOwnedOnboardingCasesInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutOwnedOnboardingCasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedOnboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOnboardingCasesInput>
 }
 
 export type UserUpsertWithoutOpenedOnboardingCasesInput = {
@@ -5218,8 +5836,13 @@ export type UserUpdateWithoutOpenedOnboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -5263,8 +5886,225 @@ export type UserUncheckedUpdateWithoutOpenedOnboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUpsertWithoutOwnedOnboardingCasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedOnboardingCasesInput, Prisma.UserUncheckedUpdateWithoutOwnedOnboardingCasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedOnboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOnboardingCasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOwnedOnboardingCasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedOnboardingCasesInput, Prisma.UserUncheckedUpdateWithoutOwnedOnboardingCasesInput>
+}
+
+export type UserUpdateWithoutOwnedOnboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOwnedOnboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutAssignedOnboardingTasksInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAssignedOnboardingTasksInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutAssignedOnboardingTasksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
 }
 
 export type UserCreateWithoutCompletedOnboardingTasksInput = {
@@ -5307,7 +6147,12 @@ export type UserCreateWithoutCompletedOnboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -5352,12 +6197,126 @@ export type UserUncheckedCreateWithoutCompletedOnboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCompletedOnboardingTasksInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutCompletedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutCompletedOnboardingTasksInput>
+}
+
+export type UserUpsertWithoutAssignedOnboardingTasksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedUpdateWithoutAssignedOnboardingTasksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOnboardingTasksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAssignedOnboardingTasksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAssignedOnboardingTasksInput, Prisma.UserUncheckedUpdateWithoutAssignedOnboardingTasksInput>
+}
+
+export type UserUpdateWithoutAssignedOnboardingTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAssignedOnboardingTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutCompletedOnboardingTasksInput = {
@@ -5411,7 +6370,12 @@ export type UserUpdateWithoutCompletedOnboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -5456,7 +6420,12 @@ export type UserUncheckedUpdateWithoutCompletedOnboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOpenedOffboardingCasesInput = {
@@ -5498,8 +6467,13 @@ export type UserCreateWithoutOpenedOffboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -5543,13 +6517,121 @@ export type UserUncheckedCreateWithoutOpenedOffboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOpenedOffboardingCasesInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutOpenedOffboardingCasesInput, Prisma.UserUncheckedCreateWithoutOpenedOffboardingCasesInput>
+}
+
+export type UserCreateWithoutOwnedOffboardingCasesInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOwnedOffboardingCasesInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutOwnedOffboardingCasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedOffboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOffboardingCasesInput>
 }
 
 export type UserUpsertWithoutOpenedOffboardingCasesInput = {
@@ -5602,8 +6684,13 @@ export type UserUpdateWithoutOpenedOffboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -5647,8 +6734,225 @@ export type UserUncheckedUpdateWithoutOpenedOffboardingCasesInput = {
   contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUpsertWithoutOwnedOffboardingCasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedOffboardingCasesInput, Prisma.UserUncheckedUpdateWithoutOwnedOffboardingCasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedOffboardingCasesInput, Prisma.UserUncheckedCreateWithoutOwnedOffboardingCasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOwnedOffboardingCasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedOffboardingCasesInput, Prisma.UserUncheckedUpdateWithoutOwnedOffboardingCasesInput>
+}
+
+export type UserUpdateWithoutOwnedOffboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOwnedOffboardingCasesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutAssignedOffboardingTasksInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAssignedOffboardingTasksInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutAssignedOffboardingTasksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedOffboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOffboardingTasksInput>
 }
 
 export type UserCreateWithoutCompletedOffboardingTasksInput = {
@@ -5691,7 +6995,12 @@ export type UserCreateWithoutCompletedOffboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -5736,12 +7045,126 @@ export type UserUncheckedCreateWithoutCompletedOffboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCompletedOffboardingTasksInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutCompletedOffboardingTasksInput, Prisma.UserUncheckedCreateWithoutCompletedOffboardingTasksInput>
+}
+
+export type UserUpsertWithoutAssignedOffboardingTasksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAssignedOffboardingTasksInput, Prisma.UserUncheckedUpdateWithoutAssignedOffboardingTasksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedOffboardingTasksInput, Prisma.UserUncheckedCreateWithoutAssignedOffboardingTasksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAssignedOffboardingTasksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAssignedOffboardingTasksInput, Prisma.UserUncheckedUpdateWithoutAssignedOffboardingTasksInput>
+}
+
+export type UserUpdateWithoutAssignedOffboardingTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAssignedOffboardingTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutCompletedOffboardingTasksInput = {
@@ -5795,7 +7218,12 @@ export type UserUpdateWithoutCompletedOffboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -5840,7 +7268,224 @@ export type UserUncheckedUpdateWithoutCompletedOffboardingTasksInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedPayrollRecurringItemsInput = {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  roles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCreatedPayrollRecurringItemsInput = {
+  id?: string
+  organizationId: string
+  email: string
+  firstName: string
+  lastName: string
+  passwordHash?: string | null
+  mustChangePassword?: boolean
+  status?: $Enums.UserAccountStatus
+  isActive?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  failedLoginAttempts?: number
+  lockedUntil?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  employeeId?: string | null
+  roles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutUserInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutUserInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutSupervisorInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutCreatedByInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutFinalDecisionByInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerUserInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutIssuedByInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutAcknowledgedByInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutAssumptionOfDutyConfirmedByInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutResolvedByInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutReviewedByInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutApprovedByInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedCreateNestedManyWithoutApproverUserInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+}
+
+export type UserCreateOrConnectWithoutCreatedPayrollRecurringItemsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedPayrollRecurringItemsInput, Prisma.UserUncheckedCreateWithoutCreatedPayrollRecurringItemsInput>
+}
+
+export type UserUpsertWithoutCreatedPayrollRecurringItemsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedPayrollRecurringItemsInput, Prisma.UserUncheckedUpdateWithoutCreatedPayrollRecurringItemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedPayrollRecurringItemsInput, Prisma.UserUncheckedCreateWithoutCreatedPayrollRecurringItemsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedPayrollRecurringItemsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedPayrollRecurringItemsInput, Prisma.UserUncheckedUpdateWithoutCreatedPayrollRecurringItemsInput>
+}
+
+export type UserUpdateWithoutCreatedPayrollRecurringItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  roles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedPayrollRecurringItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.EnumUserAccountStatusFieldUpdateOperationsInput | $Enums.UserAccountStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedLoginAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  roles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutUserNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutUserNestedInput
+  supervisedAppraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutSupervisorNestedInput
+  createdLeaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdLeaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutCreatedByNestedInput
+  finalLeaveDecisions?: Prisma.LeaveRequestUncheckedUpdateManyWithoutFinalDecisionByNestedInput
+  leaveApprovalSteps?: Prisma.LeaveApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerUserNestedInput
+  uploadedLeaveAttachments?: Prisma.LeaveAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  issuedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutIssuedByNestedInput
+  acknowledgedCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+  uploadedCorrespondenceAttachments?: Prisma.EmployeeCorrespondenceAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+  confirmedAssumptionOfDutyItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutAssumptionOfDutyConfirmedByNestedInput
+  requestedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  resolvedFileUpdates?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutResolvedByNestedInput
+  reviewedCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutReviewedByNestedInput
+  approvedEmploymentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutApprovedByNestedInput
+  contractApprovalSteps?: Prisma.EmploymentContractApprovalStepUncheckedUpdateManyWithoutApproverUserNestedInput
+  uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -5882,8 +7527,13 @@ export type UserCreateWithoutNotificationsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -5927,8 +7577,13 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -5986,8 +7641,13 @@ export type UserUpdateWithoutNotificationsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -6031,8 +7691,13 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAuditEventsInput = {
@@ -6074,8 +7739,13 @@ export type UserCreateWithoutAuditEventsInput = {
   uploadedStoredFiles?: Prisma.StoredFileCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutCreatedByInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -6119,8 +7789,13 @@ export type UserUncheckedCreateWithoutAuditEventsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutUploadedByInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOwnerInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditEventsInput = {
@@ -6178,8 +7853,13 @@ export type UserUpdateWithoutAuditEventsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -6223,8 +7903,13 @@ export type UserUncheckedUpdateWithoutAuditEventsInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyOrganizationInput = {
@@ -6286,8 +7971,13 @@ export type UserUpdateWithoutOrganizationInput = {
   uploadedStoredFiles?: Prisma.StoredFileUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutCreatedByNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -6331,8 +8021,13 @@ export type UserUncheckedUpdateWithoutOrganizationInput = {
   uploadedStoredFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutUploadedByNestedInput
   openedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
   openedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput
+  ownedOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput
   completedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   completedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  assignedOnboardingTasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  assignedOffboardingTasks?: Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  createdPayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutOrganizationInput = {
@@ -6383,8 +8078,13 @@ export type UserCountOutputType = {
   uploadedStoredFiles: number
   openedOnboardingCases: number
   openedOffboardingCases: number
+  ownedOnboardingCases: number
+  ownedOffboardingCases: number
   completedOnboardingTasks: number
   completedOffboardingTasks: number
+  assignedOnboardingTasks: number
+  assignedOffboardingTasks: number
+  createdPayrollRecurringItems: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6410,8 +8110,13 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   uploadedStoredFiles?: boolean | UserCountOutputTypeCountUploadedStoredFilesArgs
   openedOnboardingCases?: boolean | UserCountOutputTypeCountOpenedOnboardingCasesArgs
   openedOffboardingCases?: boolean | UserCountOutputTypeCountOpenedOffboardingCasesArgs
+  ownedOnboardingCases?: boolean | UserCountOutputTypeCountOwnedOnboardingCasesArgs
+  ownedOffboardingCases?: boolean | UserCountOutputTypeCountOwnedOffboardingCasesArgs
   completedOnboardingTasks?: boolean | UserCountOutputTypeCountCompletedOnboardingTasksArgs
   completedOffboardingTasks?: boolean | UserCountOutputTypeCountCompletedOffboardingTasksArgs
+  assignedOnboardingTasks?: boolean | UserCountOutputTypeCountAssignedOnboardingTasksArgs
+  assignedOffboardingTasks?: boolean | UserCountOutputTypeCountAssignedOffboardingTasksArgs
+  createdPayrollRecurringItems?: boolean | UserCountOutputTypeCountCreatedPayrollRecurringItemsArgs
 }
 
 /**
@@ -6581,6 +8286,20 @@ export type UserCountOutputTypeCountOpenedOffboardingCasesArgs<ExtArgs extends r
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountOwnedOnboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOnboardingCaseWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOwnedOffboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOffboardingCaseWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountCompletedOnboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmployeeOnboardingTaskWhereInput
 }
@@ -6590,6 +8309,27 @@ export type UserCountOutputTypeCountCompletedOnboardingTasksArgs<ExtArgs extends
  */
 export type UserCountOutputTypeCountCompletedOffboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmployeeOffboardingTaskWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAssignedOnboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOnboardingTaskWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAssignedOffboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOffboardingTaskWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedPayrollRecurringItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeePayrollRecurringItemWhereInput
 }
 
 
@@ -6635,8 +8375,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   uploadedStoredFiles?: boolean | Prisma.User$uploadedStoredFilesArgs<ExtArgs>
   openedOnboardingCases?: boolean | Prisma.User$openedOnboardingCasesArgs<ExtArgs>
   openedOffboardingCases?: boolean | Prisma.User$openedOffboardingCasesArgs<ExtArgs>
+  ownedOnboardingCases?: boolean | Prisma.User$ownedOnboardingCasesArgs<ExtArgs>
+  ownedOffboardingCases?: boolean | Prisma.User$ownedOffboardingCasesArgs<ExtArgs>
   completedOnboardingTasks?: boolean | Prisma.User$completedOnboardingTasksArgs<ExtArgs>
   completedOffboardingTasks?: boolean | Prisma.User$completedOffboardingTasksArgs<ExtArgs>
+  assignedOnboardingTasks?: boolean | Prisma.User$assignedOnboardingTasksArgs<ExtArgs>
+  assignedOffboardingTasks?: boolean | Prisma.User$assignedOffboardingTasksArgs<ExtArgs>
+  createdPayrollRecurringItems?: boolean | Prisma.User$createdPayrollRecurringItemsArgs<ExtArgs>
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -6733,8 +8478,13 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   uploadedStoredFiles?: boolean | Prisma.User$uploadedStoredFilesArgs<ExtArgs>
   openedOnboardingCases?: boolean | Prisma.User$openedOnboardingCasesArgs<ExtArgs>
   openedOffboardingCases?: boolean | Prisma.User$openedOffboardingCasesArgs<ExtArgs>
+  ownedOnboardingCases?: boolean | Prisma.User$ownedOnboardingCasesArgs<ExtArgs>
+  ownedOffboardingCases?: boolean | Prisma.User$ownedOffboardingCasesArgs<ExtArgs>
   completedOnboardingTasks?: boolean | Prisma.User$completedOnboardingTasksArgs<ExtArgs>
   completedOffboardingTasks?: boolean | Prisma.User$completedOffboardingTasksArgs<ExtArgs>
+  assignedOnboardingTasks?: boolean | Prisma.User$assignedOnboardingTasksArgs<ExtArgs>
+  assignedOffboardingTasks?: boolean | Prisma.User$assignedOffboardingTasksArgs<ExtArgs>
+  createdPayrollRecurringItems?: boolean | Prisma.User$createdPayrollRecurringItemsArgs<ExtArgs>
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -6773,8 +8523,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     uploadedStoredFiles: Prisma.$StoredFilePayload<ExtArgs>[]
     openedOnboardingCases: Prisma.$EmployeeOnboardingCasePayload<ExtArgs>[]
     openedOffboardingCases: Prisma.$EmployeeOffboardingCasePayload<ExtArgs>[]
+    ownedOnboardingCases: Prisma.$EmployeeOnboardingCasePayload<ExtArgs>[]
+    ownedOffboardingCases: Prisma.$EmployeeOffboardingCasePayload<ExtArgs>[]
     completedOnboardingTasks: Prisma.$EmployeeOnboardingTaskPayload<ExtArgs>[]
     completedOffboardingTasks: Prisma.$EmployeeOffboardingTaskPayload<ExtArgs>[]
+    assignedOnboardingTasks: Prisma.$EmployeeOnboardingTaskPayload<ExtArgs>[]
+    assignedOffboardingTasks: Prisma.$EmployeeOffboardingTaskPayload<ExtArgs>[]
+    createdPayrollRecurringItems: Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>[]
     employee: Prisma.$EmployeePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -7213,8 +8968,13 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   uploadedStoredFiles<T extends Prisma.User$uploadedStoredFilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedStoredFilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoredFilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   openedOnboardingCases<T extends Prisma.User$openedOnboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$openedOnboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOnboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   openedOffboardingCases<T extends Prisma.User$openedOffboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$openedOffboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOffboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedOnboardingCases<T extends Prisma.User$ownedOnboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedOnboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOnboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedOffboardingCases<T extends Prisma.User$ownedOffboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedOffboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOffboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   completedOnboardingTasks<T extends Prisma.User$completedOnboardingTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$completedOnboardingTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOnboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   completedOffboardingTasks<T extends Prisma.User$completedOffboardingTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$completedOffboardingTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOffboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedOnboardingTasks<T extends Prisma.User$assignedOnboardingTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedOnboardingTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOnboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedOffboardingTasks<T extends Prisma.User$assignedOffboardingTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedOffboardingTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOffboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdPayrollRecurringItems<T extends Prisma.User$createdPayrollRecurringItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdPayrollRecurringItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employee<T extends Prisma.User$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$employeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8192,6 +9952,54 @@ export type User$openedOffboardingCasesArgs<ExtArgs extends runtime.Types.Extens
 }
 
 /**
+ * User.ownedOnboardingCases
+ */
+export type User$ownedOnboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOnboardingCase
+   */
+  select?: Prisma.EmployeeOnboardingCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOnboardingCase
+   */
+  omit?: Prisma.EmployeeOnboardingCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOnboardingCaseInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOnboardingCaseWhereInput
+  orderBy?: Prisma.EmployeeOnboardingCaseOrderByWithRelationInput | Prisma.EmployeeOnboardingCaseOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOnboardingCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOnboardingCaseScalarFieldEnum | Prisma.EmployeeOnboardingCaseScalarFieldEnum[]
+}
+
+/**
+ * User.ownedOffboardingCases
+ */
+export type User$ownedOffboardingCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOffboardingCase
+   */
+  select?: Prisma.EmployeeOffboardingCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOffboardingCase
+   */
+  omit?: Prisma.EmployeeOffboardingCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOffboardingCaseInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOffboardingCaseWhereInput
+  orderBy?: Prisma.EmployeeOffboardingCaseOrderByWithRelationInput | Prisma.EmployeeOffboardingCaseOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOffboardingCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOffboardingCaseScalarFieldEnum | Prisma.EmployeeOffboardingCaseScalarFieldEnum[]
+}
+
+/**
  * User.completedOnboardingTasks
  */
 export type User$completedOnboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -8237,6 +10045,78 @@ export type User$completedOffboardingTasksArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeOffboardingTaskScalarFieldEnum | Prisma.EmployeeOffboardingTaskScalarFieldEnum[]
+}
+
+/**
+ * User.assignedOnboardingTasks
+ */
+export type User$assignedOnboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOnboardingTask
+   */
+  select?: Prisma.EmployeeOnboardingTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOnboardingTask
+   */
+  omit?: Prisma.EmployeeOnboardingTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOnboardingTaskInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOnboardingTaskWhereInput
+  orderBy?: Prisma.EmployeeOnboardingTaskOrderByWithRelationInput | Prisma.EmployeeOnboardingTaskOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOnboardingTaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOnboardingTaskScalarFieldEnum | Prisma.EmployeeOnboardingTaskScalarFieldEnum[]
+}
+
+/**
+ * User.assignedOffboardingTasks
+ */
+export type User$assignedOffboardingTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOffboardingTask
+   */
+  select?: Prisma.EmployeeOffboardingTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOffboardingTask
+   */
+  omit?: Prisma.EmployeeOffboardingTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOffboardingTaskInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOffboardingTaskWhereInput
+  orderBy?: Prisma.EmployeeOffboardingTaskOrderByWithRelationInput | Prisma.EmployeeOffboardingTaskOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOffboardingTaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOffboardingTaskScalarFieldEnum | Prisma.EmployeeOffboardingTaskScalarFieldEnum[]
+}
+
+/**
+ * User.createdPayrollRecurringItems
+ */
+export type User$createdPayrollRecurringItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeePayrollRecurringItem
+   */
+  select?: Prisma.EmployeePayrollRecurringItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeePayrollRecurringItem
+   */
+  omit?: Prisma.EmployeePayrollRecurringItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeePayrollRecurringItemInclude<ExtArgs> | null
+  where?: Prisma.EmployeePayrollRecurringItemWhereInput
+  orderBy?: Prisma.EmployeePayrollRecurringItemOrderByWithRelationInput | Prisma.EmployeePayrollRecurringItemOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeePayrollRecurringItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeePayrollRecurringItemScalarFieldEnum | Prisma.EmployeePayrollRecurringItemScalarFieldEnum[]
 }
 
 /**

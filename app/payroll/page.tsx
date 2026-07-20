@@ -11,8 +11,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function PayrollPage() {
-  const capabilities = await requirePayrollViewAccess();
-  const data = await getPayrollReadiness();
+  const [capabilities, data] = await Promise.all([
+    requirePayrollViewAccess(),
+    getPayrollReadiness(),
+  ]);
 
   return (
     <PayrollReadinessDirectory

@@ -7,13 +7,17 @@ import { Button } from "@/components/ui/button";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { PayslipDocument } from "@/src/modules/payroll/components/payslip-document";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type {
+  PayslipYtdBreakdown,
+  PayslipYtdTotals,
+} from "@/src/modules/payroll/lib/payslip-ytd";
 
 export type PayslipBatchPrintDocument = {
   key: string;
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
   ytd?: PayslipYtdTotals | null;
+  ytdBreakdown?: PayslipYtdBreakdown | null;
   isOfficial?: boolean;
 };
 
@@ -138,6 +142,7 @@ export function PayslipBatchPrintView({
               payslip={doc.payslip}
               meta={doc.meta}
               ytd={doc.ytd}
+              ytdBreakdown={doc.ytdBreakdown}
               showWarnings={!doc.isOfficial}
               isOfficial={doc.isOfficial}
             />

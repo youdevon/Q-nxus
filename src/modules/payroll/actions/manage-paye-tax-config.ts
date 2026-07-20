@@ -212,6 +212,12 @@ export async function savePayeTaxConfig(
 
   const metadata = await getAuditRequestMetadata(formData);
   const effectiveFromKey = effectiveFrom!.toISOString().slice(0, 10);
+  const taxYear =
+    Number.parseInt(textValue(formData, "taxYear"), 10) ||
+    Number(effectiveFromKey.slice(0, 4));
+  const sourceReference = nullableText(formData, "sourceReference");
+  const countryCode = nullableText(formData, "countryCode") ?? "TT";
+  const currencyCode = nullableText(formData, "currencyCode") ?? "TTD";
 
   try {
     const savedId = await prisma.$transaction(async (tx) => {
@@ -241,6 +247,10 @@ export async function savePayeTaxConfig(
         await tx.payeTaxConfig.update({
           where: { id },
           data: {
+            countryCode,
+            taxYear,
+            currencyCode,
+            sourceReference,
             personalAllowanceAnnual: new Prisma.Decimal(
               personalAllowanceAnnual!.toFixed(2),
             ),
@@ -272,6 +282,10 @@ export async function savePayeTaxConfig(
       const created = await tx.payeTaxConfig.create({
         data: {
           organizationId: organization.id,
+          countryCode,
+          taxYear,
+          currencyCode,
+          sourceReference,
           personalAllowanceAnnual: new Prisma.Decimal(
             personalAllowanceAnnual!.toFixed(2),
           ),
@@ -312,6 +326,8 @@ export async function savePayeTaxConfig(
         description: `Saved PAYE tax config effective ${effectiveFromKey}.`,
         newValues: {
           effectiveFrom: effectiveFromKey,
+          taxYear,
+          countryCode,
           personalAllowanceAnnual,
           nisDeductiblePortion,
           approvedDeductionCapAnnual,

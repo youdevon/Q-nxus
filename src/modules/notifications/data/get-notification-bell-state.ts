@@ -44,7 +44,7 @@ export type NotificationBellState = {
   unreadActionUrls: Array<string | null>;
 };
 
-const ACTION_URL_CAP = 100;
+const ACTION_URL_CAP = 40;
 
 /**
  * Shared bell payload for the API route (polling) and any server callers.

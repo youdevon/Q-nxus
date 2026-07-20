@@ -39,6 +39,7 @@ export default async function PayRunPrintPage({
         payslip: doc.payslip,
         meta: doc.meta,
         ytd: doc.ytd,
+        ytdBreakdown: doc.ytdBreakdown,
         isOfficial: doc.isOfficial,
       }))}
     />

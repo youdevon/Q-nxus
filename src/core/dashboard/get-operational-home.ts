@@ -97,7 +97,8 @@ export async function getOperationalHomeDashboard(): Promise<OperationalHomeDash
 
   const today = startOfUtcDay();
   const in90Days = addUtcDays(today, 90);
-  const organizationId = user.employee?.organizationId ?? null;
+  const organizationId =
+    user.employee?.organizationId ?? user.organizationId ?? null;
   const canCountOnLeave = canViewLeave && Boolean(organizationId);
 
   const pendingLeaveWhere: Prisma.LeaveRequestWhereInput = capabilities.can(
@@ -129,6 +130,13 @@ export async function getOperationalHomeDashboard(): Promise<OperationalHomeDash
       not: null,
       lte: in90Days,
     },
+    ...(organizationId
+      ? {
+          employee: {
+            organizationId,
+          },
+        }
+      : {}),
   };
 
   let pendingLeaveForMe: PendingLeaveRow[] = [];
@@ -218,6 +226,7 @@ export async function getOperationalHomeDashboard(): Promise<OperationalHomeDash
           startDate: { lte: today },
           endDate: { gte: today },
         },
+        distinct: ["employeeId"],
         select: { employeeId: true },
       });
     })(),

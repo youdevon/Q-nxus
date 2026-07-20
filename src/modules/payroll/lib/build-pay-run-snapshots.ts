@@ -1,7 +1,12 @@
 import { Prisma } from "@/generated/prisma/client";
 
-import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
+import {
+  getEmployeePayslipPreview,
+  type PayslipDocumentMeta,
+} from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { payslipPreviewToYtdContribution } from "@/src/modules/payroll/data/get-payslip-ytd";
+import { roundToCents, sumMoney } from "@/src/modules/payroll/lib/money";
+import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import {
   buildPayslipSnapshot,
   extractPayslipSnapshotTotals,
@@ -14,7 +19,13 @@ import {
  *
  * Single writer for payslip dual-write: `toPayslipCreateData` /
  * `toPayslipRecalcUpdateData` write snapshot JSON + denormalized columns
- * together. `postPayRunInTransaction` only flips status — never recomputes.
+ * together. `postPayRunInTransaction` freezes status and decrements
+ * balance-tracked recurring items on REGULAR posts — it does not recompute
+ * payslip amounts.
+ *
+ * CORRECTION runs (Phase B) use {@link buildCorrectionDeltaEmployeeSnapshot}
+ * so the slip pays category deltas via CORRECTION_* lines — not a second
+ * full-period reassembly. REGULAR / OFF_CYCLE keep {@link buildEmployeePayRunSnapshot}.
  */
 export type PayRunEmployeeSnapshot = {
   employeeId: string;
@@ -172,4 +183,124 @@ export function toPayslipRecalcUpdateData(
 
 export function aggregatePayRunTotals(rows: PayRunEmployeeSnapshot[]) {
   return sumPayRunTotals(rows);
+}
+
+export type CorrectionDeltaLineInput = {
+  lineType: "EARNING" | "DEDUCTION";
+  code: string;
+  label: string;
+  amount: { toString(): string } | number;
+  isTaxable: boolean;
+  notes?: string | null;
+};
+
+/**
+ * Build a delta-payment payslip from CORRECTION_* (and any manual) line items
+ * only — no contract salary and no statutory re-engine. Used for CORRECTION
+ * runs so posting/ACH pays the net difference vs the source run.
+ */
+export function buildCorrectionDeltaEmployeeSnapshot(input: {
+  employeeId: string;
+  currency: string;
+  employeeNumber: string;
+  employeeName: string;
+  nisNumber: string | null;
+  birNumber: string | null;
+  jobTitle: string | null;
+  departmentName: string | null;
+  payFrequency: string;
+  paymentMethod: string;
+  organizationName: string;
+  periodLabel: string;
+  periodAsOf: string;
+  lineItems: CorrectionDeltaLineInput[];
+  isReady?: boolean;
+  blockingIssues?: string[];
+}): PayRunEmployeeSnapshot {
+  const earnings = input.lineItems
+    .filter((line) => line.lineType === "EARNING")
+    .map((line) => ({
+      label: line.label,
+      amount: roundToCents(Number(line.amount.toString())),
+      detail: [
+        line.code.replaceAll("_", " ").toLowerCase(),
+        line.notes ?? "",
+      ]
+        .filter(Boolean)
+        .join(" · "),
+    }));
+
+  const deductions = input.lineItems
+    .filter((line) => line.lineType === "DEDUCTION")
+    .map((line) => ({
+      label: line.label,
+      amount: roundToCents(Number(line.amount.toString())),
+      detail: [
+        line.code.replaceAll("_", " ").toLowerCase(),
+        line.notes ?? "",
+      ]
+        .filter(Boolean)
+        .join(" · "),
+    }));
+
+  const grossPay = roundToCents(sumMoney(...earnings.map((line) => line.amount)));
+  const totalDeductions = roundToCents(
+    sumMoney(...deductions.map((line) => line.amount)),
+  );
+  const netPay = roundToCents(grossPay - totalDeductions);
+
+  const payslip: PayslipPreview = {
+    employee: {
+      id: input.employeeId,
+      employeeNumber: input.employeeNumber,
+      displayName: input.employeeName,
+      nisNumber: input.nisNumber,
+      birNumber: input.birNumber,
+    },
+    period: {
+      label: input.periodLabel,
+      asOf: input.periodAsOf,
+      payFrequency: input.payFrequency,
+      paymentMethod: input.paymentMethod,
+    },
+    currency: input.currency,
+    earnings,
+    baseSalary: 0,
+    allowancesTotal: 0,
+    grossPay,
+    monthlyTaxableEarnings: 0,
+    deductions,
+    totalDeductions,
+    netPay,
+    employerContributions: [],
+    bankDistribution: null,
+    nis: null,
+    paye: null,
+    health: null,
+    readiness: {
+      isReady: input.isReady !== false,
+      blockingIssues: input.blockingIssues ?? [],
+    },
+    warnings: [],
+    notes: [
+      "Correction delta payment — amounts are category differences vs the source posted run, not a full-period recalculation.",
+    ],
+  };
+
+  const meta: PayslipDocumentMeta = {
+    organizationName: input.organizationName,
+    jobTitle: input.jobTitle,
+    departmentName: input.departmentName,
+  };
+
+  const totals = extractPayslipSnapshotTotals(payslip, meta);
+  const snapshot = buildPayslipSnapshot(payslip, meta);
+
+  return {
+    employeeId: input.employeeId,
+    ...totals,
+    snapshot,
+    isReady: payslip.readiness.isReady,
+    blockingIssues: payslip.readiness.blockingIssues,
+  };
 }

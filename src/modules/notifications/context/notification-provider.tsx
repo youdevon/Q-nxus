@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { usePathname } from "next/navigation";
 
 import {
   markAllNotificationsRead,
@@ -11,7 +10,7 @@ import type { NotificationBellState } from "@/src/modules/notifications/data/get
 import { useAuth } from "@/src/modules/auth/context/auth-provider";
 import type { AppNotification } from "@/src/types/notifications";
 
-const POLL_INTERVAL_MS = 30_000;
+const POLL_INTERVAL_MS = 60_000;
 const BELL_ENDPOINT = "/api/notifications/bell";
 
 type NotificationContextValue = {
@@ -28,21 +27,40 @@ type NotificationContextValue = {
 const NotificationContext =
   React.createContext<NotificationContextValue | null>(null);
 
-async function fetchBellState(
-  signal?: AbortSignal,
-): Promise<NotificationBellState> {
+function isAbortError(error: unknown): boolean {
+  if (error instanceof DOMException && error.name === "AbortError") {
+    return true;
+  }
+
+  return error instanceof Error && error.name === "AbortError";
+}
+
+async function fetchBellState(): Promise<NotificationBellState> {
   const response = await fetch(BELL_ENDPOINT, {
     method: "GET",
     credentials: "same-origin",
     cache: "no-store",
-    signal,
   });
 
   if (!response.ok) {
     throw new Error(`Notification bell request failed (${response.status})`);
   }
 
-  return (await response.json()) as NotificationBellState;
+  // Prefer text → JSON.parse so empty bodies and HTML error pages produce a
+  // clear error. Safari surfaces bad JSON as
+  // "The string did not match the expected pattern."
+  const text = await response.text();
+  if (!text.trim()) {
+    throw new Error("Notification bell response was empty");
+  }
+
+  try {
+    return JSON.parse(text) as NotificationBellState;
+  } catch {
+    throw new Error(
+      `Notification bell response was not JSON (${text.slice(0, 80)})`,
+    );
+  }
 }
 
 export function NotificationProvider({
@@ -51,7 +69,6 @@ export function NotificationProvider({
   children: React.ReactNode;
 }) {
   const { user } = useAuth();
-  const pathname = usePathname();
   const [notifications, setNotifications] = React.useState<AppNotification[]>(
     [],
   );
@@ -65,7 +82,6 @@ export function NotificationProvider({
   const mutationEpoch = React.useRef(0);
   const hasLoadedOnce = React.useRef(false);
   const notificationsRef = React.useRef(notifications);
-  const abortRef = React.useRef<AbortController | null>(null);
 
   React.useEffect(() => {
     notificationsRef.current = notifications;
@@ -81,10 +97,8 @@ export function NotificationProvider({
       return;
     }
 
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
+    // Stale responses are dropped via requestId — avoid AbortController so
+    // mid-body cancels do not surface as Safari JSON SyntaxErrors.
     const requestId = ++refreshRequestId.current;
     const epochAtStart = mutationEpoch.current;
 
@@ -93,7 +107,7 @@ export function NotificationProvider({
     }
 
     try {
-      const state = await fetchBellState(controller.signal);
+      const state = await fetchBellState();
 
       if (requestId !== refreshRequestId.current) {
         return;
@@ -111,7 +125,7 @@ export function NotificationProvider({
       );
       hasLoadedOnce.current = true;
     } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") {
+      if (isAbortError(error)) {
         return;
       }
       console.error("Failed to refresh notifications:", error);
@@ -123,16 +137,15 @@ export function NotificationProvider({
   }, [user]);
 
   React.useEffect(() => {
-    // Defer so setState inside refresh is not synchronous within the effect body.
+    // Mount / auth change only — do not refetch on every client navigation.
     const timeoutId = window.setTimeout(() => {
       void refresh();
     }, 0);
 
     return () => {
       window.clearTimeout(timeoutId);
-      abortRef.current?.abort();
     };
-  }, [refresh, pathname]);
+  }, [refresh]);
 
   React.useEffect(() => {
     if (!user) {

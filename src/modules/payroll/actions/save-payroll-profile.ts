@@ -16,6 +16,11 @@ import {
 } from "@/src/modules/payroll/lib/payroll-banking-flags";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
 import { replaceEmployeeBankSetup } from "@/src/modules/payroll/services/replace-employee-bank-setup";
+import { upsertEmployeeTaxProfileTd1Sync } from "@/src/modules/payroll/services/upsert-employee-tax-profile-td1-sync";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type PayrollProfileFormState = {
   status: "idle" | "error";
@@ -653,6 +658,16 @@ export async function savePayrollProfile(
           },
         });
       }
+
+      // Dual-write TD1 onto the current calendar-year EmployeeTaxProfile.
+      await upsertEmployeeTaxProfileTd1Sync(transaction, {
+        organizationId: employee.organizationId,
+        employeeId: employee.id,
+        taxYear: taxYearFromAsOfKey(toStatutoryAsOfKey(new Date())),
+        td1OtherApprovedAnnual,
+        syncPayrollProfile: false,
+        userId: actor.actor.userId,
+      });
 
       await recordAuditEvent(transaction, {
         userId: actor.actor.userId,

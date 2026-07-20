@@ -463,6 +463,16 @@ export const OnboardingCaseStatus = {
 export type OnboardingCaseStatus = (typeof OnboardingCaseStatus)[keyof typeof OnboardingCaseStatus]
 
 
+export const OnboardingCaseType = {
+  NEW_HIRE: 'NEW_HIRE',
+  REHIRE: 'REHIRE',
+  CONTRACTOR: 'CONTRACTOR',
+  CONTINUING: 'CONTINUING'
+} as const
+
+export type OnboardingCaseType = (typeof OnboardingCaseType)[keyof typeof OnboardingCaseType]
+
+
 export const OffboardingCaseStatus = {
   OPEN: 'OPEN',
   CLEARED: 'CLEARED',
@@ -471,6 +481,19 @@ export const OffboardingCaseStatus = {
 } as const
 
 export type OffboardingCaseStatus = (typeof OffboardingCaseStatus)[keyof typeof OffboardingCaseStatus]
+
+
+export const OffboardingCaseReason = {
+  RESIGNATION: 'RESIGNATION',
+  RETIREMENT: 'RETIREMENT',
+  END_OF_CONTRACT: 'END_OF_CONTRACT',
+  TERMINATION: 'TERMINATION',
+  REDUNDANCY: 'REDUNDANCY',
+  TRANSFER: 'TRANSFER',
+  OTHER: 'OTHER'
+} as const
+
+export type OffboardingCaseReason = (typeof OffboardingCaseReason)[keyof typeof OffboardingCaseReason]
 
 
 export const LifecycleTaskStatus = {
@@ -498,6 +521,14 @@ export const LifecycleTaskCode = {
 } as const
 
 export type LifecycleTaskCode = (typeof LifecycleTaskCode)[keyof typeof LifecycleTaskCode]
+
+
+export const LifecycleTemplateKind = {
+  ONBOARDING: 'ONBOARDING',
+  OFFBOARDING: 'OFFBOARDING'
+} as const
+
+export type LifecycleTemplateKind = (typeof LifecycleTemplateKind)[keyof typeof LifecycleTemplateKind]
 
 
 export const EmploymentType = {
@@ -590,6 +621,79 @@ export const PayrollPaymentMethod = {
 } as const
 
 export type PayrollPaymentMethod = (typeof PayrollPaymentMethod)[keyof typeof PayrollPaymentMethod]
+
+
+export const TaxCalculationMethod = {
+  STANDARD_CUMULATIVE: 'STANDARD_CUMULATIVE',
+  STANDARD_NON_CUMULATIVE: 'STANDARD_NON_CUMULATIVE',
+  PREVIOUS_INCOME_INCLUDED: 'PREVIOUS_INCOME_INCLUDED',
+  MANUAL_INSTRUCTION: 'MANUAL_INSTRUCTION',
+  SPECIAL_IRD_INSTRUCTION: 'SPECIAL_IRD_INSTRUCTION'
+} as const
+
+export type TaxCalculationMethod = (typeof TaxCalculationMethod)[keyof typeof TaxCalculationMethod]
+
+
+export const PersonalAllowanceSource = {
+  STATUTORY_DEFAULT: 'STATUTORY_DEFAULT',
+  TD1: 'TD1',
+  IRD_INSTRUCTION: 'IRD_INSTRUCTION',
+  MANUAL_AUTHORIZED: 'MANUAL_AUTHORIZED'
+} as const
+
+export type PersonalAllowanceSource = (typeof PersonalAllowanceSource)[keyof typeof PersonalAllowanceSource]
+
+
+export const EmployeeTaxProfileStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  SUPERSEDED: 'SUPERSEDED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type EmployeeTaxProfileStatus = (typeof EmployeeTaxProfileStatus)[keyof typeof EmployeeTaxProfileStatus]
+
+
+export const PriorEmploymentDocumentType = {
+  TD4: 'TD4',
+  PRIOR_EMPLOYER_LETTER: 'PRIOR_EMPLOYER_LETTER',
+  PAYSLIP: 'PAYSLIP',
+  OTHER: 'OTHER'
+} as const
+
+export type PriorEmploymentDocumentType = (typeof PriorEmploymentDocumentType)[keyof typeof PriorEmploymentDocumentType]
+
+
+export const PriorEmploymentRecordStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  SUPERSEDED: 'SUPERSEDED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type PriorEmploymentRecordStatus = (typeof PriorEmploymentRecordStatus)[keyof typeof PriorEmploymentRecordStatus]
+
+
+export const PayrollTaxTreatment = {
+  TAXABLE_EMPLOYMENT: 'TAXABLE_EMPLOYMENT',
+  NON_TAXABLE: 'NON_TAXABLE',
+  NIS_ONLY: 'NIS_ONLY',
+  PAYE_EXEMPT: 'PAYE_EXEMPT'
+} as const
+
+export type PayrollTaxTreatment = (typeof PayrollTaxTreatment)[keyof typeof PayrollTaxTreatment]
+
+
+export const StatutoryOverrideStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  APPLIED: 'APPLIED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type StatutoryOverrideStatus = (typeof StatutoryOverrideStatus)[keyof typeof StatutoryOverrideStatus]
 
 
 export const FinancialInstitutionType = {
@@ -744,3 +848,32 @@ export const PayslipRecordStatus = {
 } as const
 
 export type PayslipRecordStatus = (typeof PayslipRecordStatus)[keyof typeof PayslipRecordStatus]
+
+
+export const PayslipEmailDeliveryStatus = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  SKIPPED: 'SKIPPED'
+} as const
+
+export type PayslipEmailDeliveryStatus = (typeof PayslipEmailDeliveryStatus)[keyof typeof PayslipEmailDeliveryStatus]
+
+
+export const PayrollComponentKind = {
+  EARNING: 'EARNING',
+  DEDUCTION: 'DEDUCTION'
+} as const
+
+export type PayrollComponentKind = (typeof PayrollComponentKind)[keyof typeof PayrollComponentKind]
+
+
+export const PayrollComponentCategory = {
+  LOAN: 'LOAN',
+  GARNISHMENT: 'GARNISHMENT',
+  PENSION_INSTALLMENT: 'PENSION_INSTALLMENT',
+  VOLUNTARY_DEDUCTION: 'VOLUNTARY_DEDUCTION',
+  RECURRING_EARNING: 'RECURRING_EARNING'
+} as const
+
+export type PayrollComponentCategory = (typeof PayrollComponentCategory)[keyof typeof PayrollComponentCategory]

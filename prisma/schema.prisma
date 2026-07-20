@@ -441,11 +441,32 @@ enum OnboardingCaseStatus {
   @@schema("hr")
 }
 
+enum OnboardingCaseType {
+  NEW_HIRE
+  REHIRE
+  CONTRACTOR
+  CONTINUING
+
+  @@schema("hr")
+}
+
 enum OffboardingCaseStatus {
   OPEN
   CLEARED
   COMPLETED
   CANCELLED
+
+  @@schema("hr")
+}
+
+enum OffboardingCaseReason {
+  RESIGNATION
+  RETIREMENT
+  END_OF_CONTRACT
+  TERMINATION
+  REDUNDANCY
+  TRANSFER
+  OTHER
 
   @@schema("hr")
 }
@@ -471,6 +492,13 @@ enum LifecycleTaskCode {
   FREEZE_EMPLOYEE_FILE
   REVOKE_ACCESS
   FINAL_PAY_CHECK
+
+  @@schema("hr")
+}
+
+enum LifecycleTemplateKind {
+  ONBOARDING
+  OFFBOARDING
 
   @@schema("hr")
 }
@@ -592,17 +620,23 @@ model Organization {
   employeeFileUpdateRequests EmployeeFileUpdateRequest[]
   employeeCorrespondenceResponses EmployeeCorrespondenceResponse[]
   storedFiles              StoredFile[]
-  employeeFilePacks        EmployeeFilePack[]
-  employeeOnboardingCases  EmployeeOnboardingCase[]
-  employeeOffboardingCases EmployeeOffboardingCase[]
+  employeeFilePacks            EmployeeFilePack[]
+  employeeLifecycleTemplates   EmployeeLifecycleTemplate[]
+  employeeOnboardingCases      EmployeeOnboardingCase[]
+  employeeOffboardingCases     EmployeeOffboardingCase[]
 
   nisEarningsClasses       NisEarningsClass[]
   payeTaxConfigs           PayeTaxConfig[]
   healthSurchargeConfigs   HealthSurchargeConfig[]
+  employeeTaxProfiles      EmployeeTaxProfile[]
+  employeePriorEmploymentYtds EmployeePriorEmploymentYtd[]
+  employeePayrollStatutoryOverrides EmployeePayrollStatutoryOverride[]
   payrollPeriods           PayrollPeriod[]
   payRuns                  PayRun[]
   payslips                 Payslip[]
   payrollLineItems         PayrollLineItem[]
+  payrollComponentDefinitions PayrollComponentDefinition[]
+  employeePayrollRecurringItems EmployeePayrollRecurringItem[]
   employeeBankAccounts     EmployeeBankAccount[]
   employeePayrollAllocations EmployeePayrollAllocation[]
   payrollPayments          PayrollPayment[]
@@ -695,8 +729,13 @@ model User {
   uploadedStoredFiles                StoredFile[] @relation("StoredFileUploader")
   openedOnboardingCases              EmployeeOnboardingCase[] @relation("OnboardingCaseOpener")
   openedOffboardingCases             EmployeeOffboardingCase[] @relation("OffboardingCaseOpener")
+  ownedOnboardingCases               EmployeeOnboardingCase[] @relation("OnboardingCaseOwner")
+  ownedOffboardingCases              EmployeeOffboardingCase[] @relation("OffboardingCaseOwner")
   completedOnboardingTasks           EmployeeOnboardingTask[] @relation("OnboardingTaskCompleter")
   completedOffboardingTasks          EmployeeOffboardingTask[] @relation("OffboardingTaskCompleter")
+  assignedOnboardingTasks            EmployeeOnboardingTask[] @relation("OnboardingTaskAssignee")
+  assignedOffboardingTasks           EmployeeOffboardingTask[] @relation("OffboardingTaskAssignee")
+  createdPayrollRecurringItems       EmployeePayrollRecurringItem[] @relation("PayrollRecurringItemCreator")
 
   employeeId String?   @unique
   employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
@@ -1071,8 +1110,12 @@ model Employee {
   assignments    EmployeeAssignment[]
   appraisals     PerformanceAppraisal[]
   payrollProfile PayrollProfile?
+  taxProfiles    EmployeeTaxProfile[]
+  priorEmploymentYtds EmployeePriorEmploymentYtd[]
+  statutoryOverrides  EmployeePayrollStatutoryOverride[]
   payslips       Payslip[]
   payrollLineItems PayrollLineItem[]
+  payrollRecurringItems EmployeePayrollRecurringItem[]
   bankAccounts   EmployeeBankAccount[]
   payrollAllocations EmployeePayrollAllocation[]
   payrollPayments PayrollPayment[]
@@ -1186,6 +1229,7 @@ model EmployeeAssignment {
   @@index([positionId])
   @@index([jobDescriptionId])
   @@index([employeeId, isCurrent])
+  @@index([isCurrent, positionId])
   @@index([startDate])
   @@map("employee_assignments")
   @@schema("hr")
@@ -1377,6 +1421,7 @@ model LeaveRequest {
   @@index([organizationId])
   @@index([organizationId, status, createdAt])
   @@index([organizationId, status, submittedAt])
+  @@index([organizationId, status, startDate, endDate])
   @@index([employeeId])
   @@index([contractId])
   @@index([leaveTypeId])
@@ -1425,6 +1470,7 @@ model LeaveApprovalStep {
   approverPosition Position?    @relation(fields: [approverPositionId], references: [id], onDelete: SetNull)
 
   @@unique([leaveRequestId, stepNumber])
+  @@index([approverUserId, status])
   @@index([approverUserId])
   @@index([approverPositionId])
   @@index([status])
@@ -1954,6 +2000,7 @@ model EmploymentContract {
   @@index([employeeId, isCurrent])
   @@index([status])
   @@index([endDate])
+  @@index([isCurrent, endDate])
   @@index([sourceContractId])
   @@index([positionId])
   @@index([departmentId])
@@ -2052,6 +2099,8 @@ model StoredFile {
   uploadedBy   User?        @relation("StoredFileUploader", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
   employmentContracts EmploymentContract[]
   fileUpdateRequests  EmployeeFileUpdateRequest[]
+  employeeTaxProfiles EmployeeTaxProfile[]
+  priorEmploymentDocuments EmployeePriorEmploymentDocument[]
 
   @@unique([organizationId, storageKey])
   @@index([organizationId])
@@ -2103,27 +2152,79 @@ model EmployeeFilePackItem {
   @@schema("hr")
 }
 
-model EmployeeOnboardingCase {
-  id               String               @id @default(cuid())
+/// Org-configurable hire/exit task packs resolved when opening a lifecycle case.
+model EmployeeLifecycleTemplate {
+  id               String                 @id @default(cuid())
   organizationId   String
-  employeeId       String
-  status           OnboardingCaseStatus @default(OPEN)
-  openedByUserId   String?
-  openedAt         DateTime             @default(now())
-  readyAt          DateTime?
-  completedAt      DateTime?
-  notes            String?
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
+  kind             LifecycleTemplateKind
+  code             String
+  name             String
+  isDefault        Boolean                @default(false)
+  isActive         Boolean                @default(true)
+  matchCaseType    OnboardingCaseType?
+  matchReasonCode  OffboardingCaseReason?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  organization Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  tasks        EmployeeLifecycleTemplateTask[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, kind, isActive])
+  @@index([organizationId, kind, isDefault])
+  @@map("employee_lifecycle_templates")
+  @@schema("hr")
+}
+
+model EmployeeLifecycleTemplateTask {
+  id         String            @id @default(cuid())
+  templateId String
+  code       LifecycleTaskCode
+  label      String
+  sortOrder  Int               @default(0)
+  mandatory  Boolean           @default(true)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  template EmployeeLifecycleTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, code])
+  @@index([templateId, sortOrder])
+  @@map("employee_lifecycle_template_tasks")
+  @@schema("hr")
+}
+
+model EmployeeOnboardingCase {
+  id                 String               @id @default(cuid())
+  organizationId     String
+  employeeId         String
+  caseNumber         String?
+  caseType           OnboardingCaseType   @default(NEW_HIRE)
+  status             OnboardingCaseStatus @default(OPEN)
+  openedByUserId     String?
+  ownerUserId        String?
+  proposedStartDate  DateTime?            @db.Date
+  confirmedStartDate DateTime?            @db.Date
+  openedAt           DateTime             @default(now())
+  readyAt            DateTime?
+  completedAt        DateTime?
+  cancelledAt        DateTime?
+  cancelledReason    String?
+  notes              String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
 
   organization Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   employee     Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   openedBy     User?                   @relation("OnboardingCaseOpener", fields: [openedByUserId], references: [id], onDelete: SetNull)
+  owner        User?                   @relation("OnboardingCaseOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
   tasks        EmployeeOnboardingTask[]
 
+  @@unique([organizationId, caseNumber])
   @@index([organizationId, status])
   @@index([employeeId])
   @@index([openedByUserId])
+  @@index([ownerUserId])
   @@map("employee_onboarding_cases")
   @@schema("hr")
 }
@@ -2136,6 +2237,7 @@ model EmployeeOnboardingTask {
   status            LifecycleTaskStatus @default(PENDING)
   sortOrder         Int               @default(0)
   dueAt             DateTime?
+  assigneeUserId    String?
   completedAt       DateTime?
   completedByUserId String?
   relatedEntityType String?
@@ -2145,37 +2247,50 @@ model EmployeeOnboardingTask {
   updatedAt         DateTime          @updatedAt
 
   case        EmployeeOnboardingCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  assignee    User?                  @relation("OnboardingTaskAssignee", fields: [assigneeUserId], references: [id], onDelete: SetNull)
   completedBy User?                  @relation("OnboardingTaskCompleter", fields: [completedByUserId], references: [id], onDelete: SetNull)
 
   @@unique([caseId, code])
   @@index([caseId, status])
+  @@index([assigneeUserId])
+  @@index([dueAt])
   @@index([completedByUserId])
   @@map("employee_onboarding_tasks")
   @@schema("hr")
 }
 
 model EmployeeOffboardingCase {
-  id               String                @id @default(cuid())
-  organizationId   String
-  employeeId       String
-  status           OffboardingCaseStatus @default(OPEN)
-  reason           String?
-  openedByUserId   String?
-  openedAt         DateTime              @default(now())
-  clearedAt        DateTime?
-  completedAt      DateTime?
-  notes            String?
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
+  id              String                 @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  caseNumber      String?
+  status          OffboardingCaseStatus  @default(OPEN)
+  reasonCode      OffboardingCaseReason?
+  reason          String?
+  openedByUserId  String?
+  ownerUserId     String?
+  lastWorkingDate DateTime?              @db.Date
+  separationDate  DateTime?              @db.Date
+  openedAt        DateTime               @default(now())
+  clearedAt       DateTime?
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  cancelledReason String?
+  notes           String?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
 
   organization Organization             @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   employee     Employee                 @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   openedBy     User?                    @relation("OffboardingCaseOpener", fields: [openedByUserId], references: [id], onDelete: SetNull)
+  owner        User?                    @relation("OffboardingCaseOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
   tasks        EmployeeOffboardingTask[]
 
+  @@unique([organizationId, caseNumber])
   @@index([organizationId, status])
   @@index([employeeId])
   @@index([openedByUserId])
+  @@index([ownerUserId])
   @@map("employee_offboarding_cases")
   @@schema("hr")
 }
@@ -2188,6 +2303,7 @@ model EmployeeOffboardingTask {
   status            LifecycleTaskStatus @default(PENDING)
   sortOrder         Int                 @default(0)
   dueAt             DateTime?
+  assigneeUserId    String?
   completedAt       DateTime?
   completedByUserId String?
   relatedEntityType String?
@@ -2197,10 +2313,13 @@ model EmployeeOffboardingTask {
   updatedAt         DateTime            @updatedAt
 
   case        EmployeeOffboardingCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  assignee    User?                   @relation("OffboardingTaskAssignee", fields: [assigneeUserId], references: [id], onDelete: SetNull)
   completedBy User?                   @relation("OffboardingTaskCompleter", fields: [completedByUserId], references: [id], onDelete: SetNull)
 
   @@unique([caseId, code])
   @@index([caseId, status])
+  @@index([assigneeUserId])
+  @@index([dueAt])
   @@index([completedByUserId])
   @@map("employee_offboarding_tasks")
   @@schema("hr")
@@ -2221,6 +2340,218 @@ enum PayrollPaymentMethod {
   CHEQUE
   CASH
 
+  @@schema("payroll")
+}
+
+/// How PAYE is determined for an employee in a tax year.
+enum TaxCalculationMethod {
+  STANDARD_CUMULATIVE
+  STANDARD_NON_CUMULATIVE
+  PREVIOUS_INCOME_INCLUDED
+  MANUAL_INSTRUCTION
+  SPECIAL_IRD_INSTRUCTION
+
+  @@schema("payroll")
+}
+
+enum PersonalAllowanceSource {
+  STATUTORY_DEFAULT
+  TD1
+  IRD_INSTRUCTION
+  MANUAL_AUTHORIZED
+
+  @@schema("payroll")
+}
+
+enum EmployeeTaxProfileStatus {
+  DRAFT
+  ACTIVE
+  SUPERSEDED
+  ARCHIVED
+
+  @@schema("payroll")
+}
+
+/// Per-employee, per-calendar-tax-year PAYE / TD1 treatment.
+/// Dual-reads with PayrollProfile.td1OtherApprovedAnnual for the current year.
+model EmployeeTaxProfile {
+  id                 String                   @id @default(cuid())
+  organizationId     String
+  employeeId         String
+  taxYear            Int
+  taxCalculationMethod TaxCalculationMethod   @default(STANDARD_NON_CUMULATIVE)
+  taxProfileStatus   EmployeeTaxProfileStatus @default(ACTIVE)
+
+  /// Override of org PayeTaxConfig.personalAllowanceAnnual when set.
+  personalAllowance          Decimal?                 @db.Decimal(14, 2)
+  personalAllowanceSource    PersonalAllowanceSource  @default(STATUTORY_DEFAULT)
+
+  td1Submitted               Boolean   @default(false)
+  td1EffectiveDate           DateTime? @db.Date
+  td1ApprovedByIrd           Boolean   @default(false)
+  td1ApprovalReference       String?
+  /// TD1 other approved deductions (pension, annuity, tax-savings) annual TTD.
+  td1OtherApprovedAnnual     Decimal?  @db.Decimal(14, 2)
+  td1StoredFileId            String?
+
+  cumulativeCalculationEnabled Boolean @default(false)
+  previousEmploymentDeclared   Boolean @default(false)
+  previousEmploymentVerified   Boolean @default(false)
+  /// Free-text source hint; structured YTD lives on EmployeePriorEmploymentYtd.
+  previousEmploymentSource     String?
+
+  effectiveFrom    DateTime  @db.Date
+  effectiveTo      DateTime? @db.Date
+  notes            String?
+  createdByUserId  String?
+  updatedByUserId  String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  td1StoredFile StoredFile? @relation(fields: [td1StoredFileId], references: [id], onDelete: SetNull)
+  priorEmploymentYtds EmployeePriorEmploymentYtd[]
+
+  @@unique([employeeId, taxYear])
+  @@index([organizationId, taxYear])
+  @@index([organizationId, taxProfileStatus])
+  @@index([td1StoredFileId])
+  @@map("employee_tax_profiles")
+  @@schema("payroll")
+}
+
+enum PriorEmploymentDocumentType {
+  TD4
+  PRIOR_EMPLOYER_LETTER
+  PAYSLIP
+  OTHER
+
+  @@schema("payroll")
+}
+
+enum PriorEmploymentRecordStatus {
+  DRAFT
+  ACTIVE
+  SUPERSEDED
+  ARCHIVED
+
+  @@schema("payroll")
+}
+
+enum PayrollTaxTreatment {
+  TAXABLE_EMPLOYMENT
+  NON_TAXABLE
+  NIS_ONLY
+  PAYE_EXEMPT
+
+  @@schema("payroll")
+}
+
+enum StatutoryOverrideStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  APPLIED
+  CANCELLED
+
+  @@schema("payroll")
+}
+
+/// Prior-employer calendar-year YTD amounts for mid-year joiners (Phase 3).
+/// Applied to cumulative PAYE in Phase 4; stored and resolved here.
+model EmployeePriorEmploymentYtd {
+  id               String                      @id @default(cuid())
+  organizationId   String
+  employeeId       String
+  taxYear          Int
+  taxProfileId     String?
+  employerName     String
+  employerBirNumber String?
+  employmentStartDate DateTime?                @db.Date
+  employmentEndDate   DateTime?                @db.Date
+  /// Date the YTD figures are stated as-of (usually last day with prior employer).
+  asOfDate         DateTime                    @db.Date
+  currencyCode     String                      @default("TTD")
+
+  taxableIncomeYtd            Decimal @db.Decimal(14, 2)
+  payeDeductedYtd             Decimal @db.Decimal(14, 2)
+  nisEmployeeYtd              Decimal? @db.Decimal(14, 2)
+  nisEmployerYtd              Decimal? @db.Decimal(14, 2)
+  healthSurchargeYtd          Decimal? @db.Decimal(14, 2)
+  otherApprovedDeductionsYtd  Decimal? @db.Decimal(14, 2)
+
+  status           PriorEmploymentRecordStatus @default(ACTIVE)
+  verified         Boolean                     @default(false)
+  verifiedAt       DateTime?
+  verifiedByUserId String?
+  notes            String?
+  createdByUserId  String?
+  updatedByUserId  String?
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  taxProfile   EmployeeTaxProfile? @relation(fields: [taxProfileId], references: [id], onDelete: SetNull)
+  documents    EmployeePriorEmploymentDocument[]
+
+  @@index([employeeId, taxYear])
+  @@index([organizationId, taxYear])
+  @@index([taxProfileId])
+  @@index([organizationId, status])
+  @@map("employee_prior_employment_ytds")
+  @@schema("payroll")
+}
+
+model EmployeePriorEmploymentDocument {
+  id                   String                      @id @default(cuid())
+  organizationId       String
+  priorEmploymentYtdId String
+  documentType         PriorEmploymentDocumentType @default(OTHER)
+  label                String?
+  storedFileId         String
+  uploadedByUserId     String?
+  createdAt            DateTime                    @default(now())
+
+  priorEmploymentYtd EmployeePriorEmploymentYtd @relation(fields: [priorEmploymentYtdId], references: [id], onDelete: Cascade)
+  storedFile         StoredFile                 @relation(fields: [storedFileId], references: [id], onDelete: Restrict)
+
+  @@index([priorEmploymentYtdId])
+  @@index([storedFileId])
+  @@index([organizationId])
+  @@map("employee_prior_employment_documents")
+  @@schema("payroll")
+}
+
+/// Period statutory amount overrides (Phase 7) with maker-checker approval.
+model EmployeePayrollStatutoryOverride {
+  id               String                  @id @default(cuid())
+  organizationId   String
+  employeeId       String
+  taxYear          Int
+  /// Period end date this override applies to (YYYY-MM-DD @db.Date).
+  periodEnd        DateTime                @db.Date
+  payeAmount       Decimal?                @db.Decimal(14, 2)
+  nisEmployeeAmount Decimal?               @db.Decimal(14, 2)
+  healthSurchargeAmount Decimal?           @db.Decimal(14, 2)
+  reason           String
+  status           StatutoryOverrideStatus @default(DRAFT)
+  requestedByUserId String
+  approvedByUserId  String?
+  approvedAt        DateTime?
+  rejectedReason    String?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, periodEnd])
+  @@index([organizationId, taxYear, status])
+  @@index([employeeId, taxYear])
+  @@map("employee_payroll_statutory_overrides")
   @@schema("payroll")
 }
 
@@ -2715,6 +3046,11 @@ model NisEarningsClass {
 model PayeTaxConfig {
   id                         String    @id @default(cuid())
   organizationId             String
+  /// ISO country for this schedule (default TT).
+  countryCode                String    @default("TT")
+  /// Calendar tax year this schedule is intended for (defaults from effectiveFrom).
+  taxYear                    Int?
+  currencyCode               String    @default("TTD")
   /// Resident personal allowance (annual), e.g. 90,000.
   personalAllowanceAnnual    Decimal   @db.Decimal(14, 2)
   /// Portion of employee NIS deductible for PAYE, e.g. 0.70.
@@ -2724,6 +3060,10 @@ model PayeTaxConfig {
   effectiveFrom              DateTime  @db.Date
   effectiveTo                DateTime? @db.Date
   versionLabel               String?
+  /// Official circular / gazette / advisor memo reference.
+  sourceReference            String?
+  approvedByUserId           String?
+  approvedAt                 DateTime?
   isActive                   Boolean   @default(true)
   createdAt                  DateTime  @default(now())
   updatedAt                  DateTime  @updatedAt
@@ -2733,6 +3073,8 @@ model PayeTaxConfig {
 
   @@unique([organizationId, effectiveFrom])
   @@index([organizationId, isActive])
+  @@index([organizationId, taxYear])
+  @@index([organizationId, countryCode, effectiveFrom])
   @@map("paye_tax_configs")
   @@schema("payroll")
 }
@@ -2835,6 +3177,16 @@ enum PayslipRecordStatus {
   DRAFT
   EXCLUDED
   POSTED
+
+  @@schema("payroll")
+}
+
+/// Delivery outcome for a released payslip email (distinct from notifications.EmailDeliveryStatus).
+enum PayslipEmailDeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
 
   @@schema("payroll")
 }
@@ -2951,6 +3303,11 @@ model Payslip {
   excludedAt             DateTime?
   excludedByUserId       String?
   exclusionReason        String?
+  /// Set when payroll releases the posted slip for employee self-service + email.
+  releasedAt             DateTime?
+  releasedById           String?
+  /// Null until release; then PENDING/SENT/FAILED/SKIPPED for email delivery.
+  emailDeliveryStatus    PayslipEmailDeliveryStatus?
   createdAt              DateTime            @default(now())
   updatedAt              DateTime            @updatedAt
 
@@ -2966,6 +3323,8 @@ model Payslip {
   @@index([payrollPeriodId])
   @@index([employeeId, status, createdAt])
   @@index([payRunId, status])
+  @@index([payRunId, releasedAt])
+  @@index([employeeId, releasedAt])
   @@map("payslips")
   @@schema("payroll")
 }
@@ -3000,6 +3359,79 @@ model PayrollLineItem {
   @@schema("payroll")
 }
 
+/// Org-scoped reusable earning/deduction masters (loans, garnishments, allowances, etc.).
+enum PayrollComponentKind {
+  EARNING
+  DEDUCTION
+
+  @@schema("payroll")
+}
+
+enum PayrollComponentCategory {
+  LOAN
+  GARNISHMENT
+  PENSION_INSTALLMENT
+  VOLUNTARY_DEDUCTION
+  RECURRING_EARNING
+
+  @@schema("payroll")
+}
+
+model PayrollComponentDefinition {
+  id             String                    @id @default(cuid())
+  organizationId String
+  code           String
+  name           String
+  kind           PayrollComponentKind
+  category       PayrollComponentCategory
+  isTaxable      Boolean                   @default(false)
+  /// Phase 6: finer tax treatment; isTaxable remains the PAYE/NIS gross flag.
+  taxTreatment   PayrollTaxTreatment       @default(NON_TAXABLE)
+  isActive       Boolean                   @default(true)
+  defaultAmount  Decimal?                  @db.Decimal(14, 2)
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+
+  organization Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignments  EmployeePayrollRecurringItem[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+  @@index([organizationId, kind, isActive])
+  @@map("payroll_component_definitions")
+  @@schema("payroll")
+}
+
+/// Employee assignment of a recurring component with optional declining balance.
+model EmployeePayrollRecurringItem {
+  id               String    @id @default(cuid())
+  organizationId   String
+  employeeId       String
+  definitionId     String
+  amount           Decimal   @db.Decimal(14, 2)
+  /// When set, period amount is min(amount, remainingBalance) and decreases on post.
+  remainingBalance Decimal?  @db.Decimal(14, 2)
+  startDate        DateTime  @db.Date
+  endDate          DateTime? @db.Date
+  isActive         Boolean   @default(true)
+  notes            String?
+  createdById      String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  organization Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  definition   PayrollComponentDefinition @relation(fields: [definitionId], references: [id], onDelete: Restrict)
+  createdBy    User?                     @relation("PayrollRecurringItemCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([employeeId, isActive])
+  @@index([organizationId, employeeId])
+  @@index([definitionId])
+  @@index([organizationId, isActive, startDate])
+  @@map("employee_payroll_recurring_items")
+  @@schema("payroll")
+}
+
 model Notification {
   id          String               @id @default(cuid())
   title       String
@@ -3017,6 +3449,7 @@ model Notification {
   @@index([moduleKey])
   @@index([createdAt])
   @@index([relatedType, relatedId])
+  @@index([expiresAt])
   @@map("notifications")
   @@schema("notifications")
 }

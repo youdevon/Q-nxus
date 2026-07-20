@@ -8,6 +8,7 @@ import {
   getStoredPayslip,
 } from "@/src/modules/payroll/data/get-stored-payslip";
 import {
+  getPayslipYtdBreakdown,
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
@@ -55,6 +56,7 @@ export default async function MyPayslipPage({
     if (
       !posted ||
       !posted.isPosted ||
+      !posted.isReleased ||
       posted.payslip.employee.id !== capabilities.employeeId
     ) {
       notFound();
@@ -65,6 +67,7 @@ export default async function MyPayslipPage({
         payslip={posted.payslip}
         meta={posted.meta}
         ytd={posted.ytd}
+        ytdBreakdown={posted.ytdBreakdown}
         backHref="/me/payslips"
         backLabel="Payslip history"
         printHref={`/me/payslip/print?payslipId=${posted.id}`}
@@ -87,6 +90,7 @@ export default async function MyPayslipPage({
           payslip={posted.payslip}
           meta={posted.meta}
           ytd={posted.ytd}
+          ytdBreakdown={posted.ytdBreakdown}
           backHref="/me"
           backLabel="My Profile"
           printHref={`/me/payslip/print?payslipId=${posted.id}`}
@@ -138,6 +142,10 @@ export default async function MyPayslipPage({
     periodKey: resolvedPeriodKey,
     current: payslipPreviewToYtdContribution(payslip),
   });
+  const ytdBreakdown = await getPayslipYtdBreakdown(
+    capabilities.employeeId,
+    ytd,
+  );
 
   const printParams = new URLSearchParams();
   printParams.set("period", resolvedPeriodKey);
@@ -149,6 +157,7 @@ export default async function MyPayslipPage({
       payslip={payslip}
       meta={meta}
       ytd={ytd}
+      ytdBreakdown={ytdBreakdown}
       backHref="/me"
       backLabel="My Profile"
       printHref={printHref}

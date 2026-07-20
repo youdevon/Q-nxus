@@ -42,13 +42,13 @@ import {
   closePayRun,
   deleteDraftPayRun,
   deletePayrollLineItem,
-  emailPostedPayslips,
   excludePayslipFromPayRun,
   postPayRun,
   approveDraftPayRun,
   recalculateDraftPayRun,
   reconcilePayRun,
   reincludePayslipInPayRun,
+  releasePayRunPayslips,
   type PayRunFormState,
 } from "@/src/modules/payroll/actions/manage-pay-run";
 import type {
@@ -63,6 +63,7 @@ import {
   isPayRunPosted,
   payRunStatusLabel,
 } from "@/src/modules/payroll/lib/pay-run-lifecycle";
+import { canReleasePayRunPayslips } from "@/src/modules/payroll/lib/payslip-release";
 import {
   correctionCodeForKind,
   defaultAdjustmentLabel,
@@ -278,9 +279,15 @@ function DeleteDraftPayRunButton({
   );
 }
 
-function EmailPayslipsButton({ payRunId }: { payRunId: string }) {
+function ReleasePayslipsButton({
+  payRunId,
+  unreleasedCount,
+}: {
+  payRunId: string;
+  unreleasedCount: number;
+}) {
   const [state, formAction, pending] = useActionState(
-    emailPostedPayslips,
+    releasePayRunPayslips,
     initialState,
   );
 
@@ -293,12 +300,18 @@ function EmailPayslipsButton({ payRunId }: { payRunId: string }) {
     }
   }, [state]);
 
+  const disabled = pending || unreleasedCount === 0;
+
   return (
     <form action={formAction}>
       <input type="hidden" name="payRunId" value={payRunId} />
-      <Button type="submit" variant="outline" disabled={pending}>
+      <Button type="submit" variant="outline" disabled={disabled}>
         <FileText />
-        {pending ? "Queueing…" : "Email payslips"}
+        {pending
+          ? "Releasing…"
+          : unreleasedCount === 0
+            ? "Payslips released"
+            : "Release & email payslips"}
       </Button>
     </form>
   );
@@ -542,16 +555,23 @@ function LineItemRow({
     <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
-          {isAdjustment ? <Badge variant="outline">Adjustment</Badge> : null}
+          {line.isAutoDelta ? (
+            <Badge variant="outline">Auto delta</Badge>
+          ) : isAdjustment ? (
+            <Badge variant="outline">Adjustment</Badge>
+          ) : null}
           <span className="font-medium text-foreground">{line.label}</span>
         </div>
         <p className="mt-0.5 text-muted-foreground">
           {line.lineType.toLowerCase()} · {line.amount}
           {line.isTaxable ? " · taxable" : ""}
-          {line.notes ? ` · ${line.notes}` : ""}
+          {line.notes && !line.isAutoDelta ? ` · ${line.notes}` : ""}
+          {line.isAutoDelta
+            ? " · refreshed on Recalculate from source vs current preview"
+            : ""}
         </p>
       </div>
-      {canManage && !isPosted ? (
+      {canManage && !isPosted && !line.isAutoDelta ? (
         <RemoveLineItemButton payRunId={runId} lineItemId={line.id} />
       ) : null}
     </div>
@@ -907,8 +927,10 @@ function PayrollLineItemsEditor({
 
 function CorrectionDeltaPanel({
   comparison,
+  runKind,
 }: {
   comparison: NonNullable<PayRunPayslipRow["comparison"]>;
+  runKind: PayRunDetail["runKind"];
 }) {
   const netToneClass =
     comparison.netDirection === "increase"
@@ -917,12 +939,17 @@ function CorrectionDeltaPanel({
         ? "text-destructive"
         : "text-muted-foreground";
 
+  const correctedLabel =
+    runKind === "CORRECTION" ? "Corrected (implied)" : "This run";
+  const deltaLabel =
+    runKind === "CORRECTION" ? "Delta payment" : "Difference";
+
   return (
-    <div className="mt-3 space-y-2 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3 md:col-span-full">
+    <div className="mt-3 space-y-3 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3 md:col-span-full">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         Correction delta vs {comparison.sourceLabel}
       </p>
-      <div className="grid grid-cols-[6rem_1fr_1fr_1fr] gap-x-3 gap-y-1 text-xs">
+      <div className="grid grid-cols-[7.5rem_1fr_1fr_1fr] gap-x-3 gap-y-1 text-xs">
         <span className="text-muted-foreground" />
         <span className="text-muted-foreground">Gross</span>
         <span className="text-muted-foreground">Deductions</span>
@@ -933,18 +960,56 @@ function CorrectionDeltaPanel({
         <span>{comparison.original.totalDeductions}</span>
         <span>{comparison.original.netPay}</span>
 
-        <span className="text-muted-foreground">This run</span>
+        <span className="text-muted-foreground">{correctedLabel}</span>
         <span>{comparison.correction.grossPay}</span>
         <span>{comparison.correction.totalDeductions}</span>
         <span>{comparison.correction.netPay}</span>
 
-        <span className="font-medium text-foreground">Difference</span>
+        <span className="font-medium text-foreground">{deltaLabel}</span>
         <span className="font-medium">{comparison.delta.grossPay}</span>
         <span className="font-medium">{comparison.delta.totalDeductions}</span>
         <span className={`font-medium ${netToneClass}`}>
           {comparison.delta.netPay}
         </span>
       </div>
+
+      {comparison.lineDeltas.length > 0 ? (
+        <div className="space-y-1 border-t border-amber-500/30 pt-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Line-level deltas
+          </p>
+          <ul className="space-y-1 text-xs">
+            {comparison.lineDeltas.map((line) => {
+              const tone =
+                line.direction === "increase"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : line.direction === "decrease"
+                    ? "text-destructive"
+                    : "text-muted-foreground";
+              return (
+                <li
+                  key={`${line.lineType}-${line.label}`}
+                  className="flex items-center justify-between gap-3"
+                >
+                  <span className="text-muted-foreground">
+                    {line.label}
+                    <span className="ml-1 text-[0.65rem] uppercase tracking-wide">
+                      ({line.lineType === "EARNING" ? "earning" : "deduction"})
+                    </span>
+                  </span>
+                  <span className={`font-medium tabular-nums ${tone}`}>
+                    {line.amount}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : runKind === "CORRECTION" ? (
+        <p className="border-t border-amber-500/30 pt-2 text-xs text-muted-foreground">
+          No category differences vs the source run — nothing auto-suggested.
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -1058,7 +1123,10 @@ function PayslipRow({
         ) : null}
       </div>
       {!slip.isExcluded && slip.comparison ? (
-        <CorrectionDeltaPanel comparison={slip.comparison} />
+        <CorrectionDeltaPanel
+          comparison={slip.comparison}
+          runKind={runKind}
+        />
       ) : null}
       {!slip.isExcluded ? (
         <PayrollLineItemsEditor
@@ -1239,7 +1307,12 @@ export function PayRunDetailView({
                     Bank CSV
                   </Button>
                 ) : null}
-                {canManage ? <EmailPayslipsButton payRunId={run.id} /> : null}
+                {canManage && canReleasePayRunPayslips(run.status) ? (
+                  <ReleasePayslipsButton
+                    payRunId={run.id}
+                    unreleasedCount={run.releaseSummary.unreleasedCount}
+                  />
+                ) : null}
                 {canManage ? (
                   <>
                     <Button
@@ -1353,47 +1426,90 @@ export function PayRunDetailView({
       </section>
 
       {isPosted ? (
-        <section className="mt-6 flex flex-wrap items-center justify-between gap-3 border-y border-border/60 py-3 text-sm">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-muted-foreground">Payments</span>
-            {paymentSummary?.prepared ? (
-              <>
-                <Badge variant="success">
-                  {paymentSummary.readyCount}/{paymentSummary.paymentCount} ready
-                </Badge>
-                {paymentSummary.batchCount > 0 ? (
-                  <Badge variant="outline">
-                    {paymentSummary.batchCount} batch
-                    {paymentSummary.batchCount === 1 ? "" : "es"}
-                    {paymentSummary.latestBatchStatus
-                      ? ` · ${paymentSummary.latestBatchStatus}`
-                      : ""}
+        <section className="mt-6 space-y-3 border-y border-border/60 py-3 text-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted-foreground">Payslip release</span>
+              {run.releaseSummary.releasedCount > 0 ? (
+                <>
+                  <Badge variant="success">
+                    {run.releaseSummary.releasedCount}/
+                    {run.releaseSummary.postedCount} released
                   </Badge>
-                ) : (
-                  <Badge variant="warning">No batch yet</Badge>
-                )}
-              </>
-            ) : (
-              <Badge variant="warning">Not prepared</Badge>
-            )}
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {!paymentSummary?.prepared ? (
+                  {run.releaseSummary.sentCount > 0 ? (
+                    <Badge variant="outline">
+                      {run.releaseSummary.sentCount} emailed
+                    </Badge>
+                  ) : null}
+                  {run.releaseSummary.pendingCount > 0 ? (
+                    <Badge variant="warning">
+                      {run.releaseSummary.pendingCount} pending
+                    </Badge>
+                  ) : null}
+                  {run.releaseSummary.failedCount > 0 ? (
+                    <Badge variant="destructive">
+                      {run.releaseSummary.failedCount} failed
+                    </Badge>
+                  ) : null}
+                  {run.releaseSummary.skippedCount > 0 ? (
+                    <Badge variant="outline">
+                      {run.releaseSummary.skippedCount} skipped
+                    </Badge>
+                  ) : null}
+                </>
+              ) : (
+                <Badge variant="warning">Not released</Badge>
+              )}
+            </div>
+            {run.releaseSummary.unreleasedCount > 0 ? (
               <p className="max-w-md text-xs text-muted-foreground">
-                Pay run is posted. Open payments to prepare disbursement
-                snapshots, then use Manual register or Bank CSV. Enable ACH only
-                after the bank confirms the export layout.
+                Release opens self-service access and queues absolute secure
+                links. Process the email queue to send.
               </p>
             ) : null}
-            <Button
-              nativeButton={false}
-              size="sm"
-              variant="outline"
-              render={<Link href={`/payroll/runs/${run.id}/payments`} />}
-            >
-              <Wallet />
-              {paymentSummary?.prepared ? "Open payments" : "Prepare payments"}
-            </Button>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted-foreground">Payments</span>
+              {paymentSummary?.prepared ? (
+                <>
+                  <Badge variant="success">
+                    {paymentSummary.readyCount}/{paymentSummary.paymentCount} ready
+                  </Badge>
+                  {paymentSummary.batchCount > 0 ? (
+                    <Badge variant="outline">
+                      {paymentSummary.batchCount} batch
+                      {paymentSummary.batchCount === 1 ? "" : "es"}
+                      {paymentSummary.latestBatchStatus
+                        ? ` · ${paymentSummary.latestBatchStatus}`
+                        : ""}
+                    </Badge>
+                  ) : (
+                    <Badge variant="warning">No batch yet</Badge>
+                  )}
+                </>
+              ) : (
+                <Badge variant="warning">Not prepared</Badge>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {!paymentSummary?.prepared ? (
+                <p className="max-w-md text-xs text-muted-foreground">
+                  Pay run is posted. Open payments to prepare disbursement
+                  snapshots, then use Manual register or Bank CSV. Enable ACH only
+                  after the bank confirms the export layout.
+                </p>
+              ) : null}
+              <Button
+                nativeButton={false}
+                size="sm"
+                variant="outline"
+                render={<Link href={`/payroll/runs/${run.id}/payments`} />}
+              >
+                <Wallet />
+                {paymentSummary?.prepared ? "Open payments" : "Prepare payments"}
+              </Button>
+            </div>
           </div>
         </section>
       ) : null}
@@ -1465,10 +1581,34 @@ export function PayRunDetailView({
             <>
               This {run.runKind === "CORRECTION" ? "correction" : "off-cycle"}{" "}
               draft creates its own payslips — the original posted payslip is
-              not changed. Use <span className="font-medium text-foreground">Add adjustment</span>{" "}
-              for one-off earning or deduction deltas, then Recalculate if
-              needed. Posting freezes included payslips so later changes do not
-              rewrite history.
+              not changed.
+              {run.runKind === "CORRECTION" ? (
+                <>
+                  {" "}
+                  Category deltas vs the source run are auto-suggested as{" "}
+                  <span className="font-medium text-foreground">
+                    CORRECTION
+                  </span>{" "}
+                  lines so this run pays the difference. Use{" "}
+                  <span className="font-medium text-foreground">
+                    Add adjustment
+                  </span>{" "}
+                  for extra manual amounts, then Recalculate to refresh auto
+                  lines from current master data.
+                </>
+              ) : (
+                <>
+                  {" "}
+                  Use{" "}
+                  <span className="font-medium text-foreground">
+                    Add adjustment
+                  </span>{" "}
+                  for one-off earning or deduction deltas, then Recalculate if
+                  needed.
+                </>
+              )}{" "}
+              Posting freezes included payslips so later changes do not rewrite
+              history.
             </>
           ) : (
             <>

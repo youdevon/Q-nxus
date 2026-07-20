@@ -5,6 +5,7 @@ import { PayslipPrintView } from "@/src/modules/payroll/components/payslip-print
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";
 import {
+  getPayslipYtdBreakdown,
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
@@ -50,6 +51,7 @@ export default async function MyPayslipPrintPage({
     if (
       !posted ||
       !posted.isPosted ||
+      !posted.isReleased ||
       posted.payslip.employee.id !== capabilities.employeeId
     ) {
       notFound();
@@ -60,6 +62,7 @@ export default async function MyPayslipPrintPage({
         payslip={posted.payslip}
         meta={posted.meta}
         ytd={posted.ytd}
+        ytdBreakdown={posted.ytdBreakdown}
         isOfficial
       />
     );
@@ -103,6 +106,17 @@ export default async function MyPayslipPrintPage({
     periodKey: resolvedPeriodKey,
     current: payslipPreviewToYtdContribution(payslip),
   });
+  const ytdBreakdown = await getPayslipYtdBreakdown(
+    capabilities.employeeId,
+    ytd,
+  );
 
-  return <PayslipPrintView payslip={payslip} meta={meta} ytd={ytd} />;
+  return (
+    <PayslipPrintView
+      payslip={payslip}
+      meta={meta}
+      ytd={ytd}
+      ytdBreakdown={ytdBreakdown}
+    />
+  );
 }

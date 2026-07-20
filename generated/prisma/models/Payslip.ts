@@ -78,6 +78,9 @@ export type PayslipMinAggregateOutputType = {
   excludedAt: Date | null
   excludedByUserId: string | null
   exclusionReason: string | null
+  releasedAt: Date | null
+  releasedById: string | null
+  emailDeliveryStatus: $Enums.PayslipEmailDeliveryStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -110,6 +113,9 @@ export type PayslipMaxAggregateOutputType = {
   excludedAt: Date | null
   excludedByUserId: string | null
   exclusionReason: string | null
+  releasedAt: Date | null
+  releasedById: string | null
+  emailDeliveryStatus: $Enums.PayslipEmailDeliveryStatus | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -143,6 +149,9 @@ export type PayslipCountAggregateOutputType = {
   excludedAt: number
   excludedByUserId: number
   exclusionReason: number
+  releasedAt: number
+  releasedById: number
+  emailDeliveryStatus: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -201,6 +210,9 @@ export type PayslipMinAggregateInputType = {
   excludedAt?: true
   excludedByUserId?: true
   exclusionReason?: true
+  releasedAt?: true
+  releasedById?: true
+  emailDeliveryStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -233,6 +245,9 @@ export type PayslipMaxAggregateInputType = {
   excludedAt?: true
   excludedByUserId?: true
   exclusionReason?: true
+  releasedAt?: true
+  releasedById?: true
+  emailDeliveryStatus?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -266,6 +281,9 @@ export type PayslipCountAggregateInputType = {
   excludedAt?: true
   excludedByUserId?: true
   exclusionReason?: true
+  releasedAt?: true
+  releasedById?: true
+  emailDeliveryStatus?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -386,6 +404,9 @@ export type PayslipGroupByOutputType = {
   excludedAt: Date | null
   excludedByUserId: string | null
   exclusionReason: string | null
+  releasedAt: Date | null
+  releasedById: string | null
+  emailDeliveryStatus: $Enums.PayslipEmailDeliveryStatus | null
   createdAt: Date
   updatedAt: Date
   _count: PayslipCountAggregateOutputType | null
@@ -442,6 +463,9 @@ export type PayslipWhereInput = {
   excludedAt?: Prisma.DateTimeNullableFilter<"Payslip"> | Date | string | null
   excludedByUserId?: Prisma.StringNullableFilter<"Payslip"> | string | null
   exclusionReason?: Prisma.StringNullableFilter<"Payslip"> | string | null
+  releasedAt?: Prisma.DateTimeNullableFilter<"Payslip"> | Date | string | null
+  releasedById?: Prisma.StringNullableFilter<"Payslip"> | string | null
+  emailDeliveryStatus?: Prisma.EnumPayslipEmailDeliveryStatusNullableFilter<"Payslip"> | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFilter<"Payslip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payslip"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -481,6 +505,9 @@ export type PayslipOrderByWithRelationInput = {
   excludedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   excludedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   exclusionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  releasedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  releasedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailDeliveryStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
@@ -524,6 +551,9 @@ export type PayslipWhereUniqueInput = Prisma.AtLeast<{
   excludedAt?: Prisma.DateTimeNullableFilter<"Payslip"> | Date | string | null
   excludedByUserId?: Prisma.StringNullableFilter<"Payslip"> | string | null
   exclusionReason?: Prisma.StringNullableFilter<"Payslip"> | string | null
+  releasedAt?: Prisma.DateTimeNullableFilter<"Payslip"> | Date | string | null
+  releasedById?: Prisma.StringNullableFilter<"Payslip"> | string | null
+  emailDeliveryStatus?: Prisma.EnumPayslipEmailDeliveryStatusNullableFilter<"Payslip"> | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFilter<"Payslip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payslip"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
@@ -563,6 +593,9 @@ export type PayslipOrderByWithAggregationInput = {
   excludedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   excludedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   exclusionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  releasedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  releasedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailDeliveryStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PayslipCountOrderByAggregateInput
@@ -604,6 +637,9 @@ export type PayslipScalarWhereWithAggregatesInput = {
   excludedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payslip"> | Date | string | null
   excludedByUserId?: Prisma.StringNullableWithAggregatesFilter<"Payslip"> | string | null
   exclusionReason?: Prisma.StringNullableWithAggregatesFilter<"Payslip"> | string | null
+  releasedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Payslip"> | Date | string | null
+  releasedById?: Prisma.StringNullableWithAggregatesFilter<"Payslip"> | string | null
+  emailDeliveryStatus?: Prisma.EnumPayslipEmailDeliveryStatusNullableWithAggregatesFilter<"Payslip"> | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Payslip"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Payslip"> | Date | string
 }
@@ -633,6 +669,9 @@ export type PayslipCreateInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayslipsInput
@@ -672,6 +711,9 @@ export type PayslipUncheckedCreateInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayslipInput
@@ -703,6 +745,9 @@ export type PayslipUpdateInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayslipsNestedInput
@@ -742,6 +787,9 @@ export type PayslipUncheckedUpdateInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayslipNestedInput
@@ -777,6 +825,9 @@ export type PayslipCreateManyInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -806,6 +857,9 @@ export type PayslipUpdateManyMutationInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -839,6 +893,9 @@ export type PayslipUncheckedUpdateManyInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -892,6 +949,9 @@ export type PayslipCountOrderByAggregateInput = {
   excludedAt?: Prisma.SortOrder
   excludedByUserId?: Prisma.SortOrder
   exclusionReason?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
+  emailDeliveryStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -936,6 +996,9 @@ export type PayslipMaxOrderByAggregateInput = {
   excludedAt?: Prisma.SortOrder
   excludedByUserId?: Prisma.SortOrder
   exclusionReason?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
+  emailDeliveryStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -968,6 +1031,9 @@ export type PayslipMinOrderByAggregateInput = {
   excludedAt?: Prisma.SortOrder
   excludedByUserId?: Prisma.SortOrder
   exclusionReason?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
+  emailDeliveryStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1170,6 +1236,10 @@ export type EnumPayslipRecordStatusFieldUpdateOperationsInput = {
   set?: $Enums.PayslipRecordStatus
 }
 
+export type NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PayslipEmailDeliveryStatus | null
+}
+
 export type PayslipCreateNestedOneWithoutLineItemsInput = {
   create?: Prisma.XOR<Prisma.PayslipCreateWithoutLineItemsInput, Prisma.PayslipUncheckedCreateWithoutLineItemsInput>
   connectOrCreate?: Prisma.PayslipCreateOrConnectWithoutLineItemsInput
@@ -1209,6 +1279,9 @@ export type PayslipCreateWithoutOrganizationInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payRun: Prisma.PayRunCreateNestedOneWithoutPayslipsInput
@@ -1246,6 +1319,9 @@ export type PayslipUncheckedCreateWithoutOrganizationInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayslipInput
@@ -1310,6 +1386,9 @@ export type PayslipScalarWhereInput = {
   excludedAt?: Prisma.DateTimeNullableFilter<"Payslip"> | Date | string | null
   excludedByUserId?: Prisma.StringNullableFilter<"Payslip"> | string | null
   exclusionReason?: Prisma.StringNullableFilter<"Payslip"> | string | null
+  releasedAt?: Prisma.DateTimeNullableFilter<"Payslip"> | Date | string | null
+  releasedById?: Prisma.StringNullableFilter<"Payslip"> | string | null
+  emailDeliveryStatus?: Prisma.EnumPayslipEmailDeliveryStatusNullableFilter<"Payslip"> | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFilter<"Payslip"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Payslip"> | Date | string
 }
@@ -1339,6 +1418,9 @@ export type PayslipCreateWithoutEmployeeInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayslipsInput
@@ -1376,6 +1458,9 @@ export type PayslipUncheckedCreateWithoutEmployeeInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayslipInput
@@ -1433,6 +1518,9 @@ export type PayslipCreateWithoutPayrollPaymentInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayslipsInput
@@ -1471,6 +1559,9 @@ export type PayslipUncheckedCreateWithoutPayrollPaymentInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayslipInput
@@ -1517,6 +1608,9 @@ export type PayslipUpdateWithoutPayrollPaymentInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayslipsNestedInput
@@ -1555,6 +1649,9 @@ export type PayslipUncheckedUpdateWithoutPayrollPaymentInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayslipNestedInput
@@ -1585,6 +1682,9 @@ export type PayslipCreateWithoutPayrollPeriodInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayslipsInput
@@ -1622,6 +1722,9 @@ export type PayslipUncheckedCreateWithoutPayrollPeriodInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayslipInput
@@ -1679,6 +1782,9 @@ export type PayslipCreateWithoutPayRunInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayslipsInput
@@ -1716,6 +1822,9 @@ export type PayslipUncheckedCreateWithoutPayRunInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutPayslipInput
@@ -1773,6 +1882,9 @@ export type PayslipCreateWithoutLineItemsInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayslipsInput
@@ -1811,6 +1923,9 @@ export type PayslipUncheckedCreateWithoutLineItemsInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
   payrollPayment?: Prisma.PayrollPaymentUncheckedCreateNestedOneWithoutPayslipInput
@@ -1857,6 +1972,9 @@ export type PayslipUpdateWithoutLineItemsInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayslipsNestedInput
@@ -1895,6 +2013,9 @@ export type PayslipUncheckedUpdateWithoutLineItemsInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payrollPayment?: Prisma.PayrollPaymentUncheckedUpdateOneWithoutPayslipNestedInput
@@ -1928,6 +2049,9 @@ export type PayslipCreateManyOrganizationInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1957,6 +2081,9 @@ export type PayslipUpdateWithoutOrganizationInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payRun?: Prisma.PayRunUpdateOneRequiredWithoutPayslipsNestedInput
@@ -1994,6 +2121,9 @@ export type PayslipUncheckedUpdateWithoutOrganizationInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayslipNestedInput
@@ -2028,6 +2158,9 @@ export type PayslipUncheckedUpdateManyWithoutOrganizationInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2060,6 +2193,9 @@ export type PayslipCreateManyEmployeeInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2089,6 +2225,9 @@ export type PayslipUpdateWithoutEmployeeInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayslipsNestedInput
@@ -2126,6 +2265,9 @@ export type PayslipUncheckedUpdateWithoutEmployeeInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayslipNestedInput
@@ -2160,6 +2302,9 @@ export type PayslipUncheckedUpdateManyWithoutEmployeeInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2192,6 +2337,9 @@ export type PayslipCreateManyPayrollPeriodInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2221,6 +2369,9 @@ export type PayslipUpdateWithoutPayrollPeriodInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayslipsNestedInput
@@ -2258,6 +2409,9 @@ export type PayslipUncheckedUpdateWithoutPayrollPeriodInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayslipNestedInput
@@ -2292,6 +2446,9 @@ export type PayslipUncheckedUpdateManyWithoutPayrollPeriodInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2324,6 +2481,9 @@ export type PayslipCreateManyPayRunInput = {
   excludedAt?: Date | string | null
   excludedByUserId?: string | null
   exclusionReason?: string | null
+  releasedAt?: Date | string | null
+  releasedById?: string | null
+  emailDeliveryStatus?: $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2353,6 +2513,9 @@ export type PayslipUpdateWithoutPayRunInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayslipsNestedInput
@@ -2390,6 +2553,9 @@ export type PayslipUncheckedUpdateWithoutPayRunInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutPayslipNestedInput
@@ -2424,6 +2590,9 @@ export type PayslipUncheckedUpdateManyWithoutPayRunInput = {
   excludedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   excludedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailDeliveryStatus?: Prisma.NullableEnumPayslipEmailDeliveryStatusFieldUpdateOperationsInput | $Enums.PayslipEmailDeliveryStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2488,6 +2657,9 @@ export type PayslipSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   excludedAt?: boolean
   excludedByUserId?: boolean
   exclusionReason?: boolean
+  releasedAt?: boolean
+  releasedById?: boolean
+  emailDeliveryStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -2528,6 +2700,9 @@ export type PayslipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   excludedAt?: boolean
   excludedByUserId?: boolean
   exclusionReason?: boolean
+  releasedAt?: boolean
+  releasedById?: boolean
+  emailDeliveryStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -2565,6 +2740,9 @@ export type PayslipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   excludedAt?: boolean
   excludedByUserId?: boolean
   exclusionReason?: boolean
+  releasedAt?: boolean
+  releasedById?: boolean
+  emailDeliveryStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -2602,11 +2780,14 @@ export type PayslipSelectScalar = {
   excludedAt?: boolean
   excludedByUserId?: boolean
   exclusionReason?: boolean
+  releasedAt?: boolean
+  releasedById?: boolean
+  emailDeliveryStatus?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PayslipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "payRunId" | "payrollPeriodId" | "employeeId" | "status" | "currency" | "grossPay" | "totalDeductions" | "netPay" | "payeAmount" | "nisEmployeeAmount" | "healthSurchargeAmount" | "baseSalary" | "allowancesTotal" | "monthlyTaxableEarnings" | "employeeNumber" | "employeeName" | "nisNumber" | "birNumber" | "jobTitle" | "departmentName" | "payFrequency" | "paymentMethod" | "snapshot" | "excludedAt" | "excludedByUserId" | "exclusionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["payslip"]>
+export type PayslipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "payRunId" | "payrollPeriodId" | "employeeId" | "status" | "currency" | "grossPay" | "totalDeductions" | "netPay" | "payeAmount" | "nisEmployeeAmount" | "healthSurchargeAmount" | "baseSalary" | "allowancesTotal" | "monthlyTaxableEarnings" | "employeeNumber" | "employeeName" | "nisNumber" | "birNumber" | "jobTitle" | "departmentName" | "payFrequency" | "paymentMethod" | "snapshot" | "excludedAt" | "excludedByUserId" | "exclusionReason" | "releasedAt" | "releasedById" | "emailDeliveryStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["payslip"]>
 export type PayslipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   payRun?: boolean | Prisma.PayRunDefaultArgs<ExtArgs>
@@ -2677,6 +2858,15 @@ export type $PayslipPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     excludedAt: Date | null
     excludedByUserId: string | null
     exclusionReason: string | null
+    /**
+     * Set when payroll releases the posted slip for employee self-service + email.
+     */
+    releasedAt: Date | null
+    releasedById: string | null
+    /**
+     * Null until release; then PENDING/SENT/FAILED/SKIPPED for email delivery.
+     */
+    emailDeliveryStatus: $Enums.PayslipEmailDeliveryStatus | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["payslip"]>
@@ -3136,6 +3326,9 @@ export interface PayslipFieldRefs {
   readonly excludedAt: Prisma.FieldRef<"Payslip", 'DateTime'>
   readonly excludedByUserId: Prisma.FieldRef<"Payslip", 'String'>
   readonly exclusionReason: Prisma.FieldRef<"Payslip", 'String'>
+  readonly releasedAt: Prisma.FieldRef<"Payslip", 'DateTime'>
+  readonly releasedById: Prisma.FieldRef<"Payslip", 'String'>
+  readonly emailDeliveryStatus: Prisma.FieldRef<"Payslip", 'PayslipEmailDeliveryStatus'>
   readonly createdAt: Prisma.FieldRef<"Payslip", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Payslip", 'DateTime'>
 }

@@ -23,6 +23,7 @@ import {
   computePayeContribution,
   type PayeTaxConfigInput,
 } from "@/src/modules/payroll/lib/paye-contribution";
+import { computeCumulativePayeContribution } from "@/src/modules/payroll/lib/cumulative-paye";
 import {
   bankFixedAmountTotal,
   type PayrollReadinessResult,
@@ -114,6 +115,29 @@ export type AssemblePayslipPreviewInput = {
   nisClasses: NisEarningsClassInput[];
   payeConfig: PayeTaxConfigInput | null;
   healthConfig: HealthSurchargeConfigInput | null;
+  /** Phase 4–5: use cumulative PAYE when set. */
+  cumulativePaye?: {
+    enabled: boolean;
+    currentEmployerTaxableYtd: number;
+    currentEmployerPayePaidYtd: number;
+    currentEmployerNisPaidYtd: number;
+    priorTaxableYtd: number;
+    priorPayePaidYtd: number;
+    priorNisEmployeeYtd: number;
+    priorOtherApprovedYtd: number;
+    monthsElapsed: number;
+  };
+  /** Phase 6: treat non-taxable earnings explicitly (default uses isTaxable). */
+  taxTreatmentNotes?: string[];
+  /** Phase 7: absolute period overrides after computed statutory. */
+  statutoryOverrides?: {
+    payeAmount?: number | null;
+    nisEmployeeAmount?: number | null;
+    healthSurchargeAmount?: number | null;
+    reason?: string | null;
+  };
+  /** Extra calc notes from tax profile / prior employment resolve. */
+  taxCalcNotes?: string[];
 };
 
 export type PayslipPreview = {
@@ -515,12 +539,36 @@ export function assemblePayslipPreview(
     if (exemptFromPaye) {
       notes.push("PAYE exempt (employee opt-out) — no income tax deducted.");
     } else if (input.payeConfig != null) {
-      paye = computePayeContribution({
-        monthlyTaxableEarnings,
-        config: input.payeConfig,
-        employeeNisWeekly: nis?.employeeWeekly ?? 0,
-        otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
-      });
+      const cumulative = input.cumulativePaye;
+      if (cumulative?.enabled) {
+        const cumulativePaye = computeCumulativePayeContribution({
+          periodTaxableEarnings: monthlyTaxableEarnings,
+          currentEmployerTaxableYtd: cumulative.currentEmployerTaxableYtd,
+          currentEmployerPayePaidYtd: cumulative.currentEmployerPayePaidYtd,
+          priorTaxableYtd: cumulative.priorTaxableYtd,
+          priorPayePaidYtd: cumulative.priorPayePaidYtd,
+          monthsElapsed: cumulative.monthsElapsed,
+          config: input.payeConfig,
+          employeeNisWeekly: nis?.employeeWeekly ?? 0,
+          nisEmployeePaidYtdBefore:
+            cumulative.currentEmployerNisPaidYtd +
+            cumulative.priorNisEmployeeYtd,
+          periodNisEmployee: nis && !nis.belowMinimum ? nis.employeeMonthly : 0,
+          otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
+          priorOtherApprovedYtd: cumulative.priorOtherApprovedYtd,
+        });
+        paye = cumulativePaye;
+        notes.push(
+          `Cumulative PAYE · ${cumulative.monthsElapsed} month${cumulative.monthsElapsed === 1 ? "" : "s"} elapsed · tax to date ${cumulativePaye.taxToDate.toFixed(2)} − paid ${cumulativePaye.payePaidYtdBefore.toFixed(2)}.`,
+        );
+      } else {
+        paye = computePayeContribution({
+          monthlyTaxableEarnings,
+          config: input.payeConfig,
+          employeeNisWeekly: nis?.employeeWeekly ?? 0,
+          otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
+        });
+      }
     } else {
       warnings.push("No active PAYE tax config configured.");
     }
@@ -561,10 +609,13 @@ export function assemblePayslipPreview(
   }
 
   if (paye) {
+    const cumulativeEnabled = input.cumulativePaye?.enabled === true;
     deductions.push({
       label: "PAYE (income tax)",
       amount: paye.monthlyPaye,
-      detail: `Annual tax ${paye.annualTax.toFixed(2)} ÷ 12`,
+      detail: cumulativeEnabled
+        ? `Cumulative period tax ${paye.monthlyPaye.toFixed(2)}`
+        : `Annual tax ${paye.annualTax.toFixed(2)} ÷ 12`,
     });
   }
 
@@ -578,6 +629,79 @@ export function assemblePayslipPreview(
     notes.push(
       `Health Surcharge exempt (${(health.exemptionReason ?? "unknown").replaceAll("_", " ").toLowerCase()}).`,
     );
+  }
+
+  const overrides = input.statutoryOverrides;
+  if (overrides) {
+    if (overrides.payeAmount != null && Number.isFinite(overrides.payeAmount)) {
+      const idx = deductions.findIndex((line) => line.label === "PAYE (income tax)");
+      const amount = roundToCents(Math.max(0, overrides.payeAmount));
+      if (idx >= 0) {
+        deductions[idx] = {
+          ...deductions[idx],
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        };
+      } else {
+        deductions.push({
+          label: "PAYE (income tax)",
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        });
+      }
+      notes.push("PAYE amount overridden for this period.");
+    }
+    if (
+      overrides.nisEmployeeAmount != null &&
+      Number.isFinite(overrides.nisEmployeeAmount)
+    ) {
+      const idx = deductions.findIndex((line) => line.label === "NIS (employee)");
+      const amount = roundToCents(Math.max(0, overrides.nisEmployeeAmount));
+      if (idx >= 0) {
+        deductions[idx] = {
+          ...deductions[idx],
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        };
+      } else if (amount > 0) {
+        deductions.push({
+          label: "NIS (employee)",
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        });
+      }
+      notes.push("NIS employee amount overridden for this period.");
+    }
+    if (
+      overrides.healthSurchargeAmount != null &&
+      Number.isFinite(overrides.healthSurchargeAmount)
+    ) {
+      const idx = deductions.findIndex(
+        (line) => line.label === "Health Surcharge",
+      );
+      const amount = roundToCents(Math.max(0, overrides.healthSurchargeAmount));
+      if (idx >= 0) {
+        deductions[idx] = {
+          ...deductions[idx],
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        };
+      } else if (amount > 0) {
+        deductions.push({
+          label: "Health Surcharge",
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        });
+      }
+      notes.push("Health Surcharge amount overridden for this period.");
+    }
+  }
+
+  if (input.taxCalcNotes?.length) {
+    notes.push(...input.taxCalcNotes);
+  }
+  if (input.taxTreatmentNotes?.length) {
+    notes.push(...input.taxTreatmentNotes);
   }
 
   for (const deduction of input.deductions ?? []) {

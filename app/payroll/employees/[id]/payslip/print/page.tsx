@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PayslipPrintView } from "@/src/modules/payroll/components/payslip-print-view";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import {
+  getPayslipYtdBreakdown,
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
@@ -51,6 +52,15 @@ export default async function EmployeePayslipPrintPage({
         current: payslipPreviewToYtdContribution(payslip),
       })
     : null;
+  const ytdBreakdown =
+    ytd != null ? await getPayslipYtdBreakdown(id, ytd) : null;
 
-  return <PayslipPrintView payslip={payslip} meta={meta} ytd={ytd} />;
+  return (
+    <PayslipPrintView
+      payslip={payslip}
+      meta={meta}
+      ytd={ytd}
+      ytdBreakdown={ytdBreakdown}
+    />
+  );
 }

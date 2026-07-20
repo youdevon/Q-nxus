@@ -13,12 +13,16 @@ import type {
   PayslipLineItem,
   PayslipPreview,
 } from "@/src/modules/payroll/lib/payslip-preview";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type {
+  PayslipYtdBreakdown,
+  PayslipYtdTotals,
+} from "@/src/modules/payroll/lib/payslip-ytd";
 
 export type PayslipPdfDocumentInput = {
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
   ytd: PayslipYtdTotals | null;
+  ytdBreakdown?: PayslipYtdBreakdown | null;
   isOfficial: boolean;
 };
 
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
   netAmount: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 1 },
   ytdRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 3 },
   ytdItem: { width: "16.6%", marginBottom: 3 },
+  ytdGroup: { marginBottom: 4 },
   footer: {
     marginTop: 8,
     paddingTop: 6,
@@ -169,11 +174,38 @@ function MetaItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-function PayslipPage({ payslip, meta, ytd, isOfficial }: PayslipPdfDocumentInput) {
+function YtdMetricRow({
+  currency,
+  metrics,
+}: {
+  currency: string;
+  metrics: Array<{ label: string; amount: number }>;
+}) {
+  return (
+    <View style={styles.ytdRow}>
+      {metrics.map((metric) => (
+        <View key={metric.label} style={styles.ytdItem}>
+          <Text style={styles.label}>{metric.label}</Text>
+          <Text>{money(metric.amount, currency)}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function PayslipPage({
+  payslip,
+  meta,
+  ytd,
+  ytdBreakdown = null,
+  isOfficial,
+}: PayslipPdfDocumentInput) {
   const { currency } = payslip;
   const primaryBank = payslip.bankDistribution?.find(
     (line) => line.kind === "REMAINDER",
   );
+  const showSplit =
+    ytdBreakdown != null && ytdBreakdown.prior.recordCount > 0;
 
   return (
     <Page size="A4" style={styles.page} wrap>
@@ -254,39 +286,115 @@ function PayslipPage({ payslip, meta, ytd, isOfficial }: PayslipPdfDocumentInput
           </Text>
         </View>
 
-        {ytd && ytd.periodCount > 0 ? (
-          <View wrap={false}>
-            <Text style={styles.sectionTitle}>
-              Year to date · {ytd.year} ({ytd.periodCount} period
-              {ytd.periodCount === 1 ? "" : "s"})
-            </Text>
-            <View style={styles.ytdRow}>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Gross</Text>
-                <Text>{money(ytd.grossPay, currency)}</Text>
+        {ytd && (showSplit || ytd.periodCount > 0) ? (
+          showSplit && ytdBreakdown ? (
+            <View wrap={false}>
+              <View style={styles.ytdGroup}>
+                <Text style={styles.sectionTitle}>
+                  Prior employer · {ytdBreakdown.year} (
+                  {ytdBreakdown.prior.recordCount} record
+                  {ytdBreakdown.prior.recordCount === 1 ? "" : "s"})
+                </Text>
+                <YtdMetricRow
+                  currency={currency}
+                  metrics={[
+                    {
+                      label: "Taxable",
+                      amount: ytdBreakdown.prior.taxableIncome,
+                    },
+                    { label: "PAYE", amount: ytdBreakdown.prior.paye },
+                    { label: "NIS", amount: ytdBreakdown.prior.nisEmployee },
+                    {
+                      label: "Health",
+                      amount: ytdBreakdown.prior.healthSurcharge,
+                    },
+                  ]}
+                />
               </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Deductions</Text>
-                <Text>{money(ytd.totalDeductions, currency)}</Text>
+              <View style={styles.ytdGroup}>
+                <Text style={styles.sectionTitle}>
+                  This employer · {ytdBreakdown.year} (
+                  {ytdBreakdown.currentEmployer.periodCount} period
+                  {ytdBreakdown.currentEmployer.periodCount === 1 ? "" : "s"})
+                </Text>
+                <YtdMetricRow
+                  currency={currency}
+                  metrics={[
+                    {
+                      label: "Gross",
+                      amount: ytdBreakdown.currentEmployer.grossPay,
+                    },
+                    {
+                      label: "Deductions",
+                      amount: ytdBreakdown.currentEmployer.totalDeductions,
+                    },
+                    {
+                      label: "PAYE",
+                      amount: ytdBreakdown.currentEmployer.paye,
+                    },
+                    {
+                      label: "NIS",
+                      amount: ytdBreakdown.currentEmployer.nisEmployee,
+                    },
+                    {
+                      label: "Health",
+                      amount: ytdBreakdown.currentEmployer.healthSurcharge,
+                    },
+                    {
+                      label: "Net",
+                      amount: ytdBreakdown.currentEmployer.netPay,
+                    },
+                  ]}
+                />
               </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>PAYE</Text>
-                <Text>{money(ytd.paye, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>NIS</Text>
-                <Text>{money(ytd.nisEmployee, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Health</Text>
-                <Text>{money(ytd.healthSurcharge, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Net</Text>
-                <Text>{money(ytd.netPay, currency)}</Text>
+              <View style={styles.ytdGroup}>
+                <Text style={styles.sectionTitle}>
+                  Combined · {ytdBreakdown.year}
+                </Text>
+                <YtdMetricRow
+                  currency={currency}
+                  metrics={[
+                    {
+                      label: "Taxable",
+                      amount: ytdBreakdown.combined.taxableEarnings,
+                    },
+                    { label: "PAYE", amount: ytdBreakdown.combined.paye },
+                    {
+                      label: "NIS",
+                      amount: ytdBreakdown.combined.nisEmployee,
+                    },
+                    {
+                      label: "Health",
+                      amount: ytdBreakdown.combined.healthSurcharge,
+                    },
+                    {
+                      label: "Gross",
+                      amount: ytdBreakdown.combined.grossPay,
+                    },
+                    { label: "Net", amount: ytdBreakdown.combined.netPay },
+                  ]}
+                />
               </View>
             </View>
-          </View>
+          ) : (
+            <View wrap={false}>
+              <Text style={styles.sectionTitle}>
+                Year to date · {ytd.year} ({ytd.periodCount} period
+                {ytd.periodCount === 1 ? "" : "s"})
+              </Text>
+              <YtdMetricRow
+                currency={currency}
+                metrics={[
+                  { label: "Gross", amount: ytd.grossPay },
+                  { label: "Deductions", amount: ytd.totalDeductions },
+                  { label: "PAYE", amount: ytd.paye },
+                  { label: "NIS", amount: ytd.nisEmployee },
+                  { label: "Health", amount: ytd.healthSurcharge },
+                  { label: "Net", amount: ytd.netPay },
+                ]}
+              />
+            </View>
+          )
         ) : null}
 
         {payslip.employerContributions.length > 0 ? (

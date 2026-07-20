@@ -4,6 +4,11 @@ import {
   type NisEarningsClassRecord,
   toNisClassInputs,
 } from "@/src/modules/payroll/lib/nis-contribution";
+import {
+  statutoryScheduleCoversAsOf,
+  toStatutoryAsOfDate,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type { NisClassVersionSummary, NisEarningsClassRecord };
 export { toNisClassInputs };
@@ -40,19 +45,6 @@ export function mapNisClassRecord(
   };
 }
 
-function versionCoversToday(
-  effectiveFrom: string,
-  effectiveTo: string | null,
-  isActive: boolean,
-  today: string,
-): boolean {
-  return (
-    isActive &&
-    effectiveFrom <= today &&
-    (effectiveTo == null || effectiveTo >= today)
-  );
-}
-
 export async function getNisClassVersions(): Promise<NisClassVersionSummary[]> {
   const rows = await prisma.nisEarningsClass.groupBy({
     by: ["effectiveFrom", "effectiveTo", "versionLabel", "isActive"],
@@ -64,7 +56,7 @@ export async function getNisClassVersions(): Promise<NisClassVersionSummary[]> {
     },
   });
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = toStatutoryAsOfKey(new Date());
   let currentAssigned = false;
 
   return rows.map((row) => {
@@ -72,12 +64,12 @@ export async function getNisClassVersions(): Promise<NisClassVersionSummary[]> {
     const effectiveTo = row.effectiveTo
       ? toDateString(row.effectiveTo)
       : null;
-    const covers = versionCoversToday(
+    const covers = statutoryScheduleCoversAsOf({
       effectiveFrom,
       effectiveTo,
-      row.isActive,
-      today,
-    );
+      isActive: row.isActive,
+      asOf: today,
+    });
     const isCurrent = covers && !currentAssigned;
 
     if (isCurrent) {
@@ -98,11 +90,7 @@ export async function getNisClassVersions(): Promise<NisClassVersionSummary[]> {
 export async function getNisClassesForVersion(
   effectiveFrom: string,
 ): Promise<NisEarningsClassRecord[]> {
-  const parsed = new Date(`${effectiveFrom}T00:00:00.000Z`);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return [];
-  }
+  const parsed = toStatutoryAsOfDate(effectiveFrom);
 
   const classes = await prisma.nisEarningsClass.findMany({
     where: {
@@ -128,33 +116,41 @@ export async function getNisClassesForVersion(
   return classes.map(mapNisClassRecord);
 }
 
-export async function getCurrentNisClasses(): Promise<NisEarningsClassRecord[]> {
-  const versions = await getNisClassVersions();
-  const current = versions.find((version) => version.isCurrent);
+/**
+ * NIS class schedule covering `asOf`.
+ * Resolves the latest active version whose window includes the date.
+ */
+export async function getNisClassesAsOf(
+  asOf: Date | string = new Date(),
+): Promise<NisEarningsClassRecord[]> {
+  const asOfKey = toStatutoryAsOfKey(asOf);
+  const asOfDate = toStatutoryAsOfDate(asOfKey);
 
-  if (!current) {
+  const anchor = await prisma.nisEarningsClass.findFirst({
+    where: {
+      isActive: true,
+      effectiveFrom: { lte: asOfDate },
+      OR: [{ effectiveTo: null }, { effectiveTo: { gte: asOfDate } }],
+    },
+    orderBy: { effectiveFrom: "desc" },
+    select: { effectiveFrom: true },
+  });
+
+  if (!anchor) {
     return [];
   }
 
-  return getNisClassesForVersion(current.effectiveFrom);
+  return getNisClassesForVersion(toDateString(anchor.effectiveFrom));
 }
 
+/** @deprecated Prefer {@link getNisClassesAsOf} with an explicit period date. */
+export async function getCurrentNisClasses(): Promise<NisEarningsClassRecord[]> {
+  return getNisClassesAsOf(new Date());
+}
+
+/** @deprecated Prefer {@link getNisClassesAsOf}. */
 export async function getActiveNisClassesAsOf(
   asOf: string = new Date().toISOString().slice(0, 10),
 ): Promise<NisEarningsClassRecord[]> {
-  const versions = await getNisClassVersions();
-  const activeVersion = versions.find((version) =>
-    versionCoversToday(
-      version.effectiveFrom,
-      version.effectiveTo,
-      version.isActive,
-      asOf,
-    ),
-  );
-
-  if (!activeVersion) {
-    return [];
-  }
-
-  return getNisClassesForVersion(activeVersion.effectiveFrom);
+  return getNisClassesAsOf(asOf);
 }

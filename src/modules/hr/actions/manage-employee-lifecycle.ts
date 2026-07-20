@@ -6,12 +6,15 @@ import { prisma } from "@/lib/prisma";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import {
+  assignLifecycleTask,
+  blockLifecycleTask,
   completeOffboardingTask,
   completeOnboardingTask,
   cancelEmployeeOffboardingCase,
   cancelEmployeeOnboardingCase,
   openEmployeeOffboardingCase,
   openEmployeeOnboardingCase,
+  setLifecycleTaskDueAt,
 } from "@/src/modules/hr/services/employee-lifecycle-cases";
 
 export type LifecycleActionState = {
@@ -44,11 +47,23 @@ export async function startEmployeeOnboarding(
   }
 
   const metadata = await getAuditRequestMetadata(formData);
+  const proposedStartRaw = textValue(formData, "proposedStartDate");
+  const caseTypeRaw = textValue(formData, "caseType");
   const opened = await openEmployeeOnboardingCase({
     organizationId: employee.organizationId,
     employeeId,
     openedByUserId: actor.actor.userId,
     notes: textValue(formData, "notes") || null,
+    caseType:
+      caseTypeRaw === "NEW_HIRE" ||
+      caseTypeRaw === "REHIRE" ||
+      caseTypeRaw === "CONTRACTOR" ||
+      caseTypeRaw === "CONTINUING"
+        ? caseTypeRaw
+        : null,
+    proposedStartDate: proposedStartRaw
+      ? new Date(`${proposedStartRaw}T00:00:00.000Z`)
+      : null,
   });
 
   await prisma.auditEvent.create({
@@ -66,6 +81,7 @@ export async function startEmployeeOnboarding(
   });
 
   revalidatePath(`/people/employees/${employeeId}`);
+  revalidatePath("/people/lifecycle");
   return { status: "success", message: "Onboarding case opened." };
 }
 
@@ -89,12 +105,37 @@ export async function startEmployeeOffboarding(
   }
 
   const metadata = await getAuditRequestMetadata(formData);
+  const reasonCodeRaw = textValue(formData, "reasonCode");
+  const lastWorkingRaw = textValue(formData, "lastWorkingDate");
+  const separationRaw = textValue(formData, "separationDate");
+  const reasonCodes = [
+    "RESIGNATION",
+    "RETIREMENT",
+    "END_OF_CONTRACT",
+    "TERMINATION",
+    "REDUNDANCY",
+    "TRANSFER",
+    "OTHER",
+  ] as const;
+  const reasonCode = reasonCodes.includes(
+    reasonCodeRaw as (typeof reasonCodes)[number],
+  )
+    ? (reasonCodeRaw as (typeof reasonCodes)[number])
+    : null;
+
   const opened = await openEmployeeOffboardingCase({
     organizationId: employee.organizationId,
     employeeId,
     openedByUserId: actor.actor.userId,
     reason: textValue(formData, "reason") || null,
+    reasonCode,
     notes: textValue(formData, "notes") || null,
+    lastWorkingDate: lastWorkingRaw
+      ? new Date(`${lastWorkingRaw}T00:00:00.000Z`)
+      : null,
+    separationDate: separationRaw
+      ? new Date(`${separationRaw}T00:00:00.000Z`)
+      : null,
   });
 
   await prisma.auditEvent.create({
@@ -112,6 +153,7 @@ export async function startEmployeeOffboarding(
   });
 
   revalidatePath(`/people/employees/${employeeId}`);
+  revalidatePath("/people/lifecycle");
   return { status: "success", message: "Offboarding case opened." };
 }
 
@@ -226,6 +268,7 @@ export async function markOnboardingTaskComplete(
   });
 
   revalidatePath(`/people/employees/${employeeId}`);
+  revalidatePath("/people/lifecycle");
   return { status: "success", message: "Onboarding task completed." };
 }
 
@@ -240,14 +283,98 @@ export async function markOffboardingTaskComplete(
 
   const taskId = textValue(formData, "taskId");
   const employeeId = textValue(formData, "employeeId");
+  const notes = textValue(formData, "notes");
+
+  const task = await prisma.employeeOffboardingTask.findUnique({
+    where: { id: taskId },
+    select: {
+      id: true,
+      code: true,
+      case: {
+        select: {
+          employeeId: true,
+          tasks: { select: { code: true, status: true } },
+        },
+      },
+    },
+  });
+
+  if (!task || task.case.employeeId !== employeeId) {
+    return { status: "error", message: "Offboarding task not found." };
+  }
+
+  if (task.code === "CLOSE_CONTRACT") {
+    const stillActive = await prisma.employmentContract.findFirst({
+      where: {
+        employeeId,
+        isCurrent: true,
+        status: "ACTIVE",
+      },
+      select: { id: true },
+    });
+
+    if (stillActive) {
+      return {
+        status: "error",
+        message:
+          "Close or expire the current active contract before marking this done.",
+      };
+    }
+  }
+
+  if (task.code === "FINAL_PAY_CHECK") {
+    const contractClosed = task.case.tasks.some(
+      (row) =>
+        row.code === "CLOSE_CONTRACT" &&
+        (row.status === "COMPLETED" || row.status === "SKIPPED"),
+    );
+    const stillActive = await prisma.employmentContract.findFirst({
+      where: {
+        employeeId,
+        isCurrent: true,
+        status: "ACTIVE",
+      },
+      select: { id: true },
+    });
+
+    if (!contractClosed && stillActive) {
+      return {
+        status: "error",
+        message:
+          "Close the employment contract (or mark Close contract done) before confirming final pay.",
+      };
+    }
+
+    if (!notes) {
+      return {
+        status: "error",
+        message:
+          "Add a confirmation note (e.g. final pay run reference or “no further pay due”) before marking final pay checked.",
+      };
+    }
+  }
+
+  if (task.code === "REVOKE_ACCESS") {
+    const fileFrozen = task.case.tasks.some(
+      (row) =>
+        row.code === "FREEZE_EMPLOYEE_FILE" && row.status === "COMPLETED",
+    );
+    if (!fileFrozen) {
+      return {
+        status: "error",
+        message: "Freeze the employee file before revoking system access.",
+      };
+    }
+  }
 
   await completeOffboardingTask({
     taskId,
     completedByUserId: actor.actor.userId,
-    notes: textValue(formData, "notes") || null,
+    notes: notes || null,
   });
 
   revalidatePath(`/people/employees/${employeeId}`);
+  revalidatePath("/people/lifecycle");
   return { status: "success", message: "Offboarding task completed." };
 }
 
@@ -288,6 +415,7 @@ export async function cancelEmployeeOnboarding(
     });
 
     revalidatePath(`/people/employees/${result.employeeId || employeeId}`);
+    revalidatePath("/people/lifecycle");
     return {
       status: "success",
       message: "Onboarding cancelled. You can start again if needed.",
@@ -342,6 +470,7 @@ export async function cancelEmployeeOffboarding(
     });
 
     revalidatePath(`/people/employees/${result.employeeId || employeeId}`);
+    revalidatePath("/people/lifecycle");
 
     if (result.accessRevoked) {
       return {
@@ -365,4 +494,159 @@ export async function cancelEmployeeOffboarding(
         : "Unable to cancel offboarding.";
     return { status: "error", message };
   }
+}
+
+function parseLifecycleKind(
+  raw: string,
+): "onboarding" | "offboarding" | null {
+  if (raw === "onboarding" || raw === "offboarding") {
+    return raw;
+  }
+  return null;
+}
+
+export async function assignEmployeeLifecycleTask(
+  _prev: LifecycleActionState,
+  formData: FormData,
+): Promise<LifecycleActionState> {
+  const actor = await requireActor("people.manage");
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const kind = parseLifecycleKind(textValue(formData, "kind"));
+  const taskId = textValue(formData, "taskId");
+  const employeeId = textValue(formData, "employeeId");
+  const assigneeRaw = textValue(formData, "assigneeUserId");
+  const assigneeUserId =
+    assigneeRaw === "" || assigneeRaw === "me"
+      ? actor.actor.userId
+      : assigneeRaw === "clear"
+        ? null
+        : assigneeRaw;
+
+  if (!kind || !taskId || !employeeId) {
+    return { status: "error", message: "Missing task details." };
+  }
+
+  try {
+    await assignLifecycleTask({
+      kind,
+      taskId,
+      employeeId,
+      assigneeUserId,
+    });
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    if (code === "LIFECYCLE_TASK_NOT_FOUND") {
+      return { status: "error", message: "Lifecycle task not found." };
+    }
+    if (code === "LIFECYCLE_ASSIGNEE_INVALID") {
+      return { status: "error", message: "Assignee must be an active user." };
+    }
+    return { status: "error", message: "Unable to assign task." };
+  }
+
+  revalidatePath(`/people/employees/${employeeId}`);
+  revalidatePath("/people/lifecycle");
+  return {
+    status: "success",
+    message: assigneeUserId ? "Task assigned." : "Assignee cleared.",
+  };
+}
+
+export async function setEmployeeLifecycleTaskDueDate(
+  _prev: LifecycleActionState,
+  formData: FormData,
+): Promise<LifecycleActionState> {
+  const actor = await requireActor("people.manage");
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const kind = parseLifecycleKind(textValue(formData, "kind"));
+  const taskId = textValue(formData, "taskId");
+  const employeeId = textValue(formData, "employeeId");
+  const dueRaw = textValue(formData, "dueAt");
+
+  if (!kind || !taskId || !employeeId) {
+    return { status: "error", message: "Missing task details." };
+  }
+
+  const dueAt = dueRaw ? new Date(`${dueRaw}T23:59:59.000Z`) : null;
+  if (dueRaw && Number.isNaN(dueAt?.getTime())) {
+    return { status: "error", message: "Invalid due date." };
+  }
+
+  try {
+    await setLifecycleTaskDueAt({
+      kind,
+      taskId,
+      employeeId,
+      dueAt,
+    });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "LIFECYCLE_TASK_NOT_FOUND"
+    ) {
+      return { status: "error", message: "Lifecycle task not found." };
+    }
+    return { status: "error", message: "Unable to set due date." };
+  }
+
+  revalidatePath(`/people/employees/${employeeId}`);
+  revalidatePath("/people/lifecycle");
+  return { status: "success", message: "Due date updated." };
+}
+
+export async function blockEmployeeLifecycleTask(
+  _prev: LifecycleActionState,
+  formData: FormData,
+): Promise<LifecycleActionState> {
+  const actor = await requireActor("people.manage");
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const kind = parseLifecycleKind(textValue(formData, "kind"));
+  const taskId = textValue(formData, "taskId");
+  const employeeId = textValue(formData, "employeeId");
+  const reason = textValue(formData, "reason");
+
+  if (!kind || !taskId || !employeeId) {
+    return { status: "error", message: "Missing task details." };
+  }
+
+  if (!reason) {
+    return { status: "error", message: "A block reason is required." };
+  }
+
+  try {
+    await blockLifecycleTask({
+      kind,
+      taskId,
+      employeeId,
+      reason,
+    });
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    if (code === "LIFECYCLE_TASK_NOT_FOUND") {
+      return { status: "error", message: "Lifecycle task not found." };
+    }
+    if (code === "LIFECYCLE_TASK_NOT_BLOCKABLE") {
+      return {
+        status: "error",
+        message: "Completed or skipped tasks cannot be blocked.",
+      };
+    }
+    if (code === "LIFECYCLE_BLOCK_REASON_REQUIRED") {
+      return { status: "error", message: "A block reason is required." };
+    }
+    return { status: "error", message: "Unable to block task." };
+  }
+
+  revalidatePath(`/people/employees/${employeeId}`);
+  revalidatePath("/people/lifecycle");
+  return { status: "success", message: "Task marked blocked." };
 }

@@ -1,6 +1,7 @@
 import { archiveExpiredCorrespondenceRetention } from "@/src/modules/hr/services/archive-correspondence-retention";
 import { notifyContractExpiryReminders } from "@/src/modules/hr/services/notify-contract-expiry";
 import { notifyCorrespondenceAcknowledgementReminders } from "@/src/modules/hr/services/notify-correspondence-acknowledgement";
+import { notifyLifecycleTaskReminders } from "@/src/modules/hr/services/notify-lifecycle-task-reminders";
 import { notifyVacationForfeitureReminders } from "@/src/modules/hr/services/notify-vacation-forfeiture";
 import { archiveExpiredStoredFileRetention } from "@/src/modules/hr/services/stored-file-retention";
 import {
@@ -40,6 +41,10 @@ const jobs: ScheduledJob[] = [
   {
     name: "vacation-forfeiture-reminders",
     run: () => notifyVacationForfeitureReminders(),
+  },
+  {
+    name: "lifecycle-task-reminders",
+    run: () => notifyLifecycleTaskReminders(),
   },
   {
     name: "correspondence-retention-archive",

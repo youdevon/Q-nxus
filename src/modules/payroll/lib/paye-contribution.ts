@@ -12,12 +12,18 @@ export type PayeTaxBracketRecord = {
 /** Serializable PAYE config passed from server pages into client components. */
 export type PayeTaxConfigRecord = {
   id: string;
+  countryCode: string;
+  taxYear: number;
+  currencyCode: string;
   personalAllowanceAnnual: string;
   nisDeductiblePortion: string;
   approvedDeductionCapAnnual: string;
   effectiveFrom: string;
   effectiveTo: string | null;
   versionLabel: string | null;
+  sourceReference: string | null;
+  approvedByUserId: string | null;
+  approvedAt: string | null;
   isActive: boolean;
   isCurrent: boolean;
   brackets: PayeTaxBracketRecord[];

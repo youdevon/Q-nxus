@@ -6,6 +6,10 @@ import { getLeaveForfeitureSettings } from "@/src/modules/hr/data/get-leave-forf
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 import type { LeaveForfeitureSettings } from "@/src/modules/hr/lib/leave-forfeiture-settings";
 import {
+  buildLeaveBalancesUrl,
+  buildSelfLeaveForfeitureUrl,
+} from "@/src/modules/hr/lib/leave-balances-url";
+import {
   evaluateVacationForfeitureAlert,
   formatVacationForfeitureMessage,
   VACATION_FORFEITURE_NOTIFICATION_TITLE,
@@ -229,7 +233,7 @@ export async function notifyVacationForfeitureReminders(
       continue;
     }
 
-    const recipients: {
+    const authorityRecipients: {
       userId: string;
       email?: string | null;
       name?: string | null;
@@ -237,7 +241,7 @@ export async function notifyVacationForfeitureReminders(
     }[] = [];
     const seenUserIds = new Set<string>();
 
-    function addRecipient(input: {
+    function addAuthorityRecipient(input: {
       userId: string;
       email?: string | null;
       name?: string | null;
@@ -247,21 +251,13 @@ export async function notifyVacationForfeitureReminders(
       }
 
       seenUserIds.add(input.userId);
-      recipients.push({
+      authorityRecipients.push({
         ...input,
         sendEmail: settings.sendEmailAlerts,
       });
     }
 
     const employeeUser = employee.user;
-
-    if (settings.notifyEmployee && employeeUser?.isActive) {
-      addRecipient({
-        userId: employeeUser.id,
-        email: employeeUser.email,
-        name: `${employeeUser.firstName} ${employeeUser.lastName}`,
-      });
-    }
 
     if (settings.notifySupervisor) {
       try {
@@ -271,7 +267,7 @@ export async function notifyVacationForfeitureReminders(
           reportingOfficer?.supervisorUserId &&
           reportingOfficer.supervisorUserId !== employeeUser?.id
         ) {
-          addRecipient({
+          addAuthorityRecipient({
             userId: reportingOfficer.supervisorUserId,
             email: reportingOfficer.supervisorUserEmail,
             name: reportingOfficer.supervisorUserName,
@@ -291,14 +287,18 @@ export async function notifyVacationForfeitureReminders(
         continue;
       }
 
-      addRecipient({
+      addAuthorityRecipient({
         userId: hrUser.id,
         email: hrUser.email,
         name: `${hrUser.firstName} ${hrUser.lastName}`,
       });
     }
 
-    if (recipients.length === 0) {
+    const willNotifyEmployee = Boolean(
+      settings.notifyEmployee && employeeUser?.isActive,
+    );
+
+    if (authorityRecipients.length === 0 && !willNotifyEmployee) {
       skipped += 1;
       continue;
     }
@@ -307,34 +307,74 @@ export async function notifyVacationForfeitureReminders(
     const message = formatVacationForfeitureMessage(alert, {
       employeeName,
     });
+    const authorityMessage = `${employee.employeeNumber} · ${
+      resolveEmployeePositionTitle({
+        assignmentPositionTitle: employee.assignments[0]?.position?.title,
+        positionTitle: employee.position?.title,
+        contractJobTitle: contract.jobTitle,
+      }) ?? contract.jobTitle
+    }${
+      contract.contractNumber ? ` (${contract.contractNumber})` : ""
+    }. ${message}`;
 
-    await createSystemNotification({
-      title: VACATION_FORFEITURE_NOTIFICATION_TITLE,
-      message: `${employee.employeeNumber} · ${
-        resolveEmployeePositionTitle({
-          assignmentPositionTitle: employee.assignments[0]?.position?.title,
-          positionTitle: employee.position?.title,
-          contractJobTitle: contract.jobTitle,
-        }) ?? contract.jobTitle
-      }${
-        contract.contractNumber ? ` (${contract.contractNumber})` : ""
-      }. ${message}`,
-      severity: NotificationSeverity.WARNING,
-      moduleKey: "hr",
-      actionUrl: `/people/leave/balances?employeeId=${employee.id}`,
-      relatedType: "EmploymentContract",
-      relatedId: contract.id,
-      recipients,
-      ...(settings.sendEmailAlerts
-        ? {
-            email: {
-              subject: VACATION_FORFEITURE_NOTIFICATION_TITLE,
-              textBody: message,
-              actionLabel: "Review leave balances",
-            },
-          }
-        : {}),
+    const authorityBalancesUrl = buildLeaveBalancesUrl({
+      employeeId: employee.id,
+      focus: "forfeiture",
     });
+
+    // Authority recipients (supervisor / HR) → People leave balances for this employee.
+    if (authorityRecipients.length > 0) {
+      await createSystemNotification({
+        title: VACATION_FORFEITURE_NOTIFICATION_TITLE,
+        message: authorityMessage,
+        severity: NotificationSeverity.WARNING,
+        moduleKey: "hr",
+        actionUrl: authorityBalancesUrl,
+        relatedType: "EmploymentContract",
+        relatedId: contract.id,
+        recipients: authorityRecipients,
+        ...(settings.sendEmailAlerts
+          ? {
+              email: {
+                subject: VACATION_FORFEITURE_NOTIFICATION_TITLE,
+                textBody: `${authorityMessage}\n\nOpen leave balances to review entitlement, taken, and available vacation.`,
+                actionLabel: "Review leave balances",
+              },
+            }
+          : {}),
+      });
+    }
+
+    // Employee self-service → My Leave (they cannot open People balances).
+    if (willNotifyEmployee && employeeUser) {
+      const selfMessage = formatVacationForfeitureMessage(alert);
+      await createSystemNotification({
+        title: VACATION_FORFEITURE_NOTIFICATION_TITLE,
+        message: selfMessage,
+        severity: NotificationSeverity.WARNING,
+        moduleKey: "hr",
+        actionUrl: buildSelfLeaveForfeitureUrl(),
+        relatedType: "EmploymentContract",
+        relatedId: contract.id,
+        recipients: [
+          {
+            userId: employeeUser.id,
+            email: employeeUser.email,
+            name: `${employeeUser.firstName} ${employeeUser.lastName}`,
+            sendEmail: settings.sendEmailAlerts,
+          },
+        ],
+        ...(settings.sendEmailAlerts
+          ? {
+              email: {
+                subject: VACATION_FORFEITURE_NOTIFICATION_TITLE,
+                textBody: `${selfMessage}\n\nOpen My Leave to request vacation before your contract ends.`,
+                actionLabel: "Open My Leave",
+              },
+            }
+          : {}),
+      });
+    }
 
     notified += 1;
   }

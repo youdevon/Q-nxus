@@ -297,6 +297,16 @@ export type EmployeeFilePack = Prisma.EmployeeFilePackModel
  */
 export type EmployeeFilePackItem = Prisma.EmployeeFilePackItemModel
 /**
+ * Model EmployeeLifecycleTemplate
+ * Org-configurable hire/exit task packs resolved when opening a lifecycle case.
+ */
+export type EmployeeLifecycleTemplate = Prisma.EmployeeLifecycleTemplateModel
+/**
+ * Model EmployeeLifecycleTemplateTask
+ * 
+ */
+export type EmployeeLifecycleTemplateTask = Prisma.EmployeeLifecycleTemplateTaskModel
+/**
  * Model EmployeeOnboardingCase
  * 
  */
@@ -316,6 +326,28 @@ export type EmployeeOffboardingCase = Prisma.EmployeeOffboardingCaseModel
  * 
  */
 export type EmployeeOffboardingTask = Prisma.EmployeeOffboardingTaskModel
+/**
+ * Model EmployeeTaxProfile
+ * Per-employee, per-calendar-tax-year PAYE / TD1 treatment.
+ * Dual-reads with PayrollProfile.td1OtherApprovedAnnual for the current year.
+ */
+export type EmployeeTaxProfile = Prisma.EmployeeTaxProfileModel
+/**
+ * Model EmployeePriorEmploymentYtd
+ * Prior-employer calendar-year YTD amounts for mid-year joiners (Phase 3).
+ * Applied to cumulative PAYE in Phase 4; stored and resolved here.
+ */
+export type EmployeePriorEmploymentYtd = Prisma.EmployeePriorEmploymentYtdModel
+/**
+ * Model EmployeePriorEmploymentDocument
+ * 
+ */
+export type EmployeePriorEmploymentDocument = Prisma.EmployeePriorEmploymentDocumentModel
+/**
+ * Model EmployeePayrollStatutoryOverride
+ * Period statutory amount overrides (Phase 7) with maker-checker approval.
+ */
+export type EmployeePayrollStatutoryOverride = Prisma.EmployeePayrollStatutoryOverrideModel
 /**
  * Model PayrollProfile
  * 
@@ -413,6 +445,16 @@ export type Payslip = Prisma.PayslipModel
  * Manual draft-run additions/deductions such as correction deltas, overtime, bonuses, and commissions.
  */
 export type PayrollLineItem = Prisma.PayrollLineItemModel
+/**
+ * Model PayrollComponentDefinition
+ * 
+ */
+export type PayrollComponentDefinition = Prisma.PayrollComponentDefinitionModel
+/**
+ * Model EmployeePayrollRecurringItem
+ * Employee assignment of a recurring component with optional declining balance.
+ */
+export type EmployeePayrollRecurringItem = Prisma.EmployeePayrollRecurringItemModel
 /**
  * Model Notification
  * 

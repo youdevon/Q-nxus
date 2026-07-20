@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { PayslipPreviewView } from "@/src/modules/payroll/components/payslip-preview";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import {
+  getPayslipYtdBreakdown,
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
@@ -31,10 +32,12 @@ export default async function EmployeePayslipPage({
   params,
   searchParams,
 }: EmployeePayslipPageProps) {
-  const capabilities = await requirePayrollViewAccess();
+  const [{ id }, { from, period }, capabilities] = await Promise.all([
+    params,
+    searchParams,
+    requirePayrollViewAccess(),
+  ]);
 
-  const { id } = await params;
-  const { from, period } = await searchParams;
   const result = await getEmployeePayslipPreview(id, {
     asOf: payslipPeriodToAsOfDate(period) ?? undefined,
   });
@@ -52,6 +55,10 @@ export default async function EmployeePayslipPage({
         current: payslipPreviewToYtdContribution(payslip),
       })
     : null;
+  const ytdBreakdown =
+    ytd != null
+      ? await getPayslipYtdBreakdown(id, ytd)
+      : null;
 
   const fromPayroll = from === "payroll";
   const fromSalaries = from === "salaries";
@@ -81,6 +88,7 @@ export default async function EmployeePayslipPage({
       payslip={payslip}
       meta={meta}
       ytd={ytd}
+      ytdBreakdown={ytdBreakdown}
       backHref={backHref}
       backLabel={backLabel}
       setupHref={

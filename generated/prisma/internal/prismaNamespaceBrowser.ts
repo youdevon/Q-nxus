@@ -101,10 +101,16 @@ export const ModelName = {
   StoredFile: 'StoredFile',
   EmployeeFilePack: 'EmployeeFilePack',
   EmployeeFilePackItem: 'EmployeeFilePackItem',
+  EmployeeLifecycleTemplate: 'EmployeeLifecycleTemplate',
+  EmployeeLifecycleTemplateTask: 'EmployeeLifecycleTemplateTask',
   EmployeeOnboardingCase: 'EmployeeOnboardingCase',
   EmployeeOnboardingTask: 'EmployeeOnboardingTask',
   EmployeeOffboardingCase: 'EmployeeOffboardingCase',
   EmployeeOffboardingTask: 'EmployeeOffboardingTask',
+  EmployeeTaxProfile: 'EmployeeTaxProfile',
+  EmployeePriorEmploymentYtd: 'EmployeePriorEmploymentYtd',
+  EmployeePriorEmploymentDocument: 'EmployeePriorEmploymentDocument',
+  EmployeePayrollStatutoryOverride: 'EmployeePayrollStatutoryOverride',
   PayrollProfile: 'PayrollProfile',
   PayrollBankAccount: 'PayrollBankAccount',
   FinancialInstitution: 'FinancialInstitution',
@@ -124,6 +130,8 @@ export const ModelName = {
   PayRun: 'PayRun',
   Payslip: 'Payslip',
   PayrollLineItem: 'PayrollLineItem',
+  PayrollComponentDefinition: 'PayrollComponentDefinition',
+  EmployeePayrollRecurringItem: 'EmployeePayrollRecurringItem',
   Notification: 'Notification',
   NotificationRecipient: 'NotificationRecipient',
   EmailDelivery: 'EmailDelivery',
@@ -1148,15 +1156,53 @@ export const EmployeeFilePackItemScalarFieldEnum = {
 export type EmployeeFilePackItemScalarFieldEnum = (typeof EmployeeFilePackItemScalarFieldEnum)[keyof typeof EmployeeFilePackItemScalarFieldEnum]
 
 
+export const EmployeeLifecycleTemplateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  kind: 'kind',
+  code: 'code',
+  name: 'name',
+  isDefault: 'isDefault',
+  isActive: 'isActive',
+  matchCaseType: 'matchCaseType',
+  matchReasonCode: 'matchReasonCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeLifecycleTemplateScalarFieldEnum = (typeof EmployeeLifecycleTemplateScalarFieldEnum)[keyof typeof EmployeeLifecycleTemplateScalarFieldEnum]
+
+
+export const EmployeeLifecycleTemplateTaskScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  code: 'code',
+  label: 'label',
+  sortOrder: 'sortOrder',
+  mandatory: 'mandatory',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeLifecycleTemplateTaskScalarFieldEnum = (typeof EmployeeLifecycleTemplateTaskScalarFieldEnum)[keyof typeof EmployeeLifecycleTemplateTaskScalarFieldEnum]
+
+
 export const EmployeeOnboardingCaseScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   employeeId: 'employeeId',
+  caseNumber: 'caseNumber',
+  caseType: 'caseType',
   status: 'status',
   openedByUserId: 'openedByUserId',
+  ownerUserId: 'ownerUserId',
+  proposedStartDate: 'proposedStartDate',
+  confirmedStartDate: 'confirmedStartDate',
   openedAt: 'openedAt',
   readyAt: 'readyAt',
   completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
+  cancelledReason: 'cancelledReason',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1173,6 +1219,7 @@ export const EmployeeOnboardingTaskScalarFieldEnum = {
   status: 'status',
   sortOrder: 'sortOrder',
   dueAt: 'dueAt',
+  assigneeUserId: 'assigneeUserId',
   completedAt: 'completedAt',
   completedByUserId: 'completedByUserId',
   relatedEntityType: 'relatedEntityType',
@@ -1189,12 +1236,19 @@ export const EmployeeOffboardingCaseScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
   employeeId: 'employeeId',
+  caseNumber: 'caseNumber',
   status: 'status',
+  reasonCode: 'reasonCode',
   reason: 'reason',
   openedByUserId: 'openedByUserId',
+  ownerUserId: 'ownerUserId',
+  lastWorkingDate: 'lastWorkingDate',
+  separationDate: 'separationDate',
   openedAt: 'openedAt',
   clearedAt: 'clearedAt',
   completedAt: 'completedAt',
+  cancelledAt: 'cancelledAt',
+  cancelledReason: 'cancelledReason',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1211,6 +1265,7 @@ export const EmployeeOffboardingTaskScalarFieldEnum = {
   status: 'status',
   sortOrder: 'sortOrder',
   dueAt: 'dueAt',
+  assigneeUserId: 'assigneeUserId',
   completedAt: 'completedAt',
   completedByUserId: 'completedByUserId',
   relatedEntityType: 'relatedEntityType',
@@ -1221,6 +1276,105 @@ export const EmployeeOffboardingTaskScalarFieldEnum = {
 } as const
 
 export type EmployeeOffboardingTaskScalarFieldEnum = (typeof EmployeeOffboardingTaskScalarFieldEnum)[keyof typeof EmployeeOffboardingTaskScalarFieldEnum]
+
+
+export const EmployeeTaxProfileScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  taxCalculationMethod: 'taxCalculationMethod',
+  taxProfileStatus: 'taxProfileStatus',
+  personalAllowance: 'personalAllowance',
+  personalAllowanceSource: 'personalAllowanceSource',
+  td1Submitted: 'td1Submitted',
+  td1EffectiveDate: 'td1EffectiveDate',
+  td1ApprovedByIrd: 'td1ApprovedByIrd',
+  td1ApprovalReference: 'td1ApprovalReference',
+  td1OtherApprovedAnnual: 'td1OtherApprovedAnnual',
+  td1StoredFileId: 'td1StoredFileId',
+  cumulativeCalculationEnabled: 'cumulativeCalculationEnabled',
+  previousEmploymentDeclared: 'previousEmploymentDeclared',
+  previousEmploymentVerified: 'previousEmploymentVerified',
+  previousEmploymentSource: 'previousEmploymentSource',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  notes: 'notes',
+  createdByUserId: 'createdByUserId',
+  updatedByUserId: 'updatedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeTaxProfileScalarFieldEnum = (typeof EmployeeTaxProfileScalarFieldEnum)[keyof typeof EmployeeTaxProfileScalarFieldEnum]
+
+
+export const EmployeePriorEmploymentYtdScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  taxProfileId: 'taxProfileId',
+  employerName: 'employerName',
+  employerBirNumber: 'employerBirNumber',
+  employmentStartDate: 'employmentStartDate',
+  employmentEndDate: 'employmentEndDate',
+  asOfDate: 'asOfDate',
+  currencyCode: 'currencyCode',
+  taxableIncomeYtd: 'taxableIncomeYtd',
+  payeDeductedYtd: 'payeDeductedYtd',
+  nisEmployeeYtd: 'nisEmployeeYtd',
+  nisEmployerYtd: 'nisEmployerYtd',
+  healthSurchargeYtd: 'healthSurchargeYtd',
+  otherApprovedDeductionsYtd: 'otherApprovedDeductionsYtd',
+  status: 'status',
+  verified: 'verified',
+  verifiedAt: 'verifiedAt',
+  verifiedByUserId: 'verifiedByUserId',
+  notes: 'notes',
+  createdByUserId: 'createdByUserId',
+  updatedByUserId: 'updatedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeePriorEmploymentYtdScalarFieldEnum = (typeof EmployeePriorEmploymentYtdScalarFieldEnum)[keyof typeof EmployeePriorEmploymentYtdScalarFieldEnum]
+
+
+export const EmployeePriorEmploymentDocumentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  priorEmploymentYtdId: 'priorEmploymentYtdId',
+  documentType: 'documentType',
+  label: 'label',
+  storedFileId: 'storedFileId',
+  uploadedByUserId: 'uploadedByUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type EmployeePriorEmploymentDocumentScalarFieldEnum = (typeof EmployeePriorEmploymentDocumentScalarFieldEnum)[keyof typeof EmployeePriorEmploymentDocumentScalarFieldEnum]
+
+
+export const EmployeePayrollStatutoryOverrideScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  periodEnd: 'periodEnd',
+  payeAmount: 'payeAmount',
+  nisEmployeeAmount: 'nisEmployeeAmount',
+  healthSurchargeAmount: 'healthSurchargeAmount',
+  reason: 'reason',
+  status: 'status',
+  requestedByUserId: 'requestedByUserId',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  rejectedReason: 'rejectedReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeePayrollStatutoryOverrideScalarFieldEnum = (typeof EmployeePayrollStatutoryOverrideScalarFieldEnum)[keyof typeof EmployeePayrollStatutoryOverrideScalarFieldEnum]
 
 
 export const PayrollProfileScalarFieldEnum = {
@@ -1512,12 +1666,18 @@ export type NisEarningsClassScalarFieldEnum = (typeof NisEarningsClassScalarFiel
 export const PayeTaxConfigScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
+  countryCode: 'countryCode',
+  taxYear: 'taxYear',
+  currencyCode: 'currencyCode',
   personalAllowanceAnnual: 'personalAllowanceAnnual',
   nisDeductiblePortion: 'nisDeductiblePortion',
   approvedDeductionCapAnnual: 'approvedDeductionCapAnnual',
   effectiveFrom: 'effectiveFrom',
   effectiveTo: 'effectiveTo',
   versionLabel: 'versionLabel',
+  sourceReference: 'sourceReference',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1633,6 +1793,9 @@ export const PayslipScalarFieldEnum = {
   excludedAt: 'excludedAt',
   excludedByUserId: 'excludedByUserId',
   exclusionReason: 'exclusionReason',
+  releasedAt: 'releasedAt',
+  releasedById: 'releasedById',
+  emailDeliveryStatus: 'emailDeliveryStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1658,6 +1821,43 @@ export const PayrollLineItemScalarFieldEnum = {
 } as const
 
 export type PayrollLineItemScalarFieldEnum = (typeof PayrollLineItemScalarFieldEnum)[keyof typeof PayrollLineItemScalarFieldEnum]
+
+
+export const PayrollComponentDefinitionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  name: 'name',
+  kind: 'kind',
+  category: 'category',
+  isTaxable: 'isTaxable',
+  taxTreatment: 'taxTreatment',
+  isActive: 'isActive',
+  defaultAmount: 'defaultAmount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PayrollComponentDefinitionScalarFieldEnum = (typeof PayrollComponentDefinitionScalarFieldEnum)[keyof typeof PayrollComponentDefinitionScalarFieldEnum]
+
+
+export const EmployeePayrollRecurringItemScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  definitionId: 'definitionId',
+  amount: 'amount',
+  remainingBalance: 'remainingBalance',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isActive: 'isActive',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeePayrollRecurringItemScalarFieldEnum = (typeof EmployeePayrollRecurringItemScalarFieldEnum)[keyof typeof EmployeePayrollRecurringItemScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

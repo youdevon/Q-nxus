@@ -8,15 +8,30 @@ import { sumMoney } from "@/src/modules/payroll/lib/money";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 
 export type PayslipStatutorySnapshot = {
+  /** Period date used to resolve schedules (YYYY-MM-DD). */
+  asOf?: string | null;
+  /** Calendar tax year for the calculation. */
+  taxYear?: number | null;
+  countryCode?: string | null;
+  currencyCode?: string | null;
   payeConfigId: string | null;
   payeVersionLabel: string | null;
   payeEffectiveFrom: string | null;
+  payeTaxYear?: number | null;
+  payeSourceReference?: string | null;
   healthConfigId: string | null;
   healthVersionLabel: string | null;
   healthEffectiveFrom: string | null;
   nisVersionLabel: string | null;
   nisEffectiveFrom: string | null;
   nisClassCount: number;
+  /** Prior-employer YTD pin (Phase 3; applied in Phase 4 cumulative). */
+  priorEmployment?: {
+    taxableIncomeYtd: number;
+    payeDeductedYtd: number;
+    recordCount: number;
+    allVerified: boolean;
+  } | null;
 };
 
 export type PayslipSnapshotPayload = {

@@ -21,10 +21,6 @@ import {
   computePayeContribution,
   toPayeConfigInput,
 } from "@/src/modules/payroll/lib/paye-contribution";
-import {
-  isPayrollBankingFeatureEnabled,
-  PAYROLL_BANKING_FEATURE_FLAGS,
-} from "@/src/modules/payroll/lib/payroll-banking-flags";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
 import { roundToCents } from "@/src/modules/payroll/lib/money";
 import type {
@@ -33,6 +29,17 @@ import type {
   PayrollPayElement,
   StatutoryPreview,
 } from "@/src/modules/payroll/lib/payroll-setup-types";
+import {
+  applyPersonalAllowanceOverride,
+  resolveEmployeeTaxPayeInputs,
+  type EmployeeTaxProfilePayeFields,
+} from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
+import { getEmployeePriorEmploymentYtds } from "@/src/modules/payroll/data/get-employee-prior-employment";
+import { getSetupBankingFlags } from "@/src/modules/payroll/data/get-payroll-banking-features";
 
 export type {
   EmployeePayrollSetup,
@@ -50,7 +57,17 @@ function allowanceFrequencyLabel(frequency: string): string {
 
 export async function getEmployeePayrollSetup(
   employeeId: string,
+  options?: {
+    includeStatutoryPreview?: boolean;
+    includeFinancialInstitutions?: boolean;
+    includePriorDocuments?: boolean;
+  },
 ): Promise<EmployeePayrollSetup | null> {
+  const includeStatutoryPreview = options?.includeStatutoryPreview !== false;
+  const includeFinancialInstitutions =
+    options?.includeFinancialInstitutions !== false;
+  const includePriorDocuments = options?.includePriorDocuments !== false;
+
   const employee = await prisma.employee.findUnique({
     where: {
       id: employeeId,
@@ -251,25 +268,72 @@ export async function getEmployeePayrollSetup(
       })) ?? [];
   }
 
+  const taxYear = taxYearFromAsOfKey(toStatutoryAsOfKey(new Date()));
+
   const [
     financialInstitutions,
+    bankingFlags,
+    taxProfileRow,
+    priorEmploymentBundle,
+  ] = await Promise.all([
+    includeFinancialInstitutions
+      ? getSelectableFinancialInstitutionOptions()
+      : Promise.resolve([] as Awaited<
+          ReturnType<typeof getSelectableFinancialInstitutionOptions>
+        >),
+    getSetupBankingFlags(),
+    prisma.employeeTaxProfile.findUnique({
+      where: {
+        employeeId_taxYear: {
+          employeeId: employee.id,
+          taxYear,
+        },
+      },
+    }),
+    getEmployeePriorEmploymentYtds(employee.id, taxYear, {
+      includeDocuments: includePriorDocuments,
+    }),
+  ]);
+
+  const {
     bankingEnabled,
     splitDepositEnabled,
     multipleAccountsEnabled,
     percentageAllocationEnabled,
     postNetSplitEnabled,
-  ] = await Promise.all([
-    getSelectableFinancialInstitutionOptions(),
-    isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.PAYROLL_BANKING_ENABLED),
-    isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.SPLIT_DEPOSIT_ENABLED),
-    isPayrollBankingFeatureEnabled(
-      PAYROLL_BANKING_FEATURE_FLAGS.MULTIPLE_EMPLOYEE_BANK_ACCOUNTS_ENABLED,
-    ),
-    isPayrollBankingFeatureEnabled(
-      PAYROLL_BANKING_FEATURE_FLAGS.PERCENTAGE_ALLOCATION_ENABLED,
-    ),
-    isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.POST_NET_SPLIT_ENABLED),
-  ]);
+  } = bankingFlags;
+
+  const taxProfileFields: EmployeeTaxProfilePayeFields | null = taxProfileRow
+    ? {
+        taxCalculationMethod: taxProfileRow.taxCalculationMethod,
+        taxProfileStatus: taxProfileRow.taxProfileStatus,
+        personalAllowance:
+          taxProfileRow.personalAllowance != null
+            ? Number(taxProfileRow.personalAllowance.toString())
+            : null,
+        personalAllowanceSource: taxProfileRow.personalAllowanceSource,
+        td1OtherApprovedAnnual:
+          taxProfileRow.td1OtherApprovedAnnual != null
+            ? Number(taxProfileRow.td1OtherApprovedAnnual.toString())
+            : null,
+        cumulativeCalculationEnabled:
+          taxProfileRow.cumulativeCalculationEnabled,
+        previousEmploymentDeclared: taxProfileRow.previousEmploymentDeclared,
+        previousEmploymentVerified: taxProfileRow.previousEmploymentVerified,
+      }
+    : null;
+
+  const resolvedTax = resolveEmployeeTaxPayeInputs({
+    taxYear,
+    taxProfile: taxProfileFields,
+    payrollProfile: {
+      td1OtherApprovedAnnual:
+        profile?.td1OtherApprovedAnnual != null
+          ? Number(profile.td1OtherApprovedAnnual.toString())
+          : null,
+    },
+    priorEmployment: priorEmploymentBundle.totals,
+  });
 
   const payElements: PayrollPayElement[] = [];
   let monthlyTaxableEarnings = 0;
@@ -326,7 +390,7 @@ export async function getEmployeePayrollSetup(
 
   let statutoryPreview: StatutoryPreview | null = null;
 
-  if (contract && monthlyTaxableEarnings > 0) {
+  if (includeStatutoryPreview && contract && monthlyTaxableEarnings > 0) {
     const [nisClasses, payeConfig, healthConfig] = await Promise.all([
       getCurrentNisClasses(),
       getCurrentPayeTaxConfig(),
@@ -350,12 +414,12 @@ export async function getEmployeePayrollSetup(
       !exemptFromPaye && payeConfig != null
         ? computePayeContribution({
             monthlyTaxableEarnings,
-            config: toPayeConfigInput(payeConfig),
+            config: applyPersonalAllowanceOverride(
+              toPayeConfigInput(payeConfig),
+              resolvedTax.personalAllowanceOverride,
+            ),
             employeeNisWeekly: nis?.employeeWeekly ?? 0,
-            otherApprovedDeductionsAnnual:
-              profile?.td1OtherApprovedAnnual != null
-                ? Number(profile.td1OtherApprovedAnnual.toString())
-                : 0,
+            otherApprovedDeductionsAnnual: resolvedTax.td1OtherApprovedAnnual,
           })
         : null;
 
@@ -378,6 +442,7 @@ export async function getEmployeePayrollSetup(
       notes: [
         "Taxable contract allowances (isTaxable) are included in NIS/PAYE/Health taxable pay; non-taxable allowances remain in gross only.",
         "Overtime, bonuses, and commissions are deferred from this preview.",
+        ...resolvedTax.calcNotes,
         ...(exemptFromNis
           ? ["NIS exempt (employee opt-out) — no contribution estimated."]
           : []),
@@ -388,9 +453,15 @@ export async function getEmployeePayrollSetup(
     };
   }
 
+  const displayTd1 =
+    resolvedTax.td1OtherApprovedAnnual > 0 || taxProfileRow != null
+      ? resolvedTax.td1OtherApprovedAnnual.toFixed(2)
+      : profile?.td1OtherApprovedAnnual?.toString() ?? null;
+
   return {
     employee: {
       id: employee.id,
+      organizationId: employee.organizationId,
       employeeNumber: employee.employeeNumber,
       displayName: `${employee.firstName} ${employee.lastName}`,
       employmentStatus: employee.employmentStatus,
@@ -408,8 +479,7 @@ export async function getEmployeePayrollSetup(
           nisNumber: profile.nisNumber,
           birNumber: profile.birNumber,
           notes: profile.notes,
-          td1OtherApprovedAnnual:
-            profile.td1OtherApprovedAnnual?.toString() ?? null,
+          td1OtherApprovedAnnual: displayTd1,
           pensionOnlyIncome: profile.pensionOnlyIncome,
           exemptFromNis: profile.exemptFromNis,
           exemptFromHealthSurcharge: profile.exemptFromHealthSurcharge,
@@ -449,5 +519,62 @@ export async function getEmployeePayrollSetup(
     payElements,
     readiness,
     statutoryPreview,
+    taxProfile: {
+      id: taxProfileRow?.id ?? null,
+      taxYear,
+      taxCalculationMethod: resolvedTax.taxCalculationMethod,
+      taxProfileStatus: resolvedTax.taxProfileStatus,
+      personalAllowance:
+        taxProfileRow?.personalAllowance?.toString() ??
+        (resolvedTax.personalAllowanceOverride != null
+          ? resolvedTax.personalAllowanceOverride.toFixed(2)
+          : null),
+      personalAllowanceSource: resolvedTax.personalAllowanceSource,
+      td1Submitted: taxProfileRow?.td1Submitted ?? false,
+      td1EffectiveDate: taxProfileRow?.td1EffectiveDate
+        ? taxProfileRow.td1EffectiveDate.toISOString().slice(0, 10)
+        : null,
+      td1ApprovedByIrd: taxProfileRow?.td1ApprovedByIrd ?? false,
+      td1ApprovalReference: taxProfileRow?.td1ApprovalReference ?? null,
+      td1OtherApprovedAnnual: displayTd1,
+      cumulativeCalculationEnabled: resolvedTax.cumulativeCalculationEnabled,
+      previousEmploymentDeclared: resolvedTax.previousEmploymentDeclared,
+      previousEmploymentVerified: resolvedTax.previousEmploymentVerified,
+      previousEmploymentSource: taxProfileRow?.previousEmploymentSource ?? null,
+      notes: taxProfileRow?.notes ?? null,
+      source: resolvedTax.source,
+    },
+    priorEmployment: {
+      taxYear: priorEmploymentBundle.taxYear,
+      records: priorEmploymentBundle.records.map((row) => ({
+        id: row.id,
+        taxYear: row.taxYear,
+        employerName: row.employerName,
+        employerBirNumber: row.employerBirNumber,
+        employmentStartDate: row.employmentStartDate,
+        employmentEndDate: row.employmentEndDate,
+        asOfDate: row.asOfDate,
+        taxableIncomeYtd: row.taxableIncomeYtd,
+        payeDeductedYtd: row.payeDeductedYtd,
+        nisEmployeeYtd: row.nisEmployeeYtd,
+        nisEmployerYtd: row.nisEmployerYtd,
+        healthSurchargeYtd: row.healthSurchargeYtd,
+        otherApprovedDeductionsYtd: row.otherApprovedDeductionsYtd,
+        verified: row.verified,
+        notes: row.notes,
+        documents: row.documents,
+      })),
+      totals: {
+        taxableIncomeYtd: priorEmploymentBundle.totals.taxableIncomeYtd,
+        payeDeductedYtd: priorEmploymentBundle.totals.payeDeductedYtd,
+        nisEmployeeYtd: priorEmploymentBundle.totals.nisEmployeeYtd,
+        healthSurchargeYtd: priorEmploymentBundle.totals.healthSurchargeYtd,
+        otherApprovedDeductionsYtd:
+          priorEmploymentBundle.totals.otherApprovedDeductionsYtd,
+        recordCount: priorEmploymentBundle.totals.recordCount,
+        verifiedCount: priorEmploymentBundle.totals.verifiedCount,
+        allVerified: priorEmploymentBundle.totals.allVerified,
+      },
+    },
   };
 }

@@ -30,6 +30,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
       payslip: doc.payslip,
       meta: doc.meta,
       ytd: doc.ytd,
+      ytdBreakdown: doc.ytdBreakdown,
       isOfficial: doc.isOfficial,
     })),
   );

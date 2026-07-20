@@ -1,12 +1,16 @@
 import { prisma } from "@/lib/prisma";
+import { getEmployeePriorEmploymentTotals } from "@/src/modules/payroll/data/get-employee-prior-employment";
 import {
   assemblePayslipYtd,
+  assemblePayslipYtdBreakdown,
+  type PayslipYtdBreakdown,
   type PayslipYtdContribution,
   type PayslipYtdTotals,
   yearFromPeriodKey,
 } from "@/src/modules/payroll/lib/payslip-ytd";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
+import { aggregatePriorEmploymentYtd } from "@/src/modules/payroll/lib/prior-employment-ytd";
 
 function lineAmount(payslip: PayslipPreview, label: string): number {
   return payslip.deductions
@@ -24,6 +28,7 @@ export function payslipPreviewToYtdContribution(
     paye: lineAmount(payslip, "PAYE (income tax)"),
     nisEmployee: lineAmount(payslip, "NIS (employee)"),
     healthSurcharge: lineAmount(payslip, "Health Surcharge"),
+    taxableEarnings: payslip.monthlyTaxableEarnings,
   };
 }
 
@@ -31,6 +36,7 @@ function toContribution(row: {
   grossPay: { toString(): string };
   totalDeductions: { toString(): string };
   netPay: { toString(): string };
+  monthlyTaxableEarnings?: { toString(): string } | null;
   payeAmount?: { toString(): string } | null;
   nisEmployeeAmount?: { toString(): string } | null;
   healthSurchargeAmount?: { toString(): string } | null;
@@ -41,6 +47,11 @@ function toContribution(row: {
     row.nisEmployeeAmount != null ||
     row.healthSurchargeAmount != null;
 
+  const taxableFromColumn =
+    row.monthlyTaxableEarnings != null
+      ? Number(row.monthlyTaxableEarnings.toString())
+      : null;
+
   if (hasStatutoryColumns) {
     return {
       grossPay: Number(row.grossPay.toString()),
@@ -49,6 +60,8 @@ function toContribution(row: {
       paye: Number(row.payeAmount?.toString() ?? 0),
       nisEmployee: Number(row.nisEmployeeAmount?.toString() ?? 0),
       healthSurcharge: Number(row.healthSurchargeAmount?.toString() ?? 0),
+      taxableEarnings:
+        taxableFromColumn ?? Number(row.grossPay.toString()),
     };
   }
 
@@ -64,6 +77,7 @@ function toContribution(row: {
     paye: 0,
     nisEmployee: 0,
     healthSurcharge: 0,
+    taxableEarnings: taxableFromColumn ?? Number(row.grossPay.toString()),
   };
 }
 
@@ -73,6 +87,7 @@ type PostedYtdCandidate = {
   grossPay: { toString(): string };
   totalDeductions: { toString(): string };
   netPay: { toString(): string };
+  monthlyTaxableEarnings: { toString(): string };
   payeAmount: { toString(): string };
   nisEmployeeAmount: { toString(): string };
   healthSurchargeAmount: { toString(): string };
@@ -145,6 +160,7 @@ export async function getPostedPayslipYtd(input: {
       grossPay: true,
       totalDeductions: true,
       netPay: true,
+      monthlyTaxableEarnings: true,
       payeAmount: true,
       nisEmployeeAmount: true,
       healthSurchargeAmount: true,
@@ -211,6 +227,7 @@ export async function getPostedPayslipYtdBatch(
       grossPay: true,
       totalDeductions: true,
       netPay: true,
+      monthlyTaxableEarnings: true,
       payeAmount: true,
       nisEmployeeAmount: true,
       healthSurchargeAmount: true,
@@ -322,6 +339,7 @@ export async function getPreviewPayslipYtdBatch(
       grossPay: true,
       totalDeductions: true,
       netPay: true,
+      monthlyTaxableEarnings: true,
       payeAmount: true,
       nisEmployeeAmount: true,
       healthSurchargeAmount: true,
@@ -344,6 +362,164 @@ export async function getPreviewPayslipYtdBatch(
         current: input.current,
       }),
     );
+  }
+
+  return result;
+}
+
+/**
+ * Current-employer statutory YTD before a period (excludes this period).
+ * Used by cumulative PAYE (Phases 4–5).
+ */
+export async function getEmployeeStatutoryYtdBeforePeriod(input: {
+  employeeId: string;
+  taxYear: number;
+  periodEnd: Date;
+}): Promise<{
+  taxableEarnings: number;
+  paye: number;
+  nisEmployee: number;
+  healthSurcharge: number;
+  periodCount: number;
+}> {
+  const rows = await prisma.payslip.findMany({
+    where: {
+      employeeId: input.employeeId,
+      status: "POSTED",
+      payrollPeriod: {
+        year: input.taxYear,
+        periodEnd: { lt: input.periodEnd },
+      },
+    },
+    select: {
+      grossPay: true,
+      totalDeductions: true,
+      netPay: true,
+      monthlyTaxableEarnings: true,
+      payeAmount: true,
+      nisEmployeeAmount: true,
+      healthSurchargeAmount: true,
+    },
+  });
+
+  const totals = assemblePayslipYtd({
+    year: input.taxYear,
+    priorPosted: rows.map(toContribution),
+  });
+
+  return {
+    taxableEarnings: totals.taxableEarnings,
+    paye: totals.paye,
+    nisEmployee: totals.nisEmployee,
+    healthSurcharge: totals.healthSurcharge,
+    periodCount: totals.periodCount,
+  };
+}
+
+/** Phase 9: prior / this-employer / combined labels for a single employee YTD. */
+export async function getPayslipYtdBreakdown(
+  employeeId: string,
+  currentEmployer: PayslipYtdTotals,
+): Promise<PayslipYtdBreakdown> {
+  const prior = await getEmployeePriorEmploymentTotals(
+    employeeId,
+    currentEmployer.year,
+  );
+  return assemblePayslipYtdBreakdown({
+    year: currentEmployer.year,
+    currentEmployer,
+    prior,
+  });
+}
+
+/**
+ * Batch Phase 9 breakdowns. Keys are `employeeId` (preview) or caller-chosen
+ * when mapping from payslip ids after the fact.
+ */
+export async function getPayslipYtdBreakdownBatch(
+  items: Array<{
+    key: string;
+    employeeId: string;
+    currentEmployer: PayslipYtdTotals;
+  }>,
+): Promise<Map<string, PayslipYtdBreakdown>> {
+  const result = new Map<string, PayslipYtdBreakdown>();
+
+  if (items.length === 0) {
+    return result;
+  }
+
+  const byYear = new Map<number, typeof items>();
+  for (const item of items) {
+    const list = byYear.get(item.currentEmployer.year) ?? [];
+    list.push(item);
+    byYear.set(item.currentEmployer.year, list);
+  }
+
+  for (const [year, yearItems] of byYear) {
+    const employeeIds = [...new Set(yearItems.map((row) => row.employeeId))];
+    const rows = await prisma.employeePriorEmploymentYtd.findMany({
+      where: {
+        employeeId: { in: employeeIds },
+        taxYear: year,
+        status: "ACTIVE",
+      },
+      select: {
+        employeeId: true,
+        taxableIncomeYtd: true,
+        payeDeductedYtd: true,
+        nisEmployeeYtd: true,
+        nisEmployerYtd: true,
+        healthSurchargeYtd: true,
+        otherApprovedDeductionsYtd: true,
+        verified: true,
+      },
+    });
+
+    const priorByEmployee = new Map<
+      string,
+      ReturnType<typeof aggregatePriorEmploymentYtd>
+    >();
+    for (const employeeId of employeeIds) {
+      const employeeRows = rows.filter((row) => row.employeeId === employeeId);
+      priorByEmployee.set(
+        employeeId,
+        aggregatePriorEmploymentYtd(
+          employeeRows.map((row) => ({
+            taxableIncomeYtd: Number(row.taxableIncomeYtd.toString()),
+            payeDeductedYtd: Number(row.payeDeductedYtd.toString()),
+            nisEmployeeYtd:
+              row.nisEmployeeYtd != null
+                ? Number(row.nisEmployeeYtd.toString())
+                : 0,
+            nisEmployerYtd:
+              row.nisEmployerYtd != null
+                ? Number(row.nisEmployerYtd.toString())
+                : 0,
+            healthSurchargeYtd:
+              row.healthSurchargeYtd != null
+                ? Number(row.healthSurchargeYtd.toString())
+                : 0,
+            otherApprovedDeductionsYtd:
+              row.otherApprovedDeductionsYtd != null
+                ? Number(row.otherApprovedDeductionsYtd.toString())
+                : 0,
+            verified: row.verified,
+          })),
+        ),
+      );
+    }
+
+    for (const item of yearItems) {
+      result.set(
+        item.key,
+        assemblePayslipYtdBreakdown({
+          year,
+          currentEmployer: item.currentEmployer,
+          prior: priorByEmployee.get(item.employeeId) ?? null,
+        }),
+      );
+    }
   }
 
   return result;

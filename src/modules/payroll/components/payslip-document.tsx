@@ -8,7 +8,7 @@ import {
   type PayslipLineItem,
   type PayslipPreview,
 } from "@/src/modules/payroll/lib/payslip-preview";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { PayslipYtdBreakdown, PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
 
 function Amount({
   amount,
@@ -25,6 +25,133 @@ function Amount({
     <span className={`tabular-nums ${className}`}>
       {formatMoney(amount, showCurrency ? { currency } : undefined)}
     </span>
+  );
+}
+
+function YtdMetricStrip({
+  currency,
+  metrics,
+}: {
+  currency: string;
+  metrics: Array<{ label: string; amount: number }>;
+}) {
+  return (
+    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] tabular-nums text-muted-foreground print:gap-x-2 print:text-[9px]">
+      {metrics.map((metric) => (
+        <span key={metric.label}>
+          {metric.label}{" "}
+          <span className="font-medium text-foreground">
+            {formatMoney(metric.amount, { currency })}
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function YtdSection({
+  currency,
+  ytd,
+  ytdBreakdown,
+}: {
+  currency: string;
+  ytd: PayslipYtdTotals;
+  ytdBreakdown?: PayslipYtdBreakdown | null;
+}) {
+  const showSplit =
+    ytdBreakdown != null && ytdBreakdown.prior.recordCount > 0;
+
+  if (!showSplit || !ytdBreakdown) {
+    if (ytd.periodCount <= 0) {
+      return null;
+    }
+
+    return (
+      <section className="border-b border-border/70 px-3 py-2 sm:px-4 print:px-2.5 print:py-0.5">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 print:gap-y-0">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+            Year to date · {ytd.year}
+            <span className="ml-1.5 font-normal normal-case tracking-normal">
+              ({ytd.periodCount} period{ytd.periodCount === 1 ? "" : "s"})
+            </span>
+          </p>
+          <YtdMetricStrip
+            currency={currency}
+            metrics={[
+              { label: "Gross", amount: ytd.grossPay },
+              { label: "Deductions", amount: ytd.totalDeductions },
+              { label: "PAYE", amount: ytd.paye },
+              { label: "NIS", amount: ytd.nisEmployee },
+              { label: "Health", amount: ytd.healthSurcharge },
+              { label: "Net", amount: ytd.netPay },
+            ]}
+          />
+        </div>
+      </section>
+    );
+  }
+
+  const current = ytdBreakdown.currentEmployer;
+  const combined = ytdBreakdown.combined;
+  const prior = ytdBreakdown.prior;
+
+  return (
+    <section className="space-y-1.5 border-b border-border/70 px-3 py-2 sm:px-4 print:space-y-0.5 print:px-2.5 print:py-0.5">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+          Prior employer · {ytdBreakdown.year}
+          <span className="ml-1.5 font-normal normal-case tracking-normal">
+            ({prior.recordCount} record{prior.recordCount === 1 ? "" : "s"})
+          </span>
+        </p>
+        <YtdMetricStrip
+          currency={currency}
+          metrics={[
+            { label: "Taxable", amount: prior.taxableIncome },
+            { label: "PAYE", amount: prior.paye },
+            { label: "NIS", amount: prior.nisEmployee },
+            { label: "Health", amount: prior.healthSurcharge },
+          ]}
+        />
+      </div>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+          This employer · {ytdBreakdown.year}
+          <span className="ml-1.5 font-normal normal-case tracking-normal">
+            (
+            {current.periodCount}{" "}
+            {current.periodCount === 1 ? "period" : "periods"})
+          </span>
+        </p>
+        <YtdMetricStrip
+          currency={currency}
+          metrics={[
+            { label: "Gross", amount: current.grossPay },
+            { label: "Deductions", amount: current.totalDeductions },
+            { label: "PAYE", amount: current.paye },
+            { label: "NIS", amount: current.nisEmployee },
+            { label: "Health", amount: current.healthSurcharge },
+            { label: "Net", amount: current.netPay },
+          ]}
+        />
+      </div>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+          Combined · {ytdBreakdown.year}
+        </p>
+        <YtdMetricStrip
+          currency={currency}
+          metrics={[
+            { label: "Taxable", amount: combined.taxableEarnings },
+            { label: "PAYE", amount: combined.paye },
+            { label: "NIS", amount: combined.nisEmployee },
+            { label: "Health", amount: combined.healthSurcharge },
+            { label: "Gross", amount: combined.grossPay },
+            { label: "Net", amount: combined.netPay },
+          ]}
+        />
+      </div>
+    </section>
   );
 }
 
@@ -135,6 +262,7 @@ export function PayslipDocument({
   payslip,
   meta,
   ytd = null,
+  ytdBreakdown = null,
   showWarnings = true,
   isOfficial = false,
 }: {
@@ -142,6 +270,8 @@ export function PayslipDocument({
   meta: PayslipDocumentMeta;
   /** Year-to-date totals (prior posted + this slip/preview). */
   ytd?: PayslipYtdTotals | null;
+  /** Phase 9: prior / this-employer / combined split when prior exists. */
+  ytdBreakdown?: PayslipYtdBreakdown | null;
   /** When false, suppresses the preview warnings block (e.g. on the main preview page). */
   showWarnings?: boolean;
   /** Posted payslip — hide preview banner and show official footer. */
@@ -348,55 +478,12 @@ export function PayslipDocument({
           </div>
         </section>
 
-        {ytd && ytd.periodCount > 0 ? (
-          <section className="border-b border-border/70 px-3 py-2 sm:px-4 print:px-2.5 print:py-0.5">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 print:gap-y-0">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
-                Year to date · {ytd.year}
-                <span className="ml-1.5 font-normal normal-case tracking-normal">
-                  ({ytd.periodCount} period{ytd.periodCount === 1 ? "" : "s"})
-                </span>
-              </p>
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] tabular-nums text-muted-foreground print:gap-x-2 print:text-[9px]">
-                <span>
-                  Gross{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.grossPay, { currency })}
-                  </span>
-                </span>
-                <span>
-                  Deductions{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.totalDeductions, { currency })}
-                  </span>
-                </span>
-                <span>
-                  PAYE{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.paye, { currency })}
-                  </span>
-                </span>
-                <span>
-                  NIS{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.nisEmployee, { currency })}
-                  </span>
-                </span>
-                <span>
-                  Health{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.healthSurcharge, { currency })}
-                  </span>
-                </span>
-                <span>
-                  Net{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.netPay, { currency })}
-                  </span>
-                </span>
-              </div>
-            </div>
-          </section>
+        {ytd ? (
+          <YtdSection
+            currency={currency}
+            ytd={ytd}
+            ytdBreakdown={ytdBreakdown}
+          />
         ) : null}
 
         {payslip.employerContributions.length > 0 ? (

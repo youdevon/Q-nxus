@@ -10,12 +10,16 @@ import { payslipStatusBadgeVariant } from "@/src/config/ui-colors";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { PayslipDocument } from "@/src/modules/payroll/components/payslip-document";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type {
+  PayslipYtdBreakdown,
+  PayslipYtdTotals,
+} from "@/src/modules/payroll/lib/payslip-ytd";
 
 export function PayslipPreviewView({
   payslip,
   meta,
   ytd = null,
+  ytdBreakdown = null,
   backHref,
   backLabel,
   setupHref,
@@ -29,6 +33,7 @@ export function PayslipPreviewView({
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
   ytd?: PayslipYtdTotals | null;
+  ytdBreakdown?: PayslipYtdBreakdown | null;
   backHref: string;
   backLabel: string;
   /** Optional link to payroll setup (manage users). */
@@ -103,6 +108,7 @@ export function PayslipPreviewView({
         payslip={payslip}
         meta={meta}
         ytd={ytd}
+        ytdBreakdown={ytdBreakdown}
         showWarnings={!isOfficial && payslip.warnings.length > 0}
         isOfficial={isOfficial}
       />

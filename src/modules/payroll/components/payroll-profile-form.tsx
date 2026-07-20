@@ -37,6 +37,12 @@ const initialState: PayrollProfileFormState = {
   message: "",
 };
 
+type PayrollProfileFormProps = {
+  setup: EmployeePayrollSetup;
+  /** Optional link to the employee tax-year overview (Phase 8). */
+  taxYearHref?: string;
+};
+
 type BankAccountRow = {
   rowId: string;
   /** Select value: DB institution id, catalog key, or `other`. */
@@ -103,9 +109,8 @@ function newBankAccount(isPrimary: boolean): BankAccountRow {
 
 export function PayrollProfileForm({
   setup,
-}: {
-  setup: EmployeePayrollSetup;
-}) {
+  taxYearHref,
+}: PayrollProfileFormProps) {
   const [state, formAction, pending] = useActionState(
     savePayrollProfile,
     initialState,
@@ -271,6 +276,15 @@ export function PayrollProfileForm({
           backLabel="Payroll"
           actions={
             <FormPageActions cancelHref={payrollHref}>
+              {taxYearHref ? (
+                <Button
+                  nativeButton={false}
+                  variant="outline"
+                  render={<Link href={taxYearHref} />}
+                >
+                  Tax year
+                </Button>
+              ) : null}
               <Button
                 nativeButton={false}
                 variant="outline"
@@ -481,7 +495,8 @@ export function PayrollProfileForm({
               )}
               <p className="text-xs text-muted-foreground">
                 Combined with 70% of employee NIS under the PAYE approved-
-                deduction cap.
+                deduction cap. Synced with the {setup.taxProfile.taxYear} tax
+                profile below.
               </p>
             </div>
 

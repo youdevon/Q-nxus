@@ -53,6 +53,7 @@ export default async function ReadyPayslipsPrintPage({
         payslip: doc.payslip,
         meta: doc.meta,
         ytd: doc.ytd,
+        ytdBreakdown: doc.ytdBreakdown,
         isOfficial: false,
       }))}
       skippedNotes={skippedNotes}

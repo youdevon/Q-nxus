@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HeartPulse, Landmark, Shield } from "lucide-react";
+import { HeartPulse, Landmark, Shield, Wallet } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -291,6 +291,32 @@ export default async function PayrollSettingsPage() {
         <p className="mb-4 text-sm text-muted-foreground">
           Configurable CSV / manual register adapters only. Official bank ACH
           layouts are not shipped — seeded profiles are marked placeholder.
+        </p>
+      </section>
+
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Wallet className="size-4 text-muted-foreground" />
+            <SectionHeading>Recurring components</SectionHeading>
+          </div>
+
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/payroll/settings/components" />}
+          >
+            {canManage || capabilities.can("payroll.setup")
+              ? "Manage components"
+              : "View components"}
+          </Button>
+        </div>
+
+        <p className="mb-4 text-sm text-muted-foreground">
+          Organization masters for loans, garnishments, pension installments,
+          voluntary deductions, and recurring earnings. Assign on each
+          employee&apos;s payroll setup page; balances decrease when a regular
+          pay run is posted.
         </p>
       </section>
     </PageShell>

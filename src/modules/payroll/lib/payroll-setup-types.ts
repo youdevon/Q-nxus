@@ -2,6 +2,75 @@ import type { HealthSurchargeResult } from "@/src/modules/payroll/lib/health-sur
 import type { NisContributionResult } from "@/src/modules/payroll/lib/nis-contribution";
 import type { PayeContributionResult } from "@/src/modules/payroll/lib/paye-contribution";
 import type { PayrollReadinessResult } from "@/src/modules/payroll/lib/payroll-readiness";
+import type {
+  EmployeeTaxProfileStatusCode,
+  PersonalAllowanceSourceCode,
+  TaxCalculationMethodCode,
+} from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
+
+export type EmployeeTaxProfileSetup = {
+  id: string | null;
+  taxYear: number;
+  taxCalculationMethod: TaxCalculationMethodCode;
+  taxProfileStatus: EmployeeTaxProfileStatusCode | null;
+  personalAllowance: string | null;
+  personalAllowanceSource: PersonalAllowanceSourceCode;
+  td1Submitted: boolean;
+  td1EffectiveDate: string | null;
+  td1ApprovedByIrd: boolean;
+  td1ApprovalReference: string | null;
+  td1OtherApprovedAnnual: string | null;
+  cumulativeCalculationEnabled: boolean;
+  previousEmploymentDeclared: boolean;
+  previousEmploymentVerified: boolean;
+  previousEmploymentSource: string | null;
+  notes: string | null;
+  /** Where resolved TD1 / method came from for calc preview. */
+  source: "tax_profile" | "payroll_profile" | "none";
+};
+
+export type PriorEmploymentDocumentSetup = {
+  id: string;
+  documentType: string;
+  label: string | null;
+  storedFileId: string;
+  fileName: string;
+  createdAt: string;
+};
+
+export type PriorEmploymentYtdSetup = {
+  id: string;
+  taxYear: number;
+  employerName: string;
+  employerBirNumber: string | null;
+  employmentStartDate: string | null;
+  employmentEndDate: string | null;
+  asOfDate: string;
+  taxableIncomeYtd: string;
+  payeDeductedYtd: string;
+  nisEmployeeYtd: string | null;
+  nisEmployerYtd: string | null;
+  healthSurchargeYtd: string | null;
+  otherApprovedDeductionsYtd: string | null;
+  verified: boolean;
+  notes: string | null;
+  documents: PriorEmploymentDocumentSetup[];
+};
+
+export type PriorEmploymentSetup = {
+  taxYear: number;
+  records: PriorEmploymentYtdSetup[];
+  totals: {
+    taxableIncomeYtd: number;
+    payeDeductedYtd: number;
+    nisEmployeeYtd: number;
+    healthSurchargeYtd: number;
+    otherApprovedDeductionsYtd: number;
+    recordCount: number;
+    verifiedCount: number;
+    allVerified: boolean;
+  };
+};
 
 /** Client-safe payroll setup DTOs (no Prisma / pg). */
 
@@ -56,6 +125,7 @@ export type StatutoryPreview = {
 export type EmployeePayrollSetup = {
   employee: {
     id: string;
+    organizationId: string;
     employeeNumber: string;
     displayName: string;
     employmentStatus: string;
@@ -109,4 +179,8 @@ export type EmployeePayrollSetup = {
   payElements: PayrollPayElement[];
   readiness: PayrollReadinessResult;
   statutoryPreview: StatutoryPreview | null;
+  /** Per tax-year PAYE / TD1 treatment (Phase 2). */
+  taxProfile: EmployeeTaxProfileSetup;
+  /** Prior-employer YTD for the current tax year (Phase 3). */
+  priorEmployment: PriorEmploymentSetup;
 };
