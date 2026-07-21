@@ -84,6 +84,14 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
     });
     payrollTaskCompleted = true;
   } else if (!payrollReady) {
+    const {
+      mergeNotificationRecipients,
+      recipientsFromUsers,
+      resolveRecipientsByPermissions,
+    } = await import(
+      "@/src/modules/notifications/lib/resolve-notification-recipients"
+    );
+
     const actor = await prisma.user.findUnique({
       where: { id: input.actorUserId },
       select: {
@@ -95,7 +103,15 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
       },
     });
 
-    if (actor?.isActive) {
+    const staff = await resolveRecipientsByPermissions(
+      input.organizationId,
+      ["payroll.setup", "payroll.manage"],
+      { sendEmail: false },
+    );
+    const actorRecipients = recipientsFromUsers([actor], { sendEmail: true });
+    const recipients = mergeNotificationRecipients(staff, actorRecipients);
+
+    if (recipients.length > 0) {
       const employeeLabel = setup?.employee
         ? `${setup.employee.employeeNumber} — ${setup.employee.displayName}`
         : input.employeeId;
@@ -110,14 +126,7 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
           actionUrl: `/payroll/employees/${input.employeeId}`,
           relatedType: "Employee",
           relatedId: input.employeeId,
-          recipients: [
-            {
-              userId: actor.id,
-              email: actor.email,
-              name: `${actor.firstName} ${actor.lastName}`,
-              sendEmail: true,
-            },
-          ],
+          recipients,
           email: {
             subject: "Payroll setup needed after contract activation",
             actionLabel: "Open payroll setup",
@@ -125,7 +134,7 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
         });
       } catch (error) {
         console.error(
-          "Unable to notify actor about payroll readiness after activate:",
+          "Unable to notify about payroll readiness after activate:",
           error,
         );
       }

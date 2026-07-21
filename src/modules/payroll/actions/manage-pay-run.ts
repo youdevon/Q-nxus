@@ -31,6 +31,11 @@ import {
   isPayRunMutable,
   isPayRunPosted,
 } from "@/src/modules/payroll/lib/pay-run-lifecycle";
+import {
+  notifyPayRunApproved,
+  notifyPayRunPosted,
+  notifyPayRunReadyForReview,
+} from "@/src/modules/payroll/services/notify-payroll-events";
 import { postPayRunInTransaction } from "@/src/modules/payroll/services/post-pay-run";
 import {
   recalculateDraftPayRunCore,
@@ -427,6 +432,21 @@ export async function createMonthlyPayPeriod(
     };
   }
 
+  const createdRun = await prisma.payRun.findUnique({
+    where: { id: payRunId },
+    select: { runNumber: true },
+  });
+  if (createdRun) {
+    await notifyPayRunReadyForReview({
+      organizationId: organization.id,
+      payRunId,
+      runNumber: createdRun.runNumber,
+      periodName: bounds.name,
+      actorUserId: actor.actor.userId,
+      reason: "created",
+    });
+  }
+
   revalidatePath("/payroll");
   revalidatePath("/payroll/runs");
   redirect(`/payroll/runs/${payRunId}`);
@@ -752,6 +772,21 @@ export async function createSupplementalPayRun(
     };
   }
 
+  const createdRun = await prisma.payRun.findUnique({
+    where: { id: payRunId },
+    select: { runNumber: true },
+  });
+  if (createdRun) {
+    await notifyPayRunReadyForReview({
+      organizationId: organization.id,
+      payRunId,
+      runNumber: createdRun.runNumber,
+      periodName: source.payrollPeriod.name,
+      actorUserId: actor.actor.userId,
+      reason: "created",
+    });
+  }
+
   revalidatePath("/payroll");
   revalidatePath("/payroll/runs");
   revalidatePath(`/payroll/runs/${source.id}`);
@@ -896,6 +931,17 @@ export async function excludePayslipFromPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
+  if (payRun.status === "APPROVED") {
+    await notifyPayRunReadyForReview({
+      organizationId: payRun.organizationId,
+      payRunId: payRun.id,
+      runNumber: payRun.runNumber,
+      actorUserId: actor.actor.userId,
+      reason: "approval_cleared",
+    });
+  }
+
   return {
     status: "success",
     message: `${payslip.employeeName} excluded from this pay run.`,
@@ -1021,6 +1067,17 @@ export async function reincludePayslipInPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
+  if (payRun.status === "APPROVED") {
+    await notifyPayRunReadyForReview({
+      organizationId: payRun.organizationId,
+      payRunId: payRun.id,
+      runNumber: payRun.runNumber,
+      actorUserId: actor.actor.userId,
+      reason: "approval_cleared",
+    });
+  }
+
   return {
     status: "success",
     message: `${payslip.employeeName} re-included in this pay run.`,
@@ -1405,6 +1462,7 @@ export async function recalculateDraftPayRun(
   }
 
   const metadata = await getAuditRequestMetadata(formData);
+  const hadApproval = Boolean(payRun.approvedAt);
   const result = await recalculateDraftPayRunCore({
     payRun,
     actorUserId: actor.actor.userId,
@@ -1417,6 +1475,18 @@ export async function recalculateDraftPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
+  if (hadApproval) {
+    await notifyPayRunReadyForReview({
+      organizationId: organization.id,
+      payRunId: payRun.id,
+      runNumber: payRun.runNumber,
+      periodName: payRun.payrollPeriod.name,
+      actorUserId: actor.actor.userId,
+      reason: "approval_cleared",
+    });
+  }
+
   return {
     status: "success",
     message: `Recalculated ${result.employeeCount} included employee${
@@ -1546,6 +1616,15 @@ export async function approveDraftPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
+  await notifyPayRunApproved({
+    organizationId: organization.id,
+    payRunId: payRun.id,
+    runNumber: payRun.runNumber,
+    createdById: payRun.createdById,
+    actorUserId: actor.actor.userId,
+  });
+
   return {
     status: "success",
     message: "Pay run approved. A different user can now post it.",
@@ -1756,6 +1835,17 @@ export async function postPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
+  await notifyPayRunPosted({
+    organizationId: organization.id,
+    payRunId: payRun.id,
+    runNumber: payRun.runNumber,
+    periodName: payRun.payrollPeriod.name,
+    actorUserId: actor.actor.userId,
+    createdById: payRun.createdById,
+    approvedById: payRun.approvedById,
+  });
+
   redirect(`/payroll/runs/${payRun.id}`);
 }
 

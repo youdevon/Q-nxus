@@ -165,7 +165,7 @@ export function PayrollReadinessDirectory({
                       {row.blockingIssues.map((issue) => (
                         <span
                           key={issue}
-                          className="inline-flex max-w-full rounded-md border border-warning/30 bg-warning/10 px-2 py-0.5 text-xs leading-snug text-warning-foreground break-words"
+                          className="inline-flex max-w-full rounded-md border border-warning/30 bg-warning/10 px-2 py-0.5 text-xs leading-snug text-warning-foreground break-words dark:border-warning/40 dark:bg-warning/15 dark:text-warning"
                         >
                           {issue}
                         </span>

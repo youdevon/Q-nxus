@@ -6,6 +6,7 @@ import {
   canReleasePayRunPayslips,
   isPayslipEligibleForRelease,
 } from "@/src/modules/payroll/lib/payslip-release";
+import { notifyPayslipsReleased } from "@/src/modules/payroll/services/notify-payroll-events";
 
 export type ReleasePayRunPayslipsResult = {
   released: number;
@@ -150,6 +151,18 @@ export async function releasePayRunPayslipsCore(input: {
       userAgent: input.metadata.userAgent,
       clientHostName: input.metadata.clientHostName,
     },
+  });
+
+  await notifyPayslipsReleased({
+    payRunId: payRun.id,
+    runNumber: payRun.runNumber,
+    periodName: payRun.payrollPeriod.name,
+    employees: eligible.map((slip) => ({
+      userId: slip.employee.user?.id ?? null,
+      email: slip.employee.user?.email ?? slip.employee.workEmail,
+      firstName: slip.employee.firstName,
+      lastName: slip.employee.lastName,
+    })),
   });
 
   return {

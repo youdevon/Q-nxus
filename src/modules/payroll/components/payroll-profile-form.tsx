@@ -329,9 +329,11 @@ export function PayrollProfileForm({
 
         {!setup.readiness.isReady &&
         setup.readiness.blockingIssues.length > 0 ? (
-          <section className="rounded-md border border-border/70 bg-muted/20 p-4">
-            <p className="text-sm font-medium">Blocking issues</p>
-            <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+          <section className="rounded-md border border-warning/30 bg-warning/10 p-4 dark:border-warning/40 dark:bg-warning/15">
+            <p className="text-sm font-medium text-warning-foreground dark:text-warning">
+              Blocking issues
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-warning-foreground dark:text-warning/95">
               {setup.readiness.blockingIssues.map((issue) => (
                 <li key={issue}>• {issue}</li>
               ))}

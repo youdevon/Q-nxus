@@ -1,7 +1,9 @@
 import { archiveExpiredCorrespondenceRetention } from "@/src/modules/hr/services/archive-correspondence-retention";
+import { notifyAppraisalDueReminders } from "@/src/modules/hr/services/notify-appraisal-events";
 import { notifyContractExpiryReminders } from "@/src/modules/hr/services/notify-contract-expiry";
 import { notifyCorrespondenceAcknowledgementReminders } from "@/src/modules/hr/services/notify-correspondence-acknowledgement";
 import { notifyLifecycleTaskReminders } from "@/src/modules/hr/services/notify-lifecycle-task-reminders";
+import { notifyProbationEndingReminders } from "@/src/modules/hr/services/notify-probation-ending";
 import { notifyVacationForfeitureReminders } from "@/src/modules/hr/services/notify-vacation-forfeiture";
 import { archiveExpiredStoredFileRetention } from "@/src/modules/hr/services/stored-file-retention";
 import {
@@ -38,6 +40,14 @@ const jobs: ScheduledJob[] = [
   {
     name: "contract-expiry-reminders",
     run: () => notifyContractExpiryReminders(),
+  },
+  {
+    name: "probation-ending-reminders",
+    run: () => notifyProbationEndingReminders(),
+  },
+  {
+    name: "appraisal-due-reminders",
+    run: () => notifyAppraisalDueReminders(),
   },
   {
     name: "vacation-forfeiture-reminders",

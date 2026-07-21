@@ -1,106 +1,130 @@
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import { moneyDiffCents, roundToCents, sumMoney } from "@/src/modules/payroll/lib/money";
+import { toCsv } from "@/src/modules/payroll/lib/csv";
+import {
+  buildPayrollDisbursementCsv,
+  buildPayrollDisbursementRows,
+  buildPayrollDisbursementRowsFromPayslips,
+  type PayrollDisbursementRunMeta,
+} from "@/src/modules/payroll/lib/payroll-disbursement-export";
 
-function csvCell(value: string | number | null | undefined): string {
-  const text = value == null ? "" : String(value);
-  return `"${text.replaceAll('"', '""')}"`;
-}
+export { toCsv } from "@/src/modules/payroll/lib/csv";
 
-export function toCsv(rows: Array<Array<string | number | null | undefined>>): string {
-  return `${rows.map((row) => row.map(csvCell).join(",")).join("\n")}\n`;
-}
-
+/**
+ * Bank payment CSV (schema v1) from payslip snapshots.
+ * Prefer prepared payment allocations via buildBankPaymentCsvFromPaymentAllocations.
+ */
 export function buildBankPaymentCsv(input: {
   runNumber: string;
+  periodKey?: string;
+  periodEnd?: string;
+  paymentDate?: string;
   rows: Array<{
     employeeNumber: string;
     employeeName: string;
+    nisNumber?: string | null;
+    birNumber?: string | null;
     currency: string;
+    grossPay?: number;
+    paye?: number;
+    nisEmployee?: number;
+    healthSurcharge?: number;
+    netPay?: number;
     payslip: PayslipPreview;
   }>;
 }): string {
-  const rows: Array<Array<string | number | null | undefined>> = [
-    [
-      "runNumber",
-      "employeeRef",
-      "employeeName",
-      "bankName",
-      "accountNumber",
-      "amount",
-      "currency",
-      "splitType",
-    ],
-  ];
+  const periodEnd =
+    input.periodEnd ??
+    input.rows[0]?.payslip.period.asOf?.slice(0, 10) ??
+    "";
+  const run: PayrollDisbursementRunMeta = {
+    runNumber: input.runNumber,
+    periodKey: input.periodKey ?? input.rows[0]?.payslip.period.label ?? "",
+    periodEnd,
+    paymentDate: input.paymentDate ?? periodEnd,
+  };
 
-  for (const row of input.rows) {
-    for (const line of row.payslip.bankDistribution ?? []) {
-      if (line.amount <= 0) {
-        continue;
-      }
-      rows.push([
-        input.runNumber,
-        row.employeeNumber,
-        row.employeeName,
-        line.bankName,
-        line.accountNumber ?? line.accountNumberMasked,
-        line.amount.toFixed(2),
-        row.currency,
-        line.kind,
-      ]);
-    }
-  }
+  const rows = buildPayrollDisbursementRowsFromPayslips({
+    run,
+    rows: input.rows.map((row) => ({
+      employeeNumber: row.employeeNumber,
+      employeeName: row.employeeName,
+      nisNumber: row.nisNumber,
+      birNumber: row.birNumber,
+      currency: row.currency,
+      grossPay: row.grossPay ?? row.payslip.grossPay,
+      paye: row.paye ?? 0,
+      nisEmployee: row.nisEmployee ?? 0,
+      healthSurcharge: row.healthSurcharge ?? 0,
+      netPay: row.netPay ?? row.payslip.netPay,
+      payslip: row.payslip,
+    })),
+  });
 
-  return toCsv(rows);
+  return buildPayrollDisbursementCsv(rows);
 }
 
 /** Prefer frozen PayrollPaymentAllocation snapshots when payments are prepared. */
 export function buildBankPaymentCsvFromPaymentAllocations(input: {
   runNumber: string;
+  periodKey?: string;
+  periodEnd?: string;
+  paymentDate?: string;
   rows: Array<{
     employeeNumber: string;
     employeeName: string;
+    nisNumber?: string | null;
+    birNumber?: string | null;
     currencyCode: string;
+    grossPay?: number;
+    paye?: number;
+    nisEmployee?: number;
+    healthSurcharge?: number;
+    netPay?: number;
     allocations: Array<{
       bankName: string;
+      branchName?: string | null;
       accountNumber: string | null;
+      accountName?: string | null;
       accountNumberMasked: string;
       amount: number;
       allocationKind: string;
     }>;
   }>;
 }): string {
-  const rows: Array<Array<string | number | null | undefined>> = [
-    [
-      "runNumber",
-      "employeeRef",
-      "employeeName",
-      "bankName",
-      "accountNumber",
-      "amount",
-      "currency",
-      "splitType",
-    ],
-  ];
+  const periodEnd = input.periodEnd ?? "";
+  const run: PayrollDisbursementRunMeta = {
+    runNumber: input.runNumber,
+    periodKey: input.periodKey ?? "",
+    periodEnd,
+    paymentDate: input.paymentDate ?? periodEnd,
+  };
 
-  for (const row of input.rows) {
-    for (const line of row.allocations) {
-      if (line.amount <= 0) {
-        continue;
-      }
-      rows.push([
-        input.runNumber,
-        row.employeeNumber,
-        row.employeeName,
-        line.bankName,
-        line.accountNumber ?? line.accountNumberMasked,
-        line.amount.toFixed(2),
-        row.currencyCode,
-        line.allocationKind,
-      ]);
-    }
-  }
+  const rows = buildPayrollDisbursementRows({
+    run,
+    employees: input.rows.map((row) => ({
+      employeeNumber: row.employeeNumber,
+      employeeName: row.employeeName,
+      nisNumber: row.nisNumber,
+      birNumber: row.birNumber,
+      currency: row.currencyCode,
+      grossPay: row.grossPay ?? 0,
+      paye: row.paye ?? 0,
+      nisEmployee: row.nisEmployee ?? 0,
+      healthSurcharge: row.healthSurcharge ?? 0,
+      netPay: row.netPay ?? 0,
+      allocations: row.allocations.map((line) => ({
+        bankName: line.bankName,
+        branchName: line.branchName ?? null,
+        accountNumber: line.accountNumber ?? line.accountNumberMasked,
+        accountName: line.accountName ?? null,
+        splitType: line.allocationKind,
+        allocationAmount: line.amount,
+      })),
+    })),
+  });
 
-  return toCsv(rows);
+  return buildPayrollDisbursementCsv(rows);
 }
 
 function sumLines(

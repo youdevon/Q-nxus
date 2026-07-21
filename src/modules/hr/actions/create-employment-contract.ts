@@ -820,6 +820,39 @@ export async function createEmploymentContract(
           payrollError,
         );
       }
+
+      try {
+        const { notifyContractActivated } = await import(
+          "@/src/modules/hr/services/notify-contract-lifecycle"
+        );
+        const linked = await prisma.employee.findUnique({
+          where: { id: employeeId },
+          select: {
+            employeeNumber: true,
+            firstName: true,
+            lastName: true,
+            user: { select: { id: true } },
+          },
+        });
+        if (linked) {
+          await notifyContractActivated({
+            contractId: contract.id,
+            employeeId,
+            employee: {
+              employeeNumber: linked.employeeNumber,
+              firstName: linked.firstName,
+              lastName: linked.lastName,
+              userId: linked.user?.id ?? null,
+            },
+            actorUserId: actor.actor.userId,
+          });
+        }
+      } catch (notifyError) {
+        console.error(
+          "Employee activate notification failed after create-activate:",
+          notifyError,
+        );
+      }
     }
 
     revalidatePath("/people");

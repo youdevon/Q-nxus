@@ -165,6 +165,18 @@ export function PayRunPaymentsView({
                   <Download />
                   Bank CSV
                 </Button>
+                <Button
+                  nativeButton={false}
+                  variant="outline"
+                  render={
+                    <Link
+                      href={`/payroll/runs/${data.payRunId}/bank-export-xlsx`}
+                    />
+                  }
+                >
+                  <Download />
+                  Disbursement Excel
+                </Button>
               </>
             ) : null}
           </PageActionsEnd>
@@ -188,8 +200,9 @@ export function PayRunPaymentsView({
             Enable <code className="text-xs">ACH_EXPORT_ENABLED</code> in
             Administration → Feature controls when your bank layout is
             confirmed. Until then, use{" "}
-            <strong>Manual register batch</strong> or <strong>Bank CSV</strong>{" "}
-            — both remain available when manual payment export is on.
+            <strong>Manual register batch</strong>, <strong>Bank CSV</strong>,
+            or <strong>Disbursement Excel</strong> — all remain available when
+            manual payment export is on.
           </p>
         </div>
       ) : null}

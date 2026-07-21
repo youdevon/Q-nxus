@@ -16,35 +16,32 @@ function addUtcDays(value: Date, days: number): Date {
   return next;
 }
 
-export type ContractExpiryReminderResult = {
+export type ProbationEndingReminderResult = {
   considered: number;
   notified: number;
   skipped: number;
 };
 
 /**
- * Creates in-app notifications for HR/contract managers when current
- * contracts enter 30 / 60 / 90-day expiry windows. Deduplicates per
- * contract + window label within the last 14 days.
+ * Remind HR/contract managers and the linked employee when probation ends
+ * within 30 days (or is overdue). Deduplicates per contract + title within 14 days.
  */
-export async function notifyContractExpiryReminders(): Promise<ContractExpiryReminderResult> {
+export async function notifyProbationEndingReminders(): Promise<ProbationEndingReminderResult> {
   const today = startOfUtcDay();
-  const windowEnd = addUtcDays(today, 90);
+  const windowEnd = addUtcDays(today, 30);
 
   const contracts = await prisma.employmentContract.findMany({
     where: {
       isCurrent: true,
-      endDate: {
+      status: "ACTIVE",
+      probationEndDate: {
         not: null,
         lte: windowEnd,
-      },
-      status: {
-        in: ["ACTIVE", "EXPIRED"],
       },
     },
     select: {
       id: true,
-      endDate: true,
+      probationEndDate: true,
       contractNumber: true,
       jobTitle: true,
       employee: {
@@ -54,15 +51,11 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
           lastName: true,
           employeeNumber: true,
           organizationId: true,
-          position: {
-            select: { title: true },
-          },
+          position: { select: { title: true } },
           assignments: {
             where: { isCurrent: true },
             take: 1,
-            select: {
-              position: { select: { title: true } },
-            },
+            select: { position: { select: { title: true } } },
           },
           user: {
             select: {
@@ -89,8 +82,8 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
       return cached;
     }
     const recipients = await resolveRecipientsByPermissions(organizationId, [
-      "contracts.manage",
       "people.manage",
+      "contracts.manage",
     ]);
     recipientsByOrg.set(organizationId, recipients);
     return recipients;
@@ -101,28 +94,27 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
   const dedupeSince = addUtcDays(today, -14);
 
   for (const contract of contracts) {
-    if (!contract.endDate) {
+    if (!contract.probationEndDate) {
       skipped += 1;
       continue;
     }
 
     const managers = await managersForOrg(contract.employee.organizationId);
-
-    const endIso = contract.endDate.toISOString().slice(0, 10);
+    const endIso = contract.probationEndDate.toISOString().slice(0, 10);
     const daysUntil = Math.ceil(
-      (contract.endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      (contract.probationEndDate.getTime() - today.getTime()) /
+        (1000 * 60 * 60 * 24),
     );
 
     let windowLabel: string;
-
     if (daysUntil < 0) {
-      windowLabel = "expired";
+      windowLabel = "ended";
+    } else if (daysUntil <= 7) {
+      windowLabel = "within 7 days";
+    } else if (daysUntil <= 14) {
+      windowLabel = "within 14 days";
     } else if (daysUntil <= 30) {
       windowLabel = "within 30 days";
-    } else if (daysUntil <= 60) {
-      windowLabel = "within 60 days";
-    } else if (daysUntil <= 90) {
-      windowLabel = "within 90 days";
     } else {
       skipped += 1;
       continue;
@@ -135,19 +127,18 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
         positionTitle: contract.employee.position?.title,
         contractJobTitle: contract.jobTitle,
       }) ?? contract.jobTitle;
-
     const contractRef = contract.contractNumber
       ? ` (${contract.contractNumber})`
       : "";
     const severity =
-      daysUntil < 0 || daysUntil <= 30
+      daysUntil < 0 || daysUntil <= 7
         ? NotificationSeverity.WARNING
         : NotificationSeverity.INFORMATION;
 
     let createdAny = false;
 
     if (managers.length > 0) {
-      const title = `Contract ${windowLabel}: ${contract.employee.firstName} ${contract.employee.lastName}`;
+      const title = `Probation ${windowLabel}: ${contract.employee.firstName} ${contract.employee.lastName}`;
       const existing = await prisma.notification.findFirst({
         where: {
           relatedType: "EmploymentContract",
@@ -161,7 +152,7 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
       if (!existing) {
         await createSystemNotification({
           title,
-          message: `${contract.employee.employeeNumber} · ${positionLabel} ends ${endIso}${contractRef}.`,
+          message: `${contract.employee.employeeNumber} · ${positionLabel} probation ends ${endIso}${contractRef}.`,
           severity,
           moduleKey: "hr",
           actionUrl: `/people/employees/${contract.employee.id}/contracts/${contract.id}`,
@@ -177,8 +168,8 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
     if (employeeUser?.isActive) {
       const employeeTitle =
         daysUntil < 0
-          ? "Your employment contract has expired"
-          : `Your employment contract ends ${windowLabel}`;
+          ? "Your probation period has ended"
+          : `Your probation ends ${windowLabel}`;
       const existingEmployee = await prisma.notification.findFirst({
         where: {
           relatedType: "EmploymentContract",
@@ -192,7 +183,7 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
       if (!existingEmployee) {
         await createSystemNotification({
           title: employeeTitle,
-          message: `Your role as ${positionLabel} ends on ${endIso}${contractRef}. Contact HR if you have questions.`,
+          message: `Your probation for ${positionLabel} ends on ${endIso}${contractRef}. Contact HR if you have questions.`,
           severity,
           moduleKey: "hr",
           actionUrl: "/me/contracts",
@@ -218,9 +209,5 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
     }
   }
 
-  return {
-    considered: contracts.length,
-    notified,
-    skipped,
-  };
+  return { considered: contracts.length, notified, skipped };
 }

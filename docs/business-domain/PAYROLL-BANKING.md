@@ -18,7 +18,8 @@ pay run.
 | `applyFixedBankAllocations` | Phase 1 payment shape (FIXED as deductions) — **default** |
 | `applyPostNetBankAllocations` | Flagged post-net split (FIXED → % → REMAINDER of full take-home) |
 | **Prepare payments** (Phase 2) | Freeze `PayrollPayment` + `PayrollPaymentAllocation` from posted payslip `bankDistribution` |
-| **ACH / register batch** (Phase 3) | `AchPaymentBatch` + `BankExportProfile` adapter engine |
+| **Disbursement export (schema v1)** | Bank CSV + Disbursement Excel for bank-website entry |
+| **ACH / register batch** (Phase 3) | `AchPaymentBatch` + `BankExportProfile` adapter engine (gated) |
 
 ### Critical Phase 1 formula (do not change when `POST_NET_SPLIT_ENABLED` is off)
 
@@ -46,13 +47,43 @@ post-net split (where bank lines sum to full take-home and fixed amounts are
    `EmployeeBankAccount` + allocations only.
 5. **Post pay run** → on the pay-run detail, open **Prepare payments** (manual;
    not automatic on post).
-6. **Disburse** — Manual payment register and/or Bank CSV. Keep
-   `ACH_EXPORT_ENABLED` **false** until the bank confirms layout / routing.
+6. **Disburse** — download **Disbursement Excel** (preferred for bank-website
+   entry) and/or **Bank CSV** / Manual payment register. Keep
+   `ACH_EXPORT_ENABLED` **false** until the bank confirms a direct file layout.
 7. **Optional ACH** — after bank confirmation, set institution routing codes,
    edit export profile `configurationJson` if needed, then enable
-   `ACH_EXPORT_ENABLED`.
+   `ACH_EXPORT_ENABLED`. Map from the same schema v1 disbursement rows.
 
 Do **not** invent official ACH/NACHA layouts or fake routing codes.
+
+---
+
+## Payroll disbursement export (schema v1)
+
+Stable column schema shared by **Bank CSV** and **Disbursement Excel**
+(Office Open XML / `.xlsx`). One row per bank allocation with `amount > 0`.
+Prefer prepared `PayrollPaymentAllocation` snapshots; fall back to payslip
+`bankDistribution` when payments are not prepared.
+
+| Group | Columns |
+|-------|---------|
+| Run | `schemaVersion`, `runNumber`, `periodKey`, `periodEnd`, `paymentDate` |
+| Employee | `employeeNumber`, `employeeName`, `nisNumber`, `birNumber` |
+| Payroll | `currency`, `grossPay`, `paye`, `nisEmployee`, `healthSurcharge`, `netPay` |
+| Bank | `bankName`, `branchName`, `accountNumber`, `accountName`, `splitType`, `allocationAmount` |
+
+- **CSV** — `/payroll/runs/[id]/bank-export` → `{runNumber}-bank-payments.csv`
+- **Excel** — `/payroll/runs/[id]/bank-export-xlsx` → `{runNumber}-payroll-disbursement.xlsx`
+  (sheets: `Disbursements`, `Summary`)
+- Constant: `PAYROLL_DISBURSEMENT_SCHEMA_VERSION = 1` in
+  `src/modules/payroll/lib/payroll-disbursement-export.ts`
+
+**Excel** is the primary operator format for entering payments on the bank’s
+website. **CSV** uses the same schema for automation / paste. Future
+`BankExportProfile` / ISO 20022 adapters should map from these rows — do not
+fork a second column model.
+
+Until a bank confirms a direct file layout, keep `ACH_EXPORT_ENABLED` off.
 
 ---
 
@@ -102,8 +133,8 @@ matching allow flags are on (seed default **false**).
    for maker-checker.
 4. Use **Generate ACH batch** on `/payroll/runs/[id]/payments`.
 
-Until ACH is enabled, operators use **Manual register batch** or **Bank CSV**.
-The payments UI shows a banner when ACH is off.
+Until ACH is enabled, operators use **Manual register batch**, **Bank CSV**,
+or **Disbursement Excel**. The payments UI shows a banner when ACH is off.
 
 ### Account number encryption at rest
 
@@ -283,8 +314,8 @@ placeholders. Column layouts and routing codes require bank confirmation
 
 | Shipped for go-live | Still blocked / deferred until bank confirms |
 |---------------------|-----------------------------------------------|
-| EmployeeBankAccount as sole bank SoT | Official bank-specific ACH / NACHA layouts |
-| Readiness / salaries use EmployeeBankAccount | Confirmed routing / ACH participant codes |
+| Disbursement Excel + schema v1 CSV | Official bank-specific ACH / NACHA layouts |
+| EmployeeBankAccount as sole bank SoT | Confirmed routing / ACH participant codes |
 | Safe missing-row feature defaults for banking | Production ACH submission |
 | Granular bank/allocation caps on profile write | Payment confirmation emails |
 | Editable export profiles (placeholder labeled) | Full verification workflow UI (flags wired) |

@@ -10,6 +10,11 @@ import {
   createAchPaymentBatch,
   generateAchPaymentBatchFile,
 } from "@/src/modules/payroll/services/ach-payment-batch";
+import {
+  notifyAchBatchApproved,
+  notifyAchBatchFileGenerated,
+  notifyAchBatchPendingApproval,
+} from "@/src/modules/payroll/services/notify-payroll-events";
 import { preparePayrollPaymentsForPayRun } from "@/src/modules/payroll/services/prepare-payroll-payments";
 
 export type PayrollPaymentActionState = {
@@ -97,6 +102,22 @@ export async function createPayRunPaymentBatch(
   revalidatePath(`/payroll/runs/${payRunId}/payments`);
   revalidatePath(`/payroll/runs/${payRunId}/payments/${result.data.batchId}`);
 
+  if (result.data.status === "PENDING_APPROVAL") {
+    const run = await prisma.payRun.findUnique({
+      where: { id: payRunId },
+      select: { organizationId: true },
+    });
+    if (run) {
+      await notifyAchBatchPendingApproval({
+        organizationId: run.organizationId,
+        payRunId,
+        batchId: result.data.batchId,
+        batchNumber: result.data.batchNumber,
+        actorUserId: actor.actor.userId,
+      });
+    }
+  }
+
   return {
     status: "success",
     message: `Created batch ${result.data.batchNumber} (${result.data.detailCount} lines, ${result.data.controlTotalAmount.toFixed(2)}).`,
@@ -128,6 +149,24 @@ export async function approvePayRunPaymentBatch(
 
   if (!result.ok) {
     return { status: "error", message: result.error };
+  }
+
+  const batch = await prisma.achPaymentBatch.findUnique({
+    where: { id: batchId },
+    select: {
+      batchNumber: true,
+      preparedByUserId: true,
+      payRunId: true,
+    },
+  });
+  if (batch) {
+    await notifyAchBatchApproved({
+      batchId,
+      batchNumber: batch.batchNumber,
+      payRunId: payRunId || batch.payRunId,
+      preparedByUserId: batch.preparedByUserId,
+      actorUserId: actor.actor.userId,
+    });
   }
 
   if (payRunId) {
@@ -176,6 +215,25 @@ export async function generatePayRunPaymentBatchFile(
 
   if (!result.ok) {
     return { status: "error", message: result.error };
+  }
+
+  const runOrg = await prisma.payRun.findUnique({
+    where: { id: payRunId },
+    select: { organizationId: true },
+  });
+  const batchMeta = await prisma.achPaymentBatch.findUnique({
+    where: { id: batchId },
+    select: { batchNumber: true },
+  });
+  if (runOrg && batchMeta) {
+    await notifyAchBatchFileGenerated({
+      organizationId: runOrg.organizationId,
+      payRunId,
+      batchId,
+      batchNumber: batchMeta.batchNumber,
+      fileName: result.data.fileName,
+      actorUserId: actor.actor.userId,
+    });
   }
 
   revalidatePath(`/payroll/runs/${payRunId}`);

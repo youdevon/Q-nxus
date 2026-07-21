@@ -300,6 +300,30 @@ Initial Notification types may include:
 
 Notification type and severity should remain separate concepts.
 
+### Implemented business-event audience (create-time)
+
+Recipients are resolved when the notification is created. Users without the listed permission (or named actor role) never receive a `NotificationRecipient` row. SYSTEM_ADMINISTRATOR is included with any permission query.
+
+| Event | Audience | Permission / rule |
+|-------|----------|-------------------|
+| Contract expiry (30/60/90) | HR / contract managers | `contracts.manage` or `people.manage` |
+| Probation ending (30/14/7) | HR / contract managers | `people.manage` or `contracts.manage` |
+| Contract pending approval | Approver position incumbents; fallback managers | Position assignment or `contracts.manage` |
+| Contract approved / rejected / signature / activate-ready | Employee, managers as applicable | Linked user + `contracts.manage` |
+| Appraisal due / submitted / reviewed | Supervisor or people managers / employee | `people.manage` or linked users |
+| Draft pay run ready / re-approval needed | Other payroll officers | `payroll.manage` (exclude actor) |
+| Pay run approved | Maker | `createdById` |
+| Pay run posted | Other payroll officers (+ maker/approver) | `payroll.manage` |
+| Payslips released | Employees with linked users | Employee user (in-app); email already queued |
+| ACH batch pending / approved / file ready | Payroll officers / preparer | `payroll.manage` |
+| Statutory override pending / decided | Approvers / requester | `payroll.statutory_override.approve` or `payroll.manage` |
+| Payroll setup needed after activate | Actor + payroll setup staff | `payroll.setup` / `payroll.manage` |
+| Contract activated (employee) | Linked employee user | Direct |
+| Contract / probation ending (employee copy) | Linked employee user | Scheduled with HR copies |
+| Payment allocation returned / rejected | Linked employee user | Direct |
+
+Scheduled jobs: `contract-expiry-reminders`, `probation-ending-reminders`, `appraisal-due-reminders` (plus existing leave/lifecycle/correspondence jobs).
+
 ---
 
 ## 6. Severity Levels

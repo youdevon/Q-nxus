@@ -1296,16 +1296,30 @@ export function PayRunDetailView({
                     : "Prepare payments"}
                 </Button>
                 {canManage ? (
-                  <Button
-                    nativeButton={false}
-                    variant="outline"
-                    render={
-                      <Link href={`/payroll/runs/${run.id}/bank-export`} />
-                    }
-                  >
-                    <FileText />
-                    Bank CSV
-                  </Button>
+                  <>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={
+                        <Link href={`/payroll/runs/${run.id}/bank-export`} />
+                      }
+                    >
+                      <FileText />
+                      Bank CSV
+                    </Button>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={
+                        <Link
+                          href={`/payroll/runs/${run.id}/bank-export-xlsx`}
+                        />
+                      }
+                    >
+                      <FileDown />
+                      Disbursement Excel
+                    </Button>
+                  </>
                 ) : null}
                 {canManage && canReleasePayRunPayslips(run.status) ? (
                   <ReleasePayslipsButton
@@ -1496,7 +1510,8 @@ export function PayRunDetailView({
               {!paymentSummary?.prepared ? (
                 <p className="max-w-md text-xs text-muted-foreground">
                   Pay run is posted. Open payments to prepare disbursement
-                  snapshots, then use Manual register or Bank CSV. Enable ACH only
+                  snapshots, then use Manual register, Bank CSV, or Disbursement
+                  Excel for bank-website entry. Enable ACH file export only
                   after the bank confirms the export layout.
                 </p>
               ) : null}

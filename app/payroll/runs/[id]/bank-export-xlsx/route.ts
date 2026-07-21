@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { loadPayRunDisbursementExport } from "@/src/modules/payroll/data/load-pay-run-disbursement-export";
-import { buildPayrollDisbursementCsv } from "@/src/modules/payroll/lib/payroll-disbursement-export";
+import { buildPayrollDisbursementXlsx } from "@/src/modules/payroll/lib/payroll-disbursement-export";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +28,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
     return Response.json(loaded.body, { status: loaded.status });
   }
 
-  const csv = buildPayrollDisbursementCsv(loaded.rows);
+  const buffer = await buildPayrollDisbursementXlsx(loaded.rows);
   const lineCount = loaded.rows.length;
 
   const metadata = await getAuditRequestMetadata();
@@ -40,10 +40,10 @@ export async function GET(_request: Request, { params }: RouteContext) {
       action: "EXPORT",
       entityType: "PayRun",
       entityId: loaded.run.id,
-      description: `Exported bank payment CSV for pay run ${loaded.run.runNumber} (${lineCount} payment line${lineCount === 1 ? "" : "s"}, source=${loaded.source}).`,
+      description: `Exported payroll disbursement Excel for pay run ${loaded.run.runNumber} (${lineCount} payment line${lineCount === 1 ? "" : "s"}, source=${loaded.source}).`,
       newValues: {
         exportKind: "BANK",
-        format: "csv",
+        format: "xlsx",
         schemaVersion: 1,
         lineCount,
         source: loaded.source,
@@ -54,10 +54,11 @@ export async function GET(_request: Request, { params }: RouteContext) {
     },
   });
 
-  return new Response(csv, {
+  return new Response(new Uint8Array(buffer), {
     headers: {
-      "content-type": "text/csv; charset=utf-8",
-      "content-disposition": `attachment; filename="${loaded.run.runNumber}-bank-payments.csv"`,
+      "content-type":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "content-disposition": `attachment; filename="${loaded.run.runNumber}-payroll-disbursement.xlsx"`,
     },
   });
 }

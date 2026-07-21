@@ -170,7 +170,7 @@ function LeaveBreakdownPanel({
                   <dd
                     className={cn(
                       "font-semibold tabular-nums",
-                      highlight && "text-amber-800",
+                      highlight && "text-amber-800 dark:text-amber-300",
                     )}
                   >
                     {formatQuantity(balance.availableBalance)}
@@ -289,7 +289,7 @@ function LeaveBalancesDetail({
                 "mt-0.5 size-4 shrink-0",
                 forfeitureWarning?.isUrgent
                   ? "text-destructive"
-                  : "text-amber-700",
+                  : "text-amber-700 dark:text-amber-400",
               )}
             />
             <div className="space-y-2 text-sm">
@@ -532,7 +532,7 @@ function LeaveBalancesDetail({
                         className={cn(
                           "px-3 py-4 text-right font-semibold tabular-nums",
                           isCurrentCycle && "text-success",
-                          highlightForfeiture && "text-amber-800",
+                          highlightForfeiture && "text-amber-800 dark:text-amber-300",
                         )}
                       >
                         {formatQuantity(balance.availableBalance)}

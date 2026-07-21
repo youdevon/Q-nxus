@@ -11,6 +11,10 @@ import {
   taxYearFromAsOfKey,
   toStatutoryAsOfKey,
 } from "@/src/modules/payroll/lib/statutory-as-of";
+import {
+  notifyStatutoryOverrideDecided,
+  notifyStatutoryOverridePending,
+} from "@/src/modules/payroll/services/notify-payroll-events";
 
 export type StatutoryOverrideFormState = {
   status: "idle" | "error" | "success";
@@ -133,6 +137,7 @@ export async function requestStatutoryOverride(
   const taxYear = taxYearFromAsOfKey(periodEndKey);
   const metadata = await getAuditRequestMetadata(formData);
   const submitForApproval = formData.get("submitForApproval") === "on";
+  let savedOverrideId: string | null = null;
 
   try {
     await prisma.$transaction(async (transaction) => {
@@ -169,6 +174,8 @@ export async function requestStatutoryOverride(
         select: { id: true, status: true },
       });
 
+      savedOverrideId = row.id;
+
       await recordAuditEvent(transaction, {
         userId: actor.actor.userId,
         organizationId: employee.organizationId,
@@ -193,6 +200,17 @@ export async function requestStatutoryOverride(
       status: "error",
       message: "Unable to save the override. Try again.",
     };
+  }
+
+  if (submitForApproval && savedOverrideId) {
+    await notifyStatutoryOverridePending({
+      organizationId: employee.organizationId,
+      employeeId: employee.id,
+      overrideId: savedOverrideId,
+      employeeLabel: `${employee.employeeNumber} — ${employee.firstName} ${employee.lastName}`,
+      periodEndKey,
+      actorUserId: actor.actor.userId,
+    });
   }
 
   revalidatePath(`/payroll/employees/${employee.id}`);
@@ -295,6 +313,16 @@ export async function decideStatutoryOverride(
 
   revalidatePath(`/payroll/employees/${existing.employee.id}`);
   revalidatePath(`/payroll/employees/${existing.employee.id}/tax-year`);
+
+  await notifyStatutoryOverrideDecided({
+    employeeId: existing.employee.id,
+    overrideId: existing.id,
+    employeeLabel: `${existing.employee.employeeNumber} — ${existing.employee.firstName} ${existing.employee.lastName}`,
+    decision: decision as "approve" | "reject",
+    requestedByUserId: existing.requestedByUserId,
+    actorUserId: actor.actor.userId,
+  });
+
   return {
     status: "success",
     message: decision === "approve" ? "Override approved." : "Override rejected.",
