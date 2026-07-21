@@ -83,6 +83,40 @@ For each tax year / legislative change, record:
 
 Until signed off, treat all nets as **provisional**.
 
+### Pre-go-live checklist (Phases 1–10)
+
+Copy into the tax-year change ticket and tick before first live pay run:
+
+- [ ] **Period-dated rates** — PAYE / NIS / Health schedules match the official circular for the tax year; In effect badge and period-end as-of resolution verified.
+- [ ] **Personal allowance & brackets** — sample annual taxable incomes land in the correct band(s).
+- [ ] **TD1 dual-read** — tax profile vs payroll-setup TD1 other approved deductions agree for current year.
+- [ ] **Mid-year joiner** — prior-employer YTD entered from TD4/letter; payslip shows Prior / This employer / Combined; cumulative / previous-income method withholds the expected period delta.
+- [ ] **Unverified prior** — soft exception note appears; payroll does not treat unverified prior as certified.
+- [ ] **Statutory overrides** — maker-checker request → approve → approved amounts replace calc for that period end.
+- [ ] **Exemptions** — NIS / Health / PAYE exempt flags zero the right deductions and relax readiness.
+- [ ] **Parallel comparison** — `npm run payroll:parallel` against a trusted export for at least one posted run (cent-level match).
+- [ ] **Access roles** — re-run `npm run seed:access` (or equivalent) so `payroll.tax_profile.*`, `payroll.prior_employment.*`, `payroll.statutory_override.*`, `payroll.employee_year.view` are granted.
+- [ ] **Migrations** — all PAYE / prior-YTD / override migrations applied on the target environment (see below).
+
+## Deploy migrations
+
+Local and every deployed environment must apply Prisma migrations before serving this branch:
+
+```bash
+npx prisma migrate deploy
+# or during local develop:
+npx prisma migrate status   # expect "Database schema is up to date!"
+```
+
+PAYE-related migrations introduced with Phases 1–10 (apply in order with the rest of the chain):
+
+- `20260720120000_paye_tax_year_metadata`
+- `20260720140000_employee_tax_profiles`
+- `20260720160000_employee_prior_employment_ytd`
+- `20260720180000_paye_tax_treatment_and_overrides`
+
+Do **not** rely on `prisma db push` for production. Confirm `migrate status` is clean after deploy.
+
 ## Runtime pinning
 
 Payslip snapshots should record which config version was used (`statutory` block on snapshot payload). Changing current settings must not alter posted history.

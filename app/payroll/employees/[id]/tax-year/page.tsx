@@ -90,6 +90,7 @@ export default async function EmployeeTaxYearPage({
     capabilities.can("payroll.statutory_override.approve");
 
   const tax = data.taxProfile;
+  const summary = data.taxProfileSummary;
   const prior = data.priorEmployment;
   const currency =
     data.postedPayslips[0]?.currency ??
@@ -99,6 +100,13 @@ export default async function EmployeeTaxYearPage({
   const yearLinks = [taxYear - 1, taxYear, taxYear + 1].filter(
     (y) => y >= 2000 && y <= 2100,
   );
+
+  const sourceLabel =
+    summary.source === "tax_profile"
+      ? "Tax profile"
+      : summary.source === "payroll_profile"
+        ? "Payroll setup (TD1 fallback)"
+        : "Defaults";
 
   return (
     <PageShell size="lg">
@@ -133,42 +141,63 @@ export default async function EmployeeTaxYearPage({
             <SectionHeading>Tax profile</SectionHeading>
             <p className="text-sm text-muted-foreground">
               Summary for calendar tax year {taxYear}. Edit on payroll setup.
+              {summary.source !== "tax_profile" ? (
+                <>
+                  {" "}
+                  Showing {sourceLabel.toLowerCase()} until a dedicated tax
+                  profile is saved.
+                </>
+              ) : null}
             </p>
           </div>
-          {tax ? (
+          {summary.source !== "none" || tax ? (
             <div className="grid gap-3 rounded-md border border-border/70 bg-muted/20 px-4 py-3 sm:grid-cols-2 lg:grid-cols-4">
+              <MetaBlock
+                label="Source"
+                value={sourceLabel}
+              />
               <MetaBlock
                 label="Method"
                 value={
-                  METHOD_LABELS[tax.taxCalculationMethod] ??
-                  tax.taxCalculationMethod
+                  METHOD_LABELS[summary.taxCalculationMethod] ??
+                  summary.taxCalculationMethod
                 }
               />
               <MetaBlock
                 label="TD1 submitted"
-                value={tax.td1Submitted ? "Yes" : "No"}
+                value={tax?.td1Submitted ? "Yes" : "No"}
               />
               <MetaBlock
                 label="Cumulative"
-                value={tax.cumulativeCalculationEnabled ? "Enabled" : "Off"}
+                value={
+                  summary.cumulativeCalculationEnabled ? "Enabled" : "Off"
+                }
               />
               <MetaBlock
                 label="Status"
-                value={tax.taxProfileStatus.replaceAll("_", " ")}
+                value={
+                  summary.taxProfileStatus?.replaceAll("_", " ") ??
+                  (summary.source === "payroll_profile"
+                    ? "From payroll setup"
+                    : "—")
+                }
               />
               <MetaBlock
                 label="Personal allowance"
                 value={
-                  tax.personalAllowance != null
-                    ? formatMoney(Number(tax.personalAllowance), { currency })
+                  summary.personalAllowanceOverride != null
+                    ? formatMoney(summary.personalAllowanceOverride, {
+                        currency,
+                      })
                     : "Statutory default"
                 }
               />
               <MetaBlock
                 label="TD1 other approved"
                 value={
-                  tax.td1OtherApprovedAnnual != null
-                    ? formatMoney(Number(tax.td1OtherApprovedAnnual), {
+                  summary.td1OtherApprovedAnnual > 0 ||
+                  summary.source !== "none"
+                    ? formatMoney(summary.td1OtherApprovedAnnual, {
                         currency,
                       })
                     : "—"
@@ -177,21 +206,20 @@ export default async function EmployeeTaxYearPage({
               <MetaBlock
                 label="Previous employment"
                 value={
-                  tax.previousEmploymentDeclared
-                    ? tax.previousEmploymentVerified
+                  summary.previousEmploymentDeclared
+                    ? summary.previousEmploymentVerified
                       ? "Declared · verified"
                       : "Declared"
                     : "None declared"
                 }
               />
-              <MetaBlock
-                label="Effective from"
-                value={tax.effectiveFrom}
-              />
+              {tax?.effectiveFrom ? (
+                <MetaBlock label="Effective from" value={tax.effectiveFrom} />
+              ) : null}
             </div>
           ) : (
             <p className="rounded-md border border-dashed border-border/70 px-4 py-6 text-sm text-muted-foreground">
-              No tax profile saved for {taxYear}. Create one on{" "}
+              No tax profile or payroll TD1 for {taxYear}. Create one on{" "}
               <Link
                 href={setupHref}
                 className="font-medium text-foreground underline-offset-4 hover:underline"

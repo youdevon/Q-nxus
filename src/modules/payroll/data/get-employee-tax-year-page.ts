@@ -3,6 +3,10 @@ import { getEmployeePriorEmploymentYtds } from "@/src/modules/payroll/data/get-e
 import { getEmployeeTaxProfile } from "@/src/modules/payroll/data/get-employee-tax-profile";
 import { listEmployeeStatutoryOverrides } from "@/src/modules/payroll/data/get-statutory-overrides";
 import {
+  resolveEmployeeTaxPayeInputs,
+  type ResolvedEmployeeTaxPayeInputs,
+} from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
+import {
   taxYearFromAsOfKey,
   toStatutoryAsOfKey,
 } from "@/src/modules/payroll/lib/statutory-as-of";
@@ -28,7 +32,13 @@ export type EmployeeTaxYearPageData = {
     employeeNumber: string;
   };
   taxYear: number;
+  /** Raw EmployeeTaxProfile row when present. */
   taxProfile: Awaited<ReturnType<typeof getEmployeeTaxProfile>>;
+  /**
+   * Dual-read display summary: prefers tax profile, falls back to payroll
+   * setup TD1 so the tax-year page is not blank before a profile is saved.
+   */
+  taxProfileSummary: ResolvedEmployeeTaxPayeInputs;
   priorEmployment: Awaited<ReturnType<typeof getEmployeePriorEmploymentYtds>>;
   postedPayslips: TaxYearPostedPayslipRow[];
   statutoryOverrides: Awaited<
@@ -57,10 +67,14 @@ export async function getEmployeeTaxYearPage(
     return null;
   }
 
-  const [taxProfile, priorEmployment, postedRows, statutoryOverrides] =
+  const [taxProfile, priorEmployment, payrollProfile, postedRows, statutoryOverrides] =
     await Promise.all([
       getEmployeeTaxProfile(employeeId, year),
       getEmployeePriorEmploymentYtds(employeeId, year),
+      prisma.payrollProfile.findUnique({
+        where: { employeeId },
+        select: { td1OtherApprovedAnnual: true },
+      }),
       prisma.payslip.findMany({
         where: {
           employeeId,
@@ -92,6 +106,35 @@ export async function getEmployeeTaxYearPage(
       listEmployeeStatutoryOverrides(employeeId, year),
     ]);
 
+  const taxProfileSummary = resolveEmployeeTaxPayeInputs({
+    taxYear: year,
+    taxProfile: taxProfile
+      ? {
+          taxCalculationMethod: taxProfile.taxCalculationMethod,
+          taxProfileStatus: taxProfile.taxProfileStatus,
+          personalAllowance:
+            taxProfile.personalAllowance != null
+              ? Number(taxProfile.personalAllowance)
+              : null,
+          personalAllowanceSource: taxProfile.personalAllowanceSource,
+          td1OtherApprovedAnnual:
+            taxProfile.td1OtherApprovedAnnual != null
+              ? Number(taxProfile.td1OtherApprovedAnnual)
+              : null,
+          cumulativeCalculationEnabled: taxProfile.cumulativeCalculationEnabled,
+          previousEmploymentDeclared: taxProfile.previousEmploymentDeclared,
+          previousEmploymentVerified: taxProfile.previousEmploymentVerified,
+        }
+      : null,
+    payrollProfile: {
+      td1OtherApprovedAnnual:
+        payrollProfile?.td1OtherApprovedAnnual != null
+          ? Number(payrollProfile.td1OtherApprovedAnnual.toString())
+          : null,
+    },
+    priorEmployment: priorEmployment.totals,
+  });
+
   return {
     employee: {
       id: employee.id,
@@ -100,6 +143,7 @@ export async function getEmployeeTaxYearPage(
     },
     taxYear: year,
     taxProfile,
+    taxProfileSummary,
     priorEmployment,
     postedPayslips: postedRows.map((row) => ({
       id: row.id,
