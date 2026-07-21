@@ -6,7 +6,7 @@ import {
 } from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
 
 describe("resolveEmployeeTaxPayeInputs", () => {
-  it("prefers tax profile TD1 over payroll profile", () => {
+  it("reads TD1 from the tax profile", () => {
     const result = resolveEmployeeTaxPayeInputs({
       taxYear: 2026,
       taxProfile: {
@@ -19,7 +19,6 @@ describe("resolveEmployeeTaxPayeInputs", () => {
         previousEmploymentDeclared: false,
         previousEmploymentVerified: false,
       },
-      payrollProfile: { td1OtherApprovedAnnual: 5_000 },
     });
 
     expect(result.source).toBe("tax_profile");
@@ -27,19 +26,18 @@ describe("resolveEmployeeTaxPayeInputs", () => {
     expect(result.personalAllowanceOverride).toBeNull();
   });
 
-  it("falls back to payroll profile when no tax profile", () => {
+  it("returns none when no tax profile", () => {
     const result = resolveEmployeeTaxPayeInputs({
       taxYear: 2026,
       taxProfile: null,
-      payrollProfile: { td1OtherApprovedAnnual: 8_500 },
     });
 
-    expect(result.source).toBe("payroll_profile");
-    expect(result.td1OtherApprovedAnnual).toBe(8_500);
+    expect(result.source).toBe("none");
+    expect(result.td1OtherApprovedAnnual).toBe(0);
     expect(result.taxCalculationMethod).toBe("STANDARD_NON_CUMULATIVE");
   });
 
-  it("uses payroll TD1 when tax profile omits TD1 amount", () => {
+  it("treats null tax-profile TD1 as zero", () => {
     const result = resolveEmployeeTaxPayeInputs({
       taxYear: 2026,
       taxProfile: {
@@ -52,10 +50,9 @@ describe("resolveEmployeeTaxPayeInputs", () => {
         previousEmploymentDeclared: false,
         previousEmploymentVerified: false,
       },
-      payrollProfile: { td1OtherApprovedAnnual: 3_000 },
     });
 
-    expect(result.td1OtherApprovedAnnual).toBe(3_000);
+    expect(result.td1OtherApprovedAnnual).toBe(0);
     expect(result.personalAllowanceOverride).toBe(90_000);
   });
 
@@ -72,7 +69,6 @@ describe("resolveEmployeeTaxPayeInputs", () => {
         previousEmploymentDeclared: true,
         previousEmploymentVerified: false,
       },
-      payrollProfile: null,
     });
 
     expect(result.calcNotes.length).toBeGreaterThanOrEqual(1);
@@ -92,7 +88,6 @@ describe("resolveEmployeeTaxPayeInputs", () => {
         previousEmploymentDeclared: true,
         previousEmploymentVerified: true,
       },
-      payrollProfile: null,
       priorEmployment: {
         taxableIncomeYtd: 25_000,
         payeDeductedYtd: 1_500,

@@ -18,6 +18,7 @@
     "notify:correspondence-backfill": "npx tsx scripts/backfill-correspondence-notifications.ts",
     "backfill:employee-login-emails": "npx tsx scripts/backfill-employee-login-emails.ts",
     "archive:correspondence-retention": "npx tsx scripts/archive-correspondence-retention.ts",
+    "purge:prior-employment-archive": "npx tsx scripts/purge-archived-prior-employment-ytd.ts",
     "seed:access": "npx tsx prisma/seed-access-roles.ts",
     "banking:backfill-accounts": "npx tsx scripts/backfill-employee-bank-accounts.ts",
     "banking:migrate-encrypt": "npx tsx scripts/migrate-encrypt-bank-accounts.ts",

@@ -26,7 +26,7 @@ export type EmployeeTaxProfileSetup = {
   previousEmploymentSource: string | null;
   notes: string | null;
   /** Where resolved TD1 / method came from for calc preview. */
-  source: "tax_profile" | "payroll_profile" | "none";
+  source: "tax_profile" | "none";
 };
 
 export type PriorEmploymentDocumentSetup = {
@@ -138,10 +138,8 @@ export type EmployeePayrollSetup = {
     id: string;
     payFrequency: string;
     paymentMethod: "BANK_TRANSFER" | "CHEQUE" | "CASH";
-    /** Mirrored copy; prefer employee values via resolveStatutoryNumber. */
-    nisNumber: string | null;
-    birNumber: string | null;
     notes: string | null;
+    /** Display TD1 from EmployeeTaxProfile (current tax year). */
     td1OtherApprovedAnnual: string | null;
     pensionOnlyIncome: boolean;
     exemptFromNis: boolean;
@@ -150,11 +148,11 @@ export type EmployeePayrollSetup = {
     isPayrollReady: boolean;
     updatedAt: string;
   } | null;
-  /** Effective NIS/BIR for form defaults (employee SoT, profile fallback). */
+  /** Effective NIS/BIR for form defaults (Employee SoT). */
   statutoryNumbers: {
     nisNumber: string | null;
     birNumber: string | null;
-    /** True when the value comes from the employee record (or matches it). */
+    /** True when the value comes from the employee record. */
     fromEmployee: boolean;
   };
   bankAccounts: PayrollBankAccountRecord[];

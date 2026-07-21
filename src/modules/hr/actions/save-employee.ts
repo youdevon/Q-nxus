@@ -647,17 +647,6 @@ export async function updateEmployee(
         },
       });
 
-      // Mirror NIS/BIR onto payroll profile when one exists (employee is SoT).
-      await transaction.payrollProfile.updateMany({
-        where: {
-          employeeId: id,
-        },
-        data: {
-          nisNumber: validation.values.nisNumber,
-          birNumber: validation.values.birNumber,
-        },
-      });
-
       const linkedUser = await transaction.user.findFirst({
         where: {
           employeeId: id,

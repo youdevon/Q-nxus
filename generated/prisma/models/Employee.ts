@@ -9940,11 +9940,11 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
      */
     dateOfBirth: Date | null
     /**
-     * National Insurance Scheme number — source of truth; payroll profile mirrors for readiness/snapshots.
+     * National Insurance Scheme number — source of truth for payroll readiness / payslip snapshots.
      */
     nisNumber: string | null
     /**
-     * Board of Inland Revenue file number — source of truth; payroll profile mirrors for readiness/snapshots.
+     * Board of Inland Revenue file number — source of truth for payroll readiness / payslip snapshots.
      */
     birNumber: string | null
     idType: $Enums.EmployeeIdType | null

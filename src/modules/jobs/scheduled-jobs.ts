@@ -8,6 +8,7 @@ import {
   processEmailQueue,
   recoverStuckEmailDeliveries,
 } from "@/src/modules/notifications/services/process-email-queue";
+import { purgeArchivedPriorEmploymentYtd } from "@/src/modules/payroll/services/purge-archived-prior-employment-ytd";
 
 export type ScheduledJobResult = {
   job: string;
@@ -53,6 +54,10 @@ const jobs: ScheduledJob[] = [
   {
     name: "stored-file-retention-archive",
     run: () => archiveExpiredStoredFileRetention(),
+  },
+  {
+    name: "prior-employment-archive-purge",
+    run: () => purgeArchivedPriorEmploymentYtd(),
   },
 ];
 

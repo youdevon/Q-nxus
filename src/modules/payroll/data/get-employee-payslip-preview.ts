@@ -227,12 +227,6 @@ export async function getEmployeePayslipPreview(
             setup.taxProfile.previousEmploymentVerified,
         }
       : null,
-    payrollProfile: {
-      td1OtherApprovedAnnual:
-        setup.profile?.td1OtherApprovedAnnual != null
-          ? Number(setup.profile.td1OtherApprovedAnnual)
-          : null,
-    },
     priorEmployment: {
       taxableIncomeYtd: setup.priorEmployment.totals.taxableIncomeYtd,
       payeDeductedYtd: setup.priorEmployment.totals.payeDeductedYtd,

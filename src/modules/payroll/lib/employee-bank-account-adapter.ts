@@ -149,40 +149,23 @@ export function toPayrollBankAccountRecords(input: {
 }
 
 /**
- * Prefer EmployeeBankAccount + allocations (Phase 1 SoT); fall back to
- * deprecated PayrollBankAccount rows when the employee has no destinations yet.
+ * Map EmployeeBankAccount (+ allocations) into readiness bank inputs.
  */
 export function resolveBankAccountsForReadiness(input: {
   employeeAccounts: readonly EmployeeBankAccountLike[];
   allocations?: readonly AllocationLike[] | null;
-  legacyAccounts?: ReadonlyArray<{
-    bankName: string;
-    accountNumber: string;
-    amount: number | string | null;
-    isPrimary: boolean;
-  }>;
 }): Array<{
   bankName: string;
   accountNumber: string;
   amount: number | null;
   isPrimary: boolean;
 }> {
-  if (input.employeeAccounts.length > 0) {
-    return toPayslipBankAccountInputs({
-      accounts: input.employeeAccounts,
-      allocations: input.allocations,
-    });
+  if (input.employeeAccounts.length === 0) {
+    return [];
   }
 
-  return (input.legacyAccounts ?? []).map((account) => ({
-    bankName: account.bankName,
-    accountNumber: account.accountNumber,
-    amount:
-      account.amount == null
-        ? null
-        : typeof account.amount === "number"
-          ? account.amount
-          : Number(account.amount),
-    isPrimary: account.isPrimary,
-  }));
+  return toPayslipBankAccountInputs({
+    accounts: input.employeeAccounts,
+    allocations: input.allocations,
+  });
 }

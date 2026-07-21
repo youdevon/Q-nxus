@@ -5,8 +5,7 @@ import {
 } from "@/src/modules/payroll/lib/prior-employment-ytd";
 
 /**
- * Resolve employee PAYE inputs for a tax year.
- * Prefer EmployeeTaxProfile; fall back to PayrollProfile.td1OtherApprovedAnnual.
+ * Resolve employee PAYE inputs for a tax year from EmployeeTaxProfile.
  */
 
 export type TaxCalculationMethodCode =
@@ -39,13 +38,9 @@ export type EmployeeTaxProfilePayeFields = {
   previousEmploymentVerified: boolean;
 };
 
-export type PayrollProfileTd1Fields = {
-  td1OtherApprovedAnnual: number | null;
-};
-
 export type ResolvedEmployeeTaxPayeInputs = {
   taxYear: number;
-  source: "tax_profile" | "payroll_profile" | "none";
+  source: "tax_profile" | "none";
   taxCalculationMethod: TaxCalculationMethodCode;
   taxProfileStatus: EmployeeTaxProfileStatusCode | null;
   /** Annual TD1 other approved deductions used by PAYE. */
@@ -67,10 +62,9 @@ export type ResolvedEmployeeTaxPayeInputs = {
 export function resolveEmployeeTaxPayeInputs(input: {
   taxYear: number;
   taxProfile: EmployeeTaxProfilePayeFields | null;
-  payrollProfile: PayrollProfileTd1Fields | null;
   priorEmployment?: PriorEmploymentYtdTotals | null;
 }): ResolvedEmployeeTaxPayeInputs {
-  const { taxYear, taxProfile, payrollProfile } = input;
+  const { taxYear, taxProfile } = input;
   const priorEmployment =
     input.priorEmployment ?? emptyPriorEmploymentYtdTotals();
 
@@ -78,9 +72,7 @@ export function resolveEmployeeTaxPayeInputs(input: {
     const td1 =
       taxProfile.td1OtherApprovedAnnual != null
         ? Math.max(0, taxProfile.td1OtherApprovedAnnual)
-        : payrollProfile?.td1OtherApprovedAnnual != null
-          ? Math.max(0, payrollProfile.td1OtherApprovedAnnual)
-          : 0;
+        : 0;
 
     const personalAllowanceOverride =
       taxProfile.personalAllowance != null &&
@@ -137,11 +129,6 @@ export function resolveEmployeeTaxPayeInputs(input: {
     };
   }
 
-  const fallbackTd1 =
-    payrollProfile?.td1OtherApprovedAnnual != null
-      ? Math.max(0, payrollProfile.td1OtherApprovedAnnual)
-      : 0;
-
   const calcNotes = priorEmploymentCalcNotes({
     previousEmploymentDeclared: priorEmployment.recordCount > 0,
     taxCalculationMethodIncludesPrevious: false,
@@ -150,10 +137,10 @@ export function resolveEmployeeTaxPayeInputs(input: {
 
   return {
     taxYear,
-    source: fallbackTd1 > 0 ? "payroll_profile" : "none",
+    source: "none",
     taxCalculationMethod: "STANDARD_NON_CUMULATIVE",
     taxProfileStatus: null,
-    td1OtherApprovedAnnual: fallbackTd1,
+    td1OtherApprovedAnnual: 0,
     personalAllowanceOverride: null,
     personalAllowanceSource: "STATUTORY_DEFAULT",
     cumulativeCalculationEnabled: false,

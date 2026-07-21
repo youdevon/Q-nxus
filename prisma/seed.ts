@@ -744,7 +744,6 @@ async function main(): Promise<void> {
 
   const {
     seedFinancialInstitutions,
-    migratePayrollBankAccountsToEmployeeBankAccounts,
     seedBankExportProfiles,
   } = await import("./seed-financial-institutions");
   await seedFinancialInstitutions(prisma);
@@ -754,13 +753,6 @@ async function main(): Promise<void> {
   });
   if (organization) {
     await seedBankExportProfiles(prisma, organization.id);
-  }
-  const migratedBanks =
-    await migratePayrollBankAccountsToEmployeeBankAccounts(prisma);
-  if (migratedBanks > 0) {
-    console.log(
-      `Migrated ${migratedBanks} legacy PayrollBankAccount row(s) to EmployeeBankAccount.`,
-    );
   }
 
   console.log("Q-NXUS platform foundation seeded successfully.");

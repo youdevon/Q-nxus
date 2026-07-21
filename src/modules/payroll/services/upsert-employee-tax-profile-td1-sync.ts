@@ -9,8 +9,7 @@ function toDecimal(value: number | null): Prisma.Decimal | null {
 }
 
 /**
- * Upsert tax-year TD1 onto EmployeeTaxProfile and optionally mirror to
- * PayrollProfile (dual-write for current-year compatibility).
+ * Upsert tax-year TD1 onto EmployeeTaxProfile (sole store).
  */
 export async function upsertEmployeeTaxProfileTd1Sync(
   tx: Prisma.TransactionClient,
@@ -19,7 +18,6 @@ export async function upsertEmployeeTaxProfileTd1Sync(
     employeeId: string;
     taxYear: number;
     td1OtherApprovedAnnual: number | null;
-    syncPayrollProfile?: boolean;
     userId?: string | null;
   },
 ): Promise<{ id: string }> {
@@ -51,13 +49,6 @@ export async function upsertEmployeeTaxProfileTd1Sync(
     },
     select: { id: true },
   });
-
-  if (input.syncPayrollProfile !== false) {
-    await tx.payrollProfile.updateMany({
-      where: { employeeId: input.employeeId },
-      data: { td1OtherApprovedAnnual: td1 },
-    });
-  }
 
   return profile;
 }

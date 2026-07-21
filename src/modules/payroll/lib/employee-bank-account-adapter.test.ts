@@ -187,7 +187,7 @@ describe("allocation validation", () => {
     expect(result.error).toMatch(/Split deposits are disabled/);
   });
 
-  it("prefers employee accounts for readiness and falls back to legacy", () => {
+  it("maps employee accounts for readiness and returns empty without them", () => {
     const preferred = resolveBankAccountsForReadiness({
       employeeAccounts: [
         {
@@ -208,37 +208,15 @@ describe("allocation validation", () => {
           isActive: true,
         },
       ],
-      legacyAccounts: [
-        {
-          bankName: "Legacy Bank",
-          accountNumber: "9999",
-          amount: null,
-          isPrimary: true,
-        },
-      ],
     });
     expect(preferred).toHaveLength(1);
     expect(preferred[0]?.bankName).toBe("FCB");
 
-    const fallback = resolveBankAccountsForReadiness({
-      employeeAccounts: [],
-      legacyAccounts: [
-        {
-          bankName: "Legacy Bank",
-          accountNumber: "9999",
-          amount: 100,
-          isPrimary: false,
-        },
-      ],
-    });
-    expect(fallback).toEqual([
-      {
-        bankName: "Legacy Bank",
-        accountNumber: "9999",
-        amount: 100,
-        isPrimary: false,
-      },
-    ]);
+    expect(
+      resolveBankAccountsForReadiness({
+        employeeAccounts: [],
+      }),
+    ).toEqual([]);
   });
 });
 

@@ -15,7 +15,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model EmployeeTaxProfile
  * Per-employee, per-calendar-tax-year PAYE / TD1 treatment.
- * Dual-reads with PayrollProfile.td1OtherApprovedAnnual for the current year.
+ * Per-employee, per-tax-year PAYE / TD1 treatment (sole store for TD1 amounts).
  */
 export type EmployeeTaxProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$EmployeeTaxProfilePayload>
 

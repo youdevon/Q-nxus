@@ -448,8 +448,6 @@ export async function savePayrollProfile(
     };
   }
 
-  // Employee is SoT. Payroll without people.manage never writes NIS/BIR
-  // (profile only mirrors Employee — no profile-only lasting form values).
   const statutory = resolveEmployeeStatutoryWriteFromPayroll({
     actor: actor.actor,
     employee: {
@@ -461,8 +459,8 @@ export async function savePayrollProfile(
       birNumber: birFromForm,
     },
   });
-  const nisNumber = statutory.profile.nisNumber;
-  const birNumber = statutory.profile.birNumber;
+  const nisNumber = statutory.resolved.nisNumber;
+  const birNumber = statutory.resolved.birNumber;
 
   const contract = employee.contracts[0] ?? null;
   const accounts = bankAccounts ?? [];
@@ -520,13 +518,7 @@ export async function savePayrollProfile(
   const profileValues = {
     payFrequency: payFrequency!,
     paymentMethod: paymentMethod!,
-    nisNumber,
-    birNumber,
     notes,
-    td1OtherApprovedAnnual:
-      td1OtherApprovedAnnual == null
-        ? null
-        : new Prisma.Decimal(td1OtherApprovedAnnual.toFixed(2)),
     pensionOnlyIncome,
     exemptFromNis,
     exemptFromHealthSurcharge,
@@ -643,9 +635,6 @@ export async function savePayrollProfile(
         await transaction.employeeBankAccount.deleteMany({
           where: { employeeId: employee.id },
         });
-        await transaction.payrollBankAccount.deleteMany({
-          where: { payrollProfileId: profile.id },
-        });
       }
 
       for (const update of allowanceTaxableUpdates) {
@@ -659,13 +648,12 @@ export async function savePayrollProfile(
         });
       }
 
-      // Dual-write TD1 onto the current calendar-year EmployeeTaxProfile.
+      // Persist current-year TD1 on EmployeeTaxProfile (sole store).
       await upsertEmployeeTaxProfileTd1Sync(transaction, {
         organizationId: employee.organizationId,
         employeeId: employee.id,
         taxYear: taxYearFromAsOfKey(toStatutoryAsOfKey(new Date())),
         td1OtherApprovedAnnual,
-        syncPayrollProfile: false,
         userId: actor.actor.userId,
       });
 

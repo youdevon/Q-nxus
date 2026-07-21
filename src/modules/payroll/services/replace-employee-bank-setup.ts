@@ -24,16 +24,16 @@ export type BankAccountWriteInput = {
 type Tx = Prisma.TransactionClient;
 
 /**
- * Single write path for Phase 1 banking:
- * EmployeeBankAccount + EmployeePayrollAllocation, then sync deprecated
- * PayrollBankAccount for one-release dual-read compatibility.
+ * Single write path for payroll banking destinations:
+ * EmployeeBankAccount + EmployeePayrollAllocation.
  */
 export async function replaceEmployeeBankSetup(
   tx: Tx,
   input: {
     organizationId: string;
     employeeId: string;
-    payrollProfileId: string;
+    /** Kept for call-site compatibility; unused after legacy bank-table drop. */
+    payrollProfileId?: string;
     createdByUserId: string | null;
     accounts: readonly BankAccountWriteInput[];
     flags: {
@@ -45,6 +45,7 @@ export async function replaceEmployeeBankSetup(
     };
   },
 ): Promise<{ error?: string; auditBanks?: Array<Record<string, unknown>> }> {
+  void input.payrollProfileId;
   const accounts = [...input.accounts];
 
   if (accounts.length > 1 && !input.flags.multipleAccountsEnabled) {
@@ -150,34 +151,6 @@ export async function replaceEmployeeBankSetup(
       percentage: isPrimary ? null : account.percentage,
       isPrimary,
       allocationType,
-    });
-  }
-
-  // Deprecated dual-sync — keep PayrollBankAccount populated for legacy readers.
-  await tx.payrollBankAccount.deleteMany({
-    where: { payrollProfileId: input.payrollProfileId },
-  });
-
-  if (accounts.length > 0) {
-    await tx.payrollBankAccount.createMany({
-      data: accounts.map((account, index) => {
-        const isPrimary = index === primaryIndex;
-        return {
-          payrollProfileId: input.payrollProfileId,
-          bankName: account.bankName,
-          branchName: account.branchName,
-          accountNumber:
-            encryptAccountNumber(account.accountNumber) ??
-            account.accountNumber,
-          accountName: account.accountName,
-          amount:
-            isPrimary || account.amount == null
-              ? null
-              : account.amount.toFixed(2),
-          isPrimary,
-          sortOrder: index,
-        };
-      }),
     });
   }
 

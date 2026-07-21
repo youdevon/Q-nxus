@@ -1,8 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import {
-  resolveEmployeePositionTitle,
-  resolveStatutoryNumber,
-} from "@/src/modules/hr/public";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
 import { getCurrentHealthSurchargeConfig } from "@/src/modules/payroll/data/get-health-surcharge-config";
 import { getSelectableFinancialInstitutionOptions } from "@/src/modules/payroll/data/get-financial-institutions";
 import { getCurrentNisClasses } from "@/src/modules/payroll/data/get-nis-classes";
@@ -133,29 +130,13 @@ export async function getEmployeePayrollSetup(
           id: true,
           payFrequency: true,
           paymentMethod: true,
-          nisNumber: true,
-          birNumber: true,
           notes: true,
-          td1OtherApprovedAnnual: true,
           pensionOnlyIncome: true,
           exemptFromNis: true,
           exemptFromHealthSurcharge: true,
           exemptFromPaye: true,
           isPayrollReady: true,
           updatedAt: true,
-          bankAccounts: {
-            orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-            select: {
-              id: true,
-              bankName: true,
-              branchName: true,
-              accountNumber: true,
-              accountName: true,
-              amount: true,
-              isPrimary: true,
-              sortOrder: true,
-            },
-          },
         },
       },
       contracts: {
@@ -202,16 +183,10 @@ export async function getEmployeePayrollSetup(
     positionTitle: employee.position?.title,
     contractJobTitle: contract?.jobTitle,
   });
-  const effectiveNis = resolveStatutoryNumber(
-    employee.nisNumber,
-    profile?.nisNumber,
-  );
-  const effectiveBir = resolveStatutoryNumber(
-    employee.birNumber,
-    profile?.birNumber,
-  );
+  const effectiveNis = employee.nisNumber?.trim() || null;
+  const effectiveBir = employee.birNumber?.trim() || null;
   const employeeBanks = employee.bankAccounts;
-  let bankAccounts: PayrollBankAccountRecord[];
+  let bankAccounts: PayrollBankAccountRecord[] = [];
 
   if (employeeBanks.length > 0) {
     const records = toPayrollBankAccountRecords({
@@ -252,20 +227,6 @@ export async function getEmployeePayrollSetup(
             : null,
       };
     });
-  } else {
-    bankAccounts =
-      profile?.bankAccounts.map((account) => ({
-        id: account.id,
-        bankName: account.bankName,
-        branchName: account.branchName,
-        accountNumber:
-          decryptAccountNumber(account.accountNumber) ?? account.accountNumber,
-        accountName: account.accountName,
-        amount: account.amount?.toString() ?? null,
-        percentage: null,
-        isPrimary: account.isPrimary,
-        sortOrder: account.sortOrder,
-      })) ?? [];
   }
 
   const taxYear = taxYearFromAsOfKey(toStatutoryAsOfKey(new Date()));
@@ -326,12 +287,6 @@ export async function getEmployeePayrollSetup(
   const resolvedTax = resolveEmployeeTaxPayeInputs({
     taxYear,
     taxProfile: taxProfileFields,
-    payrollProfile: {
-      td1OtherApprovedAnnual:
-        profile?.td1OtherApprovedAnnual != null
-          ? Number(profile.td1OtherApprovedAnnual.toString())
-          : null,
-    },
     priorEmployment: priorEmploymentBundle.totals,
   });
 
@@ -454,9 +409,9 @@ export async function getEmployeePayrollSetup(
   }
 
   const displayTd1 =
-    resolvedTax.td1OtherApprovedAnnual > 0 || taxProfileRow != null
+    taxProfileRow != null || resolvedTax.td1OtherApprovedAnnual > 0
       ? resolvedTax.td1OtherApprovedAnnual.toFixed(2)
-      : profile?.td1OtherApprovedAnnual?.toString() ?? null;
+      : null;
 
   return {
     employee: {
@@ -476,8 +431,6 @@ export async function getEmployeePayrollSetup(
           id: profile.id,
           payFrequency: profile.payFrequency,
           paymentMethod: profile.paymentMethod,
-          nisNumber: profile.nisNumber,
-          birNumber: profile.birNumber,
           notes: profile.notes,
           td1OtherApprovedAnnual: displayTd1,
           pensionOnlyIncome: profile.pensionOnlyIncome,

@@ -424,10 +424,8 @@ export function PayrollProfileForm({
                     placeholder="National insurance number"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Not on the employee record yet
-                    {setup.profile?.nisNumber
-                      ? " (legacy payroll copy — save to sync)"
-                      : ""}. Saving writes this to the employee profile.
+                    Not on the employee record yet. Saving writes this to the
+                    employee profile when you have people.manage.
                   </p>
                 </>
               )}
@@ -463,10 +461,8 @@ export function PayrollProfileForm({
                     placeholder="Board of Inland Revenue file number"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Not on the employee record yet
-                    {setup.profile?.birNumber
-                      ? " (legacy payroll copy — save to sync)"
-                      : ""}. Saving writes this to the employee profile.
+                    Not on the employee record yet. Saving writes this to the
+                    employee profile when you have people.manage.
                   </p>
                 </>
               )}

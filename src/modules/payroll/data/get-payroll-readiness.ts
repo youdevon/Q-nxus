@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import {
   getOrgEmployeeFileCompleteness,
-  resolveStatutoryNumber,
   workforceCategoryBadgeLabel,
 } from "@/src/modules/hr/public";
 import { resolveBankAccountsForReadiness } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
@@ -73,18 +72,8 @@ export async function getPayrollReadiness(options?: {
         select: {
           payFrequency: true,
           paymentMethod: true,
-          nisNumber: true,
-          birNumber: true,
           exemptFromNis: true,
           exemptFromPaye: true,
-          bankAccounts: {
-            select: {
-              bankName: true,
-              accountNumber: true,
-              amount: true,
-              isPrimary: true,
-            },
-          },
         },
       },
       contracts: {
@@ -149,21 +138,13 @@ export async function getPayrollReadiness(options?: {
         isActive: row.isActive,
         priority: row.priority,
       })),
-      legacyAccounts:
-        profile?.bankAccounts.map((account) => ({
-          bankName: account.bankName,
-          accountNumber: account.accountNumber,
-          amount:
-            account.amount != null ? Number(account.amount.toString()) : null,
-          isPrimary: account.isPrimary,
-        })) ?? [],
     });
 
     const readiness = evaluatePayrollReadiness({
       hasCurrentContract: contract != null,
       baseSalary: contract ? Number(contract.baseSalary.toString()) : null,
-      nisNumber: resolveStatutoryNumber(employee.nisNumber, profile?.nisNumber),
-      birNumber: resolveStatutoryNumber(employee.birNumber, profile?.birNumber),
+      nisNumber: employee.nisNumber?.trim() || null,
+      birNumber: employee.birNumber?.trim() || null,
       paymentMethod: profile?.paymentMethod ?? "BANK_TRANSFER",
       bankAccounts,
       exemptFromNis: profile?.exemptFromNis ?? false,

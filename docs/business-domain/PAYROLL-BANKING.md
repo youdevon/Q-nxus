@@ -37,13 +37,13 @@ post-net split (where bank lines sum to full take-home and fixed amounts are
    `FeatureControl` rows exist. Missing banking rows use **seed defaults** via
    `isPayrollBankingFeatureEnabled` (ACH / post-net / negative export stay
    **OFF**; banking + manual register stay **ON**).
-2. **Backfill legacy accounts** — if employees still only have deprecated
-   `PayrollBankAccount` rows:
-   `npm run banking:backfill-accounts`
+2. **Confirm bank destinations** — employees must have
+   `EmployeeBankAccount` + allocations (legacy `PayrollBankAccount` table
+   has been removed).
 3. **Encrypt at rest** — `npm run banking:migrate-encrypt` (needs
    `AUTH_SECRET` or `BANK_ACCOUNT_ENCRYPTION_KEY`).
-4. **Confirm readiness** — Payroll readiness / salaries prefer
-   `EmployeeBankAccount` + allocations (legacy fallback only when none exist).
+4. **Confirm readiness** — Payroll readiness / salaries read
+   `EmployeeBankAccount` + allocations only.
 5. **Post pay run** → on the pay-run detail, open **Prepare payments** (manual;
    not automatic on post).
 6. **Disburse** — Manual payment register and/or Bank CSV. Keep
@@ -63,18 +63,12 @@ Do **not** invent official ACH/NACHA layouts or fake routing codes.
 - `FinancialInstitution` / `FinancialInstitutionBranch` — configurable directory
 - `EmployeeBankAccount` — employee-owned destinations (source of truth)
 - `EmployeePayrollAllocation` — FULL_BALANCE / FIXED_AMOUNT / PERCENTAGE / REMAINDER
-- `PayrollBankAccount` — **deprecated**; dual-synced on write for one release
 
-### Legacy backfill
+### Legacy table removed
 
-`scripts/backfill-employee-bank-accounts.ts` (`npm run banking:backfill-accounts`):
-
-- For each profile with `PayrollBankAccount` whose employee has **no**
-  `EmployeeBankAccount` yet, creates destinations + FULL_BALANCE or
-  FIXED/REMAINDER allocations matching primary/secondary amounts
-- Maps `bankName` → `financialInstitutionId` via catalog name helpers when possible
-- Encrypts account numbers with the existing encrypt helper
-- Idempotent; logs per-employee and summary counts
+`PayrollBankAccount` dual-sync and the `payroll.payroll_bank_accounts` table
+were retired. Historical backfill lived in
+`scripts/backfill-employee-bank-accounts.ts` and is no longer applicable.
 
 ### Feature flags (`FeatureControl`)
 
@@ -280,8 +274,7 @@ placeholders. Column layouts and routing codes require bank confirmation
 2. Payment / batch tables are additive; dropping them does not rewrite
    `Payslip.snapshot` or pay-run totals.
 3. Bank CSV falls back to payslip snapshots when no `PayrollPayment` rows exist.
-4. Deprecated `PayrollBankAccount` dual-sync remains until a later cleanup release.
-5. Encryption key rotation requires re-running the migrate-encrypt script with
+4. Encryption key rotation requires re-running the migrate-encrypt script with
    decrypt-under-old-key / encrypt-under-new-key (not automated).
 
 ---
@@ -290,8 +283,8 @@ placeholders. Column layouts and routing codes require bank confirmation
 
 | Shipped for go-live | Still blocked / deferred until bank confirms |
 |---------------------|-----------------------------------------------|
-| Legacy → `EmployeeBankAccount` backfill | Official bank-specific ACH / NACHA layouts |
-| Readiness / salaries prefer EmployeeBankAccount | Confirmed routing / ACH participant codes |
+| EmployeeBankAccount as sole bank SoT | Official bank-specific ACH / NACHA layouts |
+| Readiness / salaries use EmployeeBankAccount | Confirmed routing / ACH participant codes |
 | Safe missing-row feature defaults for banking | Production ACH submission |
 | Granular bank/allocation caps on profile write | Payment confirmation emails |
 | Editable export profiles (placeholder labeled) | Full verification workflow UI (flags wired) |

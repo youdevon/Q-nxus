@@ -35,8 +35,7 @@ export type EmployeeTaxYearPageData = {
   /** Raw EmployeeTaxProfile row when present. */
   taxProfile: Awaited<ReturnType<typeof getEmployeeTaxProfile>>;
   /**
-   * Dual-read display summary: prefers tax profile, falls back to payroll
-   * setup TD1 so the tax-year page is not blank before a profile is saved.
+   * Display summary from EmployeeTaxProfile (sole TD1 store).
    */
   taxProfileSummary: ResolvedEmployeeTaxPayeInputs;
   priorEmployment: Awaited<ReturnType<typeof getEmployeePriorEmploymentYtds>>;
@@ -67,14 +66,10 @@ export async function getEmployeeTaxYearPage(
     return null;
   }
 
-  const [taxProfile, priorEmployment, payrollProfile, postedRows, statutoryOverrides] =
+  const [taxProfile, priorEmployment, postedRows, statutoryOverrides] =
     await Promise.all([
       getEmployeeTaxProfile(employeeId, year),
       getEmployeePriorEmploymentYtds(employeeId, year),
-      prisma.payrollProfile.findUnique({
-        where: { employeeId },
-        select: { td1OtherApprovedAnnual: true },
-      }),
       prisma.payslip.findMany({
         where: {
           employeeId,
@@ -126,12 +121,6 @@ export async function getEmployeeTaxYearPage(
           previousEmploymentVerified: taxProfile.previousEmploymentVerified,
         }
       : null,
-    payrollProfile: {
-      td1OtherApprovedAnnual:
-        payrollProfile?.td1OtherApprovedAnnual != null
-          ? Number(payrollProfile.td1OtherApprovedAnnual.toString())
-          : null,
-    },
     priorEmployment: priorEmployment.totals,
   });
 

@@ -112,7 +112,6 @@ export const ModelName = {
   EmployeePriorEmploymentDocument: 'EmployeePriorEmploymentDocument',
   EmployeePayrollStatutoryOverride: 'EmployeePayrollStatutoryOverride',
   PayrollProfile: 'PayrollProfile',
-  PayrollBankAccount: 'PayrollBankAccount',
   FinancialInstitution: 'FinancialInstitution',
   FinancialInstitutionBranch: 'FinancialInstitutionBranch',
   EmployeeBankAccount: 'EmployeeBankAccount',
@@ -1382,11 +1381,8 @@ export const PayrollProfileScalarFieldEnum = {
   employeeId: 'employeeId',
   payFrequency: 'payFrequency',
   paymentMethod: 'paymentMethod',
-  nisNumber: 'nisNumber',
-  birNumber: 'birNumber',
   notes: 'notes',
   isPayrollReady: 'isPayrollReady',
-  td1OtherApprovedAnnual: 'td1OtherApprovedAnnual',
   pensionOnlyIncome: 'pensionOnlyIncome',
   exemptFromNis: 'exemptFromNis',
   exemptFromHealthSurcharge: 'exemptFromHealthSurcharge',
@@ -1396,23 +1392,6 @@ export const PayrollProfileScalarFieldEnum = {
 } as const
 
 export type PayrollProfileScalarFieldEnum = (typeof PayrollProfileScalarFieldEnum)[keyof typeof PayrollProfileScalarFieldEnum]
-
-
-export const PayrollBankAccountScalarFieldEnum = {
-  id: 'id',
-  payrollProfileId: 'payrollProfileId',
-  bankName: 'bankName',
-  branchName: 'branchName',
-  accountNumber: 'accountNumber',
-  accountName: 'accountName',
-  amount: 'amount',
-  isPrimary: 'isPrimary',
-  sortOrder: 'sortOrder',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PayrollBankAccountScalarFieldEnum = (typeof PayrollBankAccountScalarFieldEnum)[keyof typeof PayrollBankAccountScalarFieldEnum]
 
 
 export const FinancialInstitutionScalarFieldEnum = {

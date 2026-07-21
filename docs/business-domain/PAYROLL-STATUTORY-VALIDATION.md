@@ -14,14 +14,9 @@ APIs:
 
 ## Employee tax profiles / TD1 (Phase 2)
 
-`EmployeeTaxProfile` stores per-employee, per-calendar-tax-year PAYE treatment (method, personal allowance override, TD1 flags/amounts, previous-employment declarations).
+`EmployeeTaxProfile` is the sole store for per-employee, per-calendar-tax-year PAYE treatment (method, personal allowance override, TD1 flags/amounts, previous-employment declarations).
 
-Calc dual-reads:
-
-1. Tax profile for the period’s tax year (preferred)
-2. `PayrollProfile.td1OtherApprovedAnnual` fallback
-
-Dual-write keeps current-year TD1 in sync between payroll setup and the tax profile form on `/payroll/employees/[id]`. Cumulative / prior-employer methods are stored now; full calc arrives in later phases.
+Calc reads the tax profile for the period’s tax year. Saving TD1 from payroll setup or the tax profile form writes only to `EmployeeTaxProfile` for that year.
 
 ## Prior-employer YTD (Phase 3)
 
@@ -30,6 +25,11 @@ Dual-write keeps current-year TD1 in sync between payroll setup and the tax prof
 - Joiners **without** prior employment this tax year need no records.
 - Active rows sync `EmployeeTaxProfile.previousEmploymentDeclared` / `Verified`.
 - Totals resolve into payslip statutory pins and calc notes; applied when cumulative PAYE is enabled.
+- Soft-archived (`ARCHIVED`) rows are hard-deleted after 365 days by
+  `npm run purge:prior-employment-archive` (also scheduled as
+  `prior-employment-archive-purge`). Override with
+  `PRIOR_EMPLOYMENT_ARCHIVE_RETENTION_DAYS`. Supporting documents cascade;
+  orphaned `StoredFile` rows follow stored-file retention.
 
 ## Cumulative PAYE (Phase 4–5)
 

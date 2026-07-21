@@ -102,11 +102,7 @@ export default async function EmployeeTaxYearPage({
   );
 
   const sourceLabel =
-    summary.source === "tax_profile"
-      ? "Tax profile"
-      : summary.source === "payroll_profile"
-        ? "Payroll setup (TD1 fallback)"
-        : "Defaults";
+    summary.source === "tax_profile" ? "Tax profile" : "Defaults";
 
   return (
     <PageShell size="lg">
@@ -176,10 +172,7 @@ export default async function EmployeeTaxYearPage({
               <MetaBlock
                 label="Status"
                 value={
-                  summary.taxProfileStatus?.replaceAll("_", " ") ??
-                  (summary.source === "payroll_profile"
-                    ? "From payroll setup"
-                    : "—")
+                  summary.taxProfileStatus?.replaceAll("_", " ") ?? "—"
                 }
               />
               <MetaBlock

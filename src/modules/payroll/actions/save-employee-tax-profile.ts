@@ -234,14 +234,6 @@ export async function saveEmployeeTaxProfile(
         select: { id: true },
       });
 
-      // Dual-write current-year TD1 onto PayrollProfile for legacy form / readiness paths.
-      if (taxYear === currentYear) {
-        await transaction.payrollProfile.updateMany({
-          where: { employeeId: employee.id },
-          data: { td1OtherApprovedAnnual: td1Decimal },
-        });
-      }
-
       await recordAuditEvent(transaction, {
         userId: actor.actor.userId,
         organizationId: employee.organizationId,

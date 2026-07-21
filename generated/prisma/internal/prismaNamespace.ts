@@ -445,7 +445,6 @@ export const ModelName = {
   EmployeePriorEmploymentDocument: 'EmployeePriorEmploymentDocument',
   EmployeePayrollStatutoryOverride: 'EmployeePayrollStatutoryOverride',
   PayrollProfile: 'PayrollProfile',
-  PayrollBankAccount: 'PayrollBankAccount',
   FinancialInstitution: 'FinancialInstitution',
   FinancialInstitutionBranch: 'FinancialInstitutionBranch',
   EmployeeBankAccount: 'EmployeeBankAccount',
@@ -485,7 +484,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "payrollProfile" | "payrollBankAccount" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5003,80 +5002,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    PayrollBankAccount: {
-      payload: Prisma.$PayrollBankAccountPayload<ExtArgs>
-      fields: Prisma.PayrollBankAccountFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.PayrollBankAccountFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.PayrollBankAccountFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>
-        }
-        findFirst: {
-          args: Prisma.PayrollBankAccountFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.PayrollBankAccountFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>
-        }
-        findMany: {
-          args: Prisma.PayrollBankAccountFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>[]
-        }
-        create: {
-          args: Prisma.PayrollBankAccountCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>
-        }
-        createMany: {
-          args: Prisma.PayrollBankAccountCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.PayrollBankAccountCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>[]
-        }
-        delete: {
-          args: Prisma.PayrollBankAccountDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>
-        }
-        update: {
-          args: Prisma.PayrollBankAccountUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>
-        }
-        deleteMany: {
-          args: Prisma.PayrollBankAccountDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.PayrollBankAccountUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.PayrollBankAccountUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>[]
-        }
-        upsert: {
-          args: Prisma.PayrollBankAccountUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PayrollBankAccountPayload>
-        }
-        aggregate: {
-          args: Prisma.PayrollBankAccountAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePayrollBankAccount>
-        }
-        groupBy: {
-          args: Prisma.PayrollBankAccountGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PayrollBankAccountGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.PayrollBankAccountCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PayrollBankAccountCountAggregateOutputType> | number
-        }
-      }
-    }
     FinancialInstitution: {
       payload: Prisma.$FinancialInstitutionPayload<ExtArgs>
       fields: Prisma.FinancialInstitutionFieldRefs
@@ -8119,11 +8044,8 @@ export const PayrollProfileScalarFieldEnum = {
   employeeId: 'employeeId',
   payFrequency: 'payFrequency',
   paymentMethod: 'paymentMethod',
-  nisNumber: 'nisNumber',
-  birNumber: 'birNumber',
   notes: 'notes',
   isPayrollReady: 'isPayrollReady',
-  td1OtherApprovedAnnual: 'td1OtherApprovedAnnual',
   pensionOnlyIncome: 'pensionOnlyIncome',
   exemptFromNis: 'exemptFromNis',
   exemptFromHealthSurcharge: 'exemptFromHealthSurcharge',
@@ -8133,23 +8055,6 @@ export const PayrollProfileScalarFieldEnum = {
 } as const
 
 export type PayrollProfileScalarFieldEnum = (typeof PayrollProfileScalarFieldEnum)[keyof typeof PayrollProfileScalarFieldEnum]
-
-
-export const PayrollBankAccountScalarFieldEnum = {
-  id: 'id',
-  payrollProfileId: 'payrollProfileId',
-  bankName: 'bankName',
-  branchName: 'branchName',
-  accountNumber: 'accountNumber',
-  accountName: 'accountName',
-  amount: 'amount',
-  isPrimary: 'isPrimary',
-  sortOrder: 'sortOrder',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PayrollBankAccountScalarFieldEnum = (typeof PayrollBankAccountScalarFieldEnum)[keyof typeof PayrollBankAccountScalarFieldEnum]
 
 
 export const FinancialInstitutionScalarFieldEnum = {
@@ -10044,7 +9949,6 @@ export type GlobalOmitConfig = {
   employeePriorEmploymentDocument?: Prisma.EmployeePriorEmploymentDocumentOmit
   employeePayrollStatutoryOverride?: Prisma.EmployeePayrollStatutoryOverrideOmit
   payrollProfile?: Prisma.PayrollProfileOmit
-  payrollBankAccount?: Prisma.PayrollBankAccountOmit
   financialInstitution?: Prisma.FinancialInstitutionOmit
   financialInstitutionBranch?: Prisma.FinancialInstitutionBranchOmit
   employeeBankAccount?: Prisma.EmployeeBankAccountOmit

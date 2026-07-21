@@ -1086,9 +1086,9 @@ model Employee {
   emergencyContactRelationship String?
   /// Used for Health Surcharge age exemptions (<16 / ≥60).
   dateOfBirth      DateTime?        @db.Date
-  /// National Insurance Scheme number — source of truth; payroll profile mirrors for readiness/snapshots.
+  /// National Insurance Scheme number — source of truth for payroll readiness / payslip snapshots.
   nisNumber        String?
-  /// Board of Inland Revenue file number — source of truth; payroll profile mirrors for readiness/snapshots.
+  /// Board of Inland Revenue file number — source of truth for payroll readiness / payslip snapshots.
   birNumber        String?
   idType             EmployeeIdType?
   idNumber           String?
@@ -2373,7 +2373,7 @@ enum EmployeeTaxProfileStatus {
 }
 
 /// Per-employee, per-calendar-tax-year PAYE / TD1 treatment.
-/// Dual-reads with PayrollProfile.td1OtherApprovedAnnual for the current year.
+/// Per-employee, per-tax-year PAYE / TD1 treatment (sole store for TD1 amounts).
 model EmployeeTaxProfile {
   id                 String                   @id @default(cuid())
   organizationId     String
@@ -2560,16 +2560,8 @@ model PayrollProfile {
   employeeId     String               @unique
   payFrequency   PayFrequency         @default(MONTHLY)
   paymentMethod  PayrollPaymentMethod @default(BANK_TRANSFER)
-  /// Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
-  /// here from payroll writers — prefer Employee writes when people.manage.
-  nisNumber      String?
-  /// Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
-  /// here from payroll writers — prefer Employee writes when people.manage.
-  birNumber      String?
   notes          String?
   isPayrollReady Boolean              @default(false)
-  /// TD1: other approved deductions (pension, annuity, tax-savings, etc.) annual TTD.
-  td1OtherApprovedAnnual Decimal?     @db.Decimal(14, 2)
   /// Health Surcharge: pension as only income source (exempt when true).
   pensionOnlyIncome      Boolean      @default(false)
   /// Opt out of NIS employee/employer contributions and NIS number readiness.
@@ -2581,32 +2573,9 @@ model PayrollProfile {
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
 
-  employee     Employee             @relation(fields: [employeeId], references: [id])
-  bankAccounts PayrollBankAccount[]
+  employee Employee @relation(fields: [employeeId], references: [id])
 
   @@map("payroll_profiles")
-  @@schema("payroll")
-}
-
-/// @deprecated Prefer EmployeeBankAccount. Kept for one-release dual-read/sync.
-model PayrollBankAccount {
-  id               String   @id @default(cuid())
-  payrollProfileId String
-  bankName         String
-  branchName       String?
-  accountNumber    String
-  accountName      String?
-  /// Fixed amount for secondary accounts. Null on the primary/remainder account.
-  amount           Decimal? @db.Decimal(14, 2)
-  isPrimary        Boolean  @default(false)
-  sortOrder        Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  payrollProfile PayrollProfile @relation(fields: [payrollProfileId], references: [id], onDelete: Cascade)
-
-  @@index([payrollProfileId])
-  @@map("payroll_bank_accounts")
   @@schema("payroll")
 }
 

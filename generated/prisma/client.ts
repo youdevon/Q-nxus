@@ -329,7 +329,7 @@ export type EmployeeOffboardingTask = Prisma.EmployeeOffboardingTaskModel
 /**
  * Model EmployeeTaxProfile
  * Per-employee, per-calendar-tax-year PAYE / TD1 treatment.
- * Dual-reads with PayrollProfile.td1OtherApprovedAnnual for the current year.
+ * Per-employee, per-tax-year PAYE / TD1 treatment (sole store for TD1 amounts).
  */
 export type EmployeeTaxProfile = Prisma.EmployeeTaxProfileModel
 /**
@@ -353,11 +353,6 @@ export type EmployeePayrollStatutoryOverride = Prisma.EmployeePayrollStatutoryOv
  * 
  */
 export type PayrollProfile = Prisma.PayrollProfileModel
-/**
- * Model PayrollBankAccount
- * @deprecated Prefer EmployeeBankAccount. Kept for one-release dual-read/sync.
- */
-export type PayrollBankAccount = Prisma.PayrollBankAccountModel
 /**
  * Model FinancialInstitution
  * Configurable financial institution directory (TT seed; extensible to other jurisdictions).
