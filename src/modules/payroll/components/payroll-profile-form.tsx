@@ -24,6 +24,11 @@ import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { formatMoney } from "@/src/lib/format";
 import {
+  deactivatePaymentInstruction,
+  verifyPaymentInstruction,
+  type PaymentInstructionLifecycleState,
+} from "@/src/modules/payroll/actions/manage-payment-instructions";
+import {
   savePayrollProfile,
   type PayrollProfileFormState,
 } from "@/src/modules/payroll/actions/save-payroll-profile";
@@ -37,21 +42,66 @@ const initialState: PayrollProfileFormState = {
   message: "",
 };
 
+const instructionIdle: PaymentInstructionLifecycleState = {
+  status: "idle",
+  message: "",
+};
+
+function InstructionActionForm({
+  action,
+  children,
+  hidden,
+}: {
+  action: (
+    prev: PaymentInstructionLifecycleState,
+    formData: FormData,
+  ) => Promise<PaymentInstructionLifecycleState>;
+  children: React.ReactNode;
+  hidden: Record<string, string>;
+}) {
+  const [state, formAction, pending] = useActionState(action, instructionIdle);
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(state.message);
+    } else if (state.status === "success") {
+      toast.success(state.message);
+    }
+  }, [state]);
+
+  return (
+    <form action={formAction} className="inline-flex">
+      {Object.entries(hidden).map(([key, value]) => (
+        <input key={key} type="hidden" name={key} value={value} />
+      ))}
+      <fieldset disabled={pending} className="contents">
+        {children}
+      </fieldset>
+    </form>
+  );
+}
+
 type PayrollProfileFormProps = {
   setup: EmployeePayrollSetup;
   /** Optional link to the employee tax-year overview (Phase 8). */
   taxYearHref?: string;
+  canVerifyInstructions?: boolean;
+  canDeactivateInstructions?: boolean;
 };
 
 type BankAccountRow = {
   rowId: string;
   /** Select value: DB institution id, catalog key, or `other`. */
   institutionId: string;
-  /** Official institution name (or custom text when Other). */
+  /** Official institution name (or custom text when Other) — ACH ABA label. */
   bankName: string;
-  branchName: string;
+  /** ACH ABA / routing when known. */
+  routingNumber: string;
   accountNumber: string;
+  /** ACH Individual Name */
   accountName: string;
+  /** SAVINGS | CHEQUING — ACH Payment Type */
+  accountType: "SAVINGS" | "CHEQUING";
   amount: string;
   percentage: string;
   /** Secondary split mode when percentage allocations are enabled. */
@@ -92,14 +142,28 @@ function resolveInstitutionSelection(
   };
 }
 
-function newBankAccount(isPrimary: boolean): BankAccountRow {
+function defaultAccountHolderName(setup: EmployeePayrollSetup): string {
+  return setup.employee.displayName.trim();
+}
+
+function normalizeRowAccountType(
+  value: string | null | undefined,
+): "SAVINGS" | "CHEQUING" {
+  return value === "CHEQUING" || value === "CURRENT" ? "CHEQUING" : "SAVINGS";
+}
+
+function newBankAccount(
+  isPrimary: boolean,
+  defaultHolderName = "",
+): BankAccountRow {
   return {
     rowId: crypto.randomUUID(),
     institutionId: "",
     bankName: "",
-    branchName: "",
+    routingNumber: "",
     accountNumber: "",
-    accountName: "",
+    accountName: defaultHolderName,
+    accountType: "SAVINGS",
     amount: "",
     percentage: "",
     splitMode: "fixed",
@@ -110,6 +174,8 @@ function newBankAccount(isPrimary: boolean): BankAccountRow {
 export function PayrollProfileForm({
   setup,
   taxYearHref,
+  canVerifyInstructions = false,
+  canDeactivateInstructions = false,
 }: PayrollProfileFormProps) {
   const [state, formAction, pending] = useActionState(
     savePayrollProfile,
@@ -139,16 +205,18 @@ export function PayrollProfileForm({
             rowId: account.id,
             institutionId: selection.institutionId,
             bankName: selection.bankName,
-            branchName: account.branchName ?? "",
+            routingNumber: account.routingNumber?.trim() ?? "",
             accountNumber: account.accountNumber,
-            accountName: account.accountName ?? "",
+            accountName:
+              account.accountName?.trim() || defaultAccountHolderName(setup),
+            accountType: normalizeRowAccountType(account.accountType),
             amount: account.amount ?? "",
             percentage: account.percentage ?? "",
             splitMode: hasPercentage ? ("percentage" as const) : ("fixed" as const),
             isPrimary: account.isPrimary,
           };
         })
-      : [newBankAccount(true)],
+      : [newBankAccount(true, defaultAccountHolderName(setup))],
   );
 
   const [allowanceTaxable, setAllowanceTaxable] = useState<
@@ -234,9 +302,11 @@ export function PayrollProfileForm({
       ? bankAccounts.map((row) => ({
           financialInstitutionId: row.institutionId || null,
           bankName: row.bankName.trim(),
-          branchName: row.branchName.trim() || null,
+          branchName: null,
           accountNumber: row.accountNumber.trim(),
           accountName: row.accountName.trim() || null,
+          accountType: row.accountType,
+          routingNumber: row.routingNumber.trim() || null,
           amount:
             row.isPrimary || row.splitMode === "percentage"
               ? null
@@ -258,6 +328,7 @@ export function PayrollProfileForm({
   const hasEditableAllowances = Object.keys(allowanceTaxable).length > 0;
 
   return (
+    <>
     <form action={formAction}>
       <PageShell>
         <PayrollNav />
@@ -643,7 +714,7 @@ export function PayrollProfileForm({
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <Landmark className="size-4 text-muted-foreground" />
-                <SectionHeading>Bank accounts</SectionHeading>
+                <SectionHeading>Payment instructions</SectionHeading>
                 <Badge variant={primaryCount === 1 ? "success" : "warning"}>
                   {primaryCount === 1
                     ? "Primary remainder set"
@@ -658,20 +729,29 @@ export function PayrollProfileForm({
                   onClick={() =>
                     setBankAccounts((rows) => [
                       ...rows,
-                      newBankAccount(rows.length === 0),
+                      newBankAccount(
+                        rows.length === 0,
+                        defaultAccountHolderName(setup),
+                      ),
                     ])
                   }
                 >
                   <Plus />
-                  Add bank account
+                  Add destination
                 </Button>
               ) : null}
             </div>
 
             <p className="mb-3 text-xs text-muted-foreground">
+              Fields align with First Citizens ACH entry: account holder
+              (Individual Name), ABA/routing when known, account number, and
+              Savings/Chequing (Payment Type). Employee number is used as
+              Individual ID from HR. Purpose Code and Addenda are set on the
+              bank export profile / batch — not per employee. Branch is not
+              required for ACH.{" "}
               {canAddAnotherAccount
-                ? `Mark one account as primary — it receives the remainder after fixed amounts on other accounts. Secondary accounts take a fixed ${currency} amount each pay period. These destinations feed payslip bankDistribution and later payment snapshots; changing them after a posted run is prepared does not rewrite frozen payments.`
-                : "Split deposits are disabled — one FULL_BALANCE destination only. Prepared payment snapshots on posted runs stay frozen if you change this later."}
+                ? `Mark one destination as primary — it receives the remainder after fixed amounts. Changing instructions after a posted run is prepared does not rewrite frozen payments.`
+                : "Split deposits are disabled — one FULL_BALANCE destination only."}
             </p>
 
             {hasBaseSalary ? (
@@ -734,9 +814,9 @@ export function PayrollProfileForm({
 
             {bankAccounts.length === 0 ? (
               <div className="py-8 text-center">
-                <p className="text-sm font-medium">No bank accounts added</p>
+                <p className="text-sm font-medium">No payment instructions</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Add at least one account for bank transfer payments.
+                  Add at least one destination for bank transfer / ACH payments.
                 </p>
               </div>
             ) : (
@@ -744,7 +824,7 @@ export function PayrollProfileForm({
                 {bankAccounts.map((row) => (
                   <div
                     key={row.rowId}
-                    className="grid gap-4 rounded-md border border-border/70 p-4 md:grid-cols-[minmax(16rem,2fr)_1fr_1fr_1fr_8rem_auto]"
+                    className="grid gap-4 rounded-md border border-border/70 p-4 md:grid-cols-[minmax(12rem,1.4fr)_minmax(8rem,0.9fr)_minmax(10rem,1.1fr)_1fr_1fr_8rem_auto]"
                   >
                     <div className="space-y-1.5">
                       <label
@@ -758,9 +838,25 @@ export function PayrollProfileForm({
                         institutionId={row.institutionId}
                         bankName={row.bankName}
                         institutions={institutions}
-                        onChange={({ institutionId, bankName }) =>
-                          updateRow(row.rowId, { institutionId, bankName })
-                        }
+                        onChange={({ institutionId, bankName }) => {
+                          const match = institutions.find(
+                            (item) =>
+                              item.id === institutionId ||
+                              item.catalogKey === institutionId,
+                          );
+                          const fromInstitution =
+                            match?.routingCode?.trim() ||
+                            match?.achParticipantCode?.trim() ||
+                            "";
+                          updateRow(row.rowId, {
+                            institutionId,
+                            bankName,
+                            routingNumber:
+                              institutionId === OTHER_FINANCIAL_INSTITUTION_ID
+                                ? row.routingNumber
+                                : fromInstitution || row.routingNumber,
+                          });
+                        }}
                       />
                       {row.institutionId === OTHER_FINANCIAL_INSTITUTION_ID ? (
                         <Input
@@ -781,18 +877,39 @@ export function PayrollProfileForm({
                     <div className="space-y-1.5">
                       <label
                         className="text-xs text-muted-foreground"
-                        htmlFor={`branchName-${row.rowId}`}
+                        htmlFor={`routingNumber-${row.rowId}`}
                       >
-                        Branch
+                        ABA / routing
                       </label>
                       <Input
-                        id={`branchName-${row.rowId}`}
-                        value={row.branchName}
+                        id={`routingNumber-${row.rowId}`}
+                        value={row.routingNumber}
                         onChange={(event) =>
                           updateRow(row.rowId, {
-                            branchName: event.target.value,
+                            routingNumber: event.target.value,
                           })
                         }
+                        placeholder="When confirmed"
+                        className="font-mono text-sm"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label
+                        className="text-xs text-muted-foreground"
+                        htmlFor={`accountName-${row.rowId}`}
+                      >
+                        Account holder (Individual Name)
+                      </label>
+                      <Input
+                        id={`accountName-${row.rowId}`}
+                        value={row.accountName}
+                        onChange={(event) =>
+                          updateRow(row.rowId, {
+                            accountName: event.target.value,
+                          })
+                        }
+                        required
                       />
                     </div>
 
@@ -818,19 +935,29 @@ export function PayrollProfileForm({
                     <div className="space-y-1.5">
                       <label
                         className="text-xs text-muted-foreground"
-                        htmlFor={`accountName-${row.rowId}`}
+                        htmlFor={`accountType-${row.rowId}`}
                       >
-                        Account name
+                        Account type (Payment Type)
                       </label>
-                      <Input
-                        id={`accountName-${row.rowId}`}
-                        value={row.accountName}
+                      <select
+                        id={`accountType-${row.rowId}`}
+                        className="h-9 w-full rounded-md border bg-background px-3 text-sm"
+                        value={row.accountType}
                         onChange={(event) =>
                           updateRow(row.rowId, {
-                            accountName: event.target.value,
+                            accountType:
+                              event.target.value === "CHEQUING"
+                                ? "CHEQUING"
+                                : "SAVINGS",
                           })
                         }
-                      />
+                        required
+                      >
+                        <option value="SAVINGS">Savings → Savings Credit</option>
+                        <option value="CHEQUING">
+                          Chequing → Chequing Credit
+                        </option>
+                      </select>
                     </div>
 
                     <div className="space-y-1.5">
@@ -972,6 +1099,29 @@ export function PayrollProfileForm({
                         Primary
                       </label>
 
+                      {(() => {
+                        const live = setup.bankAccounts.find(
+                          (account) => account.id === row.rowId,
+                        );
+                        if (!live) {
+                          return null;
+                        }
+                        return (
+                          <Badge
+                            variant={
+                              live.isVerified ||
+                              live.verificationStatus === "VERIFIED"
+                                ? "success"
+                                : live.verificationStatus === "FAILED"
+                                  ? "destructive"
+                                  : "outline"
+                            }
+                          >
+                            {live.verificationStatus ?? "UNVERIFIED"}
+                          </Badge>
+                        );
+                      })()}
+
                       <Button
                         type="button"
                         variant="ghost"
@@ -1082,5 +1232,122 @@ export function PayrollProfileForm({
         </section>
       </PageShell>
     </form>
+
+    {(canVerifyInstructions ||
+      canDeactivateInstructions ||
+      setup.bankAccountHistory.length > 0) && (
+      <PageShell className="pt-0 sm:pt-0 md:pt-0 lg:pt-0">
+        {(canVerifyInstructions || canDeactivateInstructions) &&
+        setup.bankAccounts.length > 0 ? (
+          <section className="mb-10">
+            <SectionHeading>Verify / deactivate instructions</SectionHeading>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Verification is separate from save. Deactivate soft-closes an
+              instruction and retains history — it does not hard-delete.
+            </p>
+            <div className="mt-4 space-y-3">
+              {setup.bankAccounts.map((account) => (
+                <div
+                  key={account.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/70 px-4 py-3"
+                >
+                  <div>
+                    <p className="text-sm font-medium">
+                      {account.bankName} · {account.accountNumberLastFour
+                        ? `••••${account.accountNumberLastFour}`
+                        : "••••"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {account.verificationStatus ?? "UNVERIFIED"}
+                      {account.dataSource ? ` · ${account.dataSource}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {canVerifyInstructions &&
+                    account.verificationStatus !== "VERIFIED" ? (
+                      <InstructionActionForm
+                        action={verifyPaymentInstruction}
+                        hidden={{
+                          accountId: account.id,
+                          employeeId: setup.employee.id,
+                        }}
+                      >
+                        <Button type="submit" size="sm" variant="outline">
+                          Verify
+                        </Button>
+                      </InstructionActionForm>
+                    ) : null}
+                    {canDeactivateInstructions ? (
+                      <InstructionActionForm
+                        action={deactivatePaymentInstruction}
+                        hidden={{
+                          accountId: account.id,
+                          employeeId: setup.employee.id,
+                          changeReason: "Deactivated from payroll setup UI",
+                        }}
+                      >
+                        <Button type="submit" size="sm" variant="outline">
+                          Deactivate
+                        </Button>
+                      </InstructionActionForm>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {setup.bankAccountHistory.length > 0 ? (
+          <section className="mb-10">
+            <SectionHeading>Instruction history</SectionHeading>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Soft-deactivated and superseded payment instructions (retained for
+              audit).
+            </p>
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[40rem] text-left text-sm">
+                <thead>
+                  <tr className="border-b text-xs text-muted-foreground">
+                    <th className="py-2 pr-4 font-medium">Bank</th>
+                    <th className="py-2 pr-4 font-medium">Account</th>
+                    <th className="py-2 pr-4 font-medium">Status</th>
+                    <th className="py-2 pr-4 font-medium">Source</th>
+                    <th className="py-2 pr-4 font-medium">Effective</th>
+                    <th className="py-2 font-medium">Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {setup.bankAccountHistory.map((row) => (
+                    <tr key={row.id} className="border-b border-border/60">
+                      <td className="py-2.5 pr-4">{row.bankName}</td>
+                      <td className="py-2.5 pr-4 font-mono text-xs">
+                        {row.accountNumberMasked}
+                      </td>
+                      <td className="py-2.5 pr-4">
+                        <Badge variant="secondary">
+                          {row.verificationStatus}
+                        </Badge>
+                      </td>
+                      <td className="py-2.5 pr-4">{row.dataSource}</td>
+                      <td className="py-2.5 pr-4 text-xs text-muted-foreground">
+                        {row.effectiveFrom.slice(0, 10)}
+                        {row.archivedAt
+                          ? ` → ${row.archivedAt.slice(0, 10)}`
+                          : ""}
+                      </td>
+                      <td className="py-2.5 text-xs text-muted-foreground">
+                        {row.changeReason ?? "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ) : null}
+      </PageShell>
+    )}
+  </>
   );
 }

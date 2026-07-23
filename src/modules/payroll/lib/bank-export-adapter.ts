@@ -8,6 +8,10 @@ import { createHash } from "node:crypto";
 import { toCsv } from "@/src/modules/payroll/lib/payroll-exports";
 import { maskAccountNumber } from "@/src/modules/payroll/lib/payslip-preview";
 import { sumMoney } from "@/src/modules/payroll/lib/money";
+import {
+  FirstCitizensImportDisabledAdapter,
+  FirstCitizensManualWorksheetAdapter,
+} from "@/src/modules/payroll/lib/first-citizens-export";
 
 export type BankExportDetailLine = {
   sequence: number;
@@ -47,8 +51,14 @@ export type BankExportValidationResult = {
   errors: string[];
 };
 
+export type BankExportAdapterKindCode =
+  | "MANUAL_REGISTER"
+  | "GENERIC_CSV"
+  | "FIRST_CITIZENS_MANUAL_WORKSHEET"
+  | "FIRST_CITIZENS_IMPORT";
+
 export interface PayrollBankExportAdapter {
-  readonly kind: "MANUAL_REGISTER" | "GENERIC_CSV";
+  readonly kind: BankExportAdapterKindCode;
   validate(input: BankExportGenerateInput): BankExportValidationResult;
   generate(input: BankExportGenerateInput): BankExportGenerateResult;
   controlTotal(details: readonly BankExportDetailLine[]): number;
@@ -277,9 +287,18 @@ export class GenericCsvBankExportAdapter implements PayrollBankExportAdapter {
 }
 
 export function resolveBankExportAdapter(
-  kind: "MANUAL_REGISTER" | "GENERIC_CSV",
+  kind: BankExportAdapterKindCode | string,
 ): PayrollBankExportAdapter {
-  return new GenericCsvBankExportAdapter(kind);
+  if (kind === "FIRST_CITIZENS_MANUAL_WORKSHEET") {
+    return new FirstCitizensManualWorksheetAdapter();
+  }
+  if (kind === "FIRST_CITIZENS_IMPORT") {
+    return new FirstCitizensImportDisabledAdapter();
+  }
+  if (kind === "MANUAL_REGISTER" || kind === "GENERIC_CSV") {
+    return new GenericCsvBankExportAdapter(kind);
+  }
+  return new GenericCsvBankExportAdapter("GENERIC_CSV");
 }
 
 export function ensureMaskedAccount(

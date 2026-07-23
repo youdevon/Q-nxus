@@ -10,6 +10,7 @@ export type EmployeeBankAccountLike = {
   accountNumberLastFour?: string | null;
   accountHolderName?: string | null;
   accountName?: string | null;
+  accountType?: string | null;
   isPrimary: boolean;
   sortOrder: number;
   financialInstitutionId?: string | null;
@@ -78,6 +79,7 @@ export function toPayslipBankAccountInputs(input: {
         ? null
         : toNumber(account.fixedAmount ?? account.amount),
       isPrimary: account.isPrimary,
+      accountType: account.accountType ?? null,
     }));
   }
 
@@ -95,6 +97,7 @@ export function toPayslipBankAccountInputs(input: {
           ? null
           : toNumber(account.fixedAmount ?? account.amount),
         isPrimary: account.isPrimary,
+        accountType: account.accountType ?? null,
       };
     }
 
@@ -109,6 +112,16 @@ export function toPayslipBankAccountInputs(input: {
       accountNumber: account.accountNumber,
       amount: isPrimary ? null : toNumber(allocation.fixedAmount),
       isPrimary,
+      accountType: account.accountType ?? null,
+      percentage:
+        type === "PERCENTAGE" ? toNumber(allocation.percentage) : null,
+      allocationKind:
+        type === "PERCENTAGE"
+          ? ("PERCENTAGE" as const)
+          : isPrimary
+            ? ("REMAINDER" as const)
+            : ("FIXED" as const),
+      priority: allocation.priority,
     };
   });
 }
@@ -137,6 +150,7 @@ export function toPayrollBankAccountRecords(input: {
       accountNumber: row.accountNumber,
       accountName:
         source?.accountHolderName ?? source?.accountName ?? null,
+      accountType: source?.accountType ?? null,
       amount: row.amount == null ? null : row.amount.toFixed(2),
       isPrimary: row.isPrimary,
       sortOrder: source?.sortOrder ?? index,
@@ -157,6 +171,8 @@ export function resolveBankAccountsForReadiness(input: {
 }): Array<{
   bankName: string;
   accountNumber: string;
+  accountHolderName: string | null;
+  accountType: string | null;
   amount: number | null;
   isPrimary: boolean;
 }> {
@@ -164,8 +180,25 @@ export function resolveBankAccountsForReadiness(input: {
     return [];
   }
 
-  return toPayslipBankAccountInputs({
+  const payslipInputs = toPayslipBankAccountInputs({
     accounts: input.employeeAccounts,
     allocations: input.allocations,
+  });
+
+  return payslipInputs.map((row) => {
+    const source = input.employeeAccounts.find(
+      (account) =>
+        account.accountNumber === row.accountNumber &&
+        account.bankName === row.bankName,
+    );
+    return {
+      bankName: row.bankName,
+      accountNumber: row.accountNumber,
+      accountHolderName:
+        source?.accountHolderName ?? source?.accountName ?? null,
+      accountType: source?.accountType ?? null,
+      amount: row.amount,
+      isPrimary: row.isPrimary,
+    };
   });
 }

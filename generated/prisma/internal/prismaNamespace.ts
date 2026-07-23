@@ -444,6 +444,9 @@ export const ModelName = {
   EmployeePriorEmploymentYtd: 'EmployeePriorEmploymentYtd',
   EmployeePriorEmploymentDocument: 'EmployeePriorEmploymentDocument',
   EmployeePayrollStatutoryOverride: 'EmployeePayrollStatutoryOverride',
+  EmployeeAnnualPayrollProjection: 'EmployeeAnnualPayrollProjection',
+  EmployeeTaxYearAdjustment: 'EmployeeTaxYearAdjustment',
+  EmployeeEarningTreatmentOverride: 'EmployeeEarningTreatmentOverride',
   PayrollProfile: 'PayrollProfile',
   FinancialInstitution: 'FinancialInstitution',
   FinancialInstitutionBranch: 'FinancialInstitutionBranch',
@@ -484,7 +487,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4928,6 +4931,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EmployeeAnnualPayrollProjection: {
+      payload: Prisma.$EmployeeAnnualPayrollProjectionPayload<ExtArgs>
+      fields: Prisma.EmployeeAnnualPayrollProjectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeAnnualPayrollProjectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeAnnualPayrollProjectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeAnnualPayrollProjectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeAnnualPayrollProjectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeAnnualPayrollProjectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeAnnualPayrollProjectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeAnnualPayrollProjectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeAnnualPayrollProjectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeAnnualPayrollProjectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>
+        }
+        update: {
+          args: Prisma.EmployeeAnnualPayrollProjectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeAnnualPayrollProjectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeAnnualPayrollProjectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeAnnualPayrollProjectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeAnnualPayrollProjectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeAnnualPayrollProjectionPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeAnnualPayrollProjectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeAnnualPayrollProjection>
+        }
+        groupBy: {
+          args: Prisma.EmployeeAnnualPayrollProjectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeAnnualPayrollProjectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeAnnualPayrollProjectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeAnnualPayrollProjectionCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeTaxYearAdjustment: {
+      payload: Prisma.$EmployeeTaxYearAdjustmentPayload<ExtArgs>
+      fields: Prisma.EmployeeTaxYearAdjustmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeTaxYearAdjustmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeTaxYearAdjustmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeTaxYearAdjustmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeTaxYearAdjustmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeTaxYearAdjustmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeTaxYearAdjustmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeTaxYearAdjustmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeTaxYearAdjustmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeTaxYearAdjustmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>
+        }
+        update: {
+          args: Prisma.EmployeeTaxYearAdjustmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeTaxYearAdjustmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeTaxYearAdjustmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeTaxYearAdjustmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeTaxYearAdjustmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeTaxYearAdjustmentPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeTaxYearAdjustmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeTaxYearAdjustment>
+        }
+        groupBy: {
+          args: Prisma.EmployeeTaxYearAdjustmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeTaxYearAdjustmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeTaxYearAdjustmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeTaxYearAdjustmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeEarningTreatmentOverride: {
+      payload: Prisma.$EmployeeEarningTreatmentOverridePayload<ExtArgs>
+      fields: Prisma.EmployeeEarningTreatmentOverrideFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeEarningTreatmentOverrideFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeEarningTreatmentOverrideFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeEarningTreatmentOverrideFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeEarningTreatmentOverrideFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeEarningTreatmentOverrideFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeEarningTreatmentOverrideCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeEarningTreatmentOverrideCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeEarningTreatmentOverrideCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeEarningTreatmentOverrideDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>
+        }
+        update: {
+          args: Prisma.EmployeeEarningTreatmentOverrideUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeEarningTreatmentOverrideDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeEarningTreatmentOverrideUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeEarningTreatmentOverrideUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeEarningTreatmentOverrideUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeEarningTreatmentOverridePayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeEarningTreatmentOverrideAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeEarningTreatmentOverride>
+        }
+        groupBy: {
+          args: Prisma.EmployeeEarningTreatmentOverrideGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeEarningTreatmentOverrideGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeEarningTreatmentOverrideCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeEarningTreatmentOverrideCountAggregateOutputType> | number
+        }
+      }
+    }
     PayrollProfile: {
       payload: Prisma.$PayrollProfilePayload<ExtArgs>
       fields: Prisma.PayrollProfileFieldRefs
@@ -8039,6 +8264,99 @@ export const EmployeePayrollStatutoryOverrideScalarFieldEnum = {
 export type EmployeePayrollStatutoryOverrideScalarFieldEnum = (typeof EmployeePayrollStatutoryOverrideScalarFieldEnum)[keyof typeof EmployeePayrollStatutoryOverrideScalarFieldEnum]
 
 
+export const EmployeeAnnualPayrollProjectionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  calculationDate: 'calculationDate',
+  version: 'version',
+  status: 'status',
+  previousEmployerTaxableIncome: 'previousEmployerTaxableIncome',
+  currentEmployerActualTaxableIncome: 'currentEmployerActualTaxableIncome',
+  projectedRemainingTaxableIncome: 'projectedRemainingTaxableIncome',
+  projectedAnnualTaxableIncome: 'projectedAnnualTaxableIncome',
+  projectedEmployeeNis: 'projectedEmployeeNis',
+  projectedQualifyingNis: 'projectedQualifyingNis',
+  projectedPension: 'projectedPension',
+  projectedOtherQualifyingContributions: 'projectedOtherQualifyingContributions',
+  personalAllowance: 'personalAllowance',
+  allowableQualifyingDeduction: 'allowableQualifyingDeduction',
+  projectedChargeableIncome: 'projectedChargeableIncome',
+  projectedAnnualTaxLiability: 'projectedAnnualTaxLiability',
+  previousEmployerPaye: 'previousEmployerPaye',
+  currentEmployerPaye: 'currentEmployerPaye',
+  manualTaxAdjustment: 'manualTaxAdjustment',
+  remainingTaxLiability: 'remainingTaxLiability',
+  remainingPayrollPeriods: 'remainingPayrollPeriods',
+  recommendedPayePerPeriod: 'recommendedPayePerPeriod',
+  payFrequency: 'payFrequency',
+  statutoryConfigurationId: 'statutoryConfigurationId',
+  calculationSnapshot: 'calculationSnapshot',
+  warnings: 'warnings',
+  generatedByUserId: 'generatedByUserId',
+  generatedAt: 'generatedAt',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  appliedToPeriodEnd: 'appliedToPeriodEnd',
+  appliedStatutoryOverrideId: 'appliedStatutoryOverrideId',
+  supersedesProjectionId: 'supersedesProjectionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeAnnualPayrollProjectionScalarFieldEnum = (typeof EmployeeAnnualPayrollProjectionScalarFieldEnum)[keyof typeof EmployeeAnnualPayrollProjectionScalarFieldEnum]
+
+
+export const EmployeeTaxYearAdjustmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  periodEnd: 'periodEnd',
+  adjustmentType: 'adjustmentType',
+  originalValue: 'originalValue',
+  adjustmentValue: 'adjustmentValue',
+  finalValue: 'finalValue',
+  reasonCode: 'reasonCode',
+  reason: 'reason',
+  supportingReference: 'supportingReference',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  enteredByUserId: 'enteredByUserId',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  rejectedReason: 'rejectedReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeTaxYearAdjustmentScalarFieldEnum = (typeof EmployeeTaxYearAdjustmentScalarFieldEnum)[keyof typeof EmployeeTaxYearAdjustmentScalarFieldEnum]
+
+
+export const EmployeeEarningTreatmentOverrideScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  componentDefinitionId: 'componentDefinitionId',
+  taxTreatment: 'taxTreatment',
+  includeInProjectedEarnings: 'includeInProjectedEarnings',
+  reason: 'reason',
+  supportingReference: 'supportingReference',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  status: 'status',
+  enteredByUserId: 'enteredByUserId',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeEarningTreatmentOverrideScalarFieldEnum = (typeof EmployeeEarningTreatmentOverrideScalarFieldEnum)[keyof typeof EmployeeEarningTreatmentOverrideScalarFieldEnum]
+
+
 export const PayrollProfileScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
@@ -8114,6 +8432,7 @@ export const EmployeeBankAccountScalarFieldEnum = {
   employeeId: 'employeeId',
   financialInstitutionId: 'financialInstitutionId',
   bankName: 'bankName',
+  routingNumber: 'routingNumber',
   branchCode: 'branchCode',
   branchName: 'branchName',
   accountHolderName: 'accountHolderName',
@@ -8133,6 +8452,9 @@ export const EmployeeBankAccountScalarFieldEnum = {
   effectiveTo: 'effectiveTo',
   isActive: 'isActive',
   sortOrder: 'sortOrder',
+  dataSource: 'dataSource',
+  changeReason: 'changeReason',
+  supersedesAccountId: 'supersedesAccountId',
   createdByUserId: 'createdByUserId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -8249,7 +8571,16 @@ export const AchPaymentBatchScalarFieldEnum = {
   status: 'status',
   currencyCode: 'currencyCode',
   controlTotalAmount: 'controlTotalAmount',
+  payrollNetTotal: 'payrollNetTotal',
   detailCount: 'detailCount',
+  effectivePaymentDate: 'effectivePaymentDate',
+  achType: 'achType',
+  purposeCode: 'purposeCode',
+  entryDescription: 'entryDescription',
+  globalAddenda: 'globalAddenda',
+  discretionaryData: 'discretionaryData',
+  transactionType: 'transactionType',
+  validationSummaryJson: 'validationSummaryJson',
   fileName: 'fileName',
   fileStorageKey: 'fileStorageKey',
   fileContentHash: 'fileContentHash',
@@ -8260,6 +8591,11 @@ export const AchPaymentBatchScalarFieldEnum = {
   approvedAt: 'approvedAt',
   generatedAt: 'generatedAt',
   exportedAt: 'exportedAt',
+  releasedAt: 'releasedAt',
+  releasedByUserId: 'releasedByUserId',
+  reconciledAt: 'reconciledAt',
+  reconciledByUserId: 'reconciledByUserId',
+  supersedesBatchId: 'supersedesBatchId',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -8277,8 +8613,13 @@ export const AchPaymentBatchDetailScalarFieldEnum = {
   currencyCode: 'currencyCode',
   employeeNumber: 'employeeNumber',
   employeeName: 'employeeName',
+  individualId: 'individualId',
   bankName: 'bankName',
+  abaNumber: 'abaNumber',
   accountNumberMasked: 'accountNumberMasked',
+  paymentType: 'paymentType',
+  purposeCode: 'purposeCode',
+  addenda: 'addenda',
   allocationKind: 'allocationKind',
   createdAt: 'createdAt'
 } as const
@@ -9430,6 +9771,62 @@ export type ListEnumStatutoryOverrideStatusFieldRefInput<$PrismaModel> = FieldRe
 
 
 /**
+ * Reference to a field of type 'AnnualPayrollProjectionStatus'
+ */
+export type EnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnualPayrollProjectionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AnnualPayrollProjectionStatus[]'
+ */
+export type ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AnnualPayrollProjectionStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TaxYearAdjustmentType'
+ */
+export type EnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaxYearAdjustmentType'>
+    
+
+
+/**
+ * Reference to a field of type 'TaxYearAdjustmentType[]'
+ */
+export type ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaxYearAdjustmentType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TaxYearAdjustmentStatus'
+ */
+export type EnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaxYearAdjustmentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TaxYearAdjustmentStatus[]'
+ */
+export type ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TaxYearAdjustmentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PayrollTaxTreatment'
+ */
+export type EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollTaxTreatment'>
+    
+
+
+/**
+ * Reference to a field of type 'PayrollTaxTreatment[]'
+ */
+export type ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollTaxTreatment[]'>
+    
+
+
+/**
  * Reference to a field of type 'PayFrequency'
  */
 export type EnumPayFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayFrequency'>
@@ -9496,6 +9893,20 @@ export type EnumBankAccountVerificationStatusFieldRefInput<$PrismaModel> = Field
  * Reference to a field of type 'BankAccountVerificationStatus[]'
  */
 export type ListEnumBankAccountVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BankAccountVerificationStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BankingDataSource'
+ */
+export type EnumBankingDataSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BankingDataSource'>
+    
+
+
+/**
+ * Reference to a field of type 'BankingDataSource[]'
+ */
+export type ListEnumBankingDataSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BankingDataSource[]'>
     
 
 
@@ -9692,20 +10103,6 @@ export type EnumPayrollComponentCategoryFieldRefInput<$PrismaModel> = FieldRefIn
  * Reference to a field of type 'PayrollComponentCategory[]'
  */
 export type ListEnumPayrollComponentCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollComponentCategory[]'>
-    
-
-
-/**
- * Reference to a field of type 'PayrollTaxTreatment'
- */
-export type EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollTaxTreatment'>
-    
-
-
-/**
- * Reference to a field of type 'PayrollTaxTreatment[]'
- */
-export type ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollTaxTreatment[]'>
     
 
 
@@ -9948,6 +10345,9 @@ export type GlobalOmitConfig = {
   employeePriorEmploymentYtd?: Prisma.EmployeePriorEmploymentYtdOmit
   employeePriorEmploymentDocument?: Prisma.EmployeePriorEmploymentDocumentOmit
   employeePayrollStatutoryOverride?: Prisma.EmployeePayrollStatutoryOverrideOmit
+  employeeAnnualPayrollProjection?: Prisma.EmployeeAnnualPayrollProjectionOmit
+  employeeTaxYearAdjustment?: Prisma.EmployeeTaxYearAdjustmentOmit
+  employeeEarningTreatmentOverride?: Prisma.EmployeeEarningTreatmentOverrideOmit
   payrollProfile?: Prisma.PayrollProfileOmit
   financialInstitution?: Prisma.FinancialInstitutionOmit
   financialInstitutionBranch?: Prisma.FinancialInstitutionBranchOmit

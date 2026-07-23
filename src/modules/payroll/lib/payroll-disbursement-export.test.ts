@@ -70,6 +70,7 @@ describe("buildPayrollDisbursementRows", () => {
               branchName: "POS",
               accountNumber: "1111",
               accountName: "Ada",
+              accountType: "SAVINGS",
               splitType: "REMAINDER",
               allocationAmount: 6_000,
             },
@@ -78,6 +79,7 @@ describe("buildPayrollDisbursementRows", () => {
               branchName: null,
               accountNumber: "2222",
               accountName: null,
+              accountType: "CHEQUING",
               splitType: "FIXED",
               allocationAmount: 2_000,
             },
@@ -94,6 +96,8 @@ describe("buildPayrollDisbursementRows", () => {
 
     expect(rows).toHaveLength(2);
     expect(rows[0]?.schemaVersion).toBe(PAYROLL_DISBURSEMENT_SCHEMA_VERSION);
+    expect(rows[0]?.accountType).toBe("SAVINGS");
+    expect(rows[1]?.accountType).toBe("CHEQUING");
     expect(rows[0]?.allocationAmount).toBe(6_000);
     expect(rows[0]?.paye).toBe(1_200);
     expect(rows[0]?.bankName).toBe("Primary");
@@ -121,6 +125,7 @@ describe("buildPayrollDisbursementRows", () => {
               accountNumberMasked: "••••9999",
               amount: 8_000,
               kind: "REMAINDER",
+              accountType: "SAVINGS",
             },
           ]),
         },
@@ -132,6 +137,7 @@ describe("buildPayrollDisbursementRows", () => {
     expect(rows[0]?.nisNumber).toBe("NIS-1");
     expect(rows[0]?.grossPay).toBe(10_000);
     expect(rows[0]?.allocationAmount).toBe(8_000);
+    expect(rows[0]?.accountType).toBe("SAVINGS");
   });
 
   it("summarizes unique employees and allocation totals", () => {

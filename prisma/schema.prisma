@@ -631,6 +631,9 @@ model Organization {
   employeeTaxProfiles      EmployeeTaxProfile[]
   employeePriorEmploymentYtds EmployeePriorEmploymentYtd[]
   employeePayrollStatutoryOverrides EmployeePayrollStatutoryOverride[]
+  employeeAnnualPayrollProjections EmployeeAnnualPayrollProjection[]
+  employeeTaxYearAdjustments EmployeeTaxYearAdjustment[]
+  employeeEarningTreatmentOverrides EmployeeEarningTreatmentOverride[]
   payrollPeriods           PayrollPeriod[]
   payRuns                  PayRun[]
   payslips                 Payslip[]
@@ -1113,6 +1116,9 @@ model Employee {
   taxProfiles    EmployeeTaxProfile[]
   priorEmploymentYtds EmployeePriorEmploymentYtd[]
   statutoryOverrides  EmployeePayrollStatutoryOverride[]
+  annualPayrollProjections EmployeeAnnualPayrollProjection[]
+  taxYearAdjustments  EmployeeTaxYearAdjustment[]
+  earningTreatmentOverrides EmployeeEarningTreatmentOverride[]
   payslips       Payslip[]
   payrollLineItems PayrollLineItem[]
   payrollRecurringItems EmployeePayrollRecurringItem[]
@@ -2555,6 +2561,165 @@ model EmployeePayrollStatutoryOverride {
   @@schema("payroll")
 }
 
+enum AnnualPayrollProjectionStatus {
+  DRAFT
+  CALCULATED
+  REVIEW_REQUIRED
+  APPROVED
+  SUPERSEDED
+
+  @@schema("payroll")
+}
+
+/// Versioned employee annual PAYE projection worksheet (calendar tax year).
+model EmployeeAnnualPayrollProjection {
+  id                                String                         @id @default(cuid())
+  organizationId                    String
+  employeeId                        String
+  taxYear                           Int
+  calculationDate                   DateTime                       @db.Date
+  version                           Int                            @default(1)
+  status                            AnnualPayrollProjectionStatus  @default(CALCULATED)
+
+  previousEmployerTaxableIncome     Decimal                        @db.Decimal(14, 2)
+  currentEmployerActualTaxableIncome Decimal                       @db.Decimal(14, 2)
+  projectedRemainingTaxableIncome   Decimal                        @db.Decimal(14, 2)
+  projectedAnnualTaxableIncome      Decimal                        @db.Decimal(14, 2)
+  projectedEmployeeNis              Decimal                        @db.Decimal(14, 2)
+  projectedQualifyingNis            Decimal                        @db.Decimal(14, 2)
+  projectedPension                  Decimal                        @default(0) @db.Decimal(14, 2)
+  projectedOtherQualifyingContributions Decimal                    @default(0) @db.Decimal(14, 2)
+  personalAllowance                 Decimal                        @db.Decimal(14, 2)
+  allowableQualifyingDeduction      Decimal                        @db.Decimal(14, 2)
+  projectedChargeableIncome         Decimal                        @db.Decimal(14, 2)
+  projectedAnnualTaxLiability       Decimal                        @db.Decimal(14, 2)
+  previousEmployerPaye              Decimal                        @db.Decimal(14, 2)
+  currentEmployerPaye               Decimal                        @db.Decimal(14, 2)
+  manualTaxAdjustment                Decimal                        @default(0) @db.Decimal(14, 2)
+  remainingTaxLiability             Decimal                        @db.Decimal(14, 2)
+  remainingPayrollPeriods           Int
+  recommendedPayePerPeriod          Decimal?                       @db.Decimal(14, 2)
+  payFrequency                      String
+  statutoryConfigurationId          String?
+  calculationSnapshot               Json?
+  warnings                          String[]                       @default([])
+
+  generatedByUserId                 String?
+  generatedAt                       DateTime                       @default(now())
+  approvedByUserId                  String?
+  approvedAt                        DateTime?
+  appliedToPeriodEnd                DateTime?                      @db.Date
+  appliedStatutoryOverrideId        String?
+  supersedesProjectionId            String?
+  createdAt                         DateTime                       @default(now())
+  updatedAt                         DateTime                       @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, taxYear, version])
+  @@index([organizationId, taxYear, status])
+  @@index([employeeId, taxYear, status])
+  @@map("employee_annual_payroll_projections")
+  @@schema("payroll")
+}
+
+enum TaxYearAdjustmentType {
+  PREVIOUS_INCOME
+  PREVIOUS_PAYE
+  PERSONAL_ALLOWANCE
+  TAXABLE_EARNINGS
+  NON_TAXABLE_EARNINGS
+  PAYE
+  NIS
+  HEALTH_SURCHARGE
+  PENSION
+  QUALIFYING_DEDUCTION
+  PROJECTED_EARNINGS
+  REMAINING_PERIOD
+  /// Absolute override of NIS deductible portion (0–1), e.g. 0.70
+  NIS_DEDUCTIBLE_PORTION
+  /// Absolute override of combined approved deduction annual cap
+  APPROVED_DEDUCTION_CAP
+  TAX_RATE_INSTRUCTION
+  OTHER_TAX
+
+  @@schema("payroll")
+}
+
+enum TaxYearAdjustmentStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  REVERSED
+
+  @@schema("payroll")
+}
+
+/// Controlled employee-specific tax-year adjustments (maker-checker).
+model EmployeeTaxYearAdjustment {
+  id                 String                   @id @default(cuid())
+  organizationId     String
+  employeeId         String
+  taxYear            Int
+  periodEnd          DateTime?                @db.Date
+  adjustmentType     TaxYearAdjustmentType
+  originalValue      Decimal?                 @db.Decimal(14, 2)
+  adjustmentValue    Decimal                  @db.Decimal(14, 2)
+  finalValue         Decimal?                 @db.Decimal(14, 2)
+  reasonCode         String?
+  reason             String
+  supportingReference String?
+  status             TaxYearAdjustmentStatus  @default(DRAFT)
+  effectiveFrom      DateTime                 @db.Date
+  effectiveTo        DateTime?                @db.Date
+  enteredByUserId    String
+  approvedByUserId   String?
+  approvedAt         DateTime?
+  rejectedReason     String?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, taxYear, status])
+  @@index([employeeId, taxYear, status])
+  @@map("employee_tax_year_adjustments")
+  @@schema("payroll")
+}
+
+/// Per-employee override of a payroll component's tax treatment.
+model EmployeeEarningTreatmentOverride {
+  id                        String               @id @default(cuid())
+  organizationId            String
+  employeeId                String
+  componentDefinitionId     String
+  taxTreatment              PayrollTaxTreatment
+  includeInProjectedEarnings Boolean             @default(true)
+  reason                    String
+  supportingReference       String?
+  effectiveFrom             DateTime             @db.Date
+  effectiveTo               DateTime?            @db.Date
+  status                    TaxYearAdjustmentStatus @default(DRAFT)
+  enteredByUserId           String
+  approvedByUserId          String?
+  approvedAt                DateTime?
+  createdAt                 DateTime             @default(now())
+  updatedAt                 DateTime             @updatedAt
+
+  organization        Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee            Employee                  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  componentDefinition PayrollComponentDefinition @relation(fields: [componentDefinitionId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, employeeId])
+  @@index([employeeId, componentDefinitionId])
+  @@index([componentDefinitionId])
+  @@map("employee_earning_treatment_overrides")
+  @@schema("payroll")
+}
+
 model PayrollProfile {
   id             String               @id @default(cuid())
   employeeId     String               @unique
@@ -2607,6 +2772,14 @@ enum BankAccountVerificationStatus {
   PENDING
   VERIFIED
   FAILED
+
+  @@schema("payroll")
+}
+
+/// How employee banking / payment-instruction data entered the system.
+enum BankingDataSource {
+  MANUAL
+  IMPORT
 
   @@schema("payroll")
 }
@@ -2686,7 +2859,9 @@ model FinancialInstitutionBranch {
   @@schema("payroll")
 }
 
-/// Employee-owned bank account (Phase 1 source of truth for payroll destinations).
+/// Employee-owned bank account / payment destination (source of truth with allocations).
+/// Together with EmployeePayrollAllocation this is the payment-instruction model —
+/// not a separate payroll employee list (HR Employee remains SoT).
 model EmployeeBankAccount {
   id                       String                        @id @default(cuid())
   organizationId           String
@@ -2694,6 +2869,8 @@ model EmployeeBankAccount {
   financialInstitutionId   String?
   /// Display / free-text name (institution displayName, or custom when Other).
   bankName                 String
+  /// ABA / routing identifier when supplied (else use institution.routingCode).
+  routingNumber            String?
   branchCode               String?
   branchName               String?
   accountHolderName        String?
@@ -2716,6 +2893,10 @@ model EmployeeBankAccount {
   effectiveTo              DateTime?
   isActive                 Boolean                       @default(true)
   sortOrder                Int                           @default(0)
+  dataSource               BankingDataSource             @default(MANUAL)
+  changeReason             String?
+  /// Prior version retained on soft-replace (history; never mutate frozen payment snapshots).
+  supersedesAccountId      String?
   createdByUserId          String?
   createdAt                DateTime                      @default(now())
   updatedAt                DateTime                      @updatedAt
@@ -2730,6 +2911,7 @@ model EmployeeBankAccount {
   @@index([employeeId, isActive])
   @@index([organizationId, employeeId])
   @@index([financialInstitutionId])
+  @@index([employeeId, effectiveFrom, effectiveTo])
   @@map("employee_bank_accounts")
   @@schema("payroll")
 }
@@ -2798,11 +2980,16 @@ enum PayrollPaymentAllocationStatus {
 
 enum AchPaymentBatchStatus {
   DRAFT
+  VALIDATION_FAILED
+  READY_FOR_APPROVAL
   PENDING_APPROVAL
   APPROVED
   GENERATED
   EXPORTED
   CANCELLED
+  /// Marked released in Q-NXUS after bank portal release (manual confirmation).
+  RELEASED
+  RECONCILED
 
   @@schema("payroll")
 }
@@ -2810,6 +2997,10 @@ enum AchPaymentBatchStatus {
 enum BankExportAdapterKind {
   MANUAL_REGISTER
   GENERIC_CSV
+  /// First Citizens Business Online manual-entry worksheet (control document).
+  FIRST_CITIZENS_MANUAL_WORKSHEET
+  /// First Citizens file import — disabled until bank confirms Default Transactions layout.
+  FIRST_CITIZENS_IMPORT
 
   @@schema("payroll")
 }
@@ -2931,7 +3122,18 @@ model AchPaymentBatch {
   status              AchPaymentBatchStatus @default(DRAFT)
   currencyCode        String               @default("TTD")
   controlTotalAmount  Decimal              @db.Decimal(14, 2)
+  /// Sum of approved payroll net payments included in this batch (validation baseline).
+  payrollNetTotal     Decimal?             @db.Decimal(14, 2)
   detailCount         Int                  @default(0)
+  effectivePaymentDate DateTime?           @db.Date
+  /// PPD (payroll default) or CCD (future company payments).
+  achType             String?
+  purposeCode         String?
+  entryDescription    String?
+  globalAddenda       String?
+  discretionaryData   String?
+  transactionType     String?
+  validationSummaryJson Json?
   fileName            String?
   fileStorageKey      String?
   fileContentHash     String?
@@ -2942,6 +3144,12 @@ model AchPaymentBatch {
   approvedAt          DateTime?
   generatedAt         DateTime?
   exportedAt          DateTime?
+  releasedAt          DateTime?
+  releasedByUserId    String?
+  reconciledAt        DateTime?
+  reconciledByUserId  String?
+  /// Prior batch this one supersedes (after cancel).
+  supersedesBatchId   String?
   notes               String?
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
@@ -2966,10 +3174,16 @@ model AchPaymentBatchDetail {
   sequence                   Int      @default(0)
   amount                     Decimal  @db.Decimal(14, 2)
   currencyCode               String   @default("TTD")
+  /// Frozen First Citizens template fields (Individual Name / ID / ABA / …).
   employeeNumber             String
   employeeName               String
+  individualId               String?
   bankName                   String
+  abaNumber                  String?
   accountNumberMasked        String
+  paymentType                String?
+  purposeCode                String?
+  addenda                    String?
   allocationKind             String
   createdAt                  DateTime @default(now())
 
@@ -3363,6 +3577,7 @@ model PayrollComponentDefinition {
 
   organization Organization                   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   assignments  EmployeePayrollRecurringItem[]
+  treatmentOverrides EmployeeEarningTreatmentOverride[]
 
   @@unique([organizationId, code])
   @@index([organizationId, isActive])

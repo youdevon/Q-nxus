@@ -43,6 +43,7 @@ describe("applyPostNetBankAllocations", () => {
         accountNumberMasked: "••••1111",
         amount: 3_000,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Percent Bank",
@@ -50,6 +51,7 @@ describe("applyPostNetBankAllocations", () => {
         accountNumberMasked: "••••2222",
         amount: 5_000,
         kind: "PERCENTAGE",
+      accountType: null,
       },
       {
         bankName: "Remainder Bank",
@@ -57,6 +59,7 @@ describe("applyPostNetBankAllocations", () => {
         accountNumberMasked: "••••3333",
         amount: 12_000,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
     expect(result.allocatedTotal).toBe(20_000);

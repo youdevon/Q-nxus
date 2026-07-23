@@ -274,6 +274,7 @@ export type PayrollComponentDefinitionWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"PayrollComponentDefinition"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   assignments?: Prisma.EmployeePayrollRecurringItemListRelationFilter
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideListRelationFilter
 }
 
 export type PayrollComponentDefinitionOrderByWithRelationInput = {
@@ -291,6 +292,7 @@ export type PayrollComponentDefinitionOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   assignments?: Prisma.EmployeePayrollRecurringItemOrderByRelationAggregateInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideOrderByRelationAggregateInput
 }
 
 export type PayrollComponentDefinitionWhereUniqueInput = Prisma.AtLeast<{
@@ -312,6 +314,7 @@ export type PayrollComponentDefinitionWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"PayrollComponentDefinition"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   assignments?: Prisma.EmployeePayrollRecurringItemListRelationFilter
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideListRelationFilter
 }, "id" | "organizationId_code">
 
 export type PayrollComponentDefinitionOrderByWithAggregationInput = {
@@ -366,6 +369,7 @@ export type PayrollComponentDefinitionCreateInput = {
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayrollComponentDefinitionsInput
   assignments?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutDefinitionInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutComponentDefinitionInput
 }
 
 export type PayrollComponentDefinitionUncheckedCreateInput = {
@@ -382,6 +386,7 @@ export type PayrollComponentDefinitionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutDefinitionInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutComponentDefinitionInput
 }
 
 export type PayrollComponentDefinitionUpdateInput = {
@@ -398,6 +403,7 @@ export type PayrollComponentDefinitionUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayrollComponentDefinitionsNestedInput
   assignments?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutDefinitionNestedInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutComponentDefinitionNestedInput
 }
 
 export type PayrollComponentDefinitionUncheckedUpdateInput = {
@@ -414,6 +420,7 @@ export type PayrollComponentDefinitionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutDefinitionNestedInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutComponentDefinitionNestedInput
 }
 
 export type PayrollComponentDefinitionCreateManyInput = {
@@ -468,6 +475,11 @@ export type PayrollComponentDefinitionListRelationFilter = {
 
 export type PayrollComponentDefinitionOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type PayrollComponentDefinitionScalarRelationFilter = {
+  is?: Prisma.PayrollComponentDefinitionWhereInput
+  isNot?: Prisma.PayrollComponentDefinitionWhereInput
 }
 
 export type PayrollComponentDefinitionOrganizationIdCodeCompoundUniqueInput = {
@@ -528,11 +540,6 @@ export type PayrollComponentDefinitionSumOrderByAggregateInput = {
   defaultAmount?: Prisma.SortOrder
 }
 
-export type PayrollComponentDefinitionScalarRelationFilter = {
-  is?: Prisma.PayrollComponentDefinitionWhereInput
-  isNot?: Prisma.PayrollComponentDefinitionWhereInput
-}
-
 export type PayrollComponentDefinitionCreateNestedManyWithoutOrganizationInput = {
   create?: Prisma.XOR<Prisma.PayrollComponentDefinitionCreateWithoutOrganizationInput, Prisma.PayrollComponentDefinitionUncheckedCreateWithoutOrganizationInput> | Prisma.PayrollComponentDefinitionCreateWithoutOrganizationInput[] | Prisma.PayrollComponentDefinitionUncheckedCreateWithoutOrganizationInput[]
   connectOrCreate?: Prisma.PayrollComponentDefinitionCreateOrConnectWithoutOrganizationInput | Prisma.PayrollComponentDefinitionCreateOrConnectWithoutOrganizationInput[]
@@ -575,16 +582,26 @@ export type PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationNest
   deleteMany?: Prisma.PayrollComponentDefinitionScalarWhereInput | Prisma.PayrollComponentDefinitionScalarWhereInput[]
 }
 
+export type PayrollComponentDefinitionCreateNestedOneWithoutTreatmentOverridesInput = {
+  create?: Prisma.XOR<Prisma.PayrollComponentDefinitionCreateWithoutTreatmentOverridesInput, Prisma.PayrollComponentDefinitionUncheckedCreateWithoutTreatmentOverridesInput>
+  connectOrCreate?: Prisma.PayrollComponentDefinitionCreateOrConnectWithoutTreatmentOverridesInput
+  connect?: Prisma.PayrollComponentDefinitionWhereUniqueInput
+}
+
+export type PayrollComponentDefinitionUpdateOneRequiredWithoutTreatmentOverridesNestedInput = {
+  create?: Prisma.XOR<Prisma.PayrollComponentDefinitionCreateWithoutTreatmentOverridesInput, Prisma.PayrollComponentDefinitionUncheckedCreateWithoutTreatmentOverridesInput>
+  connectOrCreate?: Prisma.PayrollComponentDefinitionCreateOrConnectWithoutTreatmentOverridesInput
+  upsert?: Prisma.PayrollComponentDefinitionUpsertWithoutTreatmentOverridesInput
+  connect?: Prisma.PayrollComponentDefinitionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PayrollComponentDefinitionUpdateToOneWithWhereWithoutTreatmentOverridesInput, Prisma.PayrollComponentDefinitionUpdateWithoutTreatmentOverridesInput>, Prisma.PayrollComponentDefinitionUncheckedUpdateWithoutTreatmentOverridesInput>
+}
+
 export type EnumPayrollComponentKindFieldUpdateOperationsInput = {
   set?: $Enums.PayrollComponentKind
 }
 
 export type EnumPayrollComponentCategoryFieldUpdateOperationsInput = {
   set?: $Enums.PayrollComponentCategory
-}
-
-export type EnumPayrollTaxTreatmentFieldUpdateOperationsInput = {
-  set?: $Enums.PayrollTaxTreatment
 }
 
 export type PayrollComponentDefinitionCreateNestedOneWithoutAssignmentsInput = {
@@ -614,6 +631,7 @@ export type PayrollComponentDefinitionCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutDefinitionInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutComponentDefinitionInput
 }
 
 export type PayrollComponentDefinitionUncheckedCreateWithoutOrganizationInput = {
@@ -629,6 +647,7 @@ export type PayrollComponentDefinitionUncheckedCreateWithoutOrganizationInput = 
   createdAt?: Date | string
   updatedAt?: Date | string
   assignments?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutDefinitionInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutComponentDefinitionInput
 }
 
 export type PayrollComponentDefinitionCreateOrConnectWithoutOrganizationInput = {
@@ -675,6 +694,86 @@ export type PayrollComponentDefinitionScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"PayrollComponentDefinition"> | Date | string
 }
 
+export type PayrollComponentDefinitionCreateWithoutTreatmentOverridesInput = {
+  id?: string
+  code: string
+  name: string
+  kind: $Enums.PayrollComponentKind
+  category: $Enums.PayrollComponentCategory
+  isTaxable?: boolean
+  taxTreatment?: $Enums.PayrollTaxTreatment
+  isActive?: boolean
+  defaultAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutPayrollComponentDefinitionsInput
+  assignments?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutDefinitionInput
+}
+
+export type PayrollComponentDefinitionUncheckedCreateWithoutTreatmentOverridesInput = {
+  id?: string
+  organizationId: string
+  code: string
+  name: string
+  kind: $Enums.PayrollComponentKind
+  category: $Enums.PayrollComponentCategory
+  isTaxable?: boolean
+  taxTreatment?: $Enums.PayrollTaxTreatment
+  isActive?: boolean
+  defaultAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignments?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutDefinitionInput
+}
+
+export type PayrollComponentDefinitionCreateOrConnectWithoutTreatmentOverridesInput = {
+  where: Prisma.PayrollComponentDefinitionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PayrollComponentDefinitionCreateWithoutTreatmentOverridesInput, Prisma.PayrollComponentDefinitionUncheckedCreateWithoutTreatmentOverridesInput>
+}
+
+export type PayrollComponentDefinitionUpsertWithoutTreatmentOverridesInput = {
+  update: Prisma.XOR<Prisma.PayrollComponentDefinitionUpdateWithoutTreatmentOverridesInput, Prisma.PayrollComponentDefinitionUncheckedUpdateWithoutTreatmentOverridesInput>
+  create: Prisma.XOR<Prisma.PayrollComponentDefinitionCreateWithoutTreatmentOverridesInput, Prisma.PayrollComponentDefinitionUncheckedCreateWithoutTreatmentOverridesInput>
+  where?: Prisma.PayrollComponentDefinitionWhereInput
+}
+
+export type PayrollComponentDefinitionUpdateToOneWithWhereWithoutTreatmentOverridesInput = {
+  where?: Prisma.PayrollComponentDefinitionWhereInput
+  data: Prisma.XOR<Prisma.PayrollComponentDefinitionUpdateWithoutTreatmentOverridesInput, Prisma.PayrollComponentDefinitionUncheckedUpdateWithoutTreatmentOverridesInput>
+}
+
+export type PayrollComponentDefinitionUpdateWithoutTreatmentOverridesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPayrollComponentKindFieldUpdateOperationsInput | $Enums.PayrollComponentKind
+  category?: Prisma.EnumPayrollComponentCategoryFieldUpdateOperationsInput | $Enums.PayrollComponentCategory
+  isTaxable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  taxTreatment?: Prisma.EnumPayrollTaxTreatmentFieldUpdateOperationsInput | $Enums.PayrollTaxTreatment
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayrollComponentDefinitionsNestedInput
+  assignments?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutDefinitionNestedInput
+}
+
+export type PayrollComponentDefinitionUncheckedUpdateWithoutTreatmentOverridesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumPayrollComponentKindFieldUpdateOperationsInput | $Enums.PayrollComponentKind
+  category?: Prisma.EnumPayrollComponentCategoryFieldUpdateOperationsInput | $Enums.PayrollComponentCategory
+  isTaxable?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  taxTreatment?: Prisma.EnumPayrollTaxTreatmentFieldUpdateOperationsInput | $Enums.PayrollTaxTreatment
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignments?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutDefinitionNestedInput
+}
+
 export type PayrollComponentDefinitionCreateWithoutAssignmentsInput = {
   id?: string
   code: string
@@ -688,6 +787,7 @@ export type PayrollComponentDefinitionCreateWithoutAssignmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutPayrollComponentDefinitionsInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutComponentDefinitionInput
 }
 
 export type PayrollComponentDefinitionUncheckedCreateWithoutAssignmentsInput = {
@@ -703,6 +803,7 @@ export type PayrollComponentDefinitionUncheckedCreateWithoutAssignmentsInput = {
   defaultAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutComponentDefinitionInput
 }
 
 export type PayrollComponentDefinitionCreateOrConnectWithoutAssignmentsInput = {
@@ -734,6 +835,7 @@ export type PayrollComponentDefinitionUpdateWithoutAssignmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutPayrollComponentDefinitionsNestedInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutComponentDefinitionNestedInput
 }
 
 export type PayrollComponentDefinitionUncheckedUpdateWithoutAssignmentsInput = {
@@ -749,6 +851,7 @@ export type PayrollComponentDefinitionUncheckedUpdateWithoutAssignmentsInput = {
   defaultAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutComponentDefinitionNestedInput
 }
 
 export type PayrollComponentDefinitionCreateManyOrganizationInput = {
@@ -778,6 +881,7 @@ export type PayrollComponentDefinitionUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutDefinitionNestedInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutComponentDefinitionNestedInput
 }
 
 export type PayrollComponentDefinitionUncheckedUpdateWithoutOrganizationInput = {
@@ -793,6 +897,7 @@ export type PayrollComponentDefinitionUncheckedUpdateWithoutOrganizationInput = 
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutDefinitionNestedInput
+  treatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutComponentDefinitionNestedInput
 }
 
 export type PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationInput = {
@@ -816,10 +921,12 @@ export type PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationInpu
 
 export type PayrollComponentDefinitionCountOutputType = {
   assignments: number
+  treatmentOverrides: number
 }
 
 export type PayrollComponentDefinitionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignments?: boolean | PayrollComponentDefinitionCountOutputTypeCountAssignmentsArgs
+  treatmentOverrides?: boolean | PayrollComponentDefinitionCountOutputTypeCountTreatmentOverridesArgs
 }
 
 /**
@@ -839,6 +946,13 @@ export type PayrollComponentDefinitionCountOutputTypeCountAssignmentsArgs<ExtArg
   where?: Prisma.EmployeePayrollRecurringItemWhereInput
 }
 
+/**
+ * PayrollComponentDefinitionCountOutputType without action
+ */
+export type PayrollComponentDefinitionCountOutputTypeCountTreatmentOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeEarningTreatmentOverrideWhereInput
+}
+
 
 export type PayrollComponentDefinitionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -855,6 +969,7 @@ export type PayrollComponentDefinitionSelect<ExtArgs extends runtime.Types.Exten
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.PayrollComponentDefinition$assignmentsArgs<ExtArgs>
+  treatmentOverrides?: boolean | Prisma.PayrollComponentDefinition$treatmentOverridesArgs<ExtArgs>
   _count?: boolean | Prisma.PayrollComponentDefinitionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payrollComponentDefinition"]>
 
@@ -909,6 +1024,7 @@ export type PayrollComponentDefinitionOmit<ExtArgs extends runtime.Types.Extensi
 export type PayrollComponentDefinitionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.PayrollComponentDefinition$assignmentsArgs<ExtArgs>
+  treatmentOverrides?: boolean | Prisma.PayrollComponentDefinition$treatmentOverridesArgs<ExtArgs>
   _count?: boolean | Prisma.PayrollComponentDefinitionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PayrollComponentDefinitionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -923,6 +1039,7 @@ export type $PayrollComponentDefinitionPayload<ExtArgs extends runtime.Types.Ext
   objects: {
     organization: Prisma.$OrganizationPayload<ExtArgs>
     assignments: Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>[]
+    treatmentOverrides: Prisma.$EmployeeEarningTreatmentOverridePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1336,6 +1453,7 @@ export interface Prisma__PayrollComponentDefinitionClient<T, Null = never, ExtAr
   readonly [Symbol.toStringTag]: "PrismaPromise"
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   assignments<T extends Prisma.PayrollComponentDefinition$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PayrollComponentDefinition$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  treatmentOverrides<T extends Prisma.PayrollComponentDefinition$treatmentOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PayrollComponentDefinition$treatmentOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeEarningTreatmentOverridePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1799,6 +1917,30 @@ export type PayrollComponentDefinition$assignmentsArgs<ExtArgs extends runtime.T
   take?: number
   skip?: number
   distinct?: Prisma.EmployeePayrollRecurringItemScalarFieldEnum | Prisma.EmployeePayrollRecurringItemScalarFieldEnum[]
+}
+
+/**
+ * PayrollComponentDefinition.treatmentOverrides
+ */
+export type PayrollComponentDefinition$treatmentOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeEarningTreatmentOverride
+   */
+  select?: Prisma.EmployeeEarningTreatmentOverrideSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeEarningTreatmentOverride
+   */
+  omit?: Prisma.EmployeeEarningTreatmentOverrideOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeEarningTreatmentOverrideInclude<ExtArgs> | null
+  where?: Prisma.EmployeeEarningTreatmentOverrideWhereInput
+  orderBy?: Prisma.EmployeeEarningTreatmentOverrideOrderByWithRelationInput | Prisma.EmployeeEarningTreatmentOverrideOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeEarningTreatmentOverrideWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeEarningTreatmentOverrideScalarFieldEnum | Prisma.EmployeeEarningTreatmentOverrideScalarFieldEnum[]
 }
 
 /**

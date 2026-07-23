@@ -4,7 +4,7 @@ import { toCsv } from "@/src/modules/payroll/lib/csv";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 
 /** Stable schema for bank-website / future ISO adapter consumers. */
-export const PAYROLL_DISBURSEMENT_SCHEMA_VERSION = 1 as const;
+export const PAYROLL_DISBURSEMENT_SCHEMA_VERSION = 2 as const;
 
 export const PAYROLL_DISBURSEMENT_COLUMNS = [
   "schemaVersion",
@@ -26,6 +26,7 @@ export const PAYROLL_DISBURSEMENT_COLUMNS = [
   "branchName",
   "accountNumber",
   "accountName",
+  "accountType",
   "splitType",
   "allocationAmount",
 ] as const;
@@ -53,6 +54,8 @@ export type PayrollDisbursementRow = {
   branchName: string | null;
   accountNumber: string | null;
   accountName: string | null;
+  /** SAVINGS | CHEQUING — ACH Payment Type source. */
+  accountType: string | null;
   splitType: string;
   allocationAmount: number;
 };
@@ -62,6 +65,7 @@ export type PayrollDisbursementAllocationInput = {
   branchName?: string | null;
   accountNumber: string | null;
   accountName?: string | null;
+  accountType?: string | null;
   splitType: string;
   allocationAmount: number;
 };
@@ -137,6 +141,7 @@ export function buildPayrollDisbursementRows(input: {
         branchName: allocation.branchName?.trim() || null,
         accountNumber: allocation.accountNumber,
         accountName: allocation.accountName?.trim() || null,
+        accountType: allocation.accountType?.trim() || null,
         splitType: allocation.splitType,
         allocationAmount: allocation.allocationAmount,
       });
@@ -202,6 +207,7 @@ export function payrollDisbursementRowsToCsvMatrix(
       row.branchName,
       row.accountNumber,
       row.accountName,
+      row.accountType,
       row.splitType,
       moneyCell(row.allocationAmount),
     ]),
@@ -251,6 +257,7 @@ export function buildPayrollDisbursementRowsFromPayslips(input: {
         branchName: null,
         accountNumber: line.accountNumber ?? line.accountNumberMasked,
         accountName: null,
+        accountType: line.accountType ?? null,
         splitType: line.kind,
         allocationAmount: line.amount,
       })),

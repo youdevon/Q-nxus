@@ -16,6 +16,7 @@ import {
 import { applyPostNetBankAllocations } from "@/src/modules/payroll/lib/post-net-bank-allocations";
 import { isPayRunPosted } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
+import { filterEffectiveBankSetup } from "@/src/modules/payroll/lib/effective-dated-banking";
 import {
   buildPaymentDraftFromPayslip,
   summarizePreparedPayments,
@@ -250,6 +251,7 @@ export async function preparePayrollPaymentsForPayRun(input: {
   const run = await prisma.payRun.findUnique({
     where: { id: input.payRunId },
     include: {
+      payrollPeriod: { select: { periodEnd: true } },
       payslips: {
         where: { status: "POSTED" },
         orderBy: [{ employeeName: "asc" }],
@@ -308,7 +310,8 @@ export async function preparePayrollPaymentsForPayRun(input: {
   const requireVerifiedAccounts = await requiresVerifiedBankAccounts();
 
   const employeeIds = [...new Set(run.payslips.map((slip) => slip.employeeId))];
-  const bankAccounts = await prisma.employeeBankAccount.findMany({
+  const asOf = run.payrollPeriod?.periodEnd ?? new Date();
+  const bankAccountsRaw = await prisma.employeeBankAccount.findMany({
     where: {
       organizationId: run.organizationId,
       employeeId: { in: employeeIds },
@@ -323,6 +326,8 @@ export async function preparePayrollPaymentsForPayRun(input: {
     },
     orderBy: [{ sortOrder: "asc" }],
   });
+
+  const bankAccounts = filterEffectiveBankSetup(bankAccountsRaw, asOf);
 
   const accountsByEmployee = new Map<string, typeof bankAccounts>();
   for (const account of bankAccounts) {

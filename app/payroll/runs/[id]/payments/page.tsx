@@ -26,10 +26,23 @@ export default async function PayRunPaymentsPage({ params }: PageProps) {
     notFound();
   }
 
+  const canPrepare =
+    capabilities.can("payroll.payment_batches.prepare") ||
+    capabilities.can("payroll.manage");
+  const canCreateBatch = canPrepare;
+  const canExportFiles =
+    capabilities.can("payroll.payment_batches.export") ||
+    capabilities.can("payroll.bank_accounts.view_sensitive") ||
+    capabilities.can("payroll.manage");
+
   return (
     <PayRunPaymentsView
       data={data}
-      canManage={capabilities.can("payroll.manage")}
+      capabilities={{
+        canPrepare,
+        canCreateBatch,
+        canExportFiles,
+      }}
     />
   );
 }

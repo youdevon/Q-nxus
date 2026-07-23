@@ -289,8 +289,16 @@ export default async function PayrollSettingsPage() {
         </div>
 
         <p className="mb-4 text-sm text-muted-foreground">
-          Configurable CSV / manual register adapters only. Official bank ACH
-          layouts are not shipped — seeded profiles are marked placeholder.
+          Manual register, First Citizens manual-entry worksheet, and generic CSV
+          adapters. First Citizens import-file download stays disabled until the
+          bank confirms Default Transactions layout.{" "}
+          <Link
+            href="/payroll/payment-instructions/import"
+            className="underline underline-offset-2"
+          >
+            Import payment instructions
+          </Link>
+          .
         </p>
       </section>
 

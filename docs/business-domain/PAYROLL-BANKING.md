@@ -52,31 +52,37 @@ post-net split (where bank lines sum to full take-home and fixed amounts are
    `ACH_EXPORT_ENABLED` **false** until the bank confirms a direct file layout.
 7. **Optional ACH** — after bank confirmation, set institution routing codes,
    edit export profile `configurationJson` if needed, then enable
-   `ACH_EXPORT_ENABLED`. Map from the same schema v1 disbursement rows.
+   `ACH_EXPORT_ENABLED`. Map from the same schema v2 disbursement rows.
 
 Do **not** invent official ACH/NACHA layouts or fake routing codes.
 
 ---
 
-## Payroll disbursement export (schema v1)
+## Payroll disbursement export (schema v2)
 
 Stable column schema shared by **Bank CSV** and **Disbursement Excel**
 (Office Open XML / `.xlsx`). One row per bank allocation with `amount > 0`.
 Prefer prepared `PayrollPaymentAllocation` snapshots; fall back to payslip
-`bankDistribution` when payments are not prepared.
+`bankDistribution` when payments are not prepared. Not an official First
+Citizens import file.
 
 | Group | Columns |
 |-------|---------|
 | Run | `schemaVersion`, `runNumber`, `periodKey`, `periodEnd`, `paymentDate` |
 | Employee | `employeeNumber`, `employeeName`, `nisNumber`, `birNumber` |
 | Payroll | `currency`, `grossPay`, `paye`, `nisEmployee`, `healthSurcharge`, `netPay` |
-| Bank | `bankName`, `branchName`, `accountNumber`, `accountName`, `splitType`, `allocationAmount` |
+| Bank | `bankName`, `branchName`, `accountNumber`, `accountName`, `accountType`, `splitType`, `allocationAmount` |
 
 - **CSV** — `/payroll/runs/[id]/bank-export` → `{runNumber}-bank-payments.csv`
 - **Excel** — `/payroll/runs/[id]/bank-export-xlsx` → `{runNumber}-payroll-disbursement.xlsx`
   (sheets: `Disbursements`, `Summary`)
-- Constant: `PAYROLL_DISBURSEMENT_SCHEMA_VERSION = 1` in
+- Constant: `PAYROLL_DISBURSEMENT_SCHEMA_VERSION = 2` in
   `src/modules/payroll/lib/payroll-disbursement-export.ts`
+- `accountType` is `SAVINGS` | `CHEQUING` (ACH Payment Type source).
+
+Do **not** invent official ACH/NACHA layouts or fake routing codes.
+
+---
 
 **Excel** is the primary operator format for entering payments on the bank’s
 website. **CSV** uses the same schema for automation / paste. Future
@@ -84,6 +90,37 @@ website. **CSV** uses the same schema for automation / paste. Future
 fork a second column model.
 
 Until a bank confirms a direct file layout, keep `ACH_EXPORT_ENABLED` off.
+
+### First Citizens (Business Online)
+
+- **Manual-entry worksheet** (`FIRST_CITIZENS_MANUAL_WORKSHEET`) — shipped.
+  Columns match the bank template order:
+  Individual Name | Individual ID | ABA Number | Account Number |
+  Payment Type | Purpose Code | Amount | Addenda,
+  plus a Control Summary sheet clearly labeled as **not** a bank import file.
+  Route: `/payroll/runs/[id]/payments/[batchId]/fcb-worksheet`
+- **Import file** (`FIRST_CITIZENS_IMPORT`) — adapter present but **disabled**.
+  Guides name Default Transactions / NACHA CSV options but do not document
+  field layout; request confirmation from
+  `businessonlinequeries@firstcitizenstt.com` before enabling.
+- Seeded profiles: `FCB_MANUAL_WORKSHEET`, `FCB_IMPORT` (placeholder).
+- Processing notes from bank guides (advisory only): Mon–Fri windows,
+  3,000 entry import max, 10 business-day release expiry, dual control.
+
+### Employee payment instructions ↔ First Citizens ACH
+
+| FCB entry field | Captured on employee? | Source |
+|-----------------|----------------------|--------|
+| Individual Name | **Required** | Account holder name |
+| Individual ID | No (from HR) | Employee number |
+| ABA Number | **Required** | Financial institution + optional `routingNumber` (routing / ACH participant when known) |
+| Account Number | **Required** | Encrypted account number |
+| Payment Type | **Required** | Account type: Savings or Chequing only |
+| Purpose Code | No | Bank export profile / batch default |
+| Amount | No | Payroll calc / allocation |
+| Addenda | No | Batch global addenda |
+
+**Not required for FCB ACH entry:** branch/transit (removed from primary payroll setup UI; optional on import only).
 
 ---
 
@@ -110,10 +147,11 @@ missing=enabled default used elsewhere).
 
 Key codes: `PAYROLL_BANKING_ENABLED`, `ACH_EXPORT_ENABLED`,
 `MANUAL_PAYMENT_ENABLED`, `PAYMENT_BATCH_APPROVAL_REQUIRED`,
-`ACH_FILE_APPROVAL_REQUIRED`, `PERCENTAGE_ALLOCATION_ENABLED`,
-`POST_NET_SPLIT_ENABLED`, `BANK_ACCOUNT_VERIFICATION_REQUIRED`,
-`ALLOW_UNVERIFIED_BANK_ACCOUNTS`, `ALLOW_ZERO_NET_PAY_EXPORT`,
-`ALLOW_NEGATIVE_NET_PAY_EXPORT`, allocation toggles, etc.
+`ACH_FILE_APPROVAL_REQUIRED`, `ALLOW_BATCH_SELF_APPROVAL`,
+`PERCENTAGE_ALLOCATION_ENABLED`, `POST_NET_SPLIT_ENABLED`,
+`BANK_ACCOUNT_VERIFICATION_REQUIRED`, `ALLOW_UNVERIFIED_BANK_ACCOUNTS`,
+`ALLOW_ZERO_NET_PAY_EXPORT`, `ALLOW_NEGATIVE_NET_PAY_EXPORT`, allocation
+toggles, etc.
 
 ### Verification gate (easy-win flags)
 
@@ -162,9 +200,19 @@ Do not invent official codes — mark placeholders `REQUIRES_CONFIRMATION`.
 - Writing bank destinations also needs
   (`payroll.bank_accounts.create` **or** `update` **or** `manage`) **and**
   (`payroll.allocations.manage` **or** `manage`)
-- Seeded **PAYROLL_CLERK** / **PAYROLL_OFFICER** retain those grants
+- Verify instruction: `payroll.bank_accounts.verify` or `payroll.manage`
+- Deactivate instruction: `payroll.bank_accounts.disable` or `payroll.manage`
+- Payment batches:
+  - prepare / create / cancel → `payroll.payment_batches.prepare` or `payroll.manage`
+  - approve → `payroll.payment_batches.approve` or `payroll.manage`
+  - generate / release / reconcile / FCB worksheet →
+    `payroll.payment_batches.export` or `payroll.manage`
+- Seeded **PAYROLL_CLERK** / **PAYROLL_OFFICER** / **BANK_EXPORT_OFFICER**
+  retain the matching grants
 - Export profiles: `payroll.bank_export_profiles.manage` or `payroll.manage`
 
+Key banking flags also include `ALLOW_BATCH_SELF_APPROVAL` (seed default
+**false** — preparer cannot approve the same batch).
 ---
 
 ## Phase 2 — Payment snapshots (Calc ≠ Payment)
@@ -249,13 +297,18 @@ returns a clear JSON message pointing at the manual register / Bank CSV paths.
 - Pay run detail: payment status strip, post-run prepare guidance, link to
   payments workspace, Bank CSV (manage / sensitive)
 - `/payroll/runs/[id]/payments` — prepare, batch list, employee payment table,
-  ACH-off banner
-- `/payroll/runs/[id]/payments/[batchId]` — approve / generate / download,
+  ACH-off banner, maker-checker note when `ALLOW_BATCH_SELF_APPROVAL` is off
+- `/payroll/runs/[id]/payments/[batchId]` — approve / generate / cancel /
+  release / reconcile, validation summary, FCB worksheet download,
   return / resolve / regenerate allocation actions
+- `/payroll/runs/[id]/payments/[batchId]/fcb-worksheet` — First Citizens
+  manual-entry workbook (not a bank import file)
+- `/payroll/payment-instructions/import` — CSV payment-instruction import
 - `/payroll/settings` → **Financial institutions** + **Bank export profiles**
-  (editable for ops)
-- Employee payroll setup: destinations freeze into payment snapshots after prepare;
-  Fixed / % toggle when `PERCENTAGE_ALLOCATION_ENABLED`
+  (typed First Citizens fields for FCB adapters)
+- Employee payroll setup: ACH-aligned destinations, verify / deactivate,
+  soft-deactivated instruction history; destinations freeze into payment
+  snapshots after prepare; Fixed / % toggle when `PERCENTAGE_ALLOCATION_ENABLED`
 
 ---
 
@@ -314,12 +367,12 @@ placeholders. Column layouts and routing codes require bank confirmation
 
 | Shipped for go-live | Still blocked / deferred until bank confirms |
 |---------------------|-----------------------------------------------|
-| Disbursement Excel + schema v1 CSV | Official bank-specific ACH / NACHA layouts |
-| EmployeeBankAccount as sole bank SoT | Confirmed routing / ACH participant codes |
-| Safe missing-row feature defaults for banking | Production ACH submission |
+| Disbursement Excel + schema **v2** CSV (`accountType`) | Official First Citizens Default Transactions / NACHA import layout |
+| EmployeeBankAccount as sole bank SoT + soft history | Confirmed routing / ACH participant codes |
+| Safe missing-row feature defaults for banking | Production ACH submission / enabling `ACH_EXPORT_ENABLED` |
 | Granular bank/allocation caps on profile write | Payment confirmation emails |
-| Editable export profiles (placeholder labeled) | Full verification workflow UI (flags wired) |
-| Prepare guidance after POST | Auto-prepare on post (intentionally manual) |
-| Unverified / zero / negative export gates | Key-rotation helper beyond migrate script |
-| Institutions + export profiles in settings | Dropping deprecated `PayrollBankAccount` |
-| Manual register + Bank CSV path | Cross-bank complexity beyond allow flag |
+| Editable FCB export profiles (typed fields; import still disabled) | Clearing `isPlaceholder` without bank sign-off |
+| Verify / deactivate + instruction history UI | Auto-prepare on post (intentionally manual) |
+| Prepare / batch lifecycle UI (approve, cancel, release, reconcile) | Key-rotation helper beyond migrate script |
+| Institutions + export profiles in settings | Cross-bank complexity beyond allow flag |
+| Manual register + Bank CSV / FCB worksheet path | Dropping unused placeholder adapters after confirmation |

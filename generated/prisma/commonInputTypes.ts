@@ -1286,6 +1286,74 @@ export type EnumStatutoryOverrideStatusWithAggregatesFilter<$PrismaModel = never
   _max?: Prisma.NestedEnumStatutoryOverrideStatusFilter<$PrismaModel>
 }
 
+export type EnumAnnualPayrollProjectionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AnnualPayrollProjectionStatus | Prisma.EnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAnnualPayrollProjectionStatusFilter<$PrismaModel> | $Enums.AnnualPayrollProjectionStatus
+}
+
+export type EnumAnnualPayrollProjectionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AnnualPayrollProjectionStatus | Prisma.EnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAnnualPayrollProjectionStatusWithAggregatesFilter<$PrismaModel> | $Enums.AnnualPayrollProjectionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAnnualPayrollProjectionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAnnualPayrollProjectionStatusFilter<$PrismaModel>
+}
+
+export type EnumTaxYearAdjustmentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentType | Prisma.EnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentTypeFilter<$PrismaModel> | $Enums.TaxYearAdjustmentType
+}
+
+export type EnumTaxYearAdjustmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentStatus | Prisma.EnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentStatusFilter<$PrismaModel> | $Enums.TaxYearAdjustmentStatus
+}
+
+export type EnumTaxYearAdjustmentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentType | Prisma.EnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentTypeWithAggregatesFilter<$PrismaModel> | $Enums.TaxYearAdjustmentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTaxYearAdjustmentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTaxYearAdjustmentTypeFilter<$PrismaModel>
+}
+
+export type EnumTaxYearAdjustmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentStatus | Prisma.EnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.TaxYearAdjustmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTaxYearAdjustmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTaxYearAdjustmentStatusFilter<$PrismaModel>
+}
+
+export type EnumPayrollTaxTreatmentFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
+}
+
+export type EnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
+}
+
 export type EnumPayFrequencyFilter<$PrismaModel = never> = {
   equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel>
   in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel>
@@ -1351,6 +1419,13 @@ export type EnumBankAccountVerificationStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumBankAccountVerificationStatusFilter<$PrismaModel> | $Enums.BankAccountVerificationStatus
 }
 
+export type EnumBankingDataSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.BankingDataSource | Prisma.EnumBankingDataSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBankingDataSourceFilter<$PrismaModel> | $Enums.BankingDataSource
+}
+
 export type EnumBankAccountTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.BankAccountType | Prisma.EnumBankAccountTypeFieldRefInput<$PrismaModel>
   in?: $Enums.BankAccountType[] | Prisma.ListEnumBankAccountTypeFieldRefInput<$PrismaModel>
@@ -1369,6 +1444,16 @@ export type EnumBankAccountVerificationStatusWithAggregatesFilter<$PrismaModel =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumBankAccountVerificationStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumBankAccountVerificationStatusFilter<$PrismaModel>
+}
+
+export type EnumBankingDataSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BankingDataSource | Prisma.EnumBankingDataSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBankingDataSourceWithAggregatesFilter<$PrismaModel> | $Enums.BankingDataSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBankingDataSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBankingDataSourceFilter<$PrismaModel>
 }
 
 export type EnumPayrollAllocationTypeFilter<$PrismaModel = never> = {
@@ -1606,13 +1691,6 @@ export type EnumPayrollComponentCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPayrollComponentCategoryFilter<$PrismaModel> | $Enums.PayrollComponentCategory
 }
 
-export type EnumPayrollTaxTreatmentFilter<$PrismaModel = never> = {
-  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
-}
-
 export type EnumPayrollComponentKindWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PayrollComponentKind | Prisma.EnumPayrollComponentKindFieldRefInput<$PrismaModel>
   in?: $Enums.PayrollComponentKind[] | Prisma.ListEnumPayrollComponentKindFieldRefInput<$PrismaModel>
@@ -1631,16 +1709,6 @@ export type EnumPayrollComponentCategoryWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPayrollComponentCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPayrollComponentCategoryFilter<$PrismaModel>
-}
-
-export type EnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
 }
 
 export type EnumNotificationSeverityFilter<$PrismaModel = never> = {
@@ -2942,6 +3010,74 @@ export type NestedEnumStatutoryOverrideStatusWithAggregatesFilter<$PrismaModel =
   _max?: Prisma.NestedEnumStatutoryOverrideStatusFilter<$PrismaModel>
 }
 
+export type NestedEnumAnnualPayrollProjectionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.AnnualPayrollProjectionStatus | Prisma.EnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAnnualPayrollProjectionStatusFilter<$PrismaModel> | $Enums.AnnualPayrollProjectionStatus
+}
+
+export type NestedEnumAnnualPayrollProjectionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AnnualPayrollProjectionStatus | Prisma.EnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AnnualPayrollProjectionStatus[] | Prisma.ListEnumAnnualPayrollProjectionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAnnualPayrollProjectionStatusWithAggregatesFilter<$PrismaModel> | $Enums.AnnualPayrollProjectionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAnnualPayrollProjectionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAnnualPayrollProjectionStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTaxYearAdjustmentTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentType | Prisma.EnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentTypeFilter<$PrismaModel> | $Enums.TaxYearAdjustmentType
+}
+
+export type NestedEnumTaxYearAdjustmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentStatus | Prisma.EnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentStatusFilter<$PrismaModel> | $Enums.TaxYearAdjustmentStatus
+}
+
+export type NestedEnumTaxYearAdjustmentTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentType | Prisma.EnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentType[] | Prisma.ListEnumTaxYearAdjustmentTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentTypeWithAggregatesFilter<$PrismaModel> | $Enums.TaxYearAdjustmentType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTaxYearAdjustmentTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTaxYearAdjustmentTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumTaxYearAdjustmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TaxYearAdjustmentStatus | Prisma.EnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TaxYearAdjustmentStatus[] | Prisma.ListEnumTaxYearAdjustmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTaxYearAdjustmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.TaxYearAdjustmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTaxYearAdjustmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTaxYearAdjustmentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPayrollTaxTreatmentFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
+}
+
+export type NestedEnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
+}
+
 export type NestedEnumPayFrequencyFilter<$PrismaModel = never> = {
   equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel>
   in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel>
@@ -3007,6 +3143,13 @@ export type NestedEnumBankAccountVerificationStatusFilter<$PrismaModel = never> 
   not?: Prisma.NestedEnumBankAccountVerificationStatusFilter<$PrismaModel> | $Enums.BankAccountVerificationStatus
 }
 
+export type NestedEnumBankingDataSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.BankingDataSource | Prisma.EnumBankingDataSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBankingDataSourceFilter<$PrismaModel> | $Enums.BankingDataSource
+}
+
 export type NestedEnumBankAccountTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.BankAccountType | Prisma.EnumBankAccountTypeFieldRefInput<$PrismaModel>
   in?: $Enums.BankAccountType[] | Prisma.ListEnumBankAccountTypeFieldRefInput<$PrismaModel>
@@ -3025,6 +3168,16 @@ export type NestedEnumBankAccountVerificationStatusWithAggregatesFilter<$PrismaM
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumBankAccountVerificationStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumBankAccountVerificationStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumBankingDataSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BankingDataSource | Prisma.EnumBankingDataSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BankingDataSource[] | Prisma.ListEnumBankingDataSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBankingDataSourceWithAggregatesFilter<$PrismaModel> | $Enums.BankingDataSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBankingDataSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBankingDataSourceFilter<$PrismaModel>
 }
 
 export type NestedEnumPayrollAllocationTypeFilter<$PrismaModel = never> = {
@@ -3262,13 +3415,6 @@ export type NestedEnumPayrollComponentCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPayrollComponentCategoryFilter<$PrismaModel> | $Enums.PayrollComponentCategory
 }
 
-export type NestedEnumPayrollTaxTreatmentFilter<$PrismaModel = never> = {
-  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
-}
-
 export type NestedEnumPayrollComponentKindWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PayrollComponentKind | Prisma.EnumPayrollComponentKindFieldRefInput<$PrismaModel>
   in?: $Enums.PayrollComponentKind[] | Prisma.ListEnumPayrollComponentKindFieldRefInput<$PrismaModel>
@@ -3287,16 +3433,6 @@ export type NestedEnumPayrollComponentCategoryWithAggregatesFilter<$PrismaModel 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPayrollComponentCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPayrollComponentCategoryFilter<$PrismaModel>
-}
-
-export type NestedEnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PayrollTaxTreatment | Prisma.EnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  in?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PayrollTaxTreatment[] | Prisma.ListEnumPayrollTaxTreatmentFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPayrollTaxTreatmentWithAggregatesFilter<$PrismaModel> | $Enums.PayrollTaxTreatment
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPayrollTaxTreatmentFilter<$PrismaModel>
 }
 
 export type NestedEnumNotificationSeverityFilter<$PrismaModel = never> = {

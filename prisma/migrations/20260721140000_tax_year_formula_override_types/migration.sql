@@ -1,0 +1,3 @@
+-- AlterEnum
+ALTER TYPE "payroll"."TaxYearAdjustmentType" ADD VALUE IF NOT EXISTS 'NIS_DEDUCTIBLE_PORTION';
+ALTER TYPE "payroll"."TaxYearAdjustmentType" ADD VALUE IF NOT EXISTS 'APPROVED_DEDUCTION_CAP';

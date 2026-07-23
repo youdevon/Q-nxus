@@ -70,6 +70,17 @@ export type PriorEmploymentSetup = {
     verifiedCount: number;
     allVerified: boolean;
   };
+  /** Verified ACTIVE totals used by cumulative PAYE calc. */
+  verifiedTotals: {
+    taxableIncomeYtd: number;
+    payeDeductedYtd: number;
+    nisEmployeeYtd: number;
+    healthSurchargeYtd: number;
+    otherApprovedDeductionsYtd: number;
+    recordCount: number;
+    verifiedCount: number;
+    allVerified: boolean;
+  };
 };
 
 /** Client-safe payroll setup DTOs (no Prisma / pg). */
@@ -80,6 +91,8 @@ export type PayrollBankAccountRecord = {
   branchName: string | null;
   accountNumber: string;
   accountName: string | null;
+  /** SAVINGS | CHEQUING for ACH Payment Type (Savings/Chequing Credit). */
+  accountType?: string | null;
   amount: string | null;
   /** Percentage of take-home when allocation type is PERCENTAGE. */
   percentage?: string | null;
@@ -87,6 +100,25 @@ export type PayrollBankAccountRecord = {
   sortOrder: number;
   financialInstitutionId?: string | null;
   accountNumberLastFour?: string | null;
+  verificationStatus?: string | null;
+  isVerified?: boolean;
+  verifiedAt?: string | null;
+  dataSource?: string | null;
+  routingNumber?: string | null;
+};
+
+export type PayrollBankAccountHistoryRecord = {
+  id: string;
+  bankName: string;
+  accountNumberMasked: string;
+  accountType: string | null;
+  verificationStatus: string;
+  dataSource: string;
+  isPrimary: boolean;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  archivedAt: string | null;
+  changeReason: string | null;
 };
 
 export type FinancialInstitutionOption = {
@@ -156,6 +188,8 @@ export type EmployeePayrollSetup = {
     fromEmployee: boolean;
   };
   bankAccounts: PayrollBankAccountRecord[];
+  /** Soft-deactivated / superseded instructions (history retained). */
+  bankAccountHistory: PayrollBankAccountHistoryRecord[];
   /** DB-backed institution directory for the bank select (Phase 1). */
   financialInstitutions: FinancialInstitutionOption[];
   bankingFlags: {

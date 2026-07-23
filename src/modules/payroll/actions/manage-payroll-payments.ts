@@ -7,8 +7,11 @@ import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import {
   approveAchPaymentBatch,
+  cancelAchPaymentBatch,
   createAchPaymentBatch,
   generateAchPaymentBatchFile,
+  markAchPaymentBatchReconciled,
+  markAchPaymentBatchReleased,
 } from "@/src/modules/payroll/services/ach-payment-batch";
 import {
   notifyAchBatchApproved,
@@ -31,7 +34,10 @@ export async function preparePayRunPayments(
   _prev: PayrollPaymentActionState,
   formData: FormData,
 ): Promise<PayrollPaymentActionState> {
-  const actor = await requireActor("payroll.manage");
+  const actor = await requireActor(
+    "payroll.payment_batches.prepare",
+    "payroll.manage",
+  );
   if (!actor.ok) {
     return { status: "error", message: actor.message };
   }
@@ -72,7 +78,10 @@ export async function createPayRunPaymentBatch(
   _prev: PayrollPaymentActionState,
   formData: FormData,
 ): Promise<PayrollPaymentActionState> {
-  const actor = await requireActor("payroll.manage");
+  const actor = await requireActor(
+    "payroll.payment_batches.prepare",
+    "payroll.manage",
+  );
   if (!actor.ok) {
     return { status: "error", message: actor.message };
   }
@@ -128,7 +137,10 @@ export async function approvePayRunPaymentBatch(
   _prev: PayrollPaymentActionState,
   formData: FormData,
 ): Promise<PayrollPaymentActionState> {
-  const actor = await requireActor("payroll.manage");
+  const actor = await requireActor(
+    "payroll.payment_batches.approve",
+    "payroll.manage",
+  );
   if (!actor.ok) {
     return { status: "error", message: actor.message };
   }
@@ -157,10 +169,12 @@ export async function approvePayRunPaymentBatch(
       batchNumber: true,
       preparedByUserId: true,
       payRunId: true,
+      organizationId: true,
     },
   });
   if (batch) {
     await notifyAchBatchApproved({
+      organizationId: batch.organizationId,
       batchId,
       batchNumber: batch.batchNumber,
       payRunId: payRunId || batch.payRunId,
@@ -185,7 +199,10 @@ export async function generatePayRunPaymentBatchFile(
   _prev: PayrollPaymentActionState,
   formData: FormData,
 ): Promise<PayrollPaymentActionState> {
-  const actor = await requireActor("payroll.manage");
+  const actor = await requireActor(
+    "payroll.payment_batches.export",
+    "payroll.manage",
+  );
   if (!actor.ok) {
     return { status: "error", message: actor.message };
   }
@@ -397,4 +414,123 @@ export async function regeneratePayRunAllocation(
     status: "success",
     message: "Replacement payment allocation created; original preserved.",
   };
+}
+
+export async function cancelPayRunPaymentBatch(
+  _prev: PayrollPaymentActionState,
+  formData: FormData,
+): Promise<PayrollPaymentActionState> {
+  const actor = await requireActor(
+    "payroll.payment_batches.prepare",
+    "payroll.manage",
+  );
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const batchId = textValue(formData, "batchId");
+  const payRunId = textValue(formData, "payRunId");
+  const reason = textValue(formData, "reason") || null;
+
+  if (!batchId) {
+    return { status: "error", message: "Batch id is required." };
+  }
+
+  const audit = await getAuditRequestMetadata();
+  const result = await cancelAchPaymentBatch({
+    batchId,
+    actorUserId: actor.actor.userId,
+    reason,
+    audit,
+  });
+
+  if (!result.ok) {
+    return { status: "error", message: result.error };
+  }
+
+  if (payRunId) {
+    revalidatePath(`/payroll/runs/${payRunId}`);
+    revalidatePath(`/payroll/runs/${payRunId}/payments`);
+    revalidatePath(`/payroll/runs/${payRunId}/payments/${batchId}`);
+  }
+
+  return { status: "success", message: "Batch cancelled." };
+}
+
+export async function releasePayRunPaymentBatch(
+  _prev: PayrollPaymentActionState,
+  formData: FormData,
+): Promise<PayrollPaymentActionState> {
+  const actor = await requireActor(
+    "payroll.payment_batches.export",
+    "payroll.manage",
+  );
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const batchId = textValue(formData, "batchId");
+  const payRunId = textValue(formData, "payRunId");
+
+  if (!batchId) {
+    return { status: "error", message: "Batch id is required." };
+  }
+
+  const audit = await getAuditRequestMetadata();
+  const result = await markAchPaymentBatchReleased({
+    batchId,
+    actorUserId: actor.actor.userId,
+    audit,
+  });
+
+  if (!result.ok) {
+    return { status: "error", message: result.error };
+  }
+
+  if (payRunId) {
+    revalidatePath(`/payroll/runs/${payRunId}`);
+    revalidatePath(`/payroll/runs/${payRunId}/payments`);
+    revalidatePath(`/payroll/runs/${payRunId}/payments/${batchId}`);
+  }
+
+  return { status: "success", message: "Batch marked released." };
+}
+
+export async function reconcilePayRunPaymentBatch(
+  _prev: PayrollPaymentActionState,
+  formData: FormData,
+): Promise<PayrollPaymentActionState> {
+  const actor = await requireActor(
+    "payroll.payment_batches.export",
+    "payroll.manage",
+  );
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const batchId = textValue(formData, "batchId");
+  const payRunId = textValue(formData, "payRunId");
+
+  if (!batchId) {
+    return { status: "error", message: "Batch id is required." };
+  }
+
+  const audit = await getAuditRequestMetadata();
+  const result = await markAchPaymentBatchReconciled({
+    batchId,
+    actorUserId: actor.actor.userId,
+    audit,
+  });
+
+  if (!result.ok) {
+    return { status: "error", message: result.error };
+  }
+
+  if (payRunId) {
+    revalidatePath(`/payroll/runs/${payRunId}`);
+    revalidatePath(`/payroll/runs/${payRunId}/payments`);
+    revalidatePath(`/payroll/runs/${payRunId}/payments/${batchId}`);
+  }
+
+  return { status: "success", message: "Batch reconciled." };
 }

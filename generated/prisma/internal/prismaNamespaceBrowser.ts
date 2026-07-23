@@ -111,6 +111,9 @@ export const ModelName = {
   EmployeePriorEmploymentYtd: 'EmployeePriorEmploymentYtd',
   EmployeePriorEmploymentDocument: 'EmployeePriorEmploymentDocument',
   EmployeePayrollStatutoryOverride: 'EmployeePayrollStatutoryOverride',
+  EmployeeAnnualPayrollProjection: 'EmployeeAnnualPayrollProjection',
+  EmployeeTaxYearAdjustment: 'EmployeeTaxYearAdjustment',
+  EmployeeEarningTreatmentOverride: 'EmployeeEarningTreatmentOverride',
   PayrollProfile: 'PayrollProfile',
   FinancialInstitution: 'FinancialInstitution',
   FinancialInstitutionBranch: 'FinancialInstitutionBranch',
@@ -1376,6 +1379,99 @@ export const EmployeePayrollStatutoryOverrideScalarFieldEnum = {
 export type EmployeePayrollStatutoryOverrideScalarFieldEnum = (typeof EmployeePayrollStatutoryOverrideScalarFieldEnum)[keyof typeof EmployeePayrollStatutoryOverrideScalarFieldEnum]
 
 
+export const EmployeeAnnualPayrollProjectionScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  calculationDate: 'calculationDate',
+  version: 'version',
+  status: 'status',
+  previousEmployerTaxableIncome: 'previousEmployerTaxableIncome',
+  currentEmployerActualTaxableIncome: 'currentEmployerActualTaxableIncome',
+  projectedRemainingTaxableIncome: 'projectedRemainingTaxableIncome',
+  projectedAnnualTaxableIncome: 'projectedAnnualTaxableIncome',
+  projectedEmployeeNis: 'projectedEmployeeNis',
+  projectedQualifyingNis: 'projectedQualifyingNis',
+  projectedPension: 'projectedPension',
+  projectedOtherQualifyingContributions: 'projectedOtherQualifyingContributions',
+  personalAllowance: 'personalAllowance',
+  allowableQualifyingDeduction: 'allowableQualifyingDeduction',
+  projectedChargeableIncome: 'projectedChargeableIncome',
+  projectedAnnualTaxLiability: 'projectedAnnualTaxLiability',
+  previousEmployerPaye: 'previousEmployerPaye',
+  currentEmployerPaye: 'currentEmployerPaye',
+  manualTaxAdjustment: 'manualTaxAdjustment',
+  remainingTaxLiability: 'remainingTaxLiability',
+  remainingPayrollPeriods: 'remainingPayrollPeriods',
+  recommendedPayePerPeriod: 'recommendedPayePerPeriod',
+  payFrequency: 'payFrequency',
+  statutoryConfigurationId: 'statutoryConfigurationId',
+  calculationSnapshot: 'calculationSnapshot',
+  warnings: 'warnings',
+  generatedByUserId: 'generatedByUserId',
+  generatedAt: 'generatedAt',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  appliedToPeriodEnd: 'appliedToPeriodEnd',
+  appliedStatutoryOverrideId: 'appliedStatutoryOverrideId',
+  supersedesProjectionId: 'supersedesProjectionId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeAnnualPayrollProjectionScalarFieldEnum = (typeof EmployeeAnnualPayrollProjectionScalarFieldEnum)[keyof typeof EmployeeAnnualPayrollProjectionScalarFieldEnum]
+
+
+export const EmployeeTaxYearAdjustmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  periodEnd: 'periodEnd',
+  adjustmentType: 'adjustmentType',
+  originalValue: 'originalValue',
+  adjustmentValue: 'adjustmentValue',
+  finalValue: 'finalValue',
+  reasonCode: 'reasonCode',
+  reason: 'reason',
+  supportingReference: 'supportingReference',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  enteredByUserId: 'enteredByUserId',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  rejectedReason: 'rejectedReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeTaxYearAdjustmentScalarFieldEnum = (typeof EmployeeTaxYearAdjustmentScalarFieldEnum)[keyof typeof EmployeeTaxYearAdjustmentScalarFieldEnum]
+
+
+export const EmployeeEarningTreatmentOverrideScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  componentDefinitionId: 'componentDefinitionId',
+  taxTreatment: 'taxTreatment',
+  includeInProjectedEarnings: 'includeInProjectedEarnings',
+  reason: 'reason',
+  supportingReference: 'supportingReference',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  status: 'status',
+  enteredByUserId: 'enteredByUserId',
+  approvedByUserId: 'approvedByUserId',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeEarningTreatmentOverrideScalarFieldEnum = (typeof EmployeeEarningTreatmentOverrideScalarFieldEnum)[keyof typeof EmployeeEarningTreatmentOverrideScalarFieldEnum]
+
+
 export const PayrollProfileScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
@@ -1451,6 +1547,7 @@ export const EmployeeBankAccountScalarFieldEnum = {
   employeeId: 'employeeId',
   financialInstitutionId: 'financialInstitutionId',
   bankName: 'bankName',
+  routingNumber: 'routingNumber',
   branchCode: 'branchCode',
   branchName: 'branchName',
   accountHolderName: 'accountHolderName',
@@ -1470,6 +1567,9 @@ export const EmployeeBankAccountScalarFieldEnum = {
   effectiveTo: 'effectiveTo',
   isActive: 'isActive',
   sortOrder: 'sortOrder',
+  dataSource: 'dataSource',
+  changeReason: 'changeReason',
+  supersedesAccountId: 'supersedesAccountId',
   createdByUserId: 'createdByUserId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -1586,7 +1686,16 @@ export const AchPaymentBatchScalarFieldEnum = {
   status: 'status',
   currencyCode: 'currencyCode',
   controlTotalAmount: 'controlTotalAmount',
+  payrollNetTotal: 'payrollNetTotal',
   detailCount: 'detailCount',
+  effectivePaymentDate: 'effectivePaymentDate',
+  achType: 'achType',
+  purposeCode: 'purposeCode',
+  entryDescription: 'entryDescription',
+  globalAddenda: 'globalAddenda',
+  discretionaryData: 'discretionaryData',
+  transactionType: 'transactionType',
+  validationSummaryJson: 'validationSummaryJson',
   fileName: 'fileName',
   fileStorageKey: 'fileStorageKey',
   fileContentHash: 'fileContentHash',
@@ -1597,6 +1706,11 @@ export const AchPaymentBatchScalarFieldEnum = {
   approvedAt: 'approvedAt',
   generatedAt: 'generatedAt',
   exportedAt: 'exportedAt',
+  releasedAt: 'releasedAt',
+  releasedByUserId: 'releasedByUserId',
+  reconciledAt: 'reconciledAt',
+  reconciledByUserId: 'reconciledByUserId',
+  supersedesBatchId: 'supersedesBatchId',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1614,8 +1728,13 @@ export const AchPaymentBatchDetailScalarFieldEnum = {
   currencyCode: 'currencyCode',
   employeeNumber: 'employeeNumber',
   employeeName: 'employeeName',
+  individualId: 'individualId',
   bankName: 'bankName',
+  abaNumber: 'abaNumber',
   accountNumberMasked: 'accountNumberMasked',
+  paymentType: 'paymentType',
+  purposeCode: 'purposeCode',
+  addenda: 'addenda',
   allocationKind: 'allocationKind',
   createdAt: 'createdAt'
 } as const

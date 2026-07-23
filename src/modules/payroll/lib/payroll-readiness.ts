@@ -6,14 +6,22 @@
  * - the NIS number is recorded (unless exempt from NIS)
  * - the BIR (tax) number is recorded (unless exempt from PAYE)
  * - when paid by bank transfer:
- *   - at least one bank account exists
- *   - exactly one account is marked primary (receives remainder of net pay)
- *   - every non-primary account has a fixed amount greater than zero
+ *   - at least one payment instruction exists
+ *   - exactly one instruction is marked primary (receives remainder of net pay)
+ *   - every non-primary instruction has a fixed amount greater than zero
+ *   - each instruction has ACH-aligned fields: bank/institution, account number,
+ *     account holder name (Individual Name), and Savings/Chequing type
  */
+
+import { normalizeAchAccountType } from "@/src/modules/payroll/lib/ach-employee-fields";
 
 export type PayrollBankAccountInput = {
   bankName: string;
   accountNumber: string;
+  /** ACH Individual Name — required for bank transfer readiness. */
+  accountHolderName?: string | null;
+  /** SAVINGS | CHEQUING — required for bank transfer readiness. */
+  accountType?: string | null;
   /** Fixed amount for secondary accounts; null/undefined for primary remainder. */
   amount: number | null;
   isPrimary: boolean;
@@ -73,7 +81,7 @@ export function evaluatePayrollReadiness(
 
   if (input.paymentMethod === "BANK_TRANSFER") {
     if (input.bankAccounts.length === 0) {
-      blockingIssues.push("No bank account on file for bank transfer.");
+      blockingIssues.push("No payment instruction on file for bank transfer.");
     } else {
       if (
         input.bankAccounts.some(
@@ -82,7 +90,27 @@ export function evaluatePayrollReadiness(
         )
       ) {
         blockingIssues.push(
-          "A bank account is missing its bank name or account number.",
+          "A payment instruction is missing its bank / institution or account number.",
+        );
+      }
+
+      if (
+        input.bankAccounts.some(
+          (account) => !account.accountHolderName?.trim(),
+        )
+      ) {
+        blockingIssues.push(
+          "Each payment instruction needs an account holder name (ACH Individual Name).",
+        );
+      }
+
+      if (
+        input.bankAccounts.some(
+          (account) => !normalizeAchAccountType(account.accountType),
+        )
+      ) {
+        blockingIssues.push(
+          "Each payment instruction needs account type Savings or Chequing (ACH Payment Type).",
         );
       }
 
@@ -92,7 +120,7 @@ export function evaluatePayrollReadiness(
 
       if (primaryCount !== 1) {
         blockingIssues.push(
-          "Exactly one bank account must be marked as primary (remainder).",
+          "Exactly one payment instruction must be marked as primary (remainder).",
         );
       }
 
@@ -103,7 +131,7 @@ export function evaluatePayrollReadiness(
 
         if (account.amount == null || !(account.amount > 0)) {
           blockingIssues.push(
-            "Each secondary bank account needs a fixed amount greater than zero.",
+            "Each secondary payment instruction needs a fixed amount greater than zero.",
           );
           break;
         }

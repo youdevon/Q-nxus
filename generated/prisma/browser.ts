@@ -325,6 +325,21 @@ export type EmployeePriorEmploymentDocument = Prisma.EmployeePriorEmploymentDocu
  */
 export type EmployeePayrollStatutoryOverride = Prisma.EmployeePayrollStatutoryOverrideModel
 /**
+ * Model EmployeeAnnualPayrollProjection
+ * Versioned employee annual PAYE projection worksheet (calendar tax year).
+ */
+export type EmployeeAnnualPayrollProjection = Prisma.EmployeeAnnualPayrollProjectionModel
+/**
+ * Model EmployeeTaxYearAdjustment
+ * Controlled employee-specific tax-year adjustments (maker-checker).
+ */
+export type EmployeeTaxYearAdjustment = Prisma.EmployeeTaxYearAdjustmentModel
+/**
+ * Model EmployeeEarningTreatmentOverride
+ * Per-employee override of a payroll component's tax treatment.
+ */
+export type EmployeeEarningTreatmentOverride = Prisma.EmployeeEarningTreatmentOverrideModel
+/**
  * Model PayrollProfile
  * 
  */
@@ -341,7 +356,9 @@ export type FinancialInstitution = Prisma.FinancialInstitutionModel
 export type FinancialInstitutionBranch = Prisma.FinancialInstitutionBranchModel
 /**
  * Model EmployeeBankAccount
- * Employee-owned bank account (Phase 1 source of truth for payroll destinations).
+ * Employee-owned bank account / payment destination (source of truth with allocations).
+ * Together with EmployeePayrollAllocation this is the payment-instruction model —
+ * not a separate payroll employee list (HR Employee remains SoT).
  */
 export type EmployeeBankAccount = Prisma.EmployeeBankAccountModel
 /**

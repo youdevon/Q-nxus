@@ -130,13 +130,16 @@ export async function seedPayrollBankingFeatureControls(
   }
 }
 
-/** Default MANUAL_REGISTER / generic CSV profiles (placeholder — no official bank layouts). */
+/** Default MANUAL_REGISTER / generic CSV / First Citizens profiles. */
 export async function seedBankExportProfiles(
   prisma: PrismaClient,
   organizationId: string,
 ): Promise<void> {
   const { DEFAULT_MANUAL_REGISTER_CONFIGURATION } = await import(
     "../src/modules/payroll/lib/bank-export-adapter"
+  );
+  const { DEFAULT_FIRST_CITIZENS_CONFIGURATION } = await import(
+    "../src/modules/payroll/lib/first-citizens-export"
   );
 
   await prisma.bankExportProfile.upsert({
@@ -206,6 +209,76 @@ export async function seedBankExportProfiles(
         ...DEFAULT_MANUAL_REGISTER_CONFIGURATION,
         fileNamePrefix: "generic-ach-csv",
         maskAccountNumbers: false,
+      },
+    },
+  });
+
+  await prisma.bankExportProfile.upsert({
+    where: {
+      organizationId_code: {
+        organizationId,
+        code: "FCB_MANUAL_WORKSHEET",
+      },
+    },
+    update: {
+      name: "First Citizens manual-entry worksheet",
+      description:
+        "Control document matching First Citizens Business Online template columns. NOT a bank import file — use for manual entry or checking.",
+      adapterKind: "FIRST_CITIZENS_MANUAL_WORKSHEET",
+      isDefault: false,
+      isPlaceholder: false,
+      isActive: true,
+      configurationJson: DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+    },
+    create: {
+      organizationId,
+      code: "FCB_MANUAL_WORKSHEET",
+      name: "First Citizens manual-entry worksheet",
+      description:
+        "Control document matching First Citizens Business Online template columns. NOT a bank import file — use for manual entry or checking.",
+      adapterKind: "FIRST_CITIZENS_MANUAL_WORKSHEET",
+      isDefault: false,
+      isPlaceholder: false,
+      isActive: true,
+      configurationJson: DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+    },
+  });
+
+  await prisma.bankExportProfile.upsert({
+    where: {
+      organizationId_code: {
+        organizationId,
+        code: "FCB_IMPORT",
+      },
+    },
+    update: {
+      name: "First Citizens import file (disabled)",
+      description:
+        "Disabled until First Citizens confirms Default Transactions / NACHA layout. Do not label downloads as bank-compatible.",
+      adapterKind: "FIRST_CITIZENS_IMPORT",
+      isDefault: false,
+      isPlaceholder: true,
+      isActive: true,
+      configurationJson: {
+        ...DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+        exportFormat: "IMPORT_DISABLED",
+        importFileDisabled: true,
+      },
+    },
+    create: {
+      organizationId,
+      code: "FCB_IMPORT",
+      name: "First Citizens import file (disabled)",
+      description:
+        "Disabled until First Citizens confirms Default Transactions / NACHA layout. Do not label downloads as bank-compatible.",
+      adapterKind: "FIRST_CITIZENS_IMPORT",
+      isDefault: false,
+      isPlaceholder: true,
+      isActive: true,
+      configurationJson: {
+        ...DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+        exportFormat: "IMPORT_DISABLED",
+        importFileDisabled: true,
       },
     },
   });

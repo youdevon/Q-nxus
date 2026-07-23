@@ -48,6 +48,12 @@ export default async function EmployeePayrollPage({
 
   const canManage =
     capabilities.can("payroll.setup") || capabilities.can("payroll.manage");
+  const canVerifyInstructions =
+    capabilities.can("payroll.bank_accounts.verify") ||
+    capabilities.can("payroll.manage");
+  const canDeactivateInstructions =
+    capabilities.can("payroll.bank_accounts.disable") ||
+    capabilities.can("payroll.manage");
   const currency =
     setup.currentContract?.currency ??
     setup.payElements[0]?.currency ??
@@ -57,7 +63,12 @@ export default async function EmployeePayrollPage({
 
   return (
     <>
-      <PayrollProfileForm setup={setup} taxYearHref={taxYearHref} />
+      <PayrollProfileForm
+        setup={setup}
+        taxYearHref={taxYearHref}
+        canVerifyInstructions={canVerifyInstructions}
+        canDeactivateInstructions={canDeactivateInstructions}
+      />
       <EmployeeTaxProfileForm setup={setup} />
       <EmployeePriorEmploymentForm setup={setup} />
       <PageShell className="pt-0 sm:pt-0 md:pt-0 lg:pt-0">

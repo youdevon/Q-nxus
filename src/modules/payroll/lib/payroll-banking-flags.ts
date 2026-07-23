@@ -26,6 +26,8 @@ export const PAYROLL_BANKING_FEATURE_FLAGS = {
   PAYMENT_BATCH_APPROVAL_REQUIRED: "PAYMENT_BATCH_APPROVAL_REQUIRED",
   ACH_FILE_APPROVAL_REQUIRED: "ACH_FILE_APPROVAL_REQUIRED",
   ALLOW_UNVERIFIED_BANK_ACCOUNTS: "ALLOW_UNVERIFIED_BANK_ACCOUNTS",
+  /** When true, preparer may approve their own payment batch (org policy). */
+  ALLOW_BATCH_SELF_APPROVAL: "ALLOW_BATCH_SELF_APPROVAL",
   ALLOW_CROSS_BANK_PAYMENTS: "ALLOW_CROSS_BANK_PAYMENTS",
   ALLOW_ZERO_NET_PAY_EXPORT: "ALLOW_ZERO_NET_PAY_EXPORT",
   ALLOW_NEGATIVE_NET_PAY_EXPORT: "ALLOW_NEGATIVE_NET_PAY_EXPORT",
@@ -118,6 +120,12 @@ export const PAYROLL_BANKING_FEATURE_DEFAULTS: ReadonlyArray<{
     featureCode: PAYROLL_BANKING_FEATURE_FLAGS.ALLOW_UNVERIFIED_BANK_ACCOUNTS,
     isEnabled: true,
     reason: "Phase 1 — accept accounts without verification.",
+  },
+  {
+    featureCode: PAYROLL_BANKING_FEATURE_FLAGS.ALLOW_BATCH_SELF_APPROVAL,
+    isEnabled: false,
+    reason:
+      "Maker-checker default — preparer cannot approve unless org policy enables this.",
   },
   {
     featureCode: PAYROLL_BANKING_FEATURE_FLAGS.ALLOW_CROSS_BANK_PAYMENTS,

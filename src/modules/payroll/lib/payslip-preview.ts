@@ -51,6 +51,8 @@ export type PayslipBankLine = {
   accountNumberMasked: string;
   amount: number;
   kind: "FIXED" | "PERCENTAGE" | "REMAINDER";
+  /** SAVINGS | CHEQUING when known — used by disbursement export fallback. */
+  accountType?: string | null;
 };
 
 export type PayslipEarningInput = {
@@ -75,6 +77,8 @@ export type PayslipBankAccountInput = {
   accountNumber: string;
   amount: number | null;
   isPrimary: boolean;
+  /** SAVINGS | CHEQUING — carried into bankDistribution when present. */
+  accountType?: string | null;
   /** Used when postNetSplitEnabled — percentage of full take-home (0–100). */
   percentage?: number | null;
   /** Used when postNetSplitEnabled. */
@@ -410,6 +414,7 @@ export function applyFixedBankAllocations(input: {
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: paidAmount,
       kind: "FIXED",
+      accountType: account.accountType ?? null,
     });
   }
 
@@ -428,6 +433,7 @@ export function applyFixedBankAllocations(input: {
     accountNumberMasked: maskAccountNumber(primary.accountNumber),
     amount: primaryRemainder,
     kind: "REMAINDER",
+    accountType: primary.accountType ?? null,
   });
 
   return { deductions, lines, primaryRemainder, warnings };
@@ -741,6 +747,7 @@ export function assemblePayslipPreview(
           percentage: kind === "PERCENTAGE" ? (account.percentage ?? null) : null,
           kind,
           priority: account.priority ?? index,
+          accountType: account.accountType ?? null,
         };
       });
       const allocated = applyPostNetBankAllocations({

@@ -28,6 +28,7 @@ describe("employee bank account adapter", () => {
           bankName: "Secondary Bank",
           branchName: null,
           accountNumber: "999988887777",
+          accountType: "SAVINGS",
           isPrimary: false,
           sortOrder: 1,
         },
@@ -61,6 +62,9 @@ describe("employee bank account adapter", () => {
     expect(primaryRemainder).toBe(8_000);
     expect(lines.find((line) => line.kind === "REMAINDER")?.amount).toBe(8_000);
     expect(lines.find((line) => line.kind === "FIXED")?.amount).toBe(2_000);
+    expect(lines.find((line) => line.kind === "FIXED")?.accountType).toBe(
+      "SAVINGS",
+    );
   });
 
   it("keeps netPay shape identical for single FULL_BALANCE", () => {

@@ -5,6 +5,11 @@ import {
   evaluatePayrollReadiness,
 } from "./payroll-readiness";
 
+const achReady = {
+  accountHolderName: "Ada Lovelace",
+  accountType: "SAVINGS" as const,
+};
+
 describe("evaluatePayrollReadiness", () => {
   it("is ready with primary remainder and fixed secondary amounts", () => {
     const result = evaluatePayrollReadiness({
@@ -19,12 +24,14 @@ describe("evaluatePayrollReadiness", () => {
           accountNumber: "123",
           amount: null,
           isPrimary: true,
+          ...achReady,
         },
         {
           bankName: "RBC",
           accountNumber: "456",
           amount: 1500,
           isPrimary: false,
+          ...achReady,
         },
       ],
     });
@@ -46,12 +53,14 @@ describe("evaluatePayrollReadiness", () => {
           accountNumber: "123",
           amount: 0,
           isPrimary: false,
+          ...achReady,
         },
         {
           bankName: "RBC",
           accountNumber: "456",
           amount: 500,
           isPrimary: false,
+          ...achReady,
         },
       ],
     });
@@ -61,8 +70,8 @@ describe("evaluatePayrollReadiness", () => {
       expect.arrayContaining([
         "NIS number missing.",
         "BIR number missing.",
-        "Exactly one bank account must be marked as primary (remainder).",
-        "Each secondary bank account needs a fixed amount greater than zero.",
+        "Exactly one payment instruction must be marked as primary (remainder).",
+        "Each secondary payment instruction needs a fixed amount greater than zero.",
       ]),
     );
   });
@@ -80,11 +89,38 @@ describe("evaluatePayrollReadiness", () => {
           accountNumber: "123",
           amount: null,
           isPrimary: true,
+          ...achReady,
         },
       ],
     });
 
     expect(result.isReady).toBe(true);
+  });
+
+  it("blocks bank transfer without ACH account holder or account type", () => {
+    const result = evaluatePayrollReadiness({
+      hasCurrentContract: true,
+      baseSalary: 5000,
+      nisNumber: "NIS-1",
+      birNumber: "BIR-1",
+      paymentMethod: "BANK_TRANSFER",
+      bankAccounts: [
+        {
+          bankName: "RBL",
+          accountNumber: "123",
+          amount: null,
+          isPrimary: true,
+        },
+      ],
+    });
+
+    expect(result.isReady).toBe(false);
+    expect(result.blockingIssues).toEqual(
+      expect.arrayContaining([
+        "Each payment instruction needs an account holder name (ACH Individual Name).",
+        "Each payment instruction needs account type Savings or Chequing (ACH Payment Type).",
+      ]),
+    );
   });
 
   it("does not require banks for cash payment", () => {

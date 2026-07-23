@@ -696,6 +696,50 @@ export const StatutoryOverrideStatus = {
 export type StatutoryOverrideStatus = (typeof StatutoryOverrideStatus)[keyof typeof StatutoryOverrideStatus]
 
 
+export const AnnualPayrollProjectionStatus = {
+  DRAFT: 'DRAFT',
+  CALCULATED: 'CALCULATED',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED',
+  APPROVED: 'APPROVED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type AnnualPayrollProjectionStatus = (typeof AnnualPayrollProjectionStatus)[keyof typeof AnnualPayrollProjectionStatus]
+
+
+export const TaxYearAdjustmentType = {
+  PREVIOUS_INCOME: 'PREVIOUS_INCOME',
+  PREVIOUS_PAYE: 'PREVIOUS_PAYE',
+  PERSONAL_ALLOWANCE: 'PERSONAL_ALLOWANCE',
+  TAXABLE_EARNINGS: 'TAXABLE_EARNINGS',
+  NON_TAXABLE_EARNINGS: 'NON_TAXABLE_EARNINGS',
+  PAYE: 'PAYE',
+  NIS: 'NIS',
+  HEALTH_SURCHARGE: 'HEALTH_SURCHARGE',
+  PENSION: 'PENSION',
+  QUALIFYING_DEDUCTION: 'QUALIFYING_DEDUCTION',
+  PROJECTED_EARNINGS: 'PROJECTED_EARNINGS',
+  REMAINING_PERIOD: 'REMAINING_PERIOD',
+  NIS_DEDUCTIBLE_PORTION: 'NIS_DEDUCTIBLE_PORTION',
+  APPROVED_DEDUCTION_CAP: 'APPROVED_DEDUCTION_CAP',
+  TAX_RATE_INSTRUCTION: 'TAX_RATE_INSTRUCTION',
+  OTHER_TAX: 'OTHER_TAX'
+} as const
+
+export type TaxYearAdjustmentType = (typeof TaxYearAdjustmentType)[keyof typeof TaxYearAdjustmentType]
+
+
+export const TaxYearAdjustmentStatus = {
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  REVERSED: 'REVERSED'
+} as const
+
+export type TaxYearAdjustmentStatus = (typeof TaxYearAdjustmentStatus)[keyof typeof TaxYearAdjustmentStatus]
+
+
 export const FinancialInstitutionType = {
   COMMERCIAL_BANK: 'COMMERCIAL_BANK',
   CREDIT_UNION: 'CREDIT_UNION',
@@ -729,6 +773,14 @@ export const BankAccountVerificationStatus = {
 } as const
 
 export type BankAccountVerificationStatus = (typeof BankAccountVerificationStatus)[keyof typeof BankAccountVerificationStatus]
+
+
+export const BankingDataSource = {
+  MANUAL: 'MANUAL',
+  IMPORT: 'IMPORT'
+} as const
+
+export type BankingDataSource = (typeof BankingDataSource)[keyof typeof BankingDataSource]
 
 
 export const PayrollAllocationType = {
@@ -774,11 +826,15 @@ export type PayrollPaymentAllocationStatus = (typeof PayrollPaymentAllocationSta
 
 export const AchPaymentBatchStatus = {
   DRAFT: 'DRAFT',
+  VALIDATION_FAILED: 'VALIDATION_FAILED',
+  READY_FOR_APPROVAL: 'READY_FOR_APPROVAL',
   PENDING_APPROVAL: 'PENDING_APPROVAL',
   APPROVED: 'APPROVED',
   GENERATED: 'GENERATED',
   EXPORTED: 'EXPORTED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  RELEASED: 'RELEASED',
+  RECONCILED: 'RECONCILED'
 } as const
 
 export type AchPaymentBatchStatus = (typeof AchPaymentBatchStatus)[keyof typeof AchPaymentBatchStatus]
@@ -786,7 +842,9 @@ export type AchPaymentBatchStatus = (typeof AchPaymentBatchStatus)[keyof typeof 
 
 export const BankExportAdapterKind = {
   MANUAL_REGISTER: 'MANUAL_REGISTER',
-  GENERIC_CSV: 'GENERIC_CSV'
+  GENERIC_CSV: 'GENERIC_CSV',
+  FIRST_CITIZENS_MANUAL_WORKSHEET: 'FIRST_CITIZENS_MANUAL_WORKSHEET',
+  FIRST_CITIZENS_IMPORT: 'FIRST_CITIZENS_IMPORT'
 } as const
 
 export type BankExportAdapterKind = (typeof BankExportAdapterKind)[keyof typeof BankExportAdapterKind]

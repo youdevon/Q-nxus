@@ -38,6 +38,7 @@ export type PayRunPaymentBatchListItem = {
   generatedAt: string | null;
   viewHref: string;
   downloadHref: string | null;
+  fcbWorksheetHref: string;
 };
 
 export type PayRunPaymentsPageData = {
@@ -64,6 +65,7 @@ export type PayRunPaymentsPageData = {
     manualPaymentEnabled: boolean;
     paymentBatchApprovalRequired: boolean;
     achFileApprovalRequired: boolean;
+    allowBatchSelfApproval: boolean;
   };
   exportProfiles: Array<{
     id: string;
@@ -81,17 +83,22 @@ export type AchPaymentBatchDetailData = {
   status: string;
   currencyCode: string;
   controlTotalLabel: string;
+  payrollNetTotalLabel: string | null;
   detailCount: number;
   fileName: string | null;
   fileContentHash: string | null;
   hasDownload: boolean;
   downloadHref: string | null;
+  fcbWorksheetHref: string;
+  validationSummary: unknown;
   preparedByUserId: string | null;
   approvedByUserId: string | null;
   preparedAt: string | null;
   approvedAt: string | null;
   generatedAt: string | null;
   exportedAt: string | null;
+  releasedAt: string | null;
+  reconciledAt: string | null;
   profile: {
     id: string;
     code: string;
@@ -122,6 +129,12 @@ export type AchPaymentBatchDetailData = {
   }>;
   canApprove: boolean;
   canGenerate: boolean;
+  canCancel: boolean;
+  canRelease: boolean;
+  canReconcile: boolean;
+  approvalBlockedReason: string | null;
+  importFileDisabled: boolean;
+  importDisabledReason: string | null;
 };
 
 export async function getPayRunPaymentFlags() {
@@ -131,6 +144,7 @@ export async function getPayRunPaymentFlags() {
     manualPaymentEnabled,
     paymentBatchApprovalRequired,
     achFileApprovalRequired,
+    allowBatchSelfApproval,
   ] = await Promise.all([
     isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.PAYROLL_BANKING_ENABLED),
     isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.ACH_EXPORT_ENABLED),
@@ -139,6 +153,9 @@ export async function getPayRunPaymentFlags() {
       PAYROLL_BANKING_FEATURE_FLAGS.PAYMENT_BATCH_APPROVAL_REQUIRED,
     ),
     isPayrollBankingFeatureEnabled(PAYROLL_BANKING_FEATURE_FLAGS.ACH_FILE_APPROVAL_REQUIRED),
+    isPayrollBankingFeatureEnabled(
+      PAYROLL_BANKING_FEATURE_FLAGS.ALLOW_BATCH_SELF_APPROVAL,
+    ),
   ]);
 
   return {
@@ -147,6 +164,7 @@ export async function getPayRunPaymentFlags() {
     manualPaymentEnabled,
     paymentBatchApprovalRequired,
     achFileApprovalRequired,
+    allowBatchSelfApproval,
   };
 }
 
@@ -254,6 +272,7 @@ export async function getPayRunPaymentsPage(
       downloadHref: batch.fileStorageKey
         ? `/payroll/runs/${run.id}/payments/${batch.id}/download`
         : null,
+      fcbWorksheetHref: `/payroll/runs/${run.id}/payments/${batch.id}/fcb-worksheet`,
     })),
     payments: run.payrollPayments.map((payment) => ({
       id: payment.id,
@@ -309,21 +328,48 @@ export async function getAchPaymentBatchDetail(
   }
 
   const flags = await getPayRunPaymentFlags();
-  const isManual = batch.bankExportProfile.adapterKind === "MANUAL_REGISTER";
+  const isManual =
+    batch.bankExportProfile.adapterKind === "MANUAL_REGISTER" ||
+    batch.bankExportProfile.adapterKind === "FIRST_CITIZENS_MANUAL_WORKSHEET";
   const approvalRequired =
     !isManual &&
     (flags.paymentBatchApprovalRequired || flags.achFileApprovalRequired);
+  const selfApprovalBlocked =
+    approvalRequired &&
+    Boolean(actorUserId) &&
+    batch.preparedByUserId === actorUserId &&
+    !flags.allowBatchSelfApproval;
 
   const canApprove =
     Boolean(actorUserId) &&
     (batch.status === "PENDING_APPROVAL" ||
+      batch.status === "READY_FOR_APPROVAL" ||
       (batch.status === "DRAFT" && approvalRequired)) &&
-    (!approvalRequired || batch.preparedByUserId !== actorUserId);
+    !selfApprovalBlocked;
 
   const canGenerate =
     batch.status === "APPROVED" ||
     batch.status === "GENERATED" ||
+    batch.status === "READY_FOR_APPROVAL" ||
     (batch.status === "DRAFT" && (!approvalRequired || isManual));
+
+  const canCancel = !["CANCELLED", "RELEASED", "RECONCILED"].includes(
+    batch.status,
+  );
+  const canRelease =
+    batch.status === "EXPORTED" || batch.status === "GENERATED";
+  const canReconcile =
+    batch.status === "RELEASED" || batch.status === "EXPORTED";
+
+  const { parseFirstCitizensConfiguration } = await import(
+    "@/src/modules/payroll/lib/first-citizens-export"
+  );
+  const fcbConfig = parseFirstCitizensConfiguration(
+    batch.bankExportProfile.configurationJson,
+  );
+  const isFcbProfile =
+    batch.bankExportProfile.adapterKind === "FIRST_CITIZENS_IMPORT" ||
+    batch.bankExportProfile.adapterKind === "FIRST_CITIZENS_MANUAL_WORKSHEET";
 
   return {
     id: batch.id,
@@ -333,6 +379,12 @@ export async function getAchPaymentBatchDetail(
     controlTotalLabel: formatMoney(money(batch.controlTotalAmount), {
       currency: batch.currencyCode,
     }),
+    payrollNetTotalLabel:
+      batch.payrollNetTotal != null
+        ? formatMoney(money(batch.payrollNetTotal), {
+            currency: batch.currencyCode,
+          })
+        : null,
     detailCount: batch.detailCount,
     fileName: batch.fileName,
     fileContentHash: batch.fileContentHash,
@@ -340,12 +392,16 @@ export async function getAchPaymentBatchDetail(
     downloadHref: batch.fileStorageKey
       ? `/payroll/runs/${payRunId}/payments/${batch.id}/download`
       : null,
+    fcbWorksheetHref: `/payroll/runs/${payRunId}/payments/${batch.id}/fcb-worksheet`,
+    validationSummary: batch.validationSummaryJson,
     preparedByUserId: batch.preparedByUserId,
     approvedByUserId: batch.approvedByUserId,
     preparedAt: batch.preparedAt?.toISOString() ?? null,
     approvedAt: batch.approvedAt?.toISOString() ?? null,
     generatedAt: batch.generatedAt?.toISOString() ?? null,
     exportedAt: batch.exportedAt?.toISOString() ?? null,
+    releasedAt: batch.releasedAt?.toISOString() ?? null,
+    reconciledAt: batch.reconciledAt?.toISOString() ?? null,
     profile: {
       id: batch.bankExportProfile.id,
       code: batch.bankExportProfile.code,
@@ -374,10 +430,9 @@ export async function getAchPaymentBatchDetail(
       returnReason: detail.payrollPaymentAllocation.returnReason,
       returnedAmountLabel:
         detail.payrollPaymentAllocation.returnedAmount != null
-          ? formatMoney(
-              money(detail.payrollPaymentAllocation.returnedAmount),
-              { currency: detail.currencyCode },
-            )
+          ? formatMoney(money(detail.payrollPaymentAllocation.returnedAmount), {
+              currency: detail.currencyCode,
+            })
           : null,
       settledAt:
         detail.payrollPaymentAllocation.settledAt?.toISOString() ?? null,
@@ -385,6 +440,19 @@ export async function getAchPaymentBatchDetail(
     })),
     canApprove,
     canGenerate,
+    canCancel,
+    canRelease,
+    canReconcile,
+    approvalBlockedReason: selfApprovalBlocked
+      ? "Maker-checker: you prepared this batch. Another user must approve it, or enable ALLOW_BATCH_SELF_APPROVAL."
+      : null,
+    importFileDisabled:
+      batch.bankExportProfile.adapterKind === "FIRST_CITIZENS_IMPORT" ||
+      Boolean(fcbConfig.importFileDisabled && isFcbProfile),
+    importDisabledReason: isFcbProfile
+      ? (fcbConfig.importDisabledReason ??
+        "First Citizens import file is disabled until the bank confirms the layout.")
+      : null,
   };
 }
 

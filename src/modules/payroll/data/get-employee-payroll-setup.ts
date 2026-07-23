@@ -22,6 +22,7 @@ import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-read
 import { roundToCents } from "@/src/modules/payroll/lib/money";
 import type {
   EmployeePayrollSetup,
+  PayrollBankAccountHistoryRecord,
   PayrollBankAccountRecord,
   PayrollPayElement,
   StatutoryPreview,
@@ -40,6 +41,7 @@ import { getSetupBankingFlags } from "@/src/modules/payroll/data/get-payroll-ban
 
 export type {
   EmployeePayrollSetup,
+  PayrollBankAccountHistoryRecord,
   PayrollBankAccountRecord,
   PayrollPayElement,
   StatutoryPreview,
@@ -89,9 +91,15 @@ export async function getEmployeePayrollSetup(
           accountNumber: true,
           accountNumberLastFour: true,
           accountHolderName: true,
+          accountType: true,
           isPrimary: true,
           sortOrder: true,
           financialInstitutionId: true,
+          verificationStatus: true,
+          isVerified: true,
+          verifiedAt: true,
+          dataSource: true,
+          routingNumber: true,
         },
       },
       payrollAllocations: {
@@ -198,6 +206,7 @@ export async function getEmployeePayrollSetup(
           decryptAccountNumber(account.accountNumber) ?? account.accountNumber,
         accountNumberLastFour: account.accountNumberLastFour,
         accountHolderName: account.accountHolderName,
+        accountType: account.accountType,
         isPrimary: account.isPrimary,
         sortOrder: account.sortOrder,
         financialInstitutionId: account.financialInstitutionId,
@@ -219,15 +228,58 @@ export async function getEmployeePayrollSetup(
     );
     bankAccounts = records.map((account) => {
       const alloc = allocByAccountId.get(account.id);
+      const source = employeeBanks.find((row) => row.id === account.id);
       return {
         ...account,
         percentage:
           alloc?.allocationType === "PERCENTAGE" && alloc.percentage != null
             ? alloc.percentage.toString()
             : null,
+        verificationStatus: source?.verificationStatus ?? null,
+        isVerified: source?.isVerified ?? false,
+        verifiedAt: source?.verifiedAt?.toISOString() ?? null,
+        dataSource: source?.dataSource ?? null,
+        routingNumber: source?.routingNumber ?? null,
       };
     });
   }
+
+  const historyRows = await prisma.employeeBankAccount.findMany({
+    where: {
+      employeeId: employee.id,
+      OR: [{ isActive: false }, { archivedAt: { not: null } }],
+    },
+    orderBy: [{ archivedAt: "desc" }, { updatedAt: "desc" }],
+    take: 25,
+    select: {
+      id: true,
+      bankName: true,
+      accountNumberLastFour: true,
+      accountType: true,
+      verificationStatus: true,
+      dataSource: true,
+      isPrimary: true,
+      effectiveFrom: true,
+      effectiveTo: true,
+      archivedAt: true,
+      changeReason: true,
+    },
+  });
+  const bankAccountHistory = historyRows.map((row) => ({
+    id: row.id,
+    bankName: row.bankName,
+    accountNumberMasked: row.accountNumberLastFour
+      ? `••••${row.accountNumberLastFour}`
+      : "••••",
+    accountType: row.accountType,
+    verificationStatus: row.verificationStatus,
+    dataSource: row.dataSource,
+    isPrimary: row.isPrimary,
+    effectiveFrom: row.effectiveFrom.toISOString(),
+    effectiveTo: row.effectiveTo?.toISOString() ?? null,
+    archivedAt: row.archivedAt?.toISOString() ?? null,
+    changeReason: row.changeReason,
+  }));
 
   const taxYear = taxYearFromAsOfKey(toStatutoryAsOfKey(new Date()));
 
@@ -336,6 +388,8 @@ export async function getEmployeePayrollSetup(
     bankAccounts: bankAccounts.map((account) => ({
       bankName: account.bankName,
       accountNumber: account.accountNumber,
+      accountHolderName: account.accountName,
+      accountType: account.accountType ?? null,
       amount: account.amount != null ? Number(account.amount) : null,
       isPrimary: account.isPrimary,
     })),
@@ -449,6 +503,7 @@ export async function getEmployeePayrollSetup(
       ),
     },
     bankAccounts,
+    bankAccountHistory,
     financialInstitutions,
     bankingFlags: {
       bankingEnabled,
@@ -527,6 +582,18 @@ export async function getEmployeePayrollSetup(
         recordCount: priorEmploymentBundle.totals.recordCount,
         verifiedCount: priorEmploymentBundle.totals.verifiedCount,
         allVerified: priorEmploymentBundle.totals.allVerified,
+      },
+      verifiedTotals: {
+        taxableIncomeYtd: priorEmploymentBundle.verifiedTotals.taxableIncomeYtd,
+        payeDeductedYtd: priorEmploymentBundle.verifiedTotals.payeDeductedYtd,
+        nisEmployeeYtd: priorEmploymentBundle.verifiedTotals.nisEmployeeYtd,
+        healthSurchargeYtd:
+          priorEmploymentBundle.verifiedTotals.healthSurchargeYtd,
+        otherApprovedDeductionsYtd:
+          priorEmploymentBundle.verifiedTotals.otherApprovedDeductionsYtd,
+        recordCount: priorEmploymentBundle.verifiedTotals.recordCount,
+        verifiedCount: priorEmploymentBundle.verifiedTotals.verifiedCount,
+        allVerified: priorEmploymentBundle.verifiedTotals.allVerified,
       },
     },
   };

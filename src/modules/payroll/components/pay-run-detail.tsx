@@ -1317,7 +1317,7 @@ export function PayRunDetailView({
                       }
                     >
                       <FileDown />
-                      Disbursement Excel
+                      Download Excel (bank entry)
                     </Button>
                   </>
                 ) : null}
@@ -1510,9 +1510,9 @@ export function PayRunDetailView({
               {!paymentSummary?.prepared ? (
                 <p className="max-w-md text-xs text-muted-foreground">
                   Pay run is posted. Open payments to prepare disbursement
-                  snapshots, then use Manual register, Bank CSV, or Disbursement
-                  Excel for bank-website entry. Enable ACH file export only
-                  after the bank confirms the export layout.
+                  snapshots, then use Manual register, Bank CSV, or Download
+                  Excel (bank entry) for bank-website entry. Enable ACH file
+                  export only after the bank confirms the export layout.
                 </p>
               ) : null}
               <Button

@@ -190,6 +190,7 @@ export async function loadPayRunDisbursementExport(
               decryptAccountNumber(allocation.accountNumberEncrypted) ??
               allocation.accountNumberMasked,
             accountName: allocation.beneficiaryName,
+            accountType: allocation.accountType,
             splitType: allocation.allocationKind,
             allocationAmount: Number(allocation.amount.toString()),
           })),

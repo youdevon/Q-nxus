@@ -50,6 +50,7 @@ export async function getPayrollReadiness(options?: {
           // Presence check only — avoid loading encrypted full numbers.
           accountNumberLastFour: true,
           accountHolderName: true,
+          accountType: true,
           isPrimary: true,
           sortOrder: true,
           financialInstitutionId: true,
@@ -125,6 +126,7 @@ export async function getPayrollReadiness(options?: {
             : "****",
         accountNumberLastFour: account.accountNumberLastFour,
         accountHolderName: account.accountHolderName,
+        accountType: account.accountType,
         isPrimary: account.isPrimary,
         sortOrder: account.sortOrder,
         financialInstitutionId: account.financialInstitutionId,

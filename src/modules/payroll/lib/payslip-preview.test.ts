@@ -117,6 +117,7 @@ describe("applyFixedBankAllocations", () => {
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Primary Bank",
@@ -124,6 +125,7 @@ describe("applyFixedBankAllocations", () => {
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
   });
@@ -184,6 +186,7 @@ describe("distributeNetToBanks", () => {
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Primary Bank",
@@ -191,6 +194,7 @@ describe("distributeNetToBanks", () => {
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
   });
@@ -317,6 +321,7 @@ describe("assemblePayslipPreview", () => {
         accountNumberMasked: "••••7766",
         amount: 500,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Republic Bank",
@@ -324,6 +329,7 @@ describe("assemblePayslipPreview", () => {
         accountNumberMasked: "••••7890",
         amount: preview.netPay,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
   });
