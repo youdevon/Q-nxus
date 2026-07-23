@@ -30,7 +30,10 @@ import type {
   EmploymentContractProfile,
   AllowanceCategoryRecord,
 } from "@/src/modules/hr/data/get-employment-contracts";
-import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity";
+import {
+  calculateContractGratuity,
+  TT_DEFAULT_GRATUITY_TAX_BANDS,
+} from "@/src/modules/hr/services/calculate-contract-gratuity";
 import { calculateContractLeaveEntitlementDays } from "@/src/modules/hr/lib/contract-leave-entitlement";
 import {
   isNonEmployeePayee,
@@ -249,9 +252,6 @@ export function EmploymentContractForm({
   const [gratuityRate, setGratuityRate] = useState(
     sourceContract?.gratuityRate ?? "20",
   );
-  const [gratuityTaxRate, setGratuityTaxRate] = useState(
-    sourceContract?.gratuityTaxRate ?? "25",
-  );
 
   const [allowances, setAllowances] = useState<ContractAllowanceInput[]>(
     sourceContract?.allowances.map((allowance) => ({
@@ -390,24 +390,23 @@ export function EmploymentContractForm({
   }
 
   const gratuityEstimate = useMemo(() => {
-    if (
-      !gratuityEligible ||
-      !startDate ||
-      !endDate ||
-      !baseSalary ||
-      !gratuityRate
-    ) {
+    if (!gratuityEligible || !startDate || !endDate || !baseSalary) {
       return null;
     }
 
     try {
-      return calculateContractGratuityEstimate({
+      return calculateContractGratuity({
         startDate: new Date(`${startDate}T00:00:00.000Z`),
         endDate: new Date(`${endDate}T00:00:00.000Z`),
         baseSalary,
         allowances,
-        gratuityRate,
-        gratuityTaxRate,
+        ratePercent: gratuityRate || 20,
+        policy: {
+          formulaKind: "PCT_OF_TERM_EARNINGS",
+          defaultRatePercent: 20,
+          taxMode: "TIERED",
+          taxBands: TT_DEFAULT_GRATUITY_TAX_BANDS,
+        },
       });
     } catch {
       return null;
@@ -419,7 +418,6 @@ export function EmploymentContractForm({
     baseSalary,
     allowances,
     gratuityRate,
-    gratuityTaxRate,
   ]);
 
   useEffect(() => {
@@ -1136,33 +1134,20 @@ export function EmploymentContractForm({
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
                   Percentage of eligible contract earnings (base salary +
-                  gratuity-included allowances).
+                  gratuity-included allowances). Defaults to the org policy
+                  rate (typically 20%) when left to policy on settlement.
                 </p>
               </div>
 
-              <div>
-                <label
-                  htmlFor="gratuityTaxRate"
-                  className="text-sm font-medium"
-                >
-                  Gratuity tax rate
-                </label>
-                <Input
-                  id="gratuityTaxRate"
-                  name="gratuityTaxRate"
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.01"
-                  value={gratuityTaxRate}
-                  onChange={(event) => setGratuityTaxRate(event.target.value)}
-                  className="mt-2"
-                  required
-                />
-              </div>
+              {/* Flat tax rate removed from UI — IRD tiered tax comes from org GratuityPolicy. */}
+              <input type="hidden" name="gratuityTaxRate" value="" />
 
               <div className="md:col-span-2 border-t border-border pt-5">
                 <p className="text-sm font-medium">Estimated gratuity</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Uses MoF term-% formula and IRD tiered tax (25% / 30%). Tax is
+                  configured under Payroll → Settings → Gratuity.
+                </p>
                 {gratuityEstimate ? (
                   <div className="mt-3 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                     <div>

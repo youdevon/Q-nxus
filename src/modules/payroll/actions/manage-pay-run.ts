@@ -24,6 +24,10 @@ import {
 } from "@/src/modules/payroll/lib/pay-run-membership";
 import { planPeriodAfterDraftPayRunDelete } from "@/src/modules/payroll/lib/pay-run-delete";
 import {
+  collectPayRunNotificationRefs,
+  purgeNotificationsForRelatedEntities,
+} from "@/src/modules/notifications/services/purge-related-notifications";
+import {
   canApprovePayRun,
   canClosePayRun,
   canPostPayRun,
@@ -36,6 +40,7 @@ import {
   notifyPayRunPosted,
   notifyPayRunReadyForReview,
 } from "@/src/modules/payroll/services/notify-payroll-events";
+import { markGratuitySettlementsPaidForPayRun } from "@/src/modules/payroll/actions/manage-gratuity-settlement";
 import { postPayRunInTransaction } from "@/src/modules/payroll/services/post-pay-run";
 import {
   recalculateDraftPayRunCore,
@@ -91,7 +96,9 @@ function normalizeLineItemCode(
   | "BONUS"
   | "COMMISSION"
   | "OTHER_EARNING"
-  | "OTHER_DEDUCTION" {
+  | "OTHER_DEDUCTION"
+  | "GRATUITY"
+  | "GRATUITY_TAX" {
   const normalized = value.toUpperCase();
   const earningCodes = new Set([
     "CORRECTION_EARNING",
@@ -99,8 +106,13 @@ function normalizeLineItemCode(
     "BONUS",
     "COMMISSION",
     "OTHER_EARNING",
+    "GRATUITY",
   ]);
-  const deductionCodes = new Set(["CORRECTION_DEDUCTION", "OTHER_DEDUCTION"]);
+  const deductionCodes = new Set([
+    "CORRECTION_DEDUCTION",
+    "OTHER_DEDUCTION",
+    "GRATUITY_TAX",
+  ]);
 
   if (lineType === "EARNING" && earningCodes.has(normalized)) {
     return normalized as "CORRECTION_EARNING";
@@ -1834,6 +1846,10 @@ export async function postPayRun(
     };
   }
 
+  await markGratuitySettlementsPaidForPayRun(payRun.id, {
+    actorUserId: actor.actor.userId,
+  });
+
   revalidatePayRunPaths(payRun.id);
 
   await notifyPayRunPosted({
@@ -2164,6 +2180,12 @@ export async function deleteDraftPayRun(
         },
       });
 
+      const notificationRefs = await collectPayRunNotificationRefs(
+        transaction,
+        payRun.id,
+      );
+      await purgeNotificationsForRelatedEntities(transaction, notificationRefs);
+
       // Payslips cascade via payRunId (including EXCLUDED membership rows).
       await transaction.payRun.delete({
         where: { id: payRun.id },
@@ -2195,6 +2217,7 @@ export async function deleteDraftPayRun(
   revalidatePath("/payroll/runs");
   revalidatePath(`/payroll/runs/${payRunId}`);
   revalidatePath(`/payroll/runs/${payRunId}/print`);
+  revalidatePath("/notifications");
   revalidatePath("/me");
   redirect(
     `/payroll/runs?deleted=${encodeURIComponent(runNumber)}`,

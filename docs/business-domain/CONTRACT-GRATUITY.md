@@ -1,0 +1,64 @@
+# Contract Gratuity
+
+## Purpose
+
+Contract gratuity is an end-of-contract payment for eligible fixed-term employment. Payroll owns policy configuration, settlement calculation, approval, pay-run scheduling, and tax remittance tracking. The employment contract remains the source of eligibility and optional rate override.
+
+See also [EMPLOYMENT-CONTRACT.md](./EMPLOYMENT-CONTRACT.md).
+
+## Formula (default TT)
+
+Primary formula kind: `PCT_OF_TERM_EARNINGS`.
+
+- Eligible monthly earnings = base salary + allowances marked `includedInGratuity`
+- Eligible gross earnings = eligible monthly × inclusive contract months
+- Gross gratuity = eligible gross earnings × rate% (contract override, else policy default, typically 20%)
+
+Other formula kinds (`PCT_OF_FINAL_MONTHLY_YEARS`, `DAYS_PER_YEAR`, `FLAT_AMOUNT`, `MANUAL`) are available on the policy for future use.
+
+## Tax tiers (default TT)
+
+Tax mode `TIERED` (IRD guidance):
+
+| Band | Rate |
+|------|------|
+| First TTD 1,000,000 | 25% |
+| Remainder | 30% |
+
+No personal allowance is applied to gratuity tax. Flat or none modes are also supported on the policy.
+
+## Settlement statuses
+
+| Status | Meaning |
+|--------|---------|
+| `PENDING_ESTIMATE` | Live estimate only — no settlement row yet |
+| `ESTIMATED` | Saved; contract end date still in the future |
+| `CALCULATED` | Saved; end date reached or passed |
+| `APPROVED` | Ready to schedule onto a draft pay run |
+| `SCHEDULED` | Attached to a draft pay run as `GRATUITY` / `GRATUITY_TAX` lines |
+| `PAID` | Pay run posted |
+| `INELIGIBLE` | Policy or service rules exclude payment |
+| `VOID` | Cancelled (reason required) |
+
+Tax remittance on paid settlements: `NOT_APPLICABLE` | `PENDING` | `REMITTED`.
+
+## UI surfaces
+
+- **Settings** — `/payroll/settings/gratuity` — versioned policies (formula, rate, tax bands)
+- **Queue** — `/payroll/gratuity?year=&tab=`
+  - **Unpaid** — estimate / recalculate / approve / schedule / void
+  - **Paid** — paid amounts, pay-run link, mark tax remitted
+  - **Budget** — salary outlay + expected / committed / paid gratuity, monthly breakdown, per-contract rows
+- **Contract** — People contract detail shows settlement status; when `PAID`, paid figures are source of truth
+
+## Workflow
+
+1. Mark contract gratuity-eligible (rate optional override).
+2. Recalculate settlement (creates `ESTIMATED` or `CALCULATED`).
+   - Before the end date: uses the **contract schedule** (salary × months).
+   - On/after the end date: prefers **actual posted payroll** eligible earnings in the contract term, and records variance vs the contract estimate.
+3. Approve → schedule onto a draft pay run → post pay run → settlement becomes `PAID`.
+4. Posting auto-completes open offboarding `FINAL_PAY_CHECK` tasks linked to that employee.
+5. Remit withheld gratuity tax and record the remittance reference.
+
+Tax bands and the default rate live on the versioned org **GratuityPolicy** (not a flat rate on the contract form).

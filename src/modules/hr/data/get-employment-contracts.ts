@@ -1,5 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity";
+import {
+  calculateContractGratuity,
+} from "@/src/modules/hr/services/calculate-contract-gratuity";
+import {
+  defaultTtGratuityPolicyInput,
+  getGratuityPolicyAsOf,
+  toGratuityPolicyInput,
+} from "@/src/modules/payroll/data/get-gratuity-policy";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 
 export type EmploymentContractListRecord = {
@@ -680,7 +687,8 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
 
-  const records = contracts.map((contract) => {
+  const records = await Promise.all(
+    contracts.map(async (contract) => {
     let daysUntilExpiry: number | null = null;
 
     if (contract.endDate) {
@@ -697,12 +705,12 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
     let estimatedTax: number | null = null;
     let estimatedNetGratuity: number | null = null;
 
-    if (
-      contract.gratuityEligible &&
-      contract.endDate &&
-      contract.gratuityRate
-    ) {
-      const estimate = calculateContractGratuityEstimate({
+    if (contract.gratuityEligible && contract.endDate) {
+      const policyRecord = await getGratuityPolicyAsOf(contract.endDate);
+      const policy = policyRecord
+        ? toGratuityPolicyInput(policyRecord)
+        : defaultTtGratuityPolicyInput();
+      const estimate = calculateContractGratuity({
         startDate: contract.startDate,
         endDate: contract.endDate,
         baseSalary: contract.baseSalary.toString(),
@@ -711,8 +719,8 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
           frequency: allowance.frequency,
           includedInGratuity: allowance.includedInGratuity,
         })),
-        gratuityRate: contract.gratuityRate.toString(),
-        gratuityTaxRate: contract.gratuityTaxRate?.toString() ?? 0,
+        ratePercent: contract.gratuityRate?.toString() ?? null,
+        policy,
       });
 
       estimatedGrossEarnings = estimate.estimatedGrossEarnings;
@@ -753,7 +761,8 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
       estimatedTax: estimatedTax?.toFixed(2) ?? null,
       estimatedNetGratuity: estimatedNetGratuity?.toFixed(2) ?? null,
     } satisfies ContractMonitoringRecord;
-  });
+  }),
+  );
 
   const currentRecords = records.filter((contract) => contract.isCurrent);
 
@@ -874,7 +883,7 @@ function annualizeAllowance(amount: number, frequency: string): number {
   }
 }
 
-export function calculateContractCompensation(contract: {
+export async function calculateContractCompensation(contract: {
   baseSalary: string;
   startDate: string;
   endDate: string | null;
@@ -887,7 +896,7 @@ export function calculateContractCompensation(contract: {
     isTaxable: boolean;
     includedInGratuity: boolean;
   }[];
-}): ContractCompensationSummary {
+}): Promise<ContractCompensationSummary> {
   const monthlyBaseSalary = Number(contract.baseSalary);
 
   let annualRecurringAllowances = 0;
@@ -938,14 +947,19 @@ export function calculateContractCompensation(contract: {
   let estimatedTax: string | null = null;
   let estimatedNetGratuity: string | null = null;
 
-  if (contract.gratuityEligible && contract.endDate && contract.gratuityRate) {
-    const estimate = calculateContractGratuityEstimate({
+  if (contract.gratuityEligible && contract.endDate) {
+    const asOf = new Date(`${contract.endDate}T00:00:00.000Z`);
+    const policyRecord = await getGratuityPolicyAsOf(asOf);
+    const policy = policyRecord
+      ? toGratuityPolicyInput(policyRecord)
+      : defaultTtGratuityPolicyInput();
+    const estimate = calculateContractGratuity({
       startDate: new Date(`${contract.startDate}T00:00:00.000Z`),
-      endDate: new Date(`${contract.endDate}T00:00:00.000Z`),
+      endDate: asOf,
       baseSalary: contract.baseSalary,
       allowances: contract.allowances,
-      gratuityRate: contract.gratuityRate,
-      gratuityTaxRate: contract.gratuityTaxRate,
+      ratePercent: contract.gratuityRate,
+      policy,
     });
 
     contractMonths = String(estimate.contractMonths);

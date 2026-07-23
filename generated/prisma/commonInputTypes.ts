@@ -1558,6 +1558,91 @@ export type EnumAchPaymentBatchStatusWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumAchPaymentBatchStatusFilter<$PrismaModel>
 }
 
+export type EnumGratuityFormulaKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityFormulaKind | Prisma.EnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityFormulaKindFilter<$PrismaModel> | $Enums.GratuityFormulaKind
+}
+
+export type EnumGratuityTaxModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxMode | Prisma.EnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxModeFilter<$PrismaModel> | $Enums.GratuityTaxMode
+}
+
+export type EnumGratuityPayTimingFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityPayTiming | Prisma.EnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityPayTimingFilter<$PrismaModel> | $Enums.GratuityPayTiming
+}
+
+export type EnumGratuityFormulaKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityFormulaKind | Prisma.EnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityFormulaKindWithAggregatesFilter<$PrismaModel> | $Enums.GratuityFormulaKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityFormulaKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityFormulaKindFilter<$PrismaModel>
+}
+
+export type EnumGratuityTaxModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxMode | Prisma.EnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxModeWithAggregatesFilter<$PrismaModel> | $Enums.GratuityTaxMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityTaxModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityTaxModeFilter<$PrismaModel>
+}
+
+export type EnumGratuityPayTimingWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityPayTiming | Prisma.EnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityPayTimingWithAggregatesFilter<$PrismaModel> | $Enums.GratuityPayTiming
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityPayTimingFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityPayTimingFilter<$PrismaModel>
+}
+
+export type EnumGratuitySettlementStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuitySettlementStatus | Prisma.EnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuitySettlementStatusFilter<$PrismaModel> | $Enums.GratuitySettlementStatus
+}
+
+export type EnumGratuityTaxRemittanceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxRemittanceStatus | Prisma.EnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxRemittanceStatusFilter<$PrismaModel> | $Enums.GratuityTaxRemittanceStatus
+}
+
+export type EnumGratuitySettlementStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuitySettlementStatus | Prisma.EnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuitySettlementStatusWithAggregatesFilter<$PrismaModel> | $Enums.GratuitySettlementStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuitySettlementStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuitySettlementStatusFilter<$PrismaModel>
+}
+
+export type EnumGratuityTaxRemittanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxRemittanceStatus | Prisma.EnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxRemittanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.GratuityTaxRemittanceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityTaxRemittanceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityTaxRemittanceStatusFilter<$PrismaModel>
+}
+
 export type EnumPayrollPeriodStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.PayrollPeriodStatus | Prisma.EnumPayrollPeriodStatusFieldRefInput<$PrismaModel>
   in?: $Enums.PayrollPeriodStatus[] | Prisma.ListEnumPayrollPeriodStatusFieldRefInput<$PrismaModel>
@@ -3280,6 +3365,91 @@ export type NestedEnumAchPaymentBatchStatusWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAchPaymentBatchStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAchPaymentBatchStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumGratuityFormulaKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityFormulaKind | Prisma.EnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityFormulaKindFilter<$PrismaModel> | $Enums.GratuityFormulaKind
+}
+
+export type NestedEnumGratuityTaxModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxMode | Prisma.EnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxModeFilter<$PrismaModel> | $Enums.GratuityTaxMode
+}
+
+export type NestedEnumGratuityPayTimingFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityPayTiming | Prisma.EnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityPayTimingFilter<$PrismaModel> | $Enums.GratuityPayTiming
+}
+
+export type NestedEnumGratuityFormulaKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityFormulaKind | Prisma.EnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityFormulaKind[] | Prisma.ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityFormulaKindWithAggregatesFilter<$PrismaModel> | $Enums.GratuityFormulaKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityFormulaKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityFormulaKindFilter<$PrismaModel>
+}
+
+export type NestedEnumGratuityTaxModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxMode | Prisma.EnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxMode[] | Prisma.ListEnumGratuityTaxModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxModeWithAggregatesFilter<$PrismaModel> | $Enums.GratuityTaxMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityTaxModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityTaxModeFilter<$PrismaModel>
+}
+
+export type NestedEnumGratuityPayTimingWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityPayTiming | Prisma.EnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityPayTiming[] | Prisma.ListEnumGratuityPayTimingFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityPayTimingWithAggregatesFilter<$PrismaModel> | $Enums.GratuityPayTiming
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityPayTimingFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityPayTimingFilter<$PrismaModel>
+}
+
+export type NestedEnumGratuitySettlementStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuitySettlementStatus | Prisma.EnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuitySettlementStatusFilter<$PrismaModel> | $Enums.GratuitySettlementStatus
+}
+
+export type NestedEnumGratuityTaxRemittanceStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxRemittanceStatus | Prisma.EnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxRemittanceStatusFilter<$PrismaModel> | $Enums.GratuityTaxRemittanceStatus
+}
+
+export type NestedEnumGratuitySettlementStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuitySettlementStatus | Prisma.EnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuitySettlementStatus[] | Prisma.ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuitySettlementStatusWithAggregatesFilter<$PrismaModel> | $Enums.GratuitySettlementStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuitySettlementStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuitySettlementStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumGratuityTaxRemittanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GratuityTaxRemittanceStatus | Prisma.EnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GratuityTaxRemittanceStatus[] | Prisma.ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGratuityTaxRemittanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.GratuityTaxRemittanceStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGratuityTaxRemittanceStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGratuityTaxRemittanceStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumPayrollPeriodStatusFilter<$PrismaModel = never> = {

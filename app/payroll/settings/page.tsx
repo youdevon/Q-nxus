@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HeartPulse, Landmark, Shield, Wallet } from "lucide-react";
+import { Gift, HeartPulse, Landmark, Shield, Wallet } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { PayrollNav } from "@/src/modules/payroll/components/payroll-nav";
 import { getCurrentNisClasses, getNisClassVersions } from "@/src/modules/payroll/data/get-nis-classes";
 import { getCurrentPayeTaxConfig } from "@/src/modules/payroll/data/get-paye-tax-config";
 import { getCurrentHealthSurchargeConfig } from "@/src/modules/payroll/data/get-health-surcharge-config";
+import { getCurrentGratuityPolicy } from "@/src/modules/payroll/data/get-gratuity-policy";
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
 import {
   computeHealthSurcharge,
@@ -36,12 +37,13 @@ export default async function PayrollSettingsPage() {
   const capabilities = await requirePayrollViewAccess();
   const canManage = capabilities.can("payroll.manage");
 
-  const [nisVersions, currentNisClasses, payeConfig, healthConfig] =
+  const [nisVersions, currentNisClasses, payeConfig, healthConfig, gratuityPolicy] =
     await Promise.all([
       getNisClassVersions(),
       getCurrentNisClasses(),
       getCurrentPayeTaxConfig(),
       getCurrentHealthSurchargeConfig(),
+      getCurrentGratuityPolicy(),
     ]);
 
   const currentNisVersion =
@@ -72,7 +74,7 @@ export default async function PayrollSettingsPage() {
 
       <PageHeader
         title="Payroll Settings"
-        description="Central Trinidad & Tobago statutory configuration — NIS earnings classes, PAYE, and Health Surcharge."
+        description="Central Trinidad & Tobago statutory configuration — NIS earnings classes, PAYE, Health Surcharge, and gratuity."
         backHref="/payroll"
         backLabel="Payroll"
       />
@@ -250,6 +252,58 @@ export default async function PayrollSettingsPage() {
           </p>
         )}
       </section>
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Gift className="size-4 text-muted-foreground" />
+            <SectionHeading>Gratuity</SectionHeading>
+            {gratuityPolicy?.isCurrent ? (
+              <Badge variant="success">In effect</Badge>
+            ) : null}
+          </div>
+
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/payroll/settings/gratuity" />}
+          >
+            {canManage ? "Manage gratuity" : "View gratuity"}
+          </Button>
+        </div>
+
+        <p className="mb-4 text-sm text-muted-foreground">
+          Contract-end gratuity formula and tax bands used for settlement
+          estimates, approval, and pay-run scheduling.
+        </p>
+
+        {gratuityPolicy ? (
+          <div className="grid gap-4 md:grid-cols-3">
+            <div>
+              <p className="text-xs text-muted-foreground">Default rate</p>
+              <p className="mt-1 text-sm font-medium">
+                {Number(gratuityPolicy.defaultRatePercent)}%
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Tax mode</p>
+              <p className="mt-1 text-sm font-medium">
+                {gratuityPolicy.taxMode.replaceAll("_", " ")}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Formula</p>
+              <p className="mt-1 text-sm font-medium">
+                {gratuityPolicy.formulaKind.replaceAll("_", " ")}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            No gratuity policy yet — TT defaults apply until configured.
+          </p>
+        )}
+      </section>
+
       <section className="mt-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">

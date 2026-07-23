@@ -461,6 +461,9 @@ export const ModelName = {
   PayeTaxConfig: 'PayeTaxConfig',
   PayeTaxBracket: 'PayeTaxBracket',
   HealthSurchargeConfig: 'HealthSurchargeConfig',
+  GratuityPolicy: 'GratuityPolicy',
+  GratuityTaxBand: 'GratuityTaxBand',
+  EmployeeGratuitySettlement: 'EmployeeGratuitySettlement',
   PayrollPeriod: 'PayrollPeriod',
   PayRun: 'PayRun',
   Payslip: 'Payslip',
@@ -487,7 +490,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6189,6 +6192,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GratuityPolicy: {
+      payload: Prisma.$GratuityPolicyPayload<ExtArgs>
+      fields: Prisma.GratuityPolicyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GratuityPolicyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GratuityPolicyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>
+        }
+        findFirst: {
+          args: Prisma.GratuityPolicyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GratuityPolicyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>
+        }
+        findMany: {
+          args: Prisma.GratuityPolicyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>[]
+        }
+        create: {
+          args: Prisma.GratuityPolicyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>
+        }
+        createMany: {
+          args: Prisma.GratuityPolicyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GratuityPolicyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>[]
+        }
+        delete: {
+          args: Prisma.GratuityPolicyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>
+        }
+        update: {
+          args: Prisma.GratuityPolicyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>
+        }
+        deleteMany: {
+          args: Prisma.GratuityPolicyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GratuityPolicyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GratuityPolicyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>[]
+        }
+        upsert: {
+          args: Prisma.GratuityPolicyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityPolicyPayload>
+        }
+        aggregate: {
+          args: Prisma.GratuityPolicyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGratuityPolicy>
+        }
+        groupBy: {
+          args: Prisma.GratuityPolicyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GratuityPolicyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GratuityPolicyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GratuityPolicyCountAggregateOutputType> | number
+        }
+      }
+    }
+    GratuityTaxBand: {
+      payload: Prisma.$GratuityTaxBandPayload<ExtArgs>
+      fields: Prisma.GratuityTaxBandFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GratuityTaxBandFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GratuityTaxBandFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>
+        }
+        findFirst: {
+          args: Prisma.GratuityTaxBandFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GratuityTaxBandFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>
+        }
+        findMany: {
+          args: Prisma.GratuityTaxBandFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>[]
+        }
+        create: {
+          args: Prisma.GratuityTaxBandCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>
+        }
+        createMany: {
+          args: Prisma.GratuityTaxBandCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GratuityTaxBandCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>[]
+        }
+        delete: {
+          args: Prisma.GratuityTaxBandDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>
+        }
+        update: {
+          args: Prisma.GratuityTaxBandUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>
+        }
+        deleteMany: {
+          args: Prisma.GratuityTaxBandDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GratuityTaxBandUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GratuityTaxBandUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>[]
+        }
+        upsert: {
+          args: Prisma.GratuityTaxBandUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityTaxBandPayload>
+        }
+        aggregate: {
+          args: Prisma.GratuityTaxBandAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGratuityTaxBand>
+        }
+        groupBy: {
+          args: Prisma.GratuityTaxBandGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GratuityTaxBandGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GratuityTaxBandCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GratuityTaxBandCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeGratuitySettlement: {
+      payload: Prisma.$EmployeeGratuitySettlementPayload<ExtArgs>
+      fields: Prisma.EmployeeGratuitySettlementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeGratuitySettlementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeGratuitySettlementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeGratuitySettlementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeGratuitySettlementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeGratuitySettlementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeGratuitySettlementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeGratuitySettlementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeGratuitySettlementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeGratuitySettlementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>
+        }
+        update: {
+          args: Prisma.EmployeeGratuitySettlementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeGratuitySettlementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeGratuitySettlementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeGratuitySettlementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeGratuitySettlementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeGratuitySettlementPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeGratuitySettlementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeGratuitySettlement>
+        }
+        groupBy: {
+          args: Prisma.EmployeeGratuitySettlementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeGratuitySettlementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeGratuitySettlementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeGratuitySettlementCountAggregateOutputType> | number
+        }
+      }
+    }
     PayrollPeriod: {
       payload: Prisma.$PayrollPeriodPayload<ExtArgs>
       fields: Prisma.PayrollPeriodFieldRefs
@@ -8700,6 +8925,88 @@ export const HealthSurchargeConfigScalarFieldEnum = {
 export type HealthSurchargeConfigScalarFieldEnum = (typeof HealthSurchargeConfigScalarFieldEnum)[keyof typeof HealthSurchargeConfigScalarFieldEnum]
 
 
+export const GratuityPolicyScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  countryCode: 'countryCode',
+  currencyCode: 'currencyCode',
+  formulaKind: 'formulaKind',
+  defaultRatePercent: 'defaultRatePercent',
+  taxMode: 'taxMode',
+  flatTaxRatePercent: 'flatTaxRatePercent',
+  applyPersonalAllowance: 'applyPersonalAllowance',
+  minServiceMonths: 'minServiceMonths',
+  daysPerYearOfService: 'daysPerYearOfService',
+  daysInYearBasis: 'daysInYearBasis',
+  eligibilityOnFullTermOnly: 'eligibilityOnFullTermOnly',
+  prorateOnEarlyExit: 'prorateOnEarlyExit',
+  payTiming: 'payTiming',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  sourceReference: 'sourceReference',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GratuityPolicyScalarFieldEnum = (typeof GratuityPolicyScalarFieldEnum)[keyof typeof GratuityPolicyScalarFieldEnum]
+
+
+export const GratuityTaxBandScalarFieldEnum = {
+  id: 'id',
+  gratuityPolicyId: 'gratuityPolicyId',
+  upToAmount: 'upToAmount',
+  ratePercent: 'ratePercent',
+  sortOrder: 'sortOrder'
+} as const
+
+export type GratuityTaxBandScalarFieldEnum = (typeof GratuityTaxBandScalarFieldEnum)[keyof typeof GratuityTaxBandScalarFieldEnum]
+
+
+export const EmployeeGratuitySettlementScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  contractId: 'contractId',
+  policyId: 'policyId',
+  status: 'status',
+  currency: 'currency',
+  formulaKind: 'formulaKind',
+  ratePercent: 'ratePercent',
+  contractMonths: 'contractMonths',
+  serviceYears: 'serviceYears',
+  monthlyEligibleEarnings: 'monthlyEligibleEarnings',
+  eligibleGrossEarnings: 'eligibleGrossEarnings',
+  grossAmount: 'grossAmount',
+  taxAmount: 'taxAmount',
+  netAmount: 'netAmount',
+  accruedAmount: 'accruedAmount',
+  accrualThroughDate: 'accrualThroughDate',
+  estimatedAt: 'estimatedAt',
+  calculatedAt: 'calculatedAt',
+  approvedAt: 'approvedAt',
+  approvedByUserId: 'approvedByUserId',
+  scheduledAt: 'scheduledAt',
+  paidAt: 'paidAt',
+  voidedAt: 'voidedAt',
+  voidedByUserId: 'voidedByUserId',
+  voidReason: 'voidReason',
+  payRunId: 'payRunId',
+  payslipId: 'payslipId',
+  taxRemittanceStatus: 'taxRemittanceStatus',
+  taxRemittedAt: 'taxRemittedAt',
+  taxRemittedByUserId: 'taxRemittedByUserId',
+  taxRemittanceReference: 'taxRemittanceReference',
+  notes: 'notes',
+  calculationSnapshot: 'calculationSnapshot',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeGratuitySettlementScalarFieldEnum = (typeof EmployeeGratuitySettlementScalarFieldEnum)[keyof typeof EmployeeGratuitySettlementScalarFieldEnum]
+
+
 export const PayrollPeriodScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -9981,6 +10288,76 @@ export type ListEnumAchPaymentBatchStatusFieldRefInput<$PrismaModel> = FieldRefI
 
 
 /**
+ * Reference to a field of type 'GratuityFormulaKind'
+ */
+export type EnumGratuityFormulaKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityFormulaKind'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuityFormulaKind[]'
+ */
+export type ListEnumGratuityFormulaKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityFormulaKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuityTaxMode'
+ */
+export type EnumGratuityTaxModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityTaxMode'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuityTaxMode[]'
+ */
+export type ListEnumGratuityTaxModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityTaxMode[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuityPayTiming'
+ */
+export type EnumGratuityPayTimingFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityPayTiming'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuityPayTiming[]'
+ */
+export type ListEnumGratuityPayTimingFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityPayTiming[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuitySettlementStatus'
+ */
+export type EnumGratuitySettlementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuitySettlementStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuitySettlementStatus[]'
+ */
+export type ListEnumGratuitySettlementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuitySettlementStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuityTaxRemittanceStatus'
+ */
+export type EnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityTaxRemittanceStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GratuityTaxRemittanceStatus[]'
+ */
+export type ListEnumGratuityTaxRemittanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityTaxRemittanceStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'PayrollPeriodStatus'
  */
 export type EnumPayrollPeriodStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayrollPeriodStatus'>
@@ -10362,6 +10739,9 @@ export type GlobalOmitConfig = {
   payeTaxConfig?: Prisma.PayeTaxConfigOmit
   payeTaxBracket?: Prisma.PayeTaxBracketOmit
   healthSurchargeConfig?: Prisma.HealthSurchargeConfigOmit
+  gratuityPolicy?: Prisma.GratuityPolicyOmit
+  gratuityTaxBand?: Prisma.GratuityTaxBandOmit
+  employeeGratuitySettlement?: Prisma.EmployeeGratuitySettlementOmit
   payrollPeriod?: Prisma.PayrollPeriodOmit
   payRun?: Prisma.PayRunOmit
   payslip?: Prisma.PayslipOmit

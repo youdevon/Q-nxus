@@ -315,12 +315,14 @@ export async function createEmploymentContract(
     fieldErrors.gratuityRate = "Enter a gratuity rate between 0 and 100.";
   }
 
+  // Flat tax rate is optional/legacy — org GratuityPolicy owns IRD tiered tax.
   if (
     gratuityEligible &&
-    (gratuityTaxRate === null || gratuityTaxRate < 0 || gratuityTaxRate > 100)
+    gratuityTaxRate !== null &&
+    (gratuityTaxRate < 0 || gratuityTaxRate > 100)
   ) {
     fieldErrors.gratuityTaxRate =
-      "Enter a gratuity tax rate between 0 and 100.";
+      "Enter a gratuity tax rate between 0 and 100, or leave blank to use policy tax.";
   }
 
   if (
@@ -599,7 +601,10 @@ export async function createEmploymentContract(
             currency,
             gratuityEligible,
             gratuityRate: gratuityEligible ? gratuityRate : null,
-            gratuityTaxRate: gratuityEligible ? gratuityTaxRate : null,
+            gratuityTaxRate:
+              gratuityEligible && gratuityTaxRate !== null
+                ? gratuityTaxRate
+                : null,
             isCurrent: false,
             signedDate,
             documentReference,

@@ -850,6 +850,56 @@ export const BankExportAdapterKind = {
 export type BankExportAdapterKind = (typeof BankExportAdapterKind)[keyof typeof BankExportAdapterKind]
 
 
+export const GratuityFormulaKind = {
+  PCT_OF_TERM_EARNINGS: 'PCT_OF_TERM_EARNINGS',
+  PCT_OF_FINAL_MONTHLY_YEARS: 'PCT_OF_FINAL_MONTHLY_YEARS',
+  DAYS_PER_YEAR: 'DAYS_PER_YEAR',
+  FLAT_AMOUNT: 'FLAT_AMOUNT',
+  MANUAL: 'MANUAL'
+} as const
+
+export type GratuityFormulaKind = (typeof GratuityFormulaKind)[keyof typeof GratuityFormulaKind]
+
+
+export const GratuityTaxMode = {
+  NONE: 'NONE',
+  FLAT: 'FLAT',
+  TIERED: 'TIERED'
+} as const
+
+export type GratuityTaxMode = (typeof GratuityTaxMode)[keyof typeof GratuityTaxMode]
+
+
+export const GratuityPayTiming = {
+  LAST_CONTRACT_PAY: 'LAST_CONTRACT_PAY',
+  OFF_CYCLE_AFTER_END: 'OFF_CYCLE_AFTER_END'
+} as const
+
+export type GratuityPayTiming = (typeof GratuityPayTiming)[keyof typeof GratuityPayTiming]
+
+
+export const GratuitySettlementStatus = {
+  ESTIMATED: 'ESTIMATED',
+  CALCULATED: 'CALCULATED',
+  APPROVED: 'APPROVED',
+  SCHEDULED: 'SCHEDULED',
+  PAID: 'PAID',
+  VOID: 'VOID',
+  INELIGIBLE: 'INELIGIBLE'
+} as const
+
+export type GratuitySettlementStatus = (typeof GratuitySettlementStatus)[keyof typeof GratuitySettlementStatus]
+
+
+export const GratuityTaxRemittanceStatus = {
+  NOT_APPLICABLE: 'NOT_APPLICABLE',
+  PENDING: 'PENDING',
+  REMITTED: 'REMITTED'
+} as const
+
+export type GratuityTaxRemittanceStatus = (typeof GratuityTaxRemittanceStatus)[keyof typeof GratuityTaxRemittanceStatus]
+
+
 export const PayrollPeriodStatus = {
   OPEN: 'OPEN',
   CLOSED: 'CLOSED'
@@ -893,7 +943,9 @@ export const PayrollLineItemCode = {
   BONUS: 'BONUS',
   COMMISSION: 'COMMISSION',
   OTHER_EARNING: 'OTHER_EARNING',
-  OTHER_DEDUCTION: 'OTHER_DEDUCTION'
+  OTHER_DEDUCTION: 'OTHER_DEDUCTION',
+  GRATUITY: 'GRATUITY',
+  GRATUITY_TAX: 'GRATUITY_TAX'
 } as const
 
 export type PayrollLineItemCode = (typeof PayrollLineItemCode)[keyof typeof PayrollLineItemCode]

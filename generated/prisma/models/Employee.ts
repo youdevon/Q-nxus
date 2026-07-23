@@ -397,6 +397,7 @@ export type EmployeeWhereInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionListRelationFilter
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentListRelationFilter
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideListRelationFilter
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementListRelationFilter
   payslips?: Prisma.PayslipListRelationFilter
   payrollLineItems?: Prisma.PayrollLineItemListRelationFilter
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemListRelationFilter
@@ -463,6 +464,7 @@ export type EmployeeOrderByWithRelationInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionOrderByRelationAggregateInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentOrderByRelationAggregateInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideOrderByRelationAggregateInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementOrderByRelationAggregateInput
   payslips?: Prisma.PayslipOrderByRelationAggregateInput
   payrollLineItems?: Prisma.PayrollLineItemOrderByRelationAggregateInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemOrderByRelationAggregateInput
@@ -533,6 +535,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionListRelationFilter
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentListRelationFilter
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideListRelationFilter
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementListRelationFilter
   payslips?: Prisma.PayslipListRelationFilter
   payrollLineItems?: Prisma.PayrollLineItemListRelationFilter
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemListRelationFilter
@@ -668,6 +671,7 @@ export type EmployeeCreateInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -731,6 +735,7 @@ export type EmployeeUncheckedCreateInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -794,6 +799,7 @@ export type EmployeeUpdateInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -857,6 +863,7 @@ export type EmployeeUncheckedUpdateInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1623,6 +1630,20 @@ export type EmployeeUpdateOneRequiredWithoutPayrollPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPayrollPaymentsInput, Prisma.EmployeeUpdateWithoutPayrollPaymentsInput>, Prisma.EmployeeUncheckedUpdateWithoutPayrollPaymentsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutGratuitySettlementsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutGratuitySettlementsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutGratuitySettlementsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutGratuitySettlementsInput
+  upsert?: Prisma.EmployeeUpsertWithoutGratuitySettlementsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutGratuitySettlementsInput, Prisma.EmployeeUpdateWithoutGratuitySettlementsInput>, Prisma.EmployeeUncheckedUpdateWithoutGratuitySettlementsInput>
+}
+
 export type EmployeeCreateNestedOneWithoutPayslipsInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayslipsInput, Prisma.EmployeeUncheckedCreateWithoutPayslipsInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayslipsInput
@@ -1705,6 +1726,7 @@ export type EmployeeCreateWithoutOrganizationInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -1767,6 +1789,7 @@ export type EmployeeUncheckedCreateWithoutOrganizationInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1892,6 +1915,7 @@ export type EmployeeCreateWithoutUserInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -1954,6 +1978,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2032,6 +2057,7 @@ export type EmployeeUpdateWithoutUserInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -2094,6 +2120,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2155,6 +2182,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -2217,6 +2245,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2305,6 +2334,7 @@ export type EmployeeCreateWithoutPositionInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -2367,6 +2397,7 @@ export type EmployeeUncheckedCreateWithoutPositionInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2455,6 +2486,7 @@ export type EmployeeCreateWithoutAssignmentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -2517,6 +2549,7 @@ export type EmployeeUncheckedCreateWithoutAssignmentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2595,6 +2628,7 @@ export type EmployeeUpdateWithoutAssignmentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -2657,6 +2691,7 @@ export type EmployeeUncheckedUpdateWithoutAssignmentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2720,6 +2755,7 @@ export type EmployeeCreateWithoutLeaveBalancesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -2782,6 +2818,7 @@ export type EmployeeUncheckedCreateWithoutLeaveBalancesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2860,6 +2897,7 @@ export type EmployeeUpdateWithoutLeaveBalancesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -2922,6 +2960,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveBalancesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2984,6 +3023,7 @@ export type EmployeeCreateWithoutLeaveTransactionsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -3046,6 +3086,7 @@ export type EmployeeUncheckedCreateWithoutLeaveTransactionsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3124,6 +3165,7 @@ export type EmployeeUpdateWithoutLeaveTransactionsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -3186,6 +3228,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveTransactionsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3248,6 +3291,7 @@ export type EmployeeCreateWithoutLeaveRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -3310,6 +3354,7 @@ export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3388,6 +3433,7 @@ export type EmployeeUpdateWithoutLeaveRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -3450,6 +3496,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3512,6 +3559,7 @@ export type EmployeeCreateWithoutLeaveAcknowledgementsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -3574,6 +3622,7 @@ export type EmployeeUncheckedCreateWithoutLeaveAcknowledgementsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3652,6 +3701,7 @@ export type EmployeeUpdateWithoutLeaveAcknowledgementsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -3714,6 +3764,7 @@ export type EmployeeUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3776,6 +3827,7 @@ export type EmployeeCreateWithoutCorrespondencesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -3838,6 +3890,7 @@ export type EmployeeUncheckedCreateWithoutCorrespondencesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3916,6 +3969,7 @@ export type EmployeeUpdateWithoutCorrespondencesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -3978,6 +4032,7 @@ export type EmployeeUncheckedUpdateWithoutCorrespondencesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4040,6 +4095,7 @@ export type EmployeeCreateWithoutCredentialsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -4102,6 +4158,7 @@ export type EmployeeUncheckedCreateWithoutCredentialsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4180,6 +4237,7 @@ export type EmployeeUpdateWithoutCredentialsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -4242,6 +4300,7 @@ export type EmployeeUncheckedUpdateWithoutCredentialsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4304,6 +4363,7 @@ export type EmployeeCreateWithoutTrainingRecordsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -4366,6 +4426,7 @@ export type EmployeeUncheckedCreateWithoutTrainingRecordsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4444,6 +4505,7 @@ export type EmployeeUpdateWithoutTrainingRecordsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -4506,6 +4568,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingRecordsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4568,6 +4631,7 @@ export type EmployeeCreateWithoutQualificationDocumentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -4630,6 +4694,7 @@ export type EmployeeUncheckedCreateWithoutQualificationDocumentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4708,6 +4773,7 @@ export type EmployeeUpdateWithoutQualificationDocumentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -4770,6 +4836,7 @@ export type EmployeeUncheckedUpdateWithoutQualificationDocumentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4832,6 +4899,7 @@ export type EmployeeCreateWithoutFileChecklistItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -4894,6 +4962,7 @@ export type EmployeeUncheckedCreateWithoutFileChecklistItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4972,6 +5041,7 @@ export type EmployeeUpdateWithoutFileChecklistItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -5034,6 +5104,7 @@ export type EmployeeUncheckedUpdateWithoutFileChecklistItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5096,6 +5167,7 @@ export type EmployeeCreateWithoutFileUpdateRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -5158,6 +5230,7 @@ export type EmployeeUncheckedCreateWithoutFileUpdateRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5236,6 +5309,7 @@ export type EmployeeUpdateWithoutFileUpdateRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -5298,6 +5372,7 @@ export type EmployeeUncheckedUpdateWithoutFileUpdateRequestsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5360,6 +5435,7 @@ export type EmployeeCreateWithoutCorrespondenceResponsesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -5422,6 +5498,7 @@ export type EmployeeUncheckedCreateWithoutCorrespondenceResponsesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5500,6 +5577,7 @@ export type EmployeeUpdateWithoutCorrespondenceResponsesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -5562,6 +5640,7 @@ export type EmployeeUncheckedUpdateWithoutCorrespondenceResponsesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5623,6 +5702,7 @@ export type EmployeeCreateWithoutAppraisalsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -5685,6 +5765,7 @@ export type EmployeeUncheckedCreateWithoutAppraisalsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5763,6 +5844,7 @@ export type EmployeeUpdateWithoutAppraisalsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -5825,6 +5907,7 @@ export type EmployeeUncheckedUpdateWithoutAppraisalsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5887,6 +5970,7 @@ export type EmployeeCreateWithoutContractsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -5949,6 +6033,7 @@ export type EmployeeUncheckedCreateWithoutContractsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6027,6 +6112,7 @@ export type EmployeeUpdateWithoutContractsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -6089,6 +6175,7 @@ export type EmployeeUncheckedUpdateWithoutContractsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6152,6 +6239,7 @@ export type EmployeeCreateWithoutOnboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -6214,6 +6302,7 @@ export type EmployeeUncheckedCreateWithoutOnboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6292,6 +6381,7 @@ export type EmployeeUpdateWithoutOnboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -6354,6 +6444,7 @@ export type EmployeeUncheckedUpdateWithoutOnboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6416,6 +6507,7 @@ export type EmployeeCreateWithoutOffboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -6478,6 +6570,7 @@ export type EmployeeUncheckedCreateWithoutOffboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6556,6 +6649,7 @@ export type EmployeeUpdateWithoutOffboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -6618,6 +6712,7 @@ export type EmployeeUncheckedUpdateWithoutOffboardingCasesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6679,6 +6774,7 @@ export type EmployeeCreateWithoutTaxProfilesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -6741,6 +6837,7 @@ export type EmployeeUncheckedCreateWithoutTaxProfilesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6819,6 +6916,7 @@ export type EmployeeUpdateWithoutTaxProfilesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -6881,6 +6979,7 @@ export type EmployeeUncheckedUpdateWithoutTaxProfilesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6943,6 +7042,7 @@ export type EmployeeCreateWithoutPriorEmploymentYtdsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -7005,6 +7105,7 @@ export type EmployeeUncheckedCreateWithoutPriorEmploymentYtdsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7083,6 +7184,7 @@ export type EmployeeUpdateWithoutPriorEmploymentYtdsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -7145,6 +7247,7 @@ export type EmployeeUncheckedUpdateWithoutPriorEmploymentYtdsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7207,6 +7310,7 @@ export type EmployeeCreateWithoutStatutoryOverridesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -7269,6 +7373,7 @@ export type EmployeeUncheckedCreateWithoutStatutoryOverridesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7347,6 +7452,7 @@ export type EmployeeUpdateWithoutStatutoryOverridesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -7409,6 +7515,7 @@ export type EmployeeUncheckedUpdateWithoutStatutoryOverridesInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7471,6 +7578,7 @@ export type EmployeeCreateWithoutAnnualPayrollProjectionsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -7533,6 +7641,7 @@ export type EmployeeUncheckedCreateWithoutAnnualPayrollProjectionsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7611,6 +7720,7 @@ export type EmployeeUpdateWithoutAnnualPayrollProjectionsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -7673,6 +7783,7 @@ export type EmployeeUncheckedUpdateWithoutAnnualPayrollProjectionsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7735,6 +7846,7 @@ export type EmployeeCreateWithoutTaxYearAdjustmentsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -7797,6 +7909,7 @@ export type EmployeeUncheckedCreateWithoutTaxYearAdjustmentsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7875,6 +7988,7 @@ export type EmployeeUpdateWithoutTaxYearAdjustmentsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -7937,6 +8051,7 @@ export type EmployeeUncheckedUpdateWithoutTaxYearAdjustmentsInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7999,6 +8114,7 @@ export type EmployeeCreateWithoutEarningTreatmentOverridesInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -8061,6 +8177,7 @@ export type EmployeeUncheckedCreateWithoutEarningTreatmentOverridesInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8139,6 +8256,7 @@ export type EmployeeUpdateWithoutEarningTreatmentOverridesInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -8201,6 +8319,7 @@ export type EmployeeUncheckedUpdateWithoutEarningTreatmentOverridesInput = {
   statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8263,6 +8382,7 @@ export type EmployeeCreateWithoutPayrollProfileInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -8325,6 +8445,7 @@ export type EmployeeUncheckedCreateWithoutPayrollProfileInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8403,6 +8524,7 @@ export type EmployeeUpdateWithoutPayrollProfileInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -8465,6 +8587,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollProfileInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8528,6 +8651,7 @@ export type EmployeeCreateWithoutBankAccountsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -8590,6 +8714,7 @@ export type EmployeeUncheckedCreateWithoutBankAccountsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8668,6 +8793,7 @@ export type EmployeeUpdateWithoutBankAccountsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -8730,6 +8856,7 @@ export type EmployeeUncheckedUpdateWithoutBankAccountsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8792,6 +8919,7 @@ export type EmployeeCreateWithoutPayrollAllocationsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -8854,6 +8982,7 @@ export type EmployeeUncheckedCreateWithoutPayrollAllocationsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8932,6 +9061,7 @@ export type EmployeeUpdateWithoutPayrollAllocationsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -8994,6 +9124,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollAllocationsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9056,6 +9187,7 @@ export type EmployeeCreateWithoutPayrollPaymentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
@@ -9118,6 +9250,7 @@ export type EmployeeUncheckedCreateWithoutPayrollPaymentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9196,6 +9329,7 @@ export type EmployeeUpdateWithoutPayrollPaymentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -9258,11 +9392,280 @@ export type EmployeeUncheckedUpdateWithoutPayrollPaymentsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutGratuitySettlementsInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutGratuitySettlementsInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutGratuitySettlementsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+}
+
+export type EmployeeUpsertWithoutGratuitySettlementsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedUpdateWithoutGratuitySettlementsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutGratuitySettlementsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedUpdateWithoutGratuitySettlementsInput>
+}
+
+export type EmployeeUpdateWithoutGratuitySettlementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutGratuitySettlementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9320,6 +9723,7 @@ export type EmployeeCreateWithoutPayslipsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
@@ -9382,6 +9786,7 @@ export type EmployeeUncheckedCreateWithoutPayslipsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9460,6 +9865,7 @@ export type EmployeeUpdateWithoutPayslipsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
@@ -9522,6 +9928,7 @@ export type EmployeeUncheckedUpdateWithoutPayslipsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9584,6 +9991,7 @@ export type EmployeeCreateWithoutPayrollLineItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
@@ -9646,6 +10054,7 @@ export type EmployeeUncheckedCreateWithoutPayrollLineItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9724,6 +10133,7 @@ export type EmployeeUpdateWithoutPayrollLineItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
@@ -9786,6 +10196,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollLineItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9848,6 +10259,7 @@ export type EmployeeCreateWithoutPayrollRecurringItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
@@ -9910,6 +10322,7 @@ export type EmployeeUncheckedCreateWithoutPayrollRecurringItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9988,6 +10401,7 @@ export type EmployeeUpdateWithoutPayrollRecurringItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
@@ -10050,6 +10464,7 @@ export type EmployeeUncheckedUpdateWithoutPayrollRecurringItemsInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10143,6 +10558,7 @@ export type EmployeeUpdateWithoutOrganizationInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -10205,6 +10621,7 @@ export type EmployeeUncheckedUpdateWithoutOrganizationInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10331,6 +10748,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -10393,6 +10811,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10519,6 +10938,7 @@ export type EmployeeUpdateWithoutPositionInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
@@ -10581,6 +11001,7 @@ export type EmployeeUncheckedUpdateWithoutPositionInput = {
   annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
   taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
   earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10650,6 +11071,7 @@ export type EmployeeCountOutputType = {
   annualPayrollProjections: number
   taxYearAdjustments: number
   earningTreatmentOverrides: number
+  gratuitySettlements: number
   payslips: number
   payrollLineItems: number
   payrollRecurringItems: number
@@ -10681,6 +11103,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   annualPayrollProjections?: boolean | EmployeeCountOutputTypeCountAnnualPayrollProjectionsArgs
   taxYearAdjustments?: boolean | EmployeeCountOutputTypeCountTaxYearAdjustmentsArgs
   earningTreatmentOverrides?: boolean | EmployeeCountOutputTypeCountEarningTreatmentOverridesArgs
+  gratuitySettlements?: boolean | EmployeeCountOutputTypeCountGratuitySettlementsArgs
   payslips?: boolean | EmployeeCountOutputTypeCountPayslipsArgs
   payrollLineItems?: boolean | EmployeeCountOutputTypeCountPayrollLineItemsArgs
   payrollRecurringItems?: boolean | EmployeeCountOutputTypeCountPayrollRecurringItemsArgs
@@ -10773,6 +11196,13 @@ export type EmployeeCountOutputTypeCountTaxYearAdjustmentsArgs<ExtArgs extends r
  */
 export type EmployeeCountOutputTypeCountEarningTreatmentOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmployeeEarningTreatmentOverrideWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountGratuitySettlementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeGratuitySettlementWhereInput
 }
 
 /**
@@ -10953,6 +11383,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   annualPayrollProjections?: boolean | Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs>
   taxYearAdjustments?: boolean | Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs>
   earningTreatmentOverrides?: boolean | Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs>
+  gratuitySettlements?: boolean | Prisma.Employee$gratuitySettlementsArgs<ExtArgs>
   payslips?: boolean | Prisma.Employee$payslipsArgs<ExtArgs>
   payrollLineItems?: boolean | Prisma.Employee$payrollLineItemsArgs<ExtArgs>
   payrollRecurringItems?: boolean | Prisma.Employee$payrollRecurringItemsArgs<ExtArgs>
@@ -11096,6 +11527,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   annualPayrollProjections?: boolean | Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs>
   taxYearAdjustments?: boolean | Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs>
   earningTreatmentOverrides?: boolean | Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs>
+  gratuitySettlements?: boolean | Prisma.Employee$gratuitySettlementsArgs<ExtArgs>
   payslips?: boolean | Prisma.Employee$payslipsArgs<ExtArgs>
   payrollLineItems?: boolean | Prisma.Employee$payrollLineItemsArgs<ExtArgs>
   payrollRecurringItems?: boolean | Prisma.Employee$payrollRecurringItemsArgs<ExtArgs>
@@ -11145,6 +11577,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     annualPayrollProjections: Prisma.$EmployeeAnnualPayrollProjectionPayload<ExtArgs>[]
     taxYearAdjustments: Prisma.$EmployeeTaxYearAdjustmentPayload<ExtArgs>[]
     earningTreatmentOverrides: Prisma.$EmployeeEarningTreatmentOverridePayload<ExtArgs>[]
+    gratuitySettlements: Prisma.$EmployeeGratuitySettlementPayload<ExtArgs>[]
     payslips: Prisma.$PayslipPayload<ExtArgs>[]
     payrollLineItems: Prisma.$PayrollLineItemPayload<ExtArgs>[]
     payrollRecurringItems: Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>[]
@@ -11619,6 +12052,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   annualPayrollProjections<T extends Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAnnualPayrollProjectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   taxYearAdjustments<T extends Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaxYearAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   earningTreatmentOverrides<T extends Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeEarningTreatmentOverridePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  gratuitySettlements<T extends Prisma.Employee$gratuitySettlementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$gratuitySettlementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeGratuitySettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payslips<T extends Prisma.Employee$payslipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payslipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayslipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollLineItems<T extends Prisma.Employee$payrollLineItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollLineItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollLineItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollRecurringItems<T extends Prisma.Employee$payrollRecurringItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollRecurringItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -12369,6 +12803,30 @@ export type Employee$earningTreatmentOverridesArgs<ExtArgs extends runtime.Types
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeEarningTreatmentOverrideScalarFieldEnum | Prisma.EmployeeEarningTreatmentOverrideScalarFieldEnum[]
+}
+
+/**
+ * Employee.gratuitySettlements
+ */
+export type Employee$gratuitySettlementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeGratuitySettlement
+   */
+  select?: Prisma.EmployeeGratuitySettlementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeGratuitySettlement
+   */
+  omit?: Prisma.EmployeeGratuitySettlementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeGratuitySettlementInclude<ExtArgs> | null
+  where?: Prisma.EmployeeGratuitySettlementWhereInput
+  orderBy?: Prisma.EmployeeGratuitySettlementOrderByWithRelationInput | Prisma.EmployeeGratuitySettlementOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeGratuitySettlementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeGratuitySettlementScalarFieldEnum | Prisma.EmployeeGratuitySettlementScalarFieldEnum[]
 }
 
 /**

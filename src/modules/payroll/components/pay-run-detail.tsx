@@ -771,7 +771,9 @@ function AdvancedLineItemsForm({
           <option value="BONUS">Bonus</option>
           <option value="COMMISSION">Commission</option>
           <option value="OTHER_EARNING">Other earning</option>
+          <option value="GRATUITY">Contract gratuity</option>
           <option value="OTHER_DEDUCTION">Other deduction</option>
+          <option value="GRATUITY_TAX">Gratuity tax</option>
         </select>
       </label>
       <label className="grid gap-1 text-xs md:col-span-2">

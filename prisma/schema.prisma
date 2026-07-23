@@ -628,6 +628,8 @@ model Organization {
   nisEarningsClasses       NisEarningsClass[]
   payeTaxConfigs           PayeTaxConfig[]
   healthSurchargeConfigs   HealthSurchargeConfig[]
+  gratuityPolicies         GratuityPolicy[]
+  gratuitySettlements      EmployeeGratuitySettlement[]
   employeeTaxProfiles      EmployeeTaxProfile[]
   employeePriorEmploymentYtds EmployeePriorEmploymentYtd[]
   employeePayrollStatutoryOverrides EmployeePayrollStatutoryOverride[]
@@ -729,6 +731,9 @@ model User {
 
   approvedEmploymentContracts        EmploymentContract[] @relation("ContractApprovedBy")
   contractApprovalSteps              EmploymentContractApprovalStep[] @relation("ContractApprovalUser")
+  approvedGratuitySettlements        EmployeeGratuitySettlement[] @relation("GratuitySettlementApprover")
+  voidedGratuitySettlements          EmployeeGratuitySettlement[] @relation("GratuitySettlementVoider")
+  remittedGratuityTaxSettlements     EmployeeGratuitySettlement[] @relation("GratuityTaxRemitter")
   uploadedStoredFiles                StoredFile[] @relation("StoredFileUploader")
   openedOnboardingCases              EmployeeOnboardingCase[] @relation("OnboardingCaseOpener")
   openedOffboardingCases             EmployeeOffboardingCase[] @relation("OffboardingCaseOpener")
@@ -1119,6 +1124,7 @@ model Employee {
   annualPayrollProjections EmployeeAnnualPayrollProjection[]
   taxYearAdjustments  EmployeeTaxYearAdjustment[]
   earningTreatmentOverrides EmployeeEarningTreatmentOverride[]
+  gratuitySettlements EmployeeGratuitySettlement[]
   payslips       Payslip[]
   payrollLineItems PayrollLineItem[]
   payrollRecurringItems EmployeePayrollRecurringItem[]
@@ -2001,6 +2007,7 @@ model EmploymentContract {
   leaveTransactions LeaveBalanceTransaction[]
 
   leaveRequests LeaveRequest[]
+  gratuitySettlement EmployeeGratuitySettlement?
 
   @@index([employeeId])
   @@index([employeeId, isCurrent])
@@ -3308,6 +3315,171 @@ model HealthSurchargeConfig {
   @@schema("payroll")
 }
 
+/// Contract gratuity formula + tax schedule (TT MoF/IRD defaults via seed).
+enum GratuityFormulaKind {
+  /// Eligible gross earnings over term × rate% (MoF common contract model).
+  PCT_OF_TERM_EARNINGS
+  /// Final monthly eligible × years of service × rate%.
+  PCT_OF_FINAL_MONTHLY_YEARS
+  /// (daysPerYear / daysInYear) × monthly × years.
+  DAYS_PER_YEAR
+  FLAT_AMOUNT
+  MANUAL
+
+  @@schema("payroll")
+}
+
+enum GratuityTaxMode {
+  NONE
+  FLAT
+  TIERED
+
+  @@schema("payroll")
+}
+
+enum GratuityPayTiming {
+  LAST_CONTRACT_PAY
+  OFF_CYCLE_AFTER_END
+
+  @@schema("payroll")
+}
+
+enum GratuitySettlementStatus {
+  ESTIMATED
+  CALCULATED
+  APPROVED
+  SCHEDULED
+  PAID
+  VOID
+  INELIGIBLE
+
+  @@schema("payroll")
+}
+
+enum GratuityTaxRemittanceStatus {
+  NOT_APPLICABLE
+  PENDING
+  REMITTED
+
+  @@schema("payroll")
+}
+
+model GratuityPolicy {
+  id                       String              @id @default(cuid())
+  organizationId           String
+  countryCode              String              @default("TT")
+  currencyCode             String              @default("TTD")
+  formulaKind              GratuityFormulaKind @default(PCT_OF_TERM_EARNINGS)
+  /// Default rate when contract does not override (e.g. 20).
+  defaultRatePercent       Decimal             @db.Decimal(7, 4)
+  taxMode                  GratuityTaxMode     @default(TIERED)
+  /// Used when taxMode = FLAT.
+  flatTaxRatePercent       Decimal?            @db.Decimal(7, 4)
+  applyPersonalAllowance   Boolean             @default(false)
+  minServiceMonths         Int?
+  /// For DAYS_PER_YEAR formula (e.g. 15).
+  daysPerYearOfService     Decimal?            @db.Decimal(7, 4)
+  /// Denominator for daily rate (e.g. 26 or 30).
+  daysInYearBasis          Int?                @default(26)
+  eligibilityOnFullTermOnly Boolean            @default(false)
+  prorateOnEarlyExit       Boolean             @default(true)
+  payTiming                GratuityPayTiming   @default(OFF_CYCLE_AFTER_END)
+  effectiveFrom            DateTime            @db.Date
+  effectiveTo              DateTime?           @db.Date
+  versionLabel             String?
+  sourceReference          String?
+  isActive                 Boolean             @default(true)
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @updatedAt
+
+  organization Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  taxBands     GratuityTaxBand[]
+  settlements  EmployeeGratuitySettlement[]
+
+  @@unique([organizationId, effectiveFrom])
+  @@index([organizationId, isActive])
+  @@index([organizationId, countryCode, effectiveFrom])
+  @@map("gratuity_policies")
+  @@schema("payroll")
+}
+
+model GratuityTaxBand {
+  id               String   @id @default(cuid())
+  gratuityPolicyId String
+  /// Inclusive upper bound for this band. Null = open-ended (remainder).
+  upToAmount       Decimal? @db.Decimal(14, 2)
+  ratePercent      Decimal  @db.Decimal(7, 4)
+  sortOrder        Int      @default(0)
+
+  policy GratuityPolicy @relation(fields: [gratuityPolicyId], references: [id], onDelete: Cascade)
+
+  @@index([gratuityPolicyId, sortOrder])
+  @@map("gratuity_tax_bands")
+  @@schema("payroll")
+}
+
+/// One settlement ledger row per employment contract (reissue updates same row after void).
+model EmployeeGratuitySettlement {
+  id                      String                      @id @default(cuid())
+  organizationId          String
+  employeeId              String
+  contractId              String                      @unique
+  policyId                String?
+  status                  GratuitySettlementStatus    @default(ESTIMATED)
+  currency                String                      @default("TTD")
+  formulaKind             GratuityFormulaKind         @default(PCT_OF_TERM_EARNINGS)
+  ratePercent             Decimal                     @db.Decimal(7, 4)
+  contractMonths          Int                         @default(0)
+  serviceYears            Decimal?                    @db.Decimal(8, 4)
+  monthlyEligibleEarnings Decimal                     @db.Decimal(14, 2)
+  eligibleGrossEarnings   Decimal                     @db.Decimal(14, 2)
+  grossAmount             Decimal                     @db.Decimal(14, 2)
+  taxAmount               Decimal                     @db.Decimal(14, 2)
+  netAmount               Decimal                     @db.Decimal(14, 2)
+  /// Liability recognized to date (budget / accrual view).
+  accruedAmount           Decimal                     @default(0) @db.Decimal(14, 2)
+  accrualThroughDate      DateTime?                   @db.Date
+  estimatedAt             DateTime?
+  calculatedAt            DateTime?
+  approvedAt              DateTime?
+  approvedByUserId        String?
+  scheduledAt             DateTime?
+  paidAt                  DateTime?
+  voidedAt                DateTime?
+  voidedByUserId          String?
+  voidReason              String?
+  payRunId                String?
+  payslipId               String?
+  taxRemittanceStatus     GratuityTaxRemittanceStatus @default(PENDING)
+  taxRemittedAt           DateTime?
+  taxRemittedByUserId     String?
+  taxRemittanceReference  String?
+  notes                   String?
+  /// Frozen inputs + policy bands used for audit / variance.
+  calculationSnapshot     Json?
+  createdAt               DateTime                    @default(now())
+  updatedAt               DateTime                    @updatedAt
+
+  organization Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contract     EmploymentContract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  policy       GratuityPolicy?    @relation(fields: [policyId], references: [id], onDelete: SetNull)
+  payRun       PayRun?            @relation(fields: [payRunId], references: [id], onDelete: SetNull)
+  payslip      Payslip?           @relation(fields: [payslipId], references: [id], onDelete: SetNull)
+  approvedBy   User?              @relation("GratuitySettlementApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  voidedBy     User?              @relation("GratuitySettlementVoider", fields: [voidedByUserId], references: [id], onDelete: SetNull)
+  taxRemittedBy User?             @relation("GratuityTaxRemitter", fields: [taxRemittedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, status])
+  @@index([organizationId, employeeId])
+  @@index([payRunId])
+  @@index([payslipId])
+  @@index([organizationId, paidAt])
+  @@index([taxRemittanceStatus])
+  @@map("employee_gratuity_settlements")
+  @@schema("payroll")
+}
+
 enum PayrollPeriodStatus {
   OPEN
   CLOSED
@@ -3352,6 +3524,10 @@ enum PayrollLineItemCode {
   COMMISSION
   OTHER_EARNING
   OTHER_DEDUCTION
+  /// Contract gratuity gross (exclude from PAYE — tax withheld via GRATUITY_TAX).
+  GRATUITY
+  /// IRD contract-gratuity withholding (25%/30% tiers).
+  GRATUITY_TAX
 
   @@schema("payroll")
 }
@@ -3441,6 +3617,7 @@ model PayRun {
   lineItems     PayrollLineItem[]
   payrollPayments PayrollPayment[]
   achPaymentBatches AchPaymentBatch[]
+  gratuitySettlements EmployeeGratuitySettlement[]
 
   @@unique([organizationId, runNumber])
   @@index([payrollPeriodId])
@@ -3500,6 +3677,7 @@ model Payslip {
   employee      Employee      @relation(fields: [employeeId], references: [id])
   lineItems     PayrollLineItem[]
   payrollPayment PayrollPayment?
+  gratuitySettlements EmployeeGratuitySettlement[]
 
   @@unique([payRunId, employeeId])
   @@index([organizationId, employeeId, status])

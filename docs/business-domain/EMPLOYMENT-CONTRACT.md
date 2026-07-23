@@ -24,6 +24,8 @@ The contract records the approved employment arrangement, including:
 
 - Gratuity or end-of-contract provisions
 
+Payroll settlement, tax, and payment of gratuity are documented in [CONTRACT-GRATUITY.md](./CONTRACT-GRATUITY.md).
+
 - Approval and document status
 
 The Employment Contract belongs to the People domain.

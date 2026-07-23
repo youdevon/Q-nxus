@@ -753,6 +753,8 @@ async function main(): Promise<void> {
   });
   if (organization) {
     await seedBankExportProfiles(prisma, organization.id);
+    const { seedGratuityPolicies } = await import("./seed-gratuity-policy");
+    await seedGratuityPolicies(prisma, organization.id);
   }
 
   console.log("Q-NXUS platform foundation seeded successfully.");

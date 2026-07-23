@@ -412,6 +412,21 @@ export type PayeTaxBracket = Prisma.PayeTaxBracketModel
  */
 export type HealthSurchargeConfig = Prisma.HealthSurchargeConfigModel
 /**
+ * Model GratuityPolicy
+ * 
+ */
+export type GratuityPolicy = Prisma.GratuityPolicyModel
+/**
+ * Model GratuityTaxBand
+ * 
+ */
+export type GratuityTaxBand = Prisma.GratuityTaxBandModel
+/**
+ * Model EmployeeGratuitySettlement
+ * One settlement ledger row per employment contract (reissue updates same row after void).
+ */
+export type EmployeeGratuitySettlement = Prisma.EmployeeGratuitySettlementModel
+/**
  * Model PayrollPeriod
  * Calendar span for which employees are paid (e.g. July 2026 monthly).
  */
