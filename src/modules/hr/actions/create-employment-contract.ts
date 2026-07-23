@@ -713,7 +713,7 @@ export async function createEmploymentContract(
               },
               transaction,
             );
-            finalStatus = "ACTIVE";
+            finalStatus = activation.historical ? "EXPIRED" : "ACTIVE";
 
             await transaction.auditEvent.create({
               data: {
@@ -722,7 +722,9 @@ export async function createEmploymentContract(
                 action: changeTypeValue === "INITIAL" ? "CREATE" : "AMEND",
                 entityType: "EmploymentContract",
                 entityId: created.id,
-                description: `${changeTypeValue === "INITIAL" ? "Created" : "Added"} and activated employment contract for ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName}.`,
+                description: activation.historical
+                  ? `Created and recorded historical employment contract for ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName}.`
+                  : `${changeTypeValue === "INITIAL" ? "Created" : "Added"} and activated employment contract for ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName}.`,
                 newValues: {
                   employeeId,
                   sourceContractId,
@@ -731,6 +733,7 @@ export async function createEmploymentContract(
                   changeType: created.changeType,
                   status: finalStatus,
                   saveIntent,
+                  historical: activation.historical,
                   needsAccessRoleSync: activation.needsAccessRoleSync,
                 },
                 ipAddress: metadata.ipAddress,
@@ -739,7 +742,12 @@ export async function createEmploymentContract(
               },
             });
 
-            return { ...created, status: finalStatus, _needsSync: activation.needsAccessRoleSync };
+            return {
+              ...created,
+              status: finalStatus,
+              isCurrent: !activation.historical,
+              _needsSync: activation.needsAccessRoleSync,
+            };
           } else {
             // Auto-approve path → APPROVED until first signature
             await transaction.employmentContract.update({

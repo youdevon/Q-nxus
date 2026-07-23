@@ -132,7 +132,7 @@ export function CorrespondenceResponseSubmitForm({
             accept=".pdf,.doc,.docx,image/jpeg,image/png,image/webp"
           />
           <p className="text-xs text-muted-foreground">
-            PDF, Word, or image · max 5 MB
+            PDF, Word, or image · max 15 MB
           </p>
         </div>
         <div>

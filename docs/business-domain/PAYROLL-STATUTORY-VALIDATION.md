@@ -31,9 +31,35 @@ Calc reads the tax profile for the period’s tax year. Saving TD1 from payroll 
   `PRIOR_EMPLOYMENT_ARCHIVE_RETENTION_DAYS`. Supporting documents cascade;
   orphaned `StoredFile` rows follow stored-file retention.
 
+### Canonical mid-year joiner PAYE method
+
+When an employee joins this organization mid tax year from another employer, **Annual PAYE Projection** is the authoritative planning method (validated against TT worksheet practice):
+
+1. **Prior taxable YTD** (verified TD4 / letter) + **prior PAYE deducted**
+2. **This employer posted YTD** (taxable + PAYE), if any
+3. **Projected remaining** = remaining payroll periods × expected taxable per period  
+   (basic + taxable allowances + recurring taxable earnings)
+4. **Projected annual taxable** = prior + this-employer YTD + projected remaining
+5. **Chargeable income** = annual taxable − personal allowance ($90,000 statutory, or profile override) − qualifying deductions (70% NIS + TD1 other / pension, capped at $60,000)
+6. **Annual tax** = progressive bands on chargeable (25% / 30%)
+7. **Remaining tax** = annual tax − prior PAYE − this-employer PAYE already paid
+8. **Recommended PAYE per period** = remaining tax ÷ remaining periods
+
+Operational flow:
+
+1. Enter / verify prior-employment YTD on payroll setup (or tax-year page).
+2. Set tax method `PREVIOUS_INCOME_INCLUDED` (cumulative on).
+3. Confirm contract taxable package (allowances marked correctly).
+4. Open `/payroll/employees/[id]/tax-year` — review projection.
+5. Save → review → approve projection; **Apply** creates a pending statutory PAYE override for the target period so payroll withholds the recommended amount.
+
+Do **not** blind-annualize this employer’s first month × 12 and ignore prior income/PAYE. Unverified prior amounts stay out of applied payroll (hard gate).
+
 ## Cumulative PAYE (Phase 4–5)
 
 `STANDARD_CUMULATIVE` / `PREVIOUS_INCOME_INCLUDED` methods use YTD taxable earnings and PAYE already deducted (this employer + optional prior-employer totals) to project annual liability and withhold the period delta. NIS deductible projection uses YTD NIS paid. Period pins live on the payslip snapshot.
+
+For mid-year joiners, set method to **Previous income included**, verify prior YTD, then use the Annual PAYE Projection worksheet (and apply recommended PAYE) so withholding follows the canonical remaining-tax ÷ remaining-periods method above — not a first-month × 12 blind annualization that ignores the prior employer.
 
 ## Component tax treatment (Phase 6)
 
@@ -43,9 +69,44 @@ Calc reads the tax profile for the period’s tax year. Saving TD1 from payroll 
 
 `EmployeePayrollStatutoryOverride` holds period-end absolute PAYE / NIS / Health amounts with maker-checker (`DRAFT` → `PENDING_APPROVAL` → `APPROVED` / `REJECTED`). Approved overrides apply after computed statutory in payslip assembly.
 
-## Employee tax year view (Phase 8)
+## Employee Annual PAYE Projection (canonical tax-year view)
 
-`/payroll/employees/[id]/tax-year` (optional `?year=`) shows tax profile summary, prior-employment YTD, posted payslips for the calendar year, and statutory override request / approve UI. Linked from employee payroll setup.
+`/payroll/employees/[id]/tax-year` (optional `?year=`) is the **Employee Annual PAYE Projection** page:
+
+- Employee details, tax profile, prior-employment YTD
+- Live annual projection worksheet (previous actual / current YTD / projected remaining / recommended PAYE per remaining period)
+- **Print projection** → `/payroll/employees/[id]/tax-year/print?year=` (structured tables: employee, earnings by source, tax calculation, recommended withholding, signature lines; browser print uses printer paper size)
+- Versioned save → review → **approve** (auto-applies recommended PAYE as **APPROVED** statutory overrides for all remaining open monthly periods; posted payslips are skipped; draft/approved pay runs recalculate). Maker-checker on projection approve is the correctness gate — no second per-period override approval.
+- Optional **Re-apply to open periods** on an already-approved projection refreshes those overrides after worksheet/rate changes.
+- Tax-year adjustments (maker-checker) that feed the live projection after approval
+  - Additive: previous income/PAYE, taxable YTD, non-taxable (informational), projected earnings/period, NIS, health surcharge (informational), pension, qualifying, manual remaining tax
+  - Absolute formula overrides: remaining periods, NIS deductible portion (0–1), approved deduction cap
+- Earning treatment overrides (maker-checker) applied on payslip assembly and projected earnings
+- Posted payslips for the calendar year + link to month-by-month history (`/payroll/employees/[id]/payroll/[taxYear]`)
+- Statutory override request / approve UI still available for one-off manual period amounts
+
+**Cascade after approved tax edits or org rate publish:** live projection refreshes on next load; open `APPROVED` / `REVIEW_REQUIRED` projection versions are superseded with a fresh `CALCULATED` snapshot; mutable (draft/approved) pay runs for the tax year are recalculated. Posted payslips stay frozen.
+
+**When tax law changes:** create a new org `PayeTaxConfig` under Payroll → Settings → PAYE with the new `effectiveFrom` (and close the prior version). Period-end as-of resolution picks the schedule that covers that date — publishing also triggers org-wide draft-run recalculation from that effective date. Same cascade applies to NIS and Health Surcharge version publishes.
+
+**When one employee needs a one-off formula change:** use tax-year adjustments (absolute types above) or a manual period statutory override. For mid-year joiners, approve the Annual PAYE Projection so remaining open periods receive the recommended PAYE automatically.
+
+Unverified prior-employer amounts are excluded from payslip / pay-run PAYE inputs (hard gate). They may still appear on the projection form with warnings when previewing.
+
+Approved projections appear on payslips as **Projected tax-year position** (estimate — not paid), after YTD.
+
+Permissions:
+
+- View: `payroll.employee_year.view`, `payroll.tax_projection.view` (plus setup/manage)
+- Save / submit: `payroll.tax_projection.preview`
+- Approve: `payroll.tax_projection.approve` (also auto-applies open-period PAYE overrides)
+- Re-apply open periods: `payroll.tax_projection.apply`
+- Adjustments: `payroll.tax_adjustments.create` / `payroll.tax_adjustments.approve`
+- Treatment overrides: `payroll.tax_treatment.override`
+
+Re-run `npm run seed:access` after deploy.
+
+Persistence migrations: `20260721120000_annual_paye_projection_persistence`, `20260721140000_tax_year_formula_override_types`.
 
 ## Payslip YTD labels (Phase 9)
 
@@ -54,7 +115,7 @@ When prior-employer records exist, payslip documents (HTML + PDF) show three YTD
 ## Exceptions, permissions, audit (Phase 10)
 
 - Soft PAYE exceptions (`evaluatePayeExceptions`) surface on payslip notes (declared-without-records, unverified prior under cumulative, pending overrides).
-- Finer permissions: `payroll.tax_profile.*`, `payroll.prior_employment.*`, `payroll.statutory_override.*`, `payroll.employee_year.view` (seeded on clerk/officer/admin roles). Re-run access role seed to grant them.
+- Finer permissions: `payroll.tax_profile.*`, `payroll.prior_employment.*`, `payroll.statutory_override.*`, `payroll.employee_year.view`, `payroll.tax_projection.*`, `payroll.tax_adjustments.*`, `payroll.tax_treatment.override` (seeded on clerk/officer/admin roles). Re-run access role seed to grant them.
 - Overrides and tax profile / prior YTD changes continue to write audit events.
 
 ## Seeded Trinidad & Tobago configs (reference)

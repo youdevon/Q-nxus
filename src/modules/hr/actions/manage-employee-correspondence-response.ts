@@ -43,9 +43,15 @@ function revalidateCorrespondenceResponsePaths(
 }
 
 async function storeOptionalResponseAttachment({
+  employee,
   correspondenceId,
   formData,
 }: {
+  employee: {
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+  };
   correspondenceId: string;
   formData: FormData;
 }) {
@@ -60,6 +66,7 @@ async function storeOptionalResponseAttachment({
   }
 
   return storeCorrespondenceAttachmentFile({
+    employee,
     correspondenceId,
     file: attachmentFile,
   });
@@ -115,6 +122,13 @@ export async function submitEmployeeCorrespondenceResponse(
       employeeVisible: true,
       allowsEmployeeResponse: true,
       title: true,
+      employee: {
+        select: {
+          employeeNumber: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
       responses: {
         select: {
           id: true,
@@ -153,6 +167,7 @@ export async function submitEmployeeCorrespondenceResponse(
 
   try {
     storedAttachment = await storeOptionalResponseAttachment({
+      employee: correspondence.employee,
       correspondenceId: correspondence.id,
       formData,
     });

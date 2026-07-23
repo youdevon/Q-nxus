@@ -32,6 +32,7 @@ import {
   prorateMoney,
   resolveContractPaySegments,
 } from "@/src/modules/payroll/lib/payroll-period-adjustments";
+import { getApprovedEarningTreatmentOverridesForPeriod } from "@/src/modules/payroll/data/get-earning-treatment-overrides";
 import { applyRecurringItemsForPeriod } from "@/src/modules/payroll/lib/recurring-payroll-items";
 import { loadEmployeeRecurringItems } from "@/src/modules/payroll/services/recurring-payroll-balances";
 import {
@@ -121,6 +122,7 @@ export async function getEmployeePayslipPreview(
     recurringItems,
     currentEmployerYtdBefore,
     statutoryOverride,
+    treatmentOverrides,
   ] = await Promise.all([
       options?.statutoryBundle
         ? Promise.resolve(options.statutoryBundle)
@@ -198,6 +200,7 @@ export async function getEmployeePayslipPreview(
         employeeId,
         periodEnd,
       }),
+      getApprovedEarningTreatmentOverridesForPeriod(employeeId, periodEnd),
     ]);
 
   const nisClasses = statutoryBundle.nisClasses;
@@ -228,13 +231,15 @@ export async function getEmployeePayslipPreview(
         }
       : null,
     priorEmployment: {
-      taxableIncomeYtd: setup.priorEmployment.totals.taxableIncomeYtd,
-      payeDeductedYtd: setup.priorEmployment.totals.payeDeductedYtd,
-      nisEmployeeYtd: setup.priorEmployment.totals.nisEmployeeYtd,
+      // Applied calc uses verified totals only (hard gate).
+      taxableIncomeYtd: setup.priorEmployment.verifiedTotals.taxableIncomeYtd,
+      payeDeductedYtd: setup.priorEmployment.verifiedTotals.payeDeductedYtd,
+      nisEmployeeYtd: setup.priorEmployment.verifiedTotals.nisEmployeeYtd,
       nisEmployerYtd: 0,
-      healthSurchargeYtd: setup.priorEmployment.totals.healthSurchargeYtd,
+      healthSurchargeYtd: setup.priorEmployment.verifiedTotals.healthSurchargeYtd,
       otherApprovedDeductionsYtd:
-        setup.priorEmployment.totals.otherApprovedDeductionsYtd,
+        setup.priorEmployment.verifiedTotals.otherApprovedDeductionsYtd,
+      // Exception / display counts still reflect all ACTIVE records.
       recordCount: setup.priorEmployment.totals.recordCount,
       verifiedCount: setup.priorEmployment.totals.verifiedCount,
       allVerified: setup.priorEmployment.totals.allVerified,
@@ -253,6 +258,7 @@ export async function getEmployeePayslipPreview(
     recurringItems,
     periodStart,
     periodEnd,
+    treatmentOverrides,
   );
   const recurringEarnings = recurringLines
     .filter((line) => line.kind === "EARNING")

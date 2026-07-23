@@ -15,11 +15,12 @@ import {
 } from "@/src/modules/auth/context/auth-provider";
 import { NotificationProvider } from "@/src/modules/notifications";
 
-function isPayslipPrintRoute(pathname: string) {
+function isPrintDocumentRoute(pathname: string) {
   return (
     pathname === "/me/payslip/print" ||
     pathname === "/payroll/print/ready" ||
     /^\/payroll\/employees\/[^/]+\/payslip\/print\/?$/.test(pathname) ||
+    /^\/payroll\/employees\/[^/]+\/tax-year\/print\/?$/.test(pathname) ||
     /^\/people\/employees\/[^/]+\/payroll\/payslip\/print\/?$/.test(pathname) ||
     /^\/payroll\/runs\/[^/]+\/payslips\/[^/]+\/print\/?$/.test(pathname) ||
     /^\/payroll\/runs\/[^/]+\/print\/?$/.test(pathname)
@@ -32,7 +33,7 @@ function isShellLessRoute(pathname: string) {
     pathname.startsWith("/login/") ||
     pathname === "/account/change-password" ||
     pathname.startsWith("/account/change-password/") ||
-    isPayslipPrintRoute(pathname)
+    isPrintDocumentRoute(pathname)
   );
 }
 

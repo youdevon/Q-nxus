@@ -31,6 +31,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
       meta: result.meta,
       ytd: result.ytd,
       ytdBreakdown: result.ytdBreakdown,
+      projectedTaxYearPosition: result.projectedTaxYearPosition,
       isOfficial: result.isPosted,
     },
   ]);

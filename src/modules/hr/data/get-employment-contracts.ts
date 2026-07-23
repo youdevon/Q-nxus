@@ -17,6 +17,7 @@ export type EmploymentContractListRecord = {
   gratuityRate: string | null;
   gratuityTaxRate: string | null;
   isCurrent: boolean;
+  sourceContractId: string | null;
   signedDate: string | null;
   collectedAt: string | null;
   terminationDate: string | null;
@@ -59,6 +60,7 @@ function mapContract(contract: {
   gratuityRate: { toString(): string } | null;
   gratuityTaxRate: { toString(): string } | null;
   isCurrent: boolean;
+  sourceContractId?: string | null;
   signedDate: Date | null;
   collectedAt: Date | null;
   terminationDate: Date | null;
@@ -82,6 +84,7 @@ function mapContract(contract: {
     gratuityRate: contract.gratuityRate?.toString() ?? null,
     gratuityTaxRate: contract.gratuityTaxRate?.toString() ?? null,
     isCurrent: contract.isCurrent,
+    sourceContractId: contract.sourceContractId ?? null,
     signedDate: contract.signedDate?.toISOString().slice(0, 10) ?? null,
     collectedAt: contract.collectedAt?.toISOString() ?? null,
     terminationDate:
@@ -161,6 +164,7 @@ export async function getEmployeeContractHistory(
           gratuityRate: true,
           gratuityTaxRate: true,
           isCurrent: true,
+          sourceContractId: true,
           signedDate: true,
           collectedAt: true,
           terminationDate: true,
@@ -294,6 +298,7 @@ export async function getEmploymentContractProfile(
       gratuityRate: true,
       gratuityTaxRate: true,
       isCurrent: true,
+      sourceContractId: true,
       signedDate: true,
       collectedAt: true,
       terminationDate: true,
@@ -382,9 +387,22 @@ export async function getEmploymentContractProfile(
 
   const previousVersions: EmploymentContractProfile["previousVersions"] = [];
 
+  // Amendment history only — stop at renewal/extension boundaries so prior
+  // employment periods stay out of this list.
+  const amendmentChangeTypes = new Set([
+    "AMENDMENT",
+    "SALARY_ADJUSTMENT",
+    "POSITION_CHANGE",
+  ]);
+
+  let linkChangeType: string = contract.changeType;
   let walkId = contract.sourceContract?.id ?? null;
 
   while (walkId) {
+    if (!amendmentChangeTypes.has(linkChangeType)) {
+      break;
+    }
+
     const previous = await prisma.employmentContract.findFirst({
       where: {
         id: walkId,
@@ -424,6 +442,7 @@ export async function getEmploymentContractProfile(
       isCurrent: previous.isCurrent,
     });
 
+    linkChangeType = previous.changeType;
     walkId = previous.sourceContractId;
   }
 

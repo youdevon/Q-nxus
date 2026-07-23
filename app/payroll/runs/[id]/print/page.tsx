@@ -40,6 +40,7 @@ export default async function PayRunPrintPage({
         meta: doc.meta,
         ytd: doc.ytd,
         ytdBreakdown: doc.ytdBreakdown,
+        projectedTaxYearPosition: doc.projectedTaxYearPosition,
         isOfficial: doc.isOfficial,
       }))}
     />

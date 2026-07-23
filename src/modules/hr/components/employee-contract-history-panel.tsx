@@ -10,6 +10,7 @@ import {
 } from "@/src/config/ui-colors";
 import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import type { EmploymentContractListRecord } from "@/src/modules/hr/data/get-employment-contracts";
+import { isPreviousEmploymentContract } from "@/src/modules/hr/lib/previous-employment-contract";
 
 function label(value: string): string {
   return value
@@ -98,8 +99,16 @@ export function EmployeeContractHistoryPanel({
 }) {
   const [tab, setTab] = useState<"current" | "previous">("current");
 
+  const peers = contracts.map((contract) => ({
+    id: contract.id,
+    sourceContractId: contract.sourceContractId,
+    changeType: contract.changeType,
+  }));
+
   const currentContracts = contracts.filter((contract) => contract.isCurrent);
-  const previousContracts = contracts.filter((contract) => !contract.isCurrent);
+  const previousContracts = contracts.filter((contract) =>
+    isPreviousEmploymentContract(contract, peers),
+  );
 
   const visible = tab === "current" ? currentContracts : previousContracts;
 
@@ -139,7 +148,7 @@ export function EmployeeContractHistoryPanel({
             }`}
             onClick={() => setTab("previous")}
           >
-            Previous versions
+            Previous contracts
             {previousContracts.length > 0
               ? ` (${previousContracts.length})`
               : ""}
@@ -151,7 +160,7 @@ export function EmployeeContractHistoryPanel({
         <p className="py-10 text-center text-sm text-muted-foreground">
           {tab === "current"
             ? "No current employment contract."
-            : "No previous contract versions."}
+            : "No previous contracts. Completed terms (expired, terminated, or renewed) appear here. Amendments stay under version history on the current contract."}
         </p>
       ) : (
         <div className="divide-y divide-border/70">

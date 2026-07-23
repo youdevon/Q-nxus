@@ -2,10 +2,12 @@ import path from "node:path";
 
 import {
   deleteStoredFile,
+  employeeStorageFolderLabel,
   readStoredFile,
   resolveStoredFileAbsolutePath,
   safeStoredFileName,
   storeUploadedFile,
+  type EmployeeStorageIdentity,
   type StoredFileMeta,
 } from "@/src/lib/stored-file";
 
@@ -18,10 +20,12 @@ export function resolveEmployeeFileAttachmentAbsolutePath(
 }
 
 export async function storeEmployeeFileAttachment({
+  employee,
   recordType,
   recordId,
   file,
 }: {
+  employee: EmployeeStorageIdentity;
   recordType: "credentials" | "training" | "qualifications" | "checklist";
   recordId: string;
   file: File;
@@ -29,6 +33,7 @@ export async function storeEmployeeFileAttachment({
   const fileName = safeStoredFileName(file.name || "attachment");
   const storageKey = path.posix.join(
     STORAGE_PREFIX,
+    employeeStorageFolderLabel(employee),
     recordType,
     recordId,
     `${Date.now()}-${fileName}`,

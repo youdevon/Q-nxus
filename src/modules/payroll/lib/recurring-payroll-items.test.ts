@@ -188,6 +188,33 @@ describe("applyRecurringItemsForPeriod", () => {
       }),
     ]);
   });
+
+  it("applies earning treatment override to isTaxable", () => {
+    const definitionId = "def-allow";
+    const lines = applyRecurringItemsForPeriod(
+      [
+        loanItem({
+          id: "earning",
+          amount: 100,
+          definition: {
+            id: definitionId,
+            code: "ALLOW-TRN",
+            name: "Transport allowance",
+            kind: "EARNING",
+            category: "RECURRING_EARNING",
+            isTaxable: true,
+            isActive: true,
+          },
+        }),
+      ],
+      "2026-07-01",
+      "2026-07-31",
+      new Map([[definitionId, { isTaxable: false }]]),
+    );
+
+    expect(lines[0]?.isTaxable).toBe(false);
+    expect(lines[0]?.detail).toContain("treatment override");
+  });
 });
 
 describe("computeBalanceAfterPost", () => {

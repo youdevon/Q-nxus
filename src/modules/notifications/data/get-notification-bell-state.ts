@@ -48,10 +48,11 @@ const ACTION_URL_CAP = 40;
 
 /**
  * Shared bell payload for the API route (polling) and any server callers.
- * Single unread query; inbox rows are sliced from that result.
+ * Includes recent read items so payroll approval history stays browsable
+ * after actions complete.
  */
 export async function getNotificationBellState(
-  limit = 8,
+  limit = 15,
 ): Promise<NotificationBellState> {
   const user = await getCurrentUser();
 
@@ -64,23 +65,28 @@ export async function getNotificationBellState(
   }
 
   const now = new Date();
+  const notExpired = {
+    OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+  };
   const unreadWhere = {
     userId: user.id,
     status: "UNREAD" as const,
-    notification: {
-      OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
-    },
+    notification: notExpired,
   };
 
   const inboxLimit = Math.max(1, Math.min(limit, 50));
 
-  const [unreadCount, recipients] = await Promise.all([
+  const [unreadCount, recipients, unreadForUrls] = await Promise.all([
     prisma.notificationRecipient.count({ where: unreadWhere }),
     prisma.notificationRecipient.findMany({
-      where: unreadWhere,
+      where: {
+        userId: user.id,
+        notification: notExpired,
+      },
       orderBy: { notification: { createdAt: "desc" } },
-      take: Math.max(inboxLimit, ACTION_URL_CAP),
+      take: inboxLimit,
       select: {
+        status: true,
         notification: {
           select: {
             id: true,
@@ -95,11 +101,22 @@ export async function getNotificationBellState(
         },
       },
     }),
+    prisma.notificationRecipient.findMany({
+      where: unreadWhere,
+      orderBy: { notification: { createdAt: "desc" } },
+      take: ACTION_URL_CAP,
+      select: {
+        notification: {
+          select: {
+            actionUrl: true,
+          },
+        },
+      },
+    }),
   ]);
 
   const nowMs = now.getTime();
   const notifications: AppNotification[] = recipients
-    .slice(0, inboxLimit)
     .filter((recipient) => {
       if (!recipient.notification.expiresAt) {
         return true;
@@ -113,13 +130,13 @@ export async function getNotificationBellState(
       severity: mapSeverity(recipient.notification.severity),
       moduleSource: mapModuleSource(recipient.notification.moduleKey),
       createdAt: recipient.notification.createdAt.toISOString(),
-      read: false,
+      read: recipient.status !== "UNREAD",
       href: recipient.notification.actionUrl ?? undefined,
     }));
 
-  const unreadActionUrls = recipients
-    .slice(0, ACTION_URL_CAP)
-    .map((recipient) => recipient.notification.actionUrl);
+  const unreadActionUrls = unreadForUrls.map(
+    (recipient) => recipient.notification.actionUrl,
+  );
 
   return {
     unreadCount,

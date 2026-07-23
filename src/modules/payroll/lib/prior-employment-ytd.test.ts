@@ -49,6 +49,36 @@ describe("aggregatePriorEmploymentYtd", () => {
     expect(totals.payeDeductedYtd).toBe(2_500.4);
     expect(totals.nisEmployeeYtd).toBe(1_000);
   });
+
+  it("sums only verified rows when verifiedOnly is set", () => {
+    const totals = aggregatePriorEmploymentYtd(
+      [
+        {
+          taxableIncomeYtd: 40_000,
+          payeDeductedYtd: 2_000,
+          nisEmployeeYtd: 1_000,
+          nisEmployerYtd: 2_000,
+          healthSurchargeYtd: 100,
+          otherApprovedDeductionsYtd: 500,
+          verified: true,
+        },
+        {
+          taxableIncomeYtd: 10_000,
+          payeDeductedYtd: 500,
+          nisEmployeeYtd: 0,
+          nisEmployerYtd: 0,
+          healthSurchargeYtd: 0,
+          otherApprovedDeductionsYtd: 0,
+          verified: false,
+        },
+      ],
+      { verifiedOnly: true },
+    );
+
+    expect(totals.recordCount).toBe(1);
+    expect(totals.taxableIncomeYtd).toBe(40_000);
+    expect(totals.allVerified).toBe(true);
+  });
 });
 
 describe("priorEmploymentCalcNotes", () => {

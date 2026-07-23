@@ -12,6 +12,7 @@ import { SectionHeading } from "@/src/components/ui/section-heading";
 import {
   decideStatutoryOverride,
   requestStatutoryOverride,
+  submitStatutoryOverrideForApproval,
   type StatutoryOverrideFormState,
 } from "@/src/modules/payroll/actions/manage-statutory-overrides";
 import { formatMoney } from "@/src/lib/format";
@@ -165,14 +166,52 @@ function RequestOverrideForm({
       </div>
       <div className="flex flex-wrap items-center gap-4 md:col-span-2">
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="submitForApproval" />
-          Submit for approval
+          <input
+            type="checkbox"
+            name="submitForApproval"
+            defaultChecked
+          />
+          Submit for approval (notifies approvers)
         </label>
         <Button type="submit" disabled={pending} size="sm">
           <Save className="size-4" />
           {pending ? "Saving…" : "Save override"}
         </Button>
       </div>
+    </form>
+  );
+}
+
+function SubmitDraftOverrideForm({
+  overrideId,
+  canRequest,
+}: {
+  overrideId: string;
+  canRequest: boolean;
+}) {
+  const [state, formAction, pending] = useActionState(
+    submitStatutoryOverrideForApproval,
+    decideInitial,
+  );
+
+  useEffect(() => {
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    } else if (state.status === "error" && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
+
+  if (!canRequest) {
+    return null;
+  }
+
+  return (
+    <form action={formAction} className="mt-2">
+      <input type="hidden" name="overrideId" value={overrideId} />
+      <Button type="submit" size="sm" variant="outline" disabled={pending}>
+        {pending ? "Submitting…" : "Submit for approval"}
+      </Button>
     </form>
   );
 }
@@ -316,6 +355,12 @@ export function EmployeeStatutoryOverridesPanel({
                     <Badge variant={statusVariant(row.status)}>
                       {row.status.replaceAll("_", " ")}
                     </Badge>
+                    {row.status === "DRAFT" ? (
+                      <SubmitDraftOverrideForm
+                        overrideId={row.id}
+                        canRequest={canRequest}
+                      />
+                    ) : null}
                     {row.status === "PENDING_APPROVAL" ? (
                       <DecideOverrideForm
                         overrideId={row.id}

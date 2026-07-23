@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["10.1.5.37"],
   experimental: {
     serverActions: {
-      // Matches 5 MB attachment cap with multipart/form-field headroom.
-      bodySizeLimit: "6mb",
+      // Matches 15 MB attachment cap with multipart/form-field headroom.
+      bodySizeLimit: "16mb",
     },
   },
   async redirects() {

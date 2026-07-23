@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import {
+  employeeStorageFolderLabel,
   resolveStoredFileAbsolutePath,
   safeStoredFileName,
   storeUploadedFile,
@@ -96,9 +97,25 @@ export async function savePriorEmploymentYtd(
   _previousState: PriorEmploymentFormState,
   formData: FormData,
 ): Promise<PriorEmploymentFormState> {
-  const actor = await requireActor("payroll.setup", "payroll.manage");
+  const verified = formData.get("verified") === "on";
+  const actor = verified
+    ? await requireActor(
+        "payroll.prior_employment.verify",
+        "payroll.manage",
+      )
+    : await requireActor(
+        "payroll.prior_employment.manage",
+        "payroll.setup",
+        "payroll.manage",
+      );
   if (!actor.ok) {
-    return { status: "error", message: actor.message };
+    return {
+      status: "error",
+      message: verified
+        ? actor.message ||
+          "Verifying prior-employer YTD requires payroll.prior_employment.verify."
+        : actor.message,
+    };
   }
 
   const employeeId = textValue(formData, "employeeId");
@@ -177,7 +194,6 @@ export async function savePriorEmploymentYtd(
     fieldErrors,
   );
 
-  const verified = formData.get("verified") === "on";
   const notes = nullableText(formData, "notes");
   const employerBirNumber = nullableText(formData, "employerBirNumber");
 
@@ -211,7 +227,8 @@ export async function savePriorEmploymentYtd(
 
     if (hasAttachment) {
       const file = attachment as File;
-      const storageKey = `payroll/${employee.organizationId}/prior-employment/${employee.id}/${Date.now()}-${safeStoredFileName(file.name)}`;
+      const employeeFolder = employeeStorageFolderLabel(employee);
+      const storageKey = `payroll/${employee.organizationId}/prior-employment/${employeeFolder}/${Date.now()}-${safeStoredFileName(file.name)}`;
       const stored = await storeUploadedFile({
         storageKey,
         file,
@@ -359,7 +376,11 @@ export async function archivePriorEmploymentYtd(
   _previousState: PriorEmploymentFormState,
   formData: FormData,
 ): Promise<PriorEmploymentFormState> {
-  const actor = await requireActor("payroll.setup", "payroll.manage");
+  const actor = await requireActor(
+    "payroll.prior_employment.manage",
+    "payroll.setup",
+    "payroll.manage",
+  );
   if (!actor.ok) {
     return { status: "error", message: actor.message };
   }

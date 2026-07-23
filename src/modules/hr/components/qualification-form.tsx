@@ -207,19 +207,22 @@ export function QualificationForm({
       toast.success(state.message);
       // Retain category / subtype / degree / issuer for bulk entry; clear
       // subjects, proof, custom text, programme, year, and issue date.
-      setCustomTypeLabel("");
-      setProgramme("");
-      setYear("");
-      setIssueDate("");
-      setHasAttachment(false);
-      setAttachmentFileName(null);
-      setRemoveAttachment(false);
-      setEntries(
-        qualificationUsesSubjectEntries(documentType)
-          ? [createEntryRow(0)]
-          : [],
-      );
-      setFormKey((key) => key + 1);
+      // Defer resets so this effect does not setState synchronously.
+      queueMicrotask(() => {
+        setCustomTypeLabel("");
+        setProgramme("");
+        setYear("");
+        setIssueDate("");
+        setHasAttachment(false);
+        setAttachmentFileName(null);
+        setRemoveAttachment(false);
+        setEntries(
+          qualificationUsesSubjectEntries(documentType)
+            ? [createEntryRow(0)]
+            : [],
+        );
+        setFormKey((key) => key + 1);
+      });
     }
   }, [state, documentType]);
 
@@ -694,8 +697,8 @@ export function QualificationForm({
             ) : (
               <p className="text-xs text-muted-foreground">
                 {showSubjectEntries
-                  ? "Upload the certificate or transcript that covers the subjects below (PDF, Word, or image, max 5 MB)."
-                  : "Upload the certificate or proof document (PDF, Word, or image, max 5 MB)."}
+                  ? "Upload the certificate or transcript that covers the subjects below (PDF, Word, or image, max 15 MB)."
+                  : "Upload the certificate or proof document (PDF, Word, or image, max 15 MB)."}
               </p>
             )}
           </div>

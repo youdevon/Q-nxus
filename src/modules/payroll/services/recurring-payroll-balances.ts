@@ -36,6 +36,7 @@ export async function loadEmployeeRecurringItems(
       isActive: true,
       definition: {
         select: {
+          id: true,
           code: true,
           name: true,
           kind: true,
@@ -56,6 +57,7 @@ export async function loadEmployeeRecurringItems(
     endDate: row.endDate,
     isActive: row.isActive,
     definition: {
+      id: row.definition.id,
       code: row.definition.code,
       name: row.definition.name,
       kind: row.definition.kind,

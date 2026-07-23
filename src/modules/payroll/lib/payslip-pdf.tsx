@@ -17,12 +17,14 @@ import type {
   PayslipYtdBreakdown,
   PayslipYtdTotals,
 } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
 
 export type PayslipPdfDocumentInput = {
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
   ytd: PayslipYtdTotals | null;
   ytdBreakdown?: PayslipYtdBreakdown | null;
+  projectedTaxYearPosition?: ProjectedTaxYearPosition | null;
   isOfficial: boolean;
 };
 
@@ -198,6 +200,7 @@ function PayslipPage({
   meta,
   ytd,
   ytdBreakdown = null,
+  projectedTaxYearPosition = null,
   isOfficial,
 }: PayslipPdfDocumentInput) {
   const { currency } = payslip;
@@ -395,6 +398,130 @@ function PayslipPage({
               />
             </View>
           )
+        ) : null}
+
+        {projectedTaxYearPosition ? (
+          <View wrap={false}>
+            <Text style={styles.sectionTitle}>
+              Annual PAYE projection · {projectedTaxYearPosition.taxYear} (v
+              {projectedTaxYearPosition.version} ·{" "}
+              {projectedTaxYearPosition.payFrequency.toLowerCase()} · estimate —
+              not paid)
+            </Text>
+            {projectedTaxYearPosition.previousEmployerTaxableIncome > 0 ? (
+              <View style={styles.ytdGroup}>
+                <Text style={styles.label}>Previous employer (actual)</Text>
+                <YtdMetricRow
+                  currency={currency}
+                  metrics={[
+                    {
+                      label: "Taxable",
+                      amount:
+                        projectedTaxYearPosition.previousEmployerTaxableIncome,
+                    },
+                    {
+                      label: "PAYE",
+                      amount: projectedTaxYearPosition.previousEmployerPaye,
+                    },
+                  ]}
+                />
+              </View>
+            ) : null}
+            <View style={styles.ytdGroup}>
+              <Text style={styles.label}>Current employer YTD (actual)</Text>
+              <YtdMetricRow
+                currency={currency}
+                metrics={[
+                  {
+                    label: "Taxable",
+                    amount:
+                      projectedTaxYearPosition.currentEmployerActualTaxableIncome,
+                  },
+                  {
+                    label: "PAYE",
+                    amount: projectedTaxYearPosition.currentEmployerPaye,
+                  },
+                ]}
+              />
+            </View>
+            <View style={styles.ytdGroup}>
+              <Text style={styles.label}>
+                Projected remaining (
+                {projectedTaxYearPosition.remainingPayrollPeriods} period
+                {projectedTaxYearPosition.remainingPayrollPeriods === 1
+                  ? ""
+                  : "s"}{" "}
+                · not paid)
+              </Text>
+              <YtdMetricRow
+                currency={currency}
+                metrics={[
+                  {
+                    label: "Taxable",
+                    amount:
+                      projectedTaxYearPosition.projectedRemainingTaxableIncome,
+                  },
+                ]}
+              />
+            </View>
+            <View style={styles.ytdGroup}>
+              <Text style={styles.label}>Tax calculation</Text>
+              <YtdMetricRow
+                currency={currency}
+                metrics={[
+                  {
+                    label: "Proj. taxable",
+                    amount:
+                      projectedTaxYearPosition.projectedAnnualTaxableIncome,
+                  },
+                  {
+                    label: "Personal allowance",
+                    amount: projectedTaxYearPosition.personalAllowance,
+                  },
+                  {
+                    label: "Qualifying",
+                    amount:
+                      projectedTaxYearPosition.allowableQualifyingDeduction,
+                  },
+                  {
+                    label: "Combined allowance",
+                    amount:
+                      projectedTaxYearPosition.personalAllowance +
+                      projectedTaxYearPosition.allowableQualifyingDeduction,
+                  },
+                  {
+                    label: "Chargeable",
+                    amount: projectedTaxYearPosition.projectedChargeableIncome,
+                  },
+                  {
+                    label: "Annual tax",
+                    amount: projectedTaxYearPosition.projectedAnnualTaxLiability,
+                  },
+                  ...(projectedTaxYearPosition.manualTaxAdjustment !== 0
+                    ? [
+                        {
+                          label: "Manual adj.",
+                          amount: projectedTaxYearPosition.manualTaxAdjustment,
+                        },
+                      ]
+                    : []),
+                  {
+                    label: "Remaining tax",
+                    amount: projectedTaxYearPosition.remainingTaxLiability,
+                  },
+                  ...(projectedTaxYearPosition.recommendedPayePerPeriod != null
+                    ? [
+                        {
+                          label: `PAYE / period (${projectedTaxYearPosition.remainingPayrollPeriods})`,
+                          amount:
+                            projectedTaxYearPosition.recommendedPayePerPeriod,
+                        },
+                      ]
+                    : []),
+                ]}
+              />
+            </View>
+          </View>
         ) : null}
 
         {payslip.employerContributions.length > 0 ? (

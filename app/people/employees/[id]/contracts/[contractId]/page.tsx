@@ -10,6 +10,7 @@ import { PageHeader } from "@/src/components/layout/page-header";
 import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
 import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { cn } from "@/lib/utils";
 import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import { ContractVersionHistoryTabs } from "@/src/modules/hr/components/contract-version-history-tabs";
 import { DeleteEmploymentContractButton } from "@/src/modules/hr/components/delete-employment-contract-button";
@@ -20,6 +21,7 @@ import {
   getEmploymentContractProfile,
 } from "@/src/modules/hr/data/get-employment-contracts";
 import { resolveEmployeeContractAccess } from "@/src/modules/hr/data/require-people-access";
+import { daysUntilExpiry } from "@/src/modules/hr/lib/correspondence-visibility";
 import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
 export const metadata: Metadata = {
@@ -35,13 +37,55 @@ function label(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function Detail({ labelText, value }: { labelText: string; value: string }) {
+function Detail({
+  labelText,
+  value,
+  valueClassName,
+}: {
+  labelText: string;
+  value: string;
+  valueClassName?: string;
+}) {
   return (
     <div>
       <p className="text-xs text-muted-foreground">{labelText}</p>
-      <p className="mt-1 whitespace-pre-wrap text-sm font-medium">{value}</p>
+      <p
+        className={cn(
+          "mt-1 whitespace-pre-wrap text-sm font-medium",
+          valueClassName,
+        )}
+      >
+        {value}
+      </p>
     </div>
   );
+}
+
+const CONTRACT_EXPIRY_WARNING_DAYS = 90;
+const CONTRACT_EXPIRY_CRITICAL_DAYS = 30;
+const CONTINUATION_CHANGE_TYPES = new Set(["RENEWAL", "EXTENSION"]);
+
+function formatDaysRemainingBeforeEnd(days: number): string {
+  if (days < 0) {
+    const elapsed = Math.abs(days);
+    return elapsed === 1
+      ? "Expired 1 day ago"
+      : `Expired ${elapsed} days ago`;
+  }
+
+  if (days === 0) {
+    return "Ends today";
+  }
+
+  return days === 1 ? "1 day remaining" : `${days} days remaining`;
+}
+
+function contractExpiryCountdownClass(days: number): string {
+  if (days <= CONTRACT_EXPIRY_CRITICAL_DAYS) {
+    return "text-red-600 dark:text-red-400";
+  }
+
+  return "text-amber-600 dark:text-amber-400";
 }
 
 function formatCollectedDisplay(value: string | null): string {
@@ -73,6 +117,19 @@ export default async function EmploymentContractPage({
   const historyHref = `/people/employees/${id}/contracts`;
   const isCollected = Boolean(contract.collectedAt);
   const isEmployeeSelf = currentUser?.employeeId === id;
+  const daysRemaining = contract.endDate
+    ? daysUntilExpiry(new Date(`${contract.endDate}T00:00:00.000Z`))
+    : null;
+  const hasContinuationContract = contract.amendments.some(
+    (successor) =>
+      CONTINUATION_CHANGE_TYPES.has(successor.changeType) &&
+      successor.status !== "CANCELLED",
+  );
+  const showExpiryCountdown =
+    !hasContinuationContract &&
+    daysRemaining !== null &&
+    daysRemaining <= CONTRACT_EXPIRY_WARNING_DAYS &&
+    (daysRemaining >= 0 || contract.isCurrent);
 
   const headerDescription = access.isSelfService
     ? `Your employment contract · ${contract.employee.employeeNumber}`
@@ -242,6 +299,13 @@ export default async function EmploymentContractPage({
                 : "No end date"
             }
           />
+          {showExpiryCountdown && daysRemaining !== null ? (
+            <Detail
+              labelText="Time remaining"
+              value={formatDaysRemainingBeforeEnd(daysRemaining)}
+              valueClassName={contractExpiryCountdownClass(daysRemaining)}
+            />
+          ) : null}
           <Detail
             labelText="Signed date"
             value={contract.signedDate ?? "Not recorded"}

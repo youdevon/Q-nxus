@@ -171,10 +171,13 @@
 }
 
 @media print {
-  /* Payslip print/PDF: A4 portrait (210 × 297 mm) — one detailed slip per page. */
+  /*
+   * Do not force A4/Letter — size:auto follows the printer’s selected tray
+   * so the driver does not raise a paper-size mismatch.
+   */
   @page {
-    size: A4 portrait;
-    margin: 12mm;
+    size: auto;
+    margin: 0.5in;
   }
 
   body {

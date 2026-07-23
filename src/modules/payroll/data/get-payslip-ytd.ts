@@ -424,6 +424,7 @@ export async function getPayslipYtdBreakdown(
   const prior = await getEmployeePriorEmploymentTotals(
     employeeId,
     currentEmployer.year,
+    { verifiedOnly: true },
   );
   return assemblePayslipYtdBreakdown({
     year: currentEmployer.year,

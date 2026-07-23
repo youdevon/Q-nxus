@@ -31,6 +31,8 @@ export default async function StoredPayslipPage({
       payslip={result.payslip}
       meta={result.meta}
       ytd={result.ytd}
+      ytdBreakdown={result.ytdBreakdown}
+      projectedTaxYearPosition={result.projectedTaxYearPosition}
       backHref={`/payroll/runs/${result.payRunId}`}
       backLabel={`Pay run ${result.runNumber}`}
       printHref={`/payroll/runs/${result.payRunId}/payslips/${result.id}/print`}

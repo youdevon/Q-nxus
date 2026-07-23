@@ -15,12 +15,19 @@ export type RecurringComponentCategory =
   | "RECURRING_EARNING";
 
 export type RecurringItemDefinitionInput = {
+  /** Component definition id — required to apply earning treatment overrides. */
+  id?: string;
   code: string;
   name: string;
   kind: RecurringComponentKind;
   category: RecurringComponentCategory;
   isTaxable: boolean;
   isActive: boolean;
+};
+
+export type EarningTreatmentOverrideLookup = {
+  isTaxable: boolean;
+  includeInProjectedEarnings?: boolean;
 };
 
 export type RecurringItemInput = {
@@ -119,12 +126,14 @@ export function resolveRecurringItemPeriodAmount(
 
 /**
  * Filter active-in-period items and map to payslip earning/deduction lines
- * with stable definition codes.
+ * with stable definition codes. Optional treatment overrides replace isTaxable
+ * when an approved override exists for the component definition.
  */
 export function applyRecurringItemsForPeriod(
   items: RecurringItemInput[],
   periodStart: Date | string,
   periodEnd: Date | string,
+  treatmentOverrides?: Map<string, EarningTreatmentOverrideLookup>,
 ): AppliedRecurringLine[] {
   const applied: AppliedRecurringLine[] = [];
 
@@ -138,10 +147,19 @@ export function applyRecurringItemsForPeriod(
       continue;
     }
 
+    const override =
+      item.definition.id != null
+        ? treatmentOverrides?.get(item.definition.id)
+        : undefined;
+    const isTaxable = override?.isTaxable ?? item.definition.isTaxable;
+
     const detailParts = [
       item.definition.code,
       categoryLabel(item.definition.category),
     ];
+    if (override) {
+      detailParts.push("treatment override");
+    }
     if (item.remainingBalance != null) {
       detailParts.push(
         `balance ${roundToCents(item.remainingBalance).toFixed(2)}`,
@@ -155,7 +173,7 @@ export function applyRecurringItemsForPeriod(
       category: item.definition.category,
       kind: item.definition.kind,
       amount,
-      isTaxable: item.definition.isTaxable,
+      isTaxable,
       remainingBalance: item.remainingBalance,
       detail: detailParts.join(" · "),
     });

@@ -187,9 +187,13 @@ export function NotificationProvider({
       }
 
       mutationEpoch.current += 1;
-      // Bell preview is unread-only — remove immediately on mark-read.
+      // Keep the row as history; only flip unread → read.
       setNotifications((current) =>
-        current.filter((notification) => notification.id !== id),
+        current.map((notification) =>
+          notification.id === id
+            ? { ...notification, read: true }
+            : notification,
+        ),
       );
       setUnreadCount((current) => Math.max(0, current - 1));
       if (target.href !== undefined) {
@@ -219,8 +223,11 @@ export function NotificationProvider({
     }
 
     mutationEpoch.current += 1;
-    // Bell preview is unread-only — clear the list on mark-all-read.
-    setNotifications([]);
+    setNotifications((current) =>
+      current.map((notification) =>
+        notification.read ? notification : { ...notification, read: true },
+      ),
+    );
     setUnreadCount(0);
     setUnreadActionUrls([]);
 

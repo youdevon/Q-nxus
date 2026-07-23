@@ -5,6 +5,8 @@ import {
   applyLeaveCancelTaken,
   applyLeaveRelease,
   applyLeaveReserve,
+  applyLeaveTakeDirect,
+  computeLeaveAvailable,
   isLeavePeriodStarted,
   splitLeaveTakenForDisplay,
 } from "@/src/modules/hr/lib/leave-balance-math";
@@ -59,6 +61,34 @@ describe("leave reserve / approve / withdraw math", () => {
       taken: "2",
       availableBalance: "10",
     });
+  });
+
+  it("takes leave directly for historical cutover", () => {
+    expect(applyLeaveTakeDirect(starting, "3")).toEqual({
+      reserved: "0",
+      taken: "5",
+      availableBalance: "7",
+    });
+  });
+
+  it("rejects direct take when available is insufficient", () => {
+    expect(() => applyLeaveTakeDirect(starting, "11")).toThrow(
+      /Insufficient available/,
+    );
+  });
+
+  it("computes available including opening balance", () => {
+    expect(
+      computeLeaveAvailable({
+        openingBalance: "2",
+        entitlement: "10",
+        accrued: "1",
+        carriedForward: "0",
+        adjustments: "-1",
+        reserved: "2",
+        taken: "3",
+      }),
+    ).toBe("7");
   });
 
   it("rejects approve/release when reserved is too low", () => {

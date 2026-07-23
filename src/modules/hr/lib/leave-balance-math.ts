@@ -10,6 +10,16 @@ export type LeaveBalanceSnapshot = {
   availableBalance: string;
 };
 
+export type LeaveBalanceComponents = {
+  openingBalance: string;
+  entitlement: string;
+  accrued: string;
+  carriedForward: string;
+  adjustments: string;
+  reserved: string;
+  taken: string;
+};
+
 function asNumber(value: string): number {
   const parsed = Number(value);
 
@@ -28,6 +38,24 @@ function formatQuantity(value: number): string {
   }
 
   return String(Number(value.toFixed(4)));
+}
+
+/**
+ * Available = opening + entitlement + accrued + carried forward + adjustments
+ * − reserved − taken.
+ */
+export function computeLeaveAvailable(
+  components: LeaveBalanceComponents,
+): string {
+  return formatQuantity(
+    asNumber(components.openingBalance) +
+      asNumber(components.entitlement) +
+      asNumber(components.accrued) +
+      asNumber(components.carriedForward) +
+      asNumber(components.adjustments) -
+      asNumber(components.reserved) -
+      asNumber(components.taken),
+  );
 }
 
 export function applyLeaveReserve(
@@ -72,6 +100,31 @@ export function applyLeaveApprove(
     reserved: formatQuantity(reserved - qty),
     taken: formatQuantity(asNumber(balance.taken) + qty),
     availableBalance: balance.availableBalance,
+  };
+}
+
+/**
+ * Cutover / historical: post leave as taken immediately without a reserve step.
+ */
+export function applyLeaveTakeDirect(
+  balance: LeaveBalanceSnapshot,
+  quantity: string,
+): LeaveBalanceSnapshot {
+  const qty = asNumber(quantity);
+  const available = asNumber(balance.availableBalance);
+
+  if (qty <= 0) {
+    throw new Error("Take quantity must be positive.");
+  }
+
+  if (available < qty) {
+    throw new Error("Insufficient available leave balance.");
+  }
+
+  return {
+    reserved: balance.reserved,
+    taken: formatQuantity(asNumber(balance.taken) + qty),
+    availableBalance: formatQuantity(available - qty),
   };
 }
 

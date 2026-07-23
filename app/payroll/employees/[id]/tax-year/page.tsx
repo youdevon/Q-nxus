@@ -1,24 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Printer } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/src/components/layout/page-header";
+import {
+  PageActionsEnd,
+  PageHeader,
+} from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { formatMoney } from "@/src/lib/format";
+import { AnnualPayeProjectionActions } from "@/src/modules/payroll/components/annual-paye-projection-actions";
+import { AnnualPayeProjectionWorksheet } from "@/src/modules/payroll/components/annual-paye-projection-worksheet";
+import { EmployeeEarningTreatmentOverridesPanel } from "@/src/modules/payroll/components/employee-earning-treatment-overrides-panel";
 import { EmployeeStatutoryOverridesPanel } from "@/src/modules/payroll/components/employee-statutory-overrides-panel";
+import { EmployeeTaxYearAdjustmentsPanel } from "@/src/modules/payroll/components/employee-tax-year-adjustments-panel";
 import { PayrollNav } from "@/src/modules/payroll/components/payroll-nav";
 import { getEmployeeTaxYearPage } from "@/src/modules/payroll/data/get-employee-tax-year-page";
-import { requirePayrollSetupAccess } from "@/src/modules/payroll/data/require-payroll-access";
+import { requirePayrollEmployeeYearAccess } from "@/src/modules/payroll/data/require-payroll-access";
 import {
   taxYearFromAsOfKey,
   toStatutoryAsOfKey,
 } from "@/src/modules/payroll/lib/statutory-as-of";
 
 export const metadata: Metadata = {
-  title: "Employee tax year",
+  title: "Employee Annual PAYE Projection",
 };
 
 export const dynamic = "force-dynamic";
@@ -68,7 +76,7 @@ export default async function EmployeeTaxYearPage({
   params,
   searchParams,
 }: TaxYearPageProps) {
-  const capabilities = await requirePayrollSetupAccess();
+  const capabilities = await requirePayrollEmployeeYearAccess();
   const { id } = await params;
   const { year: yearParam } = await searchParams;
   const currentYear = taxYearFromAsOfKey(toStatutoryAsOfKey(new Date()));
@@ -81,6 +89,7 @@ export default async function EmployeeTaxYearPage({
   }
 
   const setupHref = `/payroll/employees/${id}`;
+  const printHref = `/payroll/employees/${id}/tax-year/print?year=${taxYear}`;
   const canRequest =
     capabilities.can("payroll.setup") ||
     capabilities.can("payroll.manage") ||
@@ -88,14 +97,33 @@ export default async function EmployeeTaxYearPage({
   const canDecide =
     capabilities.can("payroll.manage") ||
     capabilities.can("payroll.statutory_override.approve");
+  const canSaveProjection =
+    capabilities.can("payroll.tax_projection.preview") ||
+    capabilities.can("payroll.tax_projection.view") ||
+    capabilities.can("payroll.setup") ||
+    capabilities.can("payroll.manage");
+  const canApproveProjection =
+    capabilities.can("payroll.tax_projection.approve") ||
+    capabilities.can("payroll.manage");
+  const canApplyProjection =
+    capabilities.can("payroll.tax_projection.apply") ||
+    capabilities.can("payroll.manage");
+  const canRequestAdjustment =
+    capabilities.can("payroll.tax_adjustments.create") ||
+    capabilities.can("payroll.setup") ||
+    capabilities.can("payroll.manage");
+  const canDecideAdjustment =
+    capabilities.can("payroll.tax_adjustments.approve") ||
+    capabilities.can("payroll.manage");
+  const canManageTreatment =
+    capabilities.can("payroll.tax_treatment.override") ||
+    capabilities.can("payroll.setup") ||
+    capabilities.can("payroll.manage");
 
   const tax = data.taxProfile;
   const summary = data.taxProfileSummary;
   const prior = data.priorEmployment;
-  const currency =
-    data.postedPayslips[0]?.currency ??
-    prior.records[0]?.currencyCode ??
-    "TTD";
+  const currency = data.projectionContext.currency;
 
   const yearLinks = [taxYear - 1, taxYear, taxYear + 1].filter(
     (y) => y >= 2000 && y <= 2100,
@@ -108,30 +136,129 @@ export default async function EmployeeTaxYearPage({
     <PageShell size="lg">
       <PayrollNav />
       <PageHeader
-        title={`Tax year ${taxYear}`}
-        description={`${data.employee.displayName} · ${data.employee.employeeNumber}`}
+        title="Employee Annual PAYE Projection"
+        description={`Tax year ${taxYear} · ${data.employee.displayName} · ${data.employee.employeeNumber}`}
         backHref={setupHref}
         backLabel="Payroll setup"
         actions={
-          <div className="flex flex-wrap gap-2">
-            {yearLinks.map((y) => (
+          <PageActionsEnd>
+            <div className="flex flex-wrap items-center gap-2">
               <Button
-                key={y}
                 nativeButton={false}
-                variant={y === taxYear ? "default" : "outline"}
+                variant="outline"
                 size="sm"
                 render={
-                  <Link href={`/payroll/employees/${id}/tax-year?year=${y}`} />
+                  <Link href={`/payroll/employees/${id}/payroll/${taxYear}`} />
                 }
               >
-                {y}
+                Month history
               </Button>
-            ))}
-          </div>
+              {yearLinks.map((y) => (
+                <Button
+                  key={y}
+                  nativeButton={false}
+                  variant={y === taxYear ? "default" : "outline"}
+                  size="sm"
+                  render={
+                    <Link href={`/payroll/employees/${id}/tax-year?year=${y}`} />
+                  }
+                >
+                  {y}
+                </Button>
+              ))}
+              {data.annualProjection ? (
+                <Button
+                  nativeButton={false}
+                  variant="default"
+                  size="sm"
+                  render={<Link href={printHref} />}
+                >
+                  <Printer />
+                  Print
+                </Button>
+              ) : null}
+            </div>
+          </PageActionsEnd>
         }
       />
 
       <div className="space-y-8">
+        <section className="space-y-3">
+          <div className="space-y-1">
+            <SectionHeading>Employee details</SectionHeading>
+          </div>
+          <div className="grid gap-3 rounded-md border border-border/70 bg-muted/20 px-4 py-3 sm:grid-cols-2 lg:grid-cols-4">
+            <MetaBlock label="Department" value={data.employee.departmentName ?? "—"} />
+            <MetaBlock label="Position" value={data.employee.positionTitle ?? "—"} />
+            <MetaBlock
+              label="Hire date"
+              value={data.employee.hireDate ?? "—"}
+            />
+            <MetaBlock
+              label="Pay frequency"
+              value={data.projectionContext.payFrequency}
+            />
+            <MetaBlock
+              label="Basic salary"
+              value={
+                data.projectionContext.monthlyBasicSalary != null
+                  ? formatMoney(data.projectionContext.monthlyBasicSalary, {
+                      currency,
+                    })
+                  : "—"
+              }
+            />
+            <MetaBlock
+              label="Contract end"
+              value={data.projectionContext.contractEndDate ?? "—"}
+            />
+          </div>
+        </section>
+
+        {data.annualProjection ? (
+          <AnnualPayeProjectionWorksheet
+            projection={data.annualProjection}
+            currency={currency}
+            payeConfigVersionLabel={
+              data.projectionContext.payeConfigVersionLabel
+            }
+            isMidYearJoiner={prior.totals.recordCount > 0}
+            printHref={printHref}
+          />
+        ) : (
+          <p className="rounded-md border border-dashed border-border/70 px-4 py-6 text-sm text-muted-foreground">
+            No PAYE statutory schedule is in effect for {taxYear}. Configure
+            rates under Payroll → Settings → PAYE.
+          </p>
+        )}
+
+        <AnnualPayeProjectionActions
+          employeeId={id}
+          taxYear={taxYear}
+          currency={currency}
+          savedProjections={data.savedProjections}
+          canSave={canSaveProjection}
+          canApprove={canApproveProjection}
+          canApply={canApplyProjection}
+        />
+
+        <EmployeeTaxYearAdjustmentsPanel
+          employeeId={id}
+          taxYear={taxYear}
+          adjustments={data.taxYearAdjustments}
+          canRequest={canRequestAdjustment}
+          canDecide={canDecideAdjustment}
+          currency={currency}
+        />
+
+        <EmployeeEarningTreatmentOverridesPanel
+          employeeId={id}
+          taxYear={taxYear}
+          overrides={data.earningTreatmentOverrides}
+          componentOptions={data.componentOptions}
+          canManage={canManageTreatment}
+        />
+
         <section className="space-y-3">
           <div className="space-y-1">
             <SectionHeading>Tax profile</SectionHeading>

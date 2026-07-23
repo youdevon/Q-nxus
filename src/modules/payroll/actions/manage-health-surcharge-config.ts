@@ -7,6 +7,10 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import {
+  recalculateAfterTaxChange,
+  taxYearForEffectiveFrom,
+} from "@/src/modules/payroll/services/recalculate-after-tax-change";
 
 export type HealthSurchargeFormState = {
   status: "idle" | "error";
@@ -229,5 +233,13 @@ export async function saveHealthSurchargeConfig(
   }
 
   revalidateHealthPaths();
+  await recalculateAfterTaxChange({
+    organizationId: organization.id,
+    taxYear: taxYearForEffectiveFrom(effectiveFrom!),
+    actorUserId: actor.actor.userId,
+    reason: `Health Surcharge config effective ${effectiveFromKey}`,
+    effectiveFrom: effectiveFrom!,
+    metadata,
+  });
   redirect("/payroll/settings/health");
 }

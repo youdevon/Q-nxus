@@ -35,6 +35,7 @@ export type ContractLeaveBalanceRecord = {
   /** Approved leave that has started or completed. */
   taken: string;
   expired: string;
+  openingBalance: string;
   availableBalance: string;
 };
 
@@ -386,6 +387,7 @@ export async function getContractLeaveBalances(
         leaveTypeId: true,
         cycleStart: true,
         cycleEnd: true,
+        openingBalance: true,
         entitlement: true,
         accrued: true,
         carriedForward: true,
@@ -491,6 +493,7 @@ export async function getContractLeaveBalances(
       ),
       leaveTypeCode: balance.leaveType.code,
       leaveTypeName: balance.leaveType.name,
+      openingBalance: balance.openingBalance.toString(),
       entitlement: balance.entitlement.toString(),
       accrued: balance.accrued.toString(),
       carriedForward: balance.carriedForward.toString(),

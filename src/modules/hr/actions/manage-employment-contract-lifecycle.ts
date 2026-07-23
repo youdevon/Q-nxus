@@ -6,6 +6,7 @@ import { unstable_rethrow } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import {
+  employeeStorageFolderLabel,
   resolveStoredFileAbsolutePath,
   storeUploadedFile,
 } from "@/src/lib/stored-file";
@@ -566,6 +567,18 @@ export async function activateEmploymentContract(
       }
     }
 
+    revalidateContractPaths(contract.employeeId, contractId);
+    revalidatePath(`/people/employees/${contract.employeeId}`);
+    revalidatePath(`/payroll/employees/${contract.employeeId}`);
+
+    if (result.historical) {
+      return {
+        status: "success",
+        message:
+          "Historical contract recorded as expired. It did not become the current contract or create leave balances.",
+      };
+    }
+
     let payrollMessage = "";
     try {
       const { syncPayrollReadinessAfterContractActivate } = await import(
@@ -590,10 +603,6 @@ export async function activateEmploymentContract(
         payrollError,
       );
     }
-
-    revalidateContractPaths(contract.employeeId, contractId);
-    revalidatePath(`/people/employees/${contract.employeeId}`);
-    revalidatePath(`/payroll/employees/${contract.employeeId}`);
 
     await notifyContractActivated({
       contractId,
@@ -646,6 +655,8 @@ export async function uploadEmploymentContractDocument(
         select: {
           organizationId: true,
           employeeNumber: true,
+          firstName: true,
+          lastName: true,
           fileFrozenAt: true,
         },
       },
@@ -666,7 +677,8 @@ export async function uploadEmploymentContractDocument(
   const previousStorageKey = contract.documentStorageKey;
   const previousStoredFileId = contract.storedFileId;
   const metadata = await getAuditRequestMetadata(formData);
-  const storageKey = `employee-file/${contract.employeeId}/contracts/${contractId}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}`;
+  const employeeFolder = employeeStorageFolderLabel(contract.employee);
+  const storageKey = `employee-file/${employeeFolder}/contracts/${contractId}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}`;
 
   try {
     const stored = await storeUploadedFile({

@@ -341,7 +341,13 @@ export async function createEmployeeQualificationDocument(
 
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-    select: { id: true, organizationId: true, firstName: true, lastName: true },
+    select: {
+      id: true,
+      organizationId: true,
+      firstName: true,
+      lastName: true,
+      employeeNumber: true,
+    },
   });
 
   if (!employee) {
@@ -381,6 +387,7 @@ export async function createEmployeeQualificationDocument(
 
       if (attachmentFile) {
         const stored = await storeEmployeeFileAttachment({
+          employee,
           recordType: "qualifications",
           recordId: created.id,
           file: attachmentFile,
@@ -486,6 +493,13 @@ export async function updateEmployeeQualificationDocument(
       fileName: true,
       mimeType: true,
       fileSize: true,
+      employee: {
+        select: {
+          employeeNumber: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
     },
   });
 
@@ -529,6 +543,7 @@ export async function updateEmployeeQualificationDocument(
 
       if (attachmentFile) {
         const stored = await storeEmployeeFileAttachment({
+          employee: existing.employee,
           recordType: "qualifications",
           recordId: existing.id,
           file: attachmentFile,

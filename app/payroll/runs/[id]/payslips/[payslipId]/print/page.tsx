@@ -31,6 +31,8 @@ export default async function StoredPayslipPrintPage({
       payslip={result.payslip}
       meta={result.meta}
       ytd={result.ytd}
+      ytdBreakdown={result.ytdBreakdown}
+      projectedTaxYearPosition={result.projectedTaxYearPosition}
       isOfficial={result.isPosted}
     />
   );

@@ -14,12 +14,14 @@ import type {
   PayslipYtdBreakdown,
   PayslipYtdTotals,
 } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
 
 export function PayslipPreviewView({
   payslip,
   meta,
   ytd = null,
   ytdBreakdown = null,
+  projectedTaxYearPosition = null,
   backHref,
   backLabel,
   setupHref,
@@ -34,6 +36,7 @@ export function PayslipPreviewView({
   meta: PayslipDocumentMeta;
   ytd?: PayslipYtdTotals | null;
   ytdBreakdown?: PayslipYtdBreakdown | null;
+  projectedTaxYearPosition?: ProjectedTaxYearPosition | null;
   backHref: string;
   backLabel: string;
   /** Optional link to payroll setup (manage users). */
@@ -109,6 +112,7 @@ export function PayslipPreviewView({
         meta={meta}
         ytd={ytd}
         ytdBreakdown={ytdBreakdown}
+        projectedTaxYearPosition={projectedTaxYearPosition}
         showWarnings={!isOfficial && payslip.warnings.length > 0}
         isOfficial={isOfficial}
       />

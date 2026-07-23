@@ -843,7 +843,7 @@ export function EmploymentContractForm({
                 {nonEmployeePayee
                   ? "Required engagement end. Closing the contract drops the payee from active payroll."
                   : isCustomPeriod
-                    ? "Required for leave balances and gratuity estimates."
+                    ? "Required for leave balances and gratuity estimates. If the end date is already in the past, Save & activate records it as expired history without becoming current."
                     : "Auto-calculated from the start date and period. Choose Custom to edit."}
               </p>
             )}

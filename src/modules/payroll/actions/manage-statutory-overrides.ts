@@ -15,6 +15,7 @@ import {
   notifyStatutoryOverrideDecided,
   notifyStatutoryOverridePending,
 } from "@/src/modules/payroll/services/notify-payroll-events";
+import { recalculateAfterTaxChange } from "@/src/modules/payroll/services/recalculate-after-tax-change";
 
 export type StatutoryOverrideFormState = {
   status: "idle" | "error" | "success";
@@ -223,6 +224,98 @@ export async function requestStatutoryOverride(
   };
 }
 
+/** Move a DRAFT statutory override to PENDING_APPROVAL and notify approvers. */
+export async function submitStatutoryOverrideForApproval(
+  _previousState: StatutoryOverrideFormState,
+  formData: FormData,
+): Promise<StatutoryOverrideFormState> {
+  const actor = await requireActor(
+    "payroll.manage",
+    "payroll.statutory_override.request",
+    "payroll.setup",
+  );
+  if (!actor.ok) {
+    return { status: "error", message: actor.message };
+  }
+
+  const overrideId = textValue(formData, "overrideId");
+  if (!overrideId) {
+    return { status: "error", message: "Missing override reference." };
+  }
+
+  const metadata = await getAuditRequestMetadata(formData);
+
+  try {
+    const existing = await prisma.employeePayrollStatutoryOverride.findUnique({
+      where: { id: overrideId },
+      include: {
+        employee: {
+          select: {
+            id: true,
+            organizationId: true,
+            firstName: true,
+            lastName: true,
+            employeeNumber: true,
+          },
+        },
+      },
+    });
+
+    if (!existing || existing.status !== "DRAFT") {
+      return {
+        status: "error",
+        message: "Only draft overrides can be submitted for approval.",
+      };
+    }
+
+    await prisma.$transaction(async (transaction) => {
+      await transaction.employeePayrollStatutoryOverride.update({
+        where: { id: existing.id },
+        data: {
+          status: "PENDING_APPROVAL",
+          requestedByUserId: actor.actor.userId,
+          approvedByUserId: null,
+          approvedAt: null,
+          rejectedReason: null,
+        },
+      });
+
+      await recordAuditEvent(transaction, {
+        userId: actor.actor.userId,
+        organizationId: existing.employee.organizationId,
+        moduleKey: "payroll",
+        action: "UPDATE",
+        entityType: "EmployeePayrollStatutoryOverride",
+        entityId: existing.id,
+        description: `Submitted statutory override for approval (${existing.employee.firstName} ${existing.employee.lastName}).`,
+        oldValues: { status: existing.status },
+        newValues: { status: "PENDING_APPROVAL" },
+        ...metadata,
+      });
+    });
+
+    const periodEndKey = existing.periodEnd.toISOString().slice(0, 10);
+    await notifyStatutoryOverridePending({
+      organizationId: existing.employee.organizationId,
+      employeeId: existing.employee.id,
+      overrideId: existing.id,
+      employeeLabel: `${existing.employee.employeeNumber} — ${existing.employee.firstName} ${existing.employee.lastName}`,
+      periodEndKey,
+      actorUserId: actor.actor.userId,
+    });
+
+    revalidatePath(`/payroll/employees/${existing.employee.id}`);
+    revalidatePath(`/payroll/employees/${existing.employee.id}/tax-year`);
+    return {
+      status: "success",
+      message: "Override submitted for approval.",
+    };
+  } catch (error) {
+    console.error("Unable to submit statutory override:", error);
+    return { status: "error", message: "Unable to submit the override." };
+  }
+}
+
 export async function decideStatutoryOverride(
   _previousState: StatutoryOverrideFormState,
   formData: FormData,
@@ -322,6 +415,18 @@ export async function decideStatutoryOverride(
     requestedByUserId: existing.requestedByUserId,
     actorUserId: actor.actor.userId,
   });
+
+  if (decision === "approve") {
+    await recalculateAfterTaxChange({
+      organizationId: existing.employee.organizationId,
+      employeeId: existing.employee.id,
+      taxYear: existing.taxYear,
+      actorUserId: actor.actor.userId,
+      reason: "statutory override approved",
+      effectiveFrom: existing.periodEnd,
+      metadata,
+    });
+  }
 
   return {
     status: "success",

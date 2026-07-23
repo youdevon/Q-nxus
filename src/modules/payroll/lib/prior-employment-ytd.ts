@@ -49,8 +49,13 @@ function nonNegative(value: number | null | undefined): number {
 /** Sum ACTIVE prior-employer YTD rows for a tax year. */
 export function aggregatePriorEmploymentYtd(
   records: PriorEmploymentYtdAmounts[],
+  options?: { verifiedOnly?: boolean },
 ): PriorEmploymentYtdTotals {
-  if (records.length === 0) {
+  const selected = options?.verifiedOnly
+    ? records.filter((row) => row.verified)
+    : records;
+
+  if (selected.length === 0) {
     return emptyPriorEmploymentYtdTotals();
   }
 
@@ -62,7 +67,7 @@ export function aggregatePriorEmploymentYtd(
   let otherApprovedDeductionsYtd = 0;
   let verifiedCount = 0;
 
-  for (const row of records) {
+  for (const row of selected) {
     taxableIncomeYtd += nonNegative(row.taxableIncomeYtd);
     payeDeductedYtd += nonNegative(row.payeDeductedYtd);
     nisEmployeeYtd += nonNegative(row.nisEmployeeYtd);
@@ -81,10 +86,20 @@ export function aggregatePriorEmploymentYtd(
     nisEmployerYtd: round2(nisEmployerYtd),
     healthSurchargeYtd: round2(healthSurchargeYtd),
     otherApprovedDeductionsYtd: round2(otherApprovedDeductionsYtd),
-    recordCount: records.length,
+    recordCount: selected.length,
     verifiedCount,
-    allVerified: verifiedCount === records.length,
+    allVerified: verifiedCount === selected.length,
   };
+}
+
+/**
+ * Totals that may enter approved / applied PAYE (verified ACTIVE rows only).
+ * Unverified rows remain visible for preview warnings but are excluded here.
+ */
+export function aggregateVerifiedPriorEmploymentYtd(
+  records: PriorEmploymentYtdAmounts[],
+): PriorEmploymentYtdTotals {
+  return aggregatePriorEmploymentYtd(records, { verifiedOnly: true });
 }
 
 function round2(value: number): number {

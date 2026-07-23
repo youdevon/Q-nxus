@@ -72,7 +72,11 @@ export async function saveEmployeeTaxProfile(
   _previousState: EmployeeTaxProfileFormState,
   formData: FormData,
 ): Promise<EmployeeTaxProfileFormState> {
-  const actor = await requireActor("payroll.setup", "payroll.manage");
+  const actor = await requireActor(
+    "payroll.tax_profile.manage",
+    "payroll.setup",
+    "payroll.manage",
+  );
 
   if (!actor.ok) {
     return {

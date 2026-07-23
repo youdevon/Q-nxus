@@ -11,6 +11,7 @@ import type {
   PayslipYtdBreakdown,
   PayslipYtdTotals,
 } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
 
 export type PayslipBatchPrintDocument = {
   key: string;
@@ -18,6 +19,7 @@ export type PayslipBatchPrintDocument = {
   meta: PayslipDocumentMeta;
   ytd?: PayslipYtdTotals | null;
   ytdBreakdown?: PayslipYtdBreakdown | null;
+  projectedTaxYearPosition?: ProjectedTaxYearPosition | null;
   isOfficial?: boolean;
 };
 
@@ -143,6 +145,7 @@ export function PayslipBatchPrintView({
               meta={doc.meta}
               ytd={doc.ytd}
               ytdBreakdown={doc.ytdBreakdown}
+              projectedTaxYearPosition={doc.projectedTaxYearPosition}
               showWarnings={!doc.isOfficial}
               isOfficial={doc.isOfficial}
             />

@@ -405,3 +405,24 @@ Expired
   ↓
 
 Archived
+---
+
+## 8. Paper cutover / historical contracts
+
+When migrating from paper to digital:
+
+1. Enter prior terms with their real `startDate` / `endDate` (dates may be in the past).
+2. Use **Save & activate** (or Activate on an existing draft). If `endDate` is before today (UTC), the contract is recorded as **EXPIRED** history:
+   - `isCurrent` stays false
+   - no leave balances are created
+   - the employee’s current active contract is not displaced
+   - no activate notifications / payroll-readiness sync
+3. Enter the current term last and activate it normally (end date today or later) so it becomes **ACTIVE** / current and receives leave balances.
+4. Prefer renew links (`sourceContractId` + RENEWAL/EXTENSION) so completed terms stay in **Previous contracts**. Amendments also keep `sourceContractId` for version history on the current contract, but amended predecessors do **not** appear under Previous contracts.
+
+Do not activate a past-ended term expecting it to become the live current contract — use a current-period end date for the live term.
+
+**Previous contracts** vs **amendments**:
+
+- Previous contracts: employment periods the employee worked through (expired, terminated, or superseded by renewal/extension).
+- Amendments / salary / position adjustments: version history of the same employment period — visible on the current contract’s amendment history, not in Previous contracts.

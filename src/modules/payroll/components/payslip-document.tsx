@@ -9,6 +9,7 @@ import {
   type PayslipPreview,
 } from "@/src/modules/payroll/lib/payslip-preview";
 import type { PayslipYtdBreakdown, PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
 
 function Amount({
   amount,
@@ -258,11 +259,144 @@ function MetaItem({
   );
 }
 
+function ProjectedTaxYearSection({
+  currency,
+  projected,
+}: {
+  currency: string;
+  projected: ProjectedTaxYearPosition;
+}) {
+  const hasPrior = projected.previousEmployerTaxableIncome > 0;
+  const combinedAllowance =
+    projected.personalAllowance + projected.allowableQualifyingDeduction;
+
+  return (
+    <section className="space-y-1.5 border-b border-border/70 px-3 py-2 sm:px-4 print:space-y-0.5 print:px-2.5 print:py-0.5">
+      <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+        Annual PAYE projection · {projected.taxYear}
+        <span className="ml-1.5 font-normal normal-case tracking-normal text-muted-foreground/80">
+          (v{projected.version} · {projected.payFrequency.toLowerCase()} ·
+          estimate — not paid)
+        </span>
+      </p>
+
+      {hasPrior ? (
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+            Previous employer (actual)
+          </p>
+          <YtdMetricStrip
+            currency={currency}
+            metrics={[
+              {
+                label: "Taxable",
+                amount: projected.previousEmployerTaxableIncome,
+              },
+              { label: "PAYE", amount: projected.previousEmployerPaye },
+            ]}
+          />
+        </div>
+      ) : null}
+
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+          Current employer YTD (actual)
+        </p>
+        <YtdMetricStrip
+          currency={currency}
+          metrics={[
+            {
+              label: "Taxable",
+              amount: projected.currentEmployerActualTaxableIncome,
+            },
+            { label: "PAYE", amount: projected.currentEmployerPaye },
+          ]}
+        />
+      </div>
+
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+          Projected remaining
+          <span className="ml-1.5 font-normal normal-case tracking-normal">
+            ({projected.remainingPayrollPeriods} period
+            {projected.remainingPayrollPeriods === 1 ? "" : "s"} · not paid)
+          </span>
+        </p>
+        <YtdMetricStrip
+          currency={currency}
+          metrics={[
+            {
+              label: "Taxable",
+              amount: projected.projectedRemainingTaxableIncome,
+            },
+          ]}
+        />
+      </div>
+
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+          Tax calculation
+        </p>
+        <YtdMetricStrip
+          currency={currency}
+          metrics={[
+            {
+              label: "Proj. taxable",
+              amount: projected.projectedAnnualTaxableIncome,
+            },
+            {
+              label: "Personal allowance",
+              amount: projected.personalAllowance,
+            },
+            {
+              label: "Qualifying",
+              amount: projected.allowableQualifyingDeduction,
+            },
+            {
+              label: "Combined allowance",
+              amount: combinedAllowance,
+            },
+            {
+              label: "Chargeable",
+              amount: projected.projectedChargeableIncome,
+            },
+            {
+              label: "Annual tax",
+              amount: projected.projectedAnnualTaxLiability,
+            },
+            ...(projected.manualTaxAdjustment !== 0
+              ? [
+                  {
+                    label: "Manual adj.",
+                    amount: projected.manualTaxAdjustment,
+                  },
+                ]
+              : []),
+            {
+              label: "Remaining tax",
+              amount: projected.remainingTaxLiability,
+            },
+            ...(projected.recommendedPayePerPeriod != null
+              ? [
+                  {
+                    label: `PAYE / period (${projected.remainingPayrollPeriods})`,
+                    amount: projected.recommendedPayePerPeriod,
+                  },
+                ]
+              : []),
+          ]}
+        />
+      </div>
+    </section>
+  );
+}
+
 export function PayslipDocument({
   payslip,
   meta,
   ytd = null,
   ytdBreakdown = null,
+  projectedTaxYearPosition = null,
   showWarnings = true,
   isOfficial = false,
 }: {
@@ -272,6 +406,8 @@ export function PayslipDocument({
   ytd?: PayslipYtdTotals | null;
   /** Phase 9: prior / this-employer / combined split when prior exists. */
   ytdBreakdown?: PayslipYtdBreakdown | null;
+  /** Approved annual PAYE projection summary (estimate, not paid). */
+  projectedTaxYearPosition?: ProjectedTaxYearPosition | null;
   /** When false, suppresses the preview warnings block (e.g. on the main preview page). */
   showWarnings?: boolean;
   /** Posted payslip — hide preview banner and show official footer. */
@@ -483,6 +619,13 @@ export function PayslipDocument({
             currency={currency}
             ytd={ytd}
             ytdBreakdown={ytdBreakdown}
+          />
+        ) : null}
+
+        {projectedTaxYearPosition ? (
+          <ProjectedTaxYearSection
+            currency={currency}
+            projected={projectedTaxYearPosition}
           />
         ) : null}
 

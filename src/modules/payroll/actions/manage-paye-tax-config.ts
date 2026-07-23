@@ -7,6 +7,9 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import {
+  recalculateAfterTaxChange,
+} from "@/src/modules/payroll/services/recalculate-after-tax-change";
 
 export type PayeTaxFormState = {
   status: "idle" | "error";
@@ -348,5 +351,13 @@ export async function savePayeTaxConfig(
   }
 
   revalidatePayePaths();
+  await recalculateAfterTaxChange({
+    organizationId: organization.id,
+    taxYear,
+    actorUserId: actor.actor.userId,
+    reason: `PAYE tax config effective ${effectiveFromKey}`,
+    effectiveFrom: effectiveFrom!,
+    metadata,
+  });
   redirect("/payroll/settings/paye");
 }

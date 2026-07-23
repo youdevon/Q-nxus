@@ -116,6 +116,8 @@ export async function getEmployeePriorEmploymentYtds(
   taxYear: number;
   records: PriorEmploymentYtdRecord[];
   totals: PriorEmploymentYtdTotals;
+  /** Verified ACTIVE only — use for payslip / pay-run PAYE inputs. */
+  verifiedTotals: PriorEmploymentYtdTotals;
 }> {
   const year =
     taxYear ?? taxYearFromAsOfKey(toStatutoryAsOfKey(new Date()));
@@ -143,29 +145,27 @@ export async function getEmployeePriorEmploymentYtds(
   });
 
   const activeForTotals = rows.filter((row) => row.status === "ACTIVE");
-  const totals = aggregatePriorEmploymentYtd(
-    activeForTotals.map((row) => ({
-      taxableIncomeYtd: Number(row.taxableIncomeYtd.toString()),
-      payeDeductedYtd: Number(row.payeDeductedYtd.toString()),
-      nisEmployeeYtd:
-        row.nisEmployeeYtd != null
-          ? Number(row.nisEmployeeYtd.toString())
-          : 0,
-      nisEmployerYtd:
-        row.nisEmployerYtd != null
-          ? Number(row.nisEmployerYtd.toString())
-          : 0,
-      healthSurchargeYtd:
-        row.healthSurchargeYtd != null
-          ? Number(row.healthSurchargeYtd.toString())
-          : 0,
-      otherApprovedDeductionsYtd:
-        row.otherApprovedDeductionsYtd != null
-          ? Number(row.otherApprovedDeductionsYtd.toString())
-          : 0,
-      verified: row.verified,
-    })),
-  );
+  const amountRows = activeForTotals.map((row) => ({
+    taxableIncomeYtd: Number(row.taxableIncomeYtd.toString()),
+    payeDeductedYtd: Number(row.payeDeductedYtd.toString()),
+    nisEmployeeYtd:
+      row.nisEmployeeYtd != null ? Number(row.nisEmployeeYtd.toString()) : 0,
+    nisEmployerYtd:
+      row.nisEmployerYtd != null ? Number(row.nisEmployerYtd.toString()) : 0,
+    healthSurchargeYtd:
+      row.healthSurchargeYtd != null
+        ? Number(row.healthSurchargeYtd.toString())
+        : 0,
+    otherApprovedDeductionsYtd:
+      row.otherApprovedDeductionsYtd != null
+        ? Number(row.otherApprovedDeductionsYtd.toString())
+        : 0,
+    verified: row.verified,
+  }));
+  const totals = aggregatePriorEmploymentYtd(amountRows);
+  const verifiedTotals = aggregatePriorEmploymentYtd(amountRows, {
+    verifiedOnly: true,
+  });
 
   return {
     taxYear: year,
@@ -189,6 +189,7 @@ export async function getEmployeePriorEmploymentYtds(
       }),
     ),
     totals,
+    verifiedTotals,
   };
 }
 
@@ -196,12 +197,14 @@ export async function getEmployeePriorEmploymentYtds(
 export async function getEmployeePriorEmploymentTotals(
   employeeId: string,
   taxYear: number,
+  options?: { verifiedOnly?: boolean },
 ): Promise<PriorEmploymentYtdTotals> {
   const rows = await prisma.employeePriorEmploymentYtd.findMany({
     where: {
       employeeId,
       taxYear,
       status: "ACTIVE",
+      ...(options?.verifiedOnly ? { verified: true } : {}),
     },
     select: {
       taxableIncomeYtd: true,
@@ -237,4 +240,17 @@ export async function getEmployeePriorEmploymentTotals(
       verified: row.verified,
     })),
   );
+}
+
+/**
+ * Verified ACTIVE prior YTD only — used by payslip / pay-run calc.
+ * Unverified rows remain on file for preview but do not enter withholding.
+ */
+export async function getEmployeeVerifiedPriorEmploymentTotals(
+  employeeId: string,
+  taxYear: number,
+): Promise<PriorEmploymentYtdTotals> {
+  return getEmployeePriorEmploymentTotals(employeeId, taxYear, {
+    verifiedOnly: true,
+  });
 }

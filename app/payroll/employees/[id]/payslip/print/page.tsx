@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PayslipPrintView } from "@/src/modules/payroll/components/payslip-print-view";
+import { getApprovedProjectedTaxYearPosition } from "@/src/modules/payroll/data/get-annual-paye-projections";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import {
   getPayslipYtdBreakdown,
@@ -11,6 +12,10 @@ import {
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
 import { payslipPeriodToAsOfDate } from "@/src/modules/payroll/lib/payslip-preview";
 import { periodKeyFromAsOf } from "@/src/modules/payroll/lib/payslip-ytd";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export const metadata: Metadata = {
   title: "Print payslip",
@@ -54,6 +59,10 @@ export default async function EmployeePayslipPrintPage({
     : null;
   const ytdBreakdown =
     ytd != null ? await getPayslipYtdBreakdown(id, ytd) : null;
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    id,
+    taxYearFromAsOfKey(toStatutoryAsOfKey(new Date(payslip.period.asOf))),
+  );
 
   return (
     <PayslipPrintView
@@ -61,6 +70,7 @@ export default async function EmployeePayslipPrintPage({
       meta={meta}
       ytd={ytd}
       ytdBreakdown={ytdBreakdown}
+      projectedTaxYearPosition={projectedTaxYearPosition}
     />
   );
 }

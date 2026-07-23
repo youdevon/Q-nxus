@@ -7,17 +7,20 @@ import {
   type LeaveEntitlementOverride,
 } from "@/src/modules/hr/services/create-contract-leave-balances";
 import { entitlementOverridesFromContractFields } from "@/src/modules/hr/lib/contract-leave-overrides";
+import { isHistoricalEndedContract } from "@/src/modules/hr/lib/historical-contract";
 import {
   assignEmployeeToPosition,
 } from "@/src/modules/hr/services/assign-employee-to-position";
 import type { AuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 
+export { isHistoricalEndedContract } from "@/src/modules/hr/lib/historical-contract";
+
 type Tx = Prisma.TransactionClient;
 
 /**
- * Make a draft/approved/signed contract the current ACTIVE contract:
- * supersede prior current, optional seat assignment, leave balances.
- * Does not activate contracts that are still PENDING_APPROVAL.
+ * Make a draft/approved/signed contract the current ACTIVE contract,
+ * or record a past-ended term as EXPIRED history for cutover (no leave
+ * balances, no assignment, does not displace the current contract).
  */
 export async function activateEmploymentContractInTransaction(
   input: {
@@ -31,7 +34,7 @@ export async function activateEmploymentContractInTransaction(
     applyAssignment?: boolean;
   },
   transaction: Tx,
-): Promise<{ needsAccessRoleSync: boolean }> {
+): Promise<{ needsAccessRoleSync: boolean; historical: boolean }> {
   const contract = await transaction.employmentContract.findFirst({
     where: {
       id: input.contractId,
@@ -59,7 +62,7 @@ export async function activateEmploymentContractInTransaction(
   }
 
   if (contract.status === "ACTIVE" && contract.isCurrent) {
-    return { needsAccessRoleSync: false };
+    return { needsAccessRoleSync: false, historical: false };
   }
 
   if (
@@ -89,6 +92,45 @@ export async function activateEmploymentContractInTransaction(
 
   if (!employee) {
     throw new Error("EMPLOYEE_NOT_FOUND");
+  }
+
+  const historical = isHistoricalEndedContract(contract.endDate);
+
+  // Past-ended paper terms: store as EXPIRED history without becoming current.
+  if (historical) {
+    await transaction.employmentContract.update({
+      where: { id: contract.id },
+      data: {
+        status: "EXPIRED",
+        isCurrent: false,
+        activatedAt: new Date(),
+      },
+    });
+
+    await transaction.auditEvent.create({
+      data: {
+        userId: input.actorUserId,
+        moduleKey: "hr",
+        action: "ACTIVATE",
+        entityType: "EmploymentContract",
+        entityId: contract.id,
+        description: `Recorded historical employment contract for ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName} (ended ${contract.endDate!.toISOString().slice(0, 10)}).`,
+        newValues: {
+          status: "EXPIRED",
+          isCurrent: false,
+          historical: true,
+          contractNumber: contract.contractNumber,
+          contractType: contract.contractType,
+          startDate: contract.startDate.toISOString().slice(0, 10),
+          endDate: contract.endDate!.toISOString().slice(0, 10),
+        },
+        ipAddress: input.audit.ipAddress,
+        userAgent: input.audit.userAgent,
+        clientHostName: input.audit.clientHostName,
+      },
+    });
+
+    return { needsAccessRoleSync: false, historical: true };
   }
 
   let needsAccessRoleSync = false;
@@ -220,5 +262,5 @@ export async function activateEmploymentContractInTransaction(
     },
   });
 
-  return { needsAccessRoleSync };
+  return { needsAccessRoleSync, historical: false };
 }

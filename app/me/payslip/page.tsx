@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { PayslipPreviewView } from "@/src/modules/payroll/components/payslip-preview";
+import { getApprovedProjectedTaxYearPosition } from "@/src/modules/payroll/data/get-annual-paye-projections";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import {
   getMostRecentPostedPayslip,
@@ -19,6 +20,10 @@ import {
   resolveDefaultLivePayslipPeriod,
 } from "@/src/modules/payroll/lib/payslip-preview";
 import { periodKeyFromAsOf } from "@/src/modules/payroll/lib/payslip-ytd";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
@@ -68,6 +73,7 @@ export default async function MyPayslipPage({
         meta={posted.meta}
         ytd={posted.ytd}
         ytdBreakdown={posted.ytdBreakdown}
+        projectedTaxYearPosition={posted.projectedTaxYearPosition}
         backHref="/me/payslips"
         backLabel="Payslip history"
         printHref={`/me/payslip/print?payslipId=${posted.id}`}
@@ -91,6 +97,7 @@ export default async function MyPayslipPage({
           meta={posted.meta}
           ytd={posted.ytd}
           ytdBreakdown={posted.ytdBreakdown}
+          projectedTaxYearPosition={posted.projectedTaxYearPosition}
           backHref="/me"
           backLabel="My Profile"
           printHref={`/me/payslip/print?payslipId=${posted.id}`}
@@ -146,6 +153,10 @@ export default async function MyPayslipPage({
     capabilities.employeeId,
     ytd,
   );
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    capabilities.employeeId,
+    taxYearFromAsOfKey(toStatutoryAsOfKey(new Date(payslip.period.asOf))),
+  );
 
   const printParams = new URLSearchParams();
   printParams.set("period", resolvedPeriodKey);
@@ -158,6 +169,7 @@ export default async function MyPayslipPage({
       meta={meta}
       ytd={ytd}
       ytdBreakdown={ytdBreakdown}
+      projectedTaxYearPosition={projectedTaxYearPosition}
       backHref="/me"
       backLabel="My Profile"
       printHref={printHref}

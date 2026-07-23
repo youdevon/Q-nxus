@@ -16,6 +16,8 @@ import type {
   PayslipYtdBreakdown,
   PayslipYtdTotals,
 } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
+import { getApprovedProjectedTaxYearPosition } from "@/src/modules/payroll/data/get-annual-paye-projections";
 
 function decimalLabel(value: { toString(): string }, currency: string) {
   return formatMoney(Number(value.toString()), { currency });
@@ -35,6 +37,7 @@ export type StoredPayslipResult = {
   meta: PayslipDocumentMeta;
   ytd: PayslipYtdTotals | null;
   ytdBreakdown: PayslipYtdBreakdown | null;
+  projectedTaxYearPosition: ProjectedTaxYearPosition | null;
 };
 
 export type PayRunBatchPrintDocument = {
@@ -46,6 +49,7 @@ export type PayRunBatchPrintDocument = {
   meta: PayslipDocumentMeta;
   ytd: PayslipYtdTotals | null;
   ytdBreakdown: PayslipYtdBreakdown | null;
+  projectedTaxYearPosition: ProjectedTaxYearPosition | null;
   isOfficial: boolean;
 };
 
@@ -109,6 +113,10 @@ export async function getStoredPayslip(
     ytd != null
       ? await getPayslipYtdBreakdown(row.employeeId, ytd)
       : null;
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    row.employeeId,
+    row.payrollPeriod.year,
+  );
 
   return {
     id: row.id,
@@ -123,6 +131,7 @@ export async function getStoredPayslip(
     meta: snapshot.meta,
     ytd,
     ytdBreakdown,
+    projectedTaxYearPosition,
   };
 }
 
@@ -197,20 +206,28 @@ export async function getPayRunBatchPrint(
       ),
   );
 
-  const documents: PayRunBatchPrintDocument[] = printable.map((slip) => {
-    const snapshot = parsePayslipSnapshot(slip.snapshot)!;
-    return {
-      id: slip.id,
-      employeeId: slip.employeeId,
-      employeeName: slip.employeeName,
-      employeeNumber: slip.employeeNumber,
-      payslip: snapshot.payslip,
-      meta: snapshot.meta,
-      ytd: ytdByPayslipId.get(slip.id) ?? null,
-      ytdBreakdown: breakdownByPayslipId.get(slip.id) ?? null,
-      isOfficial: slip.status === "POSTED",
-    };
-  });
+  const documents: PayRunBatchPrintDocument[] = await Promise.all(
+    printable.map(async (slip) => {
+      const snapshot = parsePayslipSnapshot(slip.snapshot)!;
+      const projectedTaxYearPosition =
+        await getApprovedProjectedTaxYearPosition(
+          slip.employeeId,
+          run.payrollPeriod.year,
+        );
+      return {
+        id: slip.id,
+        employeeId: slip.employeeId,
+        employeeName: slip.employeeName,
+        employeeNumber: slip.employeeNumber,
+        payslip: snapshot.payslip,
+        meta: snapshot.meta,
+        ytd: ytdByPayslipId.get(slip.id) ?? null,
+        ytdBreakdown: breakdownByPayslipId.get(slip.id) ?? null,
+        projectedTaxYearPosition,
+        isOfficial: slip.status === "POSTED",
+      };
+    }),
+  );
 
   return {
     id: run.id,
@@ -370,6 +387,10 @@ export async function getMostRecentPostedPayslip(
     current: payslipPreviewToYtdContribution(snapshot.payslip),
   });
   const ytdBreakdown = await getPayslipYtdBreakdown(row.employeeId, ytd);
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    row.employeeId,
+    row.payrollPeriod.year,
+  );
 
   return {
     id: row.id,
@@ -384,5 +405,6 @@ export async function getMostRecentPostedPayslip(
     meta: snapshot.meta,
     ytd,
     ytdBreakdown,
+    projectedTaxYearPosition,
   };
 }

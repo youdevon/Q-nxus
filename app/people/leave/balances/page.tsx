@@ -18,6 +18,7 @@ import { activeStateBadgeVariant } from "@/src/config/ui-colors";
 import { formatDisplayDate } from "@/src/lib/format";
 import { LeaveBalancesSearch } from "@/src/modules/hr/components/leave-balances-search";
 import { CurrentContractLeaveEntitlementForm } from "@/src/modules/hr/components/current-contract-leave-entitlement-form";
+import { LeaveOpeningBalanceForm } from "@/src/modules/hr/components/leave-opening-balance-form";
 import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import {
   getContractLeaveBalances,
@@ -254,12 +255,14 @@ function LeaveBalancesDetail({
   employee,
   balances,
   entitlementEditor,
+  canEditOpeningBalances,
   forfeitureWarning,
   focusForfeiture,
 }: {
   employee: LeaveBalanceEmployeeMatch;
   balances: ContractLeaveBalanceRecord[];
   entitlementEditor: CurrentContractLeaveEntitlementData | null;
+  canEditOpeningBalances: boolean;
   forfeitureWarning: Awaited<
     ReturnType<typeof getVacationForfeitureWarningForEmployee>
   >;
@@ -546,6 +549,19 @@ function LeaveBalancesDetail({
         )}
       </section>
 
+      {canEditOpeningBalances ? (
+        <LeaveOpeningBalanceForm
+          employeeId={employee.id}
+          balances={balances.map((balance) => ({
+            id: balance.id,
+            leaveTypeCode: balance.leaveTypeCode,
+            leaveTypeName: balance.leaveTypeName,
+            openingBalance: balance.openingBalance,
+            availableBalance: balance.availableBalance,
+          }))}
+        />
+      ) : null}
+
       {entitlementEditor ? (
         <CurrentContractLeaveEntitlementForm contract={entitlementEditor} />
       ) : null}
@@ -568,6 +584,10 @@ export default async function LeaveBalancesPage({
     "leave.manage",
     "people.manage",
     "contracts.manage",
+  );
+  const canEditOpeningBalances = capabilities.canAny(
+    "leave.manage",
+    "people.manage",
   );
 
   let selectedEmployee: LeaveBalanceEmployeeMatch | null = null;
@@ -676,6 +696,7 @@ export default async function LeaveBalancesPage({
           employee={selectedEmployee}
           balances={balances}
           entitlementEditor={entitlementEditor}
+          canEditOpeningBalances={canEditOpeningBalances}
           forfeitureWarning={forfeitureWarning}
           focusForfeiture={focusForfeiture}
         />
