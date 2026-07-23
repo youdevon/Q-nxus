@@ -617,6 +617,21 @@ export type GratuityBudgetForYear = {
   unpaidGratuityNet: string;
   byMonth: GratuityBudgetMonth[];
   rows: GratuityBudgetRow[];
+  scenario: {
+    rateOverridePercent: number | null;
+    onlyCommitted: boolean;
+    excludePendingEstimates: boolean;
+    label: string;
+  };
+};
+
+export type GratuityBudgetScenarioOptions = {
+  /** What-if rate % instead of contract/policy rate. */
+  rateOverridePercent?: number | null;
+  /** Only APPROVED / SCHEDULED / PAID settlements (no soft estimates). */
+  onlyCommitted?: boolean;
+  /** Drop PENDING_ESTIMATE / ESTIMATED / CALCULATED soft rows from expected totals. */
+  excludePendingEstimates?: boolean;
 };
 
 const MONTH_LABELS = [
@@ -673,12 +688,24 @@ export async function listDraftPayRunsForGratuity(): Promise<
 
 export async function getGratuityBudgetForYear(
   year: number,
+  scenario: GratuityBudgetScenarioOptions = {},
 ): Promise<GratuityBudgetForYear> {
   const { start, end } = yearBounds(year);
   const asOf = new Date();
   const { input: policyInput } = await resolvePolicyInput(
     new Date(Date.UTC(year, 11, 31)),
   );
+  const rateOverride =
+    scenario.rateOverridePercent != null &&
+    Number.isFinite(scenario.rateOverridePercent)
+      ? scenario.rateOverridePercent
+      : null;
+  const onlyCommitted = scenario.onlyCommitted === true;
+  const excludePendingEstimates = scenario.excludePendingEstimates === true;
+
+  const scenarioPolicy = rateOverride != null
+    ? { ...policyInput, defaultRatePercent: rateOverride }
+    : policyInput;
 
   const contracts = await prisma.employmentContract.findMany({
     where: {
@@ -772,7 +799,14 @@ export async function getGratuityBudgetForYear(
     let net: number;
     let status: string;
 
-    if (settlement) {
+    const committedStatuses = new Set(["APPROVED", "SCHEDULED", "PAID"]);
+    const softStatuses = new Set([
+      "PENDING_ESTIMATE",
+      "ESTIMATED",
+      "CALCULATED",
+    ]);
+
+    if (settlement && rateOverride == null) {
       gross = Number(settlement.grossAmount.toString());
       tax = Number(settlement.taxAmount.toString());
       net = Number(settlement.netAmount.toString());
@@ -796,15 +830,34 @@ export async function getGratuityBudgetForYear(
             includedInGratuity: row.includedInGratuity,
           })),
           gratuityEligible: true,
-          gratuityRate: contract.gratuityRate?.toString() ?? null,
+          gratuityRate:
+            rateOverride != null
+              ? rateOverride
+              : (contract.gratuityRate?.toString() ?? null),
         },
-        policyInput,
+        scenarioPolicy,
         { asOf },
       );
       gross = amounts.estimatedGrossGratuity;
       tax = amounts.estimatedTax;
       net = amounts.estimatedNetGratuity;
-      status = amounts.ineligibleReason ? "INELIGIBLE" : "PENDING_ESTIMATE";
+      status = amounts.ineligibleReason
+        ? "INELIGIBLE"
+        : settlement?.status ?? "PENDING_ESTIMATE";
+
+      if (settlement?.status === "APPROVED" || settlement?.status === "SCHEDULED") {
+        committedNet += net;
+      }
+      if (settlement?.status === "PAID") {
+        paidNet += Number(settlement.netAmount.toString());
+      }
+    }
+
+    if (onlyCommitted && !committedStatuses.has(status)) {
+      continue;
+    }
+    if (excludePendingEstimates && softStatuses.has(status)) {
+      continue;
     }
 
     expectedGross += gross;
@@ -833,10 +886,15 @@ export async function getGratuityBudgetForYear(
   }
 
   const unpaidNet = roundMoney(Math.max(0, expectedNet - paidNet));
+  const scenarioBits = [
+    rateOverride != null ? `rate ${rateOverride}%` : null,
+    onlyCommitted ? "committed only" : null,
+    excludePendingEstimates ? "exclude soft estimates" : null,
+  ].filter(Boolean);
 
   return {
     year,
-    contractsEnding,
+    contractsEnding: rows.length,
     salaryBudget: moneyString(salaryBudget),
     expectedGratuityGross: moneyString(expectedGross),
     expectedGratuityTax: moneyString(expectedTax),
@@ -855,5 +913,11 @@ export async function getGratuityBudgetForYear(
       const bEnd = b.contractEndDate ?? "";
       return aEnd.localeCompare(bEnd) || a.employeeName.localeCompare(b.employeeName);
     }),
+    scenario: {
+      rateOverridePercent: rateOverride,
+      onlyCommitted,
+      excludePendingEstimates,
+      label: scenarioBits.length > 0 ? scenarioBits.join(" · ") : "Baseline",
+    },
   };
 }

@@ -11,6 +11,8 @@ import {
   recoverStuckEmailDeliveries,
 } from "@/src/modules/notifications/services/process-email-queue";
 import { purgeArchivedPriorEmploymentYtd } from "@/src/modules/payroll/services/purge-archived-prior-employment-ytd";
+import { notifyGratuityEndingReminders } from "@/src/modules/payroll/services/notify-gratuity-ending";
+import { postMonthlyGratuityAccruals } from "@/src/modules/payroll/services/gratuity-accruals";
 
 export type ScheduledJobResult = {
   job: string;
@@ -40,6 +42,14 @@ const jobs: ScheduledJob[] = [
   {
     name: "contract-expiry-reminders",
     run: () => notifyContractExpiryReminders(),
+  },
+  {
+    name: "gratuity-ending-reminders",
+    run: () => notifyGratuityEndingReminders(),
+  },
+  {
+    name: "gratuity-monthly-accruals",
+    run: () => postMonthlyGratuityAccruals(),
   },
   {
     name: "probation-ending-reminders",

@@ -630,6 +630,7 @@ model Organization {
   healthSurchargeConfigs   HealthSurchargeConfig[]
   gratuityPolicies         GratuityPolicy[]
   gratuitySettlements      EmployeeGratuitySettlement[]
+  gratuityAccrualEntries   GratuityAccrualEntry[]
   employeeTaxProfiles      EmployeeTaxProfile[]
   employeePriorEmploymentYtds EmployeePriorEmploymentYtd[]
   employeePayrollStatutoryOverrides EmployeePayrollStatutoryOverride[]
@@ -734,6 +735,7 @@ model User {
   approvedGratuitySettlements        EmployeeGratuitySettlement[] @relation("GratuitySettlementApprover")
   voidedGratuitySettlements          EmployeeGratuitySettlement[] @relation("GratuitySettlementVoider")
   remittedGratuityTaxSettlements     EmployeeGratuitySettlement[] @relation("GratuityTaxRemitter")
+  postedGratuityAccruals             GratuityAccrualEntry[] @relation("GratuityAccrualPoster")
   uploadedStoredFiles                StoredFile[] @relation("StoredFileUploader")
   openedOnboardingCases              EmployeeOnboardingCase[] @relation("OnboardingCaseOpener")
   openedOffboardingCases             EmployeeOffboardingCase[] @relation("OffboardingCaseOpener")
@@ -1125,6 +1127,7 @@ model Employee {
   taxYearAdjustments  EmployeeTaxYearAdjustment[]
   earningTreatmentOverrides EmployeeEarningTreatmentOverride[]
   gratuitySettlements EmployeeGratuitySettlement[]
+  gratuityAccrualEntries GratuityAccrualEntry[]
   payslips       Payslip[]
   payrollLineItems PayrollLineItem[]
   payrollRecurringItems EmployeePayrollRecurringItem[]
@@ -2008,6 +2011,7 @@ model EmploymentContract {
 
   leaveRequests LeaveRequest[]
   gratuitySettlement EmployeeGratuitySettlement?
+  gratuityAccrualEntries GratuityAccrualEntry[]
 
   @@index([employeeId])
   @@index([employeeId, isCurrent])
@@ -3469,6 +3473,7 @@ model EmployeeGratuitySettlement {
   approvedBy   User?              @relation("GratuitySettlementApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
   voidedBy     User?              @relation("GratuitySettlementVoider", fields: [voidedByUserId], references: [id], onDelete: SetNull)
   taxRemittedBy User?             @relation("GratuityTaxRemitter", fields: [taxRemittedByUserId], references: [id], onDelete: SetNull)
+  accrualEntries GratuityAccrualEntry[]
 
   @@index([organizationId, status])
   @@index([organizationId, employeeId])
@@ -3477,6 +3482,45 @@ model EmployeeGratuitySettlement {
   @@index([organizationId, paidAt])
   @@index([taxRemittanceStatus])
   @@map("employee_gratuity_settlements")
+  @@schema("payroll")
+}
+
+/// Monthly liability recognition for contract gratuity (ops journal, not external GL).
+model GratuityAccrualEntry {
+  id                 String   @id @default(cuid())
+  organizationId     String
+  employeeId         String
+  contractId         String
+  settlementId       String?
+  periodYear         Int
+  periodMonth        Int
+  /// Stable key e.g. "2026-07".
+  periodKey          String
+  currency           String   @default("TTD")
+  /// Full expected gross obligation at posting time.
+  grossObligation    Decimal  @db.Decimal(14, 2)
+  /// Cumulative accrued liability through this period.
+  accruedToDate      Decimal  @db.Decimal(14, 2)
+  /// Delta recognized in this period (can be negative on reverse/true-up).
+  periodAccrualAmount Decimal @db.Decimal(14, 2)
+  notes              String?
+  postedAt           DateTime @default(now())
+  postedByUserId     String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contract     EmploymentContract          @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  settlement   EmployeeGratuitySettlement? @relation(fields: [settlementId], references: [id], onDelete: SetNull)
+  postedBy     User?                       @relation("GratuityAccrualPoster", fields: [postedByUserId], references: [id], onDelete: SetNull)
+
+  @@unique([contractId, periodYear, periodMonth])
+  @@index([organizationId, periodYear, periodMonth])
+  @@index([organizationId, periodKey])
+  @@index([employeeId])
+  @@index([settlementId])
+  @@map("gratuity_accrual_entries")
   @@schema("payroll")
 }
 

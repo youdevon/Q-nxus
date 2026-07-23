@@ -131,6 +131,7 @@ export const ModelName = {
   GratuityPolicy: 'GratuityPolicy',
   GratuityTaxBand: 'GratuityTaxBand',
   EmployeeGratuitySettlement: 'EmployeeGratuitySettlement',
+  GratuityAccrualEntry: 'GratuityAccrualEntry',
   PayrollPeriod: 'PayrollPeriod',
   PayRun: 'PayRun',
   Payslip: 'Payslip',
@@ -1898,6 +1899,29 @@ export const EmployeeGratuitySettlementScalarFieldEnum = {
 } as const
 
 export type EmployeeGratuitySettlementScalarFieldEnum = (typeof EmployeeGratuitySettlementScalarFieldEnum)[keyof typeof EmployeeGratuitySettlementScalarFieldEnum]
+
+
+export const GratuityAccrualEntryScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  contractId: 'contractId',
+  settlementId: 'settlementId',
+  periodYear: 'periodYear',
+  periodMonth: 'periodMonth',
+  periodKey: 'periodKey',
+  currency: 'currency',
+  grossObligation: 'grossObligation',
+  accruedToDate: 'accruedToDate',
+  periodAccrualAmount: 'periodAccrualAmount',
+  notes: 'notes',
+  postedAt: 'postedAt',
+  postedByUserId: 'postedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GratuityAccrualEntryScalarFieldEnum = (typeof GratuityAccrualEntryScalarFieldEnum)[keyof typeof GratuityAccrualEntryScalarFieldEnum]
 
 
 export const PayrollPeriodScalarFieldEnum = {

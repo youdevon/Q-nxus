@@ -509,6 +509,7 @@ export type EmployeeGratuitySettlementWhereInput = {
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   voidedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   taxRemittedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  accrualEntries?: Prisma.GratuityAccrualEntryListRelationFilter
 }
 
 export type EmployeeGratuitySettlementOrderByWithRelationInput = {
@@ -558,6 +559,7 @@ export type EmployeeGratuitySettlementOrderByWithRelationInput = {
   approvedBy?: Prisma.UserOrderByWithRelationInput
   voidedBy?: Prisma.UserOrderByWithRelationInput
   taxRemittedBy?: Prisma.UserOrderByWithRelationInput
+  accrualEntries?: Prisma.GratuityAccrualEntryOrderByRelationAggregateInput
 }
 
 export type EmployeeGratuitySettlementWhereUniqueInput = Prisma.AtLeast<{
@@ -610,6 +612,7 @@ export type EmployeeGratuitySettlementWhereUniqueInput = Prisma.AtLeast<{
   approvedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   voidedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   taxRemittedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  accrualEntries?: Prisma.GratuityAccrualEntryListRelationFilter
 }, "id" | "contractId">
 
 export type EmployeeGratuitySettlementOrderByWithAggregationInput = {
@@ -738,6 +741,7 @@ export type EmployeeGratuitySettlementCreateInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateInput = {
@@ -778,6 +782,7 @@ export type EmployeeGratuitySettlementUncheckedCreateInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUpdateInput = {
@@ -818,6 +823,7 @@ export type EmployeeGratuitySettlementUpdateInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateInput = {
@@ -858,6 +864,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementCreateManyInput = {
@@ -1420,6 +1427,22 @@ export type EnumGratuityTaxRemittanceStatusFieldUpdateOperationsInput = {
   set?: $Enums.GratuityTaxRemittanceStatus
 }
 
+export type EmployeeGratuitySettlementCreateNestedOneWithoutAccrualEntriesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeGratuitySettlementCreateWithoutAccrualEntriesInput, Prisma.EmployeeGratuitySettlementUncheckedCreateWithoutAccrualEntriesInput>
+  connectOrCreate?: Prisma.EmployeeGratuitySettlementCreateOrConnectWithoutAccrualEntriesInput
+  connect?: Prisma.EmployeeGratuitySettlementWhereUniqueInput
+}
+
+export type EmployeeGratuitySettlementUpdateOneWithoutAccrualEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeGratuitySettlementCreateWithoutAccrualEntriesInput, Prisma.EmployeeGratuitySettlementUncheckedCreateWithoutAccrualEntriesInput>
+  connectOrCreate?: Prisma.EmployeeGratuitySettlementCreateOrConnectWithoutAccrualEntriesInput
+  upsert?: Prisma.EmployeeGratuitySettlementUpsertWithoutAccrualEntriesInput
+  disconnect?: Prisma.EmployeeGratuitySettlementWhereInput | boolean
+  delete?: Prisma.EmployeeGratuitySettlementWhereInput | boolean
+  connect?: Prisma.EmployeeGratuitySettlementWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeGratuitySettlementUpdateToOneWithWhereWithoutAccrualEntriesInput, Prisma.EmployeeGratuitySettlementUpdateWithoutAccrualEntriesInput>, Prisma.EmployeeGratuitySettlementUncheckedUpdateWithoutAccrualEntriesInput>
+}
+
 export type EmployeeGratuitySettlementCreateNestedManyWithoutPayRunInput = {
   create?: Prisma.XOR<Prisma.EmployeeGratuitySettlementCreateWithoutPayRunInput, Prisma.EmployeeGratuitySettlementUncheckedCreateWithoutPayRunInput> | Prisma.EmployeeGratuitySettlementCreateWithoutPayRunInput[] | Prisma.EmployeeGratuitySettlementUncheckedCreateWithoutPayRunInput[]
   connectOrCreate?: Prisma.EmployeeGratuitySettlementCreateOrConnectWithoutPayRunInput | Prisma.EmployeeGratuitySettlementCreateOrConnectWithoutPayRunInput[]
@@ -1541,6 +1564,7 @@ export type EmployeeGratuitySettlementCreateWithoutOrganizationInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutOrganizationInput = {
@@ -1580,6 +1604,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutOrganizationInput = 
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutOrganizationInput = {
@@ -1688,6 +1713,7 @@ export type EmployeeGratuitySettlementCreateWithoutApprovedByInput = {
   payslip?: Prisma.PayslipCreateNestedOneWithoutGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutApprovedByInput = {
@@ -1727,6 +1753,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutApprovedByInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutApprovedByInput = {
@@ -1776,6 +1803,7 @@ export type EmployeeGratuitySettlementCreateWithoutVoidedByInput = {
   payslip?: Prisma.PayslipCreateNestedOneWithoutGratuitySettlementsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutVoidedByInput = {
@@ -1815,6 +1843,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutVoidedByInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutVoidedByInput = {
@@ -1864,6 +1893,7 @@ export type EmployeeGratuitySettlementCreateWithoutTaxRemittedByInput = {
   payslip?: Prisma.PayslipCreateNestedOneWithoutGratuitySettlementsInput
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutTaxRemittedByInput = {
@@ -1903,6 +1933,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutTaxRemittedByInput =
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutTaxRemittedByInput = {
@@ -2000,6 +2031,7 @@ export type EmployeeGratuitySettlementCreateWithoutEmployeeInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutEmployeeInput = {
@@ -2039,6 +2071,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutEmployeeInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutEmployeeInput = {
@@ -2104,6 +2137,7 @@ export type EmployeeGratuitySettlementCreateWithoutContractInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutContractInput = {
@@ -2143,6 +2177,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutContractInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutContractInput = {
@@ -2198,6 +2233,7 @@ export type EmployeeGratuitySettlementUpdateWithoutContractInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutContractInput = {
@@ -2237,6 +2273,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutContractInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementCreateWithoutPolicyInput = {
@@ -2276,6 +2313,7 @@ export type EmployeeGratuitySettlementCreateWithoutPolicyInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutPolicyInput = {
@@ -2315,6 +2353,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutPolicyInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutPolicyInput = {
@@ -2341,6 +2380,182 @@ export type EmployeeGratuitySettlementUpdateWithWhereUniqueWithoutPolicyInput = 
 export type EmployeeGratuitySettlementUpdateManyWithWhereWithoutPolicyInput = {
   where: Prisma.EmployeeGratuitySettlementScalarWhereInput
   data: Prisma.XOR<Prisma.EmployeeGratuitySettlementUpdateManyMutationInput, Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutPolicyInput>
+}
+
+export type EmployeeGratuitySettlementCreateWithoutAccrualEntriesInput = {
+  id?: string
+  status?: $Enums.GratuitySettlementStatus
+  currency?: string
+  formulaKind?: $Enums.GratuityFormulaKind
+  ratePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
+  contractMonths?: number
+  serviceYears?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  monthlyEligibleEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
+  eligibleGrossEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
+  grossAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  taxAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  netAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accruedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accrualThroughDate?: Date | string | null
+  estimatedAt?: Date | string | null
+  calculatedAt?: Date | string | null
+  approvedAt?: Date | string | null
+  scheduledAt?: Date | string | null
+  paidAt?: Date | string | null
+  voidedAt?: Date | string | null
+  voidReason?: string | null
+  taxRemittanceStatus?: $Enums.GratuityTaxRemittanceStatus
+  taxRemittedAt?: Date | string | null
+  taxRemittanceReference?: string | null
+  notes?: string | null
+  calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutGratuitySettlementsInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutGratuitySettlementsInput
+  contract: Prisma.EmploymentContractCreateNestedOneWithoutGratuitySettlementInput
+  policy?: Prisma.GratuityPolicyCreateNestedOneWithoutSettlementsInput
+  payRun?: Prisma.PayRunCreateNestedOneWithoutGratuitySettlementsInput
+  payslip?: Prisma.PayslipCreateNestedOneWithoutGratuitySettlementsInput
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
+  voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
+  taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+}
+
+export type EmployeeGratuitySettlementUncheckedCreateWithoutAccrualEntriesInput = {
+  id?: string
+  organizationId: string
+  employeeId: string
+  contractId: string
+  policyId?: string | null
+  status?: $Enums.GratuitySettlementStatus
+  currency?: string
+  formulaKind?: $Enums.GratuityFormulaKind
+  ratePercent: runtime.Decimal | runtime.DecimalJsLike | number | string
+  contractMonths?: number
+  serviceYears?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  monthlyEligibleEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
+  eligibleGrossEarnings: runtime.Decimal | runtime.DecimalJsLike | number | string
+  grossAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  taxAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  netAmount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accruedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  accrualThroughDate?: Date | string | null
+  estimatedAt?: Date | string | null
+  calculatedAt?: Date | string | null
+  approvedAt?: Date | string | null
+  approvedByUserId?: string | null
+  scheduledAt?: Date | string | null
+  paidAt?: Date | string | null
+  voidedAt?: Date | string | null
+  voidedByUserId?: string | null
+  voidReason?: string | null
+  payRunId?: string | null
+  payslipId?: string | null
+  taxRemittanceStatus?: $Enums.GratuityTaxRemittanceStatus
+  taxRemittedAt?: Date | string | null
+  taxRemittedByUserId?: string | null
+  taxRemittanceReference?: string | null
+  notes?: string | null
+  calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmployeeGratuitySettlementCreateOrConnectWithoutAccrualEntriesInput = {
+  where: Prisma.EmployeeGratuitySettlementWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeGratuitySettlementCreateWithoutAccrualEntriesInput, Prisma.EmployeeGratuitySettlementUncheckedCreateWithoutAccrualEntriesInput>
+}
+
+export type EmployeeGratuitySettlementUpsertWithoutAccrualEntriesInput = {
+  update: Prisma.XOR<Prisma.EmployeeGratuitySettlementUpdateWithoutAccrualEntriesInput, Prisma.EmployeeGratuitySettlementUncheckedUpdateWithoutAccrualEntriesInput>
+  create: Prisma.XOR<Prisma.EmployeeGratuitySettlementCreateWithoutAccrualEntriesInput, Prisma.EmployeeGratuitySettlementUncheckedCreateWithoutAccrualEntriesInput>
+  where?: Prisma.EmployeeGratuitySettlementWhereInput
+}
+
+export type EmployeeGratuitySettlementUpdateToOneWithWhereWithoutAccrualEntriesInput = {
+  where?: Prisma.EmployeeGratuitySettlementWhereInput
+  data: Prisma.XOR<Prisma.EmployeeGratuitySettlementUpdateWithoutAccrualEntriesInput, Prisma.EmployeeGratuitySettlementUncheckedUpdateWithoutAccrualEntriesInput>
+}
+
+export type EmployeeGratuitySettlementUpdateWithoutAccrualEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumGratuitySettlementStatusFieldUpdateOperationsInput | $Enums.GratuitySettlementStatus
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  formulaKind?: Prisma.EnumGratuityFormulaKindFieldUpdateOperationsInput | $Enums.GratuityFormulaKind
+  ratePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  contractMonths?: Prisma.IntFieldUpdateOperationsInput | number
+  serviceYears?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  monthlyEligibleEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  eligibleGrossEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  grossAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  taxAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  netAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accruedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accrualThroughDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  estimatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  calculatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  voidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  voidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxRemittanceStatus?: Prisma.EnumGratuityTaxRemittanceStatusFieldUpdateOperationsInput | $Enums.GratuityTaxRemittanceStatus
+  taxRemittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  taxRemittanceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutGratuitySettlementsNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutGratuitySettlementsNestedInput
+  contract?: Prisma.EmploymentContractUpdateOneRequiredWithoutGratuitySettlementNestedInput
+  policy?: Prisma.GratuityPolicyUpdateOneWithoutSettlementsNestedInput
+  payRun?: Prisma.PayRunUpdateOneWithoutGratuitySettlementsNestedInput
+  payslip?: Prisma.PayslipUpdateOneWithoutGratuitySettlementsNestedInput
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
+  voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
+  taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+}
+
+export type EmployeeGratuitySettlementUncheckedUpdateWithoutAccrualEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  contractId?: Prisma.StringFieldUpdateOperationsInput | string
+  policyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumGratuitySettlementStatusFieldUpdateOperationsInput | $Enums.GratuitySettlementStatus
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  formulaKind?: Prisma.EnumGratuityFormulaKindFieldUpdateOperationsInput | $Enums.GratuityFormulaKind
+  ratePercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  contractMonths?: Prisma.IntFieldUpdateOperationsInput | number
+  serviceYears?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  monthlyEligibleEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  eligibleGrossEarnings?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  grossAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  taxAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  netAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accruedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  accrualThroughDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  estimatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  calculatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  voidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  voidedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  voidReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payRunId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payslipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxRemittanceStatus?: Prisma.EnumGratuityTaxRemittanceStatusFieldUpdateOperationsInput | $Enums.GratuityTaxRemittanceStatus
+  taxRemittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  taxRemittedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  taxRemittanceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EmployeeGratuitySettlementCreateWithoutPayRunInput = {
@@ -2380,6 +2595,7 @@ export type EmployeeGratuitySettlementCreateWithoutPayRunInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutPayRunInput = {
@@ -2419,6 +2635,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutPayRunInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutPayRunInput = {
@@ -2484,6 +2701,7 @@ export type EmployeeGratuitySettlementCreateWithoutPayslipInput = {
   approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedGratuitySettlementsInput
   voidedBy?: Prisma.UserCreateNestedOneWithoutVoidedGratuitySettlementsInput
   taxRemittedBy?: Prisma.UserCreateNestedOneWithoutRemittedGratuityTaxSettlementsInput
+  accrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementUncheckedCreateWithoutPayslipInput = {
@@ -2523,6 +2741,7 @@ export type EmployeeGratuitySettlementUncheckedCreateWithoutPayslipInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutSettlementInput
 }
 
 export type EmployeeGratuitySettlementCreateOrConnectWithoutPayslipInput = {
@@ -2627,6 +2846,7 @@ export type EmployeeGratuitySettlementUpdateWithoutOrganizationInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutOrganizationInput = {
@@ -2666,6 +2886,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutOrganizationInput = 
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationInput = {
@@ -2861,6 +3082,7 @@ export type EmployeeGratuitySettlementUpdateWithoutApprovedByInput = {
   payslip?: Prisma.PayslipUpdateOneWithoutGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutApprovedByInput = {
@@ -2900,6 +3122,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutApprovedByInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutApprovedByInput = {
@@ -2978,6 +3201,7 @@ export type EmployeeGratuitySettlementUpdateWithoutVoidedByInput = {
   payslip?: Prisma.PayslipUpdateOneWithoutGratuitySettlementsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutVoidedByInput = {
@@ -3017,6 +3241,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutVoidedByInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutVoidedByInput = {
@@ -3095,6 +3320,7 @@ export type EmployeeGratuitySettlementUpdateWithoutTaxRemittedByInput = {
   payslip?: Prisma.PayslipUpdateOneWithoutGratuitySettlementsNestedInput
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutTaxRemittedByInput = {
@@ -3134,6 +3360,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutTaxRemittedByInput =
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutTaxRemittedByInput = {
@@ -3251,6 +3478,7 @@ export type EmployeeGratuitySettlementUpdateWithoutEmployeeInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutEmployeeInput = {
@@ -3290,6 +3518,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutEmployeeInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeInput = {
@@ -3407,6 +3636,7 @@ export type EmployeeGratuitySettlementUpdateWithoutPolicyInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutPolicyInput = {
@@ -3446,6 +3676,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutPolicyInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutPolicyInput = {
@@ -3563,6 +3794,7 @@ export type EmployeeGratuitySettlementUpdateWithoutPayRunInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutPayRunInput = {
@@ -3602,6 +3834,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutPayRunInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutPayRunInput = {
@@ -3719,6 +3952,7 @@ export type EmployeeGratuitySettlementUpdateWithoutPayslipInput = {
   approvedBy?: Prisma.UserUpdateOneWithoutApprovedGratuitySettlementsNestedInput
   voidedBy?: Prisma.UserUpdateOneWithoutVoidedGratuitySettlementsNestedInput
   taxRemittedBy?: Prisma.UserUpdateOneWithoutRemittedGratuityTaxSettlementsNestedInput
+  accrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateWithoutPayslipInput = {
@@ -3758,6 +3992,7 @@ export type EmployeeGratuitySettlementUncheckedUpdateWithoutPayslipInput = {
   calculationSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutSettlementNestedInput
 }
 
 export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutPayslipInput = {
@@ -3799,6 +4034,35 @@ export type EmployeeGratuitySettlementUncheckedUpdateManyWithoutPayslipInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type EmployeeGratuitySettlementCountOutputType
+ */
+
+export type EmployeeGratuitySettlementCountOutputType = {
+  accrualEntries: number
+}
+
+export type EmployeeGratuitySettlementCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  accrualEntries?: boolean | EmployeeGratuitySettlementCountOutputTypeCountAccrualEntriesArgs
+}
+
+/**
+ * EmployeeGratuitySettlementCountOutputType without action
+ */
+export type EmployeeGratuitySettlementCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeGratuitySettlementCountOutputType
+   */
+  select?: Prisma.EmployeeGratuitySettlementCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EmployeeGratuitySettlementCountOutputType without action
+ */
+export type EmployeeGratuitySettlementCountOutputTypeCountAccrualEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GratuityAccrualEntryWhereInput
+}
 
 
 export type EmployeeGratuitySettlementSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -3848,6 +4112,8 @@ export type EmployeeGratuitySettlementSelect<ExtArgs extends runtime.Types.Exten
   approvedBy?: boolean | Prisma.EmployeeGratuitySettlement$approvedByArgs<ExtArgs>
   voidedBy?: boolean | Prisma.EmployeeGratuitySettlement$voidedByArgs<ExtArgs>
   taxRemittedBy?: boolean | Prisma.EmployeeGratuitySettlement$taxRemittedByArgs<ExtArgs>
+  accrualEntries?: boolean | Prisma.EmployeeGratuitySettlement$accrualEntriesArgs<ExtArgs>
+  _count?: boolean | Prisma.EmployeeGratuitySettlementCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employeeGratuitySettlement"]>
 
 export type EmployeeGratuitySettlementSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -3999,6 +4265,8 @@ export type EmployeeGratuitySettlementInclude<ExtArgs extends runtime.Types.Exte
   approvedBy?: boolean | Prisma.EmployeeGratuitySettlement$approvedByArgs<ExtArgs>
   voidedBy?: boolean | Prisma.EmployeeGratuitySettlement$voidedByArgs<ExtArgs>
   taxRemittedBy?: boolean | Prisma.EmployeeGratuitySettlement$taxRemittedByArgs<ExtArgs>
+  accrualEntries?: boolean | Prisma.EmployeeGratuitySettlement$accrualEntriesArgs<ExtArgs>
+  _count?: boolean | Prisma.EmployeeGratuitySettlementCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeGratuitySettlementIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
@@ -4035,6 +4303,7 @@ export type $EmployeeGratuitySettlementPayload<ExtArgs extends runtime.Types.Ext
     approvedBy: Prisma.$UserPayload<ExtArgs> | null
     voidedBy: Prisma.$UserPayload<ExtArgs> | null
     taxRemittedBy: Prisma.$UserPayload<ExtArgs> | null
+    accrualEntries: Prisma.$GratuityAccrualEntryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4483,6 +4752,7 @@ export interface Prisma__EmployeeGratuitySettlementClient<T, Null = never, ExtAr
   approvedBy<T extends Prisma.EmployeeGratuitySettlement$approvedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeGratuitySettlement$approvedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   voidedBy<T extends Prisma.EmployeeGratuitySettlement$voidedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeGratuitySettlement$voidedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   taxRemittedBy<T extends Prisma.EmployeeGratuitySettlement$taxRemittedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeGratuitySettlement$taxRemittedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  accrualEntries<T extends Prisma.EmployeeGratuitySettlement$accrualEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeGratuitySettlement$accrualEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GratuityAccrualEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5061,6 +5331,30 @@ export type EmployeeGratuitySettlement$taxRemittedByArgs<ExtArgs extends runtime
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * EmployeeGratuitySettlement.accrualEntries
+ */
+export type EmployeeGratuitySettlement$accrualEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GratuityAccrualEntry
+   */
+  select?: Prisma.GratuityAccrualEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GratuityAccrualEntry
+   */
+  omit?: Prisma.GratuityAccrualEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GratuityAccrualEntryInclude<ExtArgs> | null
+  where?: Prisma.GratuityAccrualEntryWhereInput
+  orderBy?: Prisma.GratuityAccrualEntryOrderByWithRelationInput | Prisma.GratuityAccrualEntryOrderByWithRelationInput[]
+  cursor?: Prisma.GratuityAccrualEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GratuityAccrualEntryScalarFieldEnum | Prisma.GratuityAccrualEntryScalarFieldEnum[]
 }
 
 /**

@@ -464,6 +464,7 @@ export const ModelName = {
   GratuityPolicy: 'GratuityPolicy',
   GratuityTaxBand: 'GratuityTaxBand',
   EmployeeGratuitySettlement: 'EmployeeGratuitySettlement',
+  GratuityAccrualEntry: 'GratuityAccrualEntry',
   PayrollPeriod: 'PayrollPeriod',
   PayRun: 'PayRun',
   Payslip: 'Payslip',
@@ -490,7 +491,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "gratuityAccrualEntry" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6414,6 +6415,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GratuityAccrualEntry: {
+      payload: Prisma.$GratuityAccrualEntryPayload<ExtArgs>
+      fields: Prisma.GratuityAccrualEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GratuityAccrualEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GratuityAccrualEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.GratuityAccrualEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GratuityAccrualEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>
+        }
+        findMany: {
+          args: Prisma.GratuityAccrualEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>[]
+        }
+        create: {
+          args: Prisma.GratuityAccrualEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>
+        }
+        createMany: {
+          args: Prisma.GratuityAccrualEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GratuityAccrualEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.GratuityAccrualEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>
+        }
+        update: {
+          args: Prisma.GratuityAccrualEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.GratuityAccrualEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GratuityAccrualEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GratuityAccrualEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.GratuityAccrualEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GratuityAccrualEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.GratuityAccrualEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGratuityAccrualEntry>
+        }
+        groupBy: {
+          args: Prisma.GratuityAccrualEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GratuityAccrualEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GratuityAccrualEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GratuityAccrualEntryCountAggregateOutputType> | number
+        }
+      }
+    }
     PayrollPeriod: {
       payload: Prisma.$PayrollPeriodPayload<ExtArgs>
       fields: Prisma.PayrollPeriodFieldRefs
@@ -9007,6 +9082,29 @@ export const EmployeeGratuitySettlementScalarFieldEnum = {
 export type EmployeeGratuitySettlementScalarFieldEnum = (typeof EmployeeGratuitySettlementScalarFieldEnum)[keyof typeof EmployeeGratuitySettlementScalarFieldEnum]
 
 
+export const GratuityAccrualEntryScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  contractId: 'contractId',
+  settlementId: 'settlementId',
+  periodYear: 'periodYear',
+  periodMonth: 'periodMonth',
+  periodKey: 'periodKey',
+  currency: 'currency',
+  grossObligation: 'grossObligation',
+  accruedToDate: 'accruedToDate',
+  periodAccrualAmount: 'periodAccrualAmount',
+  notes: 'notes',
+  postedAt: 'postedAt',
+  postedByUserId: 'postedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GratuityAccrualEntryScalarFieldEnum = (typeof GratuityAccrualEntryScalarFieldEnum)[keyof typeof GratuityAccrualEntryScalarFieldEnum]
+
+
 export const PayrollPeriodScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -10742,6 +10840,7 @@ export type GlobalOmitConfig = {
   gratuityPolicy?: Prisma.GratuityPolicyOmit
   gratuityTaxBand?: Prisma.GratuityTaxBandOmit
   employeeGratuitySettlement?: Prisma.EmployeeGratuitySettlementOmit
+  gratuityAccrualEntry?: Prisma.GratuityAccrualEntryOmit
   payrollPeriod?: Prisma.PayrollPeriodOmit
   payRun?: Prisma.PayRunOmit
   payslip?: Prisma.PayslipOmit

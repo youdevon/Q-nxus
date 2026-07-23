@@ -451,6 +451,11 @@ export type GratuityTaxBand = Prisma.GratuityTaxBandModel
  */
 export type EmployeeGratuitySettlement = Prisma.EmployeeGratuitySettlementModel
 /**
+ * Model GratuityAccrualEntry
+ * Monthly liability recognition for contract gratuity (ops journal, not external GL).
+ */
+export type GratuityAccrualEntry = Prisma.GratuityAccrualEntryModel
+/**
  * Model PayrollPeriod
  * Calendar span for which employees are paid (e.g. July 2026 monthly).
  */

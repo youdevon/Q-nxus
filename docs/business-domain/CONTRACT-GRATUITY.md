@@ -48,8 +48,15 @@ Tax remittance on paid settlements: `NOT_APPLICABLE` | `PENDING` | `REMITTED`.
 - **Queue** — `/payroll/gratuity?year=&tab=`
   - **Unpaid** — estimate / recalculate / approve / schedule / void
   - **Paid** — paid amounts, pay-run link, mark tax remitted
-  - **Budget** — salary outlay + expected / committed / paid gratuity, monthly breakdown, per-contract rows
+  - **Accruals** — monthly accrual ledger (`GratuityAccrualEntry`); managers can post/true-up the current month
+  - **Budget** — salary outlay + expected / committed / paid gratuity, monthly breakdown, per-contract rows; optional scenario query params (`rateOverride`, `onlyCommitted=1`, `excludePending=1`)
+- **Me** — `/me/gratuity` — employee self-service view of eligible contracts and settlement estimates / paid amounts
 - **Contract** — People contract detail shows settlement status; when `PAID`, paid figures are source of truth
+
+## Accruals & reminders
+
+- **Monthly accruals** — scheduled job `gratuity-monthly-accruals` (and Accruals tab “Post this month’s accruals”) writes period delta = accrued-to-date − prior cumulative per eligible contract.
+- **Ending reminders** — scheduled job `gratuity-ending-reminders` notifies payroll/HR when gratuity-eligible contracts enter 30/60/90-day end windows (or are past end without a `PAID` settlement).
 
 ## Workflow
 
