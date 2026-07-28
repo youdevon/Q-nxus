@@ -219,14 +219,48 @@ export function mapMethodToAllocationType(
   return "FIXED_AMOUNT";
 }
 
-/** First Citizens Payment Type label from account type (credit payroll). */
+/**
+ * First Citizens Business Online Payment Type label from account type.
+ * Bank UI uses US spelling "Checking Credit" (not Chequing).
+ */
 export function firstCitizensPaymentType(accountType: string): string {
   const normalized = accountType.toUpperCase();
-  if (normalized === "CHEQUING" || normalized === "CURRENT") {
-    return "Chequing Credit";
+  if (
+    normalized === "CHEQUING" ||
+    normalized === "CHECKING" ||
+    normalized === "CURRENT"
+  ) {
+    return "Checking Credit";
   }
   if (normalized === "SAVINGS") {
     return "Savings Credit";
   }
   return "Savings Credit";
+}
+
+/** Normalize legacy / free-text Payment Type labels to the bank UI values. */
+export function normalizeFirstCitizensPaymentTypeLabel(
+  value: string | null | undefined,
+): string | null {
+  if (value == null) {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  const upper = trimmed.toUpperCase();
+  if (upper === "CHEQUING CREDIT" || upper === "CHECKING CREDIT") {
+    return "Checking Credit";
+  }
+  if (upper === "SAVINGS CREDIT") {
+    return "Savings Credit";
+  }
+  if (upper === "CHEQUING" || upper === "CHECKING" || upper === "CURRENT") {
+    return "Checking Credit";
+  }
+  if (upper === "SAVINGS") {
+    return "Savings Credit";
+  }
+  return trimmed;
 }

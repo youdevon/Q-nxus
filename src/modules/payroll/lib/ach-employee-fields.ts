@@ -10,7 +10,7 @@
  *   Individual ID    → HR employee number (not captured on bank form)
  *   ABA Number       → financial institution (display name / routing when known)
  *   Account Number   → encrypted account number (required)
- *   Payment Type     → Savings Credit | Chequing Credit from account type
+ *   Payment Type     → Savings Credit | Checking Credit from account type
  *   Purpose Code     → organization / bank-export profile (not per employee)
  *   Amount           → payroll allocation / payslip (not typed on setup)
  *   Addenda          → batch global addenda (optional; not per employee)
@@ -97,7 +97,7 @@ export const ACH_FIELD_HELP = {
   institution: "Bank / institution (ACH ABA Number)",
   accountHolder: "Account holder name (ACH Individual Name)",
   accountNumber: "Account number",
-  accountType: "Account type → ACH Payment Type (Savings or Chequing Credit)",
+  accountType: "Account type → ACH Payment Type (Savings or Checking Credit)",
   allocation:
     "How this account shares net pay. Amounts are calculated at payroll time — Purpose Code and Addenda are set on the bank export profile / batch, not here.",
 } as const;

@@ -6,10 +6,15 @@
 import ExcelJS from "exceljs";
 import { createHash } from "node:crypto";
 
-import { firstCitizensPaymentType } from "@/src/modules/payroll/lib/payment-instructions";
+import {
+  firstCitizensPaymentType,
+  normalizeFirstCitizensPaymentTypeLabel,
+} from "@/src/modules/payroll/lib/payment-instructions";
 import { toCsv } from "@/src/modules/payroll/lib/csv";
 import { sumMoney } from "@/src/modules/payroll/lib/money";
 import { maskAccountNumber } from "@/src/modules/payroll/lib/payslip-preview";
+
+export { normalizeFirstCitizensPaymentTypeLabel } from "@/src/modules/payroll/lib/payment-instructions";
 
 /** Local shapes mirroring bank-export-adapter (avoids circular imports). */
 export type FcbBankExportDetailLine = {
@@ -25,6 +30,11 @@ export type FcbBankExportDetailLine = {
   beneficiaryName?: string | null;
   branchCode?: string | null;
   branchName?: string | null;
+  abaNumber?: string | null;
+  accountType?: string | null;
+  paymentType?: string | null;
+  purposeCode?: string | null;
+  addenda?: string | null;
 };
 
 type FcbGenerateInput = {
@@ -90,8 +100,11 @@ export type FirstCitizensConfiguration = {
   /** PPD (payroll default) or CCD. */
   achType?: "PPD" | "CCD";
   effectiveDateRule?: "PERIOD_END" | "PAYMENT_DATE" | "EXPLICIT";
+  /** Required on FCB ACH form (e.g. Payroll). */
   globalAddenda?: string;
+  /** Often the payroll period label (e.g. July 2026). */
   discretionaryData?: string;
+  /** Required on FCB ACH form (e.g. Salary). */
   entryDescription?: string;
   transactionType?: "Credit" | "Debit";
   defaultPurposeCode?: string;
@@ -107,9 +120,9 @@ export const DEFAULT_FIRST_CITIZENS_CONFIGURATION: FirstCitizensConfiguration = 
   originatingInstitution: "First Citizens",
   achType: "PPD",
   effectiveDateRule: "PERIOD_END",
-  globalAddenda: "",
+  globalAddenda: "Payroll",
   discretionaryData: "",
-  entryDescription: "Salaries",
+  entryDescription: "Salary",
   transactionType: "Credit",
   defaultPurposeCode: "COMPENSATION OF EMPLOYEES",
   exportFormat: "MANUAL_WORKSHEET",
@@ -118,6 +131,103 @@ export const DEFAULT_FIRST_CITIZENS_CONFIGURATION: FirstCitizensConfiguration = 
   importDisabledReason:
     "First Citizens Default Transactions / NACHA import layout is not confirmed. Request the layout from businessonlinequeries@firstcitizenstt.com, then enable after a successful bank test.",
 };
+
+export type FirstCitizensPeriodContext = {
+  periodName?: string | null;
+  periodKey?: string | null;
+  periodEnd?: Date | string | null;
+};
+
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
+
+/** Effective date as shown on First Citizens Business Online (DD/MM/YYYY). */
+export function formatFcbEffectiveDate(value: Date | string): string {
+  const iso =
+    typeof value === "string"
+      ? value.slice(0, 10)
+      : value.toISOString().slice(0, 10);
+  const [year, month, day] = iso.split("-");
+  if (!year || !month || !day) {
+    return iso;
+  }
+  return `${day}/${month}/${year}`;
+}
+
+/**
+ * Discretionary Data default from the payroll period
+ * (matches live FCB batches like "July 2026").
+ */
+export function formatFcbDiscretionaryPeriod(
+  period?: FirstCitizensPeriodContext | null,
+): string {
+  const named = period?.periodName?.trim();
+  if (named) {
+    return named;
+  }
+
+  const end = period?.periodEnd;
+  if (end) {
+    const iso =
+      typeof end === "string" ? end.slice(0, 10) : end.toISOString().slice(0, 10);
+    const [yearText, monthText] = iso.split("-");
+    const year = Number(yearText);
+    const monthIndex = Number(monthText) - 1;
+    if (
+      Number.isInteger(year) &&
+      monthIndex >= 0 &&
+      monthIndex < MONTH_NAMES.length
+    ) {
+      return `${MONTH_NAMES[monthIndex]} ${year}`;
+    }
+  }
+
+  return period?.periodKey?.trim() ?? "";
+}
+
+export type FirstCitizensResolvedHeader = {
+  globalAddenda: string;
+  entryDescription: string;
+  discretionaryData: string;
+  transactionType: "Credit" | "Debit";
+  purposeCode: string;
+};
+
+/**
+ * Resolve batch header fields for the FCB ACH form.
+ * Empty profile values fall back to bank-compliant defaults / period label.
+ */
+export function resolveFirstCitizensBatchHeader(
+  config: FirstCitizensConfiguration,
+  period?: FirstCitizensPeriodContext | null,
+): FirstCitizensResolvedHeader {
+  return {
+    globalAddenda:
+      config.globalAddenda?.trim() ||
+      DEFAULT_FIRST_CITIZENS_CONFIGURATION.globalAddenda!,
+    entryDescription:
+      config.entryDescription?.trim() ||
+      DEFAULT_FIRST_CITIZENS_CONFIGURATION.entryDescription!,
+    discretionaryData:
+      config.discretionaryData?.trim() || formatFcbDiscretionaryPeriod(period),
+    transactionType: config.transactionType === "Debit" ? "Debit" : "Credit",
+    purposeCode:
+      config.defaultPurposeCode?.trim() ||
+      DEFAULT_FIRST_CITIZENS_CONFIGURATION.defaultPurposeCode!,
+  };
+}
 
 export type FirstCitizensEntryRow = {
   individualName: string;
@@ -133,6 +243,7 @@ export type FirstCitizensEntryRow = {
 export type FirstCitizensControlSummary = {
   organizationName: string;
   payrollPeriod: string;
+  /** ISO YYYY-MM-DD (also formatted DD/MM/YYYY on the bank header block). */
   effectiveDate: string;
   debitAccountMasked: string;
   employeeCount: number;
@@ -142,6 +253,13 @@ export type FirstCitizensControlSummary = {
   exportedAt: string;
   batchReference: string;
   documentLabel: string;
+  /** Bank ACH form header fields (copy onto Business Online). */
+  globalAddenda: string;
+  discretionaryData: string;
+  entryDescription: string;
+  transactionType: string;
+  purposeCode: string;
+  currencyCode?: string;
 };
 
 export function parseFirstCitizensConfiguration(
@@ -151,7 +269,7 @@ export function parseFirstCitizensConfiguration(
     return { ...DEFAULT_FIRST_CITIZENS_CONFIGURATION };
   }
   const record = value as Record<string, unknown>;
-  return {
+  const parsed: FirstCitizensConfiguration = {
     ...DEFAULT_FIRST_CITIZENS_CONFIGURATION,
     profileName:
       typeof record.profileName === "string"
@@ -206,6 +324,62 @@ export function parseFirstCitizensConfiguration(
         ? record.importDisabledReason
         : DEFAULT_FIRST_CITIZENS_CONFIGURATION.importDisabledReason,
   };
+
+  return normalizeFirstCitizensConfiguration(parsed);
+}
+
+/**
+ * Upgrade legacy / blank First Citizens profile values to bank-form defaults.
+ * - empty Global Addenda → Payroll
+ * - empty / "Salaries" Entry Description → Salary
+ */
+export function normalizeFirstCitizensConfiguration(
+  config: FirstCitizensConfiguration,
+): FirstCitizensConfiguration {
+  const globalAddenda =
+    config.globalAddenda?.trim() ||
+    DEFAULT_FIRST_CITIZENS_CONFIGURATION.globalAddenda!;
+  let entryDescription = config.entryDescription?.trim() || "";
+  if (!entryDescription || /^salaries$/i.test(entryDescription)) {
+    entryDescription = DEFAULT_FIRST_CITIZENS_CONFIGURATION.entryDescription!;
+  }
+  const purposeCode =
+    config.defaultPurposeCode?.trim() ||
+    DEFAULT_FIRST_CITIZENS_CONFIGURATION.defaultPurposeCode!;
+
+  return {
+    ...config,
+    globalAddenda,
+    entryDescription,
+    defaultPurposeCode: purposeCode,
+    transactionType: config.transactionType === "Debit" ? "Debit" : "Credit",
+    discretionaryData: config.discretionaryData?.trim() ?? "",
+  };
+}
+
+/**
+ * Validate + normalize configuration before persisting a First Citizens profile.
+ */
+export function prepareFirstCitizensConfigurationForStorage(
+  value: unknown,
+): { ok: true; config: FirstCitizensConfiguration } | { ok: false; errors: string[] } {
+  const config = normalizeFirstCitizensConfiguration(
+    parseFirstCitizensConfiguration(value),
+  );
+  const errors: string[] = [];
+  if (!config.globalAddenda?.trim()) {
+    errors.push("Global Addenda is required (e.g. Payroll).");
+  }
+  if (!config.entryDescription?.trim()) {
+    errors.push("Entry Description is required (e.g. Salary).");
+  }
+  if (!config.defaultPurposeCode?.trim()) {
+    errors.push("Purpose Code is required (e.g. COMPENSATION OF EMPLOYEES).");
+  }
+  if (errors.length > 0) {
+    return { ok: false, errors };
+  }
+  return { ok: true, config };
 }
 
 export function mapDetailToFirstCitizensEntry(
@@ -214,22 +388,41 @@ export function mapDetailToFirstCitizensEntry(
   extras?: {
     abaNumber?: string | null;
     accountType?: string | null;
+    paymentType?: string | null;
     purposeCode?: string | null;
     addenda?: string | null;
   },
 ): FirstCitizensEntryRow {
+  const header = resolveFirstCitizensBatchHeader(config);
+  const abaNumber = (
+    extras?.abaNumber ??
+    detail.abaNumber ??
+    detail.bankName ??
+    ""
+  ).trim();
+  const paymentType =
+    normalizeFirstCitizensPaymentTypeLabel(
+      extras?.paymentType ?? detail.paymentType,
+    ) ??
+    firstCitizensPaymentType(
+      extras?.accountType ?? detail.accountType ?? "SAVINGS",
+    );
+
   return {
     individualName: detail.beneficiaryName?.trim() || detail.employeeName,
     individualId: detail.employeeNumber,
-    abaNumber: (extras?.abaNumber ?? detail.bankName ?? "").trim(),
+    abaNumber,
     accountNumber: detail.accountNumber ?? detail.accountNumberMasked,
-    paymentType: firstCitizensPaymentType(extras?.accountType ?? "SAVINGS"),
+    paymentType,
     purposeCode:
       extras?.purposeCode?.trim() ||
-      config.defaultPurposeCode ||
-      "COMPENSATION OF EMPLOYEES",
+      detail.purposeCode?.trim() ||
+      header.purposeCode,
     amount: detail.amount,
-    addenda: extras?.addenda?.trim() || "",
+    addenda:
+      extras?.addenda?.trim() ||
+      detail.addenda?.trim() ||
+      header.globalAddenda,
   };
 }
 
@@ -279,24 +472,54 @@ export async function buildFirstCitizensManualWorkbook(input: {
   entriesSheet.getColumn(7).numFmt = "#,##0.00";
 
   const controlSheet = workbook.addWorksheet("Control Summary");
-  controlSheet.addRow(["Document", input.control.documentLabel]);
-  controlSheet.addRow([
-    "Warning",
-    "Manual-entry worksheet for First Citizens Business Online — NOT a bank import file.",
-  ]);
-  controlSheet.addRow(["Organization", input.control.organizationName]);
-  controlSheet.addRow(["Payroll period", input.control.payrollPeriod]);
-  controlSheet.addRow(["Effective date", input.control.effectiveDate]);
-  controlSheet.addRow(["Debit account (masked)", input.control.debitAccountMasked]);
-  controlSheet.addRow(["Employee count", input.control.employeeCount]);
-  controlSheet.addRow(["Entry count", input.control.entryCount]);
-  controlSheet.addRow(["Batch total", Number(input.control.batchTotal.toFixed(2))]);
-  controlSheet.addRow(["Exported by", input.control.exportedBy]);
-  controlSheet.addRow(["Export date/time", input.control.exportedAt]);
-  controlSheet.addRow(["Batch reference", input.control.batchReference]);
+  const c = input.control;
+  const headerRows: Array<[string, string | number]> = [
+    ["Document", c.documentLabel],
+    [
+      "Warning",
+      "Manual-entry worksheet for First Citizens Business Online — NOT a bank import file.",
+    ],
+    ["", ""],
+    ["Bank ACH header (enter on Business Online)", ""],
+    ["Effective Date", formatFcbEffectiveDate(c.effectiveDate)],
+    ["Balance Account", c.debitAccountMasked],
+    ["Global Addenda", c.globalAddenda],
+    ["Discretionary Data", c.discretionaryData],
+    ["Entry Description", c.entryDescription],
+    ["Transaction Type", c.transactionType],
+    ["Purpose Code", c.purposeCode],
+    [
+      "Total",
+      c.currencyCode
+        ? `${c.currencyCode} ${c.batchTotal.toFixed(2)}`
+        : c.batchTotal.toFixed(2),
+    ],
+    ["Total No of Records", c.entryCount],
+    ["", ""],
+    ["Organization", c.organizationName],
+    ["Payroll period", c.payrollPeriod],
+    ["Effective date (ISO)", c.effectiveDate],
+    ["Debit account (masked)", c.debitAccountMasked],
+    ["Employee count", c.employeeCount],
+    ["Entry count", c.entryCount],
+    ["Batch total", Number(c.batchTotal.toFixed(2))],
+    ["Exported by", c.exportedBy],
+    ["Export date/time", c.exportedAt],
+    ["Batch reference", c.batchReference],
+  ];
+
+  for (const [label, value] of headerRows) {
+    controlSheet.addRow([label, value]);
+  }
   controlSheet.getColumn(1).font = { bold: true };
   controlSheet.getColumn(2).width = 72;
-  controlSheet.getRow(9).getCell(2).numFmt = "#,##0.00";
+  // Batch total numeric row
+  const batchTotalRow = headerRows.findIndex(
+    ([label]) => label === "Batch total",
+  );
+  if (batchTotalRow >= 0) {
+    controlSheet.getRow(batchTotalRow + 1).getCell(2).numFmt = "#,##0.00";
+  }
 
   const buffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(buffer);
@@ -322,6 +545,22 @@ export class FirstCitizensManualWorksheetAdapter {
   validate(input: FcbGenerateInput): FcbValidationResult {
     const errors: string[] = [];
     const config = parseFirstCitizensConfiguration(input.configurationJson);
+    const header = resolveFirstCitizensBatchHeader(config);
+
+    if (!header.globalAddenda.trim()) {
+      errors.push(
+        "Global Addenda is required on the First Citizens ACH form (e.g. Payroll).",
+      );
+    }
+    if (!header.entryDescription.trim()) {
+      errors.push(
+        "Entry Description is required on the First Citizens ACH form (e.g. Salary).",
+      );
+    }
+    if (!header.purposeCode.trim()) {
+      errors.push("Purpose Code is required (e.g. COMPENSATION OF EMPLOYEES).");
+    }
+
     if (input.details.length === 0) {
       errors.push("Batch has no payment allocation details.");
     }
@@ -337,7 +576,13 @@ export class FirstCitizensManualWorksheetAdapter {
           `Detail sequence ${detail.sequence} has a non-positive amount.`,
         );
       }
-      const entry = mapDetailToFirstCitizensEntry(detail, config);
+      const entry = mapDetailToFirstCitizensEntry(detail, config, {
+        abaNumber: detail.abaNumber,
+        accountType: detail.accountType,
+        paymentType: detail.paymentType,
+        purposeCode: detail.purposeCode,
+        addenda: detail.addenda,
+      });
       purposeCodes.add(entry.purposeCode);
       if (!entry.individualName.trim()) {
         errors.push(`Detail sequence ${detail.sequence} is missing Individual Name.`);
@@ -348,6 +593,21 @@ export class FirstCitizensManualWorksheetAdapter {
       if (!entry.abaNumber.trim()) {
         errors.push(
           `Detail sequence ${detail.sequence} is missing ABA / institution identifier.`,
+        );
+      }
+      if (!entry.accountNumber.trim()) {
+        errors.push(
+          `Detail sequence ${detail.sequence} is missing Account Number.`,
+        );
+      }
+      if (!entry.paymentType.trim()) {
+        errors.push(
+          `Detail sequence ${detail.sequence} is missing Payment Type.`,
+        );
+      }
+      if (!entry.addenda.trim()) {
+        errors.push(
+          `Detail sequence ${detail.sequence} is missing Addenda (uses Global Addenda).`,
         );
       }
     }
@@ -362,7 +622,13 @@ export class FirstCitizensManualWorksheetAdapter {
   generate(input: FcbGenerateInput): FcbGenerateResult {
     const config = parseFirstCitizensConfiguration(input.configurationJson);
     const entries = input.details.map((detail) =>
-      mapDetailToFirstCitizensEntry(detail, config),
+      mapDetailToFirstCitizensEntry(detail, config, {
+        abaNumber: detail.abaNumber,
+        accountType: detail.accountType,
+        paymentType: detail.paymentType,
+        purposeCode: detail.purposeCode,
+        addenda: detail.addenda,
+      }),
     );
     const content = buildFirstCitizensManualCsv(entries);
     return {

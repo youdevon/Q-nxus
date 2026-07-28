@@ -117,7 +117,7 @@ export async function createAchPaymentBatch(input: {
   const run = await prisma.payRun.findUnique({
     where: { id: input.payRunId },
     include: {
-      payrollPeriod: { select: { periodEnd: true, periodKey: true } },
+      payrollPeriod: { select: { periodEnd: true, periodKey: true, name: true } },
       payrollPayments: {
         where: { paymentStatus: { in: ["READY", "INCLUDED_IN_BATCH"] } },
         include: {
@@ -325,6 +325,15 @@ export async function createAchPaymentBatch(input: {
       ? (await import("@/src/modules/payroll/lib/first-citizens-export"))
           .parseFirstCitizensConfiguration(profile.configurationJson)
       : null;
+  const fcbHeader = fcbConfig
+    ? (
+        await import("@/src/modules/payroll/lib/first-citizens-export")
+      ).resolveFirstCitizensBatchHeader(fcbConfig, {
+        periodName: run.payrollPeriod.name,
+        periodKey: run.payrollPeriod.periodKey,
+        periodEnd: run.payrollPeriod.periodEnd,
+      })
+    : null;
   const { firstCitizensPaymentType } = await import(
     "@/src/modules/payroll/lib/payment-instructions"
   );
@@ -385,11 +394,11 @@ export async function createAchPaymentBatch(input: {
         detailCount: available.length,
         effectivePaymentDate: run.payrollPeriod.periodEnd,
         achType: fcbConfig?.achType ?? "PPD",
-        purposeCode: fcbConfig?.defaultPurposeCode ?? null,
-        entryDescription: fcbConfig?.entryDescription ?? null,
-        globalAddenda: fcbConfig?.globalAddenda ?? null,
-        discretionaryData: fcbConfig?.discretionaryData ?? null,
-        transactionType: fcbConfig?.transactionType ?? "Credit",
+        purposeCode: fcbHeader?.purposeCode ?? null,
+        entryDescription: fcbHeader?.entryDescription ?? null,
+        globalAddenda: fcbHeader?.globalAddenda ?? null,
+        discretionaryData: fcbHeader?.discretionaryData ?? null,
+        transactionType: fcbHeader?.transactionType ?? "Credit",
         validationSummaryJson: readiness,
         preparedByUserId: input.actorUserId,
         preparedAt: now,
@@ -415,8 +424,8 @@ export async function createAchPaymentBatch(input: {
               paymentType: firstCitizensPaymentType(
                 bank?.accountType ?? allocation.accountType ?? "SAVINGS",
               ),
-              purposeCode: fcbConfig?.defaultPurposeCode ?? null,
-              addenda: fcbConfig?.globalAddenda ?? null,
+              purposeCode: fcbHeader?.purposeCode ?? null,
+              addenda: fcbHeader?.globalAddenda ?? null,
               allocationKind: allocation.allocationKind,
             };
           }),
@@ -580,6 +589,7 @@ export async function generateAchPaymentBatchFile(input: {
           payrollPaymentAllocation: {
             select: {
               accountNumberEncrypted: true,
+              accountType: true,
               beneficiaryName: true,
               branchCode: true,
               branchName: true,
@@ -620,6 +630,25 @@ export async function generateAchPaymentBatchFile(input: {
     };
   }
 
+  const { parseFirstCitizensConfiguration, resolveFirstCitizensBatchHeader } =
+    await import("@/src/modules/payroll/lib/first-citizens-export");
+
+  const fcbConfig = parseFirstCitizensConfiguration(
+    batch.bankExportProfile.configurationJson,
+  );
+  const fcbHeader = resolveFirstCitizensBatchHeader(fcbConfig);
+  const resolvedConfig = {
+    ...fcbConfig,
+    globalAddenda: batch.globalAddenda?.trim() || fcbHeader.globalAddenda,
+    entryDescription:
+      batch.entryDescription?.trim() || fcbHeader.entryDescription,
+    discretionaryData:
+      batch.discretionaryData?.trim() || fcbHeader.discretionaryData,
+    defaultPurposeCode: batch.purposeCode?.trim() || fcbHeader.purposeCode,
+    transactionType:
+      batch.transactionType === "Debit" ? ("Debit" as const) : ("Credit" as const),
+  };
+
   const details: BankExportDetailLine[] = batch.details.map((detail) => {
     let accountNumber: string | null = null;
     try {
@@ -642,6 +671,11 @@ export async function generateAchPaymentBatchFile(input: {
       beneficiaryName: detail.payrollPaymentAllocation.beneficiaryName,
       branchCode: detail.payrollPaymentAllocation.branchCode,
       branchName: detail.payrollPaymentAllocation.branchName,
+      abaNumber: detail.abaNumber,
+      accountType: detail.payrollPaymentAllocation.accountType,
+      paymentType: detail.paymentType,
+      purposeCode: detail.purposeCode ?? resolvedConfig.defaultPurposeCode,
+      addenda: detail.addenda ?? resolvedConfig.globalAddenda,
     };
   });
 
@@ -651,7 +685,7 @@ export async function generateAchPaymentBatchFile(input: {
     runNumber: input.runNumber,
     currencyCode: batch.currencyCode,
     details,
-    configurationJson: batch.bankExportProfile.configurationJson,
+    configurationJson: resolvedConfig,
   });
 
   if (!validation.ok) {
@@ -663,7 +697,7 @@ export async function generateAchPaymentBatchFile(input: {
     runNumber: input.runNumber,
     currencyCode: batch.currencyCode,
     details,
-    configurationJson: batch.bankExportProfile.configurationJson,
+    configurationJson: resolvedConfig,
   });
 
   if (

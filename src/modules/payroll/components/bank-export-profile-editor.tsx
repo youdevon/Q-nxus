@@ -133,8 +133,11 @@ export function BankExportProfileEditor({
               <div>
                 <p className="text-sm font-medium">First Citizens fields</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Maps to Business Online template / batch defaults. Import file
-                  generation stays disabled until the bank confirms layout.
+                  Maps to First Citizens Business Online ACH fields. Global
+                  Addenda and Entry Description are required by the bank form.
+                  Discretionary Data defaults to the payroll period name when
+                  blank. Import file generation stays disabled until the bank
+                  confirms layout.
                 </p>
               </div>
               <div className="grid gap-2 sm:grid-cols-2">
@@ -200,10 +203,12 @@ export function BankExportProfileEditor({
                 </div>
                 <div className="grid gap-2">
                   <label className="text-xs text-muted-foreground">
-                    Entry description
+                    Entry description (required)
                   </label>
                   <Input
                     value={fcb.entryDescription ?? ""}
+                    placeholder="Salary"
+                    required
                     onChange={(event) =>
                       setFcb((current) => ({
                         ...current,
@@ -214,10 +219,12 @@ export function BankExportProfileEditor({
                 </div>
                 <div className="grid gap-2">
                   <label className="text-xs text-muted-foreground">
-                    Global addenda
+                    Global addenda (required)
                   </label>
                   <Input
                     value={fcb.globalAddenda ?? ""}
+                    placeholder="Payroll"
+                    required
                     onChange={(event) =>
                       setFcb((current) => ({
                         ...current,
@@ -228,10 +235,26 @@ export function BankExportProfileEditor({
                 </div>
                 <div className="grid gap-2">
                   <label className="text-xs text-muted-foreground">
+                    Discretionary data
+                  </label>
+                  <Input
+                    value={fcb.discretionaryData ?? ""}
+                    placeholder="July 2026 (blank = payroll period name)"
+                    onChange={(event) =>
+                      setFcb((current) => ({
+                        ...current,
+                        discretionaryData: event.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-xs text-muted-foreground">
                     Balance account (masked)
                   </label>
                   <Input
                     value={fcb.balanceAccountMasked ?? ""}
+                    placeholder="xxx5620 - TTD"
                     onChange={(event) =>
                       setFcb((current) => ({
                         ...current,

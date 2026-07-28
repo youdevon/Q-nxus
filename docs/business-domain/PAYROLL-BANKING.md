@@ -97,15 +97,37 @@ Until a bank confirms a direct file layout, keep `ACH_EXPORT_ENABLED` off.
   Columns match the bank template order:
   Individual Name | Individual ID | ABA Number | Account Number |
   Payment Type | Purpose Code | Amount | Addenda,
-  plus a Control Summary sheet clearly labeled as **not** a bank import file.
+  plus a Control Summary sheet with a **Bank ACH header** block (copy onto
+  Business Online) clearly labeled as **not** a bank import file.
   Route: `/payroll/runs/[id]/payments/[batchId]/fcb-worksheet`
 - **Import file** (`FIRST_CITIZENS_IMPORT`) — adapter present but **disabled**.
   Guides name Default Transactions / NACHA CSV options but do not document
   field layout; request confirmation from
   `businessonlinequeries@firstcitizenstt.com` before enabling.
 - Seeded profiles: `FCB_MANUAL_WORKSHEET`, `FCB_IMPORT` (placeholder).
+  Re-seed or run `npx tsx --env-file=.env scripts/sync-fcb-ach-compliance.ts`
+  to upgrade stored profile JSON / open batches to bank-form defaults.
 - Processing notes from bank guides (advisory only): Mon–Fri windows,
   3,000 entry import max, 10 business-day release expiry, dual control.
+
+### First Citizens ACH batch header (Business Online)
+
+Required / expected header fields on the bank form (validated before worksheet
+export):
+
+| Bank field | Default / source |
+|------------|------------------|
+| Effective Date | Pay period end (shown as DD/MM/YYYY on Control Summary) |
+| Balance Account | Export profile `balanceAccountMasked` (e.g. `xxx5620 - TTD`) |
+| **Global Addenda** | **Required** — default `Payroll` |
+| Discretionary Data | Profile override, else payroll period name (e.g. `July 2026`) |
+| **Entry Description** | **Required** — default `Salary` |
+| Transaction Type | `Credit` (payroll) |
+| Purpose Code | Default `COMPENSATION OF EMPLOYEES` |
+| Total / Total No of Records | Batch control totals |
+
+Payment Type labels match the bank UI: `Savings Credit` | `Checking Credit`
+(internal account type remains `SAVINGS` / `CHEQUING`).
 
 ### Employee payment instructions ↔ First Citizens ACH
 
@@ -115,10 +137,10 @@ Until a bank confirms a direct file layout, keep `ACH_EXPORT_ENABLED` off.
 | Individual ID | No (from HR) | Employee number |
 | ABA Number | **Required** | Financial institution + optional `routingNumber` (routing / ACH participant when known) |
 | Account Number | **Required** | Encrypted account number |
-| Payment Type | **Required** | Account type: Savings or Chequing only |
+| Payment Type | **Required** | Account type → Savings Credit / Checking Credit |
 | Purpose Code | No | Bank export profile / batch default |
 | Amount | No | Payroll calc / allocation |
-| Addenda | No | Batch global addenda |
+| Addenda | No | Batch global addenda (default Payroll) |
 
 **Not required for FCB ACH entry:** branch/transit (removed from primary payroll setup UI; optional on import only).
 

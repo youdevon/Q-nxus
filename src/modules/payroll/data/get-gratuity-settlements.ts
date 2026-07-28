@@ -45,11 +45,29 @@ function employeeDisplayName(employee: {
   return `${employee.preferredName ?? employee.firstName} ${employee.lastName}`.trim();
 }
 
-function yearBounds(year: number): { start: Date; end: Date } {
+/**
+ * Calendar-year window for contract period end dates.
+ * Use `[start, endExclusive)` so Dec 31 dates are never clipped by midnight.
+ */
+function yearBounds(year: number): {
+  start: Date;
+  endInclusive: Date;
+  endExclusive: Date;
+} {
   return {
     start: new Date(Date.UTC(year, 0, 1)),
-    end: new Date(Date.UTC(year, 11, 31)),
+    endInclusive: new Date(Date.UTC(year, 11, 31)),
+    endExclusive: new Date(Date.UTC(year + 1, 0, 1)),
   };
+}
+
+/** Prisma filter: contract period endDate falls in the calendar year. */
+function contractPeriodEndsInYear(year: number) {
+  const { start, endExclusive } = yearBounds(year);
+  return {
+    gte: start,
+    lt: endExclusive,
+  } as const;
 }
 
 function monthsOverlappingYear(
@@ -57,7 +75,7 @@ function monthsOverlappingYear(
   endDate: Date,
   year: number,
 ): number {
-  const { start: yearStart, end: yearEnd } = yearBounds(year);
+  const { start: yearStart, endInclusive: yearEnd } = yearBounds(year);
   const clipStart = startDate > yearStart ? startDate : yearStart;
   const clipEnd = endDate < yearEnd ? endDate : yearEnd;
   if (clipEnd < clipStart) {
@@ -143,6 +161,16 @@ const contractListSelect = {
       taxRemittanceReference: true,
       notes: true,
       policyId: true,
+    },
+  },
+} as const;
+
+/** Detail view only — includes calculation snapshot for variance display. */
+const contractDetailSelect = {
+  ...contractListSelect,
+  gratuitySettlement: {
+    select: {
+      ...contractListSelect.gratuitySettlement.select,
       calculationSnapshot: true,
     },
   },
@@ -290,14 +318,10 @@ export async function listUnpaidGratuitySettlements(options?: {
     where: {
       gratuityEligible: true,
       status: { in: [...ELIGIBLE_CONTRACT_STATUSES] },
+      // Estimated amounts belong to the calendar year of the contract period end.
       ...(year
-        ? {
-            endDate: {
-              gte: yearBounds(year).start,
-              lte: yearBounds(year).end,
-            },
-          }
-        : {}),
+        ? { endDate: contractPeriodEndsInYear(year) }
+        : { endDate: { not: null } }),
       OR: [
         { gratuitySettlement: null },
         {
@@ -316,7 +340,7 @@ export async function listUnpaidGratuitySettlements(options?: {
     orderBy: [{ endDate: "asc" }, { startDate: "asc" }],
   });
 
-  return contracts.map((contract) => {
+  return contracts.flatMap((contract) => {
     const settlement =
       contract.gratuitySettlement &&
       contract.gratuitySettlement.status !== "VOID"
@@ -324,7 +348,11 @@ export async function listUnpaidGratuitySettlements(options?: {
         : null;
 
     if (settlement) {
-      return mapSettlementRow({ contract, settlement });
+      return [mapSettlementRow({ contract, settlement })];
+    }
+
+    if (!contract.endDate) {
+      return [];
     }
 
     const amounts = computeSettlementAmounts(
@@ -341,14 +369,16 @@ export async function listUnpaidGratuitySettlements(options?: {
         gratuityRate: contract.gratuityRate?.toString() ?? null,
       },
       policyInput,
-      { asOf },
+      { asOf, requireEndDate: true },
     );
 
-    return mapSettlementRow({
-      contract,
-      settlement: null,
-      estimate: amounts,
-    });
+    return [
+      mapSettlementRow({
+        contract,
+        settlement: null,
+        estimate: amounts,
+      }),
+    ];
   });
 }
 
@@ -360,25 +390,12 @@ export async function listPaidGratuitySettlements(options?: {
   const settlements = await prisma.employeeGratuitySettlement.findMany({
     where: {
       status: "PAID",
+      // Year view follows contract period end date (same rule as unpaid/budget).
       ...(year
         ? {
-            OR: [
-              {
-                paidAt: {
-                  gte: yearBounds(year).start,
-                  lte: new Date(Date.UTC(year, 11, 31, 23, 59, 59, 999)),
-                },
-              },
-              {
-                paidAt: null,
-                contract: {
-                  endDate: {
-                    gte: yearBounds(year).start,
-                    lte: yearBounds(year).end,
-                  },
-                },
-              },
-            ],
+            contract: {
+              endDate: contractPeriodEndsInYear(year),
+            },
           }
         : {}),
     },
@@ -499,7 +516,7 @@ export async function getGratuitySettlementForContract(
 ): Promise<GratuitySettlementDetail | null> {
   const contract = await prisma.employmentContract.findUnique({
     where: { id: contractId },
-    select: contractListSelect,
+    select: contractDetailSelect,
   });
 
   if (!contract || !contract.gratuityEligible) {
@@ -690,11 +707,9 @@ export async function getGratuityBudgetForYear(
   year: number,
   scenario: GratuityBudgetScenarioOptions = {},
 ): Promise<GratuityBudgetForYear> {
-  const { start, end } = yearBounds(year);
+  const { start, endInclusive, endExclusive } = yearBounds(year);
   const asOf = new Date();
-  const { input: policyInput } = await resolvePolicyInput(
-    new Date(Date.UTC(year, 11, 31)),
-  );
+  const { input: policyInput } = await resolvePolicyInput(endInclusive);
   const rateOverride =
     scenario.rateOverridePercent != null &&
     Number.isFinite(scenario.rateOverridePercent)
@@ -703,50 +718,65 @@ export async function getGratuityBudgetForYear(
   const onlyCommitted = scenario.onlyCommitted === true;
   const excludePendingEstimates = scenario.excludePendingEstimates === true;
 
-  const scenarioPolicy = rateOverride != null
-    ? { ...policyInput, defaultRatePercent: rateOverride }
-    : policyInput;
+  const scenarioPolicy =
+    rateOverride != null
+      ? { ...policyInput, defaultRatePercent: rateOverride }
+      : policyInput;
 
-  const contracts = await prisma.employmentContract.findMany({
-    where: {
-      status: { in: [...ELIGIBLE_CONTRACT_STATUSES] },
-      startDate: { lte: end },
-      OR: [{ endDate: null }, { endDate: { gte: start } }],
-    },
-    select: {
-      id: true,
-      startDate: true,
-      endDate: true,
-      jobTitle: true,
-      baseSalary: true,
-      gratuityEligible: true,
-      gratuityRate: true,
-      status: true,
-      employee: {
-        select: {
-          employeeNumber: true,
-          firstName: true,
-          lastName: true,
-          preferredName: true,
+  const [salaryContracts, gratuityContracts] = await Promise.all([
+    prisma.employmentContract.findMany({
+      where: {
+        status: { in: [...ELIGIBLE_CONTRACT_STATUSES] },
+        // Overlaps the calendar year (salary outlay), not necessarily ending in it.
+        startDate: { lt: endExclusive },
+        OR: [{ endDate: null }, { endDate: { gte: start } }],
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+        baseSalary: true,
+      },
+    }),
+    prisma.employmentContract.findMany({
+      where: {
+        gratuityEligible: true,
+        status: { in: [...ELIGIBLE_CONTRACT_STATUSES] },
+        // Estimated / expected gratuity is attributed to the period end year only.
+        endDate: contractPeriodEndsInYear(year),
+      },
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+        jobTitle: true,
+        baseSalary: true,
+        gratuityRate: true,
+        employee: {
+          select: {
+            employeeNumber: true,
+            firstName: true,
+            lastName: true,
+            preferredName: true,
+          },
+        },
+        allowances: {
+          select: {
+            amount: true,
+            frequency: true,
+            includedInGratuity: true,
+          },
+        },
+        gratuitySettlement: {
+          select: {
+            status: true,
+            grossAmount: true,
+            taxAmount: true,
+            netAmount: true,
+          },
         },
       },
-      allowances: {
-        select: {
-          amount: true,
-          frequency: true,
-          includedInGratuity: true,
-        },
-      },
-      gratuitySettlement: {
-        select: {
-          status: true,
-          grossAmount: true,
-          taxAmount: true,
-          netAmount: true,
-        },
-      },
-    },
-  });
+    }),
+  ]);
 
   const monthSalary = Array.from({ length: 12 }, () => 0);
   const monthGratuity = Array.from({ length: 12 }, () => 0);
@@ -756,37 +786,38 @@ export async function getGratuityBudgetForYear(
   let expectedNet = 0;
   let committedNet = 0;
   let paidNet = 0;
-  let contractsEnding = 0;
   const rows: GratuityBudgetRow[] = [];
 
-  for (const contract of contracts) {
-    const endDate = contract.endDate ?? end;
+  for (const contract of salaryContracts) {
+    const endDate = contract.endDate ?? endInclusive;
     const monthsInYear = monthsOverlappingYear(
       contract.startDate,
       endDate,
       year,
     );
     const baseSalary = Number(contract.baseSalary.toString());
-    const salaryOutlay = roundMoney(baseSalary * monthsInYear);
-    salaryBudget += salaryOutlay;
+    salaryBudget += roundMoney(baseSalary * monthsInYear);
 
     for (let month = 0; month < 12; month += 1) {
       if (isActiveInMonth(contract.startDate, endDate, year, month)) {
         monthSalary[month] += baseSalary;
       }
     }
+  }
 
-    const endsThisYear =
-      contract.endDate != null &&
-      contract.endDate >= start &&
-      contract.endDate <= end;
-
-    if (!contract.gratuityEligible || !endsThisYear) {
+  for (const contract of gratuityContracts) {
+    if (!contract.endDate) {
       continue;
     }
 
-    contractsEnding += 1;
-    const paymentMonth = contract.endDate!.getUTCMonth();
+    const monthsInYear = monthsOverlappingYear(
+      contract.startDate,
+      contract.endDate,
+      year,
+    );
+    const baseSalary = Number(contract.baseSalary.toString());
+    const salaryOutlay = roundMoney(baseSalary * monthsInYear);
+    const paymentMonth = contract.endDate.getUTCMonth();
 
     const settlement =
       contract.gratuitySettlement &&
@@ -836,16 +867,19 @@ export async function getGratuityBudgetForYear(
               : (contract.gratuityRate?.toString() ?? null),
         },
         scenarioPolicy,
-        { asOf },
+        { asOf, requireEndDate: true },
       );
       gross = amounts.estimatedGrossGratuity;
       tax = amounts.estimatedTax;
       net = amounts.estimatedNetGratuity;
       status = amounts.ineligibleReason
         ? "INELIGIBLE"
-        : settlement?.status ?? "PENDING_ESTIMATE";
+        : (settlement?.status ?? "PENDING_ESTIMATE");
 
-      if (settlement?.status === "APPROVED" || settlement?.status === "SCHEDULED") {
+      if (
+        settlement?.status === "APPROVED" ||
+        settlement?.status === "SCHEDULED"
+      ) {
         committedNet += net;
       }
       if (settlement?.status === "PAID") {
@@ -871,9 +905,7 @@ export async function getGratuityBudgetForYear(
       employeeName: employeeDisplayName(contract.employee),
       jobTitle: contract.jobTitle,
       contractStartDate: toDateString(contract.startDate),
-      contractEndDate: contract.endDate
-        ? toDateString(contract.endDate)
-        : null,
+      contractEndDate: toDateString(contract.endDate),
       baseSalary: moneyString(baseSalary),
       monthsInYear,
       salaryOutlay: moneyString(salaryOutlay),
@@ -911,7 +943,9 @@ export async function getGratuityBudgetForYear(
     rows: rows.sort((a, b) => {
       const aEnd = a.contractEndDate ?? "";
       const bEnd = b.contractEndDate ?? "";
-      return aEnd.localeCompare(bEnd) || a.employeeName.localeCompare(b.employeeName);
+      return (
+        aEnd.localeCompare(bEnd) || a.employeeName.localeCompare(b.employeeName)
+      );
     }),
     scenario: {
       rateOverridePercent: rateOverride,

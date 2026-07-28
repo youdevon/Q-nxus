@@ -955,7 +955,7 @@ export function PayrollProfileForm({
                       >
                         <option value="SAVINGS">Savings → Savings Credit</option>
                         <option value="CHEQUING">
-                          Chequing → Chequing Credit
+                          Chequing → Checking Credit
                         </option>
                       </select>
                     </div>

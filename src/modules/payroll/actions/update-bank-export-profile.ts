@@ -7,6 +7,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import { prepareFirstCitizensConfigurationForStorage } from "@/src/modules/payroll/lib/first-citizens-export";
 
 export type BankExportProfileFormState = {
   status: "idle" | "success" | "error";
@@ -18,9 +19,16 @@ function textValue(formData: FormData, key: string): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function isFirstCitizensAdapter(adapterKind: string): boolean {
+  return (
+    adapterKind === "FIRST_CITIZENS_MANUAL_WORKSHEET" ||
+    adapterKind === "FIRST_CITIZENS_IMPORT"
+  );
+}
+
 /**
  * Ops-safe edits for bank export profiles (placeholders stay placeholders).
- * Does not invent official ACH layouts — configurationJson is optional free-form.
+ * First Citizens profiles are normalized to Business Online ACH header defaults.
  */
 export async function updateBankExportProfile(
   _previous: BankExportProfileFormState,
@@ -67,6 +75,17 @@ export async function updateBankExportProfile(
 
   if (!existing) {
     return { status: "error", message: "Export profile not found." };
+  }
+
+  if (configurationJson !== undefined && isFirstCitizensAdapter(existing.adapterKind)) {
+    const prepared = prepareFirstCitizensConfigurationForStorage(configurationJson);
+    if (!prepared.ok) {
+      return {
+        status: "error",
+        message: prepared.errors.join(" "),
+      };
+    }
+    configurationJson = prepared.config as Prisma.InputJsonValue;
   }
 
   const updated = await prisma.bankExportProfile.update({

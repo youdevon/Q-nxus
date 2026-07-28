@@ -5,6 +5,7 @@ import {
   buildFirstCitizensManualWorkbook,
   mapDetailToFirstCitizensEntry,
   parseFirstCitizensConfiguration,
+  resolveFirstCitizensBatchHeader,
 } from "@/src/modules/payroll/lib/first-citizens-export";
 import { decryptAccountNumber } from "@/src/modules/payroll/lib/bank-account-crypto";
 import { markAchPaymentBatchExported } from "@/src/modules/payroll/services/ach-payment-batch";
@@ -33,8 +34,11 @@ export async function GET(_request: Request, { params }: RouteContext) {
       payRun: {
         select: {
           runNumber: true,
+          currency: true,
           organization: { select: { name: true } },
-          payrollPeriod: { select: { periodEnd: true, periodKey: true } },
+          payrollPeriod: {
+            select: { periodEnd: true, periodKey: true, name: true },
+          },
         },
       },
       details: {
@@ -59,6 +63,30 @@ export async function GET(_request: Request, { params }: RouteContext) {
   const config = parseFirstCitizensConfiguration(
     batch.bankExportProfile.configurationJson,
   );
+  const period = batch.payRun.payrollPeriod;
+  const header = resolveFirstCitizensBatchHeader(config, {
+    periodName: period.name,
+    periodKey: period.periodKey,
+    periodEnd: period.periodEnd,
+  });
+
+  // Prefer values frozen on the batch; fall back to resolved profile / period defaults.
+  const globalAddenda = batch.globalAddenda?.trim() || header.globalAddenda;
+  const entryDescription =
+    batch.entryDescription?.trim() || header.entryDescription;
+  const discretionaryData =
+    batch.discretionaryData?.trim() || header.discretionaryData;
+  const transactionType =
+    batch.transactionType?.trim() || header.transactionType;
+  const purposeCode = batch.purposeCode?.trim() || header.purposeCode;
+
+  if (!globalAddenda || !entryDescription) {
+    return new Response(
+      "First Citizens batch is missing required Global Addenda or Entry Description. Update the bank export profile and recreate the batch.",
+      { status: 400 },
+    );
+  }
+
   const entries = batch.details.map((detail) => {
     let accountNumber: string | null = null;
     try {
@@ -81,12 +109,19 @@ export async function GET(_request: Request, { params }: RouteContext) {
         allocationKind: detail.allocationKind,
         beneficiaryName: detail.payrollPaymentAllocation.beneficiaryName,
       },
-      config,
+      {
+        ...config,
+        globalAddenda,
+        entryDescription,
+        discretionaryData,
+        defaultPurposeCode: purposeCode,
+        transactionType: transactionType === "Debit" ? "Debit" : "Credit",
+      },
       {
         abaNumber: detail.abaNumber,
         accountType: detail.payrollPaymentAllocation.accountType,
-        purposeCode: detail.purposeCode ?? batch.purposeCode,
-        addenda: detail.addenda,
+        purposeCode: detail.purposeCode ?? purposeCode,
+        addenda: detail.addenda?.trim() || globalAddenda,
       },
     );
   });
@@ -100,17 +135,20 @@ export async function GET(_request: Request, { params }: RouteContext) {
       ? `${actor.firstName} ${actor.lastName}`.trim() || actor.email
       : capabilities.userId;
 
-  const periodEnd = batch.payRun.payrollPeriod.periodEnd;
+  const periodEnd = period.periodEnd;
+  const effectiveDateIso =
+    batch.effectivePaymentDate?.toISOString().slice(0, 10) ??
+    periodEnd.toISOString().slice(0, 10);
+
   const buffer = await buildFirstCitizensManualWorkbook({
     entries,
     control: {
       organizationName: batch.payRun.organization.name,
       payrollPeriod:
-        batch.payRun.payrollPeriod.periodKey ||
+        period.name ||
+        period.periodKey ||
         periodEnd.toISOString().slice(0, 10),
-      effectiveDate:
-        batch.effectivePaymentDate?.toISOString().slice(0, 10) ??
-        periodEnd.toISOString().slice(0, 10),
+      effectiveDate: effectiveDateIso,
       debitAccountMasked:
         config.balanceAccountMasked ?? "•••• (set on export profile)",
       employeeCount: new Set(batch.details.map((d) => d.employeeNumber)).size,
@@ -121,6 +159,12 @@ export async function GET(_request: Request, { params }: RouteContext) {
       batchReference: batch.batchNumber,
       documentLabel:
         "First Citizens manual-entry worksheet (NOT a bank import file)",
+      globalAddenda,
+      discretionaryData,
+      entryDescription,
+      transactionType,
+      purposeCode,
+      currencyCode: batch.currencyCode || batch.payRun.currency,
     },
   });
 

@@ -196,6 +196,53 @@ describe("First Citizens manual worksheet", () => {
     );
     expect(csv).toContain("Jane Doe");
     expect(csv).toContain("Savings Credit");
+    expect(csv).toContain("Payroll");
+    expect(entry.addenda).toBe("Payroll");
+  });
+
+  it("maps chequing accounts to Checking Credit for the bank UI", () => {
+    const config = parseFirstCitizensConfiguration({});
+    const entry = mapDetailToFirstCitizensEntry(
+      {
+        sequence: 1,
+        employeeNumber: "18",
+        employeeName: "Keston",
+        bankName: "Republic",
+        accountNumber: "8701364508",
+        accountNumberMasked: "••••4508",
+        amount: 18153,
+        currencyCode: "TTD",
+        allocationKind: "REMAINDER",
+      },
+      config,
+      { accountType: "CHEQUING" },
+    );
+    expect(entry.paymentType).toBe("Checking Credit");
+  });
+
+  it("resolves required ACH header defaults from the live bank form", async () => {
+    const {
+      formatFcbDiscretionaryPeriod,
+      formatFcbEffectiveDate,
+      resolveFirstCitizensBatchHeader,
+    } = await import("./first-citizens-export");
+
+    const header = resolveFirstCitizensBatchHeader(
+      parseFirstCitizensConfiguration({}),
+      {
+        periodName: null,
+        periodKey: "2026-07",
+        periodEnd: new Date("2026-07-31T00:00:00.000Z"),
+      },
+    );
+    expect(header.globalAddenda).toBe("Payroll");
+    expect(header.entryDescription).toBe("Salary");
+    expect(header.discretionaryData).toBe("July 2026");
+    expect(header.transactionType).toBe("Credit");
+    expect(formatFcbEffectiveDate("2026-07-28")).toBe("28/07/2026");
+    expect(
+      formatFcbDiscretionaryPeriod({ periodName: "July 2026" }),
+    ).toBe("July 2026");
   });
 
   it("validates consistent purpose codes via adapter", () => {
@@ -205,6 +252,64 @@ describe("First Citizens manual worksheet", () => {
       runNumber: "PAY-1",
       currencyCode: "TTD",
       configurationJson: {},
+      details: [
+        {
+          sequence: 1,
+          employeeNumber: "1",
+          employeeName: "A",
+          bankName: "FCB",
+          accountNumber: "1111",
+          accountNumberMasked: "••••1111",
+          amount: 10,
+          currencyCode: "TTD",
+          allocationKind: "REMAINDER",
+        },
+      ],
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  it("normalizes legacy Salaries / Chequing Credit values", () => {
+    const config = parseFirstCitizensConfiguration({
+      globalAddenda: "",
+      entryDescription: "Salaries",
+    });
+    expect(config.globalAddenda).toBe("Payroll");
+    expect(config.entryDescription).toBe("Salary");
+
+    const entry = mapDetailToFirstCitizensEntry(
+      {
+        sequence: 1,
+        employeeNumber: "18",
+        employeeName: "Keston",
+        bankName: "Republic",
+        accountNumber: "8701364508",
+        accountNumberMasked: "••••4508",
+        amount: 10,
+        currencyCode: "TTD",
+        allocationKind: "REMAINDER",
+        paymentType: "Chequing Credit",
+        abaNumber: "REPUBLIC",
+        addenda: null,
+      },
+      config,
+    );
+    expect(entry.paymentType).toBe("Checking Credit");
+    expect(entry.abaNumber).toBe("REPUBLIC");
+    expect(entry.addenda).toBe("Payroll");
+  });
+
+  it("falls back to compliant header defaults when profile fields are blank", () => {
+    const adapter = new FirstCitizensManualWorksheetAdapter();
+    const result = adapter.validate({
+      batchNumber: "ACH-1",
+      runNumber: "PAY-1",
+      currencyCode: "TTD",
+      configurationJson: {
+        globalAddenda: "   ",
+        entryDescription: "",
+        defaultPurposeCode: "COMPENSATION OF EMPLOYEES",
+      },
       details: [
         {
           sequence: 1,

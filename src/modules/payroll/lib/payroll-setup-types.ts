@@ -91,7 +91,7 @@ export type PayrollBankAccountRecord = {
   branchName: string | null;
   accountNumber: string;
   accountName: string | null;
-  /** SAVINGS | CHEQUING for ACH Payment Type (Savings/Chequing Credit). */
+  /** SAVINGS | CHEQUING for ACH Payment Type (Savings/Checking Credit). */
   accountType?: string | null;
   amount: string | null;
   /** Percentage of take-home when allocation type is PERCENTAGE. */

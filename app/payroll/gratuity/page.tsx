@@ -80,16 +80,30 @@ export default async function PayrollGratuityPage({
   const onlyCommitted = parseFlag(params.onlyCommitted);
   const excludePendingEstimates = parseFlag(params.excludePending);
 
+  // Load only the active tab — budget/accruals/unpaid were all running on every visit.
+  const unpaidPromise =
+    tab === "unpaid" ? listUnpaidGratuitySettlements({ year }) : null;
+  const paidPromise =
+    tab === "paid" ? listPaidGratuitySettlements({ year }) : null;
+  const budgetPromise =
+    tab === "budget"
+      ? getGratuityBudgetForYear(year, {
+          rateOverridePercent,
+          onlyCommitted,
+          excludePendingEstimates,
+        })
+      : null;
+  const accrualsPromise =
+    tab === "accruals" ? listGratuityAccrualEntries({ year }) : null;
+  const draftPromise =
+    tab === "unpaid" && canManage ? listDraftPayRunsForGratuity() : null;
+
   const [unpaid, paid, budget, accruals, draftPayRuns] = await Promise.all([
-    listUnpaidGratuitySettlements({ year }),
-    listPaidGratuitySettlements({ year }),
-    getGratuityBudgetForYear(year, {
-      rateOverridePercent,
-      onlyCommitted,
-      excludePendingEstimates,
-    }),
-    listGratuityAccrualEntries({ year }),
-    listDraftPayRunsForGratuity(),
+    unpaidPromise ?? Promise.resolve([]),
+    paidPromise ?? Promise.resolve([]),
+    budgetPromise ?? Promise.resolve(null),
+    accrualsPromise ?? Promise.resolve([]),
+    draftPromise ?? Promise.resolve([]),
   ]);
 
   return (
@@ -100,7 +114,7 @@ export default async function PayrollGratuityPage({
       paid={paid}
       budget={budget}
       accruals={accruals}
-      scenario={budget.scenario}
+      scenario={budget?.scenario ?? null}
       draftPayRuns={draftPayRuns}
       canManage={canManage}
     />

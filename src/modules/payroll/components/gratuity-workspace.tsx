@@ -1,9 +1,5 @@
-"use client";
-
-import { useActionState, useEffect } from "react";
 import Link from "next/link";
 import { Gift } from "lucide-react";
-import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,17 +9,10 @@ import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import {
-  runGratuityMonthlyAccrualPost,
-  type GratuityAccrualFormState,
-} from "@/src/modules/payroll/actions/manage-gratuity-accruals";
-import {
-  approveGratuitySettlement,
-  markGratuityTaxRemitted,
-  recalculateGratuitySettlement,
-  scheduleGratuitySettlement,
-  voidGratuitySettlement,
-  type GratuitySettlementFormState,
-} from "@/src/modules/payroll/actions/manage-gratuity-settlement";
+  AccrualPostForm,
+  PaidRemitForm,
+  UnpaidRowActions,
+} from "@/src/modules/payroll/components/gratuity-action-forms";
 import type {
   DraftPayRunForGratuity,
   GratuityBudgetForYear,
@@ -31,16 +20,6 @@ import type {
 } from "@/src/modules/payroll/data/get-gratuity-settlements";
 import type { GratuityAccrualListItem } from "@/src/modules/payroll/services/gratuity-accruals";
 import { PayrollNav } from "./payroll-nav";
-
-const idle: GratuitySettlementFormState = {
-  status: "idle",
-  message: "",
-};
-
-const accrualIdle: GratuityAccrualFormState = {
-  status: "idle",
-  message: "",
-};
 
 export type GratuityTab = "unpaid" | "paid" | "budget" | "accruals";
 
@@ -50,42 +29,6 @@ export type GratuityBudgetScenarioView = {
   excludePendingEstimates: boolean;
   label: string;
 };
-
-function SettlementActionForm({
-  action,
-  children,
-  hidden,
-  className,
-}: {
-  action: (
-    prev: GratuitySettlementFormState,
-    formData: FormData,
-  ) => Promise<GratuitySettlementFormState>;
-  children: React.ReactNode;
-  hidden: Record<string, string>;
-  className?: string;
-}) {
-  const [state, formAction, pending] = useActionState(action, idle);
-
-  useEffect(() => {
-    if (state.status === "error") {
-      toast.error(state.message);
-    } else if (state.status === "success") {
-      toast.success(state.message);
-    }
-  }, [state]);
-
-  return (
-    <form action={formAction} className={className ?? "inline-flex"}>
-      {Object.entries(hidden).map(([key, value]) => (
-        <input key={key} type="hidden" name={key} value={value} />
-      ))}
-      <fieldset disabled={pending} className="contents">
-        {children}
-      </fieldset>
-    </form>
-  );
-}
 
 function statusBadgeVariant(
   status: string,
@@ -127,21 +70,28 @@ export function GratuityWorkspace({
   scenario,
   draftPayRuns,
   canManage,
+  tabCounts,
 }: {
   year: number;
   tab: GratuityTab;
   unpaid: GratuitySettlementListItem[];
   paid: GratuitySettlementListItem[];
-  budget: GratuityBudgetForYear;
+  budget: GratuityBudgetForYear | null;
   accruals: GratuityAccrualListItem[];
-  scenario: GratuityBudgetScenarioView;
+  scenario: GratuityBudgetScenarioView | null;
   draftPayRuns: DraftPayRunForGratuity[];
   canManage: boolean;
+  /** Optional counts for inactive tabs (omit to hide badges). */
+  tabCounts?: Partial<Record<GratuityTab, number>>;
 }) {
   const tabs: { id: GratuityTab; label: string; count?: number }[] = [
-    { id: "unpaid", label: "Unpaid", count: unpaid.length },
-    { id: "paid", label: "Paid", count: paid.length },
-    { id: "accruals", label: "Accruals", count: accruals.length },
+    { id: "unpaid", label: "Unpaid", count: tabCounts?.unpaid ?? unpaid.length },
+    { id: "paid", label: "Paid", count: tabCounts?.paid ?? paid.length },
+    {
+      id: "accruals",
+      label: "Accruals",
+      count: tabCounts?.accruals ?? accruals.length,
+    },
     { id: "budget", label: "Budget" },
   ];
 
@@ -151,7 +101,7 @@ export function GratuityWorkspace({
 
       <PageHeader
         title="Gratuity"
-        description="Estimate, approve, schedule, and remit tax for contract-end gratuity settlements."
+        description="Estimate, approve, schedule, and remit tax for contract-end gratuity. The year filter uses each contract period’s end date."
         backHref="/payroll"
         backLabel="Payroll"
       />
@@ -188,6 +138,7 @@ export function GratuityWorkspace({
             <Link
               key={item.id}
               href={href}
+              prefetch={false}
               className={[
                 "inline-flex items-center gap-1.5 rounded-t-md px-3 py-2 text-sm transition-colors",
                 active
@@ -208,22 +159,19 @@ export function GratuityWorkspace({
 
       {tab === "unpaid" ? (
         <UnpaidTable
+          year={year}
           rows={unpaid}
           draftPayRuns={draftPayRuns}
           canManage={canManage}
         />
       ) : null}
       {tab === "paid" ? (
-        <PaidTable rows={paid} canManage={canManage} />
+        <PaidTable year={year} rows={paid} canManage={canManage} />
       ) : null}
       {tab === "accruals" ? (
-        <AccrualsPanel
-          year={year}
-          rows={accruals}
-          canManage={canManage}
-        />
+        <AccrualsPanel year={year} rows={accruals} canManage={canManage} />
       ) : null}
-      {tab === "budget" ? (
+      {tab === "budget" && budget && scenario ? (
         <BudgetPanel year={year} budget={budget} scenario={scenario} />
       ) : null}
     </PageShell>
@@ -231,19 +179,27 @@ export function GratuityWorkspace({
 }
 
 function UnpaidTable({
+  year,
   rows,
   draftPayRuns,
   canManage,
 }: {
+  year: number;
   rows: GratuitySettlementListItem[];
   draftPayRuns: DraftPayRunForGratuity[];
   canManage: boolean;
 }) {
   return (
     <section>
-      <div className="mb-4 flex items-center gap-2">
-        <Gift className="size-4 text-muted-foreground" />
-        <SectionHeading>Unpaid settlements</SectionHeading>
+      <div className="mb-4 flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <Gift className="size-4 text-muted-foreground" />
+          <SectionHeading>Unpaid settlements ending in {year}</SectionHeading>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Estimates appear for the calendar year of each contract period&apos;s
+          end date.
+        </p>
       </div>
 
       <div className="overflow-x-auto rounded-md border">
@@ -252,7 +208,7 @@ function UnpaidTable({
             <tr>
               <th className="px-3 py-2 font-medium">Employee</th>
               <th className="px-3 py-2 font-medium">Contract</th>
-              <th className="px-3 py-2 font-medium">End date</th>
+              <th className="px-3 py-2 font-medium">Period end</th>
               <th className="px-3 py-2 font-medium">Status</th>
               <th className="px-3 py-2 text-right font-medium">Gross</th>
               <th className="px-3 py-2 text-right font-medium">Tax</th>
@@ -269,7 +225,8 @@ function UnpaidTable({
                   colSpan={canManage ? 8 : 7}
                   className="px-3 py-8 text-center text-muted-foreground"
                 >
-                  No unpaid gratuity settlements for this year.
+                  No unpaid gratuity for contracts ending in {year}. Change the
+                  year to match the contract period end date.
                 </td>
               </tr>
             ) : (
@@ -315,7 +272,14 @@ function UnpaidTable({
                   </td>
                   {canManage ? (
                     <td className="px-3 py-3">
-                      <UnpaidActions row={row} draftPayRuns={draftPayRuns} />
+                      <UnpaidRowActions
+                        row={{
+                          contractId: row.contractId,
+                          settlementId: row.settlementId,
+                          status: row.status,
+                        }}
+                        draftPayRuns={draftPayRuns}
+                      />
                     </td>
                   ) : null}
                 </tr>
@@ -328,106 +292,25 @@ function UnpaidTable({
   );
 }
 
-function UnpaidActions({
-  row,
-  draftPayRuns,
-}: {
-  row: GratuitySettlementListItem;
-  draftPayRuns: DraftPayRunForGratuity[];
-}) {
-  const canApprove =
-    row.settlementId != null &&
-    (row.status === "CALCULATED" || row.status === "ESTIMATED");
-  const canSchedule =
-    row.settlementId != null && row.status === "APPROVED";
-  const canVoid =
-    row.settlementId != null &&
-    row.status !== "PAID" &&
-    row.status !== "VOID" &&
-    row.status !== "PENDING_ESTIMATE";
-
-  return (
-    <div className="flex min-w-[14rem] flex-col gap-2">
-      <SettlementActionForm
-        action={recalculateGratuitySettlement}
-        hidden={{ contractId: row.contractId }}
-      >
-        <Button type="submit" size="sm" variant="outline">
-          Recalculate
-        </Button>
-      </SettlementActionForm>
-
-      {canApprove ? (
-        <SettlementActionForm
-          action={approveGratuitySettlement}
-          hidden={{ settlementId: row.settlementId! }}
-        >
-          <Button type="submit" size="sm">
-            Approve
-          </Button>
-        </SettlementActionForm>
-      ) : null}
-
-      {canSchedule ? (
-        <SettlementActionForm
-          action={scheduleGratuitySettlement}
-          hidden={{ settlementId: row.settlementId! }}
-          className="flex flex-col gap-1"
-        >
-          <select
-            name="payRunId"
-            required
-            className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2 text-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Draft pay run…
-            </option>
-            {draftPayRuns.map((run) => (
-              <option key={run.id} value={run.id}>
-                {run.runNumber} · {run.periodName} ({run.runKind})
-              </option>
-            ))}
-          </select>
-          <Button type="submit" size="sm" variant="outline">
-            Schedule
-          </Button>
-        </SettlementActionForm>
-      ) : null}
-
-      {canVoid ? (
-        <SettlementActionForm
-          action={voidGratuitySettlement}
-          hidden={{ settlementId: row.settlementId! }}
-          className="flex flex-col gap-1"
-        >
-          <Input
-            name="reason"
-            placeholder="Void reason"
-            required
-            className="h-8 text-xs"
-          />
-          <Button type="submit" size="sm" variant="destructive">
-            Void
-          </Button>
-        </SettlementActionForm>
-      ) : null}
-    </div>
-  );
-}
-
 function PaidTable({
+  year,
   rows,
   canManage,
 }: {
+  year: number;
   rows: GratuitySettlementListItem[];
   canManage: boolean;
 }) {
   return (
     <section>
-      <div className="mb-4 flex items-center gap-2">
-        <Gift className="size-4 text-muted-foreground" />
-        <SectionHeading>Paid settlements</SectionHeading>
+      <div className="mb-4 flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <Gift className="size-4 text-muted-foreground" />
+          <SectionHeading>Paid settlements ending in {year}</SectionHeading>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Paid rows are listed by the contract period end year.
+        </p>
       </div>
 
       <div className="overflow-x-auto rounded-md border">
@@ -450,7 +333,7 @@ function PaidTable({
                   colSpan={7}
                   className="px-3 py-8 text-center text-muted-foreground"
                 >
-                  No paid gratuity settlements for this year.
+                  No paid gratuity for contracts ending in {year}.
                 </td>
               </tr>
             ) : (
@@ -513,21 +396,7 @@ function PaidTable({
                       row.settlementId &&
                       row.taxRemittanceStatus === "PENDING" &&
                       Number(row.taxAmount) > 0 ? (
-                        <SettlementActionForm
-                          action={markGratuityTaxRemitted}
-                          hidden={{ settlementId: row.settlementId }}
-                          className="flex flex-col gap-1"
-                        >
-                          <Input
-                            name="reference"
-                            placeholder="Remittance ref"
-                            required
-                            className="h-8 text-xs"
-                          />
-                          <Button type="submit" size="sm" variant="outline">
-                            Mark remitted
-                          </Button>
-                        </SettlementActionForm>
+                        <PaidRemitForm settlementId={row.settlementId} />
                       ) : null}
                     </div>
                   </td>
@@ -538,35 +407,6 @@ function PaidTable({
         </table>
       </div>
     </section>
-  );
-}
-
-function AccrualPostForm({ canManage }: { canManage: boolean }) {
-  const [state, formAction, pending] = useActionState(
-    runGratuityMonthlyAccrualPost,
-    accrualIdle,
-  );
-
-  useEffect(() => {
-    if (state.status === "error") {
-      toast.error(state.message);
-    } else if (state.status === "success") {
-      toast.success(state.message);
-    }
-  }, [state]);
-
-  if (!canManage) {
-    return null;
-  }
-
-  return (
-    <form action={formAction}>
-      <fieldset disabled={pending} className="contents">
-        <Button type="submit" size="sm">
-          Post this month&apos;s accruals
-        </Button>
-      </fieldset>
-    </form>
   );
 }
 
@@ -596,9 +436,15 @@ function AccrualsPanel({
               <th className="px-3 py-2 font-medium">Period</th>
               <th className="px-3 py-2 font-medium">Employee</th>
               <th className="px-3 py-2 font-medium">Contract</th>
-              <th className="px-3 py-2 text-right font-medium">Gross obligation</th>
-              <th className="px-3 py-2 text-right font-medium">Accrued to date</th>
-              <th className="px-3 py-2 text-right font-medium">Period accrual</th>
+              <th className="px-3 py-2 text-right font-medium">
+                Gross obligation
+              </th>
+              <th className="px-3 py-2 text-right font-medium">
+                Accrued to date
+              </th>
+              <th className="px-3 py-2 text-right font-medium">
+                Period accrual
+              </th>
               <th className="px-3 py-2 font-medium">Posted</th>
             </tr>
           </thead>
@@ -722,7 +568,9 @@ function BudgetPanel({
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Expected gratuity (net)</p>
+            <p className="text-xs text-muted-foreground">
+              Expected gratuity (net)
+            </p>
             <p className="mt-1 text-sm font-medium tabular-nums">
               {money(budget.expectedGratuityNet)}
             </p>
@@ -740,7 +588,9 @@ function BudgetPanel({
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Unpaid (expected − paid)</p>
+            <p className="text-xs text-muted-foreground">
+              Unpaid (expected − paid)
+            </p>
             <p className="mt-1 text-sm font-medium tabular-nums">
               {money(budget.unpaidGratuityNet)}
             </p>
@@ -792,7 +642,9 @@ function BudgetPanel({
       </section>
 
       <section>
-        <SectionHeading className="mb-4">Contracts ending this year</SectionHeading>
+        <SectionHeading className="mb-4">
+          Contracts ending this year
+        </SectionHeading>
         <div className="overflow-x-auto rounded-md border">
           <table className="w-full min-w-[56rem] text-left text-sm">
             <thead className="border-b bg-muted/40 text-xs text-muted-foreground">
@@ -800,7 +652,9 @@ function BudgetPanel({
                 <th className="px-3 py-2 font-medium">Employee</th>
                 <th className="px-3 py-2 font-medium">End date</th>
                 <th className="px-3 py-2 text-right font-medium">Months</th>
-                <th className="px-3 py-2 text-right font-medium">Salary outlay</th>
+                <th className="px-3 py-2 text-right font-medium">
+                  Salary outlay
+                </th>
                 <th className="px-3 py-2 text-right font-medium">Gross</th>
                 <th className="px-3 py-2 text-right font-medium">Net</th>
                 <th className="px-3 py-2 font-medium">Status</th>
@@ -818,7 +672,10 @@ function BudgetPanel({
                 </tr>
               ) : (
                 budget.rows.map((row) => (
-                  <tr key={row.contractId} className="border-b border-border/50">
+                  <tr
+                    key={row.contractId}
+                    className="border-b border-border/50"
+                  >
                     <td className="px-3 py-3">
                       <p className="font-medium">{row.employeeName}</p>
                       <p className="text-xs text-muted-foreground">

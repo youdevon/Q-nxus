@@ -26,6 +26,12 @@ export type BankExportDetailLine = {
   beneficiaryName?: string | null;
   branchCode?: string | null;
   branchName?: string | null;
+  /** Frozen First Citizens ACH fields when generating from a payment batch. */
+  abaNumber?: string | null;
+  accountType?: string | null;
+  paymentType?: string | null;
+  purposeCode?: string | null;
+  addenda?: string | null;
 };
 
 export type BankExportGenerateInput = {
