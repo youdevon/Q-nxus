@@ -4,6 +4,7 @@ import { Building2, Users, UserRound } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
@@ -16,6 +17,8 @@ import {
   type PayrollMoneyTotals,
 } from "@/src/modules/payroll/lib/payroll-analytics";
 import { formatPayslipPeriodLabel } from "@/src/modules/payroll/lib/payslip-preview";
+import { ReportExportLinks, ReportPrintLink } from "@/src/modules/reports/components/report-layout";
+import { reportPrintHref } from "@/src/modules/reports/lib/report-print";
 import { PayrollNav } from "./payroll-nav";
 
 const PRESETS = [
@@ -160,6 +163,32 @@ export function EmployeePaymentHistoryReport({
     1;
   const periodLabel = `${formatPayslipPeriodLabel(period.startPeriodKey) ?? period.startPeriodKey} – ${formatPayslipPeriodLabel(period.endPeriodKey) ?? period.endPeriodKey}`;
 
+  const exportParams = new URLSearchParams({
+    scope,
+    preset: period.preset,
+    start: period.startPeriodKey,
+    end: period.endPeriodKey,
+  });
+  if (selectedEmployee) {
+    exportParams.set("employeeId", selectedEmployee.id);
+  }
+  if (selectedDepartmentId) {
+    exportParams.set("departmentId", selectedDepartmentId);
+  }
+  if (query) {
+    exportParams.set("query", query);
+  }
+  const exportHref = `/payroll/reports/employee/export?${exportParams.toString()}`;
+  const printHref = reportPrintHref("/payroll/reports/employee", {
+    scope,
+    employeeId: selectedEmployee?.id,
+    departmentId: selectedDepartmentId ?? undefined,
+    query: query || undefined,
+    preset: period.preset,
+    start: period.startPeriodKey,
+    end: period.endPeriodKey,
+  });
+
   return (
     <PageShell size="lg">
       <PayrollNav />
@@ -167,8 +196,14 @@ export function EmployeePaymentHistoryReport({
       <PageHeader
         title="Employee payment history"
         description="Posted amounts paid across employees, one person, or a department over a selected period. Corrections and off-cycle runs are included and labeled."
-        backHref="/payroll/reports"
+        backHref="/reports"
         backLabel="Reports"
+        actions={
+          <PageActionsEnd>
+            <ReportPrintLink href={printHref} />
+            <ReportExportLinks href={exportHref} />
+          </PageActionsEnd>
+        }
       />
 
       <form

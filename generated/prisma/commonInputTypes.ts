@@ -1205,6 +1205,20 @@ export type EnumPersonalAllowanceSourceFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPersonalAllowanceSourceFilter<$PrismaModel> | $Enums.PersonalAllowanceSource
 }
 
+export type EnumPreviousEmploymentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreviousEmploymentStatus | Prisma.EnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreviousEmploymentStatusFilter<$PrismaModel> | $Enums.PreviousEmploymentStatus
+}
+
+export type EnumOtherEmolumentIncomeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OtherEmolumentIncomeStatus | Prisma.EnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOtherEmolumentIncomeStatusFilter<$PrismaModel> | $Enums.OtherEmolumentIncomeStatus
+}
+
 export type EnumTaxCalculationMethodWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TaxCalculationMethod | Prisma.EnumTaxCalculationMethodFieldRefInput<$PrismaModel>
   in?: $Enums.TaxCalculationMethod[] | Prisma.ListEnumTaxCalculationMethodFieldRefInput<$PrismaModel>
@@ -1235,11 +1249,48 @@ export type EnumPersonalAllowanceSourceWithAggregatesFilter<$PrismaModel = never
   _max?: Prisma.NestedEnumPersonalAllowanceSourceFilter<$PrismaModel>
 }
 
+export type EnumPreviousEmploymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreviousEmploymentStatus | Prisma.EnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreviousEmploymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PreviousEmploymentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreviousEmploymentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreviousEmploymentStatusFilter<$PrismaModel>
+}
+
+export type EnumOtherEmolumentIncomeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OtherEmolumentIncomeStatus | Prisma.EnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOtherEmolumentIncomeStatusWithAggregatesFilter<$PrismaModel> | $Enums.OtherEmolumentIncomeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOtherEmolumentIncomeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOtherEmolumentIncomeStatusFilter<$PrismaModel>
+}
+
+export type EnumPriorTaxableIncomeEntryModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorTaxableIncomeEntryMode | Prisma.EnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorTaxableIncomeEntryModeFilter<$PrismaModel> | $Enums.PriorTaxableIncomeEntryMode
+}
+
 export type EnumPriorEmploymentRecordStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.PriorEmploymentRecordStatus | Prisma.EnumPriorEmploymentRecordStatusFieldRefInput<$PrismaModel>
   in?: $Enums.PriorEmploymentRecordStatus[] | Prisma.ListEnumPriorEmploymentRecordStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.PriorEmploymentRecordStatus[] | Prisma.ListEnumPriorEmploymentRecordStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumPriorEmploymentRecordStatusFilter<$PrismaModel> | $Enums.PriorEmploymentRecordStatus
+}
+
+export type EnumPriorTaxableIncomeEntryModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorTaxableIncomeEntryMode | Prisma.EnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorTaxableIncomeEntryModeWithAggregatesFilter<$PrismaModel> | $Enums.PriorTaxableIncomeEntryMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPriorTaxableIncomeEntryModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPriorTaxableIncomeEntryModeFilter<$PrismaModel>
 }
 
 export type EnumPriorEmploymentRecordStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -1269,11 +1320,28 @@ export type EnumPriorEmploymentDocumentTypeWithAggregatesFilter<$PrismaModel = n
   _max?: Prisma.NestedEnumPriorEmploymentDocumentTypeFilter<$PrismaModel>
 }
 
+export type EnumStatutoryOverrideApplyScopeFilter<$PrismaModel = never> = {
+  equals?: $Enums.StatutoryOverrideApplyScope | Prisma.EnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  in?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStatutoryOverrideApplyScopeFilter<$PrismaModel> | $Enums.StatutoryOverrideApplyScope
+}
+
 export type EnumStatutoryOverrideStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.StatutoryOverrideStatus | Prisma.EnumStatutoryOverrideStatusFieldRefInput<$PrismaModel>
   in?: $Enums.StatutoryOverrideStatus[] | Prisma.ListEnumStatutoryOverrideStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.StatutoryOverrideStatus[] | Prisma.ListEnumStatutoryOverrideStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumStatutoryOverrideStatusFilter<$PrismaModel> | $Enums.StatutoryOverrideStatus
+}
+
+export type EnumStatutoryOverrideApplyScopeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StatutoryOverrideApplyScope | Prisma.EnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  in?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStatutoryOverrideApplyScopeWithAggregatesFilter<$PrismaModel> | $Enums.StatutoryOverrideApplyScope
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStatutoryOverrideApplyScopeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStatutoryOverrideApplyScopeFilter<$PrismaModel>
 }
 
 export type EnumStatutoryOverrideStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -3014,6 +3082,20 @@ export type NestedEnumPersonalAllowanceSourceFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPersonalAllowanceSourceFilter<$PrismaModel> | $Enums.PersonalAllowanceSource
 }
 
+export type NestedEnumPreviousEmploymentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreviousEmploymentStatus | Prisma.EnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreviousEmploymentStatusFilter<$PrismaModel> | $Enums.PreviousEmploymentStatus
+}
+
+export type NestedEnumOtherEmolumentIncomeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OtherEmolumentIncomeStatus | Prisma.EnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOtherEmolumentIncomeStatusFilter<$PrismaModel> | $Enums.OtherEmolumentIncomeStatus
+}
+
 export type NestedEnumTaxCalculationMethodWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.TaxCalculationMethod | Prisma.EnumTaxCalculationMethodFieldRefInput<$PrismaModel>
   in?: $Enums.TaxCalculationMethod[] | Prisma.ListEnumTaxCalculationMethodFieldRefInput<$PrismaModel>
@@ -3044,11 +3126,48 @@ export type NestedEnumPersonalAllowanceSourceWithAggregatesFilter<$PrismaModel =
   _max?: Prisma.NestedEnumPersonalAllowanceSourceFilter<$PrismaModel>
 }
 
+export type NestedEnumPreviousEmploymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PreviousEmploymentStatus | Prisma.EnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PreviousEmploymentStatus[] | Prisma.ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPreviousEmploymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.PreviousEmploymentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPreviousEmploymentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPreviousEmploymentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumOtherEmolumentIncomeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OtherEmolumentIncomeStatus | Prisma.EnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OtherEmolumentIncomeStatus[] | Prisma.ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOtherEmolumentIncomeStatusWithAggregatesFilter<$PrismaModel> | $Enums.OtherEmolumentIncomeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOtherEmolumentIncomeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOtherEmolumentIncomeStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPriorTaxableIncomeEntryModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorTaxableIncomeEntryMode | Prisma.EnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorTaxableIncomeEntryModeFilter<$PrismaModel> | $Enums.PriorTaxableIncomeEntryMode
+}
+
 export type NestedEnumPriorEmploymentRecordStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.PriorEmploymentRecordStatus | Prisma.EnumPriorEmploymentRecordStatusFieldRefInput<$PrismaModel>
   in?: $Enums.PriorEmploymentRecordStatus[] | Prisma.ListEnumPriorEmploymentRecordStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.PriorEmploymentRecordStatus[] | Prisma.ListEnumPriorEmploymentRecordStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumPriorEmploymentRecordStatusFilter<$PrismaModel> | $Enums.PriorEmploymentRecordStatus
+}
+
+export type NestedEnumPriorTaxableIncomeEntryModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PriorTaxableIncomeEntryMode | Prisma.EnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  in?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PriorTaxableIncomeEntryMode[] | Prisma.ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPriorTaxableIncomeEntryModeWithAggregatesFilter<$PrismaModel> | $Enums.PriorTaxableIncomeEntryMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPriorTaxableIncomeEntryModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPriorTaxableIncomeEntryModeFilter<$PrismaModel>
 }
 
 export type NestedEnumPriorEmploymentRecordStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -3078,11 +3197,28 @@ export type NestedEnumPriorEmploymentDocumentTypeWithAggregatesFilter<$PrismaMod
   _max?: Prisma.NestedEnumPriorEmploymentDocumentTypeFilter<$PrismaModel>
 }
 
+export type NestedEnumStatutoryOverrideApplyScopeFilter<$PrismaModel = never> = {
+  equals?: $Enums.StatutoryOverrideApplyScope | Prisma.EnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  in?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStatutoryOverrideApplyScopeFilter<$PrismaModel> | $Enums.StatutoryOverrideApplyScope
+}
+
 export type NestedEnumStatutoryOverrideStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.StatutoryOverrideStatus | Prisma.EnumStatutoryOverrideStatusFieldRefInput<$PrismaModel>
   in?: $Enums.StatutoryOverrideStatus[] | Prisma.ListEnumStatutoryOverrideStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.StatutoryOverrideStatus[] | Prisma.ListEnumStatutoryOverrideStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumStatutoryOverrideStatusFilter<$PrismaModel> | $Enums.StatutoryOverrideStatus
+}
+
+export type NestedEnumStatutoryOverrideApplyScopeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StatutoryOverrideApplyScope | Prisma.EnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  in?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StatutoryOverrideApplyScope[] | Prisma.ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStatutoryOverrideApplyScopeWithAggregatesFilter<$PrismaModel> | $Enums.StatutoryOverrideApplyScope
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStatutoryOverrideApplyScopeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStatutoryOverrideApplyScopeFilter<$PrismaModel>
 }
 
 export type NestedEnumStatutoryOverrideStatusWithAggregatesFilter<$PrismaModel = never> = {

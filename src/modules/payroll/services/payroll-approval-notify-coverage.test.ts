@@ -49,6 +49,12 @@ export const PAYROLL_APPROVAL_NOTIFY_EVENTS = [
     when: "Projection approved — auto-applies PAYE overrides to open periods",
     recipients: "generator + payroll.tax_projection.approve or payroll.manage",
   },
+  {
+    event: "payeMidMonthManualRequired",
+    when: "Mid-month contract end — sticky/projection PAYE skipped for that month",
+    recipients:
+      "payroll.statutory_override.* / tax_projection.approve / payroll.manage",
+  },
 ] as const;
 
 import { describe, expect, it } from "vitest";
@@ -64,6 +70,7 @@ describe("payroll approval notification coverage", () => {
     expect(events).toContain("earningTreatmentPending");
     expect(events).toContain("annualProjectionReviewPending");
     expect(events).toContain("annualProjectionApproved");
+    expect(events).toContain("payeMidMonthManualRequired");
     expect(events).toContain("achBatchPending");
   });
 });

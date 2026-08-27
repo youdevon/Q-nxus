@@ -806,3 +806,48 @@ export async function notifyPaymentAllocationReturned(input: {
     });
   });
 }
+
+/**
+ * Contract / employment ends mid-month — sticky / projection PAYE was not
+ * auto-applied for that period; officers must enter PAYE manually.
+ */
+export async function notifyPayeMidMonthManualRequired(input: {
+  organizationId: string;
+  employeeId: string;
+  employeeLabel: string;
+  periodEndKeys: string[];
+  employmentEndDate: string;
+  actorUserId: string;
+}): Promise<void> {
+  if (input.periodEndKeys.length === 0) {
+    return;
+  }
+
+  await safeNotify("payeMidMonthManualRequired", async () => {
+    const recipients = await resolveRecipientsByPermissions(
+      input.organizationId,
+      [
+        "payroll.statutory_override.request",
+        "payroll.statutory_override.approve",
+        "payroll.tax_projection.approve",
+        "payroll.manage",
+      ],
+      { excludeUserIds: [input.actorUserId], sendEmail: false },
+    );
+    if (recipients.length === 0) {
+      return;
+    }
+
+    const periods = input.periodEndKeys.join(", ");
+    await createSystemNotification({
+      title: `PAYE manual entry required: ${input.employeeLabel}`,
+      message: `${input.employeeLabel} employment ends mid-month on ${input.employmentEndDate}. PAYE was not auto-applied for period(s) ending ${periods}. Enter a statutory PAYE override for the worked portion of that month.`,
+      severity: NotificationSeverity.WARNING,
+      moduleKey: "payroll",
+      actionUrl: `/payroll/employees/${input.employeeId}/tax-year`,
+      relatedType: "Employee",
+      relatedId: input.employeeId,
+      recipients,
+    });
+  });
+}

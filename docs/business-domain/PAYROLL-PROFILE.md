@@ -6,6 +6,8 @@ A Payroll Profile defines how an Employee participates in Payroll.
 
 It does not replace the Employee record or Compensation record. It contains the payroll-specific configuration required to determine whether an Employee can be included in a Pay Run.
 
+**Compensation (implemented):** base salary and contract allowances are read from the employee’s current employment contract (`isCurrent` + `ACTIVE`). The profile stores readiness / payment / exemption settings only — not a parallel salary amount. Activating a contract refreshes `isPayrollReady` from the live readiness evaluation.
+
 The Payroll Profile belongs to the Payroll domain.
 
 ---
@@ -57,6 +59,14 @@ Examples:
 A Payroll Profile must reference one Employee using the Employee’s stable internal ID.
 
 Payroll must not create an unrelated duplicate Employee record.
+
+### Distinction from EmployeeTaxProfile
+
+`PayrollProfile` is **not** the TD1 / tax-year store. Per calendar tax year,
+PAYE method, personal allowance, and previous-employment flags live on
+`EmployeeTaxProfile` only. Keep both: profile = how the employee is paid;
+tax profile = how PAYE is computed for that year. See Architecture §6
+“Payroll complementary stores”.
 
 ---
 
@@ -304,9 +314,9 @@ An Employee is eligible for a normal Pay Run only where:
 
 - Payroll Profile effective dates cover the Payroll Period
 
-- Valid Compensation exists
+- Valid Compensation exists (or month-by-month default when no active contract)
 
-- Required statutory information is complete
+- Required statutory information is complete (BIR number missing is a **warning only**, unless PAYE-exempt)
 
 - Required payment information is complete
 
@@ -314,7 +324,7 @@ An Employee is eligible for a normal Pay Run only where:
 
 - Employee belongs to the correct Pay Group
 
-- Contract or employment arrangement is valid
+- Contract or employment arrangement is valid (no active contract defaults to month-by-month pay at $0 contract salary; does not block inclusion)
 
 - No policy restriction applies
 

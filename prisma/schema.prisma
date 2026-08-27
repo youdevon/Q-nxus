@@ -633,6 +633,7 @@ model Organization {
   gratuityAccrualEntries   GratuityAccrualEntry[]
   employeeTaxProfiles      EmployeeTaxProfile[]
   employeePriorEmploymentYtds EmployeePriorEmploymentYtd[]
+  employeeOpeningYtdBalances  EmployeeOpeningYtdBalance[]
   employeePayrollStatutoryOverrides EmployeePayrollStatutoryOverride[]
   employeeAnnualPayrollProjections EmployeeAnnualPayrollProjection[]
   employeeTaxYearAdjustments EmployeeTaxYearAdjustment[]
@@ -672,21 +673,6 @@ model OrganizationHoliday {
   @@index([organizationId, isActive])
   @@map("organization_holidays")
   @@schema("hr")
-}
-
-model ApplicationSetting {
-  id               String   @id @default(cuid())
-  internalCodename String   @default("Q-NXUS")
-  displayName      String   @default("Q-NXUS")
-  shortName        String   @default("Q-NXUS")
-  organizationName String?
-  logoUrl          String?
-  faviconUrl       String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  @@map("application_settings")
-  @@schema("core")
 }
 
 model User {
@@ -1122,6 +1108,7 @@ model Employee {
   payrollProfile PayrollProfile?
   taxProfiles    EmployeeTaxProfile[]
   priorEmploymentYtds EmployeePriorEmploymentYtd[]
+  openingYtdBalances  EmployeeOpeningYtdBalance[]
   statutoryOverrides  EmployeePayrollStatutoryOverride[]
   annualPayrollProjections EmployeeAnnualPayrollProjection[]
   taxYearAdjustments  EmployeeTaxYearAdjustment[]
@@ -2389,6 +2376,24 @@ enum EmployeeTaxProfileStatus {
   @@schema("payroll")
 }
 
+/// Mid-year joiner prior-employment declaration (TT PAYE / TD1).
+/// UNKNOWN must never be treated as zero prior income.
+enum PreviousEmploymentStatus {
+  NO_PREVIOUS_EMPLOYMENT
+  PREVIOUS_EMPLOYMENT
+  UNKNOWN_PREVIOUS_INCOME
+
+  @@schema("payroll")
+}
+
+enum OtherEmolumentIncomeStatus {
+  NO_OTHER_EMOLUMENTS
+  HAS_OTHER_EMOLUMENTS
+  UNKNOWN_OTHER_EMOLUMENTS
+
+  @@schema("payroll")
+}
+
 /// Per-employee, per-calendar-tax-year PAYE / TD1 treatment.
 /// Per-employee, per-tax-year PAYE / TD1 treatment (sole store for TD1 amounts).
 model EmployeeTaxProfile {
@@ -2412,10 +2417,16 @@ model EmployeeTaxProfile {
   td1StoredFileId            String?
 
   cumulativeCalculationEnabled Boolean @default(false)
+  /// Canonical Yes / No / Unknown for prior employment this tax year.
+  previousEmploymentStatus     PreviousEmploymentStatus @default(UNKNOWN_PREVIOUS_INCOME)
   previousEmploymentDeclared   Boolean @default(false)
   previousEmploymentVerified   Boolean @default(false)
   /// Free-text source hint; structured YTD lives on EmployeePriorEmploymentYtd.
   previousEmploymentSource     String?
+
+  otherEmolumentIncomeStatus   OtherEmolumentIncomeStatus @default(UNKNOWN_OTHER_EMOLUMENTS)
+  birDirectionPresent          Boolean @default(false)
+  birDirectionReference        String?
 
   effectiveFrom    DateTime  @db.Date
   effectiveTo      DateTime? @db.Date
@@ -2429,6 +2440,7 @@ model EmployeeTaxProfile {
   employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   td1StoredFile StoredFile? @relation(fields: [td1StoredFileId], references: [id], onDelete: SetNull)
   priorEmploymentYtds EmployeePriorEmploymentYtd[]
+  openingYtdBalances  EmployeeOpeningYtdBalance[]
 
   @@unique([employeeId, taxYear])
   @@index([organizationId, taxYear])
@@ -2443,6 +2455,16 @@ enum PriorEmploymentDocumentType {
   PRIOR_EMPLOYER_LETTER
   PAYSLIP
   OTHER
+
+  @@schema("payroll")
+}
+
+/// How payroll staff derived taxableIncomeYtd from a prior-employer payslip.
+enum PriorTaxableIncomeEntryMode {
+  /// Slip shows taxable / YTD PAY (or TD4 taxable) — entered directly.
+  DIRECT
+  /// Slip shows gross + non-taxable allowances — taxable = gross − non-taxable.
+  WORKSHEET
 
   @@schema("payroll")
 }
@@ -2476,6 +2498,18 @@ enum StatutoryOverrideStatus {
   @@schema("payroll")
 }
 
+/// How far an approved override should forward-fill open periods.
+enum StatutoryOverrideApplyScope {
+  /// Only the selected period end.
+  THIS_PERIOD
+  /// Remaining open months through tax-year end (clamped by employment end).
+  THROUGH_YEAR_END
+  /// Remaining open months through continuous employment / contract end.
+  THROUGH_CONTRACT_END
+
+  @@schema("payroll")
+}
+
 /// Prior-employer calendar-year YTD amounts for mid-year joiners (Phase 3).
 /// Applied to cumulative PAYE in Phase 4; stored and resolved here.
 model EmployeePriorEmploymentYtd {
@@ -2492,6 +2526,15 @@ model EmployeePriorEmploymentYtd {
   asOfDate         DateTime                    @db.Date
   currencyCode     String                      @default("TTD")
 
+  /// How taxableIncomeYtd was derived from the source payslip/TD4.
+  taxableIncomeEntryMode PriorTaxableIncomeEntryMode @default(DIRECT)
+
+  /// Optional payslip worksheet: YTD gross / GRS / total earnings (before removing non-taxable).
+  grossEarningsYtd            Decimal? @db.Decimal(14, 2)
+  /// Optional payslip worksheet: travelling and other non-taxable allowances YTD (YTD ALL when labelled).
+  nonTaxableAllowancesYtd     Decimal? @db.Decimal(14, 2)
+
+  /// Canonical taxable earnings YTD used by cumulative PAYE (YTD PAY, or gross − non-taxable).
   taxableIncomeYtd            Decimal @db.Decimal(14, 2)
   payeDeductedYtd             Decimal @db.Decimal(14, 2)
   nisEmployeeYtd              Decimal? @db.Decimal(14, 2)
@@ -2519,6 +2562,45 @@ model EmployeePriorEmploymentYtd {
   @@index([taxProfileId])
   @@index([organizationId, status])
   @@map("employee_prior_employment_ytds")
+  @@schema("payroll")
+}
+
+/// Current-employer opening YTD for mid-year payroll system migration.
+/// NOT prior-employer figures — same employer, balances brought into q-nxus.
+model EmployeeOpeningYtdBalance {
+  id               String   @id @default(cuid())
+  organizationId   String
+  employeeId       String
+  taxYear          Int
+  taxProfileId     String?
+  asOfDate         DateTime @db.Date
+  currencyCode     String   @default("TTD")
+
+  grossPayYtd                 Decimal? @db.Decimal(14, 2)
+  taxableIncomeYtd            Decimal  @db.Decimal(14, 2)
+  payeDeductedYtd             Decimal  @db.Decimal(14, 2)
+  nisEmployeeYtd              Decimal? @db.Decimal(14, 2)
+  nisEmployerYtd              Decimal? @db.Decimal(14, 2)
+  healthSurchargeYtd          Decimal? @db.Decimal(14, 2)
+  otherApprovedDeductionsYtd  Decimal? @db.Decimal(14, 2)
+
+  verified         Boolean   @default(false)
+  verifiedAt       DateTime?
+  verifiedByUserId String?
+  notes            String?
+  createdByUserId  String?
+  updatedByUserId  String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  taxProfile   EmployeeTaxProfile? @relation(fields: [taxProfileId], references: [id], onDelete: SetNull)
+
+  @@unique([employeeId, taxYear])
+  @@index([organizationId, taxYear])
+  @@index([taxProfileId])
+  @@map("employee_opening_ytd_balances")
   @@schema("payroll")
 }
 
@@ -2554,6 +2636,8 @@ model EmployeePayrollStatutoryOverride {
   nisEmployeeAmount Decimal?               @db.Decimal(14, 2)
   healthSurchargeAmount Decimal?           @db.Decimal(14, 2)
   reason           String
+  /// Forward-fill intent on approval: this month, year end, or contract end.
+  applyScope       StatutoryOverrideApplyScope @default(THIS_PERIOD)
   status           StatutoryOverrideStatus @default(DRAFT)
   requestedByUserId String
   approvedByUserId  String?
@@ -2841,7 +2925,6 @@ model FinancialInstitution {
   updatedAt                    DateTime                  @updatedAt
   archivedAt                   DateTime?
 
-  branches             FinancialInstitutionBranch[]
   employeeBankAccounts EmployeeBankAccount[]
   paymentAllocations   PayrollPaymentAllocation[]
 
@@ -2849,24 +2932,6 @@ model FinancialInstitution {
   @@index([isSelectableForEmployees, isActive])
   @@index([institutionType, isActive])
   @@map("financial_institutions")
-  @@schema("payroll")
-}
-
-model FinancialInstitutionBranch {
-  id            String   @id @default(cuid())
-  institutionId String
-  branchCode    String
-  name          String
-  address       String?
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  institution FinancialInstitution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
-
-  @@unique([institutionId, branchCode])
-  @@index([institutionId, isActive])
-  @@map("financial_institution_branches")
   @@schema("payroll")
 }
 

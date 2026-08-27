@@ -2,11 +2,15 @@
  * Year-to-date totals for payslip documents.
  *
  * Rules:
- * - Only POSTED payslips count toward history.
+ * - Only POSTED payslips count toward prior history.
  * - Calendar year comes from the payroll period (`year` / period key).
  * - Posted slip view: YTD = prior posted in year + this slip.
- * - Live preview: YTD = prior posted in year + this preview period.
- * - Phase 9: optional prior-employer / current-employer / combined split.
+ * - Live preview / draft stored slip: YTD = prior posted in year + this period snapshot.
+ * - Documents should always receive assembled YTD (never omit the block when a slip renders).
+ * - Phase 9: prior-employer / current-employer / combined split.
+ *   Combined Gross on the slip includes prior taxable income; NIS / Health /
+ *   PAYE add prior statutory YTD. Display loads all ACTIVE prior rows for the
+ *   tax year; PAYE withholding still uses verified totals only.
  */
 
 import { sumMoney } from "@/src/modules/payroll/lib/money";
@@ -124,7 +128,12 @@ export function assemblePayslipYtdBreakdown(input: {
     currentEmployer: input.currentEmployer,
     combined: {
       year: input.year,
-      grossPay: input.currentEmployer.grossPay,
+      // Slip "Gross" YTD uses prior taxable income (TD4 / letter YTD), same as
+      // taxableEarnings — prior employers do not store a separate gross figure.
+      grossPay: sumMoney(
+        input.currentEmployer.grossPay,
+        prior.taxableIncomeYtd,
+      ),
       totalDeductions: input.currentEmployer.totalDeductions,
       netPay: input.currentEmployer.netPay,
       paye: sumMoney(input.currentEmployer.paye, prior.payeDeductedYtd),

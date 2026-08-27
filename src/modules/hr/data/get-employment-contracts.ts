@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import {
   calculateContractGratuity,
+  monthlyEligibleEarnings,
+  roundMoney,
 } from "@/src/modules/hr/services/calculate-contract-gratuity";
 import {
   defaultTtGratuityPolicyInput,
@@ -858,6 +860,11 @@ export type ContractCompensationSummary = {
   annualGrossCompensation: string;
   taxableAllowanceAnnualTotal: string;
   nonTaxableAllowanceAnnualTotal: string;
+  /**
+   * TT gratuity eligible gross for the contract term when an end date exists
+   * (monthly eligible × inclusive months). Otherwise annualized monthly
+   * eligible (× 12) as a provisional base.
+   */
   gratuityEligibleAnnualEarnings: string;
   contractMonths: string | null;
   estimatedGrossEarnings: string | null;
@@ -903,7 +910,6 @@ export async function calculateContractCompensation(contract: {
   let oneTimeAllowances = 0;
   let taxableAllowanceAnnualTotal = 0;
   let nonTaxableAllowanceAnnualTotal = 0;
-  let gratuityEligibleAllowanceAnnualTotal = 0;
 
   for (const allowance of contract.allowances) {
     const amount = Number(allowance.amount);
@@ -922,10 +928,6 @@ export async function calculateContractCompensation(contract: {
     } else {
       nonTaxableAllowanceAnnualTotal += annualValue;
     }
-
-    if (allowance.includedInGratuity) {
-      gratuityEligibleAllowanceAnnualTotal += annualValue;
-    }
   }
 
   const monthlyRecurringAllowances = annualRecurringAllowances / 12;
@@ -938,8 +940,15 @@ export async function calculateContractCompensation(contract: {
   const annualGrossCompensation =
     annualBaseSalary + annualRecurringAllowances + oneTimeAllowances;
 
-  const gratuityEligibleAnnualEarnings =
-    annualBaseSalary + gratuityEligibleAllowanceAnnualTotal;
+  // Same monthly eligible base as TT PCT_OF_TERM_EARNINGS (calculate-gratuity).
+  const monthlyGratuityEligible = monthlyEligibleEarnings(
+    monthlyBaseSalary,
+    contract.allowances,
+  );
+  // Provisional annualized figure when term length is unknown.
+  let gratuityEligibleAnnualEarnings = roundMoney(
+    monthlyGratuityEligible * 12,
+  );
 
   let contractMonths: string | null = null;
   let estimatedGrossEarnings: string | null = null;
@@ -947,7 +956,7 @@ export async function calculateContractCompensation(contract: {
   let estimatedTax: string | null = null;
   let estimatedNetGratuity: string | null = null;
 
-  if (contract.gratuityEligible && contract.endDate) {
+  if (contract.endDate) {
     const asOf = new Date(`${contract.endDate}T00:00:00.000Z`);
     const policyRecord = await getGratuityPolicyAsOf(asOf);
     const policy = policyRecord
@@ -962,11 +971,16 @@ export async function calculateContractCompensation(contract: {
       policy,
     });
 
-    contractMonths = String(estimate.contractMonths);
-    estimatedGrossEarnings = estimate.estimatedGrossEarnings.toFixed(2);
-    estimatedGrossGratuity = estimate.estimatedGrossGratuity.toFixed(2);
-    estimatedTax = estimate.estimatedTax.toFixed(2);
-    estimatedNetGratuity = estimate.estimatedNetGratuity.toFixed(2);
+    // TT eligible gross for the term — the total the rate% is applied to.
+    gratuityEligibleAnnualEarnings = estimate.estimatedGrossEarnings;
+
+    if (contract.gratuityEligible) {
+      contractMonths = String(estimate.contractMonths);
+      estimatedGrossEarnings = estimate.estimatedGrossEarnings.toFixed(2);
+      estimatedGrossGratuity = estimate.estimatedGrossGratuity.toFixed(2);
+      estimatedTax = estimate.estimatedTax.toFixed(2);
+      estimatedNetGratuity = estimate.estimatedNetGratuity.toFixed(2);
+    }
   }
 
   return {

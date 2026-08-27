@@ -55,9 +55,13 @@ export type EmployeeTaxProfileMinAggregateOutputType = {
   td1OtherApprovedAnnual: runtime.Decimal | null
   td1StoredFileId: string | null
   cumulativeCalculationEnabled: boolean | null
+  previousEmploymentStatus: $Enums.PreviousEmploymentStatus | null
   previousEmploymentDeclared: boolean | null
   previousEmploymentVerified: boolean | null
   previousEmploymentSource: string | null
+  otherEmolumentIncomeStatus: $Enums.OtherEmolumentIncomeStatus | null
+  birDirectionPresent: boolean | null
+  birDirectionReference: string | null
   effectiveFrom: Date | null
   effectiveTo: Date | null
   notes: string | null
@@ -83,9 +87,13 @@ export type EmployeeTaxProfileMaxAggregateOutputType = {
   td1OtherApprovedAnnual: runtime.Decimal | null
   td1StoredFileId: string | null
   cumulativeCalculationEnabled: boolean | null
+  previousEmploymentStatus: $Enums.PreviousEmploymentStatus | null
   previousEmploymentDeclared: boolean | null
   previousEmploymentVerified: boolean | null
   previousEmploymentSource: string | null
+  otherEmolumentIncomeStatus: $Enums.OtherEmolumentIncomeStatus | null
+  birDirectionPresent: boolean | null
+  birDirectionReference: string | null
   effectiveFrom: Date | null
   effectiveTo: Date | null
   notes: string | null
@@ -111,9 +119,13 @@ export type EmployeeTaxProfileCountAggregateOutputType = {
   td1OtherApprovedAnnual: number
   td1StoredFileId: number
   cumulativeCalculationEnabled: number
+  previousEmploymentStatus: number
   previousEmploymentDeclared: number
   previousEmploymentVerified: number
   previousEmploymentSource: number
+  otherEmolumentIncomeStatus: number
+  birDirectionPresent: number
+  birDirectionReference: number
   effectiveFrom: number
   effectiveTo: number
   notes: number
@@ -153,9 +165,13 @@ export type EmployeeTaxProfileMinAggregateInputType = {
   td1OtherApprovedAnnual?: true
   td1StoredFileId?: true
   cumulativeCalculationEnabled?: true
+  previousEmploymentStatus?: true
   previousEmploymentDeclared?: true
   previousEmploymentVerified?: true
   previousEmploymentSource?: true
+  otherEmolumentIncomeStatus?: true
+  birDirectionPresent?: true
+  birDirectionReference?: true
   effectiveFrom?: true
   effectiveTo?: true
   notes?: true
@@ -181,9 +197,13 @@ export type EmployeeTaxProfileMaxAggregateInputType = {
   td1OtherApprovedAnnual?: true
   td1StoredFileId?: true
   cumulativeCalculationEnabled?: true
+  previousEmploymentStatus?: true
   previousEmploymentDeclared?: true
   previousEmploymentVerified?: true
   previousEmploymentSource?: true
+  otherEmolumentIncomeStatus?: true
+  birDirectionPresent?: true
+  birDirectionReference?: true
   effectiveFrom?: true
   effectiveTo?: true
   notes?: true
@@ -209,9 +229,13 @@ export type EmployeeTaxProfileCountAggregateInputType = {
   td1OtherApprovedAnnual?: true
   td1StoredFileId?: true
   cumulativeCalculationEnabled?: true
+  previousEmploymentStatus?: true
   previousEmploymentDeclared?: true
   previousEmploymentVerified?: true
   previousEmploymentSource?: true
+  otherEmolumentIncomeStatus?: true
+  birDirectionPresent?: true
+  birDirectionReference?: true
   effectiveFrom?: true
   effectiveTo?: true
   notes?: true
@@ -324,9 +348,13 @@ export type EmployeeTaxProfileGroupByOutputType = {
   td1OtherApprovedAnnual: runtime.Decimal | null
   td1StoredFileId: string | null
   cumulativeCalculationEnabled: boolean
+  previousEmploymentStatus: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared: boolean
   previousEmploymentVerified: boolean
   previousEmploymentSource: string | null
+  otherEmolumentIncomeStatus: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent: boolean
+  birDirectionReference: string | null
   effectiveFrom: Date
   effectiveTo: Date | null
   notes: string | null
@@ -375,9 +403,13 @@ export type EmployeeTaxProfileWhereInput = {
   td1OtherApprovedAnnual?: Prisma.DecimalNullableFilter<"EmployeeTaxProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFilter<"EmployeeTaxProfile"> | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentVerified?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentSource?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFilter<"EmployeeTaxProfile"> | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
+  birDirectionReference?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
   effectiveFrom?: Prisma.DateTimeFilter<"EmployeeTaxProfile"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableFilter<"EmployeeTaxProfile"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
@@ -389,6 +421,7 @@ export type EmployeeTaxProfileWhereInput = {
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   td1StoredFile?: Prisma.XOR<Prisma.StoredFileNullableScalarRelationFilter, Prisma.StoredFileWhereInput> | null
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdListRelationFilter
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceListRelationFilter
 }
 
 export type EmployeeTaxProfileOrderByWithRelationInput = {
@@ -407,9 +440,13 @@ export type EmployeeTaxProfileOrderByWithRelationInput = {
   td1OtherApprovedAnnual?: Prisma.SortOrderInput | Prisma.SortOrder
   td1StoredFileId?: Prisma.SortOrderInput | Prisma.SortOrder
   cumulativeCalculationEnabled?: Prisma.SortOrder
+  previousEmploymentStatus?: Prisma.SortOrder
   previousEmploymentDeclared?: Prisma.SortOrder
   previousEmploymentVerified?: Prisma.SortOrder
   previousEmploymentSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  otherEmolumentIncomeStatus?: Prisma.SortOrder
+  birDirectionPresent?: Prisma.SortOrder
+  birDirectionReference?: Prisma.SortOrderInput | Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -421,6 +458,7 @@ export type EmployeeTaxProfileOrderByWithRelationInput = {
   employee?: Prisma.EmployeeOrderByWithRelationInput
   td1StoredFile?: Prisma.StoredFileOrderByWithRelationInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdOrderByRelationAggregateInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceOrderByRelationAggregateInput
 }
 
 export type EmployeeTaxProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -443,9 +481,13 @@ export type EmployeeTaxProfileWhereUniqueInput = Prisma.AtLeast<{
   td1OtherApprovedAnnual?: Prisma.DecimalNullableFilter<"EmployeeTaxProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFilter<"EmployeeTaxProfile"> | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentVerified?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentSource?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFilter<"EmployeeTaxProfile"> | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
+  birDirectionReference?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
   effectiveFrom?: Prisma.DateTimeFilter<"EmployeeTaxProfile"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableFilter<"EmployeeTaxProfile"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
@@ -457,6 +499,7 @@ export type EmployeeTaxProfileWhereUniqueInput = Prisma.AtLeast<{
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   td1StoredFile?: Prisma.XOR<Prisma.StoredFileNullableScalarRelationFilter, Prisma.StoredFileWhereInput> | null
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdListRelationFilter
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceListRelationFilter
 }, "id" | "employeeId_taxYear">
 
 export type EmployeeTaxProfileOrderByWithAggregationInput = {
@@ -475,9 +518,13 @@ export type EmployeeTaxProfileOrderByWithAggregationInput = {
   td1OtherApprovedAnnual?: Prisma.SortOrderInput | Prisma.SortOrder
   td1StoredFileId?: Prisma.SortOrderInput | Prisma.SortOrder
   cumulativeCalculationEnabled?: Prisma.SortOrder
+  previousEmploymentStatus?: Prisma.SortOrder
   previousEmploymentDeclared?: Prisma.SortOrder
   previousEmploymentVerified?: Prisma.SortOrder
   previousEmploymentSource?: Prisma.SortOrderInput | Prisma.SortOrder
+  otherEmolumentIncomeStatus?: Prisma.SortOrder
+  birDirectionPresent?: Prisma.SortOrder
+  birDirectionReference?: Prisma.SortOrderInput | Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -511,9 +558,13 @@ export type EmployeeTaxProfileScalarWhereWithAggregatesInput = {
   td1OtherApprovedAnnual?: Prisma.DecimalNullableWithAggregatesFilter<"EmployeeTaxProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTaxProfile"> | string | null
   cumulativeCalculationEnabled?: Prisma.BoolWithAggregatesFilter<"EmployeeTaxProfile"> | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusWithAggregatesFilter<"EmployeeTaxProfile"> | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolWithAggregatesFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentVerified?: Prisma.BoolWithAggregatesFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentSource?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTaxProfile"> | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusWithAggregatesFilter<"EmployeeTaxProfile"> | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolWithAggregatesFilter<"EmployeeTaxProfile"> | boolean
+  birDirectionReference?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTaxProfile"> | string | null
   effectiveFrom?: Prisma.DateTimeWithAggregatesFilter<"EmployeeTaxProfile"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeTaxProfile"> | Date | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTaxProfile"> | string | null
@@ -536,9 +587,13 @@ export type EmployeeTaxProfileCreateInput = {
   td1ApprovalReference?: string | null
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -550,6 +605,7 @@ export type EmployeeTaxProfileCreateInput = {
   employee: Prisma.EmployeeCreateNestedOneWithoutTaxProfilesInput
   td1StoredFile?: Prisma.StoredFileCreateNestedOneWithoutEmployeeTaxProfilesInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileUncheckedCreateInput = {
@@ -568,9 +624,13 @@ export type EmployeeTaxProfileUncheckedCreateInput = {
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -579,6 +639,7 @@ export type EmployeeTaxProfileUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileUpdateInput = {
@@ -594,9 +655,13 @@ export type EmployeeTaxProfileUpdateInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -608,6 +673,7 @@ export type EmployeeTaxProfileUpdateInput = {
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutTaxProfilesNestedInput
   td1StoredFile?: Prisma.StoredFileUpdateOneWithoutEmployeeTaxProfilesNestedInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateInput = {
@@ -626,9 +692,13 @@ export type EmployeeTaxProfileUncheckedUpdateInput = {
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -637,6 +707,7 @@ export type EmployeeTaxProfileUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileCreateManyInput = {
@@ -655,9 +726,13 @@ export type EmployeeTaxProfileCreateManyInput = {
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -680,9 +755,13 @@ export type EmployeeTaxProfileUpdateManyMutationInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -708,9 +787,13 @@ export type EmployeeTaxProfileUncheckedUpdateManyInput = {
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -751,9 +834,13 @@ export type EmployeeTaxProfileCountOrderByAggregateInput = {
   td1OtherApprovedAnnual?: Prisma.SortOrder
   td1StoredFileId?: Prisma.SortOrder
   cumulativeCalculationEnabled?: Prisma.SortOrder
+  previousEmploymentStatus?: Prisma.SortOrder
   previousEmploymentDeclared?: Prisma.SortOrder
   previousEmploymentVerified?: Prisma.SortOrder
   previousEmploymentSource?: Prisma.SortOrder
+  otherEmolumentIncomeStatus?: Prisma.SortOrder
+  birDirectionPresent?: Prisma.SortOrder
+  birDirectionReference?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -785,9 +872,13 @@ export type EmployeeTaxProfileMaxOrderByAggregateInput = {
   td1OtherApprovedAnnual?: Prisma.SortOrder
   td1StoredFileId?: Prisma.SortOrder
   cumulativeCalculationEnabled?: Prisma.SortOrder
+  previousEmploymentStatus?: Prisma.SortOrder
   previousEmploymentDeclared?: Prisma.SortOrder
   previousEmploymentVerified?: Prisma.SortOrder
   previousEmploymentSource?: Prisma.SortOrder
+  otherEmolumentIncomeStatus?: Prisma.SortOrder
+  birDirectionPresent?: Prisma.SortOrder
+  birDirectionReference?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -813,9 +904,13 @@ export type EmployeeTaxProfileMinOrderByAggregateInput = {
   td1OtherApprovedAnnual?: Prisma.SortOrder
   td1StoredFileId?: Prisma.SortOrder
   cumulativeCalculationEnabled?: Prisma.SortOrder
+  previousEmploymentStatus?: Prisma.SortOrder
   previousEmploymentDeclared?: Prisma.SortOrder
   previousEmploymentVerified?: Prisma.SortOrder
   previousEmploymentSource?: Prisma.SortOrder
+  otherEmolumentIncomeStatus?: Prisma.SortOrder
+  birDirectionPresent?: Prisma.SortOrder
+  birDirectionReference?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -974,6 +1069,14 @@ export type EnumPersonalAllowanceSourceFieldUpdateOperationsInput = {
   set?: $Enums.PersonalAllowanceSource
 }
 
+export type EnumPreviousEmploymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.PreviousEmploymentStatus
+}
+
+export type EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput = {
+  set?: $Enums.OtherEmolumentIncomeStatus
+}
+
 export type EmployeeTaxProfileCreateNestedOneWithoutPriorEmploymentYtdsInput = {
   create?: Prisma.XOR<Prisma.EmployeeTaxProfileCreateWithoutPriorEmploymentYtdsInput, Prisma.EmployeeTaxProfileUncheckedCreateWithoutPriorEmploymentYtdsInput>
   connectOrCreate?: Prisma.EmployeeTaxProfileCreateOrConnectWithoutPriorEmploymentYtdsInput
@@ -990,6 +1093,22 @@ export type EmployeeTaxProfileUpdateOneWithoutPriorEmploymentYtdsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeTaxProfileUpdateToOneWithWhereWithoutPriorEmploymentYtdsInput, Prisma.EmployeeTaxProfileUpdateWithoutPriorEmploymentYtdsInput>, Prisma.EmployeeTaxProfileUncheckedUpdateWithoutPriorEmploymentYtdsInput>
 }
 
+export type EmployeeTaxProfileCreateNestedOneWithoutOpeningYtdBalancesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaxProfileCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeTaxProfileUncheckedCreateWithoutOpeningYtdBalancesInput>
+  connectOrCreate?: Prisma.EmployeeTaxProfileCreateOrConnectWithoutOpeningYtdBalancesInput
+  connect?: Prisma.EmployeeTaxProfileWhereUniqueInput
+}
+
+export type EmployeeTaxProfileUpdateOneWithoutOpeningYtdBalancesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaxProfileCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeTaxProfileUncheckedCreateWithoutOpeningYtdBalancesInput>
+  connectOrCreate?: Prisma.EmployeeTaxProfileCreateOrConnectWithoutOpeningYtdBalancesInput
+  upsert?: Prisma.EmployeeTaxProfileUpsertWithoutOpeningYtdBalancesInput
+  disconnect?: Prisma.EmployeeTaxProfileWhereInput | boolean
+  delete?: Prisma.EmployeeTaxProfileWhereInput | boolean
+  connect?: Prisma.EmployeeTaxProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeTaxProfileUpdateToOneWithWhereWithoutOpeningYtdBalancesInput, Prisma.EmployeeTaxProfileUpdateWithoutOpeningYtdBalancesInput>, Prisma.EmployeeTaxProfileUncheckedUpdateWithoutOpeningYtdBalancesInput>
+}
+
 export type EmployeeTaxProfileCreateWithoutOrganizationInput = {
   id?: string
   taxYear: number
@@ -1003,9 +1122,13 @@ export type EmployeeTaxProfileCreateWithoutOrganizationInput = {
   td1ApprovalReference?: string | null
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1016,6 +1139,7 @@ export type EmployeeTaxProfileCreateWithoutOrganizationInput = {
   employee: Prisma.EmployeeCreateNestedOneWithoutTaxProfilesInput
   td1StoredFile?: Prisma.StoredFileCreateNestedOneWithoutEmployeeTaxProfilesInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileUncheckedCreateWithoutOrganizationInput = {
@@ -1033,9 +1157,13 @@ export type EmployeeTaxProfileUncheckedCreateWithoutOrganizationInput = {
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1044,6 +1172,7 @@ export type EmployeeTaxProfileUncheckedCreateWithoutOrganizationInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileCreateOrConnectWithoutOrganizationInput = {
@@ -1091,9 +1220,13 @@ export type EmployeeTaxProfileScalarWhereInput = {
   td1OtherApprovedAnnual?: Prisma.DecimalNullableFilter<"EmployeeTaxProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFilter<"EmployeeTaxProfile"> | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentVerified?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
   previousEmploymentSource?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFilter<"EmployeeTaxProfile"> | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFilter<"EmployeeTaxProfile"> | boolean
+  birDirectionReference?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
   effectiveFrom?: Prisma.DateTimeFilter<"EmployeeTaxProfile"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableFilter<"EmployeeTaxProfile"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"EmployeeTaxProfile"> | string | null
@@ -1116,9 +1249,13 @@ export type EmployeeTaxProfileCreateWithoutEmployeeInput = {
   td1ApprovalReference?: string | null
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1129,6 +1266,7 @@ export type EmployeeTaxProfileCreateWithoutEmployeeInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeTaxProfilesInput
   td1StoredFile?: Prisma.StoredFileCreateNestedOneWithoutEmployeeTaxProfilesInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileUncheckedCreateWithoutEmployeeInput = {
@@ -1146,9 +1284,13 @@ export type EmployeeTaxProfileUncheckedCreateWithoutEmployeeInput = {
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1157,6 +1299,7 @@ export type EmployeeTaxProfileUncheckedCreateWithoutEmployeeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileCreateOrConnectWithoutEmployeeInput = {
@@ -1198,9 +1341,13 @@ export type EmployeeTaxProfileCreateWithoutTd1StoredFileInput = {
   td1ApprovalReference?: string | null
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1211,6 +1358,7 @@ export type EmployeeTaxProfileCreateWithoutTd1StoredFileInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeTaxProfilesInput
   employee: Prisma.EmployeeCreateNestedOneWithoutTaxProfilesInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileUncheckedCreateWithoutTd1StoredFileInput = {
@@ -1228,9 +1376,13 @@ export type EmployeeTaxProfileUncheckedCreateWithoutTd1StoredFileInput = {
   td1ApprovalReference?: string | null
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1239,6 +1391,7 @@ export type EmployeeTaxProfileUncheckedCreateWithoutTd1StoredFileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutTaxProfileInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileCreateOrConnectWithoutTd1StoredFileInput = {
@@ -1280,9 +1433,13 @@ export type EmployeeTaxProfileCreateWithoutPriorEmploymentYtdsInput = {
   td1ApprovalReference?: string | null
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1293,6 +1450,7 @@ export type EmployeeTaxProfileCreateWithoutPriorEmploymentYtdsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeTaxProfilesInput
   employee: Prisma.EmployeeCreateNestedOneWithoutTaxProfilesInput
   td1StoredFile?: Prisma.StoredFileCreateNestedOneWithoutEmployeeTaxProfilesInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileUncheckedCreateWithoutPriorEmploymentYtdsInput = {
@@ -1311,9 +1469,13 @@ export type EmployeeTaxProfileUncheckedCreateWithoutPriorEmploymentYtdsInput = {
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1321,6 +1483,7 @@ export type EmployeeTaxProfileUncheckedCreateWithoutPriorEmploymentYtdsInput = {
   updatedByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutTaxProfileInput
 }
 
 export type EmployeeTaxProfileCreateOrConnectWithoutPriorEmploymentYtdsInput = {
@@ -1352,9 +1515,13 @@ export type EmployeeTaxProfileUpdateWithoutPriorEmploymentYtdsInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1365,6 +1532,7 @@ export type EmployeeTaxProfileUpdateWithoutPriorEmploymentYtdsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeTaxProfilesNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutTaxProfilesNestedInput
   td1StoredFile?: Prisma.StoredFileUpdateOneWithoutEmployeeTaxProfilesNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateWithoutPriorEmploymentYtdsInput = {
@@ -1383,9 +1551,13 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutPriorEmploymentYtdsInput = {
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1393,6 +1565,155 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutPriorEmploymentYtdsInput = {
   updatedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutTaxProfileNestedInput
+}
+
+export type EmployeeTaxProfileCreateWithoutOpeningYtdBalancesInput = {
+  id?: string
+  taxYear: number
+  taxCalculationMethod?: $Enums.TaxCalculationMethod
+  taxProfileStatus?: $Enums.EmployeeTaxProfileStatus
+  personalAllowance?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  personalAllowanceSource?: $Enums.PersonalAllowanceSource
+  td1Submitted?: boolean
+  td1EffectiveDate?: Date | string | null
+  td1ApprovedByIrd?: boolean
+  td1ApprovalReference?: string | null
+  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
+  previousEmploymentDeclared?: boolean
+  previousEmploymentVerified?: boolean
+  previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
+  effectiveFrom: Date | string
+  effectiveTo?: Date | string | null
+  notes?: string | null
+  createdByUserId?: string | null
+  updatedByUserId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeTaxProfilesInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutTaxProfilesInput
+  td1StoredFile?: Prisma.StoredFileCreateNestedOneWithoutEmployeeTaxProfilesInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutTaxProfileInput
+}
+
+export type EmployeeTaxProfileUncheckedCreateWithoutOpeningYtdBalancesInput = {
+  id?: string
+  organizationId: string
+  employeeId: string
+  taxYear: number
+  taxCalculationMethod?: $Enums.TaxCalculationMethod
+  taxProfileStatus?: $Enums.EmployeeTaxProfileStatus
+  personalAllowance?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  personalAllowanceSource?: $Enums.PersonalAllowanceSource
+  td1Submitted?: boolean
+  td1EffectiveDate?: Date | string | null
+  td1ApprovedByIrd?: boolean
+  td1ApprovalReference?: string | null
+  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  td1StoredFileId?: string | null
+  cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
+  previousEmploymentDeclared?: boolean
+  previousEmploymentVerified?: boolean
+  previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
+  effectiveFrom: Date | string
+  effectiveTo?: Date | string | null
+  notes?: string | null
+  createdByUserId?: string | null
+  updatedByUserId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutTaxProfileInput
+}
+
+export type EmployeeTaxProfileCreateOrConnectWithoutOpeningYtdBalancesInput = {
+  where: Prisma.EmployeeTaxProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeTaxProfileCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeTaxProfileUncheckedCreateWithoutOpeningYtdBalancesInput>
+}
+
+export type EmployeeTaxProfileUpsertWithoutOpeningYtdBalancesInput = {
+  update: Prisma.XOR<Prisma.EmployeeTaxProfileUpdateWithoutOpeningYtdBalancesInput, Prisma.EmployeeTaxProfileUncheckedUpdateWithoutOpeningYtdBalancesInput>
+  create: Prisma.XOR<Prisma.EmployeeTaxProfileCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeTaxProfileUncheckedCreateWithoutOpeningYtdBalancesInput>
+  where?: Prisma.EmployeeTaxProfileWhereInput
+}
+
+export type EmployeeTaxProfileUpdateToOneWithWhereWithoutOpeningYtdBalancesInput = {
+  where?: Prisma.EmployeeTaxProfileWhereInput
+  data: Prisma.XOR<Prisma.EmployeeTaxProfileUpdateWithoutOpeningYtdBalancesInput, Prisma.EmployeeTaxProfileUncheckedUpdateWithoutOpeningYtdBalancesInput>
+}
+
+export type EmployeeTaxProfileUpdateWithoutOpeningYtdBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.IntFieldUpdateOperationsInput | number
+  taxCalculationMethod?: Prisma.EnumTaxCalculationMethodFieldUpdateOperationsInput | $Enums.TaxCalculationMethod
+  taxProfileStatus?: Prisma.EnumEmployeeTaxProfileStatusFieldUpdateOperationsInput | $Enums.EmployeeTaxProfileStatus
+  personalAllowance?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  personalAllowanceSource?: Prisma.EnumPersonalAllowanceSourceFieldUpdateOperationsInput | $Enums.PersonalAllowanceSource
+  td1Submitted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  td1EffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  td1ApprovedByIrd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
+  previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeTaxProfilesNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutTaxProfilesNestedInput
+  td1StoredFile?: Prisma.StoredFileUpdateOneWithoutEmployeeTaxProfilesNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutTaxProfileNestedInput
+}
+
+export type EmployeeTaxProfileUncheckedUpdateWithoutOpeningYtdBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.IntFieldUpdateOperationsInput | number
+  taxCalculationMethod?: Prisma.EnumTaxCalculationMethodFieldUpdateOperationsInput | $Enums.TaxCalculationMethod
+  taxProfileStatus?: Prisma.EnumEmployeeTaxProfileStatusFieldUpdateOperationsInput | $Enums.EmployeeTaxProfileStatus
+  personalAllowance?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  personalAllowanceSource?: Prisma.EnumPersonalAllowanceSourceFieldUpdateOperationsInput | $Enums.PersonalAllowanceSource
+  td1Submitted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  td1EffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  td1ApprovedByIrd?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
+  previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileCreateManyOrganizationInput = {
@@ -1410,9 +1731,13 @@ export type EmployeeTaxProfileCreateManyOrganizationInput = {
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1435,9 +1760,13 @@ export type EmployeeTaxProfileUpdateWithoutOrganizationInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1448,6 +1777,7 @@ export type EmployeeTaxProfileUpdateWithoutOrganizationInput = {
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutTaxProfilesNestedInput
   td1StoredFile?: Prisma.StoredFileUpdateOneWithoutEmployeeTaxProfilesNestedInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateWithoutOrganizationInput = {
@@ -1465,9 +1795,13 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutOrganizationInput = {
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1476,6 +1810,7 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutOrganizationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1493,9 +1828,13 @@ export type EmployeeTaxProfileUncheckedUpdateManyWithoutOrganizationInput = {
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1520,9 +1859,13 @@ export type EmployeeTaxProfileCreateManyEmployeeInput = {
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1545,9 +1888,13 @@ export type EmployeeTaxProfileUpdateWithoutEmployeeInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1558,6 +1905,7 @@ export type EmployeeTaxProfileUpdateWithoutEmployeeInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeTaxProfilesNestedInput
   td1StoredFile?: Prisma.StoredFileUpdateOneWithoutEmployeeTaxProfilesNestedInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateWithoutEmployeeInput = {
@@ -1575,9 +1923,13 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutEmployeeInput = {
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1586,6 +1938,7 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutEmployeeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeInput = {
@@ -1603,9 +1956,13 @@ export type EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeInput = {
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   td1StoredFileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1630,9 +1987,13 @@ export type EmployeeTaxProfileCreateManyTd1StoredFileInput = {
   td1ApprovalReference?: string | null
   td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: string | null
+  otherEmolumentIncomeStatus?: $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: boolean
+  birDirectionReference?: string | null
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   notes?: string | null
@@ -1655,9 +2016,13 @@ export type EmployeeTaxProfileUpdateWithoutTd1StoredFileInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1668,6 +2033,7 @@ export type EmployeeTaxProfileUpdateWithoutTd1StoredFileInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeTaxProfilesNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutTaxProfilesNestedInput
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateWithoutTd1StoredFileInput = {
@@ -1685,9 +2051,13 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutTd1StoredFileInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1696,6 +2066,7 @@ export type EmployeeTaxProfileUncheckedUpdateWithoutTd1StoredFileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutTaxProfileNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutTaxProfileNestedInput
 }
 
 export type EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileInput = {
@@ -1713,9 +2084,13 @@ export type EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileInput = {
   td1ApprovalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   cumulativeCalculationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  previousEmploymentStatus?: Prisma.EnumPreviousEmploymentStatusFieldUpdateOperationsInput | $Enums.PreviousEmploymentStatus
   previousEmploymentDeclared?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   previousEmploymentSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  otherEmolumentIncomeStatus?: Prisma.EnumOtherEmolumentIncomeStatusFieldUpdateOperationsInput | $Enums.OtherEmolumentIncomeStatus
+  birDirectionPresent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  birDirectionReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1732,10 +2107,12 @@ export type EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileInput = {
 
 export type EmployeeTaxProfileCountOutputType = {
   priorEmploymentYtds: number
+  openingYtdBalances: number
 }
 
 export type EmployeeTaxProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   priorEmploymentYtds?: boolean | EmployeeTaxProfileCountOutputTypeCountPriorEmploymentYtdsArgs
+  openingYtdBalances?: boolean | EmployeeTaxProfileCountOutputTypeCountOpeningYtdBalancesArgs
 }
 
 /**
@@ -1755,6 +2132,13 @@ export type EmployeeTaxProfileCountOutputTypeCountPriorEmploymentYtdsArgs<ExtArg
   where?: Prisma.EmployeePriorEmploymentYtdWhereInput
 }
 
+/**
+ * EmployeeTaxProfileCountOutputType without action
+ */
+export type EmployeeTaxProfileCountOutputTypeCountOpeningYtdBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOpeningYtdBalanceWhereInput
+}
+
 
 export type EmployeeTaxProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1772,9 +2156,13 @@ export type EmployeeTaxProfileSelect<ExtArgs extends runtime.Types.Extensions.In
   td1OtherApprovedAnnual?: boolean
   td1StoredFileId?: boolean
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: boolean
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: boolean
+  otherEmolumentIncomeStatus?: boolean
+  birDirectionPresent?: boolean
+  birDirectionReference?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   notes?: boolean
@@ -1786,6 +2174,7 @@ export type EmployeeTaxProfileSelect<ExtArgs extends runtime.Types.Extensions.In
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   td1StoredFile?: boolean | Prisma.EmployeeTaxProfile$td1StoredFileArgs<ExtArgs>
   priorEmploymentYtds?: boolean | Prisma.EmployeeTaxProfile$priorEmploymentYtdsArgs<ExtArgs>
+  openingYtdBalances?: boolean | Prisma.EmployeeTaxProfile$openingYtdBalancesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeTaxProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employeeTaxProfile"]>
 
@@ -1805,9 +2194,13 @@ export type EmployeeTaxProfileSelectCreateManyAndReturn<ExtArgs extends runtime.
   td1OtherApprovedAnnual?: boolean
   td1StoredFileId?: boolean
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: boolean
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: boolean
+  otherEmolumentIncomeStatus?: boolean
+  birDirectionPresent?: boolean
+  birDirectionReference?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   notes?: boolean
@@ -1836,9 +2229,13 @@ export type EmployeeTaxProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.
   td1OtherApprovedAnnual?: boolean
   td1StoredFileId?: boolean
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: boolean
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: boolean
+  otherEmolumentIncomeStatus?: boolean
+  birDirectionPresent?: boolean
+  birDirectionReference?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   notes?: boolean
@@ -1867,9 +2264,13 @@ export type EmployeeTaxProfileSelectScalar = {
   td1OtherApprovedAnnual?: boolean
   td1StoredFileId?: boolean
   cumulativeCalculationEnabled?: boolean
+  previousEmploymentStatus?: boolean
   previousEmploymentDeclared?: boolean
   previousEmploymentVerified?: boolean
   previousEmploymentSource?: boolean
+  otherEmolumentIncomeStatus?: boolean
+  birDirectionPresent?: boolean
+  birDirectionReference?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   notes?: boolean
@@ -1879,12 +2280,13 @@ export type EmployeeTaxProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeeTaxProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "taxYear" | "taxCalculationMethod" | "taxProfileStatus" | "personalAllowance" | "personalAllowanceSource" | "td1Submitted" | "td1EffectiveDate" | "td1ApprovedByIrd" | "td1ApprovalReference" | "td1OtherApprovedAnnual" | "td1StoredFileId" | "cumulativeCalculationEnabled" | "previousEmploymentDeclared" | "previousEmploymentVerified" | "previousEmploymentSource" | "effectiveFrom" | "effectiveTo" | "notes" | "createdByUserId" | "updatedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeTaxProfile"]>
+export type EmployeeTaxProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "taxYear" | "taxCalculationMethod" | "taxProfileStatus" | "personalAllowance" | "personalAllowanceSource" | "td1Submitted" | "td1EffectiveDate" | "td1ApprovedByIrd" | "td1ApprovalReference" | "td1OtherApprovedAnnual" | "td1StoredFileId" | "cumulativeCalculationEnabled" | "previousEmploymentStatus" | "previousEmploymentDeclared" | "previousEmploymentVerified" | "previousEmploymentSource" | "otherEmolumentIncomeStatus" | "birDirectionPresent" | "birDirectionReference" | "effectiveFrom" | "effectiveTo" | "notes" | "createdByUserId" | "updatedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeTaxProfile"]>
 export type EmployeeTaxProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   td1StoredFile?: boolean | Prisma.EmployeeTaxProfile$td1StoredFileArgs<ExtArgs>
   priorEmploymentYtds?: boolean | Prisma.EmployeeTaxProfile$priorEmploymentYtdsArgs<ExtArgs>
+  openingYtdBalances?: boolean | Prisma.EmployeeTaxProfile$openingYtdBalancesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeTaxProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeTaxProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1905,6 +2307,7 @@ export type $EmployeeTaxProfilePayload<ExtArgs extends runtime.Types.Extensions.
     employee: Prisma.$EmployeePayload<ExtArgs>
     td1StoredFile: Prisma.$StoredFilePayload<ExtArgs> | null
     priorEmploymentYtds: Prisma.$EmployeePriorEmploymentYtdPayload<ExtArgs>[]
+    openingYtdBalances: Prisma.$EmployeeOpeningYtdBalancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1928,12 +2331,19 @@ export type $EmployeeTaxProfilePayload<ExtArgs extends runtime.Types.Extensions.
     td1OtherApprovedAnnual: runtime.Decimal | null
     td1StoredFileId: string | null
     cumulativeCalculationEnabled: boolean
+    /**
+     * Canonical Yes / No / Unknown for prior employment this tax year.
+     */
+    previousEmploymentStatus: $Enums.PreviousEmploymentStatus
     previousEmploymentDeclared: boolean
     previousEmploymentVerified: boolean
     /**
      * Free-text source hint; structured YTD lives on EmployeePriorEmploymentYtd.
      */
     previousEmploymentSource: string | null
+    otherEmolumentIncomeStatus: $Enums.OtherEmolumentIncomeStatus
+    birDirectionPresent: boolean
+    birDirectionReference: string | null
     effectiveFrom: Date
     effectiveTo: Date | null
     notes: string | null
@@ -2339,6 +2749,7 @@ export interface Prisma__EmployeeTaxProfileClient<T, Null = never, ExtArgs exten
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   td1StoredFile<T extends Prisma.EmployeeTaxProfile$td1StoredFileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeTaxProfile$td1StoredFileArgs<ExtArgs>>): Prisma.Prisma__StoredFileClient<runtime.Types.Result.GetResult<Prisma.$StoredFilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   priorEmploymentYtds<T extends Prisma.EmployeeTaxProfile$priorEmploymentYtdsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeTaxProfile$priorEmploymentYtdsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePriorEmploymentYtdPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  openingYtdBalances<T extends Prisma.EmployeeTaxProfile$openingYtdBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeTaxProfile$openingYtdBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOpeningYtdBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2383,9 +2794,13 @@ export interface EmployeeTaxProfileFieldRefs {
   readonly td1OtherApprovedAnnual: Prisma.FieldRef<"EmployeeTaxProfile", 'Decimal'>
   readonly td1StoredFileId: Prisma.FieldRef<"EmployeeTaxProfile", 'String'>
   readonly cumulativeCalculationEnabled: Prisma.FieldRef<"EmployeeTaxProfile", 'Boolean'>
+  readonly previousEmploymentStatus: Prisma.FieldRef<"EmployeeTaxProfile", 'PreviousEmploymentStatus'>
   readonly previousEmploymentDeclared: Prisma.FieldRef<"EmployeeTaxProfile", 'Boolean'>
   readonly previousEmploymentVerified: Prisma.FieldRef<"EmployeeTaxProfile", 'Boolean'>
   readonly previousEmploymentSource: Prisma.FieldRef<"EmployeeTaxProfile", 'String'>
+  readonly otherEmolumentIncomeStatus: Prisma.FieldRef<"EmployeeTaxProfile", 'OtherEmolumentIncomeStatus'>
+  readonly birDirectionPresent: Prisma.FieldRef<"EmployeeTaxProfile", 'Boolean'>
+  readonly birDirectionReference: Prisma.FieldRef<"EmployeeTaxProfile", 'String'>
   readonly effectiveFrom: Prisma.FieldRef<"EmployeeTaxProfile", 'DateTime'>
   readonly effectiveTo: Prisma.FieldRef<"EmployeeTaxProfile", 'DateTime'>
   readonly notes: Prisma.FieldRef<"EmployeeTaxProfile", 'String'>
@@ -2834,6 +3249,30 @@ export type EmployeeTaxProfile$priorEmploymentYtdsArgs<ExtArgs extends runtime.T
   take?: number
   skip?: number
   distinct?: Prisma.EmployeePriorEmploymentYtdScalarFieldEnum | Prisma.EmployeePriorEmploymentYtdScalarFieldEnum[]
+}
+
+/**
+ * EmployeeTaxProfile.openingYtdBalances
+ */
+export type EmployeeTaxProfile$openingYtdBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOpeningYtdBalance
+   */
+  select?: Prisma.EmployeeOpeningYtdBalanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOpeningYtdBalance
+   */
+  omit?: Prisma.EmployeeOpeningYtdBalanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOpeningYtdBalanceInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOpeningYtdBalanceWhereInput
+  orderBy?: Prisma.EmployeeOpeningYtdBalanceOrderByWithRelationInput | Prisma.EmployeeOpeningYtdBalanceOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOpeningYtdBalanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOpeningYtdBalanceScalarFieldEnum | Prisma.EmployeeOpeningYtdBalanceScalarFieldEnum[]
 }
 
 /**

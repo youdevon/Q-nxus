@@ -16,6 +16,10 @@ import {
 } from "@/src/modules/payroll/lib/recurring-payroll-items";
 import type { PayFrequencyCode } from "@/src/modules/payroll/lib/remaining-payroll-periods";
 import {
+  describeContinuousEmploymentEnd,
+  resolveContinuousEmploymentEnd,
+} from "@/src/modules/payroll/lib/continuous-employment";
+import {
   applyPersonalAllowanceOverride,
   resolveEmployeeTaxPayeInputs,
   type ResolvedEmployeeTaxPayeInputs,
@@ -84,6 +88,7 @@ export type EmployeeTaxYearPageData = {
     payFrequency: PayFrequencyCode;
     monthlyBasicSalary: number | null;
     contractEndDate: string | null;
+    employmentEndDate: string | null;
     currency: string;
     payeConfigVersionLabel: string | null;
   };
@@ -145,12 +150,18 @@ export async function getEmployeeTaxYearPage(
         select: { payFrequency: true },
       },
       contracts: {
-        where: { isCurrent: true },
-        take: 1,
+        where: { status: { in: ["ACTIVE", "SUPERSEDED", "APPROVED"] } },
+        orderBy: [{ startDate: "asc" }],
         select: {
+          id: true,
+          isCurrent: true,
+          status: true,
+          startDate: true,
+          endDate: true,
+          terminationDate: true,
+          sourceContractId: true,
           baseSalary: true,
           currency: true,
-          endDate: true,
           jobTitle: true,
           allowances: {
             select: {
@@ -247,8 +258,12 @@ export async function getEmployeeTaxYearPage(
               ? Number(taxProfile.td1OtherApprovedAnnual)
               : null,
           cumulativeCalculationEnabled: taxProfile.cumulativeCalculationEnabled,
+          previousEmploymentStatus: taxProfile.previousEmploymentStatus,
           previousEmploymentDeclared: taxProfile.previousEmploymentDeclared,
           previousEmploymentVerified: taxProfile.previousEmploymentVerified,
+          otherEmolumentIncomeStatus: taxProfile.otherEmolumentIncomeStatus,
+          birDirectionPresent: taxProfile.birDirectionPresent,
+          birDirectionReference: taxProfile.birDirectionReference,
         }
       : null,
     priorEmployment: priorEmployment.totals,
@@ -301,7 +316,10 @@ export async function getEmployeeTaxYearPage(
 
   const payFrequency = (employee.payrollProfile?.payFrequency ??
     "MONTHLY") as PayFrequencyCode;
-  const currentContract = employee.contracts[0] ?? null;
+  const currentContract =
+    employee.contracts.find((contract) => contract.isCurrent) ??
+    employee.contracts.at(-1) ??
+    null;
   const monthlyBasicSalary =
     currentContract != null
       ? Number(currentContract.baseSalary.toString())
@@ -313,8 +331,12 @@ export async function getEmployeeTaxYearPage(
   const contractEndDate = currentContract?.endDate
     ? currentContract.endDate.toISOString().slice(0, 10)
     : null;
-  const employmentEndDate =
-    employee.terminationDate ?? currentContract?.endDate ?? null;
+  const continuousEmployment = resolveContinuousEmploymentEnd({
+    contracts: employee.contracts,
+    employeeTerminationDate: employee.terminationDate,
+    asOf: asOfDate,
+  });
+  const employmentEndDate = continuousEmployment.endDate;
 
   const currency =
     postedPayslips[0]?.currency ?? currentContract?.currency ?? "TTD";
@@ -409,6 +431,7 @@ export async function getEmployeeTaxYearPage(
       taxYear: year,
       asOfDate,
       payFrequency,
+      employmentStartDate: employee.hireDate,
       employmentEndDate,
       config,
       personalAllowanceOverride,
@@ -496,6 +519,9 @@ export async function getEmployeeTaxYearPage(
       payFrequency,
       monthlyBasicSalary,
       contractEndDate,
+      employmentEndDate: employmentEndDate
+        ? employmentEndDate.toISOString().slice(0, 10)
+        : null,
       currency,
       payeConfigVersionLabel: payeConfig?.versionLabel ?? null,
     },

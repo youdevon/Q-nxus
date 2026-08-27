@@ -41,6 +41,7 @@ export type AnnualPayeProjectionInput = {
   taxYear: number;
   asOfDate: Date;
   payFrequency: PayFrequencyCode;
+  employmentStartDate?: Date | null;
   employmentEndDate?: Date | null;
   config: PayeTaxConfigInput;
   /** Personal allowance override (employee tax profile); null = use config. */
@@ -192,6 +193,7 @@ export function computeAnnualPayeProjection(
     taxYear: input.taxYear,
     asOfDate: input.asOfDate,
     payFrequency: input.payFrequency,
+    employmentStartDate: input.employmentStartDate,
     employmentEndDate: input.employmentEndDate,
   });
   warnings.push(...periodsBase.notes);

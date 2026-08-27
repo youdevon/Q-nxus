@@ -215,3 +215,47 @@
     page-break-after: auto;
   }
 }
+
+.report-print-page {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.report-print-document {
+  color: #171717;
+}
+
+.report-print-table thead {
+  display: table-header-group;
+}
+
+.report-print-table tbody tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+@media screen {
+  .report-print-document {
+    border: 1px dashed var(--border);
+    background: white;
+    padding: 1.5rem;
+  }
+}
+
+@media print {
+  .report-print-table thead {
+    display: table-header-group;
+  }
+
+  .report-print-document {
+    border: none;
+    padding: 0;
+  }
+
+  .report-print-page .report-print-header,
+  .report-print-page .report-print-table th,
+  .report-print-page .report-print-table td,
+  .report-print-page .report-print-summary p {
+    color: #171717 !important;
+  }
+}

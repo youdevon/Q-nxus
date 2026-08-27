@@ -3,6 +3,7 @@ import {
   emptyPriorEmploymentYtdTotals,
   priorEmploymentCalcNotes,
 } from "@/src/modules/payroll/lib/prior-employment-ytd";
+import type { PreviousEmploymentStatusCode } from "@/src/modules/payroll/lib/tax-year-period-paye";
 
 /**
  * Resolve employee PAYE inputs for a tax year from EmployeeTaxProfile.
@@ -27,6 +28,13 @@ export type EmployeeTaxProfileStatusCode =
   | "SUPERSEDED"
   | "ARCHIVED";
 
+export type OtherEmolumentIncomeStatusCode =
+  | "NO_OTHER_EMOLUMENTS"
+  | "HAS_OTHER_EMOLUMENTS"
+  | "UNKNOWN_OTHER_EMOLUMENTS";
+
+export type { PreviousEmploymentStatusCode };
+
 export type EmployeeTaxProfilePayeFields = {
   taxCalculationMethod: TaxCalculationMethodCode;
   taxProfileStatus: EmployeeTaxProfileStatusCode;
@@ -34,8 +42,12 @@ export type EmployeeTaxProfilePayeFields = {
   personalAllowanceSource: PersonalAllowanceSourceCode;
   td1OtherApprovedAnnual: number | null;
   cumulativeCalculationEnabled: boolean;
+  previousEmploymentStatus: PreviousEmploymentStatusCode;
   previousEmploymentDeclared: boolean;
   previousEmploymentVerified: boolean;
+  otherEmolumentIncomeStatus: OtherEmolumentIncomeStatusCode;
+  birDirectionPresent: boolean;
+  birDirectionReference: string | null;
 };
 
 export type ResolvedEmployeeTaxPayeInputs = {
@@ -51,13 +63,30 @@ export type ResolvedEmployeeTaxPayeInputs = {
   personalAllowanceOverride: number | null;
   personalAllowanceSource: PersonalAllowanceSourceCode;
   cumulativeCalculationEnabled: boolean;
+  previousEmploymentStatus: PreviousEmploymentStatusCode;
+  /** Synced: true when status is PREVIOUS_EMPLOYMENT (or ACTIVE prior rows exist). */
   previousEmploymentDeclared: boolean;
   previousEmploymentVerified: boolean;
+  otherEmolumentIncomeStatus: OtherEmolumentIncomeStatusCode;
+  birDirectionPresent: boolean;
+  birDirectionReference: string | null;
+  /**
+   * True when status is UNKNOWN — consumers should treat as
+   * PRIOR_EMPLOYMENT_DATA_REQUIRED (do not assume prior is zero).
+   */
+  priorEmploymentDataRequired: boolean;
   /** Aggregated prior-employer YTD for the tax year (Phase 3). */
   priorEmployment: PriorEmploymentYtdTotals;
   /** Calc notes for methods not yet fully implemented. */
   calcNotes: string[];
 };
+
+function declaredFromStatus(
+  status: PreviousEmploymentStatusCode,
+  priorRecordCount: number,
+): boolean {
+  return status === "PREVIOUS_EMPLOYMENT" || priorRecordCount > 0;
+}
 
 export function resolveEmployeeTaxPayeInputs(input: {
   taxYear: number;
@@ -80,6 +109,19 @@ export function resolveEmployeeTaxPayeInputs(input: {
         ? Math.max(0, taxProfile.personalAllowance)
         : null;
 
+    const previousEmploymentStatus =
+      priorEmployment.recordCount > 0
+        ? "PREVIOUS_EMPLOYMENT"
+        : taxProfile.previousEmploymentStatus;
+
+    const previousEmploymentDeclared = declaredFromStatus(
+      previousEmploymentStatus,
+      priorEmployment.recordCount,
+    );
+
+    const priorEmploymentDataRequired =
+      previousEmploymentStatus === "UNKNOWN_PREVIOUS_INCOME";
+
     const calcNotes: string[] = [];
 
     if (
@@ -91,18 +133,15 @@ export function resolveEmployeeTaxPayeInputs(input: {
       );
     }
 
-    if (
-      taxProfile.taxCalculationMethod === "STANDARD_CUMULATIVE" ||
-      taxProfile.cumulativeCalculationEnabled
-    ) {
-      // Cumulative engine applies when enabled in assemblePayslipPreview.
+    if (priorEmploymentDataRequired) {
+      calcNotes.push(
+        "Previous employment status is Unknown — prior income is not assumed to be zero. Review required before relying on this PAYE estimate.",
+      );
     }
 
     calcNotes.push(
       ...priorEmploymentCalcNotes({
-        previousEmploymentDeclared:
-          taxProfile.previousEmploymentDeclared ||
-          priorEmployment.recordCount > 0,
+        previousEmploymentDeclared,
         taxCalculationMethodIncludesPrevious:
           taxProfile.taxCalculationMethod === "PREVIOUS_INCOME_INCLUDED",
         totals: priorEmployment,
@@ -118,22 +157,43 @@ export function resolveEmployeeTaxPayeInputs(input: {
       personalAllowanceOverride,
       personalAllowanceSource: taxProfile.personalAllowanceSource,
       cumulativeCalculationEnabled: taxProfile.cumulativeCalculationEnabled,
-      previousEmploymentDeclared:
-        taxProfile.previousEmploymentDeclared ||
-        priorEmployment.recordCount > 0,
+      previousEmploymentStatus,
+      previousEmploymentDeclared,
       previousEmploymentVerified:
         taxProfile.previousEmploymentVerified ||
         (priorEmployment.recordCount > 0 && priorEmployment.allVerified),
+      otherEmolumentIncomeStatus: taxProfile.otherEmolumentIncomeStatus,
+      birDirectionPresent: taxProfile.birDirectionPresent,
+      birDirectionReference: taxProfile.birDirectionReference,
+      priorEmploymentDataRequired,
       priorEmployment,
       calcNotes,
     };
   }
 
-  const calcNotes = priorEmploymentCalcNotes({
-    previousEmploymentDeclared: priorEmployment.recordCount > 0,
-    taxCalculationMethodIncludesPrevious: false,
-    totals: priorEmployment,
-  });
+  const previousEmploymentStatus: PreviousEmploymentStatusCode =
+    priorEmployment.recordCount > 0
+      ? "PREVIOUS_EMPLOYMENT"
+      : "UNKNOWN_PREVIOUS_INCOME";
+  const previousEmploymentDeclared = declaredFromStatus(
+    previousEmploymentStatus,
+    priorEmployment.recordCount,
+  );
+  const priorEmploymentDataRequired =
+    previousEmploymentStatus === "UNKNOWN_PREVIOUS_INCOME";
+
+  const calcNotes = [
+    ...(priorEmploymentDataRequired
+      ? [
+          "Previous employment status is Unknown — prior income is not assumed to be zero. Review required before relying on this PAYE estimate.",
+        ]
+      : []),
+    ...priorEmploymentCalcNotes({
+      previousEmploymentDeclared,
+      taxCalculationMethodIncludesPrevious: false,
+      totals: priorEmployment,
+    }),
+  ];
 
   return {
     taxYear,
@@ -144,9 +204,14 @@ export function resolveEmployeeTaxPayeInputs(input: {
     personalAllowanceOverride: null,
     personalAllowanceSource: "STATUTORY_DEFAULT",
     cumulativeCalculationEnabled: false,
-    previousEmploymentDeclared: priorEmployment.recordCount > 0,
+    previousEmploymentStatus,
+    previousEmploymentDeclared,
     previousEmploymentVerified:
       priorEmployment.recordCount > 0 && priorEmployment.allVerified,
+    otherEmolumentIncomeStatus: "UNKNOWN_OTHER_EMOLUMENTS",
+    birDirectionPresent: false,
+    birDirectionReference: null,
+    priorEmploymentDataRequired,
     priorEmployment,
     calcNotes,
   };

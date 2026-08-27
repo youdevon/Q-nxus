@@ -386,7 +386,6 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Organization: 'Organization',
   OrganizationHoliday: 'OrganizationHoliday',
-  ApplicationSetting: 'ApplicationSetting',
   User: 'User',
   Role: 'Role',
   UserRole: 'UserRole',
@@ -442,6 +441,7 @@ export const ModelName = {
   EmployeeOffboardingTask: 'EmployeeOffboardingTask',
   EmployeeTaxProfile: 'EmployeeTaxProfile',
   EmployeePriorEmploymentYtd: 'EmployeePriorEmploymentYtd',
+  EmployeeOpeningYtdBalance: 'EmployeeOpeningYtdBalance',
   EmployeePriorEmploymentDocument: 'EmployeePriorEmploymentDocument',
   EmployeePayrollStatutoryOverride: 'EmployeePayrollStatutoryOverride',
   EmployeeAnnualPayrollProjection: 'EmployeeAnnualPayrollProjection',
@@ -449,7 +449,6 @@ export const ModelName = {
   EmployeeEarningTreatmentOverride: 'EmployeeEarningTreatmentOverride',
   PayrollProfile: 'PayrollProfile',
   FinancialInstitution: 'FinancialInstitution',
-  FinancialInstitutionBranch: 'FinancialInstitutionBranch',
   EmployeeBankAccount: 'EmployeeBankAccount',
   EmployeePayrollAllocation: 'EmployeePayrollAllocation',
   PayrollPayment: 'PayrollPayment',
@@ -491,7 +490,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "applicationSetting" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "financialInstitutionBranch" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "gratuityAccrualEntry" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeeOpeningYtdBalance" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "gratuityAccrualEntry" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -640,80 +639,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OrganizationHolidayCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OrganizationHolidayCountAggregateOutputType> | number
-        }
-      }
-    }
-    ApplicationSetting: {
-      payload: Prisma.$ApplicationSettingPayload<ExtArgs>
-      fields: Prisma.ApplicationSettingFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ApplicationSettingFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ApplicationSettingFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>
-        }
-        findFirst: {
-          args: Prisma.ApplicationSettingFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ApplicationSettingFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>
-        }
-        findMany: {
-          args: Prisma.ApplicationSettingFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>[]
-        }
-        create: {
-          args: Prisma.ApplicationSettingCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>
-        }
-        createMany: {
-          args: Prisma.ApplicationSettingCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ApplicationSettingCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>[]
-        }
-        delete: {
-          args: Prisma.ApplicationSettingDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>
-        }
-        update: {
-          args: Prisma.ApplicationSettingUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>
-        }
-        deleteMany: {
-          args: Prisma.ApplicationSettingDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ApplicationSettingUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ApplicationSettingUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>[]
-        }
-        upsert: {
-          args: Prisma.ApplicationSettingUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApplicationSettingPayload>
-        }
-        aggregate: {
-          args: Prisma.ApplicationSettingAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateApplicationSetting>
-        }
-        groupBy: {
-          args: Prisma.ApplicationSettingGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ApplicationSettingGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ApplicationSettingCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ApplicationSettingCountAggregateOutputType> | number
         }
       }
     }
@@ -4787,6 +4712,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EmployeeOpeningYtdBalance: {
+      payload: Prisma.$EmployeeOpeningYtdBalancePayload<ExtArgs>
+      fields: Prisma.EmployeeOpeningYtdBalanceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeOpeningYtdBalanceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeOpeningYtdBalanceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeOpeningYtdBalanceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeOpeningYtdBalanceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeOpeningYtdBalanceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeOpeningYtdBalanceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeOpeningYtdBalanceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeOpeningYtdBalanceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeOpeningYtdBalanceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>
+        }
+        update: {
+          args: Prisma.EmployeeOpeningYtdBalanceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeOpeningYtdBalanceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeOpeningYtdBalanceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeOpeningYtdBalanceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeOpeningYtdBalanceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeOpeningYtdBalancePayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeOpeningYtdBalanceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeOpeningYtdBalance>
+        }
+        groupBy: {
+          args: Prisma.EmployeeOpeningYtdBalanceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOpeningYtdBalanceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeOpeningYtdBalanceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeOpeningYtdBalanceCountAggregateOutputType> | number
+        }
+      }
+    }
     EmployeePriorEmploymentDocument: {
       payload: Prisma.$EmployeePriorEmploymentDocumentPayload<ExtArgs>
       fields: Prisma.EmployeePriorEmploymentDocumentFieldRefs
@@ -5302,80 +5301,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FinancialInstitutionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FinancialInstitutionCountAggregateOutputType> | number
-        }
-      }
-    }
-    FinancialInstitutionBranch: {
-      payload: Prisma.$FinancialInstitutionBranchPayload<ExtArgs>
-      fields: Prisma.FinancialInstitutionBranchFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.FinancialInstitutionBranchFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.FinancialInstitutionBranchFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>
-        }
-        findFirst: {
-          args: Prisma.FinancialInstitutionBranchFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.FinancialInstitutionBranchFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>
-        }
-        findMany: {
-          args: Prisma.FinancialInstitutionBranchFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>[]
-        }
-        create: {
-          args: Prisma.FinancialInstitutionBranchCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>
-        }
-        createMany: {
-          args: Prisma.FinancialInstitutionBranchCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.FinancialInstitutionBranchCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>[]
-        }
-        delete: {
-          args: Prisma.FinancialInstitutionBranchDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>
-        }
-        update: {
-          args: Prisma.FinancialInstitutionBranchUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>
-        }
-        deleteMany: {
-          args: Prisma.FinancialInstitutionBranchDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.FinancialInstitutionBranchUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.FinancialInstitutionBranchUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>[]
-        }
-        upsert: {
-          args: Prisma.FinancialInstitutionBranchUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FinancialInstitutionBranchPayload>
-        }
-        aggregate: {
-          args: Prisma.FinancialInstitutionBranchAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateFinancialInstitutionBranch>
-        }
-        groupBy: {
-          args: Prisma.FinancialInstitutionBranchGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.FinancialInstitutionBranchGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.FinancialInstitutionBranchCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.FinancialInstitutionBranchCountAggregateOutputType> | number
         }
       }
     }
@@ -7381,21 +7306,6 @@ export const OrganizationHolidayScalarFieldEnum = {
 export type OrganizationHolidayScalarFieldEnum = (typeof OrganizationHolidayScalarFieldEnum)[keyof typeof OrganizationHolidayScalarFieldEnum]
 
 
-export const ApplicationSettingScalarFieldEnum = {
-  id: 'id',
-  internalCodename: 'internalCodename',
-  displayName: 'displayName',
-  shortName: 'shortName',
-  organizationName: 'organizationName',
-  logoUrl: 'logoUrl',
-  faviconUrl: 'faviconUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ApplicationSettingScalarFieldEnum = (typeof ApplicationSettingScalarFieldEnum)[keyof typeof ApplicationSettingScalarFieldEnum]
-
-
 export const UserScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -8481,9 +8391,13 @@ export const EmployeeTaxProfileScalarFieldEnum = {
   td1OtherApprovedAnnual: 'td1OtherApprovedAnnual',
   td1StoredFileId: 'td1StoredFileId',
   cumulativeCalculationEnabled: 'cumulativeCalculationEnabled',
+  previousEmploymentStatus: 'previousEmploymentStatus',
   previousEmploymentDeclared: 'previousEmploymentDeclared',
   previousEmploymentVerified: 'previousEmploymentVerified',
   previousEmploymentSource: 'previousEmploymentSource',
+  otherEmolumentIncomeStatus: 'otherEmolumentIncomeStatus',
+  birDirectionPresent: 'birDirectionPresent',
+  birDirectionReference: 'birDirectionReference',
   effectiveFrom: 'effectiveFrom',
   effectiveTo: 'effectiveTo',
   notes: 'notes',
@@ -8508,6 +8422,9 @@ export const EmployeePriorEmploymentYtdScalarFieldEnum = {
   employmentEndDate: 'employmentEndDate',
   asOfDate: 'asOfDate',
   currencyCode: 'currencyCode',
+  taxableIncomeEntryMode: 'taxableIncomeEntryMode',
+  grossEarningsYtd: 'grossEarningsYtd',
+  nonTaxableAllowancesYtd: 'nonTaxableAllowancesYtd',
   taxableIncomeYtd: 'taxableIncomeYtd',
   payeDeductedYtd: 'payeDeductedYtd',
   nisEmployeeYtd: 'nisEmployeeYtd',
@@ -8526,6 +8443,34 @@ export const EmployeePriorEmploymentYtdScalarFieldEnum = {
 } as const
 
 export type EmployeePriorEmploymentYtdScalarFieldEnum = (typeof EmployeePriorEmploymentYtdScalarFieldEnum)[keyof typeof EmployeePriorEmploymentYtdScalarFieldEnum]
+
+
+export const EmployeeOpeningYtdBalanceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  taxProfileId: 'taxProfileId',
+  asOfDate: 'asOfDate',
+  currencyCode: 'currencyCode',
+  grossPayYtd: 'grossPayYtd',
+  taxableIncomeYtd: 'taxableIncomeYtd',
+  payeDeductedYtd: 'payeDeductedYtd',
+  nisEmployeeYtd: 'nisEmployeeYtd',
+  nisEmployerYtd: 'nisEmployerYtd',
+  healthSurchargeYtd: 'healthSurchargeYtd',
+  otherApprovedDeductionsYtd: 'otherApprovedDeductionsYtd',
+  verified: 'verified',
+  verifiedAt: 'verifiedAt',
+  verifiedByUserId: 'verifiedByUserId',
+  notes: 'notes',
+  createdByUserId: 'createdByUserId',
+  updatedByUserId: 'updatedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeOpeningYtdBalanceScalarFieldEnum = (typeof EmployeeOpeningYtdBalanceScalarFieldEnum)[keyof typeof EmployeeOpeningYtdBalanceScalarFieldEnum]
 
 
 export const EmployeePriorEmploymentDocumentScalarFieldEnum = {
@@ -8552,6 +8497,7 @@ export const EmployeePayrollStatutoryOverrideScalarFieldEnum = {
   nisEmployeeAmount: 'nisEmployeeAmount',
   healthSurchargeAmount: 'healthSurchargeAmount',
   reason: 'reason',
+  applyScope: 'applyScope',
   status: 'status',
   requestedByUserId: 'requestedByUserId',
   approvedByUserId: 'approvedByUserId',
@@ -8710,20 +8656,6 @@ export const FinancialInstitutionScalarFieldEnum = {
 } as const
 
 export type FinancialInstitutionScalarFieldEnum = (typeof FinancialInstitutionScalarFieldEnum)[keyof typeof FinancialInstitutionScalarFieldEnum]
-
-
-export const FinancialInstitutionBranchScalarFieldEnum = {
-  id: 'id',
-  institutionId: 'institutionId',
-  branchCode: 'branchCode',
-  name: 'name',
-  address: 'address',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type FinancialInstitutionBranchScalarFieldEnum = (typeof FinancialInstitutionBranchScalarFieldEnum)[keyof typeof FinancialInstitutionBranchScalarFieldEnum]
 
 
 export const EmployeeBankAccountScalarFieldEnum = {
@@ -10134,6 +10066,48 @@ export type ListEnumPersonalAllowanceSourceFieldRefInput<$PrismaModel> = FieldRe
 
 
 /**
+ * Reference to a field of type 'PreviousEmploymentStatus'
+ */
+export type EnumPreviousEmploymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreviousEmploymentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PreviousEmploymentStatus[]'
+ */
+export type ListEnumPreviousEmploymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PreviousEmploymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OtherEmolumentIncomeStatus'
+ */
+export type EnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OtherEmolumentIncomeStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OtherEmolumentIncomeStatus[]'
+ */
+export type ListEnumOtherEmolumentIncomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OtherEmolumentIncomeStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PriorTaxableIncomeEntryMode'
+ */
+export type EnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PriorTaxableIncomeEntryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'PriorTaxableIncomeEntryMode[]'
+ */
+export type ListEnumPriorTaxableIncomeEntryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PriorTaxableIncomeEntryMode[]'>
+    
+
+
+/**
  * Reference to a field of type 'PriorEmploymentRecordStatus'
  */
 export type EnumPriorEmploymentRecordStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PriorEmploymentRecordStatus'>
@@ -10158,6 +10132,20 @@ export type EnumPriorEmploymentDocumentTypeFieldRefInput<$PrismaModel> = FieldRe
  * Reference to a field of type 'PriorEmploymentDocumentType[]'
  */
 export type ListEnumPriorEmploymentDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PriorEmploymentDocumentType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'StatutoryOverrideApplyScope'
+ */
+export type EnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutoryOverrideApplyScope'>
+    
+
+
+/**
+ * Reference to a field of type 'StatutoryOverrideApplyScope[]'
+ */
+export type ListEnumStatutoryOverrideApplyScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutoryOverrideApplyScope[]'>
     
 
 
@@ -10762,7 +10750,6 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   organization?: Prisma.OrganizationOmit
   organizationHoliday?: Prisma.OrganizationHolidayOmit
-  applicationSetting?: Prisma.ApplicationSettingOmit
   user?: Prisma.UserOmit
   role?: Prisma.RoleOmit
   userRole?: Prisma.UserRoleOmit
@@ -10818,6 +10805,7 @@ export type GlobalOmitConfig = {
   employeeOffboardingTask?: Prisma.EmployeeOffboardingTaskOmit
   employeeTaxProfile?: Prisma.EmployeeTaxProfileOmit
   employeePriorEmploymentYtd?: Prisma.EmployeePriorEmploymentYtdOmit
+  employeeOpeningYtdBalance?: Prisma.EmployeeOpeningYtdBalanceOmit
   employeePriorEmploymentDocument?: Prisma.EmployeePriorEmploymentDocumentOmit
   employeePayrollStatutoryOverride?: Prisma.EmployeePayrollStatutoryOverrideOmit
   employeeAnnualPayrollProjection?: Prisma.EmployeeAnnualPayrollProjectionOmit
@@ -10825,7 +10813,6 @@ export type GlobalOmitConfig = {
   employeeEarningTreatmentOverride?: Prisma.EmployeeEarningTreatmentOverrideOmit
   payrollProfile?: Prisma.PayrollProfileOmit
   financialInstitution?: Prisma.FinancialInstitutionOmit
-  financialInstitutionBranch?: Prisma.FinancialInstitutionBranchOmit
   employeeBankAccount?: Prisma.EmployeeBankAccountOmit
   employeePayrollAllocation?: Prisma.EmployeePayrollAllocationOmit
   payrollPayment?: Prisma.PayrollPaymentOmit

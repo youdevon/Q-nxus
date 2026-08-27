@@ -416,7 +416,11 @@ export async function getEmployeeStatutoryYtdBeforePeriod(input: {
   };
 }
 
-/** Phase 9: prior / this-employer / combined labels for a single employee YTD. */
+/**
+ * Phase 9: prior / this-employer / combined labels for a single employee YTD.
+ * Uses all ACTIVE prior records for the tax year (display). PAYE withholding
+ * still gates on verified totals via resolve-employee-tax-paye-inputs.
+ */
 export async function getPayslipYtdBreakdown(
   employeeId: string,
   currentEmployer: PayslipYtdTotals,
@@ -424,7 +428,6 @@ export async function getPayslipYtdBreakdown(
   const prior = await getEmployeePriorEmploymentTotals(
     employeeId,
     currentEmployer.year,
-    { verifiedOnly: true },
   );
   return assemblePayslipYtdBreakdown({
     year: currentEmployer.year,

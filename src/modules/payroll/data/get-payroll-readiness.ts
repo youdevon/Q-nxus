@@ -157,7 +157,7 @@ export async function getPayrollReadiness(options?: {
       ? readiness.blockingIssues
       : ["Payroll profile not set up.", ...readiness.blockingIssues];
 
-    const softWarnings: string[] = [];
+    const softWarnings: string[] = [...(readiness.softWarnings ?? [])];
     const file = completenessByEmployee.get(employee.id);
     if (file && !file.isComplete) {
       softWarnings.push(

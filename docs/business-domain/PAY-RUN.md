@@ -81,7 +81,34 @@ The time range for which payroll applies.
 Example:
 
 ```text
-
 July 2026 Monthly Payroll
-
 1 July 2026 to 31 July 2026
+```
+
+### Pay Run
+
+The processing event for that period (regular, correction, or off-cycle).
+
+---
+
+## 4. Lifecycle (implemented)
+
+```text
+DRAFT → APPROVED → POSTED → RECONCILED → CLOSED
+```
+
+| Status | Meaning |
+|--------|---------|
+| `DRAFT` | Working paysheet. Calculate all employees, adjust line items, exclude/re-include. |
+| `APPROVED` | Paysheet locked for posting. Figures and membership are frozen. **Calculate all** unlocks back to `DRAFT` and clears approval. |
+| `POSTED` | Amounts frozen permanently; payments and release allowed. |
+| `RECONCILED` | Payments matched / returns resolved. |
+| `CLOSED` | Terminal. |
+
+### Professional flow
+
+1. **Calculate all** — recomputes every included employee and saves draft payslip snapshots (the paysheet).
+2. **Approve paysheet** — runs a fresh full calculation, then locks the run as `APPROVED`.
+3. **Post paysheet** — freezes included payslips. A forced pre-post refresh refuses to post if figures changed since approval.
+
+There is no separate paysheet table. Draft `Payslip` snapshots plus pay-run totals are the saved sheet. Variable draft inputs stay on `PayrollLineItem` until calc folds them into the snapshot — complementary stores, not duplicates (Architecture §6).

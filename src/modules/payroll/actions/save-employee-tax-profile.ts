@@ -8,7 +8,9 @@ import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import type {
+  OtherEmolumentIncomeStatusCode,
   PersonalAllowanceSourceCode,
+  PreviousEmploymentStatusCode,
   TaxCalculationMethodCode,
 } from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
 import { taxYearFromAsOfKey, toStatutoryAsOfKey } from "@/src/modules/payroll/lib/statutory-as-of";
@@ -32,6 +34,18 @@ const ALLOWANCE_SOURCES: PersonalAllowanceSourceCode[] = [
   "TD1",
   "IRD_INSTRUCTION",
   "MANUAL_AUTHORIZED",
+];
+
+const PREVIOUS_EMPLOYMENT_STATUSES: PreviousEmploymentStatusCode[] = [
+  "NO_PREVIOUS_EMPLOYMENT",
+  "PREVIOUS_EMPLOYMENT",
+  "UNKNOWN_PREVIOUS_INCOME",
+];
+
+const OTHER_EMOLUMENT_STATUSES: OtherEmolumentIncomeStatusCode[] = [
+  "NO_OTHER_EMOLUMENTS",
+  "HAS_OTHER_EMOLUMENTS",
+  "UNKNOWN_OTHER_EMOLUMENTS",
 ];
 
 function textValue(formData: FormData, key: string): string {
@@ -117,6 +131,25 @@ export async function saveEmployeeTaxProfile(
     ? (sourceRaw as PersonalAllowanceSourceCode)
     : "STATUTORY_DEFAULT";
 
+  const previousStatusRaw = textValue(formData, "previousEmploymentStatus");
+  const previousEmploymentStatus = PREVIOUS_EMPLOYMENT_STATUSES.includes(
+    previousStatusRaw as PreviousEmploymentStatusCode,
+  )
+    ? (previousStatusRaw as PreviousEmploymentStatusCode)
+    : null;
+
+  if (!previousEmploymentStatus) {
+    fieldErrors.previousEmploymentStatus =
+      "Select previous employment status for this tax year.";
+  }
+
+  const otherEmolumentRaw = textValue(formData, "otherEmolumentIncomeStatus");
+  const otherEmolumentIncomeStatus = OTHER_EMOLUMENT_STATUSES.includes(
+    otherEmolumentRaw as OtherEmolumentIncomeStatusCode,
+  )
+    ? (otherEmolumentRaw as OtherEmolumentIncomeStatusCode)
+    : "UNKNOWN_OTHER_EMOLUMENTS";
+
   const personalAllowance = parseNonNegative(
     textValue(formData, "personalAllowance"),
     "personalAllowance",
@@ -143,9 +176,11 @@ export async function saveEmployeeTaxProfile(
     formData.get("cumulativeCalculationEnabled") === "on" ||
     taxCalculationMethod === "STANDARD_CUMULATIVE";
   const previousEmploymentDeclared =
-    formData.get("previousEmploymentDeclared") === "on";
+    previousEmploymentStatus === "PREVIOUS_EMPLOYMENT";
   const previousEmploymentVerified =
     formData.get("previousEmploymentVerified") === "on";
+  const birDirectionPresent = formData.get("birDirectionPresent") === "on";
+  const birDirectionReference = nullableText(formData, "birDirectionReference");
   const td1ApprovalReference = nullableText(formData, "td1ApprovalReference");
   const previousEmploymentSource = nullableText(
     formData,
@@ -211,9 +246,13 @@ export async function saveEmployeeTaxProfile(
           td1ApprovalReference,
           td1OtherApprovedAnnual: td1Decimal,
           cumulativeCalculationEnabled,
+          previousEmploymentStatus: previousEmploymentStatus!,
           previousEmploymentDeclared,
           previousEmploymentVerified,
           previousEmploymentSource,
+          otherEmolumentIncomeStatus,
+          birDirectionPresent,
+          birDirectionReference,
           effectiveFrom,
           notes,
           createdByUserId: actor.actor.userId,
@@ -229,9 +268,13 @@ export async function saveEmployeeTaxProfile(
           td1ApprovalReference,
           td1OtherApprovedAnnual: td1Decimal,
           cumulativeCalculationEnabled,
+          previousEmploymentStatus: previousEmploymentStatus!,
           previousEmploymentDeclared,
           previousEmploymentVerified,
           previousEmploymentSource,
+          otherEmolumentIncomeStatus,
+          birDirectionPresent,
+          birDirectionReference,
           notes,
           updatedByUserId: actor.actor.userId,
         },
@@ -255,8 +298,11 @@ export async function saveEmployeeTaxProfile(
           td1ApprovedByIrd,
           td1OtherApprovedAnnual,
           cumulativeCalculationEnabled,
+          previousEmploymentStatus,
           previousEmploymentDeclared,
           previousEmploymentVerified,
+          otherEmolumentIncomeStatus,
+          birDirectionPresent,
         },
         ...metadata,
       });

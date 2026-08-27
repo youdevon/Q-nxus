@@ -28,11 +28,6 @@ export type Organization = Prisma.OrganizationModel
  */
 export type OrganizationHoliday = Prisma.OrganizationHolidayModel
 /**
- * Model ApplicationSetting
- * 
- */
-export type ApplicationSetting = Prisma.ApplicationSettingModel
-/**
  * Model User
  * 
  */
@@ -315,6 +310,12 @@ export type EmployeeTaxProfile = Prisma.EmployeeTaxProfileModel
  */
 export type EmployeePriorEmploymentYtd = Prisma.EmployeePriorEmploymentYtdModel
 /**
+ * Model EmployeeOpeningYtdBalance
+ * Current-employer opening YTD for mid-year payroll system migration.
+ * NOT prior-employer figures — same employer, balances brought into q-nxus.
+ */
+export type EmployeeOpeningYtdBalance = Prisma.EmployeeOpeningYtdBalanceModel
+/**
  * Model EmployeePriorEmploymentDocument
  * 
  */
@@ -349,11 +350,6 @@ export type PayrollProfile = Prisma.PayrollProfileModel
  * Configurable financial institution directory (TT seed; extensible to other jurisdictions).
  */
 export type FinancialInstitution = Prisma.FinancialInstitutionModel
-/**
- * Model FinancialInstitutionBranch
- * 
- */
-export type FinancialInstitutionBranch = Prisma.FinancialInstitutionBranchModel
 /**
  * Model EmployeeBankAccount
  * Employee-owned bank account / payment destination (source of truth with allocations).

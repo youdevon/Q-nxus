@@ -5,7 +5,9 @@ import {
 } from "@/src/modules/payroll/lib/statutory-as-of";
 import type {
   EmployeeTaxProfileStatusCode,
+  OtherEmolumentIncomeStatusCode,
   PersonalAllowanceSourceCode,
+  PreviousEmploymentStatusCode,
   TaxCalculationMethodCode,
 } from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
 
@@ -25,9 +27,13 @@ export type EmployeeTaxProfileRecord = {
   td1OtherApprovedAnnual: string | null;
   td1StoredFileId: string | null;
   cumulativeCalculationEnabled: boolean;
+  previousEmploymentStatus: PreviousEmploymentStatusCode;
   previousEmploymentDeclared: boolean;
   previousEmploymentVerified: boolean;
   previousEmploymentSource: string | null;
+  otherEmolumentIncomeStatus: OtherEmolumentIncomeStatusCode;
+  birDirectionPresent: boolean;
+  birDirectionReference: string | null;
   effectiveFrom: string;
   effectiveTo: string | null;
   notes: string | null;
@@ -50,9 +56,13 @@ function mapTaxProfile(row: {
   td1OtherApprovedAnnual: { toString(): string } | null;
   td1StoredFileId: string | null;
   cumulativeCalculationEnabled: boolean;
+  previousEmploymentStatus: string;
   previousEmploymentDeclared: boolean;
   previousEmploymentVerified: boolean;
   previousEmploymentSource: string | null;
+  otherEmolumentIncomeStatus: string;
+  birDirectionPresent: boolean;
+  birDirectionReference: string | null;
   effectiveFrom: Date;
   effectiveTo: Date | null;
   notes: string | null;
@@ -78,9 +88,15 @@ function mapTaxProfile(row: {
     td1OtherApprovedAnnual: row.td1OtherApprovedAnnual?.toString() ?? null,
     td1StoredFileId: row.td1StoredFileId,
     cumulativeCalculationEnabled: row.cumulativeCalculationEnabled,
+    previousEmploymentStatus:
+      row.previousEmploymentStatus as PreviousEmploymentStatusCode,
     previousEmploymentDeclared: row.previousEmploymentDeclared,
     previousEmploymentVerified: row.previousEmploymentVerified,
     previousEmploymentSource: row.previousEmploymentSource,
+    otherEmolumentIncomeStatus:
+      row.otherEmolumentIncomeStatus as OtherEmolumentIncomeStatusCode,
+    birDirectionPresent: row.birDirectionPresent,
+    birDirectionReference: row.birDirectionReference,
     effectiveFrom: row.effectiveFrom.toISOString().slice(0, 10),
     effectiveTo: row.effectiveTo
       ? row.effectiveTo.toISOString().slice(0, 10)

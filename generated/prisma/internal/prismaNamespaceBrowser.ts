@@ -53,7 +53,6 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Organization: 'Organization',
   OrganizationHoliday: 'OrganizationHoliday',
-  ApplicationSetting: 'ApplicationSetting',
   User: 'User',
   Role: 'Role',
   UserRole: 'UserRole',
@@ -109,6 +108,7 @@ export const ModelName = {
   EmployeeOffboardingTask: 'EmployeeOffboardingTask',
   EmployeeTaxProfile: 'EmployeeTaxProfile',
   EmployeePriorEmploymentYtd: 'EmployeePriorEmploymentYtd',
+  EmployeeOpeningYtdBalance: 'EmployeeOpeningYtdBalance',
   EmployeePriorEmploymentDocument: 'EmployeePriorEmploymentDocument',
   EmployeePayrollStatutoryOverride: 'EmployeePayrollStatutoryOverride',
   EmployeeAnnualPayrollProjection: 'EmployeeAnnualPayrollProjection',
@@ -116,7 +116,6 @@ export const ModelName = {
   EmployeeEarningTreatmentOverride: 'EmployeeEarningTreatmentOverride',
   PayrollProfile: 'PayrollProfile',
   FinancialInstitution: 'FinancialInstitution',
-  FinancialInstitutionBranch: 'FinancialInstitutionBranch',
   EmployeeBankAccount: 'EmployeeBankAccount',
   EmployeePayrollAllocation: 'EmployeePayrollAllocation',
   PayrollPayment: 'PayrollPayment',
@@ -198,21 +197,6 @@ export const OrganizationHolidayScalarFieldEnum = {
 } as const
 
 export type OrganizationHolidayScalarFieldEnum = (typeof OrganizationHolidayScalarFieldEnum)[keyof typeof OrganizationHolidayScalarFieldEnum]
-
-
-export const ApplicationSettingScalarFieldEnum = {
-  id: 'id',
-  internalCodename: 'internalCodename',
-  displayName: 'displayName',
-  shortName: 'shortName',
-  organizationName: 'organizationName',
-  logoUrl: 'logoUrl',
-  faviconUrl: 'faviconUrl',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type ApplicationSettingScalarFieldEnum = (typeof ApplicationSettingScalarFieldEnum)[keyof typeof ApplicationSettingScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -1300,9 +1284,13 @@ export const EmployeeTaxProfileScalarFieldEnum = {
   td1OtherApprovedAnnual: 'td1OtherApprovedAnnual',
   td1StoredFileId: 'td1StoredFileId',
   cumulativeCalculationEnabled: 'cumulativeCalculationEnabled',
+  previousEmploymentStatus: 'previousEmploymentStatus',
   previousEmploymentDeclared: 'previousEmploymentDeclared',
   previousEmploymentVerified: 'previousEmploymentVerified',
   previousEmploymentSource: 'previousEmploymentSource',
+  otherEmolumentIncomeStatus: 'otherEmolumentIncomeStatus',
+  birDirectionPresent: 'birDirectionPresent',
+  birDirectionReference: 'birDirectionReference',
   effectiveFrom: 'effectiveFrom',
   effectiveTo: 'effectiveTo',
   notes: 'notes',
@@ -1327,6 +1315,9 @@ export const EmployeePriorEmploymentYtdScalarFieldEnum = {
   employmentEndDate: 'employmentEndDate',
   asOfDate: 'asOfDate',
   currencyCode: 'currencyCode',
+  taxableIncomeEntryMode: 'taxableIncomeEntryMode',
+  grossEarningsYtd: 'grossEarningsYtd',
+  nonTaxableAllowancesYtd: 'nonTaxableAllowancesYtd',
   taxableIncomeYtd: 'taxableIncomeYtd',
   payeDeductedYtd: 'payeDeductedYtd',
   nisEmployeeYtd: 'nisEmployeeYtd',
@@ -1345,6 +1336,34 @@ export const EmployeePriorEmploymentYtdScalarFieldEnum = {
 } as const
 
 export type EmployeePriorEmploymentYtdScalarFieldEnum = (typeof EmployeePriorEmploymentYtdScalarFieldEnum)[keyof typeof EmployeePriorEmploymentYtdScalarFieldEnum]
+
+
+export const EmployeeOpeningYtdBalanceScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  employeeId: 'employeeId',
+  taxYear: 'taxYear',
+  taxProfileId: 'taxProfileId',
+  asOfDate: 'asOfDate',
+  currencyCode: 'currencyCode',
+  grossPayYtd: 'grossPayYtd',
+  taxableIncomeYtd: 'taxableIncomeYtd',
+  payeDeductedYtd: 'payeDeductedYtd',
+  nisEmployeeYtd: 'nisEmployeeYtd',
+  nisEmployerYtd: 'nisEmployerYtd',
+  healthSurchargeYtd: 'healthSurchargeYtd',
+  otherApprovedDeductionsYtd: 'otherApprovedDeductionsYtd',
+  verified: 'verified',
+  verifiedAt: 'verifiedAt',
+  verifiedByUserId: 'verifiedByUserId',
+  notes: 'notes',
+  createdByUserId: 'createdByUserId',
+  updatedByUserId: 'updatedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmployeeOpeningYtdBalanceScalarFieldEnum = (typeof EmployeeOpeningYtdBalanceScalarFieldEnum)[keyof typeof EmployeeOpeningYtdBalanceScalarFieldEnum]
 
 
 export const EmployeePriorEmploymentDocumentScalarFieldEnum = {
@@ -1371,6 +1390,7 @@ export const EmployeePayrollStatutoryOverrideScalarFieldEnum = {
   nisEmployeeAmount: 'nisEmployeeAmount',
   healthSurchargeAmount: 'healthSurchargeAmount',
   reason: 'reason',
+  applyScope: 'applyScope',
   status: 'status',
   requestedByUserId: 'requestedByUserId',
   approvedByUserId: 'approvedByUserId',
@@ -1529,20 +1549,6 @@ export const FinancialInstitutionScalarFieldEnum = {
 } as const
 
 export type FinancialInstitutionScalarFieldEnum = (typeof FinancialInstitutionScalarFieldEnum)[keyof typeof FinancialInstitutionScalarFieldEnum]
-
-
-export const FinancialInstitutionBranchScalarFieldEnum = {
-  id: 'id',
-  institutionId: 'institutionId',
-  branchCode: 'branchCode',
-  name: 'name',
-  address: 'address',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type FinancialInstitutionBranchScalarFieldEnum = (typeof FinancialInstitutionBranchScalarFieldEnum)[keyof typeof FinancialInstitutionBranchScalarFieldEnum]
 
 
 export const EmployeeBankAccountScalarFieldEnum = {

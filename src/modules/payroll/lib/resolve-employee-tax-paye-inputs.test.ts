@@ -5,25 +5,36 @@ import {
   resolveEmployeeTaxPayeInputs,
 } from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
 
+const baseProfile = {
+  taxCalculationMethod: "STANDARD_NON_CUMULATIVE" as const,
+  taxProfileStatus: "ACTIVE" as const,
+  personalAllowance: null as number | null,
+  personalAllowanceSource: "STATUTORY_DEFAULT" as const,
+  td1OtherApprovedAnnual: null as number | null,
+  cumulativeCalculationEnabled: false,
+  previousEmploymentStatus: "NO_PREVIOUS_EMPLOYMENT" as const,
+  previousEmploymentDeclared: false,
+  previousEmploymentVerified: false,
+  otherEmolumentIncomeStatus: "UNKNOWN_OTHER_EMOLUMENTS" as const,
+  birDirectionPresent: false,
+  birDirectionReference: null as string | null,
+};
+
 describe("resolveEmployeeTaxPayeInputs", () => {
   it("reads TD1 from the tax profile", () => {
     const result = resolveEmployeeTaxPayeInputs({
       taxYear: 2026,
       taxProfile: {
-        taxCalculationMethod: "STANDARD_NON_CUMULATIVE",
-        taxProfileStatus: "ACTIVE",
-        personalAllowance: null,
-        personalAllowanceSource: "STATUTORY_DEFAULT",
+        ...baseProfile,
         td1OtherApprovedAnnual: 12_000,
-        cumulativeCalculationEnabled: false,
-        previousEmploymentDeclared: false,
-        previousEmploymentVerified: false,
       },
     });
 
     expect(result.source).toBe("tax_profile");
     expect(result.td1OtherApprovedAnnual).toBe(12_000);
     expect(result.personalAllowanceOverride).toBeNull();
+    expect(result.previousEmploymentStatus).toBe("NO_PREVIOUS_EMPLOYMENT");
+    expect(result.priorEmploymentDataRequired).toBe(false);
   });
 
   it("returns none when no tax profile", () => {
@@ -35,20 +46,18 @@ describe("resolveEmployeeTaxPayeInputs", () => {
     expect(result.source).toBe("none");
     expect(result.td1OtherApprovedAnnual).toBe(0);
     expect(result.taxCalculationMethod).toBe("STANDARD_NON_CUMULATIVE");
+    expect(result.previousEmploymentStatus).toBe("UNKNOWN_PREVIOUS_INCOME");
+    expect(result.priorEmploymentDataRequired).toBe(true);
   });
 
   it("treats null tax-profile TD1 as zero", () => {
     const result = resolveEmployeeTaxPayeInputs({
       taxYear: 2026,
       taxProfile: {
-        taxCalculationMethod: "STANDARD_NON_CUMULATIVE",
-        taxProfileStatus: "ACTIVE",
+        ...baseProfile,
         personalAllowance: 90_000,
         personalAllowanceSource: "TD1",
         td1OtherApprovedAnnual: null,
-        cumulativeCalculationEnabled: false,
-        previousEmploymentDeclared: false,
-        previousEmploymentVerified: false,
       },
     });
 
@@ -56,35 +65,49 @@ describe("resolveEmployeeTaxPayeInputs", () => {
     expect(result.personalAllowanceOverride).toBe(90_000);
   });
 
-  it("adds calc notes for previous employment without records", () => {
+  it("syncs declared from PREVIOUS_EMPLOYMENT status", () => {
     const result = resolveEmployeeTaxPayeInputs({
       taxYear: 2026,
       taxProfile: {
+        ...baseProfile,
         taxCalculationMethod: "STANDARD_CUMULATIVE",
-        taxProfileStatus: "ACTIVE",
-        personalAllowance: null,
-        personalAllowanceSource: "STATUTORY_DEFAULT",
-        td1OtherApprovedAnnual: 0,
         cumulativeCalculationEnabled: true,
-        previousEmploymentDeclared: true,
+        previousEmploymentStatus: "PREVIOUS_EMPLOYMENT",
+        previousEmploymentDeclared: false,
         previousEmploymentVerified: false,
       },
     });
 
+    expect(result.previousEmploymentDeclared).toBe(true);
     expect(result.calcNotes.length).toBeGreaterThanOrEqual(1);
     expect(result.priorEmployment.recordCount).toBe(0);
+  });
+
+  it("flags UNKNOWN as priorEmploymentDataRequired without assuming zero", () => {
+    const result = resolveEmployeeTaxPayeInputs({
+      taxYear: 2026,
+      taxProfile: {
+        ...baseProfile,
+        previousEmploymentStatus: "UNKNOWN_PREVIOUS_INCOME",
+      },
+    });
+
+    expect(result.priorEmploymentDataRequired).toBe(true);
+    expect(result.previousEmploymentDeclared).toBe(false);
+    expect(
+      result.calcNotes.some((note) =>
+        note.includes("not assumed to be zero"),
+      ),
+    ).toBe(true);
   });
 
   it("includes aggregated prior-employer YTD", () => {
     const result = resolveEmployeeTaxPayeInputs({
       taxYear: 2026,
       taxProfile: {
+        ...baseProfile,
         taxCalculationMethod: "PREVIOUS_INCOME_INCLUDED",
-        taxProfileStatus: "ACTIVE",
-        personalAllowance: null,
-        personalAllowanceSource: "STATUTORY_DEFAULT",
-        td1OtherApprovedAnnual: null,
-        cumulativeCalculationEnabled: false,
+        previousEmploymentStatus: "PREVIOUS_EMPLOYMENT",
         previousEmploymentDeclared: true,
         previousEmploymentVerified: true,
       },
@@ -102,6 +125,7 @@ describe("resolveEmployeeTaxPayeInputs", () => {
     });
 
     expect(result.priorEmployment.taxableIncomeYtd).toBe(25_000);
+    expect(result.previousEmploymentStatus).toBe("PREVIOUS_EMPLOYMENT");
     expect(result.calcNotes.some((note) => note.includes("Prior-employer YTD"))).toBe(
       true,
     );

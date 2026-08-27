@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import {
+  startTransition,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { Search, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -32,11 +38,20 @@ export function LeaveBalancesSearch({
   const [query, setQuery] = useState(initialQuery);
   const viewingEmployee = Boolean(selectedEmployeeId && selectedEmployeeName);
 
+  function navigateToSearch(nextQuery: string) {
+    const href = buildLeaveBalancesUrl({
+      query: nextQuery || null,
+      focus: focusForfeiture ? "forfeiture" : null,
+    });
+
+    startTransition(() => {
+      router.replace(href, { scroll: false });
+      router.refresh();
+    });
+  }
+
   useEffect(() => {
-    if (
-      inputRef.current &&
-      document.activeElement === inputRef.current
-    ) {
+    if (inputRef.current && document.activeElement === inputRef.current) {
       return;
     }
     setQuery(initialQuery);
@@ -54,17 +69,17 @@ export function LeaveBalancesSearch({
     }
 
     const timeoutId = window.setTimeout(() => {
-      router.replace(
-        buildLeaveBalancesUrl({
-          query: query.trim() || null,
-          focus: focusForfeiture ? "forfeiture" : null,
-        }),
-        { scroll: false },
-      );
+      navigateToSearch(query.trim());
     }, SEARCH_DEBOUNCE_MS);
 
     return () => window.clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional
   }, [query, initialQuery, viewingEmployee, focusForfeiture, router]);
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    navigateToSearch(query.trim());
+  }
 
   return (
     <section aria-label="Search leave balances" className="space-y-3 pb-1">
@@ -91,15 +106,7 @@ export function LeaveBalancesSearch({
         method="get"
         action="/people/leave/balances"
         className="flex flex-col gap-3 sm:flex-row sm:items-center"
-        onSubmit={(event) => {
-          event.preventDefault();
-          router.replace(
-            buildLeaveBalancesUrl({
-              query: query.trim() || null,
-              focus: focusForfeiture ? "forfeiture" : null,
-            }),
-          );
-        }}
+        onSubmit={onSubmit}
       >
         <div className="relative min-w-0 flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -108,7 +115,7 @@ export function LeaveBalancesSearch({
             name="query"
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onValueChange={setQuery}
             placeholder={
               viewingEmployee
                 ? "Search another employee…"

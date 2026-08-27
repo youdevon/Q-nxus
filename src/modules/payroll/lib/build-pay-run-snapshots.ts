@@ -280,6 +280,7 @@ export function buildCorrectionDeltaEmployeeSnapshot(input: {
     readiness: {
       isReady: input.isReady !== false,
       blockingIssues: input.blockingIssues ?? [],
+      softWarnings: [],
     },
     warnings: [],
     notes: [

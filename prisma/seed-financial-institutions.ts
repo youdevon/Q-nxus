@@ -52,7 +52,9 @@ function stableInstitutionId(catalogKey: string): string {
  * Seed TT financial institutions from the curated catalog.
  *
  * Commercial banks (8): selectable, payroll deposits on.
- * ACH routing / participant codes left NULL — REQUIRES_CONFIRMATION.
+ * Known ABA / routing codes from the TT bank participant list are written to
+ * `routingCode`. Institutions without a catalog code keep routing null (or
+ * preserve any operator-set value on re-seed).
  * Other catalog entries: selectable for employees, supportsAchCredits=false.
  */
 export async function seedFinancialInstitutions(
@@ -61,6 +63,7 @@ export async function seedFinancialInstitutions(
   for (const entry of TT_FINANCIAL_INSTITUTIONS) {
     const isCommercial = COMMERCIAL_BANK_CATALOG_KEYS.has(entry.id);
     const id = stableInstitutionId(entry.id);
+    const routingCode = entry.routingCode?.trim() || null;
 
     await prisma.financialInstitution.upsert({
       where: { catalogKey: entry.id },
@@ -71,11 +74,8 @@ export async function seedFinancialInstitutions(
         institutionType: mapCategoryToType(entry.category),
         countryCode: "TT",
         currencyCode: "TTD",
-        // Do not invent ACH codes — leave null (REQUIRES_CONFIRMATION).
-        achParticipantCode: null,
-        routingCode: null,
-        supportsAchCredits: false,
-        supportsAchDebits: false,
+        // Apply catalog ABA when known; otherwise leave operator-confirmed codes.
+        ...(routingCode ? { routingCode } : {}),
         supportsPayrollDeposits: isCommercial || entry.category === "CREDIT_UNIONS",
         isSelectableForEmployees: true,
         isActive: true,
@@ -90,9 +90,8 @@ export async function seedFinancialInstitutions(
         institutionType: mapCategoryToType(entry.category),
         countryCode: "TT",
         currencyCode: "TTD",
-        // REQUIRES_CONFIRMATION — do not invent official ACH routing codes.
         achParticipantCode: null,
-        routingCode: null,
+        routingCode,
         supportsAchCredits: false,
         supportsAchDebits: false,
         supportsPayrollDeposits: isCommercial || entry.category === "CREDIT_UNIONS",

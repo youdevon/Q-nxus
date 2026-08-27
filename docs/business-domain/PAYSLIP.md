@@ -36,6 +36,11 @@ Shared consumers:
 
 The Payslip may display selected information from People and Payroll snapshots, but its source of truth is the approved Pay Run result.
 
+Draft variable earnings/deductions before post live on `PayrollLineItem`; once
+posted, `Payslip.snapshot` (and denormalized totals) is authoritative. These are
+complementary stores — not duplicates. See Architecture §6 and
+`PAYROLL-VARIABLE-INPUTS.md`.
+
 ---
 
 ## 3. Payslip and Pay Run Relationship
@@ -348,25 +353,11 @@ Rules:
 
 ## 8. Earnings Presentation
 
-Earnings should appear as clear line items.
+Salary, travelling, and phone allowance appear in the header meta row with identity fields (name, position, NIS NO., BIR NO.). Any other earnings lines (for example overtime) appear immediately after that header, without a separate titled Earnings section. When there are no other earnings lines, the slip goes straight to Gross pay — do not show an empty earnings block or placeholder message.
 
-Examples:
+Gross pay follows; then deductions, Net pay, year-to-date (Gross / NIS / Health Surcharge / PAYE), payment breakdown, and employer contributions.
 
-- Base Salary
-
-- Overtime
-
-- Acting Allowance
-
-- Transport Allowance
-
-- Bonus
-
-- Retroactive Payment
-
-- Gratuity
-
-- Other Approved Earnings
+Earnings should appear as clear line items using labels from the payroll result. Do not invent placeholder lines.
 
 Each line may show:
 
@@ -1056,15 +1047,15 @@ The Payslip area should include:
 
 - Status
 
-- Earnings
-
-- Deductions
+- Compact earnings breakdown (identity-adjacent; no separate Earnings block)
 
 - Gross pay
 
+- Deductions
+
 - Net pay
 
-- Year-to-date values
+- Year-to-date values (Gross, NIS, Health Surcharge, PAYE — directly under Net pay)
 
 - Payment summary
 

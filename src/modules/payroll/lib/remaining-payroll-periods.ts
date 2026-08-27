@@ -22,6 +22,11 @@ export type RemainingPayrollPeriodsInput = {
    * not 31 Dec of the tax year.
    */
   employmentEndDate?: Date | null;
+  /**
+   * When set, months before this hire date in the tax year are excluded
+   * (Scenario 3 — mid-year joiner with no prior employment).
+   */
+  employmentStartDate?: Date | null;
 };
 
 export type RemainingPayrollPeriodsResult = {
@@ -74,6 +79,8 @@ export function countRemainingMonthlyPeriods(input: {
   taxYear: number;
   asOfDate: Date;
   projectionEndDate: Date;
+  /** Exclude month-ends strictly before the hire month. */
+  employmentStartDate?: Date | null;
 }): { periodsElapsed: number; remainingPeriods: number } {
   const ends = listRemainingMonthlyPeriodEnds(input);
   const start = yearStart(input.taxYear);
@@ -83,11 +90,18 @@ export function countRemainingMonthlyPeriods(input: {
     yearEnd(input.taxYear),
   );
   const asOf = utcDay(input.asOfDate);
+  const hire = input.employmentStartDate
+    ? employmentStartInTaxYear(input.employmentStartDate, input.taxYear)
+    : start;
 
   let periodsElapsed = 0;
   for (let month = 0; month < 12; month += 1) {
     const periodEnd = new Date(Date.UTC(input.taxYear, month + 1, 0));
     if (periodEnd.getTime() < start.getTime()) {
+      continue;
+    }
+    if (periodEnd.getUTCMonth() < hire.getUTCMonth() &&
+        periodEnd.getUTCFullYear() === hire.getUTCFullYear()) {
       continue;
     }
     if (periodEnd.getTime() > end.getTime()) {
@@ -112,6 +126,7 @@ export function listRemainingMonthlyPeriodEnds(input: {
   taxYear: number;
   asOfDate: Date;
   projectionEndDate: Date;
+  employmentStartDate?: Date | null;
 }): Date[] {
   const start = yearStart(input.taxYear);
   const end = clampDate(
@@ -120,11 +135,20 @@ export function listRemainingMonthlyPeriodEnds(input: {
     yearEnd(input.taxYear),
   );
   const asOf = utcDay(input.asOfDate);
+  const hire = input.employmentStartDate
+    ? employmentStartInTaxYear(input.employmentStartDate, input.taxYear)
+    : start;
   const remaining: Date[] = [];
 
   for (let month = 0; month < 12; month += 1) {
     const periodEnd = new Date(Date.UTC(input.taxYear, month + 1, 0));
     if (periodEnd.getTime() < start.getTime()) {
+      continue;
+    }
+    if (
+      periodEnd.getUTCFullYear() === hire.getUTCFullYear() &&
+      periodEnd.getUTCMonth() < hire.getUTCMonth()
+    ) {
       continue;
     }
     if (periodEnd.getTime() > end.getTime()) {
@@ -175,18 +199,30 @@ export function resolveRemainingPayrollPeriods(
     }
   }
 
-  const asOf = clampDate(utcDay(input.asOfDate), start, projectionEnd);
+  // Mid-year joiners: do not project (or count elapsed) before employment start.
+  let employmentStart = start;
+  if (input.employmentStartDate) {
+    const hire = utcDay(input.employmentStartDate);
+    if (hire.getUTCFullYear() === input.taxYear && hire.getTime() > start.getTime()) {
+      employmentStart = hire;
+      notes.push(
+        `Employment start ${isoDate(hire)} — periods before hire are excluded from the tax-year estimate.`,
+      );
+    }
+  }
+
+  const asOf = clampDate(utcDay(input.asOfDate), employmentStart, projectionEnd);
 
   if (input.payFrequency !== "MONTHLY") {
     notes.push(
       `${input.payFrequency} remaining-period counts are not fully supported yet; monthly approximation is used for display only.`,
     );
 
-    // Approximate: treat month count as remaining months for unsupported frequencies.
     const monthly = countRemainingMonthlyPeriods({
       taxYear: input.taxYear,
       asOfDate: asOf,
       projectionEndDate: projectionEnd,
+      employmentStartDate: employmentStart,
     });
 
     const periodsPerYear =
@@ -222,6 +258,7 @@ export function resolveRemainingPayrollPeriods(
     taxYear: input.taxYear,
     asOfDate: asOf,
     projectionEndDate: projectionEnd,
+    employmentStartDate: employmentStart,
   });
 
   return {
@@ -234,5 +271,95 @@ export function resolveRemainingPayrollPeriods(
     asOfDate: isoDate(asOf),
     frequencySupported: true,
     notes,
+  };
+}
+
+/**
+ * Clamp hire date into the tax year (Jan 1 if hired earlier / unknown year).
+ */
+export function employmentStartInTaxYear(
+  hireDate: Date | null | undefined,
+  taxYear: number,
+): Date {
+  const start = yearStart(taxYear);
+  if (!hireDate) {
+    return start;
+  }
+  const hire = utcDay(hireDate);
+  if (hire.getUTCFullYear() < taxYear) {
+    return start;
+  }
+  if (hire.getUTCFullYear() > taxYear) {
+    return start;
+  }
+  return hire.getTime() > start.getTime() ? hire : start;
+}
+
+/**
+ * Employment-aware monthly period counts for live PAYE.
+ * Periods before the hire month in the tax year are excluded (Scenario 3).
+ */
+export function countEmploymentMonthlyPeriods(input: {
+  taxYear: number;
+  employmentStartDate: Date | null | undefined;
+  employmentEndDate?: Date | null;
+  /** Current payroll period end (inclusive in elapsed). */
+  periodEnd: Date;
+}): {
+  employmentStartUsed: string | null;
+  periodsInEmploymentYear: number;
+  periodsElapsedIncludingThis: number;
+  remainingPeriodsAfterThis: number;
+  remainingPeriodsIncludingThis: number;
+} {
+  const yearFinish = yearEnd(input.taxYear);
+  const hire = employmentStartInTaxYear(input.employmentStartDate, input.taxYear);
+  let projectionEnd = yearFinish;
+  if (input.employmentEndDate) {
+    const end = utcDay(input.employmentEndDate);
+    if (
+      end.getUTCFullYear() === input.taxYear &&
+      end.getTime() < yearFinish.getTime()
+    ) {
+      projectionEnd = end;
+    }
+  }
+
+  const periodEnd = utcDay(input.periodEnd);
+  let periodsInEmploymentYear = 0;
+  let periodsElapsedIncludingThis = 0;
+  let remainingPeriodsAfterThis = 0;
+
+  for (let month = 0; month < 12; month += 1) {
+    if (month < hire.getUTCMonth()) {
+      continue;
+    }
+    const end = new Date(Date.UTC(input.taxYear, month + 1, 0));
+    if (end.getTime() > projectionEnd.getTime()) {
+      break;
+    }
+
+    periodsInEmploymentYear += 1;
+    if (end.getTime() <= periodEnd.getTime()) {
+      periodsElapsedIncludingThis += 1;
+    } else {
+      remainingPeriodsAfterThis += 1;
+    }
+  }
+
+  if (periodsElapsedIncludingThis < 1) {
+    periodsElapsedIncludingThis = 1;
+  }
+  if (periodsInEmploymentYear < 1) {
+    periodsInEmploymentYear = 1;
+  }
+
+  return {
+    employmentStartUsed:
+      input.employmentStartDate != null ? isoDate(hire) : null,
+    periodsInEmploymentYear,
+    periodsElapsedIncludingThis,
+    remainingPeriodsAfterThis,
+    remainingPeriodsIncludingThis: remainingPeriodsAfterThis + 1,
   };
 }

@@ -51,6 +51,7 @@ export default async function PayrollSettingsPage() {
   const nisPreview = computeNisContribution({
     monthlySalary: 30_000,
     classes: toNisClassInputs(currentNisClasses),
+    weeksInPeriod: 4,
   });
   const payePreview =
     payeConfig != null
@@ -120,7 +121,7 @@ export default async function PayrollSettingsPage() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">
-                Example — TTD 30,000/mo
+                Example — TTD 30,000/mo (4 Mondays)
               </p>
               <p className="mt-1 text-sm font-medium">
                 Class {nisPreview.classCode}: employee{" "}

@@ -11,7 +11,11 @@ import {
 } from "@/src/modules/payroll/data/get-payslip-ytd";
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
 import { payslipPeriodToAsOfDate } from "@/src/modules/payroll/lib/payslip-preview";
-import { periodKeyFromAsOf } from "@/src/modules/payroll/lib/payslip-ytd";
+import {
+  assemblePayslipYtd,
+  periodKeyFromAsOf,
+  yearFromPeriodKey,
+} from "@/src/modules/payroll/lib/payslip-ytd";
 import {
   taxYearFromAsOfKey,
   toStatutoryAsOfKey,
@@ -49,16 +53,23 @@ export default async function EmployeePayslipPrintPage({
   }
 
   const { payslip, meta } = result;
-  const resolvedPeriodKey = periodKeyFromAsOf(payslip.period.asOf);
+  const resolvedPeriodKey =
+    periodKeyFromAsOf(payslip.period.asOf) ?? period?.trim() ?? null;
+  const current = payslipPreviewToYtdContribution(payslip);
   const ytd = resolvedPeriodKey
     ? await getPreviewPayslipYtd({
         employeeId: id,
         periodKey: resolvedPeriodKey,
-        current: payslipPreviewToYtdContribution(payslip),
+        current,
       })
-    : null;
-  const ytdBreakdown =
-    ytd != null ? await getPayslipYtdBreakdown(id, ytd) : null;
+    : assemblePayslipYtd({
+        year:
+          yearFromPeriodKey(period?.trim()) ??
+          taxYearFromAsOfKey(toStatutoryAsOfKey(new Date(payslip.period.asOf))),
+        priorPosted: [],
+        current,
+      });
+  const ytdBreakdown = await getPayslipYtdBreakdown(id, ytd);
   const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
     id,
     taxYearFromAsOfKey(toStatutoryAsOfKey(new Date(payslip.period.asOf))),

@@ -158,7 +158,12 @@ function allocationFromBankLine(input: {
     bankName: input.enrichment?.bankName ?? input.line.bankName,
     branchCode: input.enrichment?.branchCode ?? null,
     branchName: input.enrichment?.branchName ?? null,
-    accountType: input.enrichment?.accountType ?? null,
+    accountType:
+      input.enrichment?.accountType ??
+      (input.line.accountType === "SAVINGS" ||
+      input.line.accountType === "CHEQUING"
+        ? input.line.accountType
+        : null),
     accountNumberMasked: masked,
     accountNumberEncrypted: accountNumberPlain
       ? encryptAccountNumber(accountNumberPlain)
@@ -278,6 +283,36 @@ export function buildPaymentDraftFromPayslip(input: {
       setupErrorMessage:
         "One or more bank lines are missing account numbers in the payment snapshot.",
       allocations: allocations.map((row) => ({ ...row, status: "PENDING" as const })),
+    };
+  }
+
+  const employeeDisplayName =
+    input.payslip?.employee?.displayName?.trim() ?? "";
+  const hasMissingAchIdentity = allocations.some((row) => {
+    const hasIndividualName = Boolean(
+      row.beneficiaryName?.trim() || employeeDisplayName,
+    );
+    const hasAccountType =
+      row.accountType === "SAVINGS" || row.accountType === "CHEQUING";
+    return !hasIndividualName || !hasAccountType;
+  });
+
+  if (hasMissingAchIdentity) {
+    return {
+      payslipId: input.payslipId,
+      employeeId: input.employeeId,
+      netPay,
+      allocatedAmount,
+      unallocatedAmount,
+      paymentMethod,
+      paymentStatus: "PAYMENT_SETUP_REQUIRED",
+      currencyCode: input.currencyCode,
+      setupErrorMessage:
+        "One or more bank lines are missing Individual Name (account holder) or Savings/Chequing account type required for ACH entry.",
+      allocations: allocations.map((row) => ({
+        ...row,
+        status: "PENDING" as const,
+      })),
     };
   }
 

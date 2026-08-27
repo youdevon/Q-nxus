@@ -129,7 +129,7 @@ export function FinancialInstitutionSelect({
   }, [open]);
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative min-w-0 w-full">
       <Button
         id={id}
         type="button"
@@ -138,10 +138,10 @@ export function FinancialInstitutionSelect({
         aria-expanded={open}
         aria-controls={listId}
         disabled={disabled}
-        className="w-full justify-between font-normal"
+        className="w-full min-w-0 justify-between font-normal"
         onClick={() => setOpen((value) => !value)}
       >
-        <span className="truncate">
+        <span className="min-w-0 flex-1 truncate text-left">
           {selectedLabel(institutionId, bankName, institutions)}
         </span>
         <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />

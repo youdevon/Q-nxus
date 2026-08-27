@@ -11,8 +11,10 @@ See also [EMPLOYMENT-CONTRACT.md](./EMPLOYMENT-CONTRACT.md).
 Primary formula kind: `PCT_OF_TERM_EARNINGS`.
 
 - Eligible monthly earnings = base salary + allowances marked `includedInGratuity`
-- Eligible gross earnings = eligible monthly × inclusive contract months
+- Eligible gross earnings (term) = eligible monthly × inclusive contract months
 - Gross gratuity = eligible gross earnings × rate% (contract override, else policy default, typically 20%)
+
+UI label **Gratuity-eligible earnings (term)** on the contract compensation summary and gratuity panel shows this eligible gross (term) total — the same figure settlement uses before applying the rate. It is not a separate calendar-year annualization; without an end date the UI falls back to monthly eligible × 12 as a provisional base.
 
 Other formula kinds (`PCT_OF_FINAL_MONTHLY_YEARS`, `DAYS_PER_YEAR`, `FLAT_AMOUNT`, `MANUAL`) are available on the policy for future use.
 

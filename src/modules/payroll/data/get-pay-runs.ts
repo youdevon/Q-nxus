@@ -12,6 +12,10 @@ import {
 import { isPayslipIncludedInRun } from "@/src/modules/payroll/lib/pay-run-membership";
 import { summarizePayslipDelivery } from "@/src/modules/payroll/lib/payslip-release";
 import { resolvePayrollOrganization } from "@/src/modules/payroll/lib/resolve-payroll-organization";
+import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
+import { extractStatutoryRemittanceRow } from "@/src/modules/payroll/lib/statutory-remittance";
+import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
+import { roundToCents } from "@/src/modules/payroll/lib/money";
 
 export {
   getEmployeePostedPayslipHistory,
@@ -69,6 +73,8 @@ export type PayRunPayslipRow = {
   excludedByName: string | null;
   releasedAt: string | null;
   emailDeliveryStatus: "PENDING" | "SENT" | "FAILED" | "SKIPPED" | null;
+  /** Soft payroll warnings (missing BIR, no contract, etc.) — shown on the run sheet. */
+  payrollWarnings: string[];
   lineItems: Array<{
     id: string;
     lineType: "EARNING" | "DEDUCTION";
@@ -113,6 +119,12 @@ export type PayRunDetail = {
   employeeCount: number;
   excludedCount: number;
   totalGross: string;
+  /** Included-slip statutory PAYE total (adds into total deductions). */
+  totalPaye: string;
+  /** Included-slip NIS (employee) total (adds into total deductions). */
+  totalNisEmployee: string;
+  /** Included-slip Health Surcharge total (adds into total deductions). */
+  totalHealthSurcharge: string;
   totalDeductions: string;
   totalNet: string;
   notes: string | null;
@@ -164,6 +176,22 @@ function decimalLabel(value: { toString(): string }, currency: string) {
   return formatMoney(Number(value.toString()), { currency });
 }
 
+function sumStatutoryTotalsFromSnapshots(
+  rows: Array<{ snapshot: unknown }>,
+  currency: string,
+): { paye: number; nisEmployee: number; healthSurcharge: number } {
+  let paye = 0;
+  let nisEmployee = 0;
+  let healthSurcharge = 0;
+  for (const row of rows) {
+    const statutory = extractStatutoryRemittanceRow(row.snapshot, currency);
+    paye = roundToCents(paye + statutory.paye);
+    nisEmployee = roundToCents(nisEmployee + statutory.nisEmployee);
+    healthSurcharge = roundToCents(healthSurcharge + statutory.health);
+  }
+  return { paye, nisEmployee, healthSurcharge };
+}
+
 export async function listPayRuns(options?: {
   /** Actor whose organization scopes the returned runs. Resolves via session/legacy fallback when omitted. */
   actorUserId?: string | null;
@@ -206,8 +234,8 @@ export async function listPayRuns(options?: {
     runKind: run.runKind,
     currency: run.currency,
     employeeCount: run.employeeCount,
-    totalGross: decimalLabel(run.totalGross, run.currency),
-    totalNet: decimalLabel(run.totalNet, run.currency),
+    totalGross: formatMoney(Number(run.totalGross.toString())),
+    totalNet: formatMoney(Number(run.totalNet.toString())),
     postedAt: run.postedAt?.toISOString() ?? null,
     createdAt: run.createdAt.toISOString(),
     period: {
@@ -280,12 +308,18 @@ export async function getPayRunDetail(
         ]
       : [];
 
+  const includedPayslipIdsForTotals = run.payslips
+    .filter((slip) => isPayslipIncludedInRun(slip.status))
+    .map((slip) => slip.id);
+
   const [
     users,
     lineItems,
+    payslipSnapshots,
     recalcEvent,
     exportEvents,
     priorNetRows,
+    readinessData,
   ] = await Promise.all([
     userIds.length > 0
       ? prisma.user.findMany({
@@ -322,6 +356,12 @@ export async function getPayRunDetail(
           isTaxable: boolean;
           notes: string | null;
         }>),
+    payslipIds.length > 0
+      ? prisma.payslip.findMany({
+          where: { id: { in: payslipIds } },
+          select: { id: true, snapshot: true },
+        })
+      : Promise.resolve([] as Array<{ id: string; snapshot: unknown }>),
     prisma.auditEvent.findFirst({
       where: {
         moduleKey: "payroll",
@@ -364,13 +404,68 @@ export async function getPayRunDetail(
           ORDER BY p."employeeId", pp."periodEnd" DESC
         `
       : Promise.resolve([] as Array<{ employeeId: string; netPay: Prisma.Decimal }>),
+    getPayrollReadiness({ includeFileCompleteness: false }),
   ]);
+
+  const payrollWarningsByEmployee = new Map(
+    readinessData.rows.map((row) => [row.employeeId, row.softWarnings]),
+  );
 
   const lineItemsByPayslip = new Map<string, typeof lineItems>();
   for (const line of lineItems) {
     const list = lineItemsByPayslip.get(line.payslipId) ?? [];
     list.push(line);
     lineItemsByPayslip.set(line.payslipId, list);
+  }
+
+  const snapshotByPayslipId = new Map(
+    payslipSnapshots.map((row) => [row.id, row.snapshot]),
+  );
+
+  function displayLineItemsForSlip(
+    payslipId: string,
+    currency: string,
+  ): PayRunPayslipRow["lineItems"] {
+    const stored = lineItemsByPayslip.get(payslipId) ?? [];
+    if (stored.length > 0) {
+      return stored.map((line) => ({
+        id: line.id,
+        lineType: line.lineType,
+        code: line.code,
+        label: line.label,
+        amount: decimalLabel(line.amount, currency),
+        isTaxable: line.isTaxable,
+        notes: line.notes,
+        isAutoDelta: isAutoGeneratedCorrectionLine(line.notes),
+      }));
+    }
+
+    const parsed = parsePayslipSnapshot(snapshotByPayslipId.get(payslipId));
+    if (!parsed) {
+      return [];
+    }
+
+    const earnings = parsed.payslip.earnings.map((line, index) => ({
+      id: `${payslipId}-snapshot-earning-${index}`,
+      lineType: "EARNING" as const,
+      code: "SNAPSHOT",
+      label: line.label,
+      amount: formatMoney(line.amount, { currency }),
+      isTaxable: true,
+      notes: line.detail ?? null,
+      isAutoDelta: false,
+    }));
+    const deductions = parsed.payslip.deductions.map((line, index) => ({
+      id: `${payslipId}-snapshot-deduction-${index}`,
+      lineType: "DEDUCTION" as const,
+      code: "SNAPSHOT",
+      label: line.label,
+      amount: formatMoney(line.amount, { currency }),
+      isTaxable: false,
+      notes: line.detail ?? null,
+      isAutoDelta: false,
+    }));
+    return [...earnings, ...deductions];
   }
 
   const userNameById = new Map(
@@ -417,6 +512,12 @@ export async function getPayRunDetail(
   ).length;
 
   const releaseSummary = summarizePayslipDelivery(run.payslips);
+  const statutoryTotals = sumStatutoryTotalsFromSnapshots(
+    payslipSnapshots.filter((row) =>
+      includedPayslipIdsForTotals.includes(row.id),
+    ),
+    run.currency,
+  );
 
   // Correction / off-cycle runs compare each slip to the original posted slip:
   // the linked source run when present, otherwise the most recent posted slip
@@ -521,9 +622,12 @@ export async function getPayRunDetail(
     currency: run.currency,
     employeeCount: run.employeeCount,
     excludedCount,
-    totalGross: decimalLabel(run.totalGross, run.currency),
-    totalDeductions: decimalLabel(run.totalDeductions, run.currency),
-    totalNet: decimalLabel(run.totalNet, run.currency),
+    totalGross: formatMoney(Number(run.totalGross.toString())),
+    totalPaye: formatMoney(statutoryTotals.paye),
+    totalNisEmployee: formatMoney(statutoryTotals.nisEmployee),
+    totalHealthSurcharge: formatMoney(statutoryTotals.healthSurcharge),
+    totalDeductions: formatMoney(Number(run.totalDeductions.toString())),
+    totalNet: formatMoney(Number(run.totalNet.toString())),
     notes: run.notes,
     postedAt: run.postedAt?.toISOString() ?? null,
     createdAt: run.createdAt.toISOString(),
@@ -560,6 +664,7 @@ export async function getPayRunDetail(
         netPay: Number(slip.netPay.toString()),
       };
       const slipLines = lineItemsByPayslip.get(slip.id) ?? [];
+      const displayLineItems = displayLineItemsForSlip(slip.id, slip.currency);
       const autoDeltaLines = slipLines.filter((line) =>
         isAutoGeneratedCorrectionLine(line.notes),
       );
@@ -647,17 +752,10 @@ export async function getPayRunDetail(
           : null,
         releasedAt: slip.releasedAt?.toISOString() ?? null,
         emailDeliveryStatus: slip.emailDeliveryStatus,
-        lineItems: slipLines.map((line) => ({
-          id: line.id,
-          lineType: line.lineType,
-          code: line.code,
-          label: line.label,
-          amount: decimalLabel(line.amount, slip.currency),
-          isTaxable: line.isTaxable,
-          notes: line.notes,
-          isAutoDelta: isAutoGeneratedCorrectionLine(line.notes),
-        })),
+        lineItems: displayLineItems,
         comparison,
+        payrollWarnings:
+          payrollWarningsByEmployee.get(slip.employeeId) ?? [],
         viewHref: `/payroll/runs/${run.id}/payslips/${slip.id}`,
         printHref: `/payroll/runs/${run.id}/payslips/${slip.id}/print`,
       };

@@ -326,11 +326,14 @@ export default async function EmployeeTaxYearPage({
               <MetaBlock
                 label="Previous employment"
                 value={
-                  summary.previousEmploymentDeclared
+                  summary.previousEmploymentStatus === "PREVIOUS_EMPLOYMENT"
                     ? summary.previousEmploymentVerified
-                      ? "Declared · verified"
-                      : "Declared"
-                    : "None declared"
+                      ? "Previous · verified"
+                      : "Previous · incomplete"
+                    : summary.previousEmploymentStatus ===
+                        "NO_PREVIOUS_EMPLOYMENT"
+                      ? "None this tax year"
+                      : "Unknown — review required"
                 }
               />
               {tax?.effectiveFrom ? (
@@ -356,6 +359,8 @@ export default async function EmployeeTaxYearPage({
             <SectionHeading>Prior employment YTD</SectionHeading>
             <p className="text-sm text-muted-foreground">
               Mid-year joiner totals from previous employers this tax year.
+              Enter or edit on the employee payroll setup page (payslip
+              worksheet). Saving recalculates open draft pay runs.
             </p>
           </div>
           {prior.totals.recordCount > 0 ? (
@@ -397,6 +402,7 @@ export default async function EmployeeTaxYearPage({
                     <th className="px-3 py-2 font-medium">As of</th>
                     <th className="px-3 py-2 font-medium">Taxable</th>
                     <th className="px-3 py-2 font-medium">PAYE</th>
+                    <th className="px-3 py-2 font-medium">Entry</th>
                     <th className="px-3 py-2 font-medium">Status</th>
                   </tr>
                 </thead>
@@ -410,6 +416,17 @@ export default async function EmployeeTaxYearPage({
                             BIR {row.employerBirNumber}
                           </p>
                         ) : null}
+                        {row.grossEarningsYtd != null ? (
+                          <p className="text-xs text-muted-foreground">
+                            Gross{" "}
+                            {formatMoney(Number(row.grossEarningsYtd), {
+                              currency: row.currencyCode,
+                            })}
+                            {row.nonTaxableAllowancesYtd != null
+                              ? ` − non-taxable ${formatMoney(Number(row.nonTaxableAllowancesYtd), { currency: row.currencyCode })}`
+                              : ""}
+                          </p>
+                        ) : null}
                       </td>
                       <td className="px-3 py-2.5 tabular-nums">{row.asOfDate}</td>
                       <td className="px-3 py-2.5 tabular-nums">
@@ -421,6 +438,11 @@ export default async function EmployeeTaxYearPage({
                         {formatMoney(Number(row.payeDeductedYtd), {
                           currency: row.currencyCode,
                         })}
+                      </td>
+                      <td className="px-3 py-2.5 text-xs text-muted-foreground">
+                        {row.taxableIncomeEntryMode === "WORKSHEET"
+                          ? "Worksheet"
+                          : "Direct"}
                       </td>
                       <td className="px-3 py-2.5">
                         <Badge
@@ -507,6 +529,11 @@ export default async function EmployeeTaxYearPage({
           canRequest={canRequest}
           canDecide={canDecide}
           currency={currency}
+          taxYear={taxYear}
+          employmentEndDate={
+            data.projectionContext.employmentEndDate ??
+            data.projectionContext.contractEndDate
+          }
         />
       </div>
     </PageShell>

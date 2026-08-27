@@ -110,7 +110,6 @@ export function ContractGratuityPanel({
     estimatedGrossGratuity: string | null;
     estimatedTax: string | null;
     estimatedNetGratuity: string | null;
-    annualEligibleEarnings: string;
     currency: string;
   };
 }) {
@@ -143,7 +142,7 @@ export function ContractGratuityPanel({
           }
         />
         <Detail
-          labelText="Eligible earnings (period)"
+          labelText="Gratuity-eligible earnings (term)"
           value={
             fallback.estimatedGrossEarnings
               ? formatMoney(fallback.estimatedGrossEarnings, {
@@ -181,12 +180,6 @@ export function ContractGratuityPanel({
                 })
               : "Not applicable"
           }
-        />
-        <Detail
-          labelText="Annual eligible earnings base"
-          value={formatMoney(fallback.annualEligibleEarnings, {
-            currency: fallback.currency,
-          })}
         />
         {canManage ? (
           <div className="md:col-span-3">

@@ -130,6 +130,7 @@ export async function createAchPaymentBatch(input: {
                   routingNumber: true,
                   accountType: true,
                   bankName: true,
+                  accountHolderName: true,
                   financialInstitution: {
                     select: { displayName: true, routingCode: true },
                   },
@@ -319,27 +320,82 @@ export async function createAchPaymentBatch(input: {
       ).values(),
     ],
   );
+  const fcbModule = await import(
+    "@/src/modules/payroll/lib/first-citizens-export"
+  );
   const fcbConfig =
     profile.adapterKind === "FIRST_CITIZENS_MANUAL_WORKSHEET" ||
     profile.adapterKind === "FIRST_CITIZENS_IMPORT"
-      ? (await import("@/src/modules/payroll/lib/first-citizens-export"))
-          .parseFirstCitizensConfiguration(profile.configurationJson)
+      ? fcbModule.parseFirstCitizensConfiguration(profile.configurationJson)
       : null;
   const fcbHeader = fcbConfig
-    ? (
-        await import("@/src/modules/payroll/lib/first-citizens-export")
-      ).resolveFirstCitizensBatchHeader(fcbConfig, {
+    ? fcbModule.resolveFirstCitizensBatchHeader(fcbConfig, {
         periodName: run.payrollPeriod.name,
         periodKey: run.payrollPeriod.periodKey,
         periodEnd: run.payrollPeriod.periodEnd,
       })
     : null;
-  const { firstCitizensPaymentType } = await import(
-    "@/src/modules/payroll/lib/payment-instructions"
-  );
+  const { resolveFirstCitizensAbaNumber, resolveFirstCitizensPaymentType } =
+    await import("@/src/modules/payroll/lib/payment-instructions");
   const { buildPaymentReadinessSummary } = await import(
     "@/src/modules/payroll/lib/payment-readiness"
   );
+
+  const fcbIssues: Array<{
+    severity: "blocking" | "warning";
+    code: string;
+    message: string;
+    employeeNumber?: string | null;
+  }> = [];
+  let invalidBankOrAccountTypeCount = 0;
+
+  if (fcbConfig) {
+    if (!fcbConfig.balanceAccountMasked?.trim()) {
+      fcbIssues.push({
+        severity: "blocking",
+        code: "FCB_BALANCE_ACCOUNT",
+        message:
+          "First Citizens export profile is missing Balance Account (masked label, e.g. xxx5620 - TTD).",
+      });
+    }
+    if (
+      !fcbHeader?.globalAddenda?.trim() ||
+      !fcbHeader.entryDescription?.trim()
+    ) {
+      fcbIssues.push({
+        severity: "blocking",
+        code: "FCB_HEADER",
+        message:
+          "First Citizens Global Addenda and Entry Description are required on the export profile.",
+      });
+    }
+
+    for (const { payment, allocation } of available) {
+      const bank = allocation.employeeBankAccount;
+      const individualName =
+        allocation.beneficiaryName?.trim() ||
+        bank?.accountHolderName?.trim() ||
+        payment.payslip.employeeName;
+      const aba = resolveFirstCitizensAbaNumber({
+        routingNumber: bank?.routingNumber,
+        routingCode: bank?.financialInstitution?.routingCode,
+        institutionDisplayName: bank?.financialInstitution?.displayName,
+        bankName: allocation.bankName,
+      });
+      const paymentType = resolveFirstCitizensPaymentType({
+        accountType: bank?.accountType ?? allocation.accountType,
+      });
+      if (!individualName.trim() || !aba || !paymentType) {
+        invalidBankOrAccountTypeCount += 1;
+        fcbIssues.push({
+          severity: "blocking",
+          code: "FCB_ROW",
+          employeeNumber: payment.payslip.employeeNumber,
+          message: `Employee ${payment.payslip.employeeNumber} is missing ACH fields (Individual Name, ABA/institution, or Savings/Chequing type).`,
+        });
+      }
+    }
+  }
 
   const readiness = buildPaymentReadinessSummary({
     payRunReference: run.runNumber,
@@ -351,8 +407,9 @@ export async function createAchPaymentBatch(input: {
     paymentEntryCount: available.length,
     payrollNetTotal: payrollDisbursementTotal,
     achBatchTotal: controlTotalAmount,
-    issues:
-      Math.abs(payrollDisbursementTotal - payslipNetTotal) > 0.009
+    invalidBankOrAccountTypeCount,
+    issues: [
+      ...(Math.abs(payrollDisbursementTotal - payslipNetTotal) > 0.009
         ? [
             {
               severity: "warning" as const,
@@ -360,8 +417,20 @@ export async function createAchPaymentBatch(input: {
               message: `Payslip net total ${payslipNetTotal.toFixed(2)} differs from disbursement allocation total ${payrollDisbursementTotal.toFixed(2)} (expected when FIXED bank lines are Phase-1 deductions).`,
             },
           ]
-        : [],
+        : []),
+      ...fcbIssues,
+    ],
   });
+
+  if (fcbConfig && !readiness.readyForApproval) {
+    return {
+      ok: false,
+      error: readiness.issues
+        .filter((issue) => issue.severity === "blocking")
+        .map((issue) => issue.message)
+        .join(" "),
+    };
+  }
 
   const initialStatus = !readiness.readyForApproval
     ? "VALIDATION_FAILED"
@@ -405,11 +474,16 @@ export async function createAchPaymentBatch(input: {
         details: {
           create: available.map(({ payment, allocation }, index) => {
             const bank = allocation.employeeBankAccount;
-            const aba =
-              bank?.routingNumber?.trim() ||
-              bank?.financialInstitution?.routingCode?.trim() ||
-              bank?.financialInstitution?.displayName ||
-              allocation.bankName;
+            const aba = resolveFirstCitizensAbaNumber({
+              routingNumber: bank?.routingNumber,
+              routingCode: bank?.financialInstitution?.routingCode,
+              institutionDisplayName: bank?.financialInstitution?.displayName,
+              bankName: allocation.bankName,
+            });
+            const paymentType =
+              resolveFirstCitizensPaymentType({
+                accountType: bank?.accountType ?? allocation.accountType,
+              }) ?? "";
             return {
               payrollPaymentAllocationId: allocation.id,
               sequence: index + 1,
@@ -421,9 +495,7 @@ export async function createAchPaymentBatch(input: {
               bankName: allocation.bankName,
               abaNumber: aba,
               accountNumberMasked: allocation.accountNumberMasked,
-              paymentType: firstCitizensPaymentType(
-                bank?.accountType ?? allocation.accountType ?? "SAVINGS",
-              ),
+              paymentType,
               purposeCode: fcbHeader?.purposeCode ?? null,
               addenda: fcbHeader?.globalAddenda ?? null,
               allocationKind: allocation.allocationKind,
@@ -583,6 +655,13 @@ export async function generateAchPaymentBatchFile(input: {
     where: { id: input.batchId },
     include: {
       bankExportProfile: true,
+      payRun: {
+        select: {
+          payrollPeriod: {
+            select: { name: true, periodKey: true, periodEnd: true },
+          },
+        },
+      },
       details: {
         orderBy: [{ sequence: "asc" }],
         include: {
@@ -630,23 +709,34 @@ export async function generateAchPaymentBatchFile(input: {
     };
   }
 
-  const { parseFirstCitizensConfiguration, resolveFirstCitizensBatchHeader } =
-    await import("@/src/modules/payroll/lib/first-citizens-export");
+  const {
+    parseFirstCitizensConfiguration,
+    normalizeFirstCitizensStoredHeader,
+  } = await import("@/src/modules/payroll/lib/first-citizens-export");
 
   const fcbConfig = parseFirstCitizensConfiguration(
     batch.bankExportProfile.configurationJson,
   );
-  const fcbHeader = resolveFirstCitizensBatchHeader(fcbConfig);
+  const period = batch.payRun.payrollPeriod;
+  const fcbHeader = normalizeFirstCitizensStoredHeader({
+    globalAddenda: batch.globalAddenda,
+    entryDescription: batch.entryDescription,
+    discretionaryData: batch.discretionaryData,
+    purposeCode: batch.purposeCode,
+    transactionType: batch.transactionType,
+    period: {
+      periodName: period.name,
+      periodKey: period.periodKey,
+      periodEnd: period.periodEnd,
+    },
+  });
   const resolvedConfig = {
     ...fcbConfig,
-    globalAddenda: batch.globalAddenda?.trim() || fcbHeader.globalAddenda,
-    entryDescription:
-      batch.entryDescription?.trim() || fcbHeader.entryDescription,
-    discretionaryData:
-      batch.discretionaryData?.trim() || fcbHeader.discretionaryData,
-    defaultPurposeCode: batch.purposeCode?.trim() || fcbHeader.purposeCode,
-    transactionType:
-      batch.transactionType === "Debit" ? ("Debit" as const) : ("Credit" as const),
+    globalAddenda: fcbHeader.globalAddenda,
+    entryDescription: fcbHeader.entryDescription,
+    discretionaryData: fcbHeader.discretionaryData,
+    defaultPurposeCode: fcbHeader.purposeCode,
+    transactionType: fcbHeader.transactionType,
   };
 
   const details: BankExportDetailLine[] = batch.details.map((detail) => {

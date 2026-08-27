@@ -18,6 +18,7 @@ import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-posi
 import { isNonEmployeePayee } from "@/src/modules/hr/lib/workforce-category";
 import { activateEmploymentContractInTransaction } from "@/src/modules/hr/services/activate-employment-contract";
 import { syncAssignedEmployeeAccessRoles } from "@/src/modules/hr/services/assign-employee-to-position";
+import { revalidatePathsAfterContractActivate } from "@/src/modules/hr/lib/revalidate-after-contract-activate";
 import {
   CONTRACT_WORKFLOW_SETTING_CODE,
   parseContractWorkflowSettings,
@@ -868,15 +869,8 @@ export async function createEmploymentContract(
       }
     }
 
-    revalidatePath("/people");
-    revalidatePath(`/people/employees/${employeeId}`);
-    revalidatePath(`/people/employees/${employeeId}/contracts`);
-    revalidatePath(`/people/employees/${employeeId}/assignments`);
-    revalidatePath(`/payroll/employees/${employeeId}`);
+    revalidatePathsAfterContractActivate(employeeId, contract.id);
     revalidatePath("/people/structure");
-    revalidatePath("/people/leave/balances");
-    revalidatePath("/people/leave");
-    revalidatePath("/contracts");
 
     if (positionId) {
       revalidatePath(`/people/structure/positions/${positionId}`);

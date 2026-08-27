@@ -251,7 +251,37 @@ describe("First Citizens manual worksheet", () => {
       batchNumber: "ACH-1",
       runNumber: "PAY-1",
       currencyCode: "TTD",
-      configurationJson: {},
+      configurationJson: {
+        balanceAccountMasked: "xxx5620 - TTD",
+      },
+      details: [
+        {
+          sequence: 1,
+          employeeNumber: "1",
+          employeeName: "A",
+          bankName: "FCB",
+          accountNumber: "1111",
+          accountNumberMasked: "••••1111",
+          amount: 10,
+          currencyCode: "TTD",
+          allocationKind: "REMAINDER",
+          accountType: "SAVINGS",
+        },
+      ],
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  it("blocks missing Payment Type and Balance Account", () => {
+    const adapter = new FirstCitizensManualWorksheetAdapter();
+    const result = adapter.validate({
+      batchNumber: "ACH-1",
+      runNumber: "PAY-1",
+      currencyCode: "TTD",
+      configurationJson: {
+        globalAddenda: "Payroll",
+        entryDescription: "Salary",
+      },
       details: [
         {
           sequence: 1,
@@ -266,13 +296,18 @@ describe("First Citizens manual worksheet", () => {
         },
       ],
     });
-    expect(result.ok).toBe(true);
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((msg) => /Balance Account/i.test(msg))).toBe(
+      true,
+    );
+    expect(result.errors.some((msg) => /Payment Type/i.test(msg))).toBe(true);
   });
 
   it("normalizes legacy Salaries / Chequing Credit values", () => {
     const config = parseFirstCitizensConfiguration({
       globalAddenda: "",
       entryDescription: "Salaries",
+      balanceAccountMasked: "xxx5620 - TTD",
     });
     expect(config.globalAddenda).toBe("Payroll");
     expect(config.entryDescription).toBe("Salary");
@@ -309,6 +344,7 @@ describe("First Citizens manual worksheet", () => {
         globalAddenda: "   ",
         entryDescription: "",
         defaultPurposeCode: "COMPENSATION OF EMPLOYEES",
+        balanceAccountMasked: "xxx5620 - TTD",
       },
       details: [
         {
@@ -321,6 +357,7 @@ describe("First Citizens manual worksheet", () => {
           amount: 10,
           currencyCode: "TTD",
           allocationKind: "REMAINDER",
+          accountType: "SAVINGS",
         },
       ],
     });

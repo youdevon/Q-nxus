@@ -15,6 +15,11 @@ import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-even
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { createStoredFileRecord } from "@/src/modules/hr/lib/create-stored-file-record";
 import { syncTaxProfilePreviousEmploymentFlags } from "@/src/modules/payroll/services/sync-tax-profile-previous-employment";
+import { recalculateAfterTaxChange } from "@/src/modules/payroll/services/recalculate-after-tax-change";
+import {
+  resolvePriorTaxableFromPayslip,
+  type PriorTaxableIncomeEntryMode,
+} from "@/src/modules/payroll/lib/prior-payslip-worksheet";
 import {
   taxYearFromAsOfKey,
   toStatutoryAsOfKey,
@@ -161,12 +166,54 @@ export async function savePriorEmploymentYtd(
     }
   }
 
-  const taxableIncomeYtd = parseNonNegative(
+  const taxableIncomeEntryModeRaw = textValue(
+    formData,
+    "taxableIncomeEntryMode",
+  );
+  const taxableIncomeEntryMode: PriorTaxableIncomeEntryMode =
+    taxableIncomeEntryModeRaw === "WORKSHEET" ? "WORKSHEET" : "DIRECT";
+
+  const grossEarningsYtd = parseNonNegative(
+    textValue(formData, "grossEarningsYtd"),
+    "grossEarningsYtd",
+    fieldErrors,
+  );
+  const nonTaxableAllowancesYtd = parseNonNegative(
+    textValue(formData, "nonTaxableAllowancesYtd"),
+    "nonTaxableAllowancesYtd",
+    fieldErrors,
+  );
+  const taxableIncomeYtdDirect = parseNonNegative(
     textValue(formData, "taxableIncomeYtd"),
     "taxableIncomeYtd",
     fieldErrors,
-    { required: true },
+    { required: taxableIncomeEntryMode === "DIRECT" },
   );
+
+  if (
+    taxableIncomeEntryMode === "WORKSHEET" &&
+    (grossEarningsYtd == null || grossEarningsYtd <= 0)
+  ) {
+    fieldErrors.grossEarningsYtd =
+      "Enter gross / total earnings YTD from the payslip.";
+  }
+
+  const resolvedTaxable = resolvePriorTaxableFromPayslip({
+    entryMode: taxableIncomeEntryMode,
+    taxableIncomeYtd: taxableIncomeYtdDirect,
+    grossEarningsYtd,
+    nonTaxableAllowancesYtd,
+  });
+  const taxableIncomeYtd = resolvedTaxable.taxableIncomeYtd;
+
+  if (
+    taxableIncomeEntryMode === "DIRECT" &&
+    (taxableIncomeYtdDirect == null || !Number.isFinite(taxableIncomeYtd))
+  ) {
+    fieldErrors.taxableIncomeYtd =
+      fieldErrors.taxableIncomeYtd ?? "Enter taxable income / YTD PAY.";
+  }
+
   const payeDeductedYtd = parseNonNegative(
     textValue(formData, "payeDeductedYtd"),
     "payeDeductedYtd",
@@ -200,7 +247,7 @@ export async function savePriorEmploymentYtd(
   const documentTypeRaw = textValue(formData, "documentType");
   const documentType = DOCUMENT_TYPES.includes(documentTypeRaw as DocumentType)
     ? (documentTypeRaw as DocumentType)
-    : "OTHER";
+    : "PAYSLIP";
   const documentLabel = nullableText(formData, "documentLabel");
   const attachment = formData.get("attachment");
   const hasAttachment =
@@ -261,6 +308,11 @@ export async function savePriorEmploymentYtd(
         employmentEndDate,
         asOfDate: asOfDate!,
         currencyCode: "TTD",
+        taxableIncomeEntryMode: resolvedTaxable.entryMode,
+        grossEarningsYtd: toDecimal(resolvedTaxable.grossEarningsYtd),
+        nonTaxableAllowancesYtd: toDecimal(
+          resolvedTaxable.nonTaxableAllowancesYtd,
+        ),
         taxableIncomeYtd: toDecimal(taxableIncomeYtd)!,
         payeDeductedYtd: toDecimal(payeDeductedYtd)!,
         nisEmployeeYtd: toDecimal(nisEmployeeYtd),
@@ -284,6 +336,7 @@ export async function savePriorEmploymentYtd(
             id: recordId,
             employeeId: employee.id,
             organizationId: employee.organizationId,
+            status: { in: ["ACTIVE", "DRAFT"] },
           },
           select: { id: true },
         });
@@ -342,7 +395,10 @@ export async function savePriorEmploymentYtd(
         newValues: {
           taxYear,
           employerName,
+          taxableIncomeEntryMode: resolvedTaxable.entryMode,
           taxableIncomeYtd,
+          grossEarningsYtd: resolvedTaxable.grossEarningsYtd,
+          nonTaxableAllowancesYtd: resolvedTaxable.nonTaxableAllowancesYtd,
           payeDeductedYtd,
           verified,
           documentAttached: storedFileId != null,
@@ -361,14 +417,32 @@ export async function savePriorEmploymentYtd(
     };
   }
 
+  const cascade = await recalculateAfterTaxChange({
+    organizationId: employee.organizationId,
+    employeeId: employee.id,
+    taxYear,
+    actorUserId: actor.actor.userId,
+    reason: recordId
+      ? "prior employment YTD updated"
+      : "prior employment YTD saved",
+    metadata,
+  });
+
   revalidatePath(`/payroll/employees/${employee.id}`);
+  revalidatePath(`/payroll/employees/${employee.id}/tax-year`);
+  revalidatePath(`/payroll/employees/${employee.id}/payslip`);
   revalidatePath(`/people/employees/${employee.id}`);
+
+  const recalcNote =
+    cascade.draftRunsRecalculated > 0
+      ? ` Recalculated ${cascade.draftRunsRecalculated} open pay run${cascade.draftRunsRecalculated === 1 ? "" : "s"}.`
+      : "";
 
   return {
     status: "success",
     message: recordId
-      ? "Prior employment YTD updated."
-      : "Prior employment YTD saved.",
+      ? `Prior employment YTD updated.${recalcNote}`
+      : `Prior employment YTD saved.${recalcNote}`,
   };
 }
 
@@ -397,6 +471,7 @@ export async function archivePriorEmploymentYtd(
   }
 
   const metadata = await getAuditRequestMetadata(formData);
+  let archivedTaxYear = taxYearFromAsOfKey(toStatutoryAsOfKey(new Date()));
 
   try {
     await prisma.$transaction(async (transaction) => {
@@ -405,12 +480,15 @@ export async function archivePriorEmploymentYtd(
           id: recordId,
           employeeId: employee.id,
           organizationId: employee.organizationId,
+          status: { in: ["ACTIVE", "DRAFT"] },
         },
         select: { id: true, taxYear: true, employerName: true },
       });
       if (!existing) {
         throw new Error("Prior employment record not found.");
       }
+
+      archivedTaxYear = existing.taxYear;
 
       await transaction.employeePriorEmploymentYtd.update({
         where: { id: existing.id },
@@ -434,7 +512,7 @@ export async function archivePriorEmploymentYtd(
         action: "UPDATE",
         entityType: "EmployeePriorEmploymentYtd",
         entityId: existing.id,
-        description: `Archived prior-employer YTD (${existing.employerName}) for ${employee.firstName} ${employee.lastName}.`,
+        description: `Deleted (archived) prior-employer YTD (${existing.employerName}) for ${employee.firstName} ${employee.lastName}.`,
         newValues: { status: "ARCHIVED" },
         ...metadata,
       });
@@ -443,10 +521,34 @@ export async function archivePriorEmploymentYtd(
     console.error("Unable to archive prior employment YTD:", error);
     return {
       status: "error",
-      message: "Unable to archive the record. Try again.",
+      message:
+        error instanceof Error && error.message.includes("not found")
+          ? error.message
+          : "Unable to delete the record. Try again.",
     };
   }
 
+  const cascade = await recalculateAfterTaxChange({
+    organizationId: employee.organizationId,
+    employeeId: employee.id,
+    taxYear: archivedTaxYear,
+    actorUserId: actor.actor.userId,
+    reason: "prior employment YTD archived",
+    metadata,
+  });
+
   revalidatePath(`/payroll/employees/${employee.id}`);
-  return { status: "success", message: "Prior employment record archived." };
+  revalidatePath(`/payroll/employees/${employee.id}/tax-year`);
+  revalidatePath(`/payroll/employees/${employee.id}/payslip`);
+  revalidatePath(`/people/employees/${employee.id}`);
+
+  const recalcNote =
+    cascade.draftRunsRecalculated > 0
+      ? ` Recalculated ${cascade.draftRunsRecalculated} open pay run${cascade.draftRunsRecalculated === 1 ? "" : "s"}.`
+      : "";
+
+  return {
+    status: "success",
+    message: `Prior employment record deleted.${recalcNote}`,
+  };
 }

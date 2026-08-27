@@ -11,6 +11,7 @@ import {
   ListSearchFilters,
   type ActiveFilterChip,
 } from "@/src/components/list-search-filters";
+import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
@@ -20,6 +21,8 @@ import {
   formatAuditModule,
 } from "@/src/lib/audit-display";
 import { buildListFilterUrl } from "@/src/lib/list-filter-url";
+import { ReportExportLinks, ReportPrintLink } from "@/src/modules/reports/components/report-layout";
+import { reportPrintHref } from "@/src/modules/reports/lib/report-print";
 import { AdministrationNav } from "./administration-nav";
 import { AuditEventsTable } from "./audit-events-table";
 import type {
@@ -78,6 +81,31 @@ function buildFilterChips(filters: AuditFilters): ActiveFilterChip[] {
   return chips;
 }
 
+function buildAuditExportHref(filters: AuditFilters): string {
+  const params = new URLSearchParams();
+  if (filters.query) params.set("query", filters.query);
+  if (filters.moduleKey) params.set("moduleKey", filters.moduleKey);
+  if (filters.action) params.set("action", filters.action);
+  if (filters.entityType) params.set("entityType", filters.entityType);
+  if (filters.dateFrom) params.set("dateFrom", filters.dateFrom);
+  if (filters.dateTo) params.set("dateTo", filters.dateTo);
+  const qs = params.toString();
+  return qs
+    ? `/administration/audit/export?${qs}`
+    : "/administration/audit/export";
+}
+
+function buildAuditPrintHref(filters: AuditFilters): string {
+  return reportPrintHref("/administration/audit", {
+    query: filters.query,
+    moduleKey: filters.moduleKey,
+    action: filters.action,
+    entityType: filters.entityType,
+    dateFrom: filters.dateFrom,
+    dateTo: filters.dateTo,
+  });
+}
+
 export function AuditTrail({ data, currentFilters }: AuditTrailProps) {
   const filterValues = {
     query: currentFilters.query,
@@ -97,6 +125,14 @@ export function AuditTrail({ data, currentFilters }: AuditTrailProps) {
         description="Review immutable records of administrative and system activity across the platform."
         backHref="/administration"
         backLabel="Administration"
+        actions={
+          data.total > 0 ? (
+            <PageActionsEnd>
+              <ReportPrintLink href={buildAuditPrintHref(currentFilters)} />
+              <ReportExportLinks href={buildAuditExportHref(currentFilters)} />
+            </PageActionsEnd>
+          ) : undefined
+        }
       />
 
       <section aria-labelledby="audit-summary-heading">

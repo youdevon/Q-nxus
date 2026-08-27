@@ -1160,7 +1160,7 @@ export function EmploymentContractForm({
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Eligible earnings
+                        Gratuity-eligible earnings (term)
                       </p>
                       <p className="mt-1 text-sm font-semibold">
                         {formatMoney(gratuityEstimate.estimatedGrossEarnings, {

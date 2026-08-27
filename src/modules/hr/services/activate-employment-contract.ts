@@ -151,7 +151,11 @@ export async function activateEmploymentContractInTransaction(
       },
     });
 
-    if (selectedPosition && employee.positionId !== selectedPosition.id) {
+    if (
+      selectedPosition &&
+      (employee.positionId !== selectedPosition.id ||
+        employee.departmentId !== selectedPosition.departmentId)
+    ) {
       const hasCurrentAssignment = Boolean(employee.assignments[0]);
       const assignmentType =
         contract.changeType === "POSITION_CHANGE"

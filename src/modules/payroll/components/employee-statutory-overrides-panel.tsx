@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { Check, Save, X } from "lucide-react";
+import { Check, Save, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import {
   decideStatutoryOverride,
+  deleteStatutoryOverride,
   requestStatutoryOverride,
   submitStatutoryOverrideForApproval,
   type StatutoryOverrideFormState,
@@ -35,6 +36,7 @@ type OverrideRow = {
   nisEmployeeAmount: string | null;
   healthSurchargeAmount: string | null;
   reason: string;
+  applyScope?: string;
   status: string;
   rejectedReason: string | null;
   updatedAt: string;
@@ -57,12 +59,28 @@ function statusVariant(
   }
 }
 
+function applyScopeLabel(scope: string | undefined): string {
+  switch (scope) {
+    case "THROUGH_YEAR_END":
+      return "Through year end";
+    case "THROUGH_CONTRACT_END":
+      return "Through contract end";
+    case "THIS_PERIOD":
+    default:
+      return "This month";
+  }
+}
+
 function RequestOverrideForm({
   employeeId,
   canRequest,
+  employmentEndDate,
+  taxYear,
 }: {
   employeeId: string;
   canRequest: boolean;
+  employmentEndDate: string | null;
+  taxYear: number;
 }) {
   const [state, formAction, pending] = useActionState(
     requestStatutoryOverride,
@@ -81,6 +99,10 @@ function RequestOverrideForm({
     return null;
   }
 
+  const yearEnd = `${taxYear}-12-31`;
+  const contractEndsBeforeYearEnd =
+    employmentEndDate != null && employmentEndDate < yearEnd;
+
   return (
     <form
       action={formAction}
@@ -91,17 +113,82 @@ function RequestOverrideForm({
         <p className="text-sm font-medium">Request period override</p>
         <p className="text-xs text-muted-foreground">
           Maker-checker: save a draft or submit for approval. Amounts replace
-          calculated PAYE / NIS / Health for that period end.
+          calculated PAYE / NIS / Health for the selected duration.
         </p>
       </div>
       <div className="space-y-1.5">
         <label className="text-xs text-muted-foreground" htmlFor="periodEnd">
-          Period end
+          Period end (start month)
         </label>
         <Input id="periodEnd" name="periodEnd" type="date" required />
         {state.fieldErrors?.periodEnd ? (
           <p className="text-xs text-destructive">
             {state.fieldErrors.periodEnd}
+          </p>
+        ) : null}
+      </div>
+      <div className="space-y-1.5 md:col-span-2">
+        <p className="text-xs text-muted-foreground">Applies to</p>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 p-3 text-sm has-[:checked]:border-foreground/40 has-[:checked]:bg-muted/40">
+            <input
+              type="radio"
+              name="applyScope"
+              value="THIS_PERIOD"
+              defaultChecked
+              className="mt-1"
+            />
+            <span>
+              <span className="font-medium">This month only</span>
+              <span className="mt-0.5 block text-xs text-muted-foreground">
+                Only the period end you select.
+              </span>
+            </span>
+          </label>
+          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 p-3 text-sm has-[:checked]:border-foreground/40 has-[:checked]:bg-muted/40">
+            <input
+              type="radio"
+              name="applyScope"
+              value="THROUGH_YEAR_END"
+              className="mt-1"
+            />
+            <span>
+              <span className="font-medium">Through year end</span>
+              <span className="mt-0.5 block text-xs text-muted-foreground">
+                Remaining open months through {yearEnd}
+                {contractEndsBeforeYearEnd
+                  ? " (stops at employment end if earlier)."
+                  : "."}
+              </span>
+            </span>
+          </label>
+          <label
+            className={`flex items-start gap-2 rounded-md border border-border/70 p-3 text-sm has-[:checked]:border-foreground/40 has-[:checked]:bg-muted/40 ${
+              employmentEndDate
+                ? "cursor-pointer"
+                : "cursor-not-allowed opacity-60"
+            }`}
+          >
+            <input
+              type="radio"
+              name="applyScope"
+              value="THROUGH_CONTRACT_END"
+              className="mt-1"
+              disabled={!employmentEndDate}
+            />
+            <span>
+              <span className="font-medium">Through contract end</span>
+              <span className="mt-0.5 block text-xs text-muted-foreground">
+                {employmentEndDate
+                  ? `Remaining open months through employment end ${employmentEndDate}.`
+                  : "Set a contract / employment end date to use this option."}
+              </span>
+            </span>
+          </label>
+        </div>
+        {state.fieldErrors?.applyScope ? (
+          <p className="text-xs text-destructive">
+            {state.fieldErrors.applyScope}
           </p>
         ) : null}
       </div>
@@ -166,11 +253,7 @@ function RequestOverrideForm({
       </div>
       <div className="flex flex-wrap items-center gap-4 md:col-span-2">
         <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="submitForApproval"
-            defaultChecked
-          />
+          <input type="checkbox" name="submitForApproval" defaultChecked />
           Submit for approval (notifies approvers)
         </label>
         <Button type="submit" disabled={pending} size="sm">
@@ -281,18 +364,82 @@ function DecideOverrideForm({
   );
 }
 
+function DeleteOverrideForm({
+  overrideId,
+  periodEnd,
+  status,
+  canDelete,
+}: {
+  overrideId: string;
+  periodEnd: string;
+  status: string;
+  canDelete: boolean;
+}) {
+  const [state, formAction, pending] = useActionState(
+    deleteStatutoryOverride,
+    decideInitial,
+  );
+
+  useEffect(() => {
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+    } else if (state.status === "error" && state.message) {
+      toast.error(state.message);
+    }
+  }, [state]);
+
+  if (!canDelete) {
+    return null;
+  }
+
+  const isApplied = status === "APPROVED" || status === "APPLIED";
+
+  return (
+    <form
+      action={formAction}
+      className="mt-2"
+      onSubmit={(event) => {
+        const ok = window.confirm(
+          isApplied
+            ? `Delete the ${status.replaceAll("_", " ").toLowerCase()} override for ${periodEnd}? Open pay runs will recalculate without these amounts.`
+            : `Delete the override request for ${periodEnd}? This cannot be undone.`,
+        );
+        if (!ok) {
+          event.preventDefault();
+        }
+      }}
+    >
+      <input type="hidden" name="overrideId" value={overrideId} />
+      <Button
+        type="submit"
+        size="sm"
+        variant="outline"
+        disabled={pending}
+        className="text-destructive hover:text-destructive"
+      >
+        <Trash2 className="size-4" />
+        {pending ? "Deleting…" : "Delete"}
+      </Button>
+    </form>
+  );
+}
+
 export function EmployeeStatutoryOverridesPanel({
   employeeId,
   overrides,
   canRequest,
   canDecide,
   currency = "TTD",
+  employmentEndDate = null,
+  taxYear,
 }: {
   employeeId: string;
   overrides: OverrideRow[];
   canRequest: boolean;
   canDecide: boolean;
   currency?: string;
+  employmentEndDate?: string | null;
+  taxYear: number;
 }) {
   return (
     <section className="space-y-4">
@@ -300,29 +447,38 @@ export function EmployeeStatutoryOverridesPanel({
         <SectionHeading>Statutory overrides</SectionHeading>
         <p className="text-sm text-muted-foreground">
           Period-level PAYE / NIS / Health amount overrides with maker-checker
-          approval.
+          approval. Choose this month, through year end, or through contract end
+          when employment finishes before 31 Dec. Delete a row to remove an
+          erroneous request or approved amount.
         </p>
       </div>
 
-      <RequestOverrideForm employeeId={employeeId} canRequest={canRequest} />
+      <RequestOverrideForm
+        employeeId={employeeId}
+        canRequest={canRequest}
+        employmentEndDate={employmentEndDate}
+        taxYear={taxYear}
+      />
 
       <div className="overflow-x-auto rounded-md border">
-        <table className="w-full min-w-[40rem] text-left text-sm">
+        <table className="w-full min-w-[48rem] text-left text-sm">
           <thead className="border-b bg-muted/40 text-xs text-muted-foreground">
             <tr>
               <th className="px-3 py-2 font-medium">Period end</th>
+              <th className="px-3 py-2 font-medium">Applies</th>
               <th className="px-3 py-2 font-medium">PAYE</th>
               <th className="px-3 py-2 font-medium">NIS</th>
               <th className="px-3 py-2 font-medium">Health</th>
               <th className="px-3 py-2 font-medium">Status</th>
               <th className="px-3 py-2 font-medium">Reason</th>
+              <th className="px-3 py-2 font-medium"> </th>
             </tr>
           </thead>
           <tbody>
             {overrides.length === 0 ? (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={8}
                   className="px-3 py-8 text-center text-muted-foreground"
                 >
                   No overrides for this tax year.
@@ -332,6 +488,9 @@ export function EmployeeStatutoryOverridesPanel({
               overrides.map((row) => (
                 <tr key={row.id} className="border-b align-top">
                   <td className="px-3 py-3 tabular-nums">{row.periodEnd}</td>
+                  <td className="px-3 py-3 text-xs text-muted-foreground">
+                    {applyScopeLabel(row.applyScope)}
+                  </td>
                   <td className="px-3 py-3 tabular-nums">
                     {row.payeAmount != null
                       ? formatMoney(Number(row.payeAmount), { currency })
@@ -375,6 +534,14 @@ export function EmployeeStatutoryOverridesPanel({
                   </td>
                   <td className="px-3 py-3 text-xs text-muted-foreground">
                     {row.reason}
+                  </td>
+                  <td className="px-3 py-3">
+                    <DeleteOverrideForm
+                      overrideId={row.id}
+                      periodEnd={row.periodEnd}
+                      status={row.status}
+                      canDelete={canRequest}
+                    />
                   </td>
                 </tr>
               ))

@@ -5,6 +5,7 @@ import {
   getPayslipYtdBreakdownBatch,
   getPostedPayslipYtd,
   getPostedPayslipYtdBatch,
+  getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
@@ -35,8 +36,9 @@ export type StoredPayslipResult = {
   isReleased: boolean;
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
-  ytd: PayslipYtdTotals | null;
-  ytdBreakdown: PayslipYtdBreakdown | null;
+  /** Always assembled for the document (posted history + this slip/snapshot). */
+  ytd: PayslipYtdTotals;
+  ytdBreakdown: PayslipYtdBreakdown;
   projectedTaxYearPosition: ProjectedTaxYearPosition | null;
 };
 
@@ -98,6 +100,9 @@ export async function getStoredPayslip(
 
   const isPosted = row.status === "POSTED";
   const isReleased = isPosted && row.releasedAt != null;
+  const current = payslipPreviewToYtdContribution(snapshot.payslip);
+  // Always assemble YTD for the document: posted path includes this slip +
+  // earlier posted periods; draft/ready uses prior posted + this snapshot.
   const ytd = isPosted
     ? await getPostedPayslipYtd({
         employeeId: row.employeeId,
@@ -106,13 +111,14 @@ export async function getStoredPayslip(
         periodEnd: row.payrollPeriod.periodEnd,
         postedAt: row.payRun.postedAt,
         createdAt: row.createdAt,
-        current: payslipPreviewToYtdContribution(snapshot.payslip),
+        current,
       })
-    : null;
-  const ytdBreakdown =
-    ytd != null
-      ? await getPayslipYtdBreakdown(row.employeeId, ytd)
-      : null;
+    : await getPreviewPayslipYtd({
+        employeeId: row.employeeId,
+        periodKey: row.payrollPeriod.periodKey,
+        current,
+      });
+  const ytdBreakdown = await getPayslipYtdBreakdown(row.employeeId, ytd);
   const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
     row.employeeId,
     row.payrollPeriod.year,

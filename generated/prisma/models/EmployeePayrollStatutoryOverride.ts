@@ -50,6 +50,7 @@ export type EmployeePayrollStatutoryOverrideMinAggregateOutputType = {
   nisEmployeeAmount: runtime.Decimal | null
   healthSurchargeAmount: runtime.Decimal | null
   reason: string | null
+  applyScope: $Enums.StatutoryOverrideApplyScope | null
   status: $Enums.StatutoryOverrideStatus | null
   requestedByUserId: string | null
   approvedByUserId: string | null
@@ -69,6 +70,7 @@ export type EmployeePayrollStatutoryOverrideMaxAggregateOutputType = {
   nisEmployeeAmount: runtime.Decimal | null
   healthSurchargeAmount: runtime.Decimal | null
   reason: string | null
+  applyScope: $Enums.StatutoryOverrideApplyScope | null
   status: $Enums.StatutoryOverrideStatus | null
   requestedByUserId: string | null
   approvedByUserId: string | null
@@ -88,6 +90,7 @@ export type EmployeePayrollStatutoryOverrideCountAggregateOutputType = {
   nisEmployeeAmount: number
   healthSurchargeAmount: number
   reason: number
+  applyScope: number
   status: number
   requestedByUserId: number
   approvedByUserId: number
@@ -123,6 +126,7 @@ export type EmployeePayrollStatutoryOverrideMinAggregateInputType = {
   nisEmployeeAmount?: true
   healthSurchargeAmount?: true
   reason?: true
+  applyScope?: true
   status?: true
   requestedByUserId?: true
   approvedByUserId?: true
@@ -142,6 +146,7 @@ export type EmployeePayrollStatutoryOverrideMaxAggregateInputType = {
   nisEmployeeAmount?: true
   healthSurchargeAmount?: true
   reason?: true
+  applyScope?: true
   status?: true
   requestedByUserId?: true
   approvedByUserId?: true
@@ -161,6 +166,7 @@ export type EmployeePayrollStatutoryOverrideCountAggregateInputType = {
   nisEmployeeAmount?: true
   healthSurchargeAmount?: true
   reason?: true
+  applyScope?: true
   status?: true
   requestedByUserId?: true
   approvedByUserId?: true
@@ -267,6 +273,7 @@ export type EmployeePayrollStatutoryOverrideGroupByOutputType = {
   nisEmployeeAmount: runtime.Decimal | null
   healthSurchargeAmount: runtime.Decimal | null
   reason: string
+  applyScope: $Enums.StatutoryOverrideApplyScope
   status: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId: string | null
@@ -309,6 +316,7 @@ export type EmployeePayrollStatutoryOverrideWhereInput = {
   nisEmployeeAmount?: Prisma.DecimalNullableFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.DecimalNullableFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFilter<"EmployeePayrollStatutoryOverride"> | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFilter<"EmployeePayrollStatutoryOverride"> | string
   approvedByUserId?: Prisma.StringNullableFilter<"EmployeePayrollStatutoryOverride"> | string | null
@@ -330,6 +338,7 @@ export type EmployeePayrollStatutoryOverrideOrderByWithRelationInput = {
   nisEmployeeAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   healthSurchargeAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   reason?: Prisma.SortOrder
+  applyScope?: Prisma.SortOrder
   status?: Prisma.SortOrder
   requestedByUserId?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -355,6 +364,7 @@ export type EmployeePayrollStatutoryOverrideWhereUniqueInput = Prisma.AtLeast<{
   nisEmployeeAmount?: Prisma.DecimalNullableFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.DecimalNullableFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFilter<"EmployeePayrollStatutoryOverride"> | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFilter<"EmployeePayrollStatutoryOverride"> | string
   approvedByUserId?: Prisma.StringNullableFilter<"EmployeePayrollStatutoryOverride"> | string | null
@@ -376,6 +386,7 @@ export type EmployeePayrollStatutoryOverrideOrderByWithAggregationInput = {
   nisEmployeeAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   healthSurchargeAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   reason?: Prisma.SortOrder
+  applyScope?: Prisma.SortOrder
   status?: Prisma.SortOrder
   requestedByUserId?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -403,6 +414,7 @@ export type EmployeePayrollStatutoryOverrideScalarWhereWithAggregatesInput = {
   nisEmployeeAmount?: Prisma.DecimalNullableWithAggregatesFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.DecimalNullableWithAggregatesFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringWithAggregatesFilter<"EmployeePayrollStatutoryOverride"> | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeWithAggregatesFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusWithAggregatesFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringWithAggregatesFilter<"EmployeePayrollStatutoryOverride"> | string
   approvedByUserId?: Prisma.StringNullableWithAggregatesFilter<"EmployeePayrollStatutoryOverride"> | string | null
@@ -420,6 +432,7 @@ export type EmployeePayrollStatutoryOverrideCreateInput = {
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -441,6 +454,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedCreateInput = {
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -458,6 +472,7 @@ export type EmployeePayrollStatutoryOverrideUpdateInput = {
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -479,6 +494,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedUpdateInput = {
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -498,6 +514,7 @@ export type EmployeePayrollStatutoryOverrideCreateManyInput = {
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -515,6 +532,7 @@ export type EmployeePayrollStatutoryOverrideUpdateManyMutationInput = {
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -534,6 +552,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedUpdateManyInput = {
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -568,6 +587,7 @@ export type EmployeePayrollStatutoryOverrideCountOrderByAggregateInput = {
   nisEmployeeAmount?: Prisma.SortOrder
   healthSurchargeAmount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
+  applyScope?: Prisma.SortOrder
   status?: Prisma.SortOrder
   requestedByUserId?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrder
@@ -594,6 +614,7 @@ export type EmployeePayrollStatutoryOverrideMaxOrderByAggregateInput = {
   nisEmployeeAmount?: Prisma.SortOrder
   healthSurchargeAmount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
+  applyScope?: Prisma.SortOrder
   status?: Prisma.SortOrder
   requestedByUserId?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrder
@@ -613,6 +634,7 @@ export type EmployeePayrollStatutoryOverrideMinOrderByAggregateInput = {
   nisEmployeeAmount?: Prisma.SortOrder
   healthSurchargeAmount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
+  applyScope?: Prisma.SortOrder
   status?: Prisma.SortOrder
   requestedByUserId?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrder
@@ -713,6 +735,10 @@ export type EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNe
   deleteMany?: Prisma.EmployeePayrollStatutoryOverrideScalarWhereInput | Prisma.EmployeePayrollStatutoryOverrideScalarWhereInput[]
 }
 
+export type EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput = {
+  set?: $Enums.StatutoryOverrideApplyScope
+}
+
 export type EnumStatutoryOverrideStatusFieldUpdateOperationsInput = {
   set?: $Enums.StatutoryOverrideStatus
 }
@@ -725,6 +751,7 @@ export type EmployeePayrollStatutoryOverrideCreateWithoutOrganizationInput = {
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -744,6 +771,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedCreateWithoutOrganizationIn
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -792,6 +820,7 @@ export type EmployeePayrollStatutoryOverrideScalarWhereInput = {
   nisEmployeeAmount?: Prisma.DecimalNullableFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.DecimalNullableFilter<"EmployeePayrollStatutoryOverride"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFilter<"EmployeePayrollStatutoryOverride"> | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFilter<"EmployeePayrollStatutoryOverride"> | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFilter<"EmployeePayrollStatutoryOverride"> | string
   approvedByUserId?: Prisma.StringNullableFilter<"EmployeePayrollStatutoryOverride"> | string | null
@@ -809,6 +838,7 @@ export type EmployeePayrollStatutoryOverrideCreateWithoutEmployeeInput = {
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -828,6 +858,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedCreateWithoutEmployeeInput 
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -872,6 +903,7 @@ export type EmployeePayrollStatutoryOverrideCreateManyOrganizationInput = {
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -889,6 +921,7 @@ export type EmployeePayrollStatutoryOverrideUpdateWithoutOrganizationInput = {
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -908,6 +941,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedUpdateWithoutOrganizationIn
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -926,6 +960,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutOrganizati
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -944,6 +979,7 @@ export type EmployeePayrollStatutoryOverrideCreateManyEmployeeInput = {
   nisEmployeeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason: string
+  applyScope?: $Enums.StatutoryOverrideApplyScope
   status?: $Enums.StatutoryOverrideStatus
   requestedByUserId: string
   approvedByUserId?: string | null
@@ -961,6 +997,7 @@ export type EmployeePayrollStatutoryOverrideUpdateWithoutEmployeeInput = {
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -980,6 +1017,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedUpdateWithoutEmployeeInput 
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -998,6 +1036,7 @@ export type EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeIn
   nisEmployeeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   healthSurchargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   reason?: Prisma.StringFieldUpdateOperationsInput | string
+  applyScope?: Prisma.EnumStatutoryOverrideApplyScopeFieldUpdateOperationsInput | $Enums.StatutoryOverrideApplyScope
   status?: Prisma.EnumStatutoryOverrideStatusFieldUpdateOperationsInput | $Enums.StatutoryOverrideStatus
   requestedByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1019,6 +1058,7 @@ export type EmployeePayrollStatutoryOverrideSelect<ExtArgs extends runtime.Types
   nisEmployeeAmount?: boolean
   healthSurchargeAmount?: boolean
   reason?: boolean
+  applyScope?: boolean
   status?: boolean
   requestedByUserId?: boolean
   approvedByUserId?: boolean
@@ -1040,6 +1080,7 @@ export type EmployeePayrollStatutoryOverrideSelectCreateManyAndReturn<ExtArgs ex
   nisEmployeeAmount?: boolean
   healthSurchargeAmount?: boolean
   reason?: boolean
+  applyScope?: boolean
   status?: boolean
   requestedByUserId?: boolean
   approvedByUserId?: boolean
@@ -1061,6 +1102,7 @@ export type EmployeePayrollStatutoryOverrideSelectUpdateManyAndReturn<ExtArgs ex
   nisEmployeeAmount?: boolean
   healthSurchargeAmount?: boolean
   reason?: boolean
+  applyScope?: boolean
   status?: boolean
   requestedByUserId?: boolean
   approvedByUserId?: boolean
@@ -1082,6 +1124,7 @@ export type EmployeePayrollStatutoryOverrideSelectScalar = {
   nisEmployeeAmount?: boolean
   healthSurchargeAmount?: boolean
   reason?: boolean
+  applyScope?: boolean
   status?: boolean
   requestedByUserId?: boolean
   approvedByUserId?: boolean
@@ -1091,7 +1134,7 @@ export type EmployeePayrollStatutoryOverrideSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeePayrollStatutoryOverrideOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "taxYear" | "periodEnd" | "payeAmount" | "nisEmployeeAmount" | "healthSurchargeAmount" | "reason" | "status" | "requestedByUserId" | "approvedByUserId" | "approvedAt" | "rejectedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["employeePayrollStatutoryOverride"]>
+export type EmployeePayrollStatutoryOverrideOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "taxYear" | "periodEnd" | "payeAmount" | "nisEmployeeAmount" | "healthSurchargeAmount" | "reason" | "applyScope" | "status" | "requestedByUserId" | "approvedByUserId" | "approvedAt" | "rejectedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["employeePayrollStatutoryOverride"]>
 export type EmployeePayrollStatutoryOverrideInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -1124,6 +1167,10 @@ export type $EmployeePayrollStatutoryOverridePayload<ExtArgs extends runtime.Typ
     nisEmployeeAmount: runtime.Decimal | null
     healthSurchargeAmount: runtime.Decimal | null
     reason: string
+    /**
+     * Forward-fill intent on approval: this month, year end, or contract end.
+     */
+    applyScope: $Enums.StatutoryOverrideApplyScope
     status: $Enums.StatutoryOverrideStatus
     requestedByUserId: string
     approvedByUserId: string | null
@@ -1565,6 +1612,7 @@ export interface EmployeePayrollStatutoryOverrideFieldRefs {
   readonly nisEmployeeAmount: Prisma.FieldRef<"EmployeePayrollStatutoryOverride", 'Decimal'>
   readonly healthSurchargeAmount: Prisma.FieldRef<"EmployeePayrollStatutoryOverride", 'Decimal'>
   readonly reason: Prisma.FieldRef<"EmployeePayrollStatutoryOverride", 'String'>
+  readonly applyScope: Prisma.FieldRef<"EmployeePayrollStatutoryOverride", 'StatutoryOverrideApplyScope'>
   readonly status: Prisma.FieldRef<"EmployeePayrollStatutoryOverride", 'StatutoryOverrideStatus'>
   readonly requestedByUserId: Prisma.FieldRef<"EmployeePayrollStatutoryOverride", 'String'>
   readonly approvedByUserId: Prisma.FieldRef<"EmployeePayrollStatutoryOverride", 'String'>

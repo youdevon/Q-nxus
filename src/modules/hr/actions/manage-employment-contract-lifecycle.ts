@@ -28,6 +28,7 @@ import {
 } from "@/src/modules/hr/lib/contract-workflow-settings";
 import { activateEmploymentContractInTransaction } from "@/src/modules/hr/services/activate-employment-contract";
 import { syncAssignedEmployeeAccessRoles } from "@/src/modules/hr/services/assign-employee-to-position";
+import { revalidatePathsAfterContractActivate } from "@/src/modules/hr/lib/revalidate-after-contract-activate";
 import {
   notifyContractActivated,
   notifyContractDecision,
@@ -47,15 +48,7 @@ function textValue(formData: FormData, key: string): string {
 }
 
 function revalidateContractPaths(employeeId: string, contractId: string) {
-  revalidatePath("/people");
-  revalidatePath(`/people/employees/${employeeId}`);
-  revalidatePath(`/people/employees/${employeeId}/contracts`);
-  revalidatePath(`/people/employees/${employeeId}/contracts/${contractId}`);
-  revalidatePath(`/people/employees/${employeeId}/documents`);
-  revalidatePath("/contracts");
-  revalidatePath("/me");
-  revalidatePath("/me/contracts");
-  revalidatePath("/people/leave/balances");
+  revalidatePathsAfterContractActivate(employeeId, contractId);
 }
 
 async function loadContractForLifecycle(contractId: string) {
@@ -568,8 +561,7 @@ export async function activateEmploymentContract(
     }
 
     revalidateContractPaths(contract.employeeId, contractId);
-    revalidatePath(`/people/employees/${contract.employeeId}`);
-    revalidatePath(`/payroll/employees/${contract.employeeId}`);
+    // Payroll roster / readiness / payslip covered by revalidateContractPaths
 
     if (result.historical) {
       return {

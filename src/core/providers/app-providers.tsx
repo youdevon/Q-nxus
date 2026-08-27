@@ -23,7 +23,11 @@ function isPrintDocumentRoute(pathname: string) {
     /^\/payroll\/employees\/[^/]+\/tax-year\/print\/?$/.test(pathname) ||
     /^\/people\/employees\/[^/]+\/payroll\/payslip\/print\/?$/.test(pathname) ||
     /^\/payroll\/runs\/[^/]+\/payslips\/[^/]+\/print\/?$/.test(pathname) ||
-    /^\/payroll\/runs\/[^/]+\/print\/?$/.test(pathname)
+    /^\/payroll\/runs\/[^/]+\/print\/?$/.test(pathname) ||
+    /^\/payroll\/reports\/[^/]+\/print\/?$/.test(pathname) ||
+    /^\/reports\/(?:payroll|people)\/[^/]+\/print\/?$/.test(pathname) ||
+    pathname === "/administration/audit/print" ||
+    pathname.startsWith("/administration/audit/print/")
   );
 }
 

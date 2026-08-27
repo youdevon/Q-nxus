@@ -1,32 +1,36 @@
 /**
- * Period cleanup when deleting a draft pay run.
+ * Period cleanup when deleting a pay run.
  *
  * Create opens a period (OPEN) with the draft run. Post closes the period
- * (CLOSED). Draft delete must free the period so a new regular run can be
+ * (CLOSED). Delete must free the period so a new regular run can be
  * created for the same month when no runs remain.
  *
  * Correction / off-cycle drafts share a CLOSED period with a posted regular —
- * deleting them must leave the period CLOSED.
+ * deleting them must leave the period CLOSED while other posted history remains.
  */
 
 export type PayrollPeriodStatus = "OPEN" | "CLOSED";
 
-export type DraftPayRunDeletePeriodPlan =
+export type PayRunDeletePeriodPlan =
   | { action: "delete_period"; periodId: string }
   | { action: "reopen_period"; periodId: string }
   | { action: "noop"; periodId: string };
 
+/** @deprecated Prefer {@link PayRunDeletePeriodPlan}. */
+export type DraftPayRunDeletePeriodPlan = PayRunDeletePeriodPlan;
+
 /**
  * @param remainingPayRunCount — other pay runs still attached after this
- *   draft run is removed.
- * @param remainingPostedCount — how many of those remaining runs are POSTED.
+ *   run is removed.
+ * @param remainingPostedCount — how many of those remaining runs are
+ *   POSTED / RECONCILED / CLOSED.
  */
-export function planPeriodAfterDraftPayRunDelete(input: {
+export function planPeriodAfterPayRunDelete(input: {
   periodId: string;
   periodStatus: PayrollPeriodStatus;
   remainingPayRunCount: number;
   remainingPostedCount?: number;
-}): DraftPayRunDeletePeriodPlan {
+}): PayRunDeletePeriodPlan {
   const {
     periodId,
     periodStatus,
@@ -48,4 +52,11 @@ export function planPeriodAfterDraftPayRunDelete(input: {
   }
 
   return { action: "noop", periodId };
+}
+
+/** @deprecated Prefer {@link planPeriodAfterPayRunDelete}. */
+export function planPeriodAfterDraftPayRunDelete(
+  input: Parameters<typeof planPeriodAfterPayRunDelete>[0],
+): PayRunDeletePeriodPlan {
+  return planPeriodAfterPayRunDelete(input);
 }

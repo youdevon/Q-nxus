@@ -26,6 +26,9 @@ export type PriorEmploymentYtdRecord = {
   employmentEndDate: string | null;
   asOfDate: string;
   currencyCode: string;
+  taxableIncomeEntryMode: "DIRECT" | "WORKSHEET";
+  grossEarningsYtd: string | null;
+  nonTaxableAllowancesYtd: string | null;
   taxableIncomeYtd: string;
   payeDeductedYtd: string;
   nisEmployeeYtd: string | null;
@@ -49,6 +52,9 @@ function mapRecord(row: {
   employmentEndDate: Date | null;
   asOfDate: Date;
   currencyCode: string;
+  taxableIncomeEntryMode: "DIRECT" | "WORKSHEET";
+  grossEarningsYtd: { toString(): string } | null;
+  nonTaxableAllowancesYtd: { toString(): string } | null;
   taxableIncomeYtd: { toString(): string };
   payeDeductedYtd: { toString(): string };
   nisEmployeeYtd: { toString(): string } | null;
@@ -82,6 +88,9 @@ function mapRecord(row: {
       : null,
     asOfDate: row.asOfDate.toISOString().slice(0, 10),
     currencyCode: row.currencyCode,
+    taxableIncomeEntryMode: row.taxableIncomeEntryMode,
+    grossEarningsYtd: row.grossEarningsYtd?.toString() ?? null,
+    nonTaxableAllowancesYtd: row.nonTaxableAllowancesYtd?.toString() ?? null,
     taxableIncomeYtd: row.taxableIncomeYtd.toString(),
     payeDeductedYtd: row.payeDeductedYtd.toString(),
     nisEmployeeYtd: row.nisEmployeeYtd?.toString() ?? null,

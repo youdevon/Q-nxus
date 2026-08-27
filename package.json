@@ -21,6 +21,7 @@
     "purge:prior-employment-archive": "npx tsx scripts/purge-archived-prior-employment-ytd.ts",
     "seed:access": "npx tsx prisma/seed-access-roles.ts",
     "banking:backfill-accounts": "npx tsx scripts/backfill-employee-bank-accounts.ts",
+    "banking:backfill-routing": "npx tsx --env-file=.env scripts/backfill-employee-bank-routing.ts",
     "banking:migrate-encrypt": "npx tsx scripts/migrate-encrypt-bank-accounts.ts",
     "payroll:parallel": "npx tsx scripts/parallel-payroll-compare.ts"
   },

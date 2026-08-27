@@ -29,6 +29,8 @@ export type AggregateEmployeePriorEmploymentYtd = {
 
 export type EmployeePriorEmploymentYtdAvgAggregateOutputType = {
   taxYear: number | null
+  grossEarningsYtd: runtime.Decimal | null
+  nonTaxableAllowancesYtd: runtime.Decimal | null
   taxableIncomeYtd: runtime.Decimal | null
   payeDeductedYtd: runtime.Decimal | null
   nisEmployeeYtd: runtime.Decimal | null
@@ -39,6 +41,8 @@ export type EmployeePriorEmploymentYtdAvgAggregateOutputType = {
 
 export type EmployeePriorEmploymentYtdSumAggregateOutputType = {
   taxYear: number | null
+  grossEarningsYtd: runtime.Decimal | null
+  nonTaxableAllowancesYtd: runtime.Decimal | null
   taxableIncomeYtd: runtime.Decimal | null
   payeDeductedYtd: runtime.Decimal | null
   nisEmployeeYtd: runtime.Decimal | null
@@ -59,6 +63,9 @@ export type EmployeePriorEmploymentYtdMinAggregateOutputType = {
   employmentEndDate: Date | null
   asOfDate: Date | null
   currencyCode: string | null
+  taxableIncomeEntryMode: $Enums.PriorTaxableIncomeEntryMode | null
+  grossEarningsYtd: runtime.Decimal | null
+  nonTaxableAllowancesYtd: runtime.Decimal | null
   taxableIncomeYtd: runtime.Decimal | null
   payeDeductedYtd: runtime.Decimal | null
   nisEmployeeYtd: runtime.Decimal | null
@@ -88,6 +95,9 @@ export type EmployeePriorEmploymentYtdMaxAggregateOutputType = {
   employmentEndDate: Date | null
   asOfDate: Date | null
   currencyCode: string | null
+  taxableIncomeEntryMode: $Enums.PriorTaxableIncomeEntryMode | null
+  grossEarningsYtd: runtime.Decimal | null
+  nonTaxableAllowancesYtd: runtime.Decimal | null
   taxableIncomeYtd: runtime.Decimal | null
   payeDeductedYtd: runtime.Decimal | null
   nisEmployeeYtd: runtime.Decimal | null
@@ -117,6 +127,9 @@ export type EmployeePriorEmploymentYtdCountAggregateOutputType = {
   employmentEndDate: number
   asOfDate: number
   currencyCode: number
+  taxableIncomeEntryMode: number
+  grossEarningsYtd: number
+  nonTaxableAllowancesYtd: number
   taxableIncomeYtd: number
   payeDeductedYtd: number
   nisEmployeeYtd: number
@@ -138,6 +151,8 @@ export type EmployeePriorEmploymentYtdCountAggregateOutputType = {
 
 export type EmployeePriorEmploymentYtdAvgAggregateInputType = {
   taxYear?: true
+  grossEarningsYtd?: true
+  nonTaxableAllowancesYtd?: true
   taxableIncomeYtd?: true
   payeDeductedYtd?: true
   nisEmployeeYtd?: true
@@ -148,6 +163,8 @@ export type EmployeePriorEmploymentYtdAvgAggregateInputType = {
 
 export type EmployeePriorEmploymentYtdSumAggregateInputType = {
   taxYear?: true
+  grossEarningsYtd?: true
+  nonTaxableAllowancesYtd?: true
   taxableIncomeYtd?: true
   payeDeductedYtd?: true
   nisEmployeeYtd?: true
@@ -168,6 +185,9 @@ export type EmployeePriorEmploymentYtdMinAggregateInputType = {
   employmentEndDate?: true
   asOfDate?: true
   currencyCode?: true
+  taxableIncomeEntryMode?: true
+  grossEarningsYtd?: true
+  nonTaxableAllowancesYtd?: true
   taxableIncomeYtd?: true
   payeDeductedYtd?: true
   nisEmployeeYtd?: true
@@ -197,6 +217,9 @@ export type EmployeePriorEmploymentYtdMaxAggregateInputType = {
   employmentEndDate?: true
   asOfDate?: true
   currencyCode?: true
+  taxableIncomeEntryMode?: true
+  grossEarningsYtd?: true
+  nonTaxableAllowancesYtd?: true
   taxableIncomeYtd?: true
   payeDeductedYtd?: true
   nisEmployeeYtd?: true
@@ -226,6 +249,9 @@ export type EmployeePriorEmploymentYtdCountAggregateInputType = {
   employmentEndDate?: true
   asOfDate?: true
   currencyCode?: true
+  taxableIncomeEntryMode?: true
+  grossEarningsYtd?: true
+  nonTaxableAllowancesYtd?: true
   taxableIncomeYtd?: true
   payeDeductedYtd?: true
   nisEmployeeYtd?: true
@@ -342,6 +368,9 @@ export type EmployeePriorEmploymentYtdGroupByOutputType = {
   employmentEndDate: Date | null
   asOfDate: Date
   currencyCode: string
+  taxableIncomeEntryMode: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd: runtime.Decimal | null
+  nonTaxableAllowancesYtd: runtime.Decimal | null
   taxableIncomeYtd: runtime.Decimal
   payeDeductedYtd: runtime.Decimal
   nisEmployeeYtd: runtime.Decimal | null
@@ -394,6 +423,9 @@ export type EmployeePriorEmploymentYtdWhereInput = {
   employmentEndDate?: Prisma.DateTimeNullableFilter<"EmployeePriorEmploymentYtd"> | Date | string | null
   asOfDate?: Prisma.DateTimeFilter<"EmployeePriorEmploymentYtd"> | Date | string
   currencyCode?: Prisma.StringFilter<"EmployeePriorEmploymentYtd"> | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFilter<"EmployeePriorEmploymentYtd"> | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -427,6 +459,9 @@ export type EmployeePriorEmploymentYtdOrderByWithRelationInput = {
   employmentEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
   asOfDate?: Prisma.SortOrder
   currencyCode?: Prisma.SortOrder
+  taxableIncomeEntryMode?: Prisma.SortOrder
+  grossEarningsYtd?: Prisma.SortOrderInput | Prisma.SortOrder
+  nonTaxableAllowancesYtd?: Prisma.SortOrderInput | Prisma.SortOrder
   taxableIncomeYtd?: Prisma.SortOrder
   payeDeductedYtd?: Prisma.SortOrder
   nisEmployeeYtd?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -463,6 +498,9 @@ export type EmployeePriorEmploymentYtdWhereUniqueInput = Prisma.AtLeast<{
   employmentEndDate?: Prisma.DateTimeNullableFilter<"EmployeePriorEmploymentYtd"> | Date | string | null
   asOfDate?: Prisma.DateTimeFilter<"EmployeePriorEmploymentYtd"> | Date | string
   currencyCode?: Prisma.StringFilter<"EmployeePriorEmploymentYtd"> | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFilter<"EmployeePriorEmploymentYtd"> | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -496,6 +534,9 @@ export type EmployeePriorEmploymentYtdOrderByWithAggregationInput = {
   employmentEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
   asOfDate?: Prisma.SortOrder
   currencyCode?: Prisma.SortOrder
+  taxableIncomeEntryMode?: Prisma.SortOrder
+  grossEarningsYtd?: Prisma.SortOrderInput | Prisma.SortOrder
+  nonTaxableAllowancesYtd?: Prisma.SortOrderInput | Prisma.SortOrder
   taxableIncomeYtd?: Prisma.SortOrder
   payeDeductedYtd?: Prisma.SortOrder
   nisEmployeeYtd?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -533,6 +574,9 @@ export type EmployeePriorEmploymentYtdScalarWhereWithAggregatesInput = {
   employmentEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | Date | string | null
   asOfDate?: Prisma.DateTimeWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | Date | string
   currencyCode?: Prisma.StringWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.DecimalNullableWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.DecimalNullableWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.DecimalNullableWithAggregatesFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -559,6 +603,9 @@ export type EmployeePriorEmploymentYtdCreateInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -592,6 +639,9 @@ export type EmployeePriorEmploymentYtdUncheckedCreateInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -619,6 +669,9 @@ export type EmployeePriorEmploymentYtdUpdateInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -652,6 +705,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -682,6 +738,9 @@ export type EmployeePriorEmploymentYtdCreateManyInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -708,6 +767,9 @@ export type EmployeePriorEmploymentYtdUpdateManyMutationInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -737,6 +799,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateManyInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -776,6 +841,9 @@ export type EmployeePriorEmploymentYtdCountOrderByAggregateInput = {
   employmentEndDate?: Prisma.SortOrder
   asOfDate?: Prisma.SortOrder
   currencyCode?: Prisma.SortOrder
+  taxableIncomeEntryMode?: Prisma.SortOrder
+  grossEarningsYtd?: Prisma.SortOrder
+  nonTaxableAllowancesYtd?: Prisma.SortOrder
   taxableIncomeYtd?: Prisma.SortOrder
   payeDeductedYtd?: Prisma.SortOrder
   nisEmployeeYtd?: Prisma.SortOrder
@@ -795,6 +863,8 @@ export type EmployeePriorEmploymentYtdCountOrderByAggregateInput = {
 
 export type EmployeePriorEmploymentYtdAvgOrderByAggregateInput = {
   taxYear?: Prisma.SortOrder
+  grossEarningsYtd?: Prisma.SortOrder
+  nonTaxableAllowancesYtd?: Prisma.SortOrder
   taxableIncomeYtd?: Prisma.SortOrder
   payeDeductedYtd?: Prisma.SortOrder
   nisEmployeeYtd?: Prisma.SortOrder
@@ -815,6 +885,9 @@ export type EmployeePriorEmploymentYtdMaxOrderByAggregateInput = {
   employmentEndDate?: Prisma.SortOrder
   asOfDate?: Prisma.SortOrder
   currencyCode?: Prisma.SortOrder
+  taxableIncomeEntryMode?: Prisma.SortOrder
+  grossEarningsYtd?: Prisma.SortOrder
+  nonTaxableAllowancesYtd?: Prisma.SortOrder
   taxableIncomeYtd?: Prisma.SortOrder
   payeDeductedYtd?: Prisma.SortOrder
   nisEmployeeYtd?: Prisma.SortOrder
@@ -844,6 +917,9 @@ export type EmployeePriorEmploymentYtdMinOrderByAggregateInput = {
   employmentEndDate?: Prisma.SortOrder
   asOfDate?: Prisma.SortOrder
   currencyCode?: Prisma.SortOrder
+  taxableIncomeEntryMode?: Prisma.SortOrder
+  grossEarningsYtd?: Prisma.SortOrder
+  nonTaxableAllowancesYtd?: Prisma.SortOrder
   taxableIncomeYtd?: Prisma.SortOrder
   payeDeductedYtd?: Prisma.SortOrder
   nisEmployeeYtd?: Prisma.SortOrder
@@ -863,6 +939,8 @@ export type EmployeePriorEmploymentYtdMinOrderByAggregateInput = {
 
 export type EmployeePriorEmploymentYtdSumOrderByAggregateInput = {
   taxYear?: Prisma.SortOrder
+  grossEarningsYtd?: Prisma.SortOrder
+  nonTaxableAllowancesYtd?: Prisma.SortOrder
   taxableIncomeYtd?: Prisma.SortOrder
   payeDeductedYtd?: Prisma.SortOrder
   nisEmployeeYtd?: Prisma.SortOrder
@@ -1002,6 +1080,10 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutTaxProfileNested
   deleteMany?: Prisma.EmployeePriorEmploymentYtdScalarWhereInput | Prisma.EmployeePriorEmploymentYtdScalarWhereInput[]
 }
 
+export type EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput = {
+  set?: $Enums.PriorTaxableIncomeEntryMode
+}
+
 export type EnumPriorEmploymentRecordStatusFieldUpdateOperationsInput = {
   set?: $Enums.PriorEmploymentRecordStatus
 }
@@ -1029,6 +1111,9 @@ export type EmployeePriorEmploymentYtdCreateWithoutOrganizationInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1060,6 +1145,9 @@ export type EmployeePriorEmploymentYtdUncheckedCreateWithoutOrganizationInput = 
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1119,6 +1207,9 @@ export type EmployeePriorEmploymentYtdScalarWhereInput = {
   employmentEndDate?: Prisma.DateTimeNullableFilter<"EmployeePriorEmploymentYtd"> | Date | string | null
   asOfDate?: Prisma.DateTimeFilter<"EmployeePriorEmploymentYtd"> | Date | string
   currencyCode?: Prisma.StringFilter<"EmployeePriorEmploymentYtd"> | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFilter<"EmployeePriorEmploymentYtd"> | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.DecimalNullableFilter<"EmployeePriorEmploymentYtd"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1145,6 +1236,9 @@ export type EmployeePriorEmploymentYtdCreateWithoutEmployeeInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1176,6 +1270,9 @@ export type EmployeePriorEmploymentYtdUncheckedCreateWithoutEmployeeInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1229,6 +1326,9 @@ export type EmployeePriorEmploymentYtdCreateWithoutTaxProfileInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1260,6 +1360,9 @@ export type EmployeePriorEmploymentYtdUncheckedCreateWithoutTaxProfileInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1313,6 +1416,9 @@ export type EmployeePriorEmploymentYtdCreateWithoutDocumentsInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1345,6 +1451,9 @@ export type EmployeePriorEmploymentYtdUncheckedCreateWithoutDocumentsInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1387,6 +1496,9 @@ export type EmployeePriorEmploymentYtdUpdateWithoutDocumentsInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1419,6 +1531,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateWithoutDocumentsInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1447,6 +1562,9 @@ export type EmployeePriorEmploymentYtdCreateManyOrganizationInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1473,6 +1591,9 @@ export type EmployeePriorEmploymentYtdUpdateWithoutOrganizationInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1504,6 +1625,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateWithoutOrganizationInput = 
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1533,6 +1657,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutOrganizationInpu
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1561,6 +1688,9 @@ export type EmployeePriorEmploymentYtdCreateManyEmployeeInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1587,6 +1717,9 @@ export type EmployeePriorEmploymentYtdUpdateWithoutEmployeeInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1618,6 +1751,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateWithoutEmployeeInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1647,6 +1783,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeInput = 
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1675,6 +1814,9 @@ export type EmployeePriorEmploymentYtdCreateManyTaxProfileInput = {
   employmentEndDate?: Date | string | null
   asOfDate: Date | string
   currencyCode?: string
+  taxableIncomeEntryMode?: $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1701,6 +1843,9 @@ export type EmployeePriorEmploymentYtdUpdateWithoutTaxProfileInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1732,6 +1877,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateWithoutTaxProfileInput = {
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1761,6 +1909,9 @@ export type EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutTaxProfileInput 
   employmentEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   asOfDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxableIncomeEntryMode?: Prisma.EnumPriorTaxableIncomeEntryModeFieldUpdateOperationsInput | $Enums.PriorTaxableIncomeEntryMode
+  grossEarningsYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nonTaxableAllowancesYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   taxableIncomeYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   payeDeductedYtd?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisEmployeeYtd?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1821,6 +1972,9 @@ export type EmployeePriorEmploymentYtdSelect<ExtArgs extends runtime.Types.Exten
   employmentEndDate?: boolean
   asOfDate?: boolean
   currencyCode?: boolean
+  taxableIncomeEntryMode?: boolean
+  grossEarningsYtd?: boolean
+  nonTaxableAllowancesYtd?: boolean
   taxableIncomeYtd?: boolean
   payeDeductedYtd?: boolean
   nisEmployeeYtd?: boolean
@@ -1855,6 +2009,9 @@ export type EmployeePriorEmploymentYtdSelectCreateManyAndReturn<ExtArgs extends 
   employmentEndDate?: boolean
   asOfDate?: boolean
   currencyCode?: boolean
+  taxableIncomeEntryMode?: boolean
+  grossEarningsYtd?: boolean
+  nonTaxableAllowancesYtd?: boolean
   taxableIncomeYtd?: boolean
   payeDeductedYtd?: boolean
   nisEmployeeYtd?: boolean
@@ -1887,6 +2044,9 @@ export type EmployeePriorEmploymentYtdSelectUpdateManyAndReturn<ExtArgs extends 
   employmentEndDate?: boolean
   asOfDate?: boolean
   currencyCode?: boolean
+  taxableIncomeEntryMode?: boolean
+  grossEarningsYtd?: boolean
+  nonTaxableAllowancesYtd?: boolean
   taxableIncomeYtd?: boolean
   payeDeductedYtd?: boolean
   nisEmployeeYtd?: boolean
@@ -1919,6 +2079,9 @@ export type EmployeePriorEmploymentYtdSelectScalar = {
   employmentEndDate?: boolean
   asOfDate?: boolean
   currencyCode?: boolean
+  taxableIncomeEntryMode?: boolean
+  grossEarningsYtd?: boolean
+  nonTaxableAllowancesYtd?: boolean
   taxableIncomeYtd?: boolean
   payeDeductedYtd?: boolean
   nisEmployeeYtd?: boolean
@@ -1936,7 +2099,7 @@ export type EmployeePriorEmploymentYtdSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeePriorEmploymentYtdOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "taxYear" | "taxProfileId" | "employerName" | "employerBirNumber" | "employmentStartDate" | "employmentEndDate" | "asOfDate" | "currencyCode" | "taxableIncomeYtd" | "payeDeductedYtd" | "nisEmployeeYtd" | "nisEmployerYtd" | "healthSurchargeYtd" | "otherApprovedDeductionsYtd" | "status" | "verified" | "verifiedAt" | "verifiedByUserId" | "notes" | "createdByUserId" | "updatedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["employeePriorEmploymentYtd"]>
+export type EmployeePriorEmploymentYtdOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "taxYear" | "taxProfileId" | "employerName" | "employerBirNumber" | "employmentStartDate" | "employmentEndDate" | "asOfDate" | "currencyCode" | "taxableIncomeEntryMode" | "grossEarningsYtd" | "nonTaxableAllowancesYtd" | "taxableIncomeYtd" | "payeDeductedYtd" | "nisEmployeeYtd" | "nisEmployerYtd" | "healthSurchargeYtd" | "otherApprovedDeductionsYtd" | "status" | "verified" | "verifiedAt" | "verifiedByUserId" | "notes" | "createdByUserId" | "updatedByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["employeePriorEmploymentYtd"]>
 export type EmployeePriorEmploymentYtdInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -1978,6 +2141,21 @@ export type $EmployeePriorEmploymentYtdPayload<ExtArgs extends runtime.Types.Ext
      */
     asOfDate: Date
     currencyCode: string
+    /**
+     * How taxableIncomeYtd was derived from the source payslip/TD4.
+     */
+    taxableIncomeEntryMode: $Enums.PriorTaxableIncomeEntryMode
+    /**
+     * Optional payslip worksheet: YTD gross / GRS / total earnings (before removing non-taxable).
+     */
+    grossEarningsYtd: runtime.Decimal | null
+    /**
+     * Optional payslip worksheet: travelling and other non-taxable allowances YTD (YTD ALL when labelled).
+     */
+    nonTaxableAllowancesYtd: runtime.Decimal | null
+    /**
+     * Canonical taxable earnings YTD used by cumulative PAYE (YTD PAY, or gross − non-taxable).
+     */
     taxableIncomeYtd: runtime.Decimal
     payeDeductedYtd: runtime.Decimal
     nisEmployeeYtd: runtime.Decimal | null
@@ -2431,6 +2609,9 @@ export interface EmployeePriorEmploymentYtdFieldRefs {
   readonly employmentEndDate: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'DateTime'>
   readonly asOfDate: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'DateTime'>
   readonly currencyCode: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'String'>
+  readonly taxableIncomeEntryMode: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'PriorTaxableIncomeEntryMode'>
+  readonly grossEarningsYtd: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'Decimal'>
+  readonly nonTaxableAllowancesYtd: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'Decimal'>
   readonly taxableIncomeYtd: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'Decimal'>
   readonly payeDeductedYtd: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'Decimal'>
   readonly nisEmployeeYtd: Prisma.FieldRef<"EmployeePriorEmploymentYtd", 'Decimal'>

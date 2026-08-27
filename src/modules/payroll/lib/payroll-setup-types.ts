@@ -4,7 +4,9 @@ import type { PayeContributionResult } from "@/src/modules/payroll/lib/paye-cont
 import type { PayrollReadinessResult } from "@/src/modules/payroll/lib/payroll-readiness";
 import type {
   EmployeeTaxProfileStatusCode,
+  OtherEmolumentIncomeStatusCode,
   PersonalAllowanceSourceCode,
+  PreviousEmploymentStatusCode,
   TaxCalculationMethodCode,
 } from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
 
@@ -21,12 +23,29 @@ export type EmployeeTaxProfileSetup = {
   td1ApprovalReference: string | null;
   td1OtherApprovedAnnual: string | null;
   cumulativeCalculationEnabled: boolean;
+  previousEmploymentStatus: PreviousEmploymentStatusCode;
   previousEmploymentDeclared: boolean;
   previousEmploymentVerified: boolean;
   previousEmploymentSource: string | null;
+  otherEmolumentIncomeStatus: OtherEmolumentIncomeStatusCode;
+  birDirectionPresent: boolean;
+  birDirectionReference: string | null;
   notes: string | null;
   /** Where resolved TD1 / method came from for calc preview. */
   source: "tax_profile" | "none";
+};
+
+/** Current-employer opening YTD (system go-live migration — not prior employer). */
+export type OpeningYtdSetup = {
+  id: string | null;
+  taxYear: number;
+  asOfDate: string | null;
+  taxableIncomeYtd: string;
+  payeDeductedYtd: string;
+  nisEmployeeYtd: string | null;
+  healthSurchargeYtd: string | null;
+  verified: boolean;
+  notes: string | null;
 };
 
 export type PriorEmploymentDocumentSetup = {
@@ -46,6 +65,9 @@ export type PriorEmploymentYtdSetup = {
   employmentStartDate: string | null;
   employmentEndDate: string | null;
   asOfDate: string;
+  taxableIncomeEntryMode: "DIRECT" | "WORKSHEET";
+  grossEarningsYtd: string | null;
+  nonTaxableAllowancesYtd: string | null;
   taxableIncomeYtd: string;
   payeDeductedYtd: string;
   nisEmployeeYtd: string | null;
@@ -215,4 +237,9 @@ export type EmployeePayrollSetup = {
   taxProfile: EmployeeTaxProfileSetup;
   /** Prior-employer YTD for the current tax year (Phase 3). */
   priorEmployment: PriorEmploymentSetup;
+  /**
+   * Current-employer opening YTD for system go-live (same employer).
+   * Not prior-employer income.
+   */
+  openingYtd: OpeningYtdSetup;
 };

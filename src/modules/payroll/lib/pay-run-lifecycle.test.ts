@@ -3,9 +3,12 @@ import { describe, expect, it } from "vitest";
 import {
   canApprovePayRun,
   canClosePayRun,
+  canDeletePayRun,
   canPostPayRun,
+  canRecalculatePayRun,
   canReconcilePayRun,
   isPayRunClosed,
+  isPayRunEditable,
   isPayRunMutable,
   isPayRunPosted,
   payRunStatusLabel,
@@ -13,12 +16,20 @@ import {
 } from "./pay-run-lifecycle";
 
 describe("pay-run lifecycle helpers", () => {
-  it("isPayRunMutable is true only for DRAFT and APPROVED", () => {
+  it("isPayRunMutable is true for DRAFT and APPROVED (open, not frozen)", () => {
     expect(isPayRunMutable("DRAFT")).toBe(true);
     expect(isPayRunMutable("APPROVED")).toBe(true);
     expect(isPayRunMutable("POSTED")).toBe(false);
     expect(isPayRunMutable("RECONCILED")).toBe(false);
     expect(isPayRunMutable("CLOSED")).toBe(false);
+  });
+
+  it("isPayRunEditable is true only for DRAFT", () => {
+    expect(isPayRunEditable("DRAFT")).toBe(true);
+    expect(isPayRunEditable("APPROVED")).toBe(false);
+    expect(isPayRunEditable("POSTED")).toBe(false);
+    expect(isPayRunEditable("RECONCILED")).toBe(false);
+    expect(isPayRunEditable("CLOSED")).toBe(false);
   });
 
   it("isPayRunPosted covers POSTED, RECONCILED, and CLOSED", () => {
@@ -41,12 +52,27 @@ describe("pay-run lifecycle helpers", () => {
     expect(canApprovePayRun("POSTED")).toBe(false);
   });
 
-  it("canPostPayRun allows APPROVED, and DRAFT as a legacy safety fallback", () => {
+  it("canRecalculatePayRun allows DRAFT and APPROVED", () => {
+    expect(canRecalculatePayRun("DRAFT")).toBe(true);
+    expect(canRecalculatePayRun("APPROVED")).toBe(true);
+    expect(canRecalculatePayRun("POSTED")).toBe(false);
+  });
+
+  it("canPostPayRun requires APPROVED", () => {
     expect(canPostPayRun("APPROVED")).toBe(true);
-    expect(canPostPayRun("DRAFT")).toBe(true);
+    expect(canPostPayRun("DRAFT")).toBe(false);
     expect(canPostPayRun("POSTED")).toBe(false);
     expect(canPostPayRun("RECONCILED")).toBe(false);
     expect(canPostPayRun("CLOSED")).toBe(false);
+  });
+
+  it("canDeletePayRun allows every lifecycle status (test wipe)", () => {
+    expect(canDeletePayRun("DRAFT")).toBe(true);
+    expect(canDeletePayRun("APPROVED")).toBe(true);
+    expect(canDeletePayRun("POSTED")).toBe(true);
+    expect(canDeletePayRun("RECONCILED")).toBe(true);
+    expect(canDeletePayRun("CLOSED")).toBe(true);
+    expect(canDeletePayRun("UNKNOWN")).toBe(false);
   });
 
   it("canReconcilePayRun only allows POSTED", () => {

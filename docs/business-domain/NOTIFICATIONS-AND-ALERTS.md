@@ -52,6 +52,13 @@ The Notifications domain determines:
 
 - Whether delivery succeeded
 
+### In-app vs email delivery (do not collapse)
+
+`Notification` / `NotificationRecipient` own the in-app inbox (read state,
+permission-scoped recipients). `EmailDelivery` / `EmailDeliveryAttempt` own the
+outbound email queue and retry log. Keep both — see Architecture §6
+“Payroll complementary stores” (same complementary-store rule).
+
 ---
 
 ## 2. Domain Ownership

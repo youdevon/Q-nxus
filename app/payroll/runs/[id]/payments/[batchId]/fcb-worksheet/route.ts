@@ -2,10 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import {
+  FirstCitizensManualWorksheetAdapter,
   buildFirstCitizensManualWorkbook,
   mapDetailToFirstCitizensEntry,
+  normalizeFirstCitizensStoredHeader,
   parseFirstCitizensConfiguration,
-  resolveFirstCitizensBatchHeader,
 } from "@/src/modules/payroll/lib/first-citizens-export";
 import { decryptAccountNumber } from "@/src/modules/payroll/lib/bank-account-crypto";
 import { markAchPaymentBatchExported } from "@/src/modules/payroll/services/ach-payment-batch";
@@ -64,30 +65,35 @@ export async function GET(_request: Request, { params }: RouteContext) {
     batch.bankExportProfile.configurationJson,
   );
   const period = batch.payRun.payrollPeriod;
-  const header = resolveFirstCitizensBatchHeader(config, {
-    periodName: period.name,
-    periodKey: period.periodKey,
-    periodEnd: period.periodEnd,
+  const header = normalizeFirstCitizensStoredHeader({
+    globalAddenda: batch.globalAddenda,
+    entryDescription: batch.entryDescription,
+    discretionaryData: batch.discretionaryData,
+    purposeCode: batch.purposeCode,
+    transactionType: batch.transactionType,
+    period: {
+      periodName: period.name,
+      periodKey: period.periodKey,
+      periodEnd: period.periodEnd,
+    },
   });
 
-  // Prefer values frozen on the batch; fall back to resolved profile / period defaults.
-  const globalAddenda = batch.globalAddenda?.trim() || header.globalAddenda;
-  const entryDescription =
-    batch.entryDescription?.trim() || header.entryDescription;
-  const discretionaryData =
-    batch.discretionaryData?.trim() || header.discretionaryData;
-  const transactionType =
-    batch.transactionType?.trim() || header.transactionType;
-  const purposeCode = batch.purposeCode?.trim() || header.purposeCode;
+  const globalAddenda = header.globalAddenda;
+  const entryDescription = header.entryDescription;
+  const discretionaryData = header.discretionaryData;
+  const transactionType = header.transactionType;
+  const purposeCode = header.purposeCode;
 
-  if (!globalAddenda || !entryDescription) {
-    return new Response(
-      "First Citizens batch is missing required Global Addenda or Entry Description. Update the bank export profile and recreate the batch.",
-      { status: 400 },
-    );
-  }
+  const resolvedConfig = {
+    ...config,
+    globalAddenda,
+    entryDescription,
+    discretionaryData,
+    defaultPurposeCode: purposeCode,
+    transactionType,
+  };
 
-  const entries = batch.details.map((detail) => {
+  const detailLines = batch.details.map((detail) => {
     let accountNumber: string | null = null;
     try {
       accountNumber = decryptAccountNumber(
@@ -96,35 +102,46 @@ export async function GET(_request: Request, { params }: RouteContext) {
     } catch {
       accountNumber = null;
     }
-    return mapDetailToFirstCitizensEntry(
-      {
-        sequence: detail.sequence,
-        employeeNumber: detail.employeeNumber,
-        employeeName: detail.employeeName,
-        bankName: detail.bankName,
-        accountNumber: accountNumber ?? detail.accountNumberMasked,
-        accountNumberMasked: detail.accountNumberMasked,
-        amount: Number(detail.amount.toString()),
-        currencyCode: detail.currencyCode,
-        allocationKind: detail.allocationKind,
-        beneficiaryName: detail.payrollPaymentAllocation.beneficiaryName,
-      },
-      {
-        ...config,
-        globalAddenda,
-        entryDescription,
-        discretionaryData,
-        defaultPurposeCode: purposeCode,
-        transactionType: transactionType === "Debit" ? "Debit" : "Credit",
-      },
-      {
-        abaNumber: detail.abaNumber,
-        accountType: detail.payrollPaymentAllocation.accountType,
-        purposeCode: detail.purposeCode ?? purposeCode,
-        addenda: detail.addenda?.trim() || globalAddenda,
-      },
-    );
+    return {
+      sequence: detail.sequence,
+      employeeNumber: detail.employeeNumber,
+      employeeName: detail.employeeName,
+      bankName: detail.bankName,
+      accountNumber: accountNumber ?? detail.accountNumberMasked,
+      accountNumberMasked: detail.accountNumberMasked,
+      amount: Number(detail.amount.toString()),
+      currencyCode: detail.currencyCode,
+      allocationKind: detail.allocationKind,
+      beneficiaryName: detail.payrollPaymentAllocation.beneficiaryName,
+      abaNumber: detail.abaNumber,
+      accountType: detail.payrollPaymentAllocation.accountType,
+      paymentType: detail.paymentType,
+      purposeCode: detail.purposeCode ?? purposeCode,
+      addenda: detail.addenda?.trim() || globalAddenda,
+    };
   });
+
+  const adapter = new FirstCitizensManualWorksheetAdapter();
+  const validation = adapter.validate({
+    batchNumber: batch.batchNumber,
+    runNumber: batch.payRun.runNumber,
+    currencyCode: batch.currencyCode || batch.payRun.currency,
+    details: detailLines,
+    configurationJson: resolvedConfig,
+  });
+  if (!validation.ok) {
+    return new Response(validation.errors.join(" "), { status: 400 });
+  }
+
+  const entries = detailLines.map((detail) =>
+    mapDetailToFirstCitizensEntry(detail, resolvedConfig, {
+      abaNumber: detail.abaNumber,
+      accountType: detail.accountType,
+      paymentType: detail.paymentType,
+      purposeCode: detail.purposeCode,
+      addenda: detail.addenda,
+    }),
+  );
 
   const actor = await prisma.user.findUnique({
     where: { id: capabilities.userId },
@@ -150,7 +167,8 @@ export async function GET(_request: Request, { params }: RouteContext) {
         periodEnd.toISOString().slice(0, 10),
       effectiveDate: effectiveDateIso,
       debitAccountMasked:
-        config.balanceAccountMasked ?? "•••• (set on export profile)",
+        config.balanceAccountMasked?.trim() ||
+        "•••• (set Balance Account on export profile)",
       employeeCount: new Set(batch.details.map((d) => d.employeeNumber)).size,
       entryCount: batch.details.length,
       batchTotal: Number(batch.controlTotalAmount.toString()),

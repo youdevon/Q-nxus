@@ -264,3 +264,40 @@ export function normalizeFirstCitizensPaymentTypeLabel(
   }
   return trimmed;
 }
+
+/**
+ * Resolve ACH Payment Type without inventing a Savings default.
+ * Returns null when neither a frozen label nor account type is available.
+ */
+export function resolveFirstCitizensPaymentType(input: {
+  paymentType?: string | null;
+  accountType?: string | null;
+}): string | null {
+  const fromLabel = normalizeFirstCitizensPaymentTypeLabel(input.paymentType);
+  if (fromLabel) {
+    return fromLabel;
+  }
+  if (input.accountType?.trim()) {
+    return firstCitizensPaymentType(input.accountType);
+  }
+  return null;
+}
+
+/**
+ * Effective ABA label for FCB entry: routing → ACH code → institution name.
+ * Does not invent official routing codes.
+ */
+export function resolveFirstCitizensAbaNumber(input: {
+  routingNumber?: string | null;
+  routingCode?: string | null;
+  institutionDisplayName?: string | null;
+  bankName?: string | null;
+}): string {
+  return (
+    input.routingNumber?.trim() ||
+    input.routingCode?.trim() ||
+    input.institutionDisplayName?.trim() ||
+    input.bankName?.trim() ||
+    ""
+  );
+}

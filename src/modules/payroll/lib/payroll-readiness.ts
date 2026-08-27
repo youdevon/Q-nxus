@@ -1,10 +1,9 @@
 /**
  * Pure payroll readiness evaluation.
  *
- * An employee is payroll-ready when:
- * - a current active employment contract with a base salary above zero exists
+ * An employee is payroll-ready when blocking issues are resolved:
+ * - when a contract exists, it must have a base salary above zero
  * - the NIS number is recorded (unless exempt from NIS)
- * - the BIR (tax) number is recorded (unless exempt from PAYE)
  * - when paid by bank transfer:
  *   - at least one payment instruction exists
  *   - exactly one instruction is marked primary (receives remainder of net pay)
@@ -43,6 +42,8 @@ export type PayrollReadinessInput = {
 export type PayrollReadinessResult = {
   isReady: boolean;
   blockingIssues: string[];
+  /** Informational — does not block pay-run inclusion. */
+  softWarnings?: string[];
 };
 
 /** Sum fixed bank amounts in cents (primary remainder accounts are excluded). */
@@ -64,9 +65,12 @@ export function evaluatePayrollReadiness(
   input: PayrollReadinessInput,
 ): PayrollReadinessResult {
   const blockingIssues: string[] = [];
+  const softWarnings: string[] = [];
 
   if (!input.hasCurrentContract) {
-    blockingIssues.push("No current active employment contract.");
+    softWarnings.push(
+      "No active employment contract — paying on month-by-month basis (no contract salary).",
+    );
   } else if (input.baseSalary == null || input.baseSalary <= 0) {
     blockingIssues.push("Current contract has no base salary.");
   }
@@ -76,7 +80,7 @@ export function evaluatePayrollReadiness(
   }
 
   if (!input.exemptFromPaye && !input.birNumber?.trim()) {
-    blockingIssues.push("BIR number missing.");
+    softWarnings.push("BIR number missing.");
   }
 
   if (input.paymentMethod === "BANK_TRANSFER") {
@@ -142,5 +146,6 @@ export function evaluatePayrollReadiness(
   return {
     isReady: blockingIssues.length === 0,
     blockingIssues,
+    softWarnings,
   };
 }

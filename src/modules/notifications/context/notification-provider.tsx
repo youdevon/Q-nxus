@@ -35,12 +35,33 @@ function isAbortError(error: unknown): boolean {
   return error instanceof Error && error.name === "AbortError";
 }
 
-async function fetchBellState(): Promise<NotificationBellState> {
+/** A signed-out bell is expected once a session expires, so it is not an error. */
+type BellFetchResult =
+  | { kind: "state"; state: NotificationBellState }
+  | { kind: "signedOut" };
+
+async function fetchBellState(): Promise<BellFetchResult> {
   const response = await fetch(BELL_ENDPOINT, {
     method: "GET",
     credentials: "same-origin",
     cache: "no-store",
+    // Without this, an auth redirect to /login is followed transparently and
+    // arrives as a 200 HTML page that reads as corrupt JSON.
+    redirect: "manual",
   });
+
+  const wasRedirected =
+    response.type === "opaqueredirect" ||
+    response.redirected ||
+    (response.status >= 300 && response.status < 400);
+
+  if (
+    wasRedirected ||
+    response.status === 401 ||
+    response.status === 403
+  ) {
+    return { kind: "signedOut" };
+  }
 
   if (!response.ok) {
     throw new Error(`Notification bell request failed (${response.status})`);
@@ -55,7 +76,7 @@ async function fetchBellState(): Promise<NotificationBellState> {
   }
 
   try {
-    return JSON.parse(text) as NotificationBellState;
+    return { kind: "state", state: JSON.parse(text) as NotificationBellState };
   } catch {
     throw new Error(
       `Notification bell response was not JSON (${text.slice(0, 80)})`,
@@ -82,18 +103,28 @@ export function NotificationProvider({
   const mutationEpoch = React.useRef(0);
   const hasLoadedOnce = React.useRef(false);
   const notificationsRef = React.useRef(notifications);
+  /** Set when the server reports no session, to stop the poll from retrying. */
+  const isSignedOut = React.useRef(false);
 
   React.useEffect(() => {
     notificationsRef.current = notifications;
   }, [notifications]);
 
+  const clearBell = React.useCallback(() => {
+    setNotifications([]);
+    setUnreadCount(0);
+    setUnreadActionUrls([]);
+    setIsLoading(false);
+  }, []);
+
   const refresh = React.useCallback(async () => {
     if (!user) {
-      setNotifications([]);
-      setUnreadCount(0);
-      setUnreadActionUrls([]);
-      setIsLoading(false);
+      clearBell();
       hasLoadedOnce.current = false;
+      return;
+    }
+
+    if (isSignedOut.current) {
       return;
     }
 
@@ -107,9 +138,15 @@ export function NotificationProvider({
     }
 
     try {
-      const state = await fetchBellState();
+      const result = await fetchBellState();
 
       if (requestId !== refreshRequestId.current) {
+        return;
+      }
+
+      if (result.kind === "signedOut") {
+        isSignedOut.current = true;
+        clearBell();
         return;
       }
 
@@ -118,6 +155,7 @@ export function NotificationProvider({
         return;
       }
 
+      const { state } = result;
       setNotifications(state.notifications);
       setUnreadCount(state.unreadCount);
       setUnreadActionUrls(
@@ -134,9 +172,13 @@ export function NotificationProvider({
         setIsLoading(false);
       }
     }
-  }, [user]);
+  }, [clearBell, user]);
 
   React.useEffect(() => {
+    // A rendered document means the session passed the proxy, so allow polling
+    // again after a previous refresh was rejected as signed out.
+    isSignedOut.current = false;
+
     // Mount / auth change only — do not refetch on every client navigation.
     const timeoutId = window.setTimeout(() => {
       void refresh();

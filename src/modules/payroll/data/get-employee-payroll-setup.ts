@@ -11,6 +11,9 @@ import {
   toHealthConfigInput,
 } from "@/src/modules/payroll/lib/health-surcharge";
 import {
+  countMondaysInMonth,
+} from "@/src/modules/payroll/lib/contribution-weeks";
+import {
   computeNisContribution,
   toNisClassInputs,
 } from "@/src/modules/payroll/lib/nis-contribution";
@@ -20,6 +23,7 @@ import {
 } from "@/src/modules/payroll/lib/paye-contribution";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
 import { roundToCents } from "@/src/modules/payroll/lib/money";
+import { defaultMonthlyPeriodKey } from "@/src/modules/payroll/lib/pay-period";
 import type {
   EmployeePayrollSetup,
   PayrollBankAccountHistoryRecord,
@@ -36,6 +40,7 @@ import {
   taxYearFromAsOfKey,
   toStatutoryAsOfKey,
 } from "@/src/modules/payroll/lib/statutory-as-of";
+import { getEmployeeOpeningYtd } from "@/src/modules/payroll/data/get-employee-opening-ytd";
 import { getEmployeePriorEmploymentYtds } from "@/src/modules/payroll/data/get-employee-prior-employment";
 import { getSetupBankingFlags } from "@/src/modules/payroll/data/get-payroll-banking-features";
 
@@ -288,6 +293,7 @@ export async function getEmployeePayrollSetup(
     bankingFlags,
     taxProfileRow,
     priorEmploymentBundle,
+    openingYtdRow,
   ] = await Promise.all([
     includeFinancialInstitutions
       ? getSelectableFinancialInstitutionOptions()
@@ -306,6 +312,7 @@ export async function getEmployeePayrollSetup(
     getEmployeePriorEmploymentYtds(employee.id, taxYear, {
       includeDocuments: includePriorDocuments,
     }),
+    getEmployeeOpeningYtd(employee.id, taxYear),
   ]);
 
   const {
@@ -331,8 +338,12 @@ export async function getEmployeePayrollSetup(
             : null,
         cumulativeCalculationEnabled:
           taxProfileRow.cumulativeCalculationEnabled,
+        previousEmploymentStatus: taxProfileRow.previousEmploymentStatus,
         previousEmploymentDeclared: taxProfileRow.previousEmploymentDeclared,
         previousEmploymentVerified: taxProfileRow.previousEmploymentVerified,
+        otherEmolumentIncomeStatus: taxProfileRow.otherEmolumentIncomeStatus,
+        birDirectionPresent: taxProfileRow.birDirectionPresent,
+        birDirectionReference: taxProfileRow.birDirectionReference,
       }
     : null;
 
@@ -411,11 +422,16 @@ export async function getEmployeePayrollSetup(
     const exemptFromHealthSurcharge =
       profile?.exemptFromHealthSurcharge ?? false;
 
+    const previewPeriodKey = defaultMonthlyPeriodKey();
+    const [previewYear, previewMonth] = previewPeriodKey.split("-").map(Number);
+    const contributionWeeks = countMondaysInMonth(previewYear, previewMonth);
+
     const nis =
       !exemptFromNis && nisClasses.length > 0
         ? computeNisContribution({
             monthlySalary: monthlyTaxableEarnings,
             classes: toNisClassInputs(nisClasses),
+            weeksInPeriod: contributionWeeks,
           })
         : null;
 
@@ -440,6 +456,7 @@ export async function getEmployeePayrollSetup(
             dateOfBirth: employee.dateOfBirth,
             pensionOnlyIncome: profile?.pensionOnlyIncome ?? false,
             exemptFromHealthSurcharge,
+            weeksInPeriod: contributionWeeks,
           })
         : null;
 
@@ -451,6 +468,7 @@ export async function getEmployeePayrollSetup(
       notes: [
         "Taxable contract allowances (isTaxable) are included in NIS/PAYE/Health taxable pay; non-taxable allowances remain in gross only.",
         "Overtime, bonuses, and commissions are deferred from this preview.",
+        `NIS and Health Surcharge use ${contributionWeeks} Monday contribution week${contributionWeeks === 1 ? "" : "s"} in ${previewPeriodKey} (Trinidad calendar month).`,
         ...resolvedTax.calcNotes,
         ...(exemptFromNis
           ? ["NIS exempt (employee opt-out) — no contribution estimated."]
@@ -546,9 +564,20 @@ export async function getEmployeePayrollSetup(
       td1ApprovalReference: taxProfileRow?.td1ApprovalReference ?? null,
       td1OtherApprovedAnnual: displayTd1,
       cumulativeCalculationEnabled: resolvedTax.cumulativeCalculationEnabled,
+      previousEmploymentStatus:
+        taxProfileRow?.previousEmploymentStatus ??
+        resolvedTax.previousEmploymentStatus,
       previousEmploymentDeclared: resolvedTax.previousEmploymentDeclared,
       previousEmploymentVerified: resolvedTax.previousEmploymentVerified,
       previousEmploymentSource: taxProfileRow?.previousEmploymentSource ?? null,
+      otherEmolumentIncomeStatus:
+        taxProfileRow?.otherEmolumentIncomeStatus ??
+        resolvedTax.otherEmolumentIncomeStatus,
+      birDirectionPresent:
+        taxProfileRow?.birDirectionPresent ?? resolvedTax.birDirectionPresent,
+      birDirectionReference:
+        taxProfileRow?.birDirectionReference ??
+        resolvedTax.birDirectionReference,
       notes: taxProfileRow?.notes ?? null,
       source: resolvedTax.source,
     },
@@ -562,6 +591,9 @@ export async function getEmployeePayrollSetup(
         employmentStartDate: row.employmentStartDate,
         employmentEndDate: row.employmentEndDate,
         asOfDate: row.asOfDate,
+        taxableIncomeEntryMode: row.taxableIncomeEntryMode,
+        grossEarningsYtd: row.grossEarningsYtd,
+        nonTaxableAllowancesYtd: row.nonTaxableAllowancesYtd,
         taxableIncomeYtd: row.taxableIncomeYtd,
         payeDeductedYtd: row.payeDeductedYtd,
         nisEmployeeYtd: row.nisEmployeeYtd,
@@ -595,6 +627,17 @@ export async function getEmployeePayrollSetup(
         verifiedCount: priorEmploymentBundle.verifiedTotals.verifiedCount,
         allVerified: priorEmploymentBundle.verifiedTotals.allVerified,
       },
+    },
+    openingYtd: {
+      id: openingYtdRow?.id ?? null,
+      taxYear,
+      asOfDate: openingYtdRow?.asOfDate ?? null,
+      taxableIncomeYtd: openingYtdRow?.taxableIncomeYtd ?? "",
+      payeDeductedYtd: openingYtdRow?.payeDeductedYtd ?? "",
+      nisEmployeeYtd: openingYtdRow?.nisEmployeeYtd ?? null,
+      healthSurchargeYtd: openingYtdRow?.healthSurchargeYtd ?? null,
+      verified: openingYtdRow?.verified ?? false,
+      notes: openingYtdRow?.notes ?? null,
     },
   };
 }

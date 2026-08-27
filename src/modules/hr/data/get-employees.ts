@@ -294,3 +294,66 @@ export async function getEmployees(
     },
   };
 }
+
+const LIVE_SEARCH_LIMIT = 25;
+
+/**
+ * Lightweight partial-name search for the People directory typeahead.
+ * Matches employee number, names, and emails (case-insensitive contains).
+ */
+export async function searchEmployeeDirectoryLive(
+  query: string,
+): Promise<EmployeeDirectoryItem[]> {
+  const trimmed = query.trim();
+  if (!trimmed) {
+    return [];
+  }
+
+  const organization = await prisma.organization.findFirst({
+    orderBy: { createdAt: "asc" },
+    select: { id: true },
+  });
+
+  if (!organization) {
+    return [];
+  }
+
+  const employees = await prisma.employee.findMany({
+    where: {
+      organizationId: organization.id,
+      isArchived: false,
+      OR: [
+        { employeeNumber: { contains: trimmed, mode: "insensitive" } },
+        { firstName: { contains: trimmed, mode: "insensitive" } },
+        { middleName: { contains: trimmed, mode: "insensitive" } },
+        { lastName: { contains: trimmed, mode: "insensitive" } },
+        { preferredName: { contains: trimmed, mode: "insensitive" } },
+        { workEmail: { contains: trimmed, mode: "insensitive" } },
+        { personalEmail: { contains: trimmed, mode: "insensitive" } },
+      ],
+    },
+    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
+    take: LIVE_SEARCH_LIMIT,
+    select: {
+      id: true,
+      employeeNumber: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      preferredName: true,
+      workEmail: true,
+      phone: true,
+      workforceCategory: true,
+      employmentStatus: true,
+      employmentType: true,
+      hireDate: true,
+      department: { select: { id: true, name: true } },
+      position: { select: { id: true, title: true } },
+    },
+  });
+
+  return employees.map((employee) => ({
+    ...employee,
+    hireDate: employee.hireDate.toISOString(),
+  }));
+}

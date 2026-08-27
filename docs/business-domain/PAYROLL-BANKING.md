@@ -118,16 +118,19 @@ export):
 | Bank field | Default / source |
 |------------|------------------|
 | Effective Date | Pay period end (shown as DD/MM/YYYY on Control Summary) |
-| Balance Account | Export profile `balanceAccountMasked` (e.g. `xxx5620 - TTD`) |
+| Balance Account | **Required** on export profile `balanceAccountMasked` (e.g. `xxx5620 - TTD`) |
 | **Global Addenda** | **Required** — default `Payroll` |
 | Discretionary Data | Profile override, else payroll period name (e.g. `July 2026`) |
 | **Entry Description** | **Required** — default `Salary` |
 | Transaction Type | `Credit` (payroll) |
-| Purpose Code | Default `COMPENSATION OF EMPLOYEES` |
+| Purpose Code | Default `COMPENSATION OF EMPLOYEES` (row field, not ACH header) |
 | Total / Total No of Records | Batch control totals |
 
+Worksheet sheets: **Bank Header** (form order) → **Manual Entry** (rows) → **Control Summary** (audit).
+
 Payment Type labels match the bank UI: `Savings Credit` | `Checking Credit`
-(internal account type remains `SAVINGS` / `CHEQUING`).
+(internal account type remains `SAVINGS` / `CHEQUING`). Missing account type
+blocks prepare / batch create (no silent Savings default).
 
 ### Employee payment instructions ↔ First Citizens ACH
 
@@ -135,7 +138,7 @@ Payment Type labels match the bank UI: `Savings Credit` | `Checking Credit`
 |-----------------|----------------------|--------|
 | Individual Name | **Required** | Account holder name |
 | Individual ID | No (from HR) | Employee number |
-| ABA Number | **Required** | Financial institution + optional `routingNumber` (routing / ACH participant when known) |
+| ABA Number | **Required** | Institution `routingCode` auto-fills employee `routingNumber` when known; manual override allowed |
 | Account Number | **Required** | Encrypted account number |
 | Payment Type | **Required** | Account type → Savings Credit / Checking Credit |
 | Purpose Code | No | Bank export profile / batch default |
@@ -150,15 +153,18 @@ Payment Type labels match the bank UI: `Savings Credit` | `Checking Credit`
 
 ### Models
 
-- `FinancialInstitution` / `FinancialInstitutionBranch` — configurable directory
-- `EmployeeBankAccount` — employee-owned destinations (source of truth)
+- `FinancialInstitution` — configurable institution directory
+- `EmployeeBankAccount` — employee-owned destinations (source of truth); branch
+  code/name are stored on the account (and frozen onto payment lines)
 - `EmployeePayrollAllocation` — FULL_BALANCE / FIXED_AMOUNT / PERCENTAGE / REMAINDER
 
-### Legacy table removed
+### Legacy tables removed
 
-`PayrollBankAccount` dual-sync and the `payroll.payroll_bank_accounts` table
-were retired. Historical backfill lived in
-`scripts/backfill-employee-bank-accounts.ts` and is no longer applicable.
+- `PayrollBankAccount` dual-sync and `payroll.payroll_bank_accounts` were
+  retired. Historical backfill lived in
+  `scripts/backfill-employee-bank-accounts.ts` and is no longer applicable.
+- `FinancialInstitutionBranch` / `payroll.financial_institution_branches` was
+  never wired and was dropped; branch data stays denormalized on accounts.
 
 ### Feature flags (`FeatureControl`)
 
@@ -213,8 +219,11 @@ See `.env.example` for `BANK_ACCOUNT_ENCRYPTION_KEY`.
 
 ### Routing / ACH codes
 
-Seeded TT institutions leave `routingCode` and `achParticipantCode` **null**.
-Do not invent official codes — mark placeholders `REQUIRES_CONFIRMATION`.
+Known TT commercial-bank ABA / routing codes (and Central Bank) are seeded on
+`FinancialInstitution.routingCode` from the bank participant list. Selecting an
+institution on employee payment instructions auto-fills ABA / routing; the
+field remains editable for override. Institutions without a catalog code leave
+`routingCode` / `achParticipantCode` **null** — do not invent values.
 
 ### Permissions
 

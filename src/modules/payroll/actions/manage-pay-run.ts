@@ -22,7 +22,7 @@ import {
   normalizeExclusionReason,
   type PayRunMembershipStatus,
 } from "@/src/modules/payroll/lib/pay-run-membership";
-import { planPeriodAfterDraftPayRunDelete } from "@/src/modules/payroll/lib/pay-run-delete";
+import { planPeriodAfterPayRunDelete } from "@/src/modules/payroll/lib/pay-run-delete";
 import {
   collectPayRunNotificationRefs,
   purgeNotificationsForRelatedEntities,
@@ -30,9 +30,12 @@ import {
 import {
   canApprovePayRun,
   canClosePayRun,
+  canDeletePayRun,
+  payRunStatusLabel,
   canPostPayRun,
+  canRecalculatePayRun,
   canReconcilePayRun,
-  isPayRunMutable,
+  isPayRunEditable,
   isPayRunPosted,
 } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import {
@@ -855,10 +858,13 @@ export async function excludePayslipFromPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
-  if (!isPayRunMutable(payRun.status)) {
+  if (!isPayRunEditable(payRun.status)) {
     return {
       status: "error",
-      message: "Employees can only be excluded from draft or approved pay runs.",
+      message:
+        payRun.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock and return it to draft before excluding anyone."
+          : "Employees can only be excluded from draft pay runs.",
     };
   }
 
@@ -944,16 +950,6 @@ export async function excludePayslipFromPayRun(
 
   revalidatePayRunPaths(payRun.id);
 
-  if (payRun.status === "APPROVED") {
-    await notifyPayRunReadyForReview({
-      organizationId: payRun.organizationId,
-      payRunId: payRun.id,
-      runNumber: payRun.runNumber,
-      actorUserId: actor.actor.userId,
-      reason: "approval_cleared",
-    });
-  }
-
   return {
     status: "success",
     message: `${payslip.employeeName} excluded from this pay run.`,
@@ -999,10 +995,13 @@ export async function reincludePayslipInPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
-  if (!isPayRunMutable(payRun.status)) {
+  if (!isPayRunEditable(payRun.status)) {
     return {
       status: "error",
-      message: "Employees can only be re-included on draft or approved pay runs.",
+      message:
+        payRun.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock and return it to draft before re-including anyone."
+          : "Employees can only be re-included on draft pay runs.",
     };
   }
 
@@ -1080,16 +1079,6 @@ export async function reincludePayslipInPayRun(
 
   revalidatePayRunPaths(payRun.id);
 
-  if (payRun.status === "APPROVED") {
-    await notifyPayRunReadyForReview({
-      organizationId: payRun.organizationId,
-      payRunId: payRun.id,
-      runNumber: payRun.runNumber,
-      actorUserId: actor.actor.userId,
-      reason: "approval_cleared",
-    });
-  }
-
   return {
     status: "success",
     message: `${payslip.employeeName} re-included in this pay run.`,
@@ -1129,10 +1118,13 @@ async function recalculateDraftPayslipWithLineItems(input: {
     },
   });
 
-  if (!payRun || !isPayRunMutable(payRun.status)) {
+  if (!payRun || !isPayRunEditable(payRun.status)) {
     return {
       ok: false,
-      message: "Only draft or approved pay runs can be updated.",
+      message:
+        payRun?.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock before editing line items."
+          : "Only draft pay runs can be updated.",
     };
   }
 
@@ -1231,12 +1223,15 @@ export async function addPayrollLineItem(
 
   if (
     !payRun ||
-    !isPayRunMutable(payRun.status) ||
+    !isPayRunEditable(payRun.status) ||
     payRun.payslips.length === 0
   ) {
     return {
       status: "error",
-      message: "Line items can only be added to included draft payslips.",
+      message:
+        payRun?.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock before adding line items."
+          : "Line items can only be added to included draft payslips.",
     };
   }
 
@@ -1352,11 +1347,14 @@ export async function deletePayrollLineItem(
   if (
     !line ||
     line.payRunId !== payRunId ||
-    !isPayRunMutable(line.payRun.status)
+    !isPayRunEditable(line.payRun.status)
   ) {
     return {
       status: "error",
-      message: "Line items can only be removed from draft or approved pay runs.",
+      message:
+        line?.payRun.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock before removing line items."
+          : "Line items can only be removed from draft pay runs.",
     };
   }
 
@@ -1473,6 +1471,13 @@ export async function recalculateDraftPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
+  if (!canRecalculatePayRun(payRun.status)) {
+    return {
+      status: "error",
+      message: "Only draft or approved pay runs can be recalculated.",
+    };
+  }
+
   const metadata = await getAuditRequestMetadata(formData);
   const hadApproval = Boolean(payRun.approvedAt);
   const result = await recalculateDraftPayRunCore({
@@ -1501,9 +1506,11 @@ export async function recalculateDraftPayRun(
 
   return {
     status: "success",
-    message: `Recalculated ${result.employeeCount} included employee${
+    message: `Calculated ${result.employeeCount} included employee${
       result.employeeCount === 1 ? "" : "s"
-    }. Prior approval (if any) was cleared.${
+    } and saved the draft paysheet.${
+      hadApproval ? " Prior approval was cleared — approve again before posting." : ""
+    }${
       result.excludedCount > 0
         ? ` ${result.excludedCount} excluded left unchanged.`
         : ""
@@ -1539,14 +1546,40 @@ export async function approveDraftPayRun(
 
   const payRun = await prisma.payRun.findUnique({
     where: { id: payRunId, organizationId: organization.id },
-    select: {
-      id: true,
-      runNumber: true,
-      status: true,
-      createdById: true,
-      approvedAt: true,
-      approvedById: true,
-      payslips: { select: { status: true } },
+    include: {
+      payrollPeriod: {
+        select: {
+          id: true,
+          name: true,
+          periodStart: true,
+          periodEnd: true,
+        },
+      },
+      payslips: {
+        select: {
+          id: true,
+          status: true,
+          employeeId: true,
+          employeeNumber: true,
+          employeeName: true,
+          exclusionReason: true,
+          excludedAt: true,
+          excludedByUserId: true,
+          grossPay: true,
+          totalDeductions: true,
+          netPay: true,
+          lineItems: {
+            select: {
+              lineType: true,
+              code: true,
+              label: true,
+              amount: true,
+              isTaxable: true,
+              notes: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -1555,7 +1588,13 @@ export async function approveDraftPayRun(
   }
 
   if (!canApprovePayRun(payRun.status)) {
-    return { status: "error", message: "Only draft pay runs can be approved." };
+    return {
+      status: "error",
+      message:
+        payRun.status === "APPROVED"
+          ? "This paysheet is already approved. Post it, or calculate all employees to unlock and revise."
+          : "Only draft pay runs can be approved.",
+    };
   }
 
   const included = filterIncludedPayRunRows(payRun.payslips);
@@ -1579,6 +1618,23 @@ export async function approveDraftPayRun(
   }
 
   const metadata = await getAuditRequestMetadata(formData);
+
+  // Fresh calculation is the paysheet save — approve locks those figures.
+  const recalc = await recalculateDraftPayRunCore({
+    payRun,
+    actorUserId: actor.actor.userId,
+    metadata,
+    reason: "manual",
+    clearApproval: true,
+  });
+
+  if (!recalc.ok) {
+    return {
+      status: "error",
+      message: `Could not approve — calculation failed. ${recalc.message}`,
+    };
+  }
+
   const approvedAt = new Date();
 
   try {
@@ -1600,7 +1656,7 @@ export async function approveDraftPayRun(
           action: "UPDATE",
           entityType: "PayRun",
           entityId: payRun.id,
-          description: `Approved draft pay run ${payRun.runNumber} for posting.`,
+          description: `Approved paysheet for pay run ${payRun.runNumber} after calculating ${recalc.employeeCount} included employees.`,
           oldValues: {
             status: payRun.status,
             approvedAt: payRun.approvedAt?.toISOString() ?? null,
@@ -1611,6 +1667,9 @@ export async function approveDraftPayRun(
             approvedAt: approvedAt.toISOString(),
             approvedById: actor.actor.userId,
             approvalNote,
+            employeeCount: recalc.employeeCount,
+            totalNet: recalc.totalNet,
+            figuresChangedOnApprove: recalc.figuresChanged,
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
@@ -1639,7 +1698,13 @@ export async function approveDraftPayRun(
 
   return {
     status: "success",
-    message: "Pay run approved. A different user can now post it.",
+    message: `Paysheet calculated for ${recalc.employeeCount} employee${
+      recalc.employeeCount === 1 ? "" : "s"
+    } and locked for posting.${
+      recalc.figuresChanged
+        ? " Totals were refreshed during approval — review before posting."
+        : ""
+    }`,
   };
 }
 
@@ -1707,7 +1772,8 @@ export async function postPayRun(
   if (!canPostPayRun(payRunForRecalc.status)) {
     return {
       status: "error",
-      message: "Only approved (or draft, as a safety fallback) pay runs can be posted.",
+      message:
+        "Only an approved paysheet can be posted. Calculate all employees, then approve, then post.",
     };
   }
 
@@ -2118,11 +2184,10 @@ export async function deleteDraftPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
-  if (!isPayRunMutable(payRun.status)) {
+  if (!canDeletePayRun(payRun.status)) {
     return {
       status: "error",
-      message:
-        "Posted pay runs cannot be deleted. Posted payroll history is immutable.",
+      message: "This pay run cannot be deleted.",
     };
   }
 
@@ -2131,6 +2196,7 @@ export async function deleteDraftPayRun(
   const periodName = payRun.payrollPeriod.name;
   const periodKey = payRun.payrollPeriod.periodKey;
   const payslipCount = payRun._count.payslips;
+  const statusLabel = payRunStatusLabel(payRun.status);
 
   try {
     await prisma.$transaction(async (transaction) => {
@@ -2148,7 +2214,7 @@ export async function deleteDraftPayRun(
         },
       });
 
-      const periodPlan = planPeriodAfterDraftPayRunDelete({
+      const periodPlan = planPeriodAfterPayRunDelete({
         periodId: payRun.payrollPeriodId,
         periodStatus: payRun.payrollPeriod.status,
         remainingPayRunCount,
@@ -2162,12 +2228,12 @@ export async function deleteDraftPayRun(
           action: "DELETE",
           entityType: "PayRun",
           entityId: payRun.id,
-          description: `Deleted draft pay run ${runNumber} for ${periodName} (${payslipCount} payslip${
+          description: `Deleted ${statusLabel.toLowerCase()} pay run ${runNumber} for ${periodName} (${payslipCount} payslip${
             payslipCount === 1 ? "" : "s"
           }).`,
           oldValues: {
             runNumber,
-            status: "DRAFT",
+            status: payRun.status,
             periodKey,
             periodName,
             periodStatus: payRun.payrollPeriod.status,
@@ -2186,7 +2252,7 @@ export async function deleteDraftPayRun(
       );
       await purgeNotificationsForRelatedEntities(transaction, notificationRefs);
 
-      // Payslips cascade via payRunId (including EXCLUDED membership rows).
+      // Payslips, payments, ACH batches cascade via payRunId.
       await transaction.payRun.delete({
         where: { id: payRun.id },
       });
@@ -2209,7 +2275,7 @@ export async function deleteDraftPayRun(
       message:
         error instanceof Error
           ? error.message
-          : "Could not delete the draft pay run.",
+          : "Could not delete the pay run.",
     };
   }
 

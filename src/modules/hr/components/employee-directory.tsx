@@ -6,7 +6,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  Search,
   Undo2,
   Users,
 } from "lucide-react";
@@ -35,6 +34,7 @@ import {
   WORKFORCE_CATEGORY_OPTIONS,
   workforceCategoryBadgeLabel,
 } from "@/src/modules/hr/lib/workforce-category";
+import { EmployeeDirectoryLiveSearch } from "./employee-directory-live-search";
 import { EmployeeDirectoryRow } from "./employee-directory-row";
 import { PeoplePageHeader } from "./people-page-header";
 
@@ -175,6 +175,13 @@ function SortableColumnHeader({
 
 export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
   const hasExplicitSort = Boolean(filters.sort || filters.order);
+  const hasBrowseFilters = Boolean(
+    filters.status ||
+      filters.employmentType ||
+      filters.workforceCategory ||
+      filters.departmentId ||
+      filters.show === "all",
+  );
   const filterValues = {
     query: filters.query,
     status: filters.status,
@@ -196,6 +203,10 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
     order: filterValues.order,
   });
 
+  // Name search uses a client typeahead (partial match as you type).
+  // Structured filters / Show all keep the server-rendered directory table.
+  const useLiveNameSearch = !hasBrowseFilters;
+
   return (
     <PageShell size="lg">
       <PeoplePageHeader
@@ -212,94 +223,96 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
         }
       />
 
-      <div className="space-y-3">
-        <ListSearchFilters
-          basePath="/people"
-          clearHref="/people"
-          searchPlaceholder="Name, number or email"
-          searchValue={filters.query ?? ""}
-          values={filterValues}
-          chips={buildFilterChips(filters, data.departments)}
-          fields={[
-            {
-              type: "checkbox",
-              name: "status",
-              label: "Status",
-              options: [...STATUS_OPTIONS],
-              multi: false,
-            },
-            {
-              type: "checkbox",
-              name: "workforceCategory",
-              label: "Category",
-              options: WORKFORCE_CATEGORY_OPTIONS.map((option) => ({
-                value: option.value,
-                label: option.label,
-              })),
-              multi: false,
-            },
-            {
-              type: "checkbox",
-              name: "employmentType",
-              label: "Employment type",
-              options: [...EMPLOYMENT_TYPE_OPTIONS],
-              multi: false,
-            },
-            {
-              type: "checkbox",
-              name: "departmentId",
-              label: "Department",
-              options: data.departments.map((department) => ({
-                value: department.id,
-                label: department.name,
-              })),
-              multi: false,
-            },
-          ]}
-        />
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground">
-            {data.summary.active} active
-            {data.summary.active === 1 ? " person" : " people"}
-          </p>
-
-          {filters.show === "all" ? (
+      {useLiveNameSearch ? (
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground">
+              {data.summary.active} active
+              {data.summary.active === 1 ? " person" : " people"}
+            </p>
             <Button
               nativeButton={false}
               variant="outline"
               size="sm"
-              render={<Link href="/people" />}
-            >
-              <Undo2 />
-              Back to search
-            </Button>
-          ) : null}
-        </div>
-      </div>
-
-      {!data.listing ? (
-        <section className="py-14 text-center">
-          <Search className="mx-auto size-7 text-muted-foreground" />
-          <p className="mt-3 text-sm font-medium">Find someone</p>
-          <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">
-            Search by name, number or email. Use Show all when you need the full
-            directory.
-          </p>
-          <div className="mt-5">
-            <Button
-              nativeButton={false}
-              variant="outline"
               render={<Link href={showAllHref} />}
             >
               <Users />
-              Show all
+              Show all / filters
             </Button>
           </div>
-        </section>
+
+          <EmployeeDirectoryLiveSearch
+            initialQuery={filters.query ?? ""}
+            showAllHref={showAllHref}
+          />
+        </div>
       ) : (
         <>
-          <section>
+          <div className="space-y-3">
+            <ListSearchFilters
+              basePath="/people"
+              clearHref="/people"
+              searchPlaceholder="Name, number or email"
+              searchValue={filters.query ?? ""}
+              values={filterValues}
+              chips={buildFilterChips(filters, data.departments)}
+              fields={[
+                {
+                  type: "checkbox",
+                  name: "status",
+                  label: "Status",
+                  options: [...STATUS_OPTIONS],
+                  multi: false,
+                },
+                {
+                  type: "checkbox",
+                  name: "workforceCategory",
+                  label: "Category",
+                  options: WORKFORCE_CATEGORY_OPTIONS.map((option) => ({
+                    value: option.value,
+                    label: option.label,
+                  })),
+                  multi: false,
+                },
+                {
+                  type: "checkbox",
+                  name: "employmentType",
+                  label: "Employment type",
+                  options: [...EMPLOYMENT_TYPE_OPTIONS],
+                  multi: false,
+                },
+                {
+                  type: "checkbox",
+                  name: "departmentId",
+                  label: "Department",
+                  options: data.departments.map((department) => ({
+                    value: department.id,
+                    label: department.name,
+                  })),
+                  multi: false,
+                },
+              ]}
+            />
+
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-xs text-muted-foreground">
+                {data.summary.active} active
+                {data.summary.active === 1 ? " person" : " people"}
+              </p>
+
+              <Button
+                nativeButton={false}
+                variant="outline"
+                size="sm"
+                render={<Link href="/people" />}
+              >
+                <Undo2 />
+                Back to live search
+              </Button>
+            </div>
+          </div>
+
+          <section className="mt-6">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="size-4 text-muted-foreground" />
@@ -317,7 +330,7 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
                 <Users className="mx-auto size-7 text-muted-foreground" />
                 <p className="mt-3 text-sm font-medium">No people found</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Adjust the search or filters, or show the full directory.
+                  Adjust the search or filters, or go back to live search.
                 </p>
               </div>
             ) : (
@@ -404,7 +417,9 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
                             </span>
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
                               {categoryBadge ? (
-                                <Badge variant="secondary">{categoryBadge}</Badge>
+                                <Badge variant="secondary">
+                                  {categoryBadge}
+                                </Badge>
                               ) : null}
                               <p className="text-xs text-muted-foreground">
                                 {employee.workEmail ?? "No work email"}
@@ -450,7 +465,7 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
             )}
           </section>
 
-          <footer className="flex items-center justify-between border-t border-border pt-5">
+          <footer className="mt-5 flex items-center justify-between border-t border-border pt-5">
             <p className="text-xs text-muted-foreground">
               Page {data.page} of {data.totalPages}
             </p>

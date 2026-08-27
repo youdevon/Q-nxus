@@ -58,8 +58,11 @@ import type {
 import {
   canApprovePayRun,
   canClosePayRun,
+  canDeletePayRun,
   canPostPayRun,
+  canRecalculatePayRun,
   canReconcilePayRun,
+  isPayRunEditable,
   isPayRunPosted,
   payRunStatusLabel,
 } from "@/src/modules/payroll/lib/pay-run-lifecycle";
@@ -91,7 +94,13 @@ function formatDateTime(iso: string | null) {
   return formatDisplayDateTime(iso, { fallback: "—" });
 }
 
-function RecalculatePayRunButton({ payRunId }: { payRunId: string }) {
+function RecalculatePayRunButton({
+  payRunId,
+  isApproved,
+}: {
+  payRunId: string;
+  isApproved: boolean;
+}) {
   const [state, formAction, pending] = useActionState(
     recalculateDraftPayRun,
     initialState,
@@ -111,7 +120,11 @@ function RecalculatePayRunButton({ payRunId }: { payRunId: string }) {
       <input type="hidden" name="payRunId" value={payRunId} />
       <Button type="submit" variant="outline" disabled={pending}>
         <RefreshCw />
-        {pending ? "Recalculating…" : "Recalculate"}
+        {pending
+          ? "Calculating…"
+          : isApproved
+            ? "Unlock & calculate all"
+            : "Calculate all"}
       </Button>
     </form>
   );
@@ -149,21 +162,28 @@ function ApprovePayRunButton({
         onClick={() => setOpen(true)}
       >
         <CircleCheck />
-        Approve for posting
+        Approve paysheet
       </Button>
       <DialogContent showCloseButton={!pending}>
         <DialogHeader>
-          <DialogTitle>Approve this pay run?</DialogTitle>
+          <DialogTitle>Approve and lock this paysheet?</DialogTitle>
           <DialogDescription>
             {noteRequired ? (
               <>
-                This run has {varianceFlagCount} net-pay exception
+                Approving recalculates every included employee, saves the draft
+                paysheet, then locks it for posting. This run has{" "}
+                {varianceFlagCount} net-pay exception
                 {varianceFlagCount === 1 ? "" : "s"} requiring explanation (see
-                Exceptions below). Add a note explaining the review before
-                approving. A different payroll officer must post this run.
+                Exceptions below). Add a note before approving. A different
+                payroll officer must post this run.
               </>
             ) : (
-              "A different payroll officer must post this run once approved."
+              <>
+                Approving recalculates every included employee, saves the draft
+                paysheet, then locks figures and membership for posting. Use
+                Unlock &amp; calculate all if you need to revise afterward. A
+                different payroll officer must post this run.
+              </>
             )}
           </DialogDescription>
         </DialogHeader>
@@ -199,7 +219,7 @@ function ApprovePayRunButton({
             </DialogClose>
             <Button type="submit" disabled={pending}>
               <CircleCheck />
-              {pending ? "Approving…" : "Approve"}
+              {pending ? "Calculating & approving…" : "Approve paysheet"}
             </Button>
           </DialogFooter>
         </form>
@@ -208,20 +228,24 @@ function ApprovePayRunButton({
   );
 }
 
-function DeleteDraftPayRunButton({
+function DeletePayRunButton({
   payRunId,
   runNumber,
   periodName,
+  status,
 }: {
   payRunId: string;
   runNumber: string;
   periodName: string;
+  status: string;
 }) {
   const [open, setOpen] = useState(false);
   const [state, formAction, pending] = useActionState(
     deleteDraftPayRun,
     initialState,
   );
+  const statusLabel = payRunStatusLabel(status);
+  const isFrozen = isPayRunPosted(status);
 
   useEffect(() => {
     if (state.status === "error") {
@@ -238,18 +262,29 @@ function DeleteDraftPayRunButton({
         onClick={() => setOpen(true)}
       >
         <Trash2 />
-        Delete draft
+        Delete{isFrozen ? "" : status === "DRAFT" ? " draft" : ""}
       </Button>
       <DialogContent showCloseButton={!pending}>
         <DialogHeader>
-          <DialogTitle>Delete draft pay run?</DialogTitle>
+          <DialogTitle>
+            Delete {statusLabel.toLowerCase()} pay run?
+          </DialogTitle>
           <DialogDescription>
-            This permanently removes draft pay run{" "}
+            This permanently removes pay run{" "}
             <span className="font-medium text-foreground">{runNumber}</span>{" "}
-            for {periodName}, including all draft payslip membership rows
-            (excluded employees included). The pay period will be freed so you
-            can create a new run for the same month. Posted payroll cannot be
-            deleted this way.
+            ({statusLabel}) for {periodName}, including payslips
+            {isFrozen
+              ? ", payment batches, and disbursement records"
+              : " (excluded employees included)"}
+            . The period will be freed when no other runs remain so you can
+            create a new run for the same month.
+            {isFrozen ? (
+              <>
+                {" "}
+                Use this only while testing — posted history cannot be
+                recovered.
+              </>
+            ) : null}
           </DialogDescription>
         </DialogHeader>
         {state.status === "error" ? (
@@ -270,7 +305,7 @@ function DeleteDraftPayRunButton({
             <input type="hidden" name="payRunId" value={payRunId} />
             <Button type="submit" variant="destructive" disabled={pending}>
               <Trash2 />
-              {pending ? "Deleting…" : "Delete draft"}
+              {pending ? "Deleting…" : "Delete pay run"}
             </Button>
           </form>
         </DialogFooter>
@@ -541,13 +576,11 @@ function RemoveLineItemButton({
 function LineItemRow({
   runId,
   line,
-  canManage,
-  isPosted,
+  canEdit,
 }: {
   runId: string;
   line: PayRunPayslipRow["lineItems"][number];
-  canManage: boolean;
-  isPosted: boolean;
+  canEdit: boolean;
 }) {
   const isAdjustment = isCorrectionAdjustmentCode(line.code);
 
@@ -567,11 +600,11 @@ function LineItemRow({
           {line.isTaxable ? " · taxable" : ""}
           {line.notes && !line.isAutoDelta ? ` · ${line.notes}` : ""}
           {line.isAutoDelta
-            ? " · refreshed on Recalculate from source vs current preview"
+            ? " · refreshed when you calculate all from source vs current preview"
             : ""}
         </p>
       </div>
-      {canManage && !isPosted && !line.isAutoDelta ? (
+      {canEdit && !line.isAutoDelta ? (
         <RemoveLineItemButton payRunId={runId} lineItemId={line.id} />
       ) : null}
     </div>
@@ -825,15 +858,13 @@ function AdvancedLineItemsForm({
 function PayrollLineItemsEditor({
   runId,
   slip,
-  canManage,
-  isPosted,
+  canEdit,
   runKind,
   currency,
 }: {
   runId: string;
   slip: PayRunPayslipRow;
-  canManage: boolean;
-  isPosted: boolean;
+  canEdit: boolean;
   runKind: PayRunDetail["runKind"];
   currency: string;
 }) {
@@ -846,10 +877,7 @@ function PayrollLineItemsEditor({
     (line) => !isCorrectionAdjustmentCode(line.code),
   );
 
-  if (
-    slip.lineItems.length === 0 &&
-    (isPosted || !canManage)
-  ) {
+  if (slip.lineItems.length === 0 && !canEdit) {
     return null;
   }
 
@@ -865,8 +893,7 @@ function PayrollLineItemsEditor({
               key={line.id}
               runId={runId}
               line={line}
-              canManage={canManage}
-              isPosted={isPosted}
+              canEdit={canEdit}
             />
           ))}
         </div>
@@ -882,18 +909,17 @@ function PayrollLineItemsEditor({
               key={line.id}
               runId={runId}
               line={line}
-              canManage={canManage}
-              isPosted={isPosted}
+              canEdit={canEdit}
             />
           ))}
         </div>
       ) : null}
 
-      {canManage && !isPosted && isSupplemental ? (
+      {canEdit && isSupplemental ? (
         <AddAdjustmentPanel runId={runId} slip={slip} currency={currency} />
       ) : null}
 
-      {canManage && !isPosted ? (
+      {canEdit ? (
         isSupplemental ? (
           <div className="space-y-2">
             <Button
@@ -1019,14 +1045,14 @@ function CorrectionDeltaPanel({
 function PayslipRow({
   runId,
   slip,
-  canManage,
+  canEdit,
   isPosted,
   runKind,
   currency,
 }: {
   runId: string;
   slip: PayRunPayslipRow;
-  canManage: boolean;
+  canEdit: boolean;
   isPosted: boolean;
   runKind: PayRunDetail["runKind"];
   currency: string;
@@ -1047,6 +1073,15 @@ function PayslipRow({
           {[slip.jobTitle, slip.departmentName].filter(Boolean).join(" · ") ||
             "—"}
         </p>
+        {!slip.isExcluded && slip.payrollWarnings.length > 0 ? (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {slip.payrollWarnings.map((warning) => (
+              <Badge key={warning} variant="warning">
+                {warning}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
         {slip.isExcluded ? (
           <div className="mt-2 space-y-1 text-xs text-muted-foreground">
             <p>
@@ -1116,11 +1151,11 @@ function PayslipRow({
                 PDF
               </Button>
             ) : null}
-            {canManage && !isPosted ? (
+            {canEdit ? (
               <ExcludePayslipControls runId={runId} slip={slip} />
             ) : null}
           </>
-        ) : canManage && !isPosted ? (
+        ) : canEdit ? (
           <ReincludePayslipButton runId={runId} slip={slip} />
         ) : null}
       </div>
@@ -1134,8 +1169,7 @@ function PayslipRow({
         <PayrollLineItemsEditor
           runId={runId}
           slip={slip}
-          canManage={canManage}
-          isPosted={isPosted}
+          canEdit={canEdit}
           runKind={runKind}
           currency={currency}
         />
@@ -1243,6 +1277,8 @@ export function PayRunDetailView({
   }, [postState]);
 
   const isPosted = isPayRunPosted(run.status);
+  const isApproved = run.status === "APPROVED";
+  const canEdit = canManage && isPayRunEditable(run.status);
   const isSupplemental = isSupplementalPayRunKind(run.runKind);
   const unexplainedVarianceCount = run.varianceFlags.length;
   const included = run.payslips.filter((slip) => !slip.isExcluded);
@@ -1356,22 +1392,38 @@ export function PayRunDetailView({
                 {canManage && canClosePayRun(run.status) ? (
                   <ClosePayRunButton payRunId={run.id} />
                 ) : null}
+                {canManage && canDeletePayRun(run.status) && isPosted ? (
+                  <DeletePayRunButton
+                    payRunId={run.id}
+                    runNumber={run.runNumber}
+                    periodName={run.period.name}
+                    status={run.status}
+                  />
+                ) : null}
               </>
             ) : null}
             {canManage && !isPosted ? (
               <>
-                <RecalculatePayRunButton payRunId={run.id} />
+                {canRecalculatePayRun(run.status) ? (
+                  <RecalculatePayRunButton
+                    payRunId={run.id}
+                    isApproved={isApproved}
+                  />
+                ) : null}
                 {canApprovePayRun(run.status) ? (
                   <ApprovePayRunButton
                     payRunId={run.id}
                     varianceFlagCount={unexplainedVarianceCount}
                   />
                 ) : null}
-                <DeleteDraftPayRunButton
-                  payRunId={run.id}
-                  runNumber={run.runNumber}
-                  periodName={run.period.name}
-                />
+                {canDeletePayRun(run.status) ? (
+                  <DeletePayRunButton
+                    payRunId={run.id}
+                    runNumber={run.runNumber}
+                    periodName={run.period.name}
+                    status={run.status}
+                  />
+                ) : null}
                 <form action={postAction}>
                   <input type="hidden" name="payRunId" value={run.id} />
                   <Button
@@ -1381,9 +1433,9 @@ export function PayRunDetailView({
                     <Lock />
                     {postPending
                       ? "Posting…"
-                      : run.status === "APPROVED"
-                        ? "Post pay run"
-                        : "Post (needs approval)"}
+                      : isApproved
+                        ? "Post paysheet"
+                        : "Post (approve first)"}
                   </Button>
                 </form>
               </>
@@ -1401,7 +1453,7 @@ export function PayRunDetailView({
         </div>
       ) : null}
 
-      <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-7">
         <div>
           <p className="text-xs text-muted-foreground">Status</p>
           <div className="mt-1 flex flex-wrap gap-2">
@@ -1429,15 +1481,39 @@ export function PayRunDetailView({
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Gross</p>
-          <p className="mt-1 text-lg font-semibold">{run.totalGross}</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalGross}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-muted-foreground">Deductions</p>
-          <p className="mt-1 text-lg font-semibold">{run.totalDeductions}</p>
+          <p className="text-xs text-muted-foreground">PAYE</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalPaye}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground">NIS (employee)</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalNisEmployee}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground">Health Surcharge</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalHealthSurcharge}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground">Total deductions</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalDeductions}
+          </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Net</p>
-          <p className="mt-1 text-lg font-semibold">{run.totalNet}</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalNet}
+          </p>
         </div>
       </section>
 
@@ -1594,7 +1670,17 @@ export function PayRunDetailView({
 
       {!isPosted ? (
         <p className="mt-6 text-sm text-muted-foreground">
-          {isSupplemental ? (
+          {isApproved ? (
+            <>
+              This paysheet is approved and locked. Figures and membership
+              cannot change until you{" "}
+              <span className="font-medium text-foreground">
+                Unlock &amp; calculate all
+              </span>
+              , which returns the run to draft. Post freezes included payslips
+              permanently.
+            </>
+          ) : isSupplemental ? (
             <>
               This {run.runKind === "CORRECTION" ? "correction" : "off-cycle"}{" "}
               draft creates its own payslips — the original posted payslip is
@@ -1610,8 +1696,11 @@ export function PayRunDetailView({
                   <span className="font-medium text-foreground">
                     Add adjustment
                   </span>{" "}
-                  for extra manual amounts, then Recalculate to refresh auto
-                  lines from current master data.
+                  for extra manual amounts, then{" "}
+                  <span className="font-medium text-foreground">
+                    Calculate all
+                  </span>{" "}
+                  to refresh auto lines from current master data.
                 </>
               ) : (
                 <>
@@ -1620,20 +1709,30 @@ export function PayRunDetailView({
                   <span className="font-medium text-foreground">
                     Add adjustment
                   </span>{" "}
-                  for one-off earning or deduction deltas, then Recalculate if
-                  needed.
+                  for one-off earning or deduction deltas, then{" "}
+                  <span className="font-medium text-foreground">
+                    Calculate all
+                  </span>{" "}
+                  if needed.
                 </>
               )}{" "}
-              Posting freezes included payslips so later changes do not rewrite
-              history.
+              When the sheet is complete,{" "}
+              <span className="font-medium text-foreground">
+                Approve paysheet
+              </span>{" "}
+              recalculates everyone, saves the draft, and locks it for posting.
             </>
           ) : (
             <>
-              Draft amounts are snapshotted from the payslip preview calculation.
-              Use Recalculate to refresh included employees from current contracts
-              and statutory configs. Excluded employees stay out of totals and are
-              not posted. Posting freezes included payslips so later changes do not
-              rewrite history.
+              Draft amounts are snapshotted from the payslip calculation. Use{" "}
+              <span className="font-medium text-foreground">Calculate all</span>{" "}
+              to refresh included employees from current contracts and statutory
+              configs. Excluded employees stay out of totals and are not posted.
+              When the sheet is complete,{" "}
+              <span className="font-medium text-foreground">
+                Approve paysheet
+              </span>{" "}
+              recalculates everyone, saves the draft, and locks it for posting.
             </>
           )}
         </p>
@@ -1664,7 +1763,7 @@ export function PayRunDetailView({
                 key={slip.id}
                 runId={run.id}
                 slip={slip}
-                canManage={canManage}
+                canEdit={canEdit}
                 isPosted={isPosted}
                 runKind={run.runKind}
                 currency={run.currency}
@@ -1686,7 +1785,7 @@ export function PayRunDetailView({
                 key={slip.id}
                 runId={run.id}
                 slip={slip}
-                canManage={canManage}
+                canEdit={canEdit}
                 isPosted={isPosted}
                 runKind={run.runKind}
                 currency={run.currency}

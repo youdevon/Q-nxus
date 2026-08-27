@@ -35,7 +35,10 @@ import {
 import { FinancialInstitutionSelect } from "@/src/modules/payroll/components/financial-institution-select";
 import { PayrollNav } from "@/src/modules/payroll/components/payroll-nav";
 import type { EmployeePayrollSetup } from "@/src/modules/payroll/lib/payroll-setup-types";
-import { OTHER_FINANCIAL_INSTITUTION_ID } from "@/src/modules/payroll/lib/tt-financial-institutions";
+import {
+  OTHER_FINANCIAL_INSTITUTION_ID,
+  getTtFinancialInstitutionById,
+} from "@/src/modules/payroll/lib/tt-financial-institutions";
 
 const initialState: PayrollProfileFormState = {
   status: "idle",
@@ -142,6 +145,28 @@ function resolveInstitutionSelection(
   };
 }
 
+/** ABA / routing for a selected institution (DB option, else catalog fallback). */
+function resolveInstitutionRouting(
+  institutionId: string,
+  institutions: EmployeePayrollSetup["financialInstitutions"],
+): string {
+  if (!institutionId || institutionId === OTHER_FINANCIAL_INSTITUTION_ID) {
+    return "";
+  }
+
+  const match = institutions.find(
+    (item) => item.id === institutionId || item.catalogKey === institutionId,
+  );
+  const fromDb =
+    match?.routingCode?.trim() || match?.achParticipantCode?.trim() || "";
+  if (fromDb) {
+    return fromDb;
+  }
+
+  const catalogKey = match?.catalogKey ?? institutionId;
+  return getTtFinancialInstitutionById(catalogKey)?.routingCode?.trim() || "";
+}
+
 function defaultAccountHolderName(setup: EmployeePayrollSetup): string {
   return setup.employee.displayName.trim();
 }
@@ -199,13 +224,20 @@ export function PayrollProfileForm({
     setup.bankAccounts.length > 0
       ? setup.bankAccounts.map((account) => {
           const selection = resolveInstitutionSelection(account, institutions);
+          const storedRouting = account.routingNumber?.trim() ?? "";
+          // Prefer stored ABA; when blank (e.g. ACH sync linked FI only),
+          // show institution / catalog routing so the field is visible and
+          // persists on the next save.
+          const routingNumber =
+            storedRouting ||
+            resolveInstitutionRouting(selection.institutionId, institutions);
           const hasPercentage =
             account.percentage != null && Number(account.percentage) > 0;
           return {
             rowId: account.id,
             institutionId: selection.institutionId,
             bankName: selection.bankName,
-            routingNumber: account.routingNumber?.trim() ?? "",
+            routingNumber,
             accountNumber: account.accountNumber,
             accountName:
               account.accountName?.trim() || defaultAccountHolderName(setup),
@@ -330,7 +362,7 @@ export function PayrollProfileForm({
   return (
     <>
     <form action={formAction}>
-      <PageShell>
+      <PageShell size="lg" className="min-w-0">
         <PayrollNav />
         <input type="hidden" name="employeeId" value={setup.employee.id} />
         <input type="hidden" name="bankAccountsJson" value={bankAccountsJson} />
@@ -412,14 +444,30 @@ export function PayrollProfileForm({
           </section>
         ) : null}
 
+        {(setup.readiness.softWarnings?.length ?? 0) > 0 ? (
+          <section className="rounded-md border border-amber-500/30 bg-amber-500/10 p-4 dark:border-amber-500/40 dark:bg-amber-500/15">
+            <p className="text-sm font-medium text-amber-950 dark:text-amber-100">
+              Warnings
+            </p>
+            <p className="mt-1 text-xs text-amber-900/80 dark:text-amber-100/80">
+              These do not block pay-run inclusion.
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-amber-950 dark:text-amber-100">
+              {setup.readiness.softWarnings?.map((warning) => (
+                <li key={warning}>• {warning}</li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
         <section>
           <div className="mb-4 flex items-center gap-2">
             <Wallet className="size-4 text-muted-foreground" />
             <SectionHeading>Payroll assignment</SectionHeading>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="space-y-2">
+          <div className="grid min-w-0 gap-5 md:grid-cols-2">
+            <div className="min-w-0 space-y-2">
               <label className="text-sm font-medium" htmlFor="payFrequency">
                 Pay frequency
               </label>
@@ -445,7 +493,7 @@ export function PayrollProfileForm({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <label className="text-sm font-medium" htmlFor="paymentMethod">
                 Payment method
               </label>
@@ -467,7 +515,7 @@ export function PayrollProfileForm({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <label className="text-sm font-medium" htmlFor="nisNumber">
                 NIS number
               </label>
@@ -484,7 +532,7 @@ export function PayrollProfileForm({
                     name="nisNumber"
                     value={setup.employee.nisNumber}
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-pretty text-xs text-muted-foreground">
                     From the employee record — edit on the employee profile.
                   </p>
                 </>
@@ -496,7 +544,7 @@ export function PayrollProfileForm({
                     defaultValue={setup.statutoryNumbers.nisNumber ?? ""}
                     placeholder="National insurance number"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-pretty text-xs text-muted-foreground">
                     Not on the employee record yet. Saving writes this to the
                     employee profile when you have people.manage.
                   </p>
@@ -504,10 +552,17 @@ export function PayrollProfileForm({
               )}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="birNumber">
-                BIR number
-              </label>
+            <div className="min-w-0 space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="text-sm font-medium" htmlFor="birNumber">
+                  BIR number
+                </label>
+                {!setup.employee.birNumber &&
+                !setup.statutoryNumbers.birNumber &&
+                !(setup.profile?.exemptFromPaye ?? false) ? (
+                  <Badge variant="warning">Missing — does not block payroll</Badge>
+                ) : null}
+              </div>
               {setup.employee.birNumber ? (
                 <>
                   <Input
@@ -521,7 +576,7 @@ export function PayrollProfileForm({
                     name="birNumber"
                     value={setup.employee.birNumber}
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-pretty text-xs text-muted-foreground">
                     From the employee record — edit on the employee profile.
                   </p>
                 </>
@@ -533,7 +588,7 @@ export function PayrollProfileForm({
                     defaultValue={setup.statutoryNumbers.birNumber ?? ""}
                     placeholder="Board of Inland Revenue file number"
                   />
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-pretty text-xs text-muted-foreground">
                     Not on the employee record yet. Saving writes this to the
                     employee profile when you have people.manage.
                   </p>
@@ -541,7 +596,7 @@ export function PayrollProfileForm({
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <label
                 className="text-sm font-medium"
                 htmlFor="td1OtherApprovedAnnual"
@@ -562,73 +617,76 @@ export function PayrollProfileForm({
                   {state.fieldErrors.td1OtherApprovedAnnual}
                 </p>
               )}
-              <p className="text-xs text-muted-foreground">
+              <p className="text-pretty text-xs text-muted-foreground">
                 Combined with 70% of employee NIS under the PAYE approved-
                 deduction cap. Synced with the {setup.taxProfile.taxYear} tax
                 profile below.
               </p>
             </div>
 
-            <label className="flex items-end gap-2 pb-2 text-sm font-medium">
+            <label className="flex min-w-0 items-start gap-2 text-sm font-medium md:items-end md:pb-2">
               <input
                 type="checkbox"
                 name="pensionOnlyIncome"
+                className="mt-1 shrink-0 md:mt-0 md:mb-1"
                 defaultChecked={setup.profile?.pensionOnlyIncome ?? false}
               />
-              Pension is only source of income (Health Surcharge exempt)
+              <span className="min-w-0 text-pretty">
+                Pension is only source of income (Health Surcharge exempt)
+              </span>
             </label>
 
-            <div className="space-y-3 md:col-span-2">
+            <div className="min-w-0 space-y-3 md:col-span-2">
               <p className="text-sm font-medium">Statutory exemptions</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-pretty text-xs text-muted-foreground">
                 Opt this employee out of specific statutory deductions. Exempt
                 flags also relax payroll readiness (NIS number / BIR number)
                 where applicable.
               </p>
-              <div className="grid gap-3 md:grid-cols-3">
-                <label className="flex items-start gap-2 text-sm">
+              <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <label className="flex min-w-0 items-start gap-2 text-sm">
                   <input
                     type="checkbox"
                     name="exemptFromNis"
-                    className="mt-0.5"
+                    className="mt-0.5 shrink-0"
                     defaultChecked={setup.profile?.exemptFromNis ?? false}
                   />
-                  <span>
+                  <span className="min-w-0">
                     <span className="font-medium">Exempt from NIS</span>
-                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                    <span className="mt-0.5 block text-pretty text-xs font-normal text-muted-foreground">
                       No employee or employer NIS. NIS number not required for
                       readiness.
                     </span>
                   </span>
                 </label>
-                <label className="flex items-start gap-2 text-sm">
+                <label className="flex min-w-0 items-start gap-2 text-sm">
                   <input
                     type="checkbox"
                     name="exemptFromHealthSurcharge"
-                    className="mt-0.5"
+                    className="mt-0.5 shrink-0"
                     defaultChecked={
                       setup.profile?.exemptFromHealthSurcharge ?? false
                     }
                   />
-                  <span>
+                  <span className="min-w-0">
                     <span className="font-medium">
                       Exempt from Health Surcharge
                     </span>
-                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                    <span className="mt-0.5 block text-pretty text-xs font-normal text-muted-foreground">
                       Health Surcharge calculates as zero for this employee.
                     </span>
                   </span>
                 </label>
-                <label className="flex items-start gap-2 text-sm">
+                <label className="flex min-w-0 items-start gap-2 text-sm sm:col-span-2 xl:col-span-1">
                   <input
                     type="checkbox"
                     name="exemptFromPaye"
-                    className="mt-0.5"
+                    className="mt-0.5 shrink-0"
                     defaultChecked={setup.profile?.exemptFromPaye ?? false}
                   />
-                  <span>
+                  <span className="min-w-0">
                     <span className="font-medium">Exempt from PAYE</span>
-                    <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                    <span className="mt-0.5 block text-pretty text-xs font-normal text-muted-foreground">
                       No PAYE deducted. BIR number not required for readiness.
                     </span>
                   </span>
@@ -651,9 +709,9 @@ export function PayrollProfileForm({
         </section>
 
         {setup.statutoryPreview ? (
-          <section className="rounded-md border border-border/70 bg-muted/20 p-4">
+          <section className="min-w-0 rounded-md border border-border/70 bg-muted/20 p-4">
             <p className="text-sm font-medium">Estimated statutory deductions</p>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-pretty text-xs text-muted-foreground">
               Based on taxable pay{" "}
               {formatMoney(setup.statutoryPreview.monthlyTaxableEarnings, {
                 currency,
@@ -662,23 +720,23 @@ export function PayrollProfileForm({
               Non-taxable allowances remain in gross pay only.
             </p>
 
-            <div className="mt-4 grid gap-4 md:grid-cols-3">
-              <div>
+            <div className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">NIS (employee)</p>
-                <p className="mt-1 text-sm font-medium">
+                <p className="mt-1 text-pretty text-sm font-medium">
                   {setup.profile?.exemptFromNis
                     ? "Exempt (opt-out)"
                     : setup.statutoryPreview.nis
                       ? setup.statutoryPreview.nis.belowMinimum
                         ? "Below Class I — none"
-                        : `Class ${setup.statutoryPreview.nis.classCode}: ${formatMoney(setup.statutoryPreview.nis.employeeMonthly, { currency: "TTD" })}/mo`
+                        : `Class ${setup.statutoryPreview.nis.classCode}: ${formatMoney(setup.statutoryPreview.nis.employeeMonthly, { currency: "TTD" })}/mo (${setup.statutoryPreview.nis.weeksInPeriod} wk)`
                       : "No NIS classes configured"}
                 </p>
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs text-muted-foreground">PAYE</p>
-                <p className="mt-1 text-sm font-medium">
+                <p className="mt-1 text-pretty text-sm font-medium">
                   {setup.profile?.exemptFromPaye
                     ? "Exempt (opt-out)"
                     : setup.statutoryPreview.paye
@@ -687,13 +745,13 @@ export function PayrollProfileForm({
                 </p>
               </div>
 
-              <div>
+              <div className="min-w-0 sm:col-span-2 xl:col-span-1">
                 <p className="text-xs text-muted-foreground">Health Surcharge</p>
-                <p className="mt-1 text-sm font-medium">
+                <p className="mt-1 text-pretty text-sm font-medium">
                   {setup.statutoryPreview.health
                     ? setup.statutoryPreview.health.exempt
                       ? `Exempt (${setup.statutoryPreview.health.exemptionReason?.replaceAll("_", " ").toLowerCase()})`
-                      : `${formatMoney(setup.statutoryPreview.health.averageMonthlyAmount, { currency: "TTD" })}/mo avg (${formatMoney(setup.statutoryPreview.health.weeklyAmount)}/wk)`
+                      : `${formatMoney(setup.statutoryPreview.health.periodAmount, { currency: "TTD" })}/mo (${formatMoney(setup.statutoryPreview.health.weeklyAmount)}/wk × ${setup.statutoryPreview.health.weeksInPeriod})`
                     : "No Health config"}
                 </p>
               </div>
@@ -710,10 +768,10 @@ export function PayrollProfileForm({
         ) : null}
 
         {showBankSection ? (
-          <section>
+          <section className="min-w-0">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Landmark className="size-4 text-muted-foreground" />
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <Landmark className="size-4 shrink-0 text-muted-foreground" />
                 <SectionHeading>Payment instructions</SectionHeading>
                 <Badge variant={primaryCount === 1 ? "success" : "warning"}>
                   {primaryCount === 1
@@ -742,7 +800,7 @@ export function PayrollProfileForm({
               ) : null}
             </div>
 
-            <p className="mb-3 text-xs text-muted-foreground">
+            <p className="mb-3 text-pretty text-xs text-muted-foreground">
               Fields align with First Citizens ACH entry: account holder
               (Individual Name), ABA/routing when known, account number, and
               Savings/Chequing (Payment Type). Employee number is used as
@@ -756,20 +814,20 @@ export function PayrollProfileForm({
 
             {hasBaseSalary ? (
               <div className="mb-4 rounded-md border border-border/70 bg-muted/20 px-4 py-3">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <div>
+                <div className="flex min-w-0 flex-wrap items-baseline justify-between gap-2">
+                  <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">
                       Reference base salary
                     </p>
-                    <p className="mt-0.5 text-sm font-medium">
+                    <p className="mt-0.5 text-pretty text-sm font-medium">
                       {formatMoney(baseSalary, { currency })}
                       <span className="ml-1.5 font-normal text-muted-foreground">
                         (current contract)
                       </span>
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-2 text-xs">
-                    <Badge variant="outline">
+                  <div className="flex min-w-0 flex-wrap gap-2 text-xs">
+                    <Badge variant="outline" className="max-w-full truncate">
                       Allocated {formatMoney(allocatedTotal, { currency })}
                     </Badge>
                     <Badge
@@ -824,9 +882,9 @@ export function PayrollProfileForm({
                 {bankAccounts.map((row) => (
                   <div
                     key={row.rowId}
-                    className="grid gap-4 rounded-md border border-border/70 p-4 md:grid-cols-[minmax(12rem,1.4fr)_minmax(8rem,0.9fr)_minmax(10rem,1.1fr)_1fr_1fr_8rem_auto]"
+                    className="grid min-w-0 gap-4 rounded-md border border-border/70 p-4 sm:grid-cols-2 xl:grid-cols-3"
                   >
-                    <div className="space-y-1.5">
+                    <div className="min-w-0 space-y-1.5 sm:col-span-2 xl:col-span-1">
                       <label
                         className="text-xs text-muted-foreground"
                         htmlFor={`institution-${row.rowId}`}
@@ -839,22 +897,18 @@ export function PayrollProfileForm({
                         bankName={row.bankName}
                         institutions={institutions}
                         onChange={({ institutionId, bankName }) => {
-                          const match = institutions.find(
-                            (item) =>
-                              item.id === institutionId ||
-                              item.catalogKey === institutionId,
-                          );
-                          const fromInstitution =
-                            match?.routingCode?.trim() ||
-                            match?.achParticipantCode?.trim() ||
-                            "";
                           updateRow(row.rowId, {
                             institutionId,
                             bankName,
+                            // Refill from the new institution on each change;
+                            // keep manual value only for "Other".
                             routingNumber:
                               institutionId === OTHER_FINANCIAL_INSTITUTION_ID
                                 ? row.routingNumber
-                                : fromInstitution || row.routingNumber,
+                                : resolveInstitutionRouting(
+                                    institutionId,
+                                    institutions,
+                                  ),
                           });
                         }}
                       />
@@ -874,7 +928,7 @@ export function PayrollProfileForm({
                       ) : null}
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="min-w-0 space-y-1.5">
                       <label
                         className="text-xs text-muted-foreground"
                         htmlFor={`routingNumber-${row.rowId}`}
@@ -889,12 +943,16 @@ export function PayrollProfileForm({
                             routingNumber: event.target.value,
                           })
                         }
-                        placeholder="When confirmed"
+                        placeholder="Auto-filled when known"
                         className="font-mono text-sm"
                       />
+                      <p className="text-pretty text-[11px] text-muted-foreground">
+                        Auto-filled from the institution when known; edit to
+                        override. ACH uses this value when set.
+                      </p>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="min-w-0 space-y-1.5">
                       <label
                         className="text-xs text-muted-foreground"
                         htmlFor={`accountName-${row.rowId}`}
@@ -913,7 +971,7 @@ export function PayrollProfileForm({
                       />
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="min-w-0 space-y-1.5">
                       <label
                         className="text-xs text-muted-foreground"
                         htmlFor={`accountNumber-${row.rowId}`}
@@ -932,7 +990,7 @@ export function PayrollProfileForm({
                       />
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="min-w-0 space-y-1.5">
                       <label
                         className="text-xs text-muted-foreground"
                         htmlFor={`accountType-${row.rowId}`}
@@ -941,7 +999,7 @@ export function PayrollProfileForm({
                       </label>
                       <select
                         id={`accountType-${row.rowId}`}
-                        className="h-9 w-full rounded-md border bg-background px-3 text-sm"
+                        className="h-9 w-full min-w-0 rounded-md border bg-background px-3 text-sm"
                         value={row.accountType}
                         onChange={(event) =>
                           updateRow(row.rowId, {
@@ -960,7 +1018,7 @@ export function PayrollProfileForm({
                       </select>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="min-w-0 space-y-1.5">
                       <label
                         className="text-xs text-muted-foreground"
                         htmlFor={`amount-${row.rowId}`}
@@ -1088,7 +1146,7 @@ export function PayrollProfileForm({
                       )}
                     </div>
 
-                    <div className="flex items-end gap-2 pb-0.5">
+                    <div className="flex min-w-0 flex-wrap items-end gap-2 pb-0.5 sm:col-span-2 xl:col-span-3">
                       <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
                         <input
                           type="radio"
@@ -1171,10 +1229,12 @@ export function PayrollProfileForm({
                   return (
                     <div
                       key={`${element.label}-${index}`}
-                      className="grid gap-4 py-4 md:grid-cols-[1fr_10rem_8rem_8rem]"
+                      className="grid min-w-0 gap-4 py-4 sm:grid-cols-2 xl:grid-cols-4"
                     >
-                      <div>
-                        <p className="text-sm font-medium">{element.label}</p>
+                      <div className="min-w-0 sm:col-span-2 xl:col-span-1">
+                        <p className="text-pretty text-sm font-medium">
+                          {element.label}
+                        </p>
                         <p className="mt-0.5 text-xs text-muted-foreground">
                           {element.source === "CONTRACT_SALARY"
                             ? "Contract base salary"
@@ -1182,7 +1242,7 @@ export function PayrollProfileForm({
                         </p>
                       </div>
 
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">Amount</p>
                         <p className="mt-1 text-sm font-medium">
                           {formatMoney(element.amount, {
@@ -1191,7 +1251,7 @@ export function PayrollProfileForm({
                         </p>
                       </div>
 
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">
                           Frequency
                         </p>
@@ -1200,7 +1260,7 @@ export function PayrollProfileForm({
                         </p>
                       </div>
 
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-xs text-muted-foreground">Taxable</p>
                         {canEditTaxable ? (
                           <label className="mt-1 flex items-center gap-2 text-sm font-medium">
@@ -1236,7 +1296,7 @@ export function PayrollProfileForm({
     {(canVerifyInstructions ||
       canDeactivateInstructions ||
       setup.bankAccountHistory.length > 0) && (
-      <PageShell className="pt-0 sm:pt-0 md:pt-0 lg:pt-0">
+      <PageShell size="lg" className="min-w-0 pt-0 sm:pt-0 md:pt-0 lg:pt-0">
         {(canVerifyInstructions || canDeactivateInstructions) &&
         setup.bankAccounts.length > 0 ? (
           <section className="mb-10">

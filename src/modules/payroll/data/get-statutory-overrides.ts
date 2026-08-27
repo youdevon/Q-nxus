@@ -65,6 +65,7 @@ export async function listEmployeeStatutoryOverrides(
     nisEmployeeAmount: row.nisEmployeeAmount?.toString() ?? null,
     healthSurchargeAmount: row.healthSurchargeAmount?.toString() ?? null,
     reason: row.reason,
+    applyScope: row.applyScope,
     status: row.status,
     requestedByUserId: row.requestedByUserId,
     approvedByUserId: row.approvedByUserId,

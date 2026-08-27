@@ -654,6 +654,24 @@ export const EmployeeTaxProfileStatus = {
 export type EmployeeTaxProfileStatus = (typeof EmployeeTaxProfileStatus)[keyof typeof EmployeeTaxProfileStatus]
 
 
+export const PreviousEmploymentStatus = {
+  NO_PREVIOUS_EMPLOYMENT: 'NO_PREVIOUS_EMPLOYMENT',
+  PREVIOUS_EMPLOYMENT: 'PREVIOUS_EMPLOYMENT',
+  UNKNOWN_PREVIOUS_INCOME: 'UNKNOWN_PREVIOUS_INCOME'
+} as const
+
+export type PreviousEmploymentStatus = (typeof PreviousEmploymentStatus)[keyof typeof PreviousEmploymentStatus]
+
+
+export const OtherEmolumentIncomeStatus = {
+  NO_OTHER_EMOLUMENTS: 'NO_OTHER_EMOLUMENTS',
+  HAS_OTHER_EMOLUMENTS: 'HAS_OTHER_EMOLUMENTS',
+  UNKNOWN_OTHER_EMOLUMENTS: 'UNKNOWN_OTHER_EMOLUMENTS'
+} as const
+
+export type OtherEmolumentIncomeStatus = (typeof OtherEmolumentIncomeStatus)[keyof typeof OtherEmolumentIncomeStatus]
+
+
 export const PriorEmploymentDocumentType = {
   TD4: 'TD4',
   PRIOR_EMPLOYER_LETTER: 'PRIOR_EMPLOYER_LETTER',
@@ -662,6 +680,14 @@ export const PriorEmploymentDocumentType = {
 } as const
 
 export type PriorEmploymentDocumentType = (typeof PriorEmploymentDocumentType)[keyof typeof PriorEmploymentDocumentType]
+
+
+export const PriorTaxableIncomeEntryMode = {
+  DIRECT: 'DIRECT',
+  WORKSHEET: 'WORKSHEET'
+} as const
+
+export type PriorTaxableIncomeEntryMode = (typeof PriorTaxableIncomeEntryMode)[keyof typeof PriorTaxableIncomeEntryMode]
 
 
 export const PriorEmploymentRecordStatus = {
@@ -694,6 +720,15 @@ export const StatutoryOverrideStatus = {
 } as const
 
 export type StatutoryOverrideStatus = (typeof StatutoryOverrideStatus)[keyof typeof StatutoryOverrideStatus]
+
+
+export const StatutoryOverrideApplyScope = {
+  THIS_PERIOD: 'THIS_PERIOD',
+  THROUGH_YEAR_END: 'THROUGH_YEAR_END',
+  THROUGH_CONTRACT_END: 'THROUGH_CONTRACT_END'
+} as const
+
+export type StatutoryOverrideApplyScope = (typeof StatutoryOverrideApplyScope)[keyof typeof StatutoryOverrideApplyScope]
 
 
 export const AnnualPayrollProjectionStatus = {

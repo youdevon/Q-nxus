@@ -16,15 +16,58 @@ APIs:
 
 `EmployeeTaxProfile` is the sole store for per-employee, per-calendar-tax-year PAYE treatment (method, personal allowance override, TD1 flags/amounts, previous-employment declarations).
 
+### Previous-employment status (three scenarios)
+
+`previousEmploymentStatus` drives whether prior income may enter PAYE:
+
+| Status | Meaning | Calc behaviour |
+|--------|---------|----------------|
+| `NO_PREVIOUS_EMPLOYMENT` | No other employer this tax year | Prior assumed zero; mid-year hire is **not** an exceptions-report hit |
+| `PREVIOUS_EMPLOYMENT` | Had prior employer(s) this year | Enter / verify `EmployeePriorEmploymentYtd`; incomplete / unverified → exceptions |
+| `UNKNOWN_PREVIOUS_INCOME` | Not confirmed | **Do not assume zero**; calc notes + `PRIOR_EMPLOYMENT_DATA_REQUIRED`; mid-year joiners flagged for review |
+
+`previousEmploymentDeclared` is synced as `status === PREVIOUS_EMPLOYMENT` (also true when ACTIVE prior rows exist). Saving prior YTD auto-sets status to `PREVIOUS_EMPLOYMENT`; archiving the last prior row clears `PREVIOUS` → `NO_PREVIOUS_EMPLOYMENT` (UNKNOWN is left alone).
+
+Also on the tax profile: `otherEmolumentIncomeStatus`, `birDirectionPresent` / `birDirectionReference`.
+
 Calc reads the tax profile for the period’s tax year. Saving TD1 from payroll setup or the tax profile form writes only to `EmployeeTaxProfile` for that year.
+
+### Tax-year period PAYE (live path)
+
+Live payslips use `computeTaxYearPeriodPaye` when cumulative / previous-income is enabled **or** the employee joined mid tax year. That path:
+
+- Projects remaining periods from hire (never blind ×12 for mid-year joiners)
+- Honours `previousEmploymentStatus` (Unknown → warning / data-required; Previous without verified YTD → incomplete)
+- Combines verified prior-employer YTD with **current-employer** YTD (posted slips + verified opening balances)
+
+### Opening YTD vs prior-employer YTD
+
+| Store | Meaning | Bucket |
+|-------|---------|--------|
+| `EmployeeOpeningYtdBalance` | Same employer — system go-live / migration balances already paid under **this** employer before Q-NXUS | Current-employer YTD |
+| `EmployeePriorEmploymentYtd` | Different employer(s) earlier in the same tax year | Prior-employer YTD |
+
+Verified opening taxable / PAYE / NIS / Health fold into current-employer YTD on payslip preview (same as posted slips). Unverified opening stays out of calc. UI copy must keep these distinct.
+
+**Do not merge these tables.** Collapsing opening + prior into one store would
+muddy PAYE (current-employer vs other-employer credits). Same rule for
+`EmployeeTaxProfile` vs `PayrollProfile`, and draft `PayrollLineItem` vs
+frozen `Payslip.snapshot` — see Architecture §6 “Payroll complementary stores”.
 
 ## Prior-employer YTD (Phase 3)
 
-`EmployeePriorEmploymentYtd` stores mid-year joiner prior taxable income / PAYE / NIS / Health totals (plus optional TD4 or letter attachments via `StoredFile`).
+`EmployeePriorEmploymentYtd` stores mid-year joiner prior taxable income / PAYE / NIS / Health totals (plus optional TD4, payslip, or letter attachments via `StoredFile`).
 
-- Joiners **without** prior employment this tax year need no records.
-- Active rows sync `EmployeeTaxProfile.previousEmploymentDeclared` / `Verified`.
-- Totals resolve into payslip statutory pins and calc notes; applied when cumulative PAYE is enabled.
+Entry on payroll setup supports two payslip modes:
+
+- **Direct** — slip shows taxable / YTD PAY (or TD4 taxable); enter that amount.
+- **Worksheet** — slip shows gross + travelling/non-taxable; enter gross and non-taxable allowances; taxable = gross − non-taxable (stored with the worksheet amounts for audit).
+
+Do **not** enter net pay as taxable. Saving or archiving prior YTD refreshes projections and recalculates mutable (draft/approved) pay runs for that employee; posted payslips stay frozen.
+
+- Joiners **without** prior employment this tax year need no records — set status `NO_PREVIOUS_EMPLOYMENT`.
+- Active rows sync `previousEmploymentStatus` → `PREVIOUS_EMPLOYMENT` (+ declared/verified) and switch standard non-cumulative profiles to previous-income / cumulative when the first prior row is added.
+- Totals resolve into payslip statutory pins and calc notes; applied when cumulative PAYE is enabled (verified rows only).
 - Soft-archived (`ARCHIVED`) rows are hard-deleted after 365 days by
   `npm run purge:prior-employment-archive` (also scheduled as
   `prior-employment-archive-purge`). Override with
@@ -68,6 +111,18 @@ For mid-year joiners, set method to **Previous income included**, verify prior Y
 ## Statutory overrides (Phase 7)
 
 `EmployeePayrollStatutoryOverride` holds period-end absolute PAYE / NIS / Health amounts with maker-checker (`DRAFT` → `PENDING_APPROVAL` → `APPROVED` / `REJECTED`). Approved overrides apply after computed statutory in payslip assembly.
+
+When requesting an override, choose **apply scope**:
+
+| Scope | Behaviour on approval |
+|-------|------------------------|
+| `THIS_PERIOD` | Only the selected period end |
+| `THROUGH_YEAR_END` | Forward-fill remaining open months through 31 Dec (clamped by employment end if earlier) |
+| `THROUGH_CONTRACT_END` | Forward-fill through continuous employment / contract end (requires an end date) |
+
+Mid-month final employment months skip auto PAYE fill and raise a manual-entry notification. Posted payslips are never rewritten.
+
+Overrides in any status can be **deleted** from the tax-year UI (same permissions as request) when entered in error. Deleting an approved/applied row recalculates open draft/approved pay runs for that employee from that period.
 
 ## Employee Annual PAYE Projection (canonical tax-year view)
 
@@ -123,7 +178,7 @@ When prior-employer records exist, payslip documents (HTML + PDF) show three YTD
 | Config | Where | Notes |
 |--------|--------|--------|
 | PAYE | `PayeTaxConfig` + brackets | Personal allowance, NIS deductible portion, cap, progressive bands |
-| NIS | `NisEarningsClass` I–XVI | Weekly employee/employer × `13/3` weeks/month |
+| NIS | `NisEarningsClass` I–XVI | Weekly employee/employer × Mondays in the pay period (typically 4 or 5) |
 | Health Surcharge | `HealthSurchargeConfig` | Higher/lower weekly; Mondays-in-period weeks; age exemptions |
 
 Migrations that inserted org-wide 2026 defaults:
@@ -154,7 +209,7 @@ Copy into the tax-year change ticket and tick before first live pay run:
 - [ ] **Mid-year joiner** — prior-employer YTD entered from TD4/letter; payslip shows Prior / This employer / Combined; cumulative / previous-income method withholds the expected period delta.
 - [ ] **Unverified prior** — soft exception note appears; payroll does not treat unverified prior as certified.
 - [ ] **Statutory overrides** — maker-checker request → approve → approved amounts replace calc for that period end.
-- [ ] **Exemptions** — NIS / Health / PAYE exempt flags zero the right deductions and relax readiness.
+- [ ] **Exemptions** — NIS / Health / PAYE exempt flags zero the right deductions and relax readiness (missing BIR is a warning only when not PAYE-exempt).
 - [ ] **Parallel comparison** — `npm run payroll:parallel` against a trusted export for at least one posted run (cent-level match).
 - [ ] **Access roles** — re-run `npm run seed:access` (or equivalent) so `payroll.tax_profile.*`, `payroll.prior_employment.*`, `payroll.statutory_override.*`, `payroll.employee_year.view` are granted.
 - [ ] **Migrations** — all PAYE / prior-YTD / override migrations applied on the target environment (see below).

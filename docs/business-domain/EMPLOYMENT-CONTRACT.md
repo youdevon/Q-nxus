@@ -294,6 +294,22 @@ Rules:
 
 - Cannot normally be physically deleted
 
+### Activation effects (implemented)
+
+On successful **Activate** or **Save & activate** (non-historical terms):
+
+1. Contract becomes `ACTIVE` with `isCurrent = true`; prior current contracts are `SUPERSEDED` (end date may be closed to the day before the new start).
+2. Leave balances are created for the contract when none exist yet (including draft entitlement overrides).
+3. When the contract has a Position, the employee’s current assignment / seat (`Employee.departmentId` / `positionId`) is aligned to that position if it differs.
+4. Payroll readiness onboarding may auto-complete; otherwise staff are notified that setup still needs attention.
+5. `PayrollProfile.isPayrollReady` is refreshed from the live readiness evaluation (compensation still comes only from the current contract — not stored on the profile).
+6. Open draft/approved pay runs that include the employee are recalculated so payslip snapshots pick up the new contract salary/allowances. Posted payslips are never rewritten.
+7. Relevant People and Payroll list/detail paths are revalidated (employee file, contracts, leave balances, payroll setup, salaries roster, readiness, payslip preview).
+
+Payroll salaries roster, payslip preview, payroll setup, and readiness directories always read base salary and allowances from the current `ACTIVE` + `isCurrent` contract. There is no separate salary store to sync.
+
+Historical past-ended terms recorded via Save & activate stay `EXPIRED` / non-current and skip leave balances, assignment, notifications, and payroll sync — see §8.
+
 ### Expiring
 
 The contract is active and approaching its end date.

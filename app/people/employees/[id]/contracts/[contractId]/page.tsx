@@ -393,12 +393,17 @@ export default async function EmploymentContractPage({
           />
 
           <Detail
-            labelText="Gratuity-eligible annual earnings"
+            labelText="Gratuity-eligible earnings (term)"
             value={formatMoney(compensation.gratuityEligibleAnnualEarnings, {
               currency: contract.currency,
             })}
           />
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          TT gratuity base: monthly eligible (base salary + allowances marked
+          included in gratuity) × inclusive contract months. Without an end
+          date, shown as a 12-month annualization of that monthly base.
+        </p>
       </section>
 
       <section>
@@ -492,8 +497,6 @@ export default async function EmploymentContractPage({
             estimatedGrossGratuity: compensation.estimatedGrossGratuity,
             estimatedTax: compensation.estimatedTax,
             estimatedNetGratuity: compensation.estimatedNetGratuity,
-            annualEligibleEarnings:
-              compensation.gratuityEligibleAnnualEarnings,
             currency: contract.currency,
           }}
         />

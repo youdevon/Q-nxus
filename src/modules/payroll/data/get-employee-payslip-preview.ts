@@ -1,6 +1,7 @@
 import { getOrganizationProfile } from "@/src/modules/admin/data/get-organization-profile";
 import { prisma } from "@/lib/prisma";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
+import { getVerifiedEmployeeOpeningYtdAmounts } from "@/src/modules/payroll/data/get-employee-opening-ytd";
 import { getEmployeePayrollSetup } from "@/src/modules/payroll/data/get-employee-payroll-setup";
 import { getEmployeeStatutoryYtdBeforePeriod } from "@/src/modules/payroll/data/get-payslip-ytd";
 import {
@@ -120,7 +121,8 @@ export async function getEmployeePayslipPreview(
     employeeExtras,
     contracts,
     recurringItems,
-    currentEmployerYtdBefore,
+    postedEmployerYtdBefore,
+    openingYtd,
     statutoryOverride,
     treatmentOverrides,
   ] = await Promise.all([
@@ -196,12 +198,26 @@ export async function getEmployeePayslipPreview(
         taxYear,
         periodEnd,
       }),
+      getVerifiedEmployeeOpeningYtdAmounts(employeeId, taxYear),
       getApprovedStatutoryOverrideForPeriod({
         employeeId,
         periodEnd,
       }),
       getApprovedEarningTreatmentOverridesForPeriod(employeeId, periodEnd),
     ]);
+
+  // Opening YTD (same employer / go-live) folds into current-employer bucket —
+  // never into prior-employer totals.
+  const currentEmployerYtdBefore = {
+    taxableEarnings:
+      postedEmployerYtdBefore.taxableEarnings + openingYtd.taxableIncomeYtd,
+    paye: postedEmployerYtdBefore.paye + openingYtd.payeDeductedYtd,
+    nisEmployee:
+      postedEmployerYtdBefore.nisEmployee + openingYtd.nisEmployeeYtd,
+    healthSurcharge:
+      postedEmployerYtdBefore.healthSurcharge + openingYtd.healthSurchargeYtd,
+    periodCount: postedEmployerYtdBefore.periodCount,
+  };
 
   const nisClasses = statutoryBundle.nisClasses;
   const payeConfigRecord = statutoryBundle.paye;
@@ -224,10 +240,15 @@ export async function getEmployeePayslipPreview(
               : null,
           cumulativeCalculationEnabled:
             setup.taxProfile.cumulativeCalculationEnabled,
+          previousEmploymentStatus: setup.taxProfile.previousEmploymentStatus,
           previousEmploymentDeclared:
             setup.taxProfile.previousEmploymentDeclared,
           previousEmploymentVerified:
             setup.taxProfile.previousEmploymentVerified,
+          otherEmolumentIncomeStatus:
+            setup.taxProfile.otherEmolumentIncomeStatus,
+          birDirectionPresent: setup.taxProfile.birDirectionPresent,
+          birDirectionReference: setup.taxProfile.birDirectionReference,
         }
       : null,
     priorEmployment: {
@@ -371,12 +392,13 @@ export async function getEmployeePayslipPreview(
   const readiness =
     coverage.segments.length === 0 && Boolean(setup.currentContract)
       ? {
-          isReady: setup.readiness.isReady,
+          isReady: false,
           blockingIssues: [
             ...setup.readiness.blockingIssues,
             coverage.detail ??
               "No contract covers this pay period — earnings are zero.",
           ],
+          softWarnings: setup.readiness.softWarnings,
         }
       : setup.readiness;
 
@@ -462,6 +484,16 @@ export async function getEmployeePayslipPreview(
       priorOtherApprovedYtd:
         resolvedTax.priorEmployment.otherApprovedDeductionsYtd,
       monthsElapsed: monthsElapsedFromPeriodEnd(periodEnd),
+      taxYear,
+      employmentStartDate: employeeExtras?.hireDate ?? null,
+      previousEmploymentStatus: resolvedTax.previousEmploymentStatus,
+      recognizePriorEmployment:
+        resolvedTax.previousEmploymentStatus === "PREVIOUS_EMPLOYMENT" &&
+        resolvedTax.priorEmployment.recordCount > 0 &&
+        resolvedTax.priorEmployment.allVerified,
+      personalAllowanceOverride: resolvedTax.personalAllowanceOverride,
+      td1Submitted: resolvedTax.source === "tax_profile",
+      birDirectionPresent: resolvedTax.birDirectionPresent,
     },
     statutoryOverrides: statutoryOverride
       ? {
@@ -473,6 +505,12 @@ export async function getEmployeePayslipPreview(
       : undefined,
     taxCalcNotes: [
       ...resolvedTax.calcNotes,
+      ...(openingYtd.verified &&
+      (openingYtd.taxableIncomeYtd > 0 || openingYtd.payeDeductedYtd > 0)
+        ? [
+            `Opening YTD (same employer / go-live) included in current-employer totals: taxable ${openingYtd.taxableIncomeYtd.toFixed(2)}, PAYE ${openingYtd.payeDeductedYtd.toFixed(2)}.`,
+          ]
+        : []),
       ...evaluatePayeExceptions({
         previousEmploymentDeclared: resolvedTax.previousEmploymentDeclared,
         priorEmploymentRecordCount: resolvedTax.priorEmployment.recordCount,

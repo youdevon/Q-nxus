@@ -2,6 +2,10 @@
 
 import { roundToCents } from "@/src/modules/payroll/lib/money";
 
+/**
+ * Legacy average weeks/month (52/12 = 13/3). Prefer Mondays-in-period for
+ * actual period amounts; keep for illustrative 4⅓ averages in settings UIs.
+ */
 export const NIS_WEEKS_PER_MONTH = 13 / 3;
 
 /** Minimum monthly insurable earnings for Class I (below = no NIS contribution). */
@@ -58,12 +62,14 @@ export type NisContributionResult = {
   employeeMonthly: number;
   employerMonthly: number;
   totalMonthly: number;
+  /** Contribution weeks used (Mondays in period for live calc). */
+  weeksInPeriod: number;
   /** True when monthly earnings are below the Class I floor. */
   belowMinimum: boolean;
 };
 
-function weeklyToMonthly(weeklyAmount: number, weeksPerMonth: number): number {
-  return roundToCents(weeklyAmount * weeksPerMonth);
+function weeklyToPeriodAmount(weeklyAmount: number, weeksInPeriod: number): number {
+  return roundToCents(weeklyAmount * weeksInPeriod);
 }
 
 function sortClasses(classes: NisEarningsClassInput[]): NisEarningsClassInput[] {
@@ -102,9 +108,18 @@ export function resolveNisClass(
 export function computeNisContribution(input: {
   monthlySalary: number;
   classes: NisEarningsClassInput[];
+  /**
+   * Mondays in the pay period (T&T). Required for period amounts; when omitted,
+   * falls back to the legacy 13/3 average for settings illustrations only.
+   */
+  weeksInPeriod?: number;
+  /** @deprecated Prefer `weeksInPeriod`. */
   weeksPerMonth?: number;
 }): NisContributionResult {
-  const weeksPerMonth = input.weeksPerMonth ?? NIS_WEEKS_PER_MONTH;
+  const weeksInPeriod = Math.max(
+    0,
+    input.weeksInPeriod ?? input.weeksPerMonth ?? NIS_WEEKS_PER_MONTH,
+  );
   const earningsClass = resolveNisClass(input.monthlySalary, input.classes);
 
   if (!earningsClass) {
@@ -115,17 +130,18 @@ export function computeNisContribution(input: {
       employeeMonthly: 0,
       employerMonthly: 0,
       totalMonthly: 0,
+      weeksInPeriod,
       belowMinimum: true,
     };
   }
 
-  const employeeMonthly = weeklyToMonthly(
+  const employeeMonthly = weeklyToPeriodAmount(
     earningsClass.employeeWeeklyAmount,
-    weeksPerMonth,
+    weeksInPeriod,
   );
-  const employerMonthly = weeklyToMonthly(
+  const employerMonthly = weeklyToPeriodAmount(
     earningsClass.employerWeeklyAmount,
-    weeksPerMonth,
+    weeksInPeriod,
   );
 
   return {
@@ -135,6 +151,7 @@ export function computeNisContribution(input: {
     employeeMonthly,
     employerMonthly,
     totalMonthly: roundToCents(employeeMonthly + employerMonthly),
+    weeksInPeriod,
     belowMinimum: false,
   };
 }

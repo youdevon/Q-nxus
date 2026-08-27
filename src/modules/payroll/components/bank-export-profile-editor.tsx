@@ -250,11 +250,31 @@ export function BankExportProfileEditor({
                 </div>
                 <div className="grid gap-2">
                   <label className="text-xs text-muted-foreground">
-                    Balance account (masked)
+                    Transaction type
+                  </label>
+                  <select
+                    className="h-9 rounded-md border bg-background px-3 text-sm"
+                    value={fcb.transactionType ?? "Credit"}
+                    onChange={(event) =>
+                      setFcb((current) => ({
+                        ...current,
+                        transactionType:
+                          event.target.value === "Debit" ? "Debit" : "Credit",
+                      }))
+                    }
+                  >
+                    <option value="Credit">Credit</option>
+                    <option value="Debit">Debit</option>
+                  </select>
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-xs text-muted-foreground">
+                    Balance account (required)
                   </label>
                   <Input
                     value={fcb.balanceAccountMasked ?? ""}
                     placeholder="xxx5620 - TTD"
+                    required
                     onChange={(event) =>
                       setFcb((current) => ({
                         ...current,

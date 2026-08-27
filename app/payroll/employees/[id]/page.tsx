@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { EmployeeOpeningYtdForm } from "@/src/modules/payroll/components/employee-opening-ytd-form";
 import { EmployeePriorEmploymentForm } from "@/src/modules/payroll/components/employee-prior-employment-form";
 import { EmployeeRecurringItemsManager } from "@/src/modules/payroll/components/employee-recurring-items-manager";
 import { EmployeeTaxProfileForm } from "@/src/modules/payroll/components/employee-tax-profile-form";
@@ -70,14 +71,15 @@ export default async function EmployeePayrollPage({
         canDeactivateInstructions={canDeactivateInstructions}
       />
       <EmployeeTaxProfileForm setup={setup} />
+      <EmployeeOpeningYtdForm setup={setup} />
       <EmployeePriorEmploymentForm setup={setup} />
-      <PageShell className="pt-0 sm:pt-0 md:pt-0 lg:pt-0">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/70 bg-muted/20 px-4 py-3">
-          <div className="space-y-0.5">
+      <PageShell size="lg" className="min-w-0 pt-0 sm:pt-0 md:pt-0 lg:pt-0">
+        <div className="mb-6 flex min-w-0 flex-wrap items-center justify-between gap-3 rounded-md border border-border/70 bg-muted/20 px-4 py-3">
+          <div className="min-w-0 space-y-0.5">
             <p className="text-sm font-medium text-foreground">
               Tax year overview
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-pretty text-xs text-muted-foreground">
               Profile summary, prior-employer YTD, posted slips, and statutory
               overrides.
             </p>

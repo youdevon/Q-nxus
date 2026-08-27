@@ -9,10 +9,10 @@
 
 import type { HealthSurchargeResult } from "@/src/modules/payroll/lib/health-surcharge";
 import {
-  countHealthContributionWeeks,
   computeHealthSurcharge,
   type HealthSurchargeConfigInput,
 } from "@/src/modules/payroll/lib/health-surcharge";
+import { countMondaysInRange } from "@/src/modules/payroll/lib/contribution-weeks";
 import type { NisContributionResult } from "@/src/modules/payroll/lib/nis-contribution";
 import {
   computeNisContribution,
@@ -24,6 +24,11 @@ import {
   type PayeTaxConfigInput,
 } from "@/src/modules/payroll/lib/paye-contribution";
 import { computeCumulativePayeContribution } from "@/src/modules/payroll/lib/cumulative-paye";
+import {
+  computeTaxYearPeriodPaye,
+  shouldUseTaxYearPeriodPaye,
+  type PreviousEmploymentStatusCode,
+} from "@/src/modules/payroll/lib/tax-year-period-paye";
 import {
   bankFixedAmountTotal,
   type PayrollReadinessResult,
@@ -44,6 +49,42 @@ export type PayslipLineItem = {
   /** Optional detail shown under the label (e.g. class code, weekly rate). */
   detail?: string;
 };
+
+/** Label hints for earning lines promoted into the identity meta rows. */
+const PAYSLIP_META_SALARY_HINTS = ["base salary", "salary"] as const;
+const PAYSLIP_META_TRAVEL_HINTS = ["travel"] as const;
+const PAYSLIP_META_PHONE_HINTS = ["phone", "telephone"] as const;
+
+function labelMatchesHints(
+  label: string,
+  hints: readonly string[],
+): boolean {
+  const normalized = label.toLowerCase();
+  return hints.some((hint) => normalized.includes(hint));
+}
+
+/** Salary / travelling / phone lines shown in meta — not again above Gross. */
+export function isPayslipMetaAllowanceLine(line: PayslipLineItem): boolean {
+  return (
+    labelMatchesHints(line.label, PAYSLIP_META_SALARY_HINTS) ||
+    labelMatchesHints(line.label, PAYSLIP_META_TRAVEL_HINTS) ||
+    labelMatchesHints(line.label, PAYSLIP_META_PHONE_HINTS)
+  );
+}
+
+export function findPayslipMetaAllowanceAmount(
+  earnings: PayslipLineItem[],
+  kind: "salary" | "travel" | "phone",
+): number | undefined {
+  const hints =
+    kind === "salary"
+      ? PAYSLIP_META_SALARY_HINTS
+      : kind === "travel"
+        ? PAYSLIP_META_TRAVEL_HINTS
+        : PAYSLIP_META_PHONE_HINTS;
+  const match = earnings.find((line) => labelMatchesHints(line.label, hints));
+  return match?.amount;
+}
 
 export type PayslipBankLine = {
   bankName: string;
@@ -119,7 +160,7 @@ export type AssemblePayslipPreviewInput = {
   nisClasses: NisEarningsClassInput[];
   payeConfig: PayeTaxConfigInput | null;
   healthConfig: HealthSurchargeConfigInput | null;
-  /** Phase 4–5: use cumulative PAYE when set. */
+  /** Phase 4–5 / tax-year projection: cumulative or hire-aware PAYE. */
   cumulativePaye?: {
     enabled: boolean;
     currentEmployerTaxableYtd: number;
@@ -129,7 +170,16 @@ export type AssemblePayslipPreviewInput = {
     priorPayePaidYtd: number;
     priorNisEmployeeYtd: number;
     priorOtherApprovedYtd: number;
+    /** @deprecated Prefer tax-year projection; kept for legacy cumulative. */
     monthsElapsed: number;
+    taxYear?: number;
+    employmentStartDate?: Date | null;
+    employmentEndDate?: Date | null;
+    previousEmploymentStatus?: PreviousEmploymentStatusCode | null;
+    recognizePriorEmployment?: boolean;
+    personalAllowanceOverride?: number | null;
+    td1Submitted?: boolean;
+    birDirectionPresent?: boolean;
   };
   /** Phase 6: treat non-taxable earnings explicitly (default uses isTaxable). */
   taxTreatmentNotes?: string[];
@@ -202,6 +252,44 @@ export function notesForPayslipDisplay(
   }
 
   return notes.filter((note) => !PREVIEW_CAVEAT_NOTE_SET.has(note));
+}
+
+/**
+ * Line `detail` text safe to show on employee-facing payslips.
+ * Hides override reasons and internal PAYE estimate audit strings.
+ */
+export function payslipLineDetailForDisplay(
+  detail: string | undefined | null,
+): string | null {
+  if (detail == null) {
+    return null;
+  }
+  const trimmed = detail.trim();
+  if (!trimmed) {
+    return null;
+  }
+  if (/^override\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/paye amount overridden/i.test(trimmed)) {
+    return null;
+  }
+  if (/tax-year paye\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/tax-year estimate\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/^annual tax\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/employment start used for estimate/i.test(trimmed)) {
+    return null;
+  }
+  if (/prior-employer ytd\b/i.test(trimmed)) {
+    return null;
+  }
+  return trimmed;
 }
 
 /** Convert an allowance/salary amount at its source frequency to a monthly period amount. */
@@ -461,7 +549,10 @@ export function assemblePayslipPreview(
   const periodStart = input.periodStart ?? periodStartFromAsOf(asOf);
   const periodEnd = input.periodEnd ?? periodEndFromAsOf(asOf);
   const asOfIso = asOf.toISOString().slice(0, 10);
-  const warnings: string[] = [...input.readiness.blockingIssues];
+  const warnings: string[] = [
+    ...input.readiness.blockingIssues,
+    ...(input.readiness.softWarnings ?? []),
+  ];
   const notes: string[] = [...PAYSLIP_PREVIEW_CAVEAT_NOTES];
 
   const earnings: PayslipLineItem[] = [];
@@ -531,12 +622,15 @@ export function assemblePayslipPreview(
   const exemptFromHealthSurcharge = input.exemptFromHealthSurcharge ?? false;
 
   if (monthlyTaxableEarnings > 0) {
+    const contributionWeeks = countMondaysInRange(periodStart, periodEnd);
+
     if (exemptFromNis) {
       notes.push("NIS exempt (employee opt-out) — no employee or employer contribution.");
     } else if (input.nisClasses.length > 0) {
       nis = computeNisContribution({
         monthlySalary: monthlyTaxableEarnings,
         classes: input.nisClasses,
+        weeksInPeriod: contributionWeeks,
       });
     } else {
       warnings.push("No active NIS earnings classes configured.");
@@ -546,7 +640,65 @@ export function assemblePayslipPreview(
       notes.push("PAYE exempt (employee opt-out) — no income tax deducted.");
     } else if (input.payeConfig != null) {
       const cumulative = input.cumulativePaye;
-      if (cumulative?.enabled) {
+      const taxYear =
+        cumulative?.taxYear ??
+        periodEnd.getUTCFullYear();
+      const useTaxYearProjection =
+        cumulative != null &&
+        (cumulative.enabled ||
+          shouldUseTaxYearPeriodPaye({
+            taxCalculationMethod: cumulative.enabled
+              ? "STANDARD_CUMULATIVE"
+              : "STANDARD_NON_CUMULATIVE",
+            cumulativeCalculationEnabled: cumulative.enabled,
+            employmentStartDate: cumulative.employmentStartDate,
+            taxYear,
+          }));
+
+      if (useTaxYearProjection && cumulative) {
+        const taxYearPaye = computeTaxYearPeriodPaye({
+          taxYear,
+          periodStart,
+          periodEnd,
+          employmentStartDate: cumulative.employmentStartDate ?? null,
+          employmentEndDate: cumulative.employmentEndDate ?? null,
+          config: input.payeConfig,
+          personalAllowanceOverride: cumulative.personalAllowanceOverride,
+          periodTaxableEarnings: monthlyTaxableEarnings,
+          currentEmployerTaxableYtdBefore: cumulative.currentEmployerTaxableYtd,
+          currentEmployerPayePaidYtdBefore: cumulative.currentEmployerPayePaidYtd,
+          priorTaxableYtd: cumulative.priorTaxableYtd,
+          priorPayePaidYtd: cumulative.priorPayePaidYtd,
+          previousEmploymentStatus: cumulative.previousEmploymentStatus,
+          recognizePriorEmployment:
+            cumulative.recognizePriorEmployment ??
+            (cumulative.priorTaxableYtd > 0 || cumulative.priorPayePaidYtd > 0),
+          employeeNisWeekly: nis?.employeeWeekly ?? 0,
+          nisEmployeePaidYtdBefore:
+            cumulative.currentEmployerNisPaidYtd +
+            cumulative.priorNisEmployeeYtd,
+          periodNisEmployee: nis && !nis.belowMinimum ? nis.employeeMonthly : 0,
+          otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
+          priorOtherApprovedYtd: cumulative.priorOtherApprovedYtd,
+          td1Submitted: cumulative.td1Submitted,
+          birDirectionPresent: cumulative.birDirectionPresent,
+        });
+        paye = taxYearPaye;
+        notes.push(
+          `Tax-year PAYE · ${taxYearPaye.remainingPeriodsIncludingThis} period${taxYearPaye.remainingPeriodsIncludingThis === 1 ? "" : "s"} remaining (incl. this) · estimated annual taxable ${taxYearPaye.projectedAnnualTaxable.toFixed(2)} · annual tax ${taxYearPaye.annualTax.toFixed(2)} − paid ${taxYearPaye.payePaidYtdBefore.toFixed(2)} → ${taxYearPaye.periodPaye.toFixed(2)}.`,
+        );
+        if (taxYearPaye.explain.employmentStartUsed) {
+          notes.push(
+            `Employment start used for estimate: ${taxYearPaye.explain.employmentStartUsed} (months before hire are not annualized).`,
+          );
+        }
+        for (const warning of taxYearPaye.warnings) {
+          warnings.push(warning);
+        }
+        if (taxYearPaye.payePositionStatus !== "NORMAL") {
+          notes.push(`PAYE position: ${taxYearPaye.payePositionStatus}.`);
+        }
+      } else if (cumulative?.enabled) {
         const cumulativePaye = computeCumulativePayeContribution({
           periodTaxableEarnings: monthlyTaxableEarnings,
           currentEmployerTaxableYtd: cumulative.currentEmployerTaxableYtd,
@@ -587,7 +739,7 @@ export function assemblePayslipPreview(
         pensionOnlyIncome: input.pensionOnlyIncome ?? false,
         exemptFromHealthSurcharge,
         asOf,
-        weeksInPeriod: countHealthContributionWeeks(periodStart, periodEnd),
+        weeksInPeriod: contributionWeeks,
       });
 
       if (!exemptFromHealthSurcharge && !input.employee.dateOfBirth) {
@@ -608,20 +760,24 @@ export function assemblePayslipPreview(
     deductions.push({
       label: "NIS (employee)",
       amount: nis.employeeMonthly,
-      detail: `Class ${nis.classCode} · ${nis.employeeWeekly.toFixed(2)}/wk × 4⅓`,
+      detail: `Class ${nis.classCode} · ${nis.employeeWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod}`,
     });
   } else if (nis?.belowMinimum) {
     notes.push("NIS: earnings below Class I floor — no employee contribution.");
   }
 
   if (paye) {
+    const taxYearMethod =
+      paye && "method" in paye && paye.method === "TAX_YEAR_PROJECTION";
     const cumulativeEnabled = input.cumulativePaye?.enabled === true;
     deductions.push({
       label: "PAYE (income tax)",
       amount: paye.monthlyPaye,
-      detail: cumulativeEnabled
-        ? `Cumulative period tax ${paye.monthlyPaye.toFixed(2)}`
-        : `Annual tax ${paye.annualTax.toFixed(2)} ÷ 12`,
+      detail: taxYearMethod
+        ? `Tax-year estimate ${paye.monthlyPaye.toFixed(2)}`
+        : cumulativeEnabled
+          ? `Cumulative period tax ${paye.monthlyPaye.toFixed(2)}`
+          : `Annual tax ${paye.annualTax.toFixed(2)} ÷ 12`,
     });
   }
 
