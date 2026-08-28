@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
+import type { NisContributionCategory } from "@/generated/prisma/enums";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
@@ -42,8 +43,13 @@ const PAY_FREQUENCIES = [
 
 const PAYMENT_METHODS = ["BANK_TRANSFER", "CHEQUE", "CASH"] as const;
 
+const NIS_CATEGORY_OVERRIDES = ["NORMAL", "CLASS_Z", "EXEMPT"] as const satisfies ReadonlyArray<
+  NisContributionCategory
+>;
+
 type PayFrequency = (typeof PAY_FREQUENCIES)[number];
 type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+type NisCategoryOverride = (typeof NIS_CATEGORY_OVERRIDES)[number];
 
 type BankAccountInput = {
   financialInstitutionId: string | null;
@@ -67,6 +73,14 @@ function textValue(formData: FormData, key: string): string {
 function nullableText(formData: FormData, key: string): string | null {
   const value = textValue(formData, key);
   return value.length > 0 ? value : null;
+}
+
+function parseOptionalDate(value: string | null): Date | null {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return null;
+  }
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function parseBankAccounts(raw: string): BankAccountInput[] | null {
@@ -362,9 +376,31 @@ export async function savePayrollProfile(
   const notes = nullableText(formData, "notes");
   const pensionOnlyIncome = formData.get("pensionOnlyIncome") === "on";
   const exemptFromNis = formData.get("exemptFromNis") === "on";
+  const receivingNisRetirementBenefit =
+    formData.get("receivingNisRetirementBenefit") === "on";
   const exemptFromHealthSurcharge =
     formData.get("exemptFromHealthSurcharge") === "on";
   const exemptFromPaye = formData.get("exemptFromPaye") === "on";
+
+  const nisCategoryOverrideRaw = nullableText(formData, "nisCategoryOverride");
+  const nisCategoryOverride = NIS_CATEGORY_OVERRIDES.includes(
+    nisCategoryOverrideRaw as NisCategoryOverride,
+  )
+    ? (nisCategoryOverrideRaw as NisCategoryOverride)
+    : null;
+  const nisOverrideReason = nullableText(formData, "nisOverrideReason");
+  const nisOverrideEffectiveFromRaw = nullableText(
+    formData,
+    "nisOverrideEffectiveFrom",
+  );
+  const nisOverrideEffectiveToRaw = nullableText(
+    formData,
+    "nisOverrideEffectiveTo",
+  );
+  const nisOverrideEffectiveFrom = parseOptionalDate(
+    nisOverrideEffectiveFromRaw,
+  );
+  const nisOverrideEffectiveTo = parseOptionalDate(nisOverrideEffectiveToRaw);
 
   const td1Raw = textValue(formData, "td1OtherApprovedAnnual");
   let td1OtherApprovedAnnual: number | null = null;
@@ -549,8 +585,13 @@ export async function savePayrollProfile(
     notes,
     pensionOnlyIncome,
     exemptFromNis,
+    receivingNisRetirementBenefit,
     exemptFromHealthSurcharge,
     exemptFromPaye,
+    nisCategoryOverride,
+    nisOverrideReason,
+    nisOverrideEffectiveFrom,
+    nisOverrideEffectiveTo,
     isPayrollReady: readiness.isReady,
   };
 

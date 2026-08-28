@@ -457,6 +457,8 @@ export const ModelName = {
   AchPaymentBatch: 'AchPaymentBatch',
   AchPaymentBatchDetail: 'AchPaymentBatchDetail',
   NisEarningsClass: 'NisEarningsClass',
+  NisClassZRate: 'NisClassZRate',
+  NisEligibilityConfig: 'NisEligibilityConfig',
   PayeTaxConfig: 'PayeTaxConfig',
   PayeTaxBracket: 'PayeTaxBracket',
   HealthSurchargeConfig: 'HealthSurchargeConfig',
@@ -490,7 +492,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeeOpeningYtdBalance" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "gratuityAccrualEntry" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeeOpeningYtdBalance" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "nisClassZRate" | "nisEligibilityConfig" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "gratuityAccrualEntry" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5896,6 +5898,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    NisClassZRate: {
+      payload: Prisma.$NisClassZRatePayload<ExtArgs>
+      fields: Prisma.NisClassZRateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NisClassZRateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NisClassZRateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>
+        }
+        findFirst: {
+          args: Prisma.NisClassZRateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NisClassZRateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>
+        }
+        findMany: {
+          args: Prisma.NisClassZRateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>[]
+        }
+        create: {
+          args: Prisma.NisClassZRateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>
+        }
+        createMany: {
+          args: Prisma.NisClassZRateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NisClassZRateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>[]
+        }
+        delete: {
+          args: Prisma.NisClassZRateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>
+        }
+        update: {
+          args: Prisma.NisClassZRateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>
+        }
+        deleteMany: {
+          args: Prisma.NisClassZRateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NisClassZRateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NisClassZRateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>[]
+        }
+        upsert: {
+          args: Prisma.NisClassZRateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisClassZRatePayload>
+        }
+        aggregate: {
+          args: Prisma.NisClassZRateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNisClassZRate>
+        }
+        groupBy: {
+          args: Prisma.NisClassZRateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NisClassZRateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NisClassZRateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NisClassZRateCountAggregateOutputType> | number
+        }
+      }
+    }
+    NisEligibilityConfig: {
+      payload: Prisma.$NisEligibilityConfigPayload<ExtArgs>
+      fields: Prisma.NisEligibilityConfigFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NisEligibilityConfigFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NisEligibilityConfigFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>
+        }
+        findFirst: {
+          args: Prisma.NisEligibilityConfigFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NisEligibilityConfigFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>
+        }
+        findMany: {
+          args: Prisma.NisEligibilityConfigFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>[]
+        }
+        create: {
+          args: Prisma.NisEligibilityConfigCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>
+        }
+        createMany: {
+          args: Prisma.NisEligibilityConfigCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NisEligibilityConfigCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>[]
+        }
+        delete: {
+          args: Prisma.NisEligibilityConfigDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>
+        }
+        update: {
+          args: Prisma.NisEligibilityConfigUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>
+        }
+        deleteMany: {
+          args: Prisma.NisEligibilityConfigDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NisEligibilityConfigUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NisEligibilityConfigUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>[]
+        }
+        upsert: {
+          args: Prisma.NisEligibilityConfigUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NisEligibilityConfigPayload>
+        }
+        aggregate: {
+          args: Prisma.NisEligibilityConfigAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNisEligibilityConfig>
+        }
+        groupBy: {
+          args: Prisma.NisEligibilityConfigGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NisEligibilityConfigGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NisEligibilityConfigCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NisEligibilityConfigCountAggregateOutputType> | number
+        }
+      }
+    }
     PayeTaxConfig: {
       payload: Prisma.$PayeTaxConfigPayload<ExtArgs>
       fields: Prisma.PayeTaxConfigFieldRefs
@@ -8495,6 +8645,8 @@ export const EmployeePayrollStatutoryOverrideScalarFieldEnum = {
   periodEnd: 'periodEnd',
   payeAmount: 'payeAmount',
   nisEmployeeAmount: 'nisEmployeeAmount',
+  nisEmployerAmount: 'nisEmployerAmount',
+  nisClassZAmount: 'nisClassZAmount',
   healthSurchargeAmount: 'healthSurchargeAmount',
   reason: 'reason',
   applyScope: 'applyScope',
@@ -8612,6 +8764,11 @@ export const PayrollProfileScalarFieldEnum = {
   isPayrollReady: 'isPayrollReady',
   pensionOnlyIncome: 'pensionOnlyIncome',
   exemptFromNis: 'exemptFromNis',
+  receivingNisRetirementBenefit: 'receivingNisRetirementBenefit',
+  nisCategoryOverride: 'nisCategoryOverride',
+  nisOverrideReason: 'nisOverrideReason',
+  nisOverrideEffectiveFrom: 'nisOverrideEffectiveFrom',
+  nisOverrideEffectiveTo: 'nisOverrideEffectiveTo',
   exemptFromHealthSurcharge: 'exemptFromHealthSurcharge',
   exemptFromPaye: 'exemptFromPaye',
   createdAt: 'createdAt',
@@ -8876,6 +9033,43 @@ export const NisEarningsClassScalarFieldEnum = {
 } as const
 
 export type NisEarningsClassScalarFieldEnum = (typeof NisEarningsClassScalarFieldEnum)[keyof typeof NisEarningsClassScalarFieldEnum]
+
+
+export const NisClassZRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  monthlyMin: 'monthlyMin',
+  monthlyMax: 'monthlyMax',
+  employerWeeklyAmount: 'employerWeeklyAmount',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdByUserId: 'createdByUserId',
+  updatedByUserId: 'updatedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NisClassZRateScalarFieldEnum = (typeof NisClassZRateScalarFieldEnum)[keyof typeof NisClassZRateScalarFieldEnum]
+
+
+export const NisEligibilityConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fullRetirementAge: 'fullRetirementAge',
+  earlyRetirementAge: 'earlyRetirementAge',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NisEligibilityConfigScalarFieldEnum = (typeof NisEligibilityConfigScalarFieldEnum)[keyof typeof NisEligibilityConfigScalarFieldEnum]
 
 
 export const PayeTaxConfigScalarFieldEnum = {
@@ -10248,6 +10442,20 @@ export type ListEnumPayrollPaymentMethodFieldRefInput<$PrismaModel> = FieldRefIn
 
 
 /**
+ * Reference to a field of type 'NisContributionCategory'
+ */
+export type EnumNisContributionCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NisContributionCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'NisContributionCategory[]'
+ */
+export type ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NisContributionCategory[]'>
+    
+
+
+/**
  * Reference to a field of type 'FinancialInstitutionType'
  */
 export type EnumFinancialInstitutionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinancialInstitutionType'>
@@ -10821,6 +11029,8 @@ export type GlobalOmitConfig = {
   achPaymentBatch?: Prisma.AchPaymentBatchOmit
   achPaymentBatchDetail?: Prisma.AchPaymentBatchDetailOmit
   nisEarningsClass?: Prisma.NisEarningsClassOmit
+  nisClassZRate?: Prisma.NisClassZRateOmit
+  nisEligibilityConfig?: Prisma.NisEligibilityConfigOmit
   payeTaxConfig?: Prisma.PayeTaxConfigOmit
   payeTaxBracket?: Prisma.PayeTaxBracketOmit
   healthSurchargeConfig?: Prisma.HealthSurchargeConfigOmit

@@ -361,6 +361,8 @@ export type OrganizationWhereInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
   nisEarningsClasses?: Prisma.NisEarningsClassListRelationFilter
+  nisClassZRates?: Prisma.NisClassZRateListRelationFilter
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigListRelationFilter
   payeTaxConfigs?: Prisma.PayeTaxConfigListRelationFilter
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigListRelationFilter
   gratuityPolicies?: Prisma.GratuityPolicyListRelationFilter
@@ -436,6 +438,8 @@ export type OrganizationOrderByWithRelationInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseOrderByRelationAggregateInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseOrderByRelationAggregateInput
   nisEarningsClasses?: Prisma.NisEarningsClassOrderByRelationAggregateInput
+  nisClassZRates?: Prisma.NisClassZRateOrderByRelationAggregateInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigOrderByRelationAggregateInput
   payeTaxConfigs?: Prisma.PayeTaxConfigOrderByRelationAggregateInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigOrderByRelationAggregateInput
   gratuityPolicies?: Prisma.GratuityPolicyOrderByRelationAggregateInput
@@ -514,6 +518,8 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseListRelationFilter
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseListRelationFilter
   nisEarningsClasses?: Prisma.NisEarningsClassListRelationFilter
+  nisClassZRates?: Prisma.NisClassZRateListRelationFilter
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigListRelationFilter
   payeTaxConfigs?: Prisma.PayeTaxConfigListRelationFilter
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigListRelationFilter
   gratuityPolicies?: Prisma.GratuityPolicyListRelationFilter
@@ -641,6 +647,8 @@ export type OrganizationCreateInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -716,6 +724,8 @@ export type OrganizationUncheckedCreateInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -791,6 +801,8 @@ export type OrganizationUpdateInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -866,6 +878,8 @@ export type OrganizationUncheckedUpdateInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1654,6 +1668,34 @@ export type OrganizationUpdateOneRequiredWithoutNisEarningsClassesNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutNisEarningsClassesInput, Prisma.OrganizationUpdateWithoutNisEarningsClassesInput>, Prisma.OrganizationUncheckedUpdateWithoutNisEarningsClassesInput>
 }
 
+export type OrganizationCreateNestedOneWithoutNisClassZRatesInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutNisClassZRatesInput, Prisma.OrganizationUncheckedCreateWithoutNisClassZRatesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutNisClassZRatesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutNisClassZRatesNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutNisClassZRatesInput, Prisma.OrganizationUncheckedCreateWithoutNisClassZRatesInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutNisClassZRatesInput
+  upsert?: Prisma.OrganizationUpsertWithoutNisClassZRatesInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutNisClassZRatesInput, Prisma.OrganizationUpdateWithoutNisClassZRatesInput>, Prisma.OrganizationUncheckedUpdateWithoutNisClassZRatesInput>
+}
+
+export type OrganizationCreateNestedOneWithoutNisEligibilityConfigsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutNisEligibilityConfigsInput, Prisma.OrganizationUncheckedCreateWithoutNisEligibilityConfigsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutNisEligibilityConfigsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutNisEligibilityConfigsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutNisEligibilityConfigsInput, Prisma.OrganizationUncheckedCreateWithoutNisEligibilityConfigsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutNisEligibilityConfigsInput
+  upsert?: Prisma.OrganizationUpsertWithoutNisEligibilityConfigsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutNisEligibilityConfigsInput, Prisma.OrganizationUpdateWithoutNisEligibilityConfigsInput>, Prisma.OrganizationUncheckedUpdateWithoutNisEligibilityConfigsInput>
+}
+
 export type OrganizationCreateNestedOneWithoutPayeTaxConfigsInput = {
   create?: Prisma.XOR<Prisma.OrganizationCreateWithoutPayeTaxConfigsInput, Prisma.OrganizationUncheckedCreateWithoutPayeTaxConfigsInput>
   connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutPayeTaxConfigsInput
@@ -1872,6 +1914,8 @@ export type OrganizationCreateWithoutOrganizationHolidaysInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -1946,6 +1990,8 @@ export type OrganizationUncheckedCreateWithoutOrganizationHolidaysInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2036,6 +2082,8 @@ export type OrganizationUpdateWithoutOrganizationHolidaysInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -2110,6 +2158,8 @@ export type OrganizationUncheckedUpdateWithoutOrganizationHolidaysInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2184,6 +2234,8 @@ export type OrganizationCreateWithoutUsersInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -2258,6 +2310,8 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2348,6 +2402,8 @@ export type OrganizationUpdateWithoutUsersInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -2422,6 +2478,8 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2496,6 +2554,8 @@ export type OrganizationCreateWithoutRolesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -2570,6 +2630,8 @@ export type OrganizationUncheckedCreateWithoutRolesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2660,6 +2722,8 @@ export type OrganizationUpdateWithoutRolesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -2734,6 +2798,8 @@ export type OrganizationUncheckedUpdateWithoutRolesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2808,6 +2874,8 @@ export type OrganizationCreateWithoutBusinessUnitsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -2882,6 +2950,8 @@ export type OrganizationUncheckedCreateWithoutBusinessUnitsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2972,6 +3042,8 @@ export type OrganizationUpdateWithoutBusinessUnitsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -3046,6 +3118,8 @@ export type OrganizationUncheckedUpdateWithoutBusinessUnitsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3120,6 +3194,8 @@ export type OrganizationCreateWithoutLocationsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -3194,6 +3270,8 @@ export type OrganizationUncheckedCreateWithoutLocationsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3284,6 +3362,8 @@ export type OrganizationUpdateWithoutLocationsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -3358,6 +3438,8 @@ export type OrganizationUncheckedUpdateWithoutLocationsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3432,6 +3514,8 @@ export type OrganizationCreateWithoutReferenceDataSetsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -3506,6 +3590,8 @@ export type OrganizationUncheckedCreateWithoutReferenceDataSetsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3596,6 +3682,8 @@ export type OrganizationUpdateWithoutReferenceDataSetsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -3670,6 +3758,8 @@ export type OrganizationUncheckedUpdateWithoutReferenceDataSetsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -3744,6 +3834,8 @@ export type OrganizationCreateWithoutFeatureControlsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -3818,6 +3910,8 @@ export type OrganizationUncheckedCreateWithoutFeatureControlsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -3908,6 +4002,8 @@ export type OrganizationUpdateWithoutFeatureControlsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -3982,6 +4078,8 @@ export type OrganizationUncheckedUpdateWithoutFeatureControlsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4056,6 +4154,8 @@ export type OrganizationCreateWithoutDomainSettingsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -4130,6 +4230,8 @@ export type OrganizationUncheckedCreateWithoutDomainSettingsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4220,6 +4322,8 @@ export type OrganizationUpdateWithoutDomainSettingsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -4294,6 +4398,8 @@ export type OrganizationUncheckedUpdateWithoutDomainSettingsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4368,6 +4474,8 @@ export type OrganizationCreateWithoutNumberingSequencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -4442,6 +4550,8 @@ export type OrganizationUncheckedCreateWithoutNumberingSequencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4532,6 +4642,8 @@ export type OrganizationUpdateWithoutNumberingSequencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -4606,6 +4718,8 @@ export type OrganizationUncheckedUpdateWithoutNumberingSequencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4680,6 +4794,8 @@ export type OrganizationCreateWithoutDepartmentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -4754,6 +4870,8 @@ export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -4844,6 +4962,8 @@ export type OrganizationUpdateWithoutDepartmentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -4918,6 +5038,8 @@ export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -4992,6 +5114,8 @@ export type OrganizationCreateWithoutEmployeesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -5066,6 +5190,8 @@ export type OrganizationUncheckedCreateWithoutEmployeesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5156,6 +5282,8 @@ export type OrganizationUpdateWithoutEmployeesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -5230,6 +5358,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5304,6 +5434,8 @@ export type OrganizationCreateWithoutLeaveTypesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -5378,6 +5510,8 @@ export type OrganizationUncheckedCreateWithoutLeaveTypesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5468,6 +5602,8 @@ export type OrganizationUpdateWithoutLeaveTypesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -5542,6 +5678,8 @@ export type OrganizationUncheckedUpdateWithoutLeaveTypesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5616,6 +5754,8 @@ export type OrganizationCreateWithoutLeaveEntitlementRulesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -5690,6 +5830,8 @@ export type OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -5780,6 +5922,8 @@ export type OrganizationUpdateWithoutLeaveEntitlementRulesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -5854,6 +5998,8 @@ export type OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -5928,6 +6074,8 @@ export type OrganizationCreateWithoutLeaveRequestsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -6002,6 +6150,8 @@ export type OrganizationUncheckedCreateWithoutLeaveRequestsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -6092,6 +6242,8 @@ export type OrganizationUpdateWithoutLeaveRequestsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -6166,6 +6318,8 @@ export type OrganizationUncheckedUpdateWithoutLeaveRequestsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -6240,6 +6394,8 @@ export type OrganizationCreateWithoutEmployeeCorrespondencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -6314,6 +6470,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeCorrespondencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -6404,6 +6562,8 @@ export type OrganizationUpdateWithoutEmployeeCorrespondencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -6478,6 +6638,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeCorrespondencesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -6552,6 +6714,8 @@ export type OrganizationCreateWithoutCorrespondenceTemplatesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -6626,6 +6790,8 @@ export type OrganizationUncheckedCreateWithoutCorrespondenceTemplatesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -6716,6 +6882,8 @@ export type OrganizationUpdateWithoutCorrespondenceTemplatesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -6790,6 +6958,8 @@ export type OrganizationUncheckedUpdateWithoutCorrespondenceTemplatesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -6864,6 +7034,8 @@ export type OrganizationCreateWithoutEmployeeCredentialsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -6938,6 +7110,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeCredentialsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -7028,6 +7202,8 @@ export type OrganizationUpdateWithoutEmployeeCredentialsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -7102,6 +7278,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeCredentialsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -7176,6 +7354,8 @@ export type OrganizationCreateWithoutEmployeeTrainingRecordsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -7250,6 +7430,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeTrainingRecordsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -7340,6 +7522,8 @@ export type OrganizationUpdateWithoutEmployeeTrainingRecordsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -7414,6 +7598,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeTrainingRecordsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -7488,6 +7674,8 @@ export type OrganizationCreateWithoutEmployeeQualificationDocumentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -7562,6 +7750,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeQualificationDocumentsInpu
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -7652,6 +7842,8 @@ export type OrganizationUpdateWithoutEmployeeQualificationDocumentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -7726,6 +7918,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeQualificationDocumentsInpu
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -7800,6 +7994,8 @@ export type OrganizationCreateWithoutEmployeeFileChecklistItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -7874,6 +8070,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeFileChecklistItemsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -7964,6 +8162,8 @@ export type OrganizationUpdateWithoutEmployeeFileChecklistItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -8038,6 +8238,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeFileChecklistItemsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -8112,6 +8314,8 @@ export type OrganizationCreateWithoutEmployeeFileUpdateRequestsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -8186,6 +8390,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeFileUpdateRequestsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -8276,6 +8482,8 @@ export type OrganizationUpdateWithoutEmployeeFileUpdateRequestsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -8350,6 +8558,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeFileUpdateRequestsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -8424,6 +8634,8 @@ export type OrganizationCreateWithoutEmployeeCorrespondenceResponsesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -8498,6 +8710,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeCorrespondenceResponsesInp
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -8588,6 +8802,8 @@ export type OrganizationUpdateWithoutEmployeeCorrespondenceResponsesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -8662,6 +8878,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeCorrespondenceResponsesInp
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -8736,6 +8954,8 @@ export type OrganizationCreateWithoutAllowanceCategoriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -8810,6 +9030,8 @@ export type OrganizationUncheckedCreateWithoutAllowanceCategoriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -8900,6 +9122,8 @@ export type OrganizationUpdateWithoutAllowanceCategoriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -8974,6 +9198,8 @@ export type OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -9048,6 +9274,8 @@ export type OrganizationCreateWithoutStoredFilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -9122,6 +9350,8 @@ export type OrganizationUncheckedCreateWithoutStoredFilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -9212,6 +9442,8 @@ export type OrganizationUpdateWithoutStoredFilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -9286,6 +9518,8 @@ export type OrganizationUncheckedUpdateWithoutStoredFilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -9360,6 +9594,8 @@ export type OrganizationCreateWithoutEmployeeFilePacksInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -9434,6 +9670,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeFilePacksInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -9524,6 +9762,8 @@ export type OrganizationUpdateWithoutEmployeeFilePacksInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -9598,6 +9838,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeFilePacksInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -9672,6 +9914,8 @@ export type OrganizationCreateWithoutEmployeeLifecycleTemplatesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -9746,6 +9990,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeLifecycleTemplatesInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -9836,6 +10082,8 @@ export type OrganizationUpdateWithoutEmployeeLifecycleTemplatesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -9910,6 +10158,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeLifecycleTemplatesInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -9984,6 +10234,8 @@ export type OrganizationCreateWithoutEmployeeOnboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -10058,6 +10310,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeOnboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -10148,6 +10402,8 @@ export type OrganizationUpdateWithoutEmployeeOnboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -10222,6 +10478,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeOnboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -10296,6 +10554,8 @@ export type OrganizationCreateWithoutEmployeeOffboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -10370,6 +10630,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeOffboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -10460,6 +10722,8 @@ export type OrganizationUpdateWithoutEmployeeOffboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -10534,6 +10798,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeOffboardingCasesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -10609,6 +10875,8 @@ export type OrganizationCreateWithoutEmployeeTaxProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -10683,6 +10951,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeTaxProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -10773,6 +11043,8 @@ export type OrganizationUpdateWithoutEmployeeTaxProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -10847,6 +11119,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeTaxProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -10921,6 +11195,8 @@ export type OrganizationCreateWithoutEmployeePriorEmploymentYtdsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -10995,6 +11271,8 @@ export type OrganizationUncheckedCreateWithoutEmployeePriorEmploymentYtdsInput =
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -11085,6 +11363,8 @@ export type OrganizationUpdateWithoutEmployeePriorEmploymentYtdsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -11159,6 +11439,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeePriorEmploymentYtdsInput =
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -11233,6 +11515,8 @@ export type OrganizationCreateWithoutEmployeeOpeningYtdBalancesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -11307,6 +11591,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeOpeningYtdBalancesInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -11397,6 +11683,8 @@ export type OrganizationUpdateWithoutEmployeeOpeningYtdBalancesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -11471,6 +11759,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeOpeningYtdBalancesInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -11545,6 +11835,8 @@ export type OrganizationCreateWithoutEmployeePayrollStatutoryOverridesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -11619,6 +11911,8 @@ export type OrganizationUncheckedCreateWithoutEmployeePayrollStatutoryOverridesI
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -11709,6 +12003,8 @@ export type OrganizationUpdateWithoutEmployeePayrollStatutoryOverridesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -11783,6 +12079,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeePayrollStatutoryOverridesI
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -11857,6 +12155,8 @@ export type OrganizationCreateWithoutEmployeeAnnualPayrollProjectionsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -11931,6 +12231,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeAnnualPayrollProjectionsIn
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -12021,6 +12323,8 @@ export type OrganizationUpdateWithoutEmployeeAnnualPayrollProjectionsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -12095,6 +12399,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeAnnualPayrollProjectionsIn
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -12169,6 +12475,8 @@ export type OrganizationCreateWithoutEmployeeTaxYearAdjustmentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -12243,6 +12551,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeTaxYearAdjustmentsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -12333,6 +12643,8 @@ export type OrganizationUpdateWithoutEmployeeTaxYearAdjustmentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -12407,6 +12719,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeTaxYearAdjustmentsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -12481,6 +12795,8 @@ export type OrganizationCreateWithoutEmployeeEarningTreatmentOverridesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -12555,6 +12871,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeEarningTreatmentOverridesI
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -12645,6 +12963,8 @@ export type OrganizationUpdateWithoutEmployeeEarningTreatmentOverridesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -12719,6 +13039,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeEarningTreatmentOverridesI
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -12793,6 +13115,8 @@ export type OrganizationCreateWithoutEmployeeBankAccountsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -12867,6 +13191,8 @@ export type OrganizationUncheckedCreateWithoutEmployeeBankAccountsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -12957,6 +13283,8 @@ export type OrganizationUpdateWithoutEmployeeBankAccountsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -13031,6 +13359,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeeBankAccountsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -13105,6 +13435,8 @@ export type OrganizationCreateWithoutEmployeePayrollAllocationsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -13179,6 +13511,8 @@ export type OrganizationUncheckedCreateWithoutEmployeePayrollAllocationsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -13269,6 +13603,8 @@ export type OrganizationUpdateWithoutEmployeePayrollAllocationsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -13343,6 +13679,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeePayrollAllocationsInput = 
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -13417,6 +13755,8 @@ export type OrganizationCreateWithoutPayrollPaymentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -13491,6 +13831,8 @@ export type OrganizationUncheckedCreateWithoutPayrollPaymentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -13581,6 +13923,8 @@ export type OrganizationUpdateWithoutPayrollPaymentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -13655,6 +13999,8 @@ export type OrganizationUncheckedUpdateWithoutPayrollPaymentsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -13729,6 +14075,8 @@ export type OrganizationCreateWithoutBankExportProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -13803,6 +14151,8 @@ export type OrganizationUncheckedCreateWithoutBankExportProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -13893,6 +14243,8 @@ export type OrganizationUpdateWithoutBankExportProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -13967,6 +14319,8 @@ export type OrganizationUncheckedUpdateWithoutBankExportProfilesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -14041,6 +14395,8 @@ export type OrganizationCreateWithoutAchPaymentBatchesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -14115,6 +14471,8 @@ export type OrganizationUncheckedCreateWithoutAchPaymentBatchesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -14205,6 +14563,8 @@ export type OrganizationUpdateWithoutAchPaymentBatchesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -14279,6 +14639,8 @@ export type OrganizationUncheckedUpdateWithoutAchPaymentBatchesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -14352,6 +14714,8 @@ export type OrganizationCreateWithoutNisEarningsClassesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -14426,6 +14790,8 @@ export type OrganizationUncheckedCreateWithoutNisEarningsClassesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -14516,6 +14882,8 @@ export type OrganizationUpdateWithoutNisEarningsClassesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -14590,6 +14958,648 @@ export type OrganizationUncheckedUpdateWithoutNisEarningsClassesInput = {
   employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutNisClassZRatesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutNisClassZRatesInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutNisClassZRatesInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutNisClassZRatesInput, Prisma.OrganizationUncheckedCreateWithoutNisClassZRatesInput>
+}
+
+export type OrganizationUpsertWithoutNisClassZRatesInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutNisClassZRatesInput, Prisma.OrganizationUncheckedUpdateWithoutNisClassZRatesInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutNisClassZRatesInput, Prisma.OrganizationUncheckedCreateWithoutNisClassZRatesInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutNisClassZRatesInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutNisClassZRatesInput, Prisma.OrganizationUncheckedUpdateWithoutNisClassZRatesInput>
+}
+
+export type OrganizationUpdateWithoutNisClassZRatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutNisClassZRatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutNisEligibilityConfigsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutNisEligibilityConfigsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutNisEligibilityConfigsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutNisEligibilityConfigsInput, Prisma.OrganizationUncheckedCreateWithoutNisEligibilityConfigsInput>
+}
+
+export type OrganizationUpsertWithoutNisEligibilityConfigsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutNisEligibilityConfigsInput, Prisma.OrganizationUncheckedUpdateWithoutNisEligibilityConfigsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutNisEligibilityConfigsInput, Prisma.OrganizationUncheckedCreateWithoutNisEligibilityConfigsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutNisEligibilityConfigsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutNisEligibilityConfigsInput, Prisma.OrganizationUncheckedUpdateWithoutNisEligibilityConfigsInput>
+}
+
+export type OrganizationUpdateWithoutNisEligibilityConfigsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutNisEligibilityConfigsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -14665,6 +15675,8 @@ export type OrganizationCreateWithoutPayeTaxConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
@@ -14739,6 +15751,8 @@ export type OrganizationUncheckedCreateWithoutPayeTaxConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
@@ -14829,6 +15843,8 @@ export type OrganizationUpdateWithoutPayeTaxConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
@@ -14903,6 +15919,8 @@ export type OrganizationUncheckedUpdateWithoutPayeTaxConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -14977,6 +15995,8 @@ export type OrganizationCreateWithoutHealthSurchargeConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
@@ -15051,6 +16071,8 @@ export type OrganizationUncheckedCreateWithoutHealthSurchargeConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
@@ -15141,6 +16163,8 @@ export type OrganizationUpdateWithoutHealthSurchargeConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
@@ -15215,6 +16239,8 @@ export type OrganizationUncheckedUpdateWithoutHealthSurchargeConfigsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -15289,6 +16315,8 @@ export type OrganizationCreateWithoutGratuityPoliciesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
@@ -15363,6 +16391,8 @@ export type OrganizationUncheckedCreateWithoutGratuityPoliciesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
@@ -15453,6 +16483,8 @@ export type OrganizationUpdateWithoutGratuityPoliciesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
@@ -15527,6 +16559,8 @@ export type OrganizationUncheckedUpdateWithoutGratuityPoliciesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -15601,6 +16635,8 @@ export type OrganizationCreateWithoutGratuitySettlementsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -15675,6 +16711,8 @@ export type OrganizationUncheckedCreateWithoutGratuitySettlementsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -15765,6 +16803,8 @@ export type OrganizationUpdateWithoutGratuitySettlementsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -15839,6 +16879,8 @@ export type OrganizationUncheckedUpdateWithoutGratuitySettlementsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -15913,6 +16955,8 @@ export type OrganizationCreateWithoutGratuityAccrualEntriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -15987,6 +17031,8 @@ export type OrganizationUncheckedCreateWithoutGratuityAccrualEntriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -16077,6 +17123,8 @@ export type OrganizationUpdateWithoutGratuityAccrualEntriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -16151,6 +17199,8 @@ export type OrganizationUncheckedUpdateWithoutGratuityAccrualEntriesInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -16225,6 +17275,8 @@ export type OrganizationCreateWithoutPayrollPeriodsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -16299,6 +17351,8 @@ export type OrganizationUncheckedCreateWithoutPayrollPeriodsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -16389,6 +17443,8 @@ export type OrganizationUpdateWithoutPayrollPeriodsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -16463,6 +17519,8 @@ export type OrganizationUncheckedUpdateWithoutPayrollPeriodsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -16537,6 +17595,8 @@ export type OrganizationCreateWithoutPayRunsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -16611,6 +17671,8 @@ export type OrganizationUncheckedCreateWithoutPayRunsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -16701,6 +17763,8 @@ export type OrganizationUpdateWithoutPayRunsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -16775,6 +17839,8 @@ export type OrganizationUncheckedUpdateWithoutPayRunsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -16849,6 +17915,8 @@ export type OrganizationCreateWithoutPayslipsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -16923,6 +17991,8 @@ export type OrganizationUncheckedCreateWithoutPayslipsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -17013,6 +18083,8 @@ export type OrganizationUpdateWithoutPayslipsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -17087,6 +18159,8 @@ export type OrganizationUncheckedUpdateWithoutPayslipsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -17161,6 +18235,8 @@ export type OrganizationCreateWithoutPayrollLineItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -17235,6 +18311,8 @@ export type OrganizationUncheckedCreateWithoutPayrollLineItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -17325,6 +18403,8 @@ export type OrganizationUpdateWithoutPayrollLineItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -17399,6 +18479,8 @@ export type OrganizationUncheckedUpdateWithoutPayrollLineItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -17473,6 +18555,8 @@ export type OrganizationCreateWithoutPayrollComponentDefinitionsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -17547,6 +18631,8 @@ export type OrganizationUncheckedCreateWithoutPayrollComponentDefinitionsInput =
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -17637,6 +18723,8 @@ export type OrganizationUpdateWithoutPayrollComponentDefinitionsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -17711,6 +18799,8 @@ export type OrganizationUncheckedUpdateWithoutPayrollComponentDefinitionsInput =
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -17785,6 +18875,8 @@ export type OrganizationCreateWithoutEmployeePayrollRecurringItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -17859,6 +18951,8 @@ export type OrganizationUncheckedCreateWithoutEmployeePayrollRecurringItemsInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -17949,6 +19043,8 @@ export type OrganizationUpdateWithoutEmployeePayrollRecurringItemsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -18023,6 +19119,8 @@ export type OrganizationUncheckedUpdateWithoutEmployeePayrollRecurringItemsInput
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -18097,6 +19195,8 @@ export type OrganizationCreateWithoutAuditEventsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
@@ -18171,6 +19271,8 @@ export type OrganizationUncheckedCreateWithoutAuditEventsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
@@ -18261,6 +19363,8 @@ export type OrganizationUpdateWithoutAuditEventsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
@@ -18335,6 +19439,8 @@ export type OrganizationUncheckedUpdateWithoutAuditEventsInput = {
   employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
   nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
   gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -18395,6 +19501,8 @@ export type OrganizationCountOutputType = {
   employeeOnboardingCases: number
   employeeOffboardingCases: number
   nisEarningsClasses: number
+  nisClassZRates: number
+  nisEligibilityConfigs: number
   payeTaxConfigs: number
   healthSurchargeConfigs: number
   gratuityPolicies: number
@@ -18451,6 +19559,8 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   employeeOnboardingCases?: boolean | OrganizationCountOutputTypeCountEmployeeOnboardingCasesArgs
   employeeOffboardingCases?: boolean | OrganizationCountOutputTypeCountEmployeeOffboardingCasesArgs
   nisEarningsClasses?: boolean | OrganizationCountOutputTypeCountNisEarningsClassesArgs
+  nisClassZRates?: boolean | OrganizationCountOutputTypeCountNisClassZRatesArgs
+  nisEligibilityConfigs?: boolean | OrganizationCountOutputTypeCountNisEligibilityConfigsArgs
   payeTaxConfigs?: boolean | OrganizationCountOutputTypeCountPayeTaxConfigsArgs
   healthSurchargeConfigs?: boolean | OrganizationCountOutputTypeCountHealthSurchargeConfigsArgs
   gratuityPolicies?: boolean | OrganizationCountOutputTypeCountGratuityPoliciesArgs
@@ -18693,6 +19803,20 @@ export type OrganizationCountOutputTypeCountNisEarningsClassesArgs<ExtArgs exten
 /**
  * OrganizationCountOutputType without action
  */
+export type OrganizationCountOutputTypeCountNisClassZRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NisClassZRateWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountNisEligibilityConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NisEligibilityConfigWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
 export type OrganizationCountOutputTypeCountPayeTaxConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PayeTaxConfigWhereInput
 }
@@ -18908,6 +20032,8 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   employeeOnboardingCases?: boolean | Prisma.Organization$employeeOnboardingCasesArgs<ExtArgs>
   employeeOffboardingCases?: boolean | Prisma.Organization$employeeOffboardingCasesArgs<ExtArgs>
   nisEarningsClasses?: boolean | Prisma.Organization$nisEarningsClassesArgs<ExtArgs>
+  nisClassZRates?: boolean | Prisma.Organization$nisClassZRatesArgs<ExtArgs>
+  nisEligibilityConfigs?: boolean | Prisma.Organization$nisEligibilityConfigsArgs<ExtArgs>
   payeTaxConfigs?: boolean | Prisma.Organization$payeTaxConfigsArgs<ExtArgs>
   healthSurchargeConfigs?: boolean | Prisma.Organization$healthSurchargeConfigsArgs<ExtArgs>
   gratuityPolicies?: boolean | Prisma.Organization$gratuityPoliciesArgs<ExtArgs>
@@ -19032,6 +20158,8 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   employeeOnboardingCases?: boolean | Prisma.Organization$employeeOnboardingCasesArgs<ExtArgs>
   employeeOffboardingCases?: boolean | Prisma.Organization$employeeOffboardingCasesArgs<ExtArgs>
   nisEarningsClasses?: boolean | Prisma.Organization$nisEarningsClassesArgs<ExtArgs>
+  nisClassZRates?: boolean | Prisma.Organization$nisClassZRatesArgs<ExtArgs>
+  nisEligibilityConfigs?: boolean | Prisma.Organization$nisEligibilityConfigsArgs<ExtArgs>
   payeTaxConfigs?: boolean | Prisma.Organization$payeTaxConfigsArgs<ExtArgs>
   healthSurchargeConfigs?: boolean | Prisma.Organization$healthSurchargeConfigsArgs<ExtArgs>
   gratuityPolicies?: boolean | Prisma.Organization$gratuityPoliciesArgs<ExtArgs>
@@ -19093,6 +20221,8 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     employeeOnboardingCases: Prisma.$EmployeeOnboardingCasePayload<ExtArgs>[]
     employeeOffboardingCases: Prisma.$EmployeeOffboardingCasePayload<ExtArgs>[]
     nisEarningsClasses: Prisma.$NisEarningsClassPayload<ExtArgs>[]
+    nisClassZRates: Prisma.$NisClassZRatePayload<ExtArgs>[]
+    nisEligibilityConfigs: Prisma.$NisEligibilityConfigPayload<ExtArgs>[]
     payeTaxConfigs: Prisma.$PayeTaxConfigPayload<ExtArgs>[]
     healthSurchargeConfigs: Prisma.$HealthSurchargeConfigPayload<ExtArgs>[]
     gratuityPolicies: Prisma.$GratuityPolicyPayload<ExtArgs>[]
@@ -19561,6 +20691,8 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   employeeOnboardingCases<T extends Prisma.Organization$employeeOnboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$employeeOnboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOnboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employeeOffboardingCases<T extends Prisma.Organization$employeeOffboardingCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$employeeOffboardingCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOffboardingCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   nisEarningsClasses<T extends Prisma.Organization$nisEarningsClassesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$nisEarningsClassesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NisEarningsClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  nisClassZRates<T extends Prisma.Organization$nisClassZRatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$nisClassZRatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NisClassZRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  nisEligibilityConfigs<T extends Prisma.Organization$nisEligibilityConfigsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$nisEligibilityConfigsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NisEligibilityConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payeTaxConfigs<T extends Prisma.Organization$payeTaxConfigsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$payeTaxConfigsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayeTaxConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   healthSurchargeConfigs<T extends Prisma.Organization$healthSurchargeConfigsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$healthSurchargeConfigsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HealthSurchargeConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   gratuityPolicies<T extends Prisma.Organization$gratuityPoliciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$gratuityPoliciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GratuityPolicyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -20719,6 +21851,54 @@ export type Organization$nisEarningsClassesArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.NisEarningsClassScalarFieldEnum | Prisma.NisEarningsClassScalarFieldEnum[]
+}
+
+/**
+ * Organization.nisClassZRates
+ */
+export type Organization$nisClassZRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NisClassZRate
+   */
+  select?: Prisma.NisClassZRateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NisClassZRate
+   */
+  omit?: Prisma.NisClassZRateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NisClassZRateInclude<ExtArgs> | null
+  where?: Prisma.NisClassZRateWhereInput
+  orderBy?: Prisma.NisClassZRateOrderByWithRelationInput | Prisma.NisClassZRateOrderByWithRelationInput[]
+  cursor?: Prisma.NisClassZRateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NisClassZRateScalarFieldEnum | Prisma.NisClassZRateScalarFieldEnum[]
+}
+
+/**
+ * Organization.nisEligibilityConfigs
+ */
+export type Organization$nisEligibilityConfigsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NisEligibilityConfig
+   */
+  select?: Prisma.NisEligibilityConfigSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NisEligibilityConfig
+   */
+  omit?: Prisma.NisEligibilityConfigOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NisEligibilityConfigInclude<ExtArgs> | null
+  where?: Prisma.NisEligibilityConfigWhereInput
+  orderBy?: Prisma.NisEligibilityConfigOrderByWithRelationInput | Prisma.NisEligibilityConfigOrderByWithRelationInput[]
+  cursor?: Prisma.NisEligibilityConfigWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NisEligibilityConfigScalarFieldEnum | Prisma.NisEligibilityConfigScalarFieldEnum[]
 }
 
 /**

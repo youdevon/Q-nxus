@@ -16,6 +16,8 @@ export type ReportExportColumn = {
   width?: number;
   /** ISO currency code for currency columns (default TTD). */
   currency?: string;
+  /** Styled XLSX exports — highlight employer contribution columns. */
+  xlsxSection?: "employer" | "employer-total";
 };
 
 export type ReportExportMetadataLine = {

@@ -112,3 +112,13 @@ DRAFT → APPROVED → POSTED → RECONCILED → CLOSED
 3. **Post paysheet** — freezes included payslips. A forced pre-post refresh refuses to post if figures changed since approval.
 
 There is no separate paysheet table. Draft `Payslip` snapshots plus pay-run totals are the saved sheet. Variable draft inputs stay on `PayrollLineItem` until calc folds them into the snapshot — complementary stores, not duplicates (Architecture §6).
+
+### Review before approval
+
+Officers can open the **payroll register (paysheet)** for any run status (including DRAFT / APPROVED):
+
+- View: `/payroll/runs/[id]/paysheet`
+- Print: `/payroll/runs/[id]/paysheet/print`
+- Download CSV / Excel: `/payroll/runs/[id]/paysheet/export`
+
+Columns follow a classic register layout: Emp # · Name · Dept · Basic · Allowances · Gross · PAYE · NIS (ee) · Health · Other deductions · Total deductions · Net · NIS (er) · NIS payment (employee + employer), with run totals. The employer NIS column is an additional organization cost (not deducted from net pay). Preview runs are labelled so they are not confused with posted official slips or bank exports.

@@ -626,6 +626,8 @@ model Organization {
   employeeOffboardingCases     EmployeeOffboardingCase[]
 
   nisEarningsClasses       NisEarningsClass[]
+  nisClassZRates           NisClassZRate[]
+  nisEligibilityConfigs    NisEligibilityConfig[]
   payeTaxConfigs           PayeTaxConfig[]
   healthSurchargeConfigs   HealthSurchargeConfig[]
   gratuityPolicies         GratuityPolicy[]
@@ -2634,6 +2636,8 @@ model EmployeePayrollStatutoryOverride {
   periodEnd        DateTime                @db.Date
   payeAmount       Decimal?                @db.Decimal(14, 2)
   nisEmployeeAmount Decimal?               @db.Decimal(14, 2)
+  nisEmployerAmount Decimal?               @db.Decimal(14, 2)
+  nisClassZAmount   Decimal?               @db.Decimal(14, 2)
   healthSurchargeAmount Decimal?           @db.Decimal(14, 2)
   reason           String
   /// Forward-fill intent on approval: this month, year end, or contract end.
@@ -2826,6 +2830,13 @@ model PayrollProfile {
   pensionOnlyIncome      Boolean      @default(false)
   /// Opt out of NIS employee/employer contributions and NIS number readiness.
   exemptFromNis              Boolean  @default(false)
+  /// Employee receives NIS retirement benefit (Class Z eligibility when age 60–64).
+  receivingNisRetirementBenefit Boolean @default(false)
+  /// Manual NIS category override; null = derive from age and retirement benefit.
+  nisCategoryOverride        NisContributionCategory?
+  nisOverrideReason          String?
+  nisOverrideEffectiveFrom   DateTime? @db.Date
+  nisOverrideEffectiveTo     DateTime? @db.Date
   /// Opt out of Health Surcharge (in addition to age/pension exemptions).
   exemptFromHealthSurcharge  Boolean  @default(false)
   /// Opt out of PAYE and BIR number readiness.
@@ -3298,6 +3309,62 @@ model NisEarningsClass {
   @@index([organizationId, effectiveFrom])
   @@index([organizationId, isActive])
   @@map("nis_earnings_classes")
+  @@schema("payroll")
+}
+
+enum NisContributionCategory {
+  NORMAL
+  CLASS_Z
+  EXEMPT
+
+  @@schema("payroll")
+}
+
+/// Employer-only Class Z (employment injury) weekly amounts by monthly earnings band.
+model NisClassZRate {
+  id                   String    @id @default(cuid())
+  organizationId       String
+  monthlyMin           Decimal   @db.Decimal(14, 2)
+  monthlyMax           Decimal?  @db.Decimal(14, 2)
+  employerWeeklyAmount Decimal   @db.Decimal(10, 2)
+  effectiveFrom        DateTime  @db.Date
+  effectiveTo          DateTime? @db.Date
+  versionLabel         String?
+  notes                String?
+  isActive             Boolean   @default(true)
+  createdByUserId      String?
+  updatedByUserId      String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, monthlyMin, effectiveFrom])
+  @@index([organizationId, effectiveFrom])
+  @@index([organizationId, isActive])
+  @@map("nis_class_z_rates")
+  @@schema("payroll")
+}
+
+/// Age thresholds for automatic NIS Class Z eligibility (effective-dated).
+model NisEligibilityConfig {
+  id                 String    @id @default(cuid())
+  organizationId     String
+  fullRetirementAge  Int       @default(65)
+  earlyRetirementAge Int       @default(60)
+  effectiveFrom      DateTime  @db.Date
+  effectiveTo        DateTime? @db.Date
+  versionLabel       String?
+  notes              String?
+  isActive           Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, effectiveFrom])
+  @@index([organizationId, isActive])
+  @@map("nis_eligibility_configs")
   @@schema("payroll")
 }
 

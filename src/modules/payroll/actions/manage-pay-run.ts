@@ -1201,6 +1201,14 @@ export async function addPayrollLineItem(
     }
   }
 
+  if (
+    !notes &&
+    (label.toLowerCase().includes("overpayment recovery") ||
+      label.toLowerCase().includes("salary adjustment"))
+  ) {
+    fieldErrors.notes = "Reason is required for salary / overpayment adjustments.";
+  }
+
   if (Object.keys(fieldErrors).length > 0 || amount == null || !lineType || !code) {
     return {
       status: "error",

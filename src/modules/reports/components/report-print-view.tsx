@@ -11,6 +11,8 @@ type ReportPrintViewProps = {
   metaLines?: string[];
   generatedAtLabel: string;
   toolbarLabel?: string;
+  /** Wider sheet for landscape registers (e.g. payroll paysheet). */
+  wide?: boolean;
   children: React.ReactNode;
 };
 
@@ -20,6 +22,7 @@ export function ReportPrintView({
   metaLines = [],
   generatedAtLabel,
   toolbarLabel,
+  wide = false,
   children,
 }: ReportPrintViewProps) {
   useEffect(() => {
@@ -33,7 +36,11 @@ export function ReportPrintView({
   return (
     <div className="report-print-page min-h-full bg-muted/40 print:bg-white">
       <div className="print:hidden sticky top-0 z-10 border-b border-border/70 bg-background/95 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto flex max-w-[210mm] items-center justify-between gap-3">
+        <div
+          className={`mx-auto flex items-center justify-between gap-3 ${
+            wide ? "max-w-[297mm]" : "max-w-[210mm]"
+          }`}
+        >
           <p className="truncate text-sm font-medium text-foreground">
             {toolbarLabel ?? title}
           </p>
@@ -54,7 +61,11 @@ export function ReportPrintView({
         </div>
       </div>
 
-      <div className="report-print-document mx-auto max-w-[210mm] px-4 py-6 print:max-w-none print:px-0 print:py-0">
+      <div
+        className={`report-print-document mx-auto px-4 py-6 print:max-w-none print:px-0 print:py-0 ${
+          wide ? "max-w-[297mm]" : "max-w-[210mm]"
+        }`}
+      >
         <header className="report-print-header mb-6 border-b border-neutral-300 pb-4">
           <p className="text-xs font-medium tracking-wide text-neutral-500 uppercase">
             {organizationName}

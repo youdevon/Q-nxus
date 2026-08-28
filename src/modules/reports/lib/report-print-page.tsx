@@ -6,6 +6,7 @@ type ReportPrintPageProps = {
   title: string;
   metaLines?: string[];
   toolbarLabel?: string;
+  wide?: boolean;
   children: React.ReactNode;
 };
 
@@ -14,6 +15,7 @@ export async function ReportPrintPage({
   title,
   metaLines,
   toolbarLabel,
+  wide,
   children,
 }: ReportPrintPageProps) {
   const chrome = await getApplicationChrome();
@@ -26,6 +28,7 @@ export async function ReportPrintPage({
       metaLines={metaLines}
       generatedAtLabel={generatedAt}
       toolbarLabel={toolbarLabel}
+      wide={wide}
     >
       {children}
     </ReportPrintView>

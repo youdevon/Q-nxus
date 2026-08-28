@@ -417,6 +417,16 @@ export type AchPaymentBatchDetail = Prisma.AchPaymentBatchDetailModel
  */
 export type NisEarningsClass = Prisma.NisEarningsClassModel
 /**
+ * Model NisClassZRate
+ * Employer-only Class Z (employment injury) weekly amounts by monthly earnings band.
+ */
+export type NisClassZRate = Prisma.NisClassZRateModel
+/**
+ * Model NisEligibilityConfig
+ * Age thresholds for automatic NIS Class Z eligibility (effective-dated).
+ */
+export type NisEligibilityConfig = Prisma.NisEligibilityConfigModel
+/**
  * Model PayeTaxConfig
  * Trinidad & Tobago PAYE (income tax) parameters — annual brackets, not flat monthly %.
  */

@@ -885,6 +885,15 @@ export const BankExportAdapterKind = {
 export type BankExportAdapterKind = (typeof BankExportAdapterKind)[keyof typeof BankExportAdapterKind]
 
 
+export const NisContributionCategory = {
+  NORMAL: 'NORMAL',
+  CLASS_Z: 'CLASS_Z',
+  EXEMPT: 'EXEMPT'
+} as const
+
+export type NisContributionCategory = (typeof NisContributionCategory)[keyof typeof NisContributionCategory]
+
+
 export const GratuityFormulaKind = {
   PCT_OF_TERM_EARNINGS: 'PCT_OF_TERM_EARNINGS',
   PCT_OF_FINAL_MONTHLY_YEARS: 'PCT_OF_FINAL_MONTHLY_YEARS',

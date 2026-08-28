@@ -199,6 +199,11 @@ export type EmployeePayrollSetup = {
     exemptFromNis: boolean;
     exemptFromHealthSurcharge: boolean;
     exemptFromPaye: boolean;
+    receivingNisRetirementBenefit: boolean;
+    nisCategoryOverride: "NORMAL" | "CLASS_Z" | "EXEMPT" | null;
+    nisOverrideReason: string | null;
+    nisOverrideEffectiveFrom: string | null;
+    nisOverrideEffectiveTo: string | null;
     isPayrollReady: boolean;
     updatedAt: string;
   } | null;

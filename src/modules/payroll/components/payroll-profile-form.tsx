@@ -647,6 +647,25 @@ export function PayrollProfileForm({
                 <label className="flex min-w-0 items-start gap-2 text-sm">
                   <input
                     type="checkbox"
+                    name="receivingNisRetirementBenefit"
+                    className="mt-0.5 shrink-0"
+                    defaultChecked={
+                      setup.profile?.receivingNisRetirementBenefit ?? false
+                    }
+                  />
+                  <span className="min-w-0">
+                    <span className="font-medium">
+                      Receiving NIS retirement benefit
+                    </span>
+                    <span className="mt-0.5 block text-pretty text-xs font-normal text-muted-foreground">
+                      When aged 60–64, enables Class Z (employer injury only)
+                      instead of normal NIS.
+                    </span>
+                  </span>
+                </label>
+                <label className="flex min-w-0 items-start gap-2 text-sm">
+                  <input
+                    type="checkbox"
                     name="exemptFromNis"
                     className="mt-0.5 shrink-0"
                     defaultChecked={setup.profile?.exemptFromNis ?? false}
@@ -690,6 +709,47 @@ export function PayrollProfileForm({
                       No PAYE deducted. BIR number not required for readiness.
                     </span>
                   </span>
+                </label>
+              </div>
+              <div className="mt-4 grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <label className="grid gap-1.5 text-sm">
+                  <span className="font-medium">NIS category override</span>
+                  <select
+                    name="nisCategoryOverride"
+                    defaultValue={setup.profile?.nisCategoryOverride ?? ""}
+                    className="h-8 rounded-lg border border-border bg-background px-2.5 text-sm"
+                  >
+                    <option value="">Automatic (from age)</option>
+                    <option value="NORMAL">Normal NIS</option>
+                    <option value="CLASS_Z">Class Z</option>
+                    <option value="EXEMPT">Exempt / not applicable</option>
+                  </select>
+                </label>
+                <label className="grid gap-1.5 text-sm">
+                  <span className="font-medium">Override effective from</span>
+                  <Input
+                    type="date"
+                    name="nisOverrideEffectiveFrom"
+                    defaultValue={
+                      setup.profile?.nisOverrideEffectiveFrom ?? ""
+                    }
+                  />
+                </label>
+                <label className="grid gap-1.5 text-sm">
+                  <span className="font-medium">Override effective to</span>
+                  <Input
+                    type="date"
+                    name="nisOverrideEffectiveTo"
+                    defaultValue={setup.profile?.nisOverrideEffectiveTo ?? ""}
+                  />
+                </label>
+                <label className="grid gap-1.5 text-sm md:col-span-2 xl:col-span-1">
+                  <span className="font-medium">Override reason</span>
+                  <Input
+                    name="nisOverrideReason"
+                    defaultValue={setup.profile?.nisOverrideReason ?? ""}
+                    placeholder="Optional note for audit"
+                  />
                 </label>
               </div>
             </div>

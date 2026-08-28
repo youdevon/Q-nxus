@@ -1,9 +1,6 @@
-import ExcelJS from "exceljs";
-
 import type {
   ReportExportColumn,
   ReportExportColumnKind,
-  ReportExportMetadataLine,
   ReportExportTable,
 } from "@/src/modules/reports/lib/report-export-table";
 
@@ -15,6 +12,13 @@ const COLORS = {
   metaText: "FF64748B",
   border: "FFE2E8F0",
   zebra: "FFF8FAFC",
+  totals: "FFE2E8F0",
+  employerHeader: "FFBAE6FD",
+  employerHeaderText: "FF0C4A6E",
+  employerCell: "FFE0F2FE",
+  employerCellText: "FF082F49",
+  employerTotalHeader: "FF7DD3FC",
+  employerTotalCell: "FFBAE6FD",
 } as const;
 
 const FONT = {
@@ -47,27 +51,98 @@ function numFmtForKind(
   }
 }
 
-function applyBorder(cell: ExcelJS.Cell) {
-  cell.border = {
-    top: { style: "thin", color: { argb: COLORS.border } },
-    left: { style: "thin", color: { argb: COLORS.border } },
-    bottom: { style: "thin", color: { argb: COLORS.border } },
-    right: { style: "thin", color: { argb: COLORS.border } },
-  };
+function currencyDisplaySample(
+  value: string | number | null | undefined,
+  currency: string,
+): string {
+  if (value == null || value === "") {
+    return `${currency} 0.00`;
+  }
+  const amount = Number(value);
+  if (!Number.isFinite(amount)) {
+    return String(value);
+  }
+  const formatted = amount.toLocaleString("en-TT", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+  return `${currency} ${formatted}`;
 }
 
 function estimateColumnWidth(
   column: ReportExportColumn,
   values: Array<string | number | null | undefined>,
 ): number {
+  const kind = column.kind ?? "text";
+  const currency = column.currency ?? "TTD";
+
+  const displayLengths = values.map((value) => {
+    if (kind === "currency") {
+      return currencyDisplaySample(value, currency).length;
+    }
+    if (kind === "number" || kind === "integer") {
+      if (value == null || value === "") {
+        return 0;
+      }
+      const amount = Number(value);
+      if (!Number.isFinite(amount)) {
+        return String(value).length;
+      }
+      return amount.toLocaleString("en-TT", {
+        minimumFractionDigits: kind === "integer" ? 0 : 2,
+        maximumFractionDigits: kind === "integer" ? 0 : 2,
+      }).length;
+    }
+    return value == null ? 0 : String(value).length;
+  });
+
   const headerLen = column.header.length;
-  const maxValueLen = values.reduce<number>((max, value) => {
-    const text = value == null ? "" : String(value);
-    return Math.max(max, text.length);
-  }, 0);
-  const computed = Math.max(headerLen, maxValueLen) + 2;
-  const min = column.width ?? 10;
-  return Math.min(Math.max(computed, min), 48);
+  const maxValueLen = displayLengths.reduce(
+    (max, length) => Math.max(max, length),
+    0,
+  );
+
+  const computed = Math.max(headerLen, maxValueLen) + 3;
+  const kindFloor =
+    kind === "currency" ? 14 : kind === "number" || kind === "integer" ? 12 : 10;
+  const min = Math.max(column.width ?? kindFloor, kindFloor);
+  const max = kind === "text" ? 42 : 22;
+  return Math.min(Math.max(computed, min), max);
+}
+
+function employerHeaderColors(section: "employer" | "employer-total") {
+  return section === "employer-total"
+    ? {
+        fill: COLORS.employerTotalHeader,
+        text: COLORS.employerHeaderText,
+      }
+    : {
+        fill: COLORS.employerHeader,
+        text: COLORS.employerHeaderText,
+      };
+}
+
+function employerDataColors(
+  section: "employer" | "employer-total",
+  isTotals: boolean,
+) {
+  if (isTotals) {
+    return {
+      fill:
+        section === "employer-total"
+          ? COLORS.employerTotalHeader
+          : COLORS.employerHeader,
+      text: COLORS.employerCellText,
+    };
+  }
+
+  return {
+    fill:
+      section === "employer-total"
+        ? COLORS.employerTotalCell
+        : COLORS.employerCell,
+    text: COLORS.employerCellText,
+  };
 }
 
 export type StyledReportXlsxInput = {
@@ -80,6 +155,8 @@ export type StyledReportXlsxInput = {
 export async function buildStyledReportXlsx(
   input: StyledReportXlsxInput,
 ): Promise<Buffer> {
+  // Lazy-load ExcelJS so export routes boot without compiling the full package.
+  const ExcelJS = (await import("exceljs")).default;
   const { table, organizationName } = input;
   const generatedAt = input.generatedAt ?? new Date();
 
@@ -90,14 +167,21 @@ export async function buildStyledReportXlsx(
   const sheetName = (table.sheetName ?? "Report").slice(0, 31);
   const sheet = workbook.addWorksheet(sheetName, {
     views: [{ state: "frozen", ySplit: 1, activeCell: "A1" }],
-    properties: { defaultRowHeight: 18 },
+    properties: { defaultRowHeight: 22 },
   });
+
+  const thinBorder = {
+    top: { style: "thin" as const, color: { argb: COLORS.border } },
+    left: { style: "thin" as const, color: { argb: COLORS.border } },
+    bottom: { style: "thin" as const, color: { argb: COLORS.border } },
+    right: { style: "thin" as const, color: { argb: COLORS.border } },
+  };
 
   let rowIndex = 1;
 
   if (organizationName) {
     const row = sheet.getRow(rowIndex++);
-    row.height = 22;
+    row.height = 26;
     const cell = row.getCell(1);
     cell.value = organizationName;
     cell.font = {
@@ -110,7 +194,7 @@ export async function buildStyledReportXlsx(
 
   {
     const row = sheet.getRow(rowIndex++);
-    row.height = 22;
+    row.height = 26;
     const cell = row.getCell(1);
     cell.value = table.title;
     cell.font = {
@@ -123,7 +207,7 @@ export async function buildStyledReportXlsx(
 
   {
     const row = sheet.getRow(rowIndex++);
-    row.height = 16;
+    row.height = 18;
     const cell = row.getCell(1);
     cell.value = `Generated ${generatedAt.toLocaleString("en-TT", {
       dateStyle: "medium",
@@ -138,7 +222,7 @@ export async function buildStyledReportXlsx(
 
   for (const line of table.metadata ?? []) {
     const row = sheet.getRow(rowIndex++);
-    row.height = 16;
+    row.height = 18;
     const cell = row.getCell(1);
     cell.value = `${line.label}: ${line.value}`;
     cell.font = {
@@ -152,25 +236,35 @@ export async function buildStyledReportXlsx(
 
   const headerRowIndex = rowIndex;
   const headerRow = sheet.getRow(rowIndex++);
-  headerRow.height = 22;
+  headerRow.height = 28;
 
-  table.columns.forEach((column, columnIndex) => {
+  const columnCount = table.columns.length;
+  for (let columnIndex = 0; columnIndex < columnCount; columnIndex += 1) {
+    const column = table.columns[columnIndex];
     const cell = headerRow.getCell(columnIndex + 1);
     cell.value = column.header;
+    const employerSection = column.xlsxSection;
+    const employerHeader = employerSection
+      ? employerHeaderColors(employerSection)
+      : null;
     cell.font = {
       name: FONT.family,
       size: FONT.headerSize,
       bold: true,
-      color: { argb: COLORS.headerText },
+      color: { argb: employerHeader?.text ?? COLORS.headerText },
     };
     cell.fill = {
       type: "pattern",
       pattern: "solid",
-      fgColor: { argb: COLORS.headerFill },
+      fgColor: { argb: employerHeader?.fill ?? COLORS.headerFill },
     };
-    cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
-    applyBorder(cell);
-  });
+    cell.alignment = {
+      vertical: "middle",
+      horizontal: "center",
+      wrapText: true,
+    };
+    cell.border = thinBorder;
+  }
 
   sheet.views = [
     {
@@ -186,13 +280,15 @@ export async function buildStyledReportXlsx(
 
   for (let dataIndex = 0; dataIndex < dataRows.length; dataIndex += 1) {
     const sourceRow = dataRows[dataIndex];
-    const isTotals = table.totalsRow != null && dataIndex === dataRows.length - 1;
+    const isTotals =
+      table.totalsRow != null && dataIndex === dataRows.length - 1;
     const isZebra = !isTotals && dataIndex % 2 === 1;
 
     const row = sheet.getRow(rowIndex++);
-    row.height = 18;
+    row.height = isTotals ? 26 : 24;
 
-    table.columns.forEach((column, columnIndex) => {
+    for (let columnIndex = 0; columnIndex < columnCount; columnIndex += 1) {
+      const column = table.columns[columnIndex];
       const cell = row.getCell(columnIndex + 1);
       const raw = sourceRow[column.key];
       const kind = column.kind ?? "text";
@@ -202,10 +298,7 @@ export async function buildStyledReportXlsx(
         cell.value = raw == null || raw === "" ? "" : String(raw);
       } else if (kind === "integer") {
         cell.value = Number(raw);
-      } else if (
-        kind === "number" ||
-        kind === "currency"
-      ) {
+      } else if (kind === "number" || kind === "currency") {
         cell.value = Number(raw);
       } else if (kind === "date" || kind === "datetime") {
         const parsed = new Date(String(raw));
@@ -219,14 +312,31 @@ export async function buildStyledReportXlsx(
         cell.numFmt = numFmt;
       }
 
+      const employerSection = column.xlsxSection;
+      const employerData = employerSection
+        ? employerDataColors(employerSection, isTotals)
+        : null;
+
       cell.font = {
         name: FONT.family,
         size: FONT.dataSize,
         bold: isTotals,
-        color: { argb: COLORS.titleText },
+        color: { argb: employerData?.text ?? COLORS.titleText },
       };
 
-      if (isZebra) {
+      if (employerData) {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: employerData.fill },
+        };
+      } else if (isTotals) {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: COLORS.totals },
+        };
+      } else if (isZebra) {
         cell.fill = {
           type: "pattern",
           pattern: "solid",
@@ -237,25 +347,28 @@ export async function buildStyledReportXlsx(
       cell.alignment = {
         vertical: "middle",
         horizontal:
-          kind === "number" ||
-          kind === "integer" ||
-          kind === "currency"
+          kind === "number" || kind === "integer" || kind === "currency"
             ? "right"
             : "left",
-        wrapText: kind === "text",
+        wrapText: false,
       };
 
-      applyBorder(cell);
-    });
+      cell.border = thinBorder;
+    }
   }
 
-  table.columns.forEach((column, columnIndex) => {
+  for (let columnIndex = 0; columnIndex < columnCount; columnIndex += 1) {
+    const column = table.columns[columnIndex];
     const values = table.rows.map((row) => row[column.key]);
     if (table.totalsRow) {
       values.push(table.totalsRow[column.key]);
     }
-    sheet.getColumn(columnIndex + 1).width = estimateColumnWidth(column, values);
-  });
+    values.push(column.header);
+    sheet.getColumn(columnIndex + 1).width = estimateColumnWidth(
+      column,
+      values,
+    );
+  }
 
   const buffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(buffer);

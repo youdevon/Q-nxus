@@ -9,8 +9,19 @@ Variable earnings and deductions on a **draft** pay run use `PayrollLineItem`:
 | `OVERTIME` | Manual overtime amount |
 | `BONUS` | Bonus |
 | `COMMISSION` | Commission |
-| `OTHER_EARNING` / `OTHER_DEDUCTION` | Ad-hoc |
+| `OTHER_EARNING` / `OTHER_DEDUCTION` | Ad-hoc; also used for **salary reduction** (negative taxable earning) and **overpayment recovery** (deduction) via the pay-run salary adjustment panel |
 | `CORRECTION_*` | Supplemental correction runs |
+
+### Salary / overpayment adjustment (regular draft runs)
+
+On a **REGULAR** draft pay run, each employee row has **Salary / overpayment adjustment**:
+
+| Choice | Effect |
+|--------|--------|
+| Recover overpayment | `OTHER_DEDUCTION` — reduces **net** this period; contract salary / gross line unchanged |
+| Reduce this period’s salary | Negative taxable `OTHER_EARNING` — lowers **gross** and taxable base (PAYE/NIS) for this month only |
+
+Reason is required. Does **not** amend the employment contract. Posted slips stay frozen; use a **CORRECTION** / **OFF_CYCLE** run if the overpayment was already posted and you need a separate recovery slip.
 
 Controls already wrapping these inputs:
 

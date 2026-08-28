@@ -5,6 +5,8 @@ export type StatutoryOverrideAmounts = {
   id: string;
   payeAmount: number | null;
   nisEmployeeAmount: number | null;
+  nisEmployerAmount: number | null;
+  nisClassZAmount: number | null;
   healthSurchargeAmount: number | null;
   reason: string;
   status: string;
@@ -39,6 +41,14 @@ export async function getApprovedStatutoryOverrideForPeriod(input: {
       row.nisEmployeeAmount != null
         ? Number(row.nisEmployeeAmount.toString())
         : null,
+    nisEmployerAmount:
+      row.nisEmployerAmount != null
+        ? Number(row.nisEmployerAmount.toString())
+        : null,
+    nisClassZAmount:
+      row.nisClassZAmount != null
+        ? Number(row.nisClassZAmount.toString())
+        : null,
     healthSurchargeAmount:
       row.healthSurchargeAmount != null
         ? Number(row.healthSurchargeAmount.toString())
@@ -63,6 +73,8 @@ export async function listEmployeeStatutoryOverrides(
     periodEnd: row.periodEnd.toISOString().slice(0, 10),
     payeAmount: row.payeAmount?.toString() ?? null,
     nisEmployeeAmount: row.nisEmployeeAmount?.toString() ?? null,
+    nisEmployerAmount: row.nisEmployerAmount?.toString() ?? null,
+    nisClassZAmount: row.nisClassZAmount?.toString() ?? null,
     healthSurchargeAmount: row.healthSurchargeAmount?.toString() ?? null,
     reason: row.reason,
     applyScope: row.applyScope,

@@ -124,6 +124,8 @@ export const ModelName = {
   AchPaymentBatch: 'AchPaymentBatch',
   AchPaymentBatchDetail: 'AchPaymentBatchDetail',
   NisEarningsClass: 'NisEarningsClass',
+  NisClassZRate: 'NisClassZRate',
+  NisEligibilityConfig: 'NisEligibilityConfig',
   PayeTaxConfig: 'PayeTaxConfig',
   PayeTaxBracket: 'PayeTaxBracket',
   HealthSurchargeConfig: 'HealthSurchargeConfig',
@@ -1388,6 +1390,8 @@ export const EmployeePayrollStatutoryOverrideScalarFieldEnum = {
   periodEnd: 'periodEnd',
   payeAmount: 'payeAmount',
   nisEmployeeAmount: 'nisEmployeeAmount',
+  nisEmployerAmount: 'nisEmployerAmount',
+  nisClassZAmount: 'nisClassZAmount',
   healthSurchargeAmount: 'healthSurchargeAmount',
   reason: 'reason',
   applyScope: 'applyScope',
@@ -1505,6 +1509,11 @@ export const PayrollProfileScalarFieldEnum = {
   isPayrollReady: 'isPayrollReady',
   pensionOnlyIncome: 'pensionOnlyIncome',
   exemptFromNis: 'exemptFromNis',
+  receivingNisRetirementBenefit: 'receivingNisRetirementBenefit',
+  nisCategoryOverride: 'nisCategoryOverride',
+  nisOverrideReason: 'nisOverrideReason',
+  nisOverrideEffectiveFrom: 'nisOverrideEffectiveFrom',
+  nisOverrideEffectiveTo: 'nisOverrideEffectiveTo',
   exemptFromHealthSurcharge: 'exemptFromHealthSurcharge',
   exemptFromPaye: 'exemptFromPaye',
   createdAt: 'createdAt',
@@ -1769,6 +1778,43 @@ export const NisEarningsClassScalarFieldEnum = {
 } as const
 
 export type NisEarningsClassScalarFieldEnum = (typeof NisEarningsClassScalarFieldEnum)[keyof typeof NisEarningsClassScalarFieldEnum]
+
+
+export const NisClassZRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  monthlyMin: 'monthlyMin',
+  monthlyMax: 'monthlyMax',
+  employerWeeklyAmount: 'employerWeeklyAmount',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdByUserId: 'createdByUserId',
+  updatedByUserId: 'updatedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NisClassZRateScalarFieldEnum = (typeof NisClassZRateScalarFieldEnum)[keyof typeof NisClassZRateScalarFieldEnum]
+
+
+export const NisEligibilityConfigScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fullRetirementAge: 'fullRetirementAge',
+  earlyRetirementAge: 'earlyRetirementAge',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  versionLabel: 'versionLabel',
+  notes: 'notes',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NisEligibilityConfigScalarFieldEnum = (typeof NisEligibilityConfigScalarFieldEnum)[keyof typeof NisEligibilityConfigScalarFieldEnum]
 
 
 export const PayeTaxConfigScalarFieldEnum = {

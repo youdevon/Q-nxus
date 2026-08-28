@@ -1436,6 +1436,13 @@ export type EnumPayrollPaymentMethodFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPayrollPaymentMethodFilter<$PrismaModel> | $Enums.PayrollPaymentMethod
 }
 
+export type EnumNisContributionCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.NisContributionCategory | Prisma.EnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumNisContributionCategoryNullableFilter<$PrismaModel> | $Enums.NisContributionCategory | null
+}
+
 export type EnumPayFrequencyWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel>
   in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel>
@@ -1454,6 +1461,16 @@ export type EnumPayrollPaymentMethodWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPayrollPaymentMethodFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPayrollPaymentMethodFilter<$PrismaModel>
+}
+
+export type EnumNisContributionCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NisContributionCategory | Prisma.EnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumNisContributionCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.NisContributionCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNisContributionCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNisContributionCategoryNullableFilter<$PrismaModel>
 }
 
 export type EnumFinancialInstitutionTypeFilter<$PrismaModel = never> = {
@@ -3313,6 +3330,13 @@ export type NestedEnumPayrollPaymentMethodFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPayrollPaymentMethodFilter<$PrismaModel> | $Enums.PayrollPaymentMethod
 }
 
+export type NestedEnumNisContributionCategoryNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.NisContributionCategory | Prisma.EnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumNisContributionCategoryNullableFilter<$PrismaModel> | $Enums.NisContributionCategory | null
+}
+
 export type NestedEnumPayFrequencyWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PayFrequency | Prisma.EnumPayFrequencyFieldRefInput<$PrismaModel>
   in?: $Enums.PayFrequency[] | Prisma.ListEnumPayFrequencyFieldRefInput<$PrismaModel>
@@ -3331,6 +3355,16 @@ export type NestedEnumPayrollPaymentMethodWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPayrollPaymentMethodFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPayrollPaymentMethodFilter<$PrismaModel>
+}
+
+export type NestedEnumNisContributionCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NisContributionCategory | Prisma.EnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  in?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.NisContributionCategory[] | Prisma.ListEnumNisContributionCategoryFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumNisContributionCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.NisContributionCategory | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNisContributionCategoryNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNisContributionCategoryNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumFinancialInstitutionTypeFilter<$PrismaModel = never> = {

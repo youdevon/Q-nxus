@@ -652,7 +652,9 @@ describe("assemblePayslipPreview", () => {
       healthConfig: TT_HEALTH_SURCHARGE_2026,
     });
 
-    expect(preview.nis).toBeNull();
+    expect(preview.nis?.category).toBe("EXEMPT");
+    expect(preview.nis?.employeeMonthly).toBe(0);
+    expect(preview.nis?.employerMonthly).toBe(0);
     expect(preview.paye).toBeNull();
     expect(preview.health?.exempt).toBe(true);
     expect(preview.health?.exemptionReason).toBe("EMPLOYEE_OPT_OUT");

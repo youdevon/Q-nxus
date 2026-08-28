@@ -10,6 +10,7 @@ import {
 } from "@/src/modules/payroll/data/get-statutory-bundle";
 import { toHealthConfigInput } from "@/src/modules/payroll/lib/health-surcharge";
 import { toNisClassInputs } from "@/src/modules/payroll/lib/nis-contribution";
+import { toNisClassZRateInputs } from "@/src/modules/payroll/data/get-nis-class-z-rates";
 import { toPayeConfigInput } from "@/src/modules/payroll/lib/paye-contribution";
 import {
   applyPersonalAllowanceOverride,
@@ -466,7 +467,14 @@ export async function getEmployeePayslipPreview(
     exemptFromHealthSurcharge:
       setup.profile?.exemptFromHealthSurcharge ?? false,
     exemptFromPaye: setup.profile?.exemptFromPaye ?? false,
+    receivingNisRetirementBenefit:
+      setup.profile?.receivingNisRetirementBenefit ?? false,
+    nisCategoryOverride: setup.profile?.nisCategoryOverride ?? null,
+    nisOverrideEffectiveFrom: setup.profile?.nisOverrideEffectiveFrom ?? null,
+    nisOverrideEffectiveTo: setup.profile?.nisOverrideEffectiveTo ?? null,
     nisClasses: toNisClassInputs(nisClasses),
+    classZRates: toNisClassZRateInputs(statutoryBundle.classZRates),
+    nisEligibilityConfig: statutoryBundle.nisEligibility,
     payeConfig,
     healthConfig:
       healthConfig != null ? toHealthConfigInput(healthConfig) : null,
@@ -499,6 +507,8 @@ export async function getEmployeePayslipPreview(
       ? {
           payeAmount: statutoryOverride.payeAmount,
           nisEmployeeAmount: statutoryOverride.nisEmployeeAmount,
+          nisEmployerAmount: statutoryOverride.nisEmployerAmount,
+          nisClassZAmount: statutoryOverride.nisClassZAmount,
           healthSurchargeAmount: statutoryOverride.healthSurchargeAmount,
           reason: statutoryOverride.reason,
         }

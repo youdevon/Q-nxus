@@ -49,6 +49,7 @@ export async function buildReportExportResponse(input: {
       "content-type":
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "content-disposition": `attachment; filename="${fileName}"`,
+      "cache-control": "no-store",
     },
   });
 }
@@ -58,12 +59,14 @@ export async function respondWithReportExport(input: {
   request: Request;
   table: ReportExportTable;
   fileNameBase: string;
+  organizationName?: string | null;
 }): Promise<Response> {
   const format = parseExportFormat(input.request);
   return buildReportExportResponse({
     table: input.table,
     fileNameBase: input.fileNameBase,
     format,
+    organizationName: input.organizationName,
   });
 }
 

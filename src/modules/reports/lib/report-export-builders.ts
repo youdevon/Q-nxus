@@ -1,6 +1,7 @@
 import { checklistItemLabel } from "@/src/modules/hr/lib/employee-file-checklist";
 import type { EmployeeFileCompletenessRow } from "@/src/modules/hr/data/get-org-employee-file-completeness";
 import type { MonthlyPayrollReportData } from "@/src/modules/payroll/data/get-monthly-payroll-summary";
+import type { PayRunPaysheetData } from "@/src/modules/payroll/data/get-pay-run-paysheet";
 import type { StatutoryRemittanceReport } from "@/src/modules/payroll/data/get-statutory-remittance";
 import type { EmployeePaymentHistoryReportData } from "@/src/modules/payroll/data/get-employee-payment-history";
 import type { YearEndEmployeeSummary } from "@/src/modules/payroll/data/get-year-end-payroll-summary";
@@ -317,6 +318,145 @@ export function buildYearEndPayrollExportTable(
       totalDeductions: row.totalDeductions,
       netPay: row.netPay,
     })),
+  };
+}
+
+/** Classic payroll register / paysheet for a single pay run (draft through posted). */
+export function buildPayRunPaysheetExportTable(
+  data: PayRunPaysheetData,
+): ReportExportTable {
+  const currency = data.currency;
+  return {
+    title: `Payroll register — ${data.runNumber}`,
+    sheetName: "Paysheet",
+    metadata: [
+      { label: "Period", value: data.periodName },
+      { label: "Period key", value: data.periodKey },
+      { label: "Status", value: data.statusLabel },
+      { label: "Run kind", value: data.runKind },
+      { label: "Currency", value: currency },
+      {
+        label: "Employees",
+        value: `${data.includedCount} included${
+          data.excludedCount > 0 ? ` · ${data.excludedCount} excluded` : ""
+        }`,
+      },
+      ...(data.isPreview
+        ? [
+            {
+              label: "Note",
+              value: "Preview register — not yet posted",
+            },
+          ]
+        : []),
+    ],
+    columns: [
+      { header: "Emp #", key: "employeeNumber", width: 12 },
+      { header: "Employee", key: "employeeName", width: 28 },
+      { header: "Department", key: "departmentName", width: 20 },
+      { header: "Job title", key: "jobTitle", width: 20 },
+      {
+        header: "Basic",
+        key: "baseSalary",
+        kind: "currency",
+        currency,
+        width: 16,
+      },
+      {
+        header: "Allowances",
+        key: "allowancesTotal",
+        kind: "currency",
+        currency,
+        width: 16,
+      },
+      {
+        header: "Gross",
+        key: "grossPay",
+        kind: "currency",
+        currency,
+        width: 16,
+      },
+      { header: "PAYE", key: "paye", kind: "currency", currency, width: 15 },
+      {
+        header: "NIS (ee)",
+        key: "nisEmployee",
+        kind: "currency",
+        currency,
+        width: 15,
+      },
+      {
+        header: "Health",
+        key: "healthSurcharge",
+        kind: "currency",
+        currency,
+        width: 15,
+      },
+      {
+        header: "Other ded.",
+        key: "otherDeductions",
+        kind: "currency",
+        currency,
+        width: 15,
+      },
+      {
+        header: "Total ded.",
+        key: "totalDeductions",
+        kind: "currency",
+        currency,
+        width: 16,
+      },
+      { header: "Net", key: "netPay", kind: "currency", currency, width: 16 },
+      {
+        header: "NIS (er)",
+        key: "nisEmployer",
+        kind: "currency",
+        currency,
+        width: 15,
+        xlsxSection: "employer",
+      },
+      {
+        header: "NIS payment",
+        key: "nisPayment",
+        kind: "currency",
+        currency,
+        width: 16,
+        xlsxSection: "employer-total",
+      },
+    ],
+    rows: data.rows.map((row) => ({
+      employeeNumber: row.employeeNumber,
+      employeeName: row.employeeName,
+      departmentName: row.departmentName ?? "",
+      jobTitle: row.jobTitle ?? "",
+      baseSalary: row.baseSalary,
+      allowancesTotal: row.allowancesTotal,
+      grossPay: row.grossPay,
+      paye: row.paye,
+      nisEmployee: row.nisEmployee,
+      healthSurcharge: row.healthSurcharge,
+      otherDeductions: row.otherDeductions,
+      totalDeductions: row.totalDeductions,
+      netPay: row.netPay,
+      nisEmployer: row.nisEmployer,
+      nisPayment: row.nisPayment,
+    })),
+    totalsRow: {
+      employeeNumber: "",
+      employeeName: "TOTAL",
+      departmentName: "",
+      jobTitle: "",
+      baseSalary: data.totals.baseSalary,
+      allowancesTotal: data.totals.allowancesTotal,
+      grossPay: data.totals.grossPay,
+      paye: data.totals.paye,
+      nisEmployee: data.totals.nisEmployee,
+      healthSurcharge: data.totals.healthSurcharge,
+      otherDeductions: data.totals.otherDeductions,
+      totalDeductions: data.totals.totalDeductions,
+      netPay: data.totals.netPay,
+      nisEmployer: data.totals.nisEmployer,
+      nisPayment: data.totals.nisPayment,
+    },
   };
 }
 

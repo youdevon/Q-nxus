@@ -72,7 +72,9 @@ import {
   defaultAdjustmentLabel,
   isCorrectionAdjustmentCode,
   isSupplementalPayRunKind,
+  salaryAdjustmentDefaults,
   type PayrollAdjustmentKind,
+  type SalaryAdjustmentKind,
 } from "@/src/modules/payroll/lib/payroll-adjustment-line";
 import {
   formatDisplayDate,
@@ -80,6 +82,7 @@ import {
   formatMoney,
 } from "@/src/lib/format";
 import { PayrollNav } from "./payroll-nav";
+import { ReportDownloadButton } from "@/src/modules/reports/components/report-download-button";
 
 const initialState: PayRunFormState = {
   status: "idle",
@@ -743,6 +746,159 @@ function AddAdjustmentPanel({
   );
 }
 
+function SalaryAdjustmentPanel({
+  runId,
+  slip,
+  currency,
+}: {
+  runId: string;
+  slip: PayRunPayslipRow;
+  currency: string;
+}) {
+  const [kind, setKind] = useState<SalaryAdjustmentKind>("OVERPAYMENT_RECOVERY");
+  const [amount, setAmount] = useState("");
+  const [formKey, setFormKey] = useState(0);
+  const [state, formAction, pending] = useActionState(
+    addPayrollLineItem,
+    initialState,
+  );
+  const defaults = salaryAdjustmentDefaults(kind);
+  const parsedAmount = Number(amount);
+  const signedAmount =
+    Number.isFinite(parsedAmount) && parsedAmount > 0
+      ? parsedAmount * defaults.amountSign
+      : "";
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(
+        state.fieldErrors?.notes ||
+          state.fieldErrors?.amount ||
+          state.message,
+      );
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+      setFormKey((key) => key + 1);
+      setAmount("");
+      setKind("OVERPAYMENT_RECOVERY");
+    }
+  }, [state]);
+
+  return (
+    <div className="space-y-3 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Salary / overpayment adjustment
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Use when a past overpayment must be recovered, or this period’s salary
+          should be reduced. Does not change the employment contract — only this
+          draft paysheet. Recalculate after adding if totals look stale.
+        </p>
+      </div>
+
+      <form
+        key={formKey}
+        action={formAction}
+        className="grid gap-2 md:grid-cols-6"
+      >
+        <input type="hidden" name="payRunId" value={runId} />
+        <input type="hidden" name="payslipId" value={slip.id} />
+        <input type="hidden" name="lineType" value={defaults.lineType} />
+        <input type="hidden" name="code" value={defaults.code} />
+        <input type="hidden" name="label" value={defaults.label} />
+        <input type="hidden" name="amount" value={signedAmount} />
+        {defaults.isTaxable ? (
+          <input type="hidden" name="isTaxable" value="on" />
+        ) : null}
+
+        <fieldset className="grid gap-2 text-xs md:col-span-3">
+          <legend className="text-muted-foreground">Adjustment type</legend>
+          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 bg-background/80 p-2 has-[:checked]:border-foreground/40">
+            <input
+              type="radio"
+              className="mt-0.5"
+              checked={kind === "OVERPAYMENT_RECOVERY"}
+              onChange={() => setKind("OVERPAYMENT_RECOVERY")}
+            />
+            <span>
+              <span className="font-medium text-foreground">
+                Recover overpayment
+              </span>
+              <span className="mt-0.5 block text-muted-foreground">
+                Deducts from net pay this period (gross / salary line unchanged).
+              </span>
+            </span>
+          </label>
+          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 bg-background/80 p-2 has-[:checked]:border-foreground/40">
+            <input
+              type="radio"
+              className="mt-0.5"
+              checked={kind === "SALARY_REDUCTION"}
+              onChange={() => setKind("SALARY_REDUCTION")}
+            />
+            <span>
+              <span className="font-medium text-foreground">
+                Reduce this period’s salary
+              </span>
+              <span className="mt-0.5 block text-muted-foreground">
+                Lowers taxable gross for this month (affects PAYE / NIS base).
+              </span>
+            </span>
+          </label>
+        </fieldset>
+
+        <label className="grid gap-1 text-xs">
+          <span className="text-muted-foreground">
+            Amount to {kind === "SALARY_REDUCTION" ? "reduce" : "recover"} (
+            {currency})
+          </span>
+          <input
+            type="number"
+            step="0.01"
+            min="0.01"
+            value={amount}
+            onChange={(event) => setAmount(event.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-2"
+            placeholder="0.00"
+            required
+            aria-invalid={Boolean(state.fieldErrors?.amount)}
+          />
+          {state.fieldErrors?.amount ? (
+            <p className="text-destructive">{state.fieldErrors.amount}</p>
+          ) : null}
+        </label>
+
+        <label className="grid gap-1 text-xs md:col-span-2">
+          <span className="text-muted-foreground">Reason (required)</span>
+          <input
+            name="notes"
+            className="h-9 rounded-md border border-input bg-background px-2"
+            placeholder="e.g. July overpayment of basic salary"
+            required
+            aria-invalid={Boolean(state.fieldErrors?.notes)}
+          />
+          {state.fieldErrors?.notes ? (
+            <p className="text-destructive">{state.fieldErrors.notes}</p>
+          ) : null}
+        </label>
+
+        <div className="flex items-end md:col-span-6">
+          <Button
+            type="submit"
+            size="sm"
+            disabled={pending || signedAmount === ""}
+          >
+            <Plus />
+            {pending ? "Adding…" : "Add salary adjustment"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 function AdvancedLineItemsForm({
   runId,
   slip,
@@ -919,6 +1075,10 @@ function PayrollLineItemsEditor({
         <AddAdjustmentPanel runId={runId} slip={slip} currency={currency} />
       ) : null}
 
+      {canEdit && !isSupplemental ? (
+        <SalaryAdjustmentPanel runId={runId} slip={slip} currency={currency} />
+      ) : null}
+
       {canEdit ? (
         isSupplemental ? (
           <div className="space-y-2">
@@ -942,11 +1102,26 @@ function PayrollLineItemsEditor({
             ) : null}
           </div>
         ) : (
-          <AdvancedLineItemsForm
-            runId={runId}
-            slip={slip}
-            includeCorrectionCodes
-          />
+          <div className="space-y-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowAdvanced((open) => !open)}
+            >
+              <Plus />
+              {showAdvanced
+                ? "Hide other line types"
+                : "Add overtime, bonus, or other line"}
+            </Button>
+            {showAdvanced ? (
+              <AdvancedLineItemsForm
+                runId={runId}
+                slip={slip}
+                includeCorrectionCodes
+              />
+            ) : null}
+          </div>
         )
       ) : null}
     </div>
@@ -1305,6 +1480,33 @@ export function PayRunDetailView({
         backLabel="Pay runs"
         actions={
           <PageActionsEnd>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link href={`/payroll/runs/${run.id}/paysheet`} />
+              }
+            >
+              <FileText />
+              View paysheet
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link
+                  href={`/payroll/runs/${run.id}/paysheet/print`}
+                  target="_blank"
+                />
+              }
+            >
+              <Printer />
+              Print paysheet
+            </Button>
+            <ReportDownloadButton
+              href={`/payroll/runs/${run.id}/paysheet/export?format=xlsx`}
+              label="Download Excel"
+            />
             {isPosted ? (
               <>
                 <Button
@@ -1313,7 +1515,7 @@ export function PayRunDetailView({
                   render={<Link href={`/payroll/runs/${run.id}/print`} />}
                 >
                   <Printer />
-                  Batch print
+                  Batch print slips
                 </Button>
                 <Button
                   nativeButton={false}

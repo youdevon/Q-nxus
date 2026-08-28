@@ -1,7 +1,11 @@
 import { getHealthSurchargeConfigAsOf } from "@/src/modules/payroll/data/get-health-surcharge-config";
+import { getNisClassZRatesAsOf } from "@/src/modules/payroll/data/get-nis-class-z-rates";
 import { getNisClassesAsOf } from "@/src/modules/payroll/data/get-nis-classes";
+import { resolveNisEligibilityConfigInput } from "@/src/modules/payroll/data/get-nis-eligibility-config";
 import { getPayeTaxConfigAsOf } from "@/src/modules/payroll/data/get-paye-tax-config";
 import type { HealthSurchargeConfigRecord } from "@/src/modules/payroll/lib/health-surcharge";
+import type { NisClassZRateRecord } from "@/src/modules/payroll/lib/nis-class-z";
+import type { NisEligibilityConfigInput } from "@/src/modules/payroll/lib/nis-eligibility";
 import type { NisEarningsClassRecord } from "@/src/modules/payroll/lib/nis-contribution";
 import type { PayeTaxConfigRecord } from "@/src/modules/payroll/lib/paye-contribution";
 import type { PayslipStatutorySnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
@@ -19,6 +23,8 @@ export type StatutoryConfigBundle = {
   taxYear: number;
   paye: PayeTaxConfigRecord | null;
   nisClasses: NisEarningsClassRecord[];
+  classZRates: NisClassZRateRecord[];
+  nisEligibility: NisEligibilityConfigInput;
   health: HealthSurchargeConfigRecord | null;
 };
 
@@ -26,17 +32,22 @@ export async function resolveStatutoryConfigBundle(
   asOf: Date | string,
 ): Promise<StatutoryConfigBundle> {
   const asOfKey = toStatutoryAsOfKey(asOf);
-  const [paye, nisClasses, health] = await Promise.all([
-    getPayeTaxConfigAsOf(asOfKey),
-    getNisClassesAsOf(asOfKey),
-    getHealthSurchargeConfigAsOf(asOfKey),
-  ]);
+  const [paye, nisClasses, classZRates, nisEligibility, health] =
+    await Promise.all([
+      getPayeTaxConfigAsOf(asOfKey),
+      getNisClassesAsOf(asOfKey),
+      getNisClassZRatesAsOf(asOfKey),
+      resolveNisEligibilityConfigInput(asOfKey),
+      getHealthSurchargeConfigAsOf(asOfKey),
+    ]);
 
   return {
     asOf: asOfKey,
     taxYear: paye?.taxYear ?? taxYearFromAsOfKey(asOfKey),
     paye,
     nisClasses,
+    classZRates,
+    nisEligibility,
     health,
   };
 }

@@ -4,6 +4,7 @@ import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { ReportDownloadButton } from "@/src/modules/reports/components/report-download-button";
 
 type ReportLayoutProps = {
   title: string;
@@ -62,11 +63,7 @@ export function ReportXlsxLink({
   href: string;
   label?: string;
 }) {
-  return (
-    <Button nativeButton={false} variant="outline" render={<Link href={href} />}>
-      {label}
-    </Button>
-  );
+  return <ReportDownloadButton href={href} label={label} />;
 }
 
 function withXlsxFormat(href: string): string {

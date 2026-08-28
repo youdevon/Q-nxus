@@ -15,9 +15,14 @@ import {
 import { countMondaysInRange } from "@/src/modules/payroll/lib/contribution-weeks";
 import type { NisContributionResult } from "@/src/modules/payroll/lib/nis-contribution";
 import {
-  computeNisContribution,
+  computeEmployeeNisStatutory,
   type NisEarningsClassInput,
 } from "@/src/modules/payroll/lib/nis-contribution";
+import type { NisClassZRateInput } from "@/src/modules/payroll/lib/nis-class-z";
+import type {
+  NisContributionCategory,
+  NisEligibilityConfigInput,
+} from "@/src/modules/payroll/lib/nis-eligibility";
 import type { PayeContributionResult } from "@/src/modules/payroll/lib/paye-contribution";
 import {
   computePayeContribution,
@@ -157,7 +162,13 @@ export type AssemblePayslipPreviewInput = {
   exemptFromNis?: boolean;
   exemptFromHealthSurcharge?: boolean;
   exemptFromPaye?: boolean;
+  receivingNisRetirementBenefit?: boolean;
+  nisCategoryOverride?: NisContributionCategory | null;
+  nisOverrideEffectiveFrom?: string | null;
+  nisOverrideEffectiveTo?: string | null;
   nisClasses: NisEarningsClassInput[];
+  classZRates?: NisClassZRateInput[];
+  nisEligibilityConfig?: NisEligibilityConfigInput;
   payeConfig: PayeTaxConfigInput | null;
   healthConfig: HealthSurchargeConfigInput | null;
   /** Phase 4–5 / tax-year projection: cumulative or hire-aware PAYE. */
@@ -187,6 +198,8 @@ export type AssemblePayslipPreviewInput = {
   statutoryOverrides?: {
     payeAmount?: number | null;
     nisEmployeeAmount?: number | null;
+    nisEmployerAmount?: number | null;
+    nisClassZAmount?: number | null;
     healthSurchargeAmount?: number | null;
     reason?: string | null;
   };
@@ -624,14 +637,44 @@ export function assemblePayslipPreview(
   if (monthlyTaxableEarnings > 0) {
     const contributionWeeks = countMondaysInRange(periodStart, periodEnd);
 
-    if (exemptFromNis) {
-      notes.push("NIS exempt (employee opt-out) — no employee or employer contribution.");
-    } else if (input.nisClasses.length > 0) {
-      nis = computeNisContribution({
+    if (input.nisClasses.length > 0) {
+      nis = computeEmployeeNisStatutory({
         monthlySalary: monthlyTaxableEarnings,
         classes: input.nisClasses,
+        classZRates: input.classZRates ?? [],
         weeksInPeriod: contributionWeeks,
+        dateOfBirth: input.employee.dateOfBirth,
+        asOf: periodEnd,
+        exemptFromNis,
+        receivingNisRetirementBenefit:
+          input.receivingNisRetirementBenefit ?? false,
+        categoryOverride: input.nisCategoryOverride,
+        overrideEffectiveFrom: input.nisOverrideEffectiveFrom,
+        overrideEffectiveTo: input.nisOverrideEffectiveTo,
+        eligibilityConfig: input.nisEligibilityConfig,
       });
+      if (nis.category === "EXEMPT" && exemptFromNis) {
+        notes.push(
+          "NIS exempt (employee opt-out) — no employee or employer contribution.",
+        );
+      }
+      if (nis.transitionAlert) {
+        warnings.push(nis.transitionAlert);
+      }
+      if (nis.category === "CLASS_Z") {
+        notes.push(
+          `NIS Class Z — employee $0.00; employer injury coverage ${nis.classZEmployerMonthly.toFixed(2)} (${nis.classZEmployerWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod}).`,
+        );
+        if (nis.classZOverrideApplied) {
+          notes.push(
+            `Class Z override applied — calculated ${nis.classZCalculatedEmployerMonthly.toFixed(2)}, applied ${nis.classZEmployerMonthly.toFixed(2)}.`,
+          );
+        }
+      }
+    } else if (exemptFromNis) {
+      notes.push(
+        "NIS exempt (employee opt-out) — no employee or employer contribution.",
+      );
     } else {
       warnings.push("No active NIS earnings classes configured.");
     }
@@ -756,12 +799,14 @@ export function assemblePayslipPreview(
 
   const deductions: PayslipLineItem[] = [];
 
-  if (nis && !nis.belowMinimum) {
+  if (nis && nis.category === "NORMAL" && !nis.belowMinimum) {
     deductions.push({
       label: "NIS (employee)",
       amount: nis.employeeMonthly,
       detail: `Class ${nis.classCode} · ${nis.employeeWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod}`,
     });
+  } else if (nis?.category === "CLASS_Z") {
+    notes.push("NIS employee contribution: $0.00 (Class Z).");
   } else if (nis?.belowMinimum) {
     notes.push("NIS: earnings below Class I floor — no employee contribution.");
   }
@@ -833,6 +878,35 @@ export function assemblePayslipPreview(
         });
       }
       notes.push("NIS employee amount overridden for this period.");
+    }
+    if (
+      overrides.nisClassZAmount != null &&
+      Number.isFinite(overrides.nisClassZAmount) &&
+      nis?.category === "CLASS_Z"
+    ) {
+      const amount = roundToCents(Math.max(0, overrides.nisClassZAmount));
+      nis = {
+        ...nis,
+        classZEmployerMonthly: amount,
+        classZOverrideApplied: amount !== nis.classZCalculatedEmployerMonthly,
+        totalMonthly: amount,
+      };
+      notes.push("NIS Class Z employer amount overridden for this period.");
+    }
+    if (
+      overrides.nisEmployerAmount != null &&
+      Number.isFinite(overrides.nisEmployerAmount) &&
+      nis?.category === "NORMAL"
+    ) {
+      const amount = roundToCents(Math.max(0, overrides.nisEmployerAmount));
+      if (nis) {
+        nis = {
+          ...nis,
+          employerMonthly: amount,
+          totalMonthly: roundToCents(nis.employeeMonthly + amount),
+        };
+      }
+      notes.push("NIS employer amount overridden for this period.");
     }
     if (
       overrides.healthSurchargeAmount != null &&
@@ -933,7 +1007,13 @@ export function assemblePayslipPreview(
   const netPay = fromCents(subCents(toCents(grossPay), toCents(totalDeductions)));
 
   const employerContributions: PayslipLineItem[] = [];
-  if (nis && !nis.belowMinimum) {
+  if (nis?.category === "CLASS_Z" && nis.classZEmployerMonthly > 0) {
+    employerContributions.push({
+      label: "NIS Class Z (employer)",
+      amount: nis.classZEmployerMonthly,
+      detail: `Class Z · ${nis.classZEmployerWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod} · employer injury — not deducted from net`,
+    });
+  } else if (nis && nis.category === "NORMAL" && !nis.belowMinimum) {
     employerContributions.push({
       label: "NIS (employer)",
       amount: nis.employerMonthly,

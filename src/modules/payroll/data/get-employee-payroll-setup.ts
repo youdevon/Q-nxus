@@ -1,9 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
-import { getCurrentHealthSurchargeConfig } from "@/src/modules/payroll/data/get-health-surcharge-config";
 import { getSelectableFinancialInstitutionOptions } from "@/src/modules/payroll/data/get-financial-institutions";
-import { getCurrentNisClasses } from "@/src/modules/payroll/data/get-nis-classes";
-import { getCurrentPayeTaxConfig } from "@/src/modules/payroll/data/get-paye-tax-config";
+import { resolveStatutoryConfigBundle } from "@/src/modules/payroll/data/get-statutory-bundle";
 import { decryptAccountNumber } from "@/src/modules/payroll/lib/bank-account-crypto";
 import { toPayrollBankAccountRecords } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
 import {
@@ -14,9 +12,10 @@ import {
   countMondaysInMonth,
 } from "@/src/modules/payroll/lib/contribution-weeks";
 import {
-  computeNisContribution,
+  computeEmployeeNisStatutory,
   toNisClassInputs,
 } from "@/src/modules/payroll/lib/nis-contribution";
+import { toNisClassZRateInputs } from "@/src/modules/payroll/data/get-nis-class-z-rates";
 import {
   computePayeContribution,
   toPayeConfigInput,
@@ -148,6 +147,11 @@ export async function getEmployeePayrollSetup(
           exemptFromNis: true,
           exemptFromHealthSurcharge: true,
           exemptFromPaye: true,
+          receivingNisRetirementBenefit: true,
+          nisCategoryOverride: true,
+          nisOverrideReason: true,
+          nisOverrideEffectiveFrom: true,
+          nisOverrideEffectiveTo: true,
           isPayrollReady: true,
           updatedAt: true,
         },
@@ -411,27 +415,37 @@ export async function getEmployeePayrollSetup(
   let statutoryPreview: StatutoryPreview | null = null;
 
   if (includeStatutoryPreview && contract && monthlyTaxableEarnings > 0) {
-    const [nisClasses, payeConfig, healthConfig] = await Promise.all([
-      getCurrentNisClasses(),
-      getCurrentPayeTaxConfig(),
-      getCurrentHealthSurchargeConfig(),
-    ]);
+    const previewPeriodKey = defaultMonthlyPeriodKey();
+    const [previewYear, previewMonth] = previewPeriodKey.split("-").map(Number);
+    const contributionWeeks = countMondaysInMonth(previewYear, previewMonth);
+    const periodEnd = new Date(
+      Date.UTC(previewYear, previewMonth, 0, 0, 0, 0, 0),
+    );
+    const statutoryBundle = await resolveStatutoryConfigBundle(periodEnd);
 
     const exemptFromNis = profile?.exemptFromNis ?? false;
     const exemptFromPaye = profile?.exemptFromPaye ?? false;
     const exemptFromHealthSurcharge =
       profile?.exemptFromHealthSurcharge ?? false;
-
-    const previewPeriodKey = defaultMonthlyPeriodKey();
-    const [previewYear, previewMonth] = previewPeriodKey.split("-").map(Number);
-    const contributionWeeks = countMondaysInMonth(previewYear, previewMonth);
+    const payeConfig = statutoryBundle.paye;
+    const healthConfig = statutoryBundle.health;
 
     const nis =
-      !exemptFromNis && nisClasses.length > 0
-        ? computeNisContribution({
+      !exemptFromNis && statutoryBundle.nisClasses.length > 0
+        ? computeEmployeeNisStatutory({
             monthlySalary: monthlyTaxableEarnings,
-            classes: toNisClassInputs(nisClasses),
+            classes: toNisClassInputs(statutoryBundle.nisClasses),
+            classZRates: toNisClassZRateInputs(statutoryBundle.classZRates),
             weeksInPeriod: contributionWeeks,
+            dateOfBirth: employee.dateOfBirth,
+            asOf: periodEnd,
+            exemptFromNis,
+            receivingNisRetirementBenefit:
+              profile?.receivingNisRetirementBenefit ?? false,
+            categoryOverride: profile?.nisCategoryOverride ?? null,
+            overrideEffectiveFrom: profile?.nisOverrideEffectiveFrom,
+            overrideEffectiveTo: profile?.nisOverrideEffectiveTo,
+            eligibilityConfig: statutoryBundle.nisEligibility,
           })
         : null;
 
@@ -509,6 +523,15 @@ export async function getEmployeePayrollSetup(
           exemptFromNis: profile.exemptFromNis,
           exemptFromHealthSurcharge: profile.exemptFromHealthSurcharge,
           exemptFromPaye: profile.exemptFromPaye,
+          receivingNisRetirementBenefit: profile.receivingNisRetirementBenefit,
+          nisCategoryOverride: profile.nisCategoryOverride,
+          nisOverrideReason: profile.nisOverrideReason,
+          nisOverrideEffectiveFrom: profile.nisOverrideEffectiveFrom
+            ? profile.nisOverrideEffectiveFrom.toISOString().slice(0, 10)
+            : null,
+          nisOverrideEffectiveTo: profile.nisOverrideEffectiveTo
+            ? profile.nisOverrideEffectiveTo.toISOString().slice(0, 10)
+            : null,
           isPayrollReady: profile.isPayrollReady,
           updatedAt: profile.updatedAt.toISOString(),
         }
