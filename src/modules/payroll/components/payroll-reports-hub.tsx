@@ -51,8 +51,8 @@ export function PayrollReportsHub() {
       <PageHeader
         title="Payroll reports"
         description="Posted payroll analytics only. Draft runs and live payslip previews are never included in these totals."
-        backHref="/payroll"
-        backLabel="Payroll"
+        backHref="/reports"
+        backLabel="Reports"
       />
 
       <section>

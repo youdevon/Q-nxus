@@ -1,9 +1,12 @@
+import { getOrganizationProfile } from "@/src/modules/admin/data/get-organization-profile";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
 import {
+  getPayslipYtdBreakdownBatch,
   getPreviewPayslipYtdBatch,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
+import { resolveStatutoryConfigBundle } from "@/src/modules/payroll/data/get-statutory-bundle";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import {
@@ -11,7 +14,11 @@ import {
   getPreviousPayslipPeriod,
   payslipPeriodToAsOfDate,
 } from "@/src/modules/payroll/lib/payslip-preview";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type {
+  PayslipYtdBreakdown,
+  PayslipYtdTotals,
+} from "@/src/modules/payroll/lib/payslip-ytd";
+import { toStatutoryAsOfKey } from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type ReadyPayslipBatchItem = {
   employeeId: string;
@@ -20,6 +27,7 @@ export type ReadyPayslipBatchItem = {
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
   ytd: PayslipYtdTotals;
+  ytdBreakdown: PayslipYtdBreakdown;
 };
 
 export type ReadyPayslipBatchResult = {
@@ -37,11 +45,42 @@ export type ReadyPayslipBatchResult = {
   readyCount: number;
 };
 
+const PREVIEW_CONCURRENCY = 6;
+
+async function mapPool<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T) => Promise<R>,
+): Promise<R[]> {
+  if (items.length === 0) {
+    return [];
+  }
+
+  const results = new Array<R>(items.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < items.length) {
+      const index = nextIndex;
+      nextIndex += 1;
+      results[index] = await mapper(items[index]!);
+    }
+  }
+
+  const workers = Array.from(
+    { length: Math.min(concurrency, items.length) },
+    () => worker(),
+  );
+  await Promise.all(workers);
+  return results;
+}
+
 /**
  * Build printable preview documents for every payroll-ready employee.
  * Default period = previous Trinidad calendar month (most recent completed month).
  *
- * Previews run in parallel; YTD uses one batched year query.
+ * Shares statutory config + org name across the batch; previews run with
+ * limited concurrency; YTD uses one batched year query.
  */
 export async function getReadyPayslipBatch(options?: {
   periodKey?: string;
@@ -49,15 +88,33 @@ export async function getReadyPayslipBatch(options?: {
   const periodKey = options?.periodKey ?? getPreviousPayslipPeriod();
   const asOf = payslipPeriodToAsOfDate(periodKey) ?? undefined;
   const periodLabel = formatPayslipPeriodLabel(periodKey) ?? periodKey;
+  const periodEnd = asOf ?? new Date();
+  const statutoryAsOf = toStatutoryAsOfKey(periodEnd);
 
-  const readiness = await getPayrollReadiness();
+  const [readiness, statutoryBundle, organization] = await Promise.all([
+    getPayrollReadiness({ includeFileCompleteness: false }),
+    resolveStatutoryConfigBundle(statutoryAsOf),
+    getOrganizationProfile(),
+  ]);
+
+  const organizationName =
+    organization?.legalName?.trim() ||
+    organization?.name?.trim() ||
+    "Organization";
+
   const readyRows = readiness.rows.filter((row) => row.isReady);
 
-  const previewResults = await Promise.all(
-    readyRows.map(async (row) => {
-      const result = await getEmployeePayslipPreview(row.employeeId, { asOf });
+  const previewResults = await mapPool(
+    readyRows,
+    PREVIEW_CONCURRENCY,
+    async (row) => {
+      const result = await getEmployeePayslipPreview(row.employeeId, {
+        asOf,
+        statutoryBundle,
+        organizationName,
+      });
       return { row, result };
-    }),
+    },
   );
 
   const skipped: ReadyPayslipBatchResult["skipped"] = [];
@@ -97,9 +154,8 @@ export async function getReadyPayslipBatch(options?: {
     })),
   );
 
-  const documents: ReadyPayslipBatchItem[] = successful.map((item) => ({
-    ...item,
-    ytd:
+  const documentsWithYtd = successful.map((item) => {
+    const ytd =
       ytdByEmployee.get(item.employeeId) ??
       ({
         year: new Date().getFullYear(),
@@ -110,7 +166,45 @@ export async function getReadyPayslipBatch(options?: {
         paye: 0,
         nisEmployee: 0,
         healthSurcharge: 0,
-      } satisfies PayslipYtdTotals),
+        taxableEarnings: item.payslip.monthlyTaxableEarnings,
+      } satisfies PayslipYtdTotals);
+    return { ...item, ytd };
+  });
+
+  const breakdownByEmployee = await getPayslipYtdBreakdownBatch(
+    documentsWithYtd.map((item) => ({
+      key: item.employeeId,
+      employeeId: item.employeeId,
+      currentEmployer: item.ytd,
+    })),
+  );
+
+  const documents: ReadyPayslipBatchItem[] = documentsWithYtd.map((item) => ({
+    ...item,
+    ytdBreakdown:
+      breakdownByEmployee.get(item.employeeId) ??
+      ({
+        year: item.ytd.year,
+        prior: {
+          taxableIncome: 0,
+          paye: 0,
+          nisEmployee: 0,
+          healthSurcharge: 0,
+          recordCount: 0,
+        },
+        currentEmployer: item.ytd,
+        combined: {
+          year: item.ytd.year,
+          grossPay: item.ytd.grossPay,
+          totalDeductions: item.ytd.totalDeductions,
+          netPay: item.ytd.netPay,
+          paye: item.ytd.paye,
+          nisEmployee: item.ytd.nisEmployee,
+          healthSurcharge: item.ytd.healthSurcharge,
+          taxableEarnings: item.ytd.taxableEarnings,
+          periodCount: item.ytd.periodCount,
+        },
+      } satisfies PayslipYtdBreakdown),
   }));
 
   return {

@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { PayslipPreviewView } from "@/src/modules/payroll/components/payslip-preview";
+import { getApprovedProjectedTaxYearPosition } from "@/src/modules/payroll/data/get-annual-paye-projections";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import {
   getMostRecentPostedPayslip,
   getStoredPayslip,
 } from "@/src/modules/payroll/data/get-stored-payslip";
 import {
+  getPayslipYtdBreakdown,
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
@@ -18,6 +20,10 @@ import {
   resolveDefaultLivePayslipPeriod,
 } from "@/src/modules/payroll/lib/payslip-preview";
 import { periodKeyFromAsOf } from "@/src/modules/payroll/lib/payslip-ytd";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
@@ -55,6 +61,7 @@ export default async function MyPayslipPage({
     if (
       !posted ||
       !posted.isPosted ||
+      !posted.isReleased ||
       posted.payslip.employee.id !== capabilities.employeeId
     ) {
       notFound();
@@ -65,6 +72,8 @@ export default async function MyPayslipPage({
         payslip={posted.payslip}
         meta={posted.meta}
         ytd={posted.ytd}
+        ytdBreakdown={posted.ytdBreakdown}
+        projectedTaxYearPosition={posted.projectedTaxYearPosition}
         backHref="/me/payslips"
         backLabel="Payslip history"
         printHref={`/me/payslip/print?payslipId=${posted.id}`}
@@ -87,6 +96,8 @@ export default async function MyPayslipPage({
           payslip={posted.payslip}
           meta={posted.meta}
           ytd={posted.ytd}
+          ytdBreakdown={posted.ytdBreakdown}
+          projectedTaxYearPosition={posted.projectedTaxYearPosition}
           backHref="/me"
           backLabel="My Profile"
           printHref={`/me/payslip/print?payslipId=${posted.id}`}
@@ -138,6 +149,14 @@ export default async function MyPayslipPage({
     periodKey: resolvedPeriodKey,
     current: payslipPreviewToYtdContribution(payslip),
   });
+  const ytdBreakdown = await getPayslipYtdBreakdown(
+    capabilities.employeeId,
+    ytd,
+  );
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    capabilities.employeeId,
+    taxYearFromAsOfKey(toStatutoryAsOfKey(new Date(payslip.period.asOf))),
+  );
 
   const printParams = new URLSearchParams();
   printParams.set("period", resolvedPeriodKey);
@@ -149,6 +168,8 @@ export default async function MyPayslipPage({
       payslip={payslip}
       meta={meta}
       ytd={ytd}
+      ytdBreakdown={ytdBreakdown}
+      projectedTaxYearPosition={projectedTaxYearPosition}
       backHref="/me"
       backLabel="My Profile"
       printHref={printHref}

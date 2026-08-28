@@ -228,6 +228,8 @@ Payroll owns payroll-specific configuration, calculations, processing and histor
 
 - Statutory deductions
 
+- Contract gratuity policy, settlements, and tax remittance (see `CONTRACT-GRATUITY.md`)
+
 - Overtime
 
 - Adjustments

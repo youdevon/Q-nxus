@@ -12,6 +12,10 @@ import {
   TT_NIS_2026_CLASSES,
   TT_NIS_2026_EFFECTIVE_FROM,
 } from "@/src/modules/payroll/lib/nis-seed-data";
+import {
+  recalculateAfterTaxChange,
+  taxYearForEffectiveFrom,
+} from "@/src/modules/payroll/services/recalculate-after-tax-change";
 
 export type NisClassFormState = {
   status: "idle" | "error";
@@ -335,6 +339,14 @@ export async function saveNisClassVersion(
   }
 
   revalidateNisPaths();
+  await recalculateAfterTaxChange({
+    organizationId,
+    taxYear: taxYearForEffectiveFrom(effectiveFrom!),
+    actorUserId: actor.actor.userId,
+    reason: `NIS class schedule effective ${effectiveFromKey}`,
+    effectiveFrom: effectiveFrom!,
+    metadata,
+  });
   redirect(`/payroll/settings/nis?version=${effectiveFromKey}`);
 }
 

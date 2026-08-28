@@ -24,6 +24,8 @@ The contract records the approved employment arrangement, including:
 
 - Gratuity or end-of-contract provisions
 
+Payroll settlement, tax, and payment of gratuity are documented in [CONTRACT-GRATUITY.md](./CONTRACT-GRATUITY.md).
+
 - Approval and document status
 
 The Employment Contract belongs to the People domain.
@@ -292,6 +294,22 @@ Rules:
 
 - Cannot normally be physically deleted
 
+### Activation effects (implemented)
+
+On successful **Activate** or **Save & activate** (non-historical terms):
+
+1. Contract becomes `ACTIVE` with `isCurrent = true`; prior current contracts are `SUPERSEDED` (end date may be closed to the day before the new start).
+2. Leave balances are created for the contract when none exist yet (including draft entitlement overrides).
+3. When the contract has a Position, the employee’s current assignment / seat (`Employee.departmentId` / `positionId`) is aligned to that position if it differs.
+4. Payroll readiness onboarding may auto-complete; otherwise staff are notified that setup still needs attention.
+5. `PayrollProfile.isPayrollReady` is refreshed from the live readiness evaluation (compensation still comes only from the current contract — not stored on the profile).
+6. Open draft/approved pay runs that include the employee are recalculated so payslip snapshots pick up the new contract salary/allowances. Posted payslips are never rewritten.
+7. Relevant People and Payroll list/detail paths are revalidated (employee file, contracts, leave balances, payroll setup, salaries roster, readiness, payslip preview).
+
+Payroll salaries roster, payslip preview, payroll setup, and readiness directories always read base salary and allowances from the current `ACTIVE` + `isCurrent` contract. There is no separate salary store to sync.
+
+Historical past-ended terms recorded via Save & activate stay `EXPIRED` / non-current and skip leave balances, assignment, notifications, and payroll sync — see §8.
+
 ### Expiring
 
 The contract is active and approaching its end date.
@@ -405,3 +423,24 @@ Expired
   ↓
 
 Archived
+---
+
+## 8. Paper cutover / historical contracts
+
+When migrating from paper to digital:
+
+1. Enter prior terms with their real `startDate` / `endDate` (dates may be in the past).
+2. Use **Save & activate** (or Activate on an existing draft). If `endDate` is before today (UTC), the contract is recorded as **EXPIRED** history:
+   - `isCurrent` stays false
+   - no leave balances are created
+   - the employee’s current active contract is not displaced
+   - no activate notifications / payroll-readiness sync
+3. Enter the current term last and activate it normally (end date today or later) so it becomes **ACTIVE** / current and receives leave balances.
+4. Prefer renew links (`sourceContractId` + RENEWAL/EXTENSION) so completed terms stay in **Previous contracts**. Amendments also keep `sourceContractId` for version history on the current contract, but amended predecessors do **not** appear under Previous contracts.
+
+Do not activate a past-ended term expecting it to become the live current contract — use a current-period end date for the live term.
+
+**Previous contracts** vs **amendments**:
+
+- Previous contracts: employment periods the employee worked through (expired, terminated, or superseded by renewal/extension).
+- Amendments / salary / position adjustments: version history of the same employment period — visible on the current contract’s amendment history, not in Previous contracts.

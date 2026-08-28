@@ -18,6 +18,7 @@ import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-posi
 import { isNonEmployeePayee } from "@/src/modules/hr/lib/workforce-category";
 import { activateEmploymentContractInTransaction } from "@/src/modules/hr/services/activate-employment-contract";
 import { syncAssignedEmployeeAccessRoles } from "@/src/modules/hr/services/assign-employee-to-position";
+import { revalidatePathsAfterContractActivate } from "@/src/modules/hr/lib/revalidate-after-contract-activate";
 import {
   CONTRACT_WORKFLOW_SETTING_CODE,
   parseContractWorkflowSettings,
@@ -315,12 +316,14 @@ export async function createEmploymentContract(
     fieldErrors.gratuityRate = "Enter a gratuity rate between 0 and 100.";
   }
 
+  // Flat tax rate is optional/legacy — org GratuityPolicy owns IRD tiered tax.
   if (
     gratuityEligible &&
-    (gratuityTaxRate === null || gratuityTaxRate < 0 || gratuityTaxRate > 100)
+    gratuityTaxRate !== null &&
+    (gratuityTaxRate < 0 || gratuityTaxRate > 100)
   ) {
     fieldErrors.gratuityTaxRate =
-      "Enter a gratuity tax rate between 0 and 100.";
+      "Enter a gratuity tax rate between 0 and 100, or leave blank to use policy tax.";
   }
 
   if (
@@ -599,7 +602,10 @@ export async function createEmploymentContract(
             currency,
             gratuityEligible,
             gratuityRate: gratuityEligible ? gratuityRate : null,
-            gratuityTaxRate: gratuityEligible ? gratuityTaxRate : null,
+            gratuityTaxRate:
+              gratuityEligible && gratuityTaxRate !== null
+                ? gratuityTaxRate
+                : null,
             isCurrent: false,
             signedDate,
             documentReference,
@@ -713,7 +719,7 @@ export async function createEmploymentContract(
               },
               transaction,
             );
-            finalStatus = "ACTIVE";
+            finalStatus = activation.historical ? "EXPIRED" : "ACTIVE";
 
             await transaction.auditEvent.create({
               data: {
@@ -722,7 +728,9 @@ export async function createEmploymentContract(
                 action: changeTypeValue === "INITIAL" ? "CREATE" : "AMEND",
                 entityType: "EmploymentContract",
                 entityId: created.id,
-                description: `${changeTypeValue === "INITIAL" ? "Created" : "Added"} and activated employment contract for ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName}.`,
+                description: activation.historical
+                  ? `Created and recorded historical employment contract for ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName}.`
+                  : `${changeTypeValue === "INITIAL" ? "Created" : "Added"} and activated employment contract for ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName}.`,
                 newValues: {
                   employeeId,
                   sourceContractId,
@@ -731,6 +739,7 @@ export async function createEmploymentContract(
                   changeType: created.changeType,
                   status: finalStatus,
                   saveIntent,
+                  historical: activation.historical,
                   needsAccessRoleSync: activation.needsAccessRoleSync,
                 },
                 ipAddress: metadata.ipAddress,
@@ -739,7 +748,12 @@ export async function createEmploymentContract(
               },
             });
 
-            return { ...created, status: finalStatus, _needsSync: activation.needsAccessRoleSync };
+            return {
+              ...created,
+              status: finalStatus,
+              isCurrent: !activation.historical,
+              _needsSync: activation.needsAccessRoleSync,
+            };
           } else {
             // Auto-approve path → APPROVED until first signature
             await transaction.employmentContract.update({
@@ -820,17 +834,43 @@ export async function createEmploymentContract(
           payrollError,
         );
       }
+
+      try {
+        const { notifyContractActivated } = await import(
+          "@/src/modules/hr/services/notify-contract-lifecycle"
+        );
+        const linked = await prisma.employee.findUnique({
+          where: { id: employeeId },
+          select: {
+            employeeNumber: true,
+            firstName: true,
+            lastName: true,
+            user: { select: { id: true } },
+          },
+        });
+        if (linked) {
+          await notifyContractActivated({
+            contractId: contract.id,
+            employeeId,
+            employee: {
+              employeeNumber: linked.employeeNumber,
+              firstName: linked.firstName,
+              lastName: linked.lastName,
+              userId: linked.user?.id ?? null,
+            },
+            actorUserId: actor.actor.userId,
+          });
+        }
+      } catch (notifyError) {
+        console.error(
+          "Employee activate notification failed after create-activate:",
+          notifyError,
+        );
+      }
     }
 
-    revalidatePath("/people");
-    revalidatePath(`/people/employees/${employeeId}`);
-    revalidatePath(`/people/employees/${employeeId}/contracts`);
-    revalidatePath(`/people/employees/${employeeId}/assignments`);
-    revalidatePath(`/payroll/employees/${employeeId}`);
+    revalidatePathsAfterContractActivate(employeeId, contract.id);
     revalidatePath("/people/structure");
-    revalidatePath("/people/leave/balances");
-    revalidatePath("/people/leave");
-    revalidatePath("/contracts");
 
     if (positionId) {
       revalidatePath(`/people/structure/positions/${positionId}`);

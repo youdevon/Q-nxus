@@ -28,11 +28,6 @@ export type Organization = Prisma.OrganizationModel
  */
 export type OrganizationHoliday = Prisma.OrganizationHolidayModel
 /**
- * Model ApplicationSetting
- * 
- */
-export type ApplicationSetting = Prisma.ApplicationSettingModel
-/**
  * Model User
  * 
  */
@@ -273,6 +268,16 @@ export type EmployeeFilePack = Prisma.EmployeeFilePackModel
  */
 export type EmployeeFilePackItem = Prisma.EmployeeFilePackItemModel
 /**
+ * Model EmployeeLifecycleTemplate
+ * Org-configurable hire/exit task packs resolved when opening a lifecycle case.
+ */
+export type EmployeeLifecycleTemplate = Prisma.EmployeeLifecycleTemplateModel
+/**
+ * Model EmployeeLifecycleTemplateTask
+ * 
+ */
+export type EmployeeLifecycleTemplateTask = Prisma.EmployeeLifecycleTemplateTaskModel
+/**
  * Model EmployeeOnboardingCase
  * 
  */
@@ -293,28 +298,63 @@ export type EmployeeOffboardingCase = Prisma.EmployeeOffboardingCaseModel
  */
 export type EmployeeOffboardingTask = Prisma.EmployeeOffboardingTaskModel
 /**
+ * Model EmployeeTaxProfile
+ * Per-employee, per-calendar-tax-year PAYE / TD1 treatment.
+ * Per-employee, per-tax-year PAYE / TD1 treatment (sole store for TD1 amounts).
+ */
+export type EmployeeTaxProfile = Prisma.EmployeeTaxProfileModel
+/**
+ * Model EmployeePriorEmploymentYtd
+ * Prior-employer calendar-year YTD amounts for mid-year joiners (Phase 3).
+ * Applied to cumulative PAYE in Phase 4; stored and resolved here.
+ */
+export type EmployeePriorEmploymentYtd = Prisma.EmployeePriorEmploymentYtdModel
+/**
+ * Model EmployeeOpeningYtdBalance
+ * Current-employer opening YTD for mid-year payroll system migration.
+ * NOT prior-employer figures — same employer, balances brought into q-nxus.
+ */
+export type EmployeeOpeningYtdBalance = Prisma.EmployeeOpeningYtdBalanceModel
+/**
+ * Model EmployeePriorEmploymentDocument
+ * 
+ */
+export type EmployeePriorEmploymentDocument = Prisma.EmployeePriorEmploymentDocumentModel
+/**
+ * Model EmployeePayrollStatutoryOverride
+ * Period statutory amount overrides (Phase 7) with maker-checker approval.
+ */
+export type EmployeePayrollStatutoryOverride = Prisma.EmployeePayrollStatutoryOverrideModel
+/**
+ * Model EmployeeAnnualPayrollProjection
+ * Versioned employee annual PAYE projection worksheet (calendar tax year).
+ */
+export type EmployeeAnnualPayrollProjection = Prisma.EmployeeAnnualPayrollProjectionModel
+/**
+ * Model EmployeeTaxYearAdjustment
+ * Controlled employee-specific tax-year adjustments (maker-checker).
+ */
+export type EmployeeTaxYearAdjustment = Prisma.EmployeeTaxYearAdjustmentModel
+/**
+ * Model EmployeeEarningTreatmentOverride
+ * Per-employee override of a payroll component's tax treatment.
+ */
+export type EmployeeEarningTreatmentOverride = Prisma.EmployeeEarningTreatmentOverrideModel
+/**
  * Model PayrollProfile
  * 
  */
 export type PayrollProfile = Prisma.PayrollProfileModel
-/**
- * Model PayrollBankAccount
- * @deprecated Prefer EmployeeBankAccount. Kept for one-release dual-read/sync.
- */
-export type PayrollBankAccount = Prisma.PayrollBankAccountModel
 /**
  * Model FinancialInstitution
  * Configurable financial institution directory (TT seed; extensible to other jurisdictions).
  */
 export type FinancialInstitution = Prisma.FinancialInstitutionModel
 /**
- * Model FinancialInstitutionBranch
- * 
- */
-export type FinancialInstitutionBranch = Prisma.FinancialInstitutionBranchModel
-/**
  * Model EmployeeBankAccount
- * Employee-owned bank account (Phase 1 source of truth for payroll destinations).
+ * Employee-owned bank account / payment destination (source of truth with allocations).
+ * Together with EmployeePayrollAllocation this is the payment-instruction model —
+ * not a separate payroll employee list (HR Employee remains SoT).
  */
 export type EmployeeBankAccount = Prisma.EmployeeBankAccountModel
 /**
@@ -353,6 +393,16 @@ export type AchPaymentBatchDetail = Prisma.AchPaymentBatchDetailModel
  */
 export type NisEarningsClass = Prisma.NisEarningsClassModel
 /**
+ * Model NisClassZRate
+ * Employer-only Class Z (employment injury) weekly amounts by monthly earnings band.
+ */
+export type NisClassZRate = Prisma.NisClassZRateModel
+/**
+ * Model NisEligibilityConfig
+ * Age thresholds for automatic NIS Class Z eligibility (effective-dated).
+ */
+export type NisEligibilityConfig = Prisma.NisEligibilityConfigModel
+/**
  * Model PayeTaxConfig
  * Trinidad & Tobago PAYE (income tax) parameters — annual brackets, not flat monthly %.
  */
@@ -367,6 +417,26 @@ export type PayeTaxBracket = Prisma.PayeTaxBracketModel
  * Trinidad & Tobago Health Surcharge — fixed weekly amounts by earnings tier.
  */
 export type HealthSurchargeConfig = Prisma.HealthSurchargeConfigModel
+/**
+ * Model GratuityPolicy
+ * 
+ */
+export type GratuityPolicy = Prisma.GratuityPolicyModel
+/**
+ * Model GratuityTaxBand
+ * 
+ */
+export type GratuityTaxBand = Prisma.GratuityTaxBandModel
+/**
+ * Model EmployeeGratuitySettlement
+ * One settlement ledger row per employment contract (reissue updates same row after void).
+ */
+export type EmployeeGratuitySettlement = Prisma.EmployeeGratuitySettlementModel
+/**
+ * Model GratuityAccrualEntry
+ * Monthly liability recognition for contract gratuity (ops journal, not external GL).
+ */
+export type GratuityAccrualEntry = Prisma.GratuityAccrualEntryModel
 /**
  * Model PayrollPeriod
  * Calendar span for which employees are paid (e.g. July 2026 monthly).
@@ -389,6 +459,16 @@ export type Payslip = Prisma.PayslipModel
  * Manual draft-run additions/deductions such as correction deltas, overtime, bonuses, and commissions.
  */
 export type PayrollLineItem = Prisma.PayrollLineItemModel
+/**
+ * Model PayrollComponentDefinition
+ * 
+ */
+export type PayrollComponentDefinition = Prisma.PayrollComponentDefinitionModel
+/**
+ * Model EmployeePayrollRecurringItem
+ * Employee assignment of a recurring component with optional declining balance.
+ */
+export type EmployeePayrollRecurringItem = Prisma.EmployeePayrollRecurringItemModel
 /**
  * Model Notification
  * 

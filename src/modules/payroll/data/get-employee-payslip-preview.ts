@@ -1,13 +1,27 @@
 import { getOrganizationProfile } from "@/src/modules/admin/data/get-organization-profile";
 import { prisma } from "@/lib/prisma";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
-import { getCurrentHealthSurchargeConfig } from "@/src/modules/payroll/data/get-health-surcharge-config";
+import { getVerifiedEmployeeOpeningYtdAmounts } from "@/src/modules/payroll/data/get-employee-opening-ytd";
 import { getEmployeePayrollSetup } from "@/src/modules/payroll/data/get-employee-payroll-setup";
-import { getCurrentNisClasses } from "@/src/modules/payroll/data/get-nis-classes";
-import { getCurrentPayeTaxConfig } from "@/src/modules/payroll/data/get-paye-tax-config";
+import { getEmployeeStatutoryYtdBeforePeriod } from "@/src/modules/payroll/data/get-payslip-ytd";
+import {
+  resolveStatutoryConfigBundle,
+  toPayslipStatutorySnapshot,
+} from "@/src/modules/payroll/data/get-statutory-bundle";
 import { toHealthConfigInput } from "@/src/modules/payroll/lib/health-surcharge";
 import { toNisClassInputs } from "@/src/modules/payroll/lib/nis-contribution";
+import { toNisClassZRateInputs } from "@/src/modules/payroll/data/get-nis-class-z-rates";
 import { toPayeConfigInput } from "@/src/modules/payroll/lib/paye-contribution";
+import {
+  applyPersonalAllowanceOverride,
+  resolveEmployeeTaxPayeInputs,
+} from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
+import {
+  monthsElapsedFromPeriodEnd,
+  shouldUseCumulativePaye,
+} from "@/src/modules/payroll/lib/cumulative-paye";
+import { evaluatePayeExceptions } from "@/src/modules/payroll/lib/paye-exceptions";
+import { getApprovedStatutoryOverrideForPeriod } from "@/src/modules/payroll/data/get-statutory-overrides";
 import {
   assemblePayslipPreview,
   type PayslipEarningInput,
@@ -20,6 +34,13 @@ import {
   prorateMoney,
   resolveContractPaySegments,
 } from "@/src/modules/payroll/lib/payroll-period-adjustments";
+import { getApprovedEarningTreatmentOverridesForPeriod } from "@/src/modules/payroll/data/get-earning-treatment-overrides";
+import { applyRecurringItemsForPeriod } from "@/src/modules/payroll/lib/recurring-payroll-items";
+import { loadEmployeeRecurringItems } from "@/src/modules/payroll/services/recurring-payroll-balances";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type { PayslipPreview };
 
@@ -44,8 +65,8 @@ function allowanceFrequencyLabel(frequency: string): string {
 }
 
 /**
- * Build a monthly payslip preview for an employee using current statutory
- * configs and contract pay elements that cover the selected period.
+ * Build a monthly payslip preview for an employee using statutory configs
+ * effective as of the pay period end (not wall-clock "today").
  *
  * Mid-month amendments use the current contract from its start date and any
  * prior SUPERSEDED contract only for uncovered earlier days in the period.
@@ -56,6 +77,10 @@ export async function getEmployeePayslipPreview(
     asOf?: Date;
     periodStart?: Date;
     periodEnd?: Date;
+    /** Shared period bundle for batch previews (avoids N statutory lookups). */
+    statutoryBundle?: Awaited<ReturnType<typeof resolveStatutoryConfigBundle>>;
+    /** Shared org display name for batch previews. */
+    organizationName?: string | null;
     variableEarnings?: Array<{
       label: string;
       amount: number;
@@ -69,7 +94,11 @@ export async function getEmployeePayslipPreview(
     }>;
   },
 ): Promise<EmployeePayslipPreviewResult | null> {
-  const setup = await getEmployeePayrollSetup(employeeId);
+  const setup = await getEmployeePayrollSetup(employeeId, {
+    includeStatutoryPreview: false,
+    includeFinancialInstitutions: false,
+    includePriorDocuments: false,
+  });
 
   if (!setup) {
     return null;
@@ -83,12 +112,27 @@ export async function getEmployeePayslipPreview(
     options?.periodEnd ??
     new Date(Date.UTC(asOf.getUTCFullYear(), asOf.getUTCMonth() + 1, 0, 12));
 
-  const [nisClasses, payeConfig, healthConfig, organization, employeeExtras, contracts] =
-    await Promise.all([
-      getCurrentNisClasses(),
-      getCurrentPayeTaxConfig(),
-      getCurrentHealthSurchargeConfig(),
-      getOrganizationProfile(),
+  // Statutory schedules follow the period being paid, not the date of recalculation.
+  const statutoryAsOf = toStatutoryAsOfKey(periodEnd);
+  const taxYear = taxYearFromAsOfKey(statutoryAsOf);
+
+  const [
+    statutoryBundle,
+    organization,
+    employeeExtras,
+    contracts,
+    recurringItems,
+    postedEmployerYtdBefore,
+    openingYtd,
+    statutoryOverride,
+    treatmentOverrides,
+  ] = await Promise.all([
+      options?.statutoryBundle
+        ? Promise.resolve(options.statutoryBundle)
+        : resolveStatutoryConfigBundle(statutoryAsOf),
+      options?.organizationName != null
+        ? Promise.resolve(null)
+        : getOrganizationProfile(),
       prisma.employee.findUnique({
         where: { id: employeeId },
         select: {
@@ -149,7 +193,110 @@ export async function getEmployeePayslipPreview(
           },
         },
       }),
+      loadEmployeeRecurringItems(prisma, employeeId),
+      getEmployeeStatutoryYtdBeforePeriod({
+        employeeId,
+        taxYear,
+        periodEnd,
+      }),
+      getVerifiedEmployeeOpeningYtdAmounts(employeeId, taxYear),
+      getApprovedStatutoryOverrideForPeriod({
+        employeeId,
+        periodEnd,
+      }),
+      getApprovedEarningTreatmentOverridesForPeriod(employeeId, periodEnd),
     ]);
+
+  // Opening YTD (same employer / go-live) folds into current-employer bucket —
+  // never into prior-employer totals.
+  const currentEmployerYtdBefore = {
+    taxableEarnings:
+      postedEmployerYtdBefore.taxableEarnings + openingYtd.taxableIncomeYtd,
+    paye: postedEmployerYtdBefore.paye + openingYtd.payeDeductedYtd,
+    nisEmployee:
+      postedEmployerYtdBefore.nisEmployee + openingYtd.nisEmployeeYtd,
+    healthSurcharge:
+      postedEmployerYtdBefore.healthSurcharge + openingYtd.healthSurchargeYtd,
+    periodCount: postedEmployerYtdBefore.periodCount,
+  };
+
+  const nisClasses = statutoryBundle.nisClasses;
+  const payeConfigRecord = statutoryBundle.paye;
+  const healthConfig = statutoryBundle.health;
+
+  const resolvedTax = resolveEmployeeTaxPayeInputs({
+    taxYear,
+    taxProfile: setup.taxProfile.id
+      ? {
+          taxCalculationMethod: setup.taxProfile.taxCalculationMethod,
+          taxProfileStatus: setup.taxProfile.taxProfileStatus ?? "ACTIVE",
+          personalAllowance:
+            setup.taxProfile.personalAllowance != null
+              ? Number(setup.taxProfile.personalAllowance)
+              : null,
+          personalAllowanceSource: setup.taxProfile.personalAllowanceSource,
+          td1OtherApprovedAnnual:
+            setup.taxProfile.td1OtherApprovedAnnual != null
+              ? Number(setup.taxProfile.td1OtherApprovedAnnual)
+              : null,
+          cumulativeCalculationEnabled:
+            setup.taxProfile.cumulativeCalculationEnabled,
+          previousEmploymentStatus: setup.taxProfile.previousEmploymentStatus,
+          previousEmploymentDeclared:
+            setup.taxProfile.previousEmploymentDeclared,
+          previousEmploymentVerified:
+            setup.taxProfile.previousEmploymentVerified,
+          otherEmolumentIncomeStatus:
+            setup.taxProfile.otherEmolumentIncomeStatus,
+          birDirectionPresent: setup.taxProfile.birDirectionPresent,
+          birDirectionReference: setup.taxProfile.birDirectionReference,
+        }
+      : null,
+    priorEmployment: {
+      // Applied calc uses verified totals only (hard gate).
+      taxableIncomeYtd: setup.priorEmployment.verifiedTotals.taxableIncomeYtd,
+      payeDeductedYtd: setup.priorEmployment.verifiedTotals.payeDeductedYtd,
+      nisEmployeeYtd: setup.priorEmployment.verifiedTotals.nisEmployeeYtd,
+      nisEmployerYtd: 0,
+      healthSurchargeYtd: setup.priorEmployment.verifiedTotals.healthSurchargeYtd,
+      otherApprovedDeductionsYtd:
+        setup.priorEmployment.verifiedTotals.otherApprovedDeductionsYtd,
+      // Exception / display counts still reflect all ACTIVE records.
+      recordCount: setup.priorEmployment.totals.recordCount,
+      verifiedCount: setup.priorEmployment.totals.verifiedCount,
+      allVerified: setup.priorEmployment.totals.allVerified,
+    },
+  });
+
+  const payeConfig =
+    payeConfigRecord != null
+      ? applyPersonalAllowanceOverride(
+          toPayeConfigInput(payeConfigRecord),
+          resolvedTax.personalAllowanceOverride,
+        )
+      : null;
+
+  const recurringLines = applyRecurringItemsForPeriod(
+    recurringItems,
+    periodStart,
+    periodEnd,
+    treatmentOverrides,
+  );
+  const recurringEarnings = recurringLines
+    .filter((line) => line.kind === "EARNING")
+    .map((line) => ({
+      label: line.label,
+      amount: line.amount,
+      isTaxable: line.isTaxable,
+      detail: line.detail,
+    }));
+  const recurringDeductions = recurringLines
+    .filter((line) => line.kind === "DEDUCTION")
+    .map((line) => ({
+      label: line.label,
+      amount: line.amount,
+      detail: line.detail,
+    }));
 
   const coverage = resolveContractPaySegments({
     periodStart,
@@ -246,12 +393,13 @@ export async function getEmployeePayslipPreview(
   const readiness =
     coverage.segments.length === 0 && Boolean(setup.currentContract)
       ? {
-          isReady: setup.readiness.isReady,
+          isReady: false,
           blockingIssues: [
             ...setup.readiness.blockingIssues,
             coverage.detail ??
               "No contract covers this pay period — earnings are zero.",
           ],
+          softWarnings: setup.readiness.softWarnings,
         }
       : setup.readiness;
 
@@ -275,6 +423,14 @@ export async function getEmployeePayslipPreview(
     periodStart,
     periodEnd,
     earnings: earnings.concat(
+      recurringEarnings.map((line) => ({
+        label: line.label,
+        amount: line.amount,
+        frequency: "Monthly",
+        isTaxable: line.isTaxable,
+        source: "VARIABLE_EARNING" as const,
+        detail: line.detail,
+      })),
       (options?.variableEarnings ?? []).map((line) => ({
         label: line.label,
         amount: line.amount,
@@ -286,6 +442,7 @@ export async function getEmployeePayslipPreview(
     ),
     deductions: [
       ...unpaidLeaveDeductions,
+      ...recurringDeductions,
       ...(options?.variableDeductions ?? []),
     ],
     bankAccounts: setup.bankAccounts.map((account) => ({
@@ -304,25 +461,84 @@ export async function getEmployeePayslipPreview(
     })),
     postNetSplitEnabled: setup.bankingFlags.postNetSplitEnabled,
     readiness,
-    td1OtherApprovedAnnual:
-      setup.profile?.td1OtherApprovedAnnual != null
-        ? Number(setup.profile.td1OtherApprovedAnnual)
-        : 0,
+    td1OtherApprovedAnnual: resolvedTax.td1OtherApprovedAnnual,
     pensionOnlyIncome: setup.profile?.pensionOnlyIncome ?? false,
     exemptFromNis: setup.profile?.exemptFromNis ?? false,
     exemptFromHealthSurcharge:
       setup.profile?.exemptFromHealthSurcharge ?? false,
     exemptFromPaye: setup.profile?.exemptFromPaye ?? false,
+    receivingNisRetirementBenefit:
+      setup.profile?.receivingNisRetirementBenefit ?? false,
+    nisCategoryOverride: setup.profile?.nisCategoryOverride ?? null,
+    nisOverrideEffectiveFrom: setup.profile?.nisOverrideEffectiveFrom ?? null,
+    nisOverrideEffectiveTo: setup.profile?.nisOverrideEffectiveTo ?? null,
     nisClasses: toNisClassInputs(nisClasses),
-    payeConfig: payeConfig != null ? toPayeConfigInput(payeConfig) : null,
+    classZRates: toNisClassZRateInputs(statutoryBundle.classZRates),
+    nisEligibilityConfig: statutoryBundle.nisEligibility,
+    payeConfig,
     healthConfig:
       healthConfig != null ? toHealthConfigInput(healthConfig) : null,
+    cumulativePaye: {
+      enabled: shouldUseCumulativePaye({
+        taxCalculationMethod: resolvedTax.taxCalculationMethod,
+        cumulativeCalculationEnabled: resolvedTax.cumulativeCalculationEnabled,
+      }),
+      currentEmployerTaxableYtd: currentEmployerYtdBefore.taxableEarnings,
+      currentEmployerPayePaidYtd: currentEmployerYtdBefore.paye,
+      currentEmployerNisPaidYtd: currentEmployerYtdBefore.nisEmployee,
+      priorTaxableYtd: resolvedTax.priorEmployment.taxableIncomeYtd,
+      priorPayePaidYtd: resolvedTax.priorEmployment.payeDeductedYtd,
+      priorNisEmployeeYtd: resolvedTax.priorEmployment.nisEmployeeYtd,
+      priorOtherApprovedYtd:
+        resolvedTax.priorEmployment.otherApprovedDeductionsYtd,
+      monthsElapsed: monthsElapsedFromPeriodEnd(periodEnd),
+      taxYear,
+      employmentStartDate: employeeExtras?.hireDate ?? null,
+      previousEmploymentStatus: resolvedTax.previousEmploymentStatus,
+      recognizePriorEmployment:
+        resolvedTax.previousEmploymentStatus === "PREVIOUS_EMPLOYMENT" &&
+        resolvedTax.priorEmployment.recordCount > 0 &&
+        resolvedTax.priorEmployment.allVerified,
+      personalAllowanceOverride: resolvedTax.personalAllowanceOverride,
+      td1Submitted: resolvedTax.source === "tax_profile",
+      birDirectionPresent: resolvedTax.birDirectionPresent,
+    },
+    statutoryOverrides: statutoryOverride
+      ? {
+          payeAmount: statutoryOverride.payeAmount,
+          nisEmployeeAmount: statutoryOverride.nisEmployeeAmount,
+          nisEmployerAmount: statutoryOverride.nisEmployerAmount,
+          nisClassZAmount: statutoryOverride.nisClassZAmount,
+          healthSurchargeAmount: statutoryOverride.healthSurchargeAmount,
+          reason: statutoryOverride.reason,
+        }
+      : undefined,
+    taxCalcNotes: [
+      ...resolvedTax.calcNotes,
+      ...(openingYtd.verified &&
+      (openingYtd.taxableIncomeYtd > 0 || openingYtd.payeDeductedYtd > 0)
+        ? [
+            `Opening YTD (same employer / go-live) included in current-employer totals: taxable ${openingYtd.taxableIncomeYtd.toFixed(2)}, PAYE ${openingYtd.payeDeductedYtd.toFixed(2)}.`,
+          ]
+        : []),
+      ...evaluatePayeExceptions({
+        previousEmploymentDeclared: resolvedTax.previousEmploymentDeclared,
+        priorEmploymentRecordCount: resolvedTax.priorEmployment.recordCount,
+        priorEmploymentAllVerified: resolvedTax.priorEmployment.allVerified,
+        cumulativeEnabled: shouldUseCumulativePaye({
+          taxCalculationMethod: resolvedTax.taxCalculationMethod,
+          cumulativeCalculationEnabled:
+            resolvedTax.cumulativeCalculationEnabled,
+        }),
+      }),
+    ],
   });
 
   return {
     payslip,
     meta: {
       organizationName:
+        options?.organizationName?.trim() ||
         organization?.legalName?.trim() ||
         organization?.name?.trim() ||
         "Organization",
@@ -338,15 +554,16 @@ export async function getEmployeePayslipPreview(
       departmentName: employeeExtras?.department?.name ?? null,
     },
     statutory: {
-      payeConfigId: payeConfig?.id ?? null,
-      payeVersionLabel: payeConfig?.versionLabel ?? null,
-      payeEffectiveFrom: payeConfig?.effectiveFrom ?? null,
-      healthConfigId: healthConfig?.id ?? null,
-      healthVersionLabel: healthConfig?.versionLabel ?? null,
-      healthEffectiveFrom: healthConfig?.effectiveFrom ?? null,
-      nisVersionLabel: nisClasses[0]?.versionLabel ?? null,
-      nisEffectiveFrom: nisClasses[0]?.effectiveFrom ?? null,
-      nisClassCount: nisClasses.length,
+      ...toPayslipStatutorySnapshot(statutoryBundle),
+      priorEmployment:
+        resolvedTax.priorEmployment.recordCount > 0
+          ? {
+              taxableIncomeYtd: resolvedTax.priorEmployment.taxableIncomeYtd,
+              payeDeductedYtd: resolvedTax.priorEmployment.payeDeductedYtd,
+              recordCount: resolvedTax.priorEmployment.recordCount,
+              allVerified: resolvedTax.priorEmployment.allVerified,
+            }
+          : null,
     },
   };
 }

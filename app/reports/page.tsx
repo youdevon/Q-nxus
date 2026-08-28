@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 
-import { ModulePlaceholder } from "@/src/components/layout/module-placeholder";
+import { ReportsHub } from "@/src/modules/reports/components/reports-hub";
+import { requireReportsHubAccess } from "@/src/modules/reports/data/require-reports-access";
 
 export const metadata: Metadata = {
   title: "Reports",
 };
 
-export default function ReportsPage() {
-  return (
-    <ModulePlaceholder
-      title="Reports"
-      moduleName="Core"
-      description="Cross-module analytics and scheduled reporting will live in this workspace."
-    />
-  );
+export const dynamic = "force-dynamic";
+
+export default async function ReportsPage() {
+  const capabilities = await requireReportsHubAccess();
+
+  return <ReportsHub capabilities={capabilities} />;
 }

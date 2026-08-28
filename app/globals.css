@@ -106,14 +106,14 @@
   --secondary: oklch(0.28 0.006 0);
   --secondary-foreground: oklch(0.92 0.003 0);
   --muted: oklch(0.26 0.005 0);
-  --muted-foreground: oklch(0.72 0.006 0);
+  --muted-foreground: oklch(0.78 0.008 0);
   --accent: oklch(0.3 0.008 0);
   --accent-foreground: oklch(0.96 0.002 0);
-  --destructive: oklch(0.65 0.18 25);
+  --destructive: oklch(0.72 0.17 25);
   --destructive-foreground: oklch(0.99 0.005 25);
-  --success: oklch(0.7 0.13 155);
+  --success: oklch(0.72 0.13 155);
   --success-foreground: oklch(0.16 0.03 155);
-  --warning: oklch(0.8 0.13 75);
+  --warning: oklch(0.82 0.13 75);
   --warning-foreground: oklch(0.22 0.05 75);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
@@ -171,10 +171,13 @@
 }
 
 @media print {
-  /* Payslip print/PDF: A4 portrait (210 × 297 mm) — one detailed slip per page. */
+  /*
+   * Do not force A4/Letter — size:auto follows the printer’s selected tray
+   * so the driver does not raise a paper-size mismatch.
+   */
   @page {
-    size: A4 portrait;
-    margin: 12mm;
+    size: auto;
+    margin: 0.5in;
   }
 
   body {
@@ -210,5 +213,49 @@
   .payslip-batch-page:last-child {
     break-after: auto;
     page-break-after: auto;
+  }
+}
+
+.report-print-page {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.report-print-document {
+  color: #171717;
+}
+
+.report-print-table thead {
+  display: table-header-group;
+}
+
+.report-print-table tbody tr {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+@media screen {
+  .report-print-document {
+    border: 1px dashed var(--border);
+    background: white;
+    padding: 1.5rem;
+  }
+}
+
+@media print {
+  .report-print-table thead {
+    display: table-header-group;
+  }
+
+  .report-print-document {
+    border: none;
+    padding: 0;
+  }
+
+  .report-print-page .report-print-header,
+  .report-print-page .report-print-table th,
+  .report-print-page .report-print-table td,
+  .report-print-page .report-print-summary p {
+    color: #171717 !important;
   }
 }

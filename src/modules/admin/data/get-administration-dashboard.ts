@@ -80,7 +80,6 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
     permissions,
     moduleStatuses,
     numberingSequences,
-    applicationSettings,
   ] = await Promise.all([
     prisma.user.count({
       where: {
@@ -129,7 +128,6 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
         isActive: true,
       },
     }),
-    prisma.applicationSetting.count(),
   ]);
 
   const readiness = [
@@ -168,15 +166,6 @@ export async function getAdministrationDashboard(): Promise<AdministrationDashbo
         numberingSequences > 0
           ? `${numberingSequences} active numbering sequence${numberingSequences === 1 ? "" : "s"}.`
           : "No active numbering sequences exist.",
-    },
-    {
-      key: "application-settings",
-      label: "Application settings",
-      ready: applicationSettings > 0,
-      detail:
-        applicationSettings > 0
-          ? "Application identity settings are available."
-          : "Application settings have not been created.",
     },
   ];
 

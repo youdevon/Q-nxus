@@ -1,13 +1,20 @@
 import { Landmark } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { formatMoney } from "@/src/lib/format";
 import type { StatutoryRemittanceReport } from "@/src/modules/payroll/data/get-statutory-remittance";
 import { formatPayslipPeriodLabel } from "@/src/modules/payroll/lib/payslip-preview";
+import {
+  ReportEmptyState,
+  ReportExportLinks,
+  ReportGenerateButton,
+  ReportPrintLink,
+} from "@/src/modules/reports/components/report-layout";
+import { reportPrintHref } from "@/src/modules/reports/lib/report-print";
 import { PayrollNav } from "./payroll-nav";
 
 export function StatutoryRemittanceReport({
@@ -33,8 +40,20 @@ export function StatutoryRemittanceReport({
       <PageHeader
         title="Statutory remittance"
         description="PAYE, NIS (employee + employer), and Health Surcharge due for the selected month — summed from posted payslips only. Verify against BIR/NIB filing before payment."
-        backHref="/payroll/reports"
+        backHref="/reports"
         backLabel="Reports"
+        actions={
+          <PageActionsEnd>
+            <ReportPrintLink
+              href={reportPrintHref("/payroll/reports/remittance", {
+                month: selectedPeriodKey,
+              })}
+            />
+            <ReportExportLinks
+              href={`/payroll/reports/remittance/export?month=${selectedPeriodKey}`}
+            />
+          </PageActionsEnd>
+        }
       />
 
       <form
@@ -52,9 +71,7 @@ export function StatutoryRemittanceReport({
             required
           />
         </label>
-        <Button type="submit" variant="outline">
-          Apply
-        </Button>
+        <ReportGenerateButton />
         {optionKeys.length > 0 ? (
           <p className="pb-2 text-xs text-muted-foreground">
             Posted months available:{" "}
@@ -79,9 +96,10 @@ export function StatutoryRemittanceReport({
         </div>
 
         {payslipCount === 0 ? (
-          <p className="py-12 text-center text-sm text-muted-foreground">
-            No posted payslips for {periodLabel}. Draft runs are not counted.
-          </p>
+          <ReportEmptyState
+            message={`No posted payslips for ${periodLabel}. Draft runs are not counted.`}
+            hint="Choose another month above and click Generate report to refresh."
+          />
         ) : (
           <div className="space-y-5">
             {mixed ? (

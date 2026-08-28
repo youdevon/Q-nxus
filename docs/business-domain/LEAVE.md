@@ -453,3 +453,30 @@ Approved leave used:  -5 days
 Manual adjustment:     1 day
 
 Available balance:    15 days
+---
+
+## 11. Paper cutover / historical leave
+
+Two supported cutover paths:
+
+### Opening balance
+
+On **People → Leave balances**, set **Opening balance** per leave type on the current contract.
+
+Formula:
+
+```text
+available = opening + entitlement + accrued + carried forward + adjustments − reserved − taken
+```
+
+Use opening balance to match paper remaining without re-entering every past absence. Negative opening is allowed when system entitlement exceeds paper remaining.
+
+### Past approved leave dates
+
+On **People → Leave → Request for employee**, check **Record as past approved leave**:
+
+- Requires `leave.manage` (on-behalf mode)
+- End date must be before today
+- Skips notice period and approval workflow
+- Creates an **APPROVED** request and posts **LEAVE_TAKEN** against the balance
+- Optional when the calendar / history of absences is needed; otherwise opening balance alone is enough for remaining days

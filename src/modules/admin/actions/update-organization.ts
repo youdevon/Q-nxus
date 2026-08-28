@@ -238,15 +238,6 @@ export async function updateOrganization(
         },
       });
 
-      // Legacy mirror for older ApplicationSetting readers. Organization is SoT
-      // for chrome (see getApplicationChrome); keep in sync to avoid stale fallbacks.
-      await transaction.applicationSetting.updateMany({
-        data: {
-          organizationName: updated.name,
-          shortName: updated.shortName?.trim() || updated.code,
-        },
-      });
-
       await recordAuditEvent(transaction, {
         userId: actor.actor.userId,
         organizationId: updated.id,

@@ -17,19 +17,29 @@ export type TtFinancialInstitution = {
   name: string;
   shortName: string;
   category: TtFinancialInstitutionCategoryId;
+  /**
+   * TT ACH ABA / routing when known from the bank participant list.
+   * Leave undefined for institutions without a confirmed code.
+   */
+  routingCode?: string;
 };
 
 export const OTHER_FINANCIAL_INSTITUTION_ID = "other" as const;
 
+/**
+ * ABA / routing from the TT bank participant list (image source).
+ * INTERCOMMERCIAL BANK maps to JMMB Bank (T&T) — successor institution.
+ * FIRST CARIBBEAN INTERNATIONAL BANK maps to CIBC Caribbean.
+ */
 export const TT_FINANCIAL_INSTITUTIONS: readonly TtFinancialInstitution[] = [
-  { id: "ansa-bank", name: "ANSA Bank Limited", shortName: "ANSA Bank", category: "COMMERCIAL_BANKS" },
-  { id: "cibc", name: "CIBC Caribbean Bank (Trinidad and Tobago) Limited", shortName: "CIBC", category: "COMMERCIAL_BANKS" },
-  { id: "citi", name: "Citibank (Trinidad & Tobago) Limited", shortName: "Citi", category: "COMMERCIAL_BANKS" },
-  { id: "fcb", name: "First Citizens Bank Limited", shortName: "FCB", category: "COMMERCIAL_BANKS" },
-  { id: "jmmb-bank", name: "JMMB Bank (T&T) Limited", shortName: "JMMB Bank", category: "COMMERCIAL_BANKS" },
-  { id: "rbc", name: "RBC Royal Bank (Trinidad & Tobago) Limited", shortName: "RBC", category: "COMMERCIAL_BANKS" },
-  { id: "rbl", name: "Republic Bank Limited", shortName: "RBL", category: "COMMERCIAL_BANKS" },
-  { id: "scotia", name: "Scotiabank Trinidad and Tobago Limited", shortName: "Scotia", category: "COMMERCIAL_BANKS" },
+  { id: "ansa-bank", name: "ANSA Bank Limited", shortName: "ANSA Bank", category: "COMMERCIAL_BANKS", routingCode: "010100107" },
+  { id: "cibc", name: "CIBC Caribbean Bank (Trinidad and Tobago) Limited", shortName: "CIBC", category: "COMMERCIAL_BANKS", routingCode: "010100602" },
+  { id: "citi", name: "Citibank (Trinidad & Tobago) Limited", shortName: "Citi", category: "COMMERCIAL_BANKS", routingCode: "010100055" },
+  { id: "fcb", name: "First Citizens Bank Limited", shortName: "FCB", category: "COMMERCIAL_BANKS", routingCode: "010100013" },
+  { id: "jmmb-bank", name: "JMMB Bank (T&T) Limited", shortName: "JMMB Bank", category: "COMMERCIAL_BANKS", routingCode: "010100505" },
+  { id: "rbc", name: "RBC Royal Bank (Trinidad & Tobago) Limited", shortName: "RBC", category: "COMMERCIAL_BANKS", routingCode: "010100039" },
+  { id: "rbl", name: "Republic Bank Limited", shortName: "RBL", category: "COMMERCIAL_BANKS", routingCode: "010100903" },
+  { id: "scotia", name: "Scotiabank Trinidad and Tobago Limited", shortName: "Scotia", category: "COMMERCIAL_BANKS", routingCode: "010100026" },
   { id: "ambl", name: "ANSA Merchant Bank Limited", shortName: "AMBL", category: "LICENSED_NON_BANK" },
   { id: "cfc", name: "Caribbean Finance Company Limited", shortName: "CFC", category: "LICENSED_NON_BANK" },
   { id: "cmbl", name: "Citicorp Merchant Bank Limited", shortName: "CMBL", category: "LICENSED_NON_BANK" },
@@ -60,7 +70,7 @@ export const TT_FINANCIAL_INSTITUTIONS: readonly TtFinancialInstitution[] = [
   { id: "dic", name: "Deposit Insurance Corporation of Trinidad and Tobago", shortName: "DIC", category: "INVESTMENT_MORTGAGE_DEVELOPMENT" },
   { id: "ttsec", name: "Trinidad and Tobago Securities and Exchange Commission", shortName: "TTSEC", category: "INVESTMENT_MORTGAGE_DEVELOPMENT" },
   { id: "ttse", name: "Trinidad and Tobago Stock Exchange Limited", shortName: "TTSE", category: "INVESTMENT_MORTGAGE_DEVELOPMENT" },
-  { id: "cbtt", name: "Central Bank of Trinidad and Tobago", shortName: "CBTT", category: "INVESTMENT_MORTGAGE_DEVELOPMENT" },
+  { id: "cbtt", name: "Central Bank of Trinidad and Tobago", shortName: "CBTT", category: "INVESTMENT_MORTGAGE_DEVELOPMENT", routingCode: "010100110" },
   { id: "nibtt", name: "National Insurance Board of Trinidad and Tobago", shortName: "NIBTT", category: "INVESTMENT_MORTGAGE_DEVELOPMENT" },
   { id: "tatil", name: "Trinidad and Tobago Insurance Limited", shortName: "TATIL", category: "INVESTMENT_MORTGAGE_DEVELOPMENT" },
   { id: "fcis", name: "First Citizens Investment Services Limited", shortName: "FCIS", category: "INVESTMENT_MORTGAGE_DEVELOPMENT" },

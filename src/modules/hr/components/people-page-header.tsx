@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { createElement, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronLeft, type LucideIcon } from "lucide-react";
@@ -64,7 +64,7 @@ export function PeoplePageHeader({
   className,
 }: PeoplePageHeaderProps) {
   const pathname = usePathname();
-  const Icon =
+  const iconComponent =
     icon === null
       ? null
       : (icon ??
@@ -93,12 +93,12 @@ export function PeoplePageHeader({
           </Link>
         ) : null}
         <div className="flex items-center gap-2.5">
-          {Icon ? (
-            <Icon
-              className="size-5 shrink-0 text-muted-foreground"
-              aria-hidden
-            />
-          ) : null}
+          {iconComponent
+            ? createElement(iconComponent, {
+                className: "size-5 shrink-0 text-muted-foreground",
+                "aria-hidden": true,
+              })
+            : null}
           <h1 className={UI_TYPOGRAPHY.pageTitle}>{title}</h1>
         </div>
         {description ? (

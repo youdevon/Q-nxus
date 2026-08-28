@@ -58,7 +58,7 @@ export function NotificationItem({
             />
           )}
         </div>
-        <p className="mt-0.5 break-words text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-0.5 whitespace-pre-wrap break-words text-xs leading-relaxed text-muted-foreground">
           {notification.message}
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-2">

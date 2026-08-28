@@ -20,18 +20,8 @@ export type PayrollProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$
 
 export type AggregatePayrollProfile = {
   _count: PayrollProfileCountAggregateOutputType | null
-  _avg: PayrollProfileAvgAggregateOutputType | null
-  _sum: PayrollProfileSumAggregateOutputType | null
   _min: PayrollProfileMinAggregateOutputType | null
   _max: PayrollProfileMaxAggregateOutputType | null
-}
-
-export type PayrollProfileAvgAggregateOutputType = {
-  td1OtherApprovedAnnual: runtime.Decimal | null
-}
-
-export type PayrollProfileSumAggregateOutputType = {
-  td1OtherApprovedAnnual: runtime.Decimal | null
 }
 
 export type PayrollProfileMinAggregateOutputType = {
@@ -39,13 +29,15 @@ export type PayrollProfileMinAggregateOutputType = {
   employeeId: string | null
   payFrequency: $Enums.PayFrequency | null
   paymentMethod: $Enums.PayrollPaymentMethod | null
-  nisNumber: string | null
-  birNumber: string | null
   notes: string | null
   isPayrollReady: boolean | null
-  td1OtherApprovedAnnual: runtime.Decimal | null
   pensionOnlyIncome: boolean | null
   exemptFromNis: boolean | null
+  receivingNisRetirementBenefit: boolean | null
+  nisCategoryOverride: $Enums.NisContributionCategory | null
+  nisOverrideReason: string | null
+  nisOverrideEffectiveFrom: Date | null
+  nisOverrideEffectiveTo: Date | null
   exemptFromHealthSurcharge: boolean | null
   exemptFromPaye: boolean | null
   createdAt: Date | null
@@ -57,13 +49,15 @@ export type PayrollProfileMaxAggregateOutputType = {
   employeeId: string | null
   payFrequency: $Enums.PayFrequency | null
   paymentMethod: $Enums.PayrollPaymentMethod | null
-  nisNumber: string | null
-  birNumber: string | null
   notes: string | null
   isPayrollReady: boolean | null
-  td1OtherApprovedAnnual: runtime.Decimal | null
   pensionOnlyIncome: boolean | null
   exemptFromNis: boolean | null
+  receivingNisRetirementBenefit: boolean | null
+  nisCategoryOverride: $Enums.NisContributionCategory | null
+  nisOverrideReason: string | null
+  nisOverrideEffectiveFrom: Date | null
+  nisOverrideEffectiveTo: Date | null
   exemptFromHealthSurcharge: boolean | null
   exemptFromPaye: boolean | null
   createdAt: Date | null
@@ -75,13 +69,15 @@ export type PayrollProfileCountAggregateOutputType = {
   employeeId: number
   payFrequency: number
   paymentMethod: number
-  nisNumber: number
-  birNumber: number
   notes: number
   isPayrollReady: number
-  td1OtherApprovedAnnual: number
   pensionOnlyIncome: number
   exemptFromNis: number
+  receivingNisRetirementBenefit: number
+  nisCategoryOverride: number
+  nisOverrideReason: number
+  nisOverrideEffectiveFrom: number
+  nisOverrideEffectiveTo: number
   exemptFromHealthSurcharge: number
   exemptFromPaye: number
   createdAt: number
@@ -90,26 +86,20 @@ export type PayrollProfileCountAggregateOutputType = {
 }
 
 
-export type PayrollProfileAvgAggregateInputType = {
-  td1OtherApprovedAnnual?: true
-}
-
-export type PayrollProfileSumAggregateInputType = {
-  td1OtherApprovedAnnual?: true
-}
-
 export type PayrollProfileMinAggregateInputType = {
   id?: true
   employeeId?: true
   payFrequency?: true
   paymentMethod?: true
-  nisNumber?: true
-  birNumber?: true
   notes?: true
   isPayrollReady?: true
-  td1OtherApprovedAnnual?: true
   pensionOnlyIncome?: true
   exemptFromNis?: true
+  receivingNisRetirementBenefit?: true
+  nisCategoryOverride?: true
+  nisOverrideReason?: true
+  nisOverrideEffectiveFrom?: true
+  nisOverrideEffectiveTo?: true
   exemptFromHealthSurcharge?: true
   exemptFromPaye?: true
   createdAt?: true
@@ -121,13 +111,15 @@ export type PayrollProfileMaxAggregateInputType = {
   employeeId?: true
   payFrequency?: true
   paymentMethod?: true
-  nisNumber?: true
-  birNumber?: true
   notes?: true
   isPayrollReady?: true
-  td1OtherApprovedAnnual?: true
   pensionOnlyIncome?: true
   exemptFromNis?: true
+  receivingNisRetirementBenefit?: true
+  nisCategoryOverride?: true
+  nisOverrideReason?: true
+  nisOverrideEffectiveFrom?: true
+  nisOverrideEffectiveTo?: true
   exemptFromHealthSurcharge?: true
   exemptFromPaye?: true
   createdAt?: true
@@ -139,13 +131,15 @@ export type PayrollProfileCountAggregateInputType = {
   employeeId?: true
   payFrequency?: true
   paymentMethod?: true
-  nisNumber?: true
-  birNumber?: true
   notes?: true
   isPayrollReady?: true
-  td1OtherApprovedAnnual?: true
   pensionOnlyIncome?: true
   exemptFromNis?: true
+  receivingNisRetirementBenefit?: true
+  nisCategoryOverride?: true
+  nisOverrideReason?: true
+  nisOverrideEffectiveFrom?: true
+  nisOverrideEffectiveTo?: true
   exemptFromHealthSurcharge?: true
   exemptFromPaye?: true
   createdAt?: true
@@ -191,18 +185,6 @@ export type PayrollProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: PayrollProfileAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: PayrollProfileSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: PayrollProfileMinAggregateInputType
@@ -233,8 +215,6 @@ export type PayrollProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   _count?: PayrollProfileCountAggregateInputType | true
-  _avg?: PayrollProfileAvgAggregateInputType
-  _sum?: PayrollProfileSumAggregateInputType
   _min?: PayrollProfileMinAggregateInputType
   _max?: PayrollProfileMaxAggregateInputType
 }
@@ -244,20 +224,20 @@ export type PayrollProfileGroupByOutputType = {
   employeeId: string
   payFrequency: $Enums.PayFrequency
   paymentMethod: $Enums.PayrollPaymentMethod
-  nisNumber: string | null
-  birNumber: string | null
   notes: string | null
   isPayrollReady: boolean
-  td1OtherApprovedAnnual: runtime.Decimal | null
   pensionOnlyIncome: boolean
   exemptFromNis: boolean
+  receivingNisRetirementBenefit: boolean
+  nisCategoryOverride: $Enums.NisContributionCategory | null
+  nisOverrideReason: string | null
+  nisOverrideEffectiveFrom: Date | null
+  nisOverrideEffectiveTo: Date | null
   exemptFromHealthSurcharge: boolean
   exemptFromPaye: boolean
   createdAt: Date
   updatedAt: Date
   _count: PayrollProfileCountAggregateOutputType | null
-  _avg: PayrollProfileAvgAggregateOutputType | null
-  _sum: PayrollProfileSumAggregateOutputType | null
   _min: PayrollProfileMinAggregateOutputType | null
   _max: PayrollProfileMaxAggregateOutputType | null
 }
@@ -285,19 +265,20 @@ export type PayrollProfileWhereInput = {
   employeeId?: Prisma.StringFilter<"PayrollProfile"> | string
   payFrequency?: Prisma.EnumPayFrequencyFilter<"PayrollProfile"> | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFilter<"PayrollProfile"> | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
-  birNumber?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
   notes?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
   isPayrollReady?: Prisma.BoolFilter<"PayrollProfile"> | boolean
-  td1OtherApprovedAnnual?: Prisma.DecimalNullableFilter<"PayrollProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   exemptFromNis?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  nisCategoryOverride?: Prisma.EnumNisContributionCategoryNullableFilter<"PayrollProfile"> | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
+  nisOverrideEffectiveFrom?: Prisma.DateTimeNullableFilter<"PayrollProfile"> | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.DateTimeNullableFilter<"PayrollProfile"> | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   exemptFromPaye?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
-  bankAccounts?: Prisma.PayrollBankAccountListRelationFilter
 }
 
 export type PayrollProfileOrderByWithRelationInput = {
@@ -305,19 +286,20 @@ export type PayrollProfileOrderByWithRelationInput = {
   employeeId?: Prisma.SortOrder
   payFrequency?: Prisma.SortOrder
   paymentMethod?: Prisma.SortOrder
-  nisNumber?: Prisma.SortOrderInput | Prisma.SortOrder
-  birNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   isPayrollReady?: Prisma.SortOrder
-  td1OtherApprovedAnnual?: Prisma.SortOrderInput | Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
   exemptFromNis?: Prisma.SortOrder
+  receivingNisRetirementBenefit?: Prisma.SortOrder
+  nisCategoryOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  nisOverrideReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  nisOverrideEffectiveFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  nisOverrideEffectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   exemptFromHealthSurcharge?: Prisma.SortOrder
   exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
-  bankAccounts?: Prisma.PayrollBankAccountOrderByRelationAggregateInput
 }
 
 export type PayrollProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -328,19 +310,20 @@ export type PayrollProfileWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PayrollProfileWhereInput | Prisma.PayrollProfileWhereInput[]
   payFrequency?: Prisma.EnumPayFrequencyFilter<"PayrollProfile"> | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFilter<"PayrollProfile"> | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
-  birNumber?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
   notes?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
   isPayrollReady?: Prisma.BoolFilter<"PayrollProfile"> | boolean
-  td1OtherApprovedAnnual?: Prisma.DecimalNullableFilter<"PayrollProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   exemptFromNis?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFilter<"PayrollProfile"> | boolean
+  nisCategoryOverride?: Prisma.EnumNisContributionCategoryNullableFilter<"PayrollProfile"> | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.StringNullableFilter<"PayrollProfile"> | string | null
+  nisOverrideEffectiveFrom?: Prisma.DateTimeNullableFilter<"PayrollProfile"> | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.DateTimeNullableFilter<"PayrollProfile"> | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   exemptFromPaye?: Prisma.BoolFilter<"PayrollProfile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PayrollProfile"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
-  bankAccounts?: Prisma.PayrollBankAccountListRelationFilter
 }, "id" | "employeeId">
 
 export type PayrollProfileOrderByWithAggregationInput = {
@@ -348,22 +331,22 @@ export type PayrollProfileOrderByWithAggregationInput = {
   employeeId?: Prisma.SortOrder
   payFrequency?: Prisma.SortOrder
   paymentMethod?: Prisma.SortOrder
-  nisNumber?: Prisma.SortOrderInput | Prisma.SortOrder
-  birNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   isPayrollReady?: Prisma.SortOrder
-  td1OtherApprovedAnnual?: Prisma.SortOrderInput | Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
   exemptFromNis?: Prisma.SortOrder
+  receivingNisRetirementBenefit?: Prisma.SortOrder
+  nisCategoryOverride?: Prisma.SortOrderInput | Prisma.SortOrder
+  nisOverrideReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  nisOverrideEffectiveFrom?: Prisma.SortOrderInput | Prisma.SortOrder
+  nisOverrideEffectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   exemptFromHealthSurcharge?: Prisma.SortOrder
   exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PayrollProfileCountOrderByAggregateInput
-  _avg?: Prisma.PayrollProfileAvgOrderByAggregateInput
   _max?: Prisma.PayrollProfileMaxOrderByAggregateInput
   _min?: Prisma.PayrollProfileMinOrderByAggregateInput
-  _sum?: Prisma.PayrollProfileSumOrderByAggregateInput
 }
 
 export type PayrollProfileScalarWhereWithAggregatesInput = {
@@ -374,13 +357,15 @@ export type PayrollProfileScalarWhereWithAggregatesInput = {
   employeeId?: Prisma.StringWithAggregatesFilter<"PayrollProfile"> | string
   payFrequency?: Prisma.EnumPayFrequencyWithAggregatesFilter<"PayrollProfile"> | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodWithAggregatesFilter<"PayrollProfile"> | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.StringNullableWithAggregatesFilter<"PayrollProfile"> | string | null
-  birNumber?: Prisma.StringNullableWithAggregatesFilter<"PayrollProfile"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"PayrollProfile"> | string | null
   isPayrollReady?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
-  td1OtherApprovedAnnual?: Prisma.DecimalNullableWithAggregatesFilter<"PayrollProfile"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
   exemptFromNis?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
+  nisCategoryOverride?: Prisma.EnumNisContributionCategoryNullableWithAggregatesFilter<"PayrollProfile"> | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.StringNullableWithAggregatesFilter<"PayrollProfile"> | string | null
+  nisOverrideEffectiveFrom?: Prisma.DateTimeNullableWithAggregatesFilter<"PayrollProfile"> | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.DateTimeNullableWithAggregatesFilter<"PayrollProfile"> | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
   exemptFromPaye?: Prisma.BoolWithAggregatesFilter<"PayrollProfile"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PayrollProfile"> | Date | string
@@ -391,19 +376,20 @@ export type PayrollProfileCreateInput = {
   id?: string
   payFrequency?: $Enums.PayFrequency
   paymentMethod?: $Enums.PayrollPaymentMethod
-  nisNumber?: string | null
-  birNumber?: string | null
   notes?: string | null
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: $Enums.NisContributionCategory | null
+  nisOverrideReason?: string | null
+  nisOverrideEffectiveFrom?: Date | string | null
+  nisOverrideEffectiveTo?: Date | string | null
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutPayrollProfileInput
-  bankAccounts?: Prisma.PayrollBankAccountCreateNestedManyWithoutPayrollProfileInput
 }
 
 export type PayrollProfileUncheckedCreateInput = {
@@ -411,37 +397,39 @@ export type PayrollProfileUncheckedCreateInput = {
   employeeId: string
   payFrequency?: $Enums.PayFrequency
   paymentMethod?: $Enums.PayrollPaymentMethod
-  nisNumber?: string | null
-  birNumber?: string | null
   notes?: string | null
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: $Enums.NisContributionCategory | null
+  nisOverrideReason?: string | null
+  nisOverrideEffectiveFrom?: Date | string | null
+  nisOverrideEffectiveTo?: Date | string | null
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  bankAccounts?: Prisma.PayrollBankAccountUncheckedCreateNestedManyWithoutPayrollProfileInput
 }
 
 export type PayrollProfileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  nisCategoryOverride?: Prisma.NullableEnumNisContributionCategoryFieldUpdateOperationsInput | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nisOverrideEffectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutPayrollProfileNestedInput
-  bankAccounts?: Prisma.PayrollBankAccountUpdateManyWithoutPayrollProfileNestedInput
 }
 
 export type PayrollProfileUncheckedUpdateInput = {
@@ -449,18 +437,19 @@ export type PayrollProfileUncheckedUpdateInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  nisCategoryOverride?: Prisma.NullableEnumNisContributionCategoryFieldUpdateOperationsInput | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nisOverrideEffectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bankAccounts?: Prisma.PayrollBankAccountUncheckedUpdateManyWithoutPayrollProfileNestedInput
 }
 
 export type PayrollProfileCreateManyInput = {
@@ -468,13 +457,15 @@ export type PayrollProfileCreateManyInput = {
   employeeId: string
   payFrequency?: $Enums.PayFrequency
   paymentMethod?: $Enums.PayrollPaymentMethod
-  nisNumber?: string | null
-  birNumber?: string | null
   notes?: string | null
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: $Enums.NisContributionCategory | null
+  nisOverrideReason?: string | null
+  nisOverrideEffectiveFrom?: Date | string | null
+  nisOverrideEffectiveTo?: Date | string | null
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: Date | string
@@ -485,13 +476,15 @@ export type PayrollProfileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  nisCategoryOverride?: Prisma.NullableEnumNisContributionCategoryFieldUpdateOperationsInput | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nisOverrideEffectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -503,13 +496,15 @@ export type PayrollProfileUncheckedUpdateManyInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  nisCategoryOverride?: Prisma.NullableEnumNisContributionCategoryFieldUpdateOperationsInput | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nisOverrideEffectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -526,21 +521,19 @@ export type PayrollProfileCountOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   payFrequency?: Prisma.SortOrder
   paymentMethod?: Prisma.SortOrder
-  nisNumber?: Prisma.SortOrder
-  birNumber?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   isPayrollReady?: Prisma.SortOrder
-  td1OtherApprovedAnnual?: Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
   exemptFromNis?: Prisma.SortOrder
+  receivingNisRetirementBenefit?: Prisma.SortOrder
+  nisCategoryOverride?: Prisma.SortOrder
+  nisOverrideReason?: Prisma.SortOrder
+  nisOverrideEffectiveFrom?: Prisma.SortOrder
+  nisOverrideEffectiveTo?: Prisma.SortOrder
   exemptFromHealthSurcharge?: Prisma.SortOrder
   exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type PayrollProfileAvgOrderByAggregateInput = {
-  td1OtherApprovedAnnual?: Prisma.SortOrder
 }
 
 export type PayrollProfileMaxOrderByAggregateInput = {
@@ -548,13 +541,15 @@ export type PayrollProfileMaxOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   payFrequency?: Prisma.SortOrder
   paymentMethod?: Prisma.SortOrder
-  nisNumber?: Prisma.SortOrder
-  birNumber?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   isPayrollReady?: Prisma.SortOrder
-  td1OtherApprovedAnnual?: Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
   exemptFromNis?: Prisma.SortOrder
+  receivingNisRetirementBenefit?: Prisma.SortOrder
+  nisCategoryOverride?: Prisma.SortOrder
+  nisOverrideReason?: Prisma.SortOrder
+  nisOverrideEffectiveFrom?: Prisma.SortOrder
+  nisOverrideEffectiveTo?: Prisma.SortOrder
   exemptFromHealthSurcharge?: Prisma.SortOrder
   exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -566,26 +561,19 @@ export type PayrollProfileMinOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   payFrequency?: Prisma.SortOrder
   paymentMethod?: Prisma.SortOrder
-  nisNumber?: Prisma.SortOrder
-  birNumber?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   isPayrollReady?: Prisma.SortOrder
-  td1OtherApprovedAnnual?: Prisma.SortOrder
   pensionOnlyIncome?: Prisma.SortOrder
   exemptFromNis?: Prisma.SortOrder
+  receivingNisRetirementBenefit?: Prisma.SortOrder
+  nisCategoryOverride?: Prisma.SortOrder
+  nisOverrideReason?: Prisma.SortOrder
+  nisOverrideEffectiveFrom?: Prisma.SortOrder
+  nisOverrideEffectiveTo?: Prisma.SortOrder
   exemptFromHealthSurcharge?: Prisma.SortOrder
   exemptFromPaye?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type PayrollProfileSumOrderByAggregateInput = {
-  td1OtherApprovedAnnual?: Prisma.SortOrder
-}
-
-export type PayrollProfileScalarRelationFilter = {
-  is?: Prisma.PayrollProfileWhereInput
-  isNot?: Prisma.PayrollProfileWhereInput
 }
 
 export type PayrollProfileCreateNestedOneWithoutEmployeeInput = {
@@ -628,54 +616,46 @@ export type EnumPayrollPaymentMethodFieldUpdateOperationsInput = {
   set?: $Enums.PayrollPaymentMethod
 }
 
-export type PayrollProfileCreateNestedOneWithoutBankAccountsInput = {
-  create?: Prisma.XOR<Prisma.PayrollProfileCreateWithoutBankAccountsInput, Prisma.PayrollProfileUncheckedCreateWithoutBankAccountsInput>
-  connectOrCreate?: Prisma.PayrollProfileCreateOrConnectWithoutBankAccountsInput
-  connect?: Prisma.PayrollProfileWhereUniqueInput
-}
-
-export type PayrollProfileUpdateOneRequiredWithoutBankAccountsNestedInput = {
-  create?: Prisma.XOR<Prisma.PayrollProfileCreateWithoutBankAccountsInput, Prisma.PayrollProfileUncheckedCreateWithoutBankAccountsInput>
-  connectOrCreate?: Prisma.PayrollProfileCreateOrConnectWithoutBankAccountsInput
-  upsert?: Prisma.PayrollProfileUpsertWithoutBankAccountsInput
-  connect?: Prisma.PayrollProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.PayrollProfileUpdateToOneWithWhereWithoutBankAccountsInput, Prisma.PayrollProfileUpdateWithoutBankAccountsInput>, Prisma.PayrollProfileUncheckedUpdateWithoutBankAccountsInput>
+export type NullableEnumNisContributionCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.NisContributionCategory | null
 }
 
 export type PayrollProfileCreateWithoutEmployeeInput = {
   id?: string
   payFrequency?: $Enums.PayFrequency
   paymentMethod?: $Enums.PayrollPaymentMethod
-  nisNumber?: string | null
-  birNumber?: string | null
   notes?: string | null
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: $Enums.NisContributionCategory | null
+  nisOverrideReason?: string | null
+  nisOverrideEffectiveFrom?: Date | string | null
+  nisOverrideEffectiveTo?: Date | string | null
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  bankAccounts?: Prisma.PayrollBankAccountCreateNestedManyWithoutPayrollProfileInput
 }
 
 export type PayrollProfileUncheckedCreateWithoutEmployeeInput = {
   id?: string
   payFrequency?: $Enums.PayFrequency
   paymentMethod?: $Enums.PayrollPaymentMethod
-  nisNumber?: string | null
-  birNumber?: string | null
   notes?: string | null
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: $Enums.NisContributionCategory | null
+  nisOverrideReason?: string | null
+  nisOverrideEffectiveFrom?: Date | string | null
+  nisOverrideEffectiveTo?: Date | string | null
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  bankAccounts?: Prisma.PayrollBankAccountUncheckedCreateNestedManyWithoutPayrollProfileInput
 }
 
 export type PayrollProfileCreateOrConnectWithoutEmployeeInput = {
@@ -698,155 +678,40 @@ export type PayrollProfileUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  nisCategoryOverride?: Prisma.NullableEnumNisContributionCategoryFieldUpdateOperationsInput | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nisOverrideEffectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bankAccounts?: Prisma.PayrollBankAccountUpdateManyWithoutPayrollProfileNestedInput
 }
 
 export type PayrollProfileUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
   paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  bankAccounts?: Prisma.PayrollBankAccountUncheckedUpdateManyWithoutPayrollProfileNestedInput
-}
-
-export type PayrollProfileCreateWithoutBankAccountsInput = {
-  id?: string
-  payFrequency?: $Enums.PayFrequency
-  paymentMethod?: $Enums.PayrollPaymentMethod
-  nisNumber?: string | null
-  birNumber?: string | null
-  notes?: string | null
-  isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  pensionOnlyIncome?: boolean
-  exemptFromNis?: boolean
-  exemptFromHealthSurcharge?: boolean
-  exemptFromPaye?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  employee: Prisma.EmployeeCreateNestedOneWithoutPayrollProfileInput
-}
-
-export type PayrollProfileUncheckedCreateWithoutBankAccountsInput = {
-  id?: string
-  employeeId: string
-  payFrequency?: $Enums.PayFrequency
-  paymentMethod?: $Enums.PayrollPaymentMethod
-  nisNumber?: string | null
-  birNumber?: string | null
-  notes?: string | null
-  isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  pensionOnlyIncome?: boolean
-  exemptFromNis?: boolean
-  exemptFromHealthSurcharge?: boolean
-  exemptFromPaye?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type PayrollProfileCreateOrConnectWithoutBankAccountsInput = {
-  where: Prisma.PayrollProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.PayrollProfileCreateWithoutBankAccountsInput, Prisma.PayrollProfileUncheckedCreateWithoutBankAccountsInput>
-}
-
-export type PayrollProfileUpsertWithoutBankAccountsInput = {
-  update: Prisma.XOR<Prisma.PayrollProfileUpdateWithoutBankAccountsInput, Prisma.PayrollProfileUncheckedUpdateWithoutBankAccountsInput>
-  create: Prisma.XOR<Prisma.PayrollProfileCreateWithoutBankAccountsInput, Prisma.PayrollProfileUncheckedCreateWithoutBankAccountsInput>
-  where?: Prisma.PayrollProfileWhereInput
-}
-
-export type PayrollProfileUpdateToOneWithWhereWithoutBankAccountsInput = {
-  where?: Prisma.PayrollProfileWhereInput
-  data: Prisma.XOR<Prisma.PayrollProfileUpdateWithoutBankAccountsInput, Prisma.PayrollProfileUncheckedUpdateWithoutBankAccountsInput>
-}
-
-export type PayrollProfileUpdateWithoutBankAccountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
-  paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  employee?: Prisma.EmployeeUpdateOneRequiredWithoutPayrollProfileNestedInput
-}
-
-export type PayrollProfileUncheckedUpdateWithoutBankAccountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  payFrequency?: Prisma.EnumPayFrequencyFieldUpdateOperationsInput | $Enums.PayFrequency
-  paymentMethod?: Prisma.EnumPayrollPaymentMethodFieldUpdateOperationsInput | $Enums.PayrollPaymentMethod
-  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isPayrollReady?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  td1OtherApprovedAnnual?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  pensionOnlyIncome?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  exemptFromNis?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  receivingNisRetirementBenefit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  nisCategoryOverride?: Prisma.NullableEnumNisContributionCategoryFieldUpdateOperationsInput | $Enums.NisContributionCategory | null
+  nisOverrideReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nisOverrideEffectiveFrom?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisOverrideEffectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   exemptFromHealthSurcharge?: Prisma.BoolFieldUpdateOperationsInput | boolean
   exemptFromPaye?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-
-/**
- * Count Type PayrollProfileCountOutputType
- */
-
-export type PayrollProfileCountOutputType = {
-  bankAccounts: number
-}
-
-export type PayrollProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  bankAccounts?: boolean | PayrollProfileCountOutputTypeCountBankAccountsArgs
-}
-
-/**
- * PayrollProfileCountOutputType without action
- */
-export type PayrollProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PayrollProfileCountOutputType
-   */
-  select?: Prisma.PayrollProfileCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * PayrollProfileCountOutputType without action
- */
-export type PayrollProfileCountOutputTypeCountBankAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PayrollBankAccountWhereInput
-}
 
 
 export type PayrollProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -854,20 +719,20 @@ export type PayrollProfileSelect<ExtArgs extends runtime.Types.Extensions.Intern
   employeeId?: boolean
   payFrequency?: boolean
   paymentMethod?: boolean
-  nisNumber?: boolean
-  birNumber?: boolean
   notes?: boolean
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: boolean
+  nisOverrideReason?: boolean
+  nisOverrideEffectiveFrom?: boolean
+  nisOverrideEffectiveTo?: boolean
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  bankAccounts?: boolean | Prisma.PayrollProfile$bankAccountsArgs<ExtArgs>
-  _count?: boolean | Prisma.PayrollProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["payrollProfile"]>
 
 export type PayrollProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -875,13 +740,15 @@ export type PayrollProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   employeeId?: boolean
   payFrequency?: boolean
   paymentMethod?: boolean
-  nisNumber?: boolean
-  birNumber?: boolean
   notes?: boolean
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: boolean
+  nisOverrideReason?: boolean
+  nisOverrideEffectiveFrom?: boolean
+  nisOverrideEffectiveTo?: boolean
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: boolean
@@ -894,13 +761,15 @@ export type PayrollProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   employeeId?: boolean
   payFrequency?: boolean
   paymentMethod?: boolean
-  nisNumber?: boolean
-  birNumber?: boolean
   notes?: boolean
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: boolean
+  nisOverrideReason?: boolean
+  nisOverrideEffectiveFrom?: boolean
+  nisOverrideEffectiveTo?: boolean
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: boolean
@@ -913,24 +782,24 @@ export type PayrollProfileSelectScalar = {
   employeeId?: boolean
   payFrequency?: boolean
   paymentMethod?: boolean
-  nisNumber?: boolean
-  birNumber?: boolean
   notes?: boolean
   isPayrollReady?: boolean
-  td1OtherApprovedAnnual?: boolean
   pensionOnlyIncome?: boolean
   exemptFromNis?: boolean
+  receivingNisRetirementBenefit?: boolean
+  nisCategoryOverride?: boolean
+  nisOverrideReason?: boolean
+  nisOverrideEffectiveFrom?: boolean
+  nisOverrideEffectiveTo?: boolean
   exemptFromHealthSurcharge?: boolean
   exemptFromPaye?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PayrollProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "payFrequency" | "paymentMethod" | "nisNumber" | "birNumber" | "notes" | "isPayrollReady" | "td1OtherApprovedAnnual" | "pensionOnlyIncome" | "exemptFromNis" | "exemptFromHealthSurcharge" | "exemptFromPaye" | "createdAt" | "updatedAt", ExtArgs["result"]["payrollProfile"]>
+export type PayrollProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "payFrequency" | "paymentMethod" | "notes" | "isPayrollReady" | "pensionOnlyIncome" | "exemptFromNis" | "receivingNisRetirementBenefit" | "nisCategoryOverride" | "nisOverrideReason" | "nisOverrideEffectiveFrom" | "nisOverrideEffectiveTo" | "exemptFromHealthSurcharge" | "exemptFromPaye" | "createdAt" | "updatedAt", ExtArgs["result"]["payrollProfile"]>
 export type PayrollProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  bankAccounts?: boolean | Prisma.PayrollProfile$bankAccountsArgs<ExtArgs>
-  _count?: boolean | Prisma.PayrollProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PayrollProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -943,29 +812,14 @@ export type $PayrollProfilePayload<ExtArgs extends runtime.Types.Extensions.Inte
   name: "PayrollProfile"
   objects: {
     employee: Prisma.$EmployeePayload<ExtArgs>
-    bankAccounts: Prisma.$PayrollBankAccountPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     employeeId: string
     payFrequency: $Enums.PayFrequency
     paymentMethod: $Enums.PayrollPaymentMethod
-    /**
-     * Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
-     * here from payroll writers — prefer Employee writes when people.manage.
-     */
-    nisNumber: string | null
-    /**
-     * Mirrored from Employee (source of truth). Do not persist form-only NIS/BIR
-     * here from payroll writers — prefer Employee writes when people.manage.
-     */
-    birNumber: string | null
     notes: string | null
     isPayrollReady: boolean
-    /**
-     * TD1: other approved deductions (pension, annuity, tax-savings, etc.) annual TTD.
-     */
-    td1OtherApprovedAnnual: runtime.Decimal | null
     /**
      * Health Surcharge: pension as only income source (exempt when true).
      */
@@ -974,6 +828,17 @@ export type $PayrollProfilePayload<ExtArgs extends runtime.Types.Extensions.Inte
      * Opt out of NIS employee/employer contributions and NIS number readiness.
      */
     exemptFromNis: boolean
+    /**
+     * Employee receives NIS retirement benefit (Class Z eligibility when age 60–64).
+     */
+    receivingNisRetirementBenefit: boolean
+    /**
+     * Manual NIS category override; null = derive from age and retirement benefit.
+     */
+    nisCategoryOverride: $Enums.NisContributionCategory | null
+    nisOverrideReason: string | null
+    nisOverrideEffectiveFrom: Date | null
+    nisOverrideEffectiveTo: Date | null
     /**
      * Opt out of Health Surcharge (in addition to age/pension exemptions).
      */
@@ -1379,7 +1244,6 @@ readonly fields: PayrollProfileFieldRefs;
 export interface Prisma__PayrollProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  bankAccounts<T extends Prisma.PayrollProfile$bankAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PayrollProfile$bankAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollBankAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1413,13 +1277,15 @@ export interface PayrollProfileFieldRefs {
   readonly employeeId: Prisma.FieldRef<"PayrollProfile", 'String'>
   readonly payFrequency: Prisma.FieldRef<"PayrollProfile", 'PayFrequency'>
   readonly paymentMethod: Prisma.FieldRef<"PayrollProfile", 'PayrollPaymentMethod'>
-  readonly nisNumber: Prisma.FieldRef<"PayrollProfile", 'String'>
-  readonly birNumber: Prisma.FieldRef<"PayrollProfile", 'String'>
   readonly notes: Prisma.FieldRef<"PayrollProfile", 'String'>
   readonly isPayrollReady: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
-  readonly td1OtherApprovedAnnual: Prisma.FieldRef<"PayrollProfile", 'Decimal'>
   readonly pensionOnlyIncome: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
   readonly exemptFromNis: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
+  readonly receivingNisRetirementBenefit: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
+  readonly nisCategoryOverride: Prisma.FieldRef<"PayrollProfile", 'NisContributionCategory'>
+  readonly nisOverrideReason: Prisma.FieldRef<"PayrollProfile", 'String'>
+  readonly nisOverrideEffectiveFrom: Prisma.FieldRef<"PayrollProfile", 'DateTime'>
+  readonly nisOverrideEffectiveTo: Prisma.FieldRef<"PayrollProfile", 'DateTime'>
   readonly exemptFromHealthSurcharge: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
   readonly exemptFromPaye: Prisma.FieldRef<"PayrollProfile", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PayrollProfile", 'DateTime'>
@@ -1822,30 +1688,6 @@ export type PayrollProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many PayrollProfiles to delete.
    */
   limit?: number
-}
-
-/**
- * PayrollProfile.bankAccounts
- */
-export type PayrollProfile$bankAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PayrollBankAccount
-   */
-  select?: Prisma.PayrollBankAccountSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PayrollBankAccount
-   */
-  omit?: Prisma.PayrollBankAccountOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PayrollBankAccountInclude<ExtArgs> | null
-  where?: Prisma.PayrollBankAccountWhereInput
-  orderBy?: Prisma.PayrollBankAccountOrderByWithRelationInput | Prisma.PayrollBankAccountOrderByWithRelationInput[]
-  cursor?: Prisma.PayrollBankAccountWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.PayrollBankAccountScalarFieldEnum | Prisma.PayrollBankAccountScalarFieldEnum[]
 }
 
 /**

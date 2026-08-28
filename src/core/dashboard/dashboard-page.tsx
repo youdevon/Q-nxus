@@ -144,14 +144,22 @@ export async function DashboardPage() {
           title="Mandatory vacation cannot roll over"
         >
           <p>{dashboard.vacationForfeitureWarning.message}</p>
-          <p className="mt-2">
+          <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <Link
               href="/me/leave/new"
               className="font-medium underline underline-offset-2 hover:text-foreground"
             >
               Request vacation leave
-            </Link>{" "}
-            so it finishes on or before{" "}
+            </Link>
+            <Link
+              href="/me/leave?focus=forfeiture"
+              className="font-medium underline underline-offset-2 hover:text-foreground"
+            >
+              Open My Leave
+            </Link>
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Leave must finish on or before{" "}
             {dashboard.vacationForfeitureWarning.contractEndDateIso}.
           </p>
         </PageAlert>

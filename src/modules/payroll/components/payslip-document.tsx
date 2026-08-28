@@ -3,12 +3,16 @@ import { CircleAlert } from "lucide-react";
 
 import { formatMoney } from "@/src/lib/format";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
+import { sumMoney } from "@/src/modules/payroll/lib/money";
 import {
-  notesForPayslipDisplay,
+  findPayslipMetaAllowanceAmount,
+  isPayslipMetaAllowanceLine,
+  payslipLineDetailForDisplay,
   type PayslipLineItem,
   type PayslipPreview,
 } from "@/src/modules/payroll/lib/payslip-preview";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { PayslipYtdBreakdown, PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
 
 function Amount({
   amount,
@@ -32,43 +36,114 @@ function isBankDeduction(line: PayslipLineItem): boolean {
   return line.label.startsWith("Bank transfer");
 }
 
+function YtdMetricStrip({
+  currency,
+  metrics,
+}: {
+  currency: string;
+  metrics: Array<{ label: string; amount: number }>;
+}) {
+  return (
+    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] tabular-nums text-muted-foreground print:gap-x-2 print:text-[9px]">
+      {metrics.map((metric) => (
+        <span key={metric.label}>
+          {metric.label}{" "}
+          <span className="font-medium text-foreground">
+            {formatMoney(metric.amount, { currency })}
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function YtdSection({
+  currency,
+  ytd,
+  ytdBreakdown,
+}: {
+  currency: string;
+  ytd: PayslipYtdTotals;
+  ytdBreakdown?: PayslipYtdBreakdown | null;
+}) {
+  const showPrior =
+    ytdBreakdown != null && ytdBreakdown.prior.recordCount > 0;
+
+  const metrics = showPrior && ytdBreakdown
+    ? [
+        { label: "Gross", amount: ytdBreakdown.combined.grossPay },
+        { label: "NIS", amount: ytdBreakdown.combined.nisEmployee },
+        {
+          label: "Health Surcharge",
+          amount: ytdBreakdown.combined.healthSurcharge,
+        },
+        { label: "PAYE", amount: ytdBreakdown.combined.paye },
+      ]
+    : [
+        { label: "Gross", amount: ytd.grossPay },
+        { label: "NIS", amount: ytd.nisEmployee },
+        { label: "Health Surcharge", amount: ytd.healthSurcharge },
+        { label: "PAYE", amount: ytd.paye },
+      ];
+
+  const periodLabel =
+    ytd.periodCount > 0
+      ? `(${ytd.periodCount} period${ytd.periodCount === 1 ? "" : "s"})`
+      : "(this slip)";
+
+  return (
+    <section className="border-b border-border/70 px-3 py-2 sm:px-4 print:px-2.5 print:py-0.5">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 print:gap-y-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
+          Year to date · {ytd.year}
+          {showPrior ? (
+            <span className="ml-1.5 font-normal normal-case tracking-normal">
+              (includes prior employer)
+            </span>
+          ) : (
+            <span className="ml-1.5 font-normal normal-case tracking-normal">
+              {periodLabel}
+            </span>
+          )}
+        </p>
+        <YtdMetricStrip currency={currency} metrics={metrics} />
+      </div>
+    </section>
+  );
+}
+
 function LineRows({
   lines,
   currency,
-  compact = false,
 }: {
   lines: PayslipLineItem[];
   currency: string;
-  compact?: boolean;
 }) {
-  const cellPad = compact
-    ? "px-3 py-1 print:px-2.5 print:py-px"
-    : "px-3 py-1.5 print:px-2.5 print:py-px";
-
   return (
     <>
-      {lines.map((line, index) => (
+      {lines.map((line, index) => {
+        const detail = payslipLineDetailForDisplay(line.detail);
+        return (
         <tr
           key={`${line.label}-${line.amount}-${index}`}
           className="border-b border-border/40 last:border-0"
         >
-          <td className={`${cellPad} align-top`}>
+          <td className="px-3 py-1.5 align-top print:px-2.5 print:py-px sm:px-4">
             <p className="text-sm font-medium leading-snug text-foreground print:text-[10px]">
               {line.label}
             </p>
-            {line.detail ? (
+            {detail ? (
               <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground print:mt-0 print:text-[8px]">
-                {line.detail}
+                {detail}
               </p>
             ) : null}
           </td>
-          <td
-            className={`${cellPad} text-right align-top text-sm print:text-[10px]`}
-          >
+          <td className="px-3 py-1.5 text-right align-top text-sm print:px-2.5 print:py-px print:text-[10px] sm:px-4">
             <Amount amount={line.amount} currency={currency} />
           </td>
         </tr>
-      ))}
+        );
+      })}
     </>
   );
 }
@@ -81,7 +156,7 @@ function SectionTitle({ children }: { children: ReactNode }) {
   );
 }
 
-function CompactLinesTable({
+function LinesTable({
   lines,
   currency,
   emptyLabel,
@@ -92,14 +167,16 @@ function CompactLinesTable({
 }) {
   if (lines.length === 0) {
     return (
-      <p className="px-3 py-2 text-xs text-muted-foreground">{emptyLabel}</p>
+      <p className="px-3 py-2 text-xs text-muted-foreground sm:px-4 print:px-2.5 print:py-0.5">
+        {emptyLabel}
+      </p>
     );
   }
 
   return (
     <table className="w-full text-sm">
       <tbody>
-        <LineRows lines={lines} currency={currency} compact />
+        <LineRows lines={lines} currency={currency} />
       </tbody>
     </table>
   );
@@ -108,11 +185,9 @@ function CompactLinesTable({
 function MetaItem({
   label,
   value,
-  detail,
 }: {
   label: string;
   value: string;
-  detail?: string | null;
 }) {
   return (
     <div className="min-w-0">
@@ -122,19 +197,62 @@ function MetaItem({
       <p className="mt-0.5 truncate text-sm font-medium leading-tight text-foreground tabular-nums print:mt-0 print:text-[10px]">
         {value}
       </p>
-      {detail ? (
-        <p className="mt-0.5 truncate text-[11px] leading-snug text-muted-foreground print:mt-0 print:text-[9px]">
-          {detail}
-        </p>
-      ) : null}
     </div>
   );
 }
 
+function TotalRow({
+  label,
+  amount,
+  currency,
+  emphasize = false,
+}: {
+  label: string;
+  amount: number;
+  currency: string;
+  emphasize?: boolean;
+}) {
+  return (
+    <div
+      className={
+        emphasize
+          ? "flex items-baseline justify-between gap-3 border-t border-border/70 bg-muted/20 px-3 py-1.5 print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4"
+          : "flex items-baseline justify-between gap-3 border-t border-border/60 px-3 py-1.5 print:px-2.5 print:py-0.5 sm:px-4"
+      }
+    >
+      <p
+        className={
+          emphasize
+            ? "text-sm font-semibold text-foreground print:text-[10px]"
+            : "text-sm text-foreground print:text-[10px]"
+        }
+      >
+        {label}
+      </p>
+      <Amount
+        amount={amount}
+        currency={currency}
+        showCurrency
+        className={
+          emphasize
+            ? "text-sm font-semibold text-foreground print:text-[10px]"
+            : "text-sm font-medium text-foreground print:text-[10px]"
+        }
+      />
+    </div>
+  );
+}
+
+/**
+ * Official / preview payslip surface shared by screen, print, and batch print.
+ * Annual PAYE projection stays on its dedicated tax-year views — not here.
+ */
 export function PayslipDocument({
   payslip,
   meta,
   ytd = null,
+  ytdBreakdown = null,
+  projectedTaxYearPosition: _projectedTaxYearPosition = null,
   showWarnings = true,
   isOfficial = false,
 }: {
@@ -142,6 +260,13 @@ export function PayslipDocument({
   meta: PayslipDocumentMeta;
   /** Year-to-date totals (prior posted + this slip/preview). */
   ytd?: PayslipYtdTotals | null;
+  /** Prior / this-employer / combined split when prior exists — shown as one YTD strip. */
+  ytdBreakdown?: PayslipYtdBreakdown | null;
+  /**
+   * Kept for call-site compatibility. Not rendered on the payslip —
+   * use the annual PAYE projection worksheet instead.
+   */
+  projectedTaxYearPosition?: ProjectedTaxYearPosition | null;
   /** When false, suppresses the preview warnings block (e.g. on the main preview page). */
   showWarnings?: boolean;
   /** Posted payslip — hide preview banner and show official footer. */
@@ -149,20 +274,24 @@ export function PayslipDocument({
 }) {
   const { currency } = payslip;
   const position = meta.jobTitle?.trim() || "—";
-  const primaryBank = payslip.bankDistribution?.find(
-    (line) => line.kind === "REMAINDER",
-  );
-  const footerNotes = notesForPayslipDisplay(payslip.notes, isOfficial);
 
-  const statutory = payslip.deductions.filter((line) => !isBankDeduction(line));
-  const bank = payslip.deductions.filter(isBankDeduction);
-  const hasBothDeductionGroups = statutory.length > 0 && bank.length > 0;
-  const singleDeductionGroup =
-    !hasBothDeductionGroups && payslip.deductions.length > 0
-      ? bank.length > 0
-        ? ({ title: "Bank transfers", lines: bank } as const)
-        : ({ title: "Statutory / tax", lines: statutory } as const)
-      : null;
+  const employeeDeductions = payslip.deductions.filter(
+    (line) => !isBankDeduction(line),
+  );
+  const employeeDeductionTotal = sumMoney(
+    ...employeeDeductions.map((line) => line.amount),
+  );
+  const salaryAmount =
+    findPayslipMetaAllowanceAmount(payslip.earnings, "salary") ??
+    (payslip.baseSalary > 0 ? payslip.baseSalary : undefined);
+  const travellingAmount = findPayslipMetaAllowanceAmount(
+    payslip.earnings,
+    "travel",
+  );
+  const phoneAmount = findPayslipMetaAllowanceAmount(payslip.earnings, "phone");
+  const earningsAboveGross = payslip.earnings.filter(
+    (line) => !isPayslipMetaAllowanceLine(line),
+  );
 
   return (
     <>
@@ -188,7 +317,6 @@ export function PayslipDocument({
       ) : null}
 
       <article className="overflow-hidden rounded-xl border border-border/80 bg-background print:rounded-none print:border print:border-border">
-        {/* Org / period chrome + employee header */}
         <header className="border-b border-border/70 bg-muted/25 px-4 py-3 sm:px-5 print:bg-transparent print:px-2.5 print:py-1.5">
           <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 print:gap-y-0.5">
             <div className="min-w-0">
@@ -207,246 +335,123 @@ export function PayslipDocument({
                 {payslip.period.label}
               </p>
               <p className="text-[11px] text-muted-foreground print:text-[9px]">
-                Currency {currency}
+                {payslip.period.payFrequency} · {currency}
               </p>
             </div>
           </div>
 
-          <div className="mt-3 grid gap-2.5 border-t border-border/60 pt-3 sm:grid-cols-2 lg:grid-cols-4 print:mt-1 print:gap-1 print:pt-1 print:grid-cols-4">
-            <MetaItem label="Employee" value={payslip.employee.displayName} />
-            <MetaItem label="Position" value={position} />
-            <MetaItem
-              label="NIS no."
-              value={payslip.employee.nisNumber ?? "—"}
-            />
-            <MetaItem
-              label="BIR no."
-              value={payslip.employee.birNumber ?? "—"}
-            />
-            {payslip.earnings.length === 0 ? (
-              <MetaItem label="Earnings" value="None on file" />
-            ) : (
-              payslip.earnings.map((line, index) => (
-                <MetaItem
-                  key={`${line.label}-${line.amount}-${index}`}
-                  label={line.label}
-                  value={formatMoney(line.amount, { currency })}
-                  detail={line.detail}
-                />
-              ))
-            )}
-            <MetaItem
-              label="Gross pay"
-              value={formatMoney(payslip.grossPay, { currency })}
-            />
-            <MetaItem
-              label="Taxable"
-              value={formatMoney(payslip.monthlyTaxableEarnings, {
-                currency,
-              })}
-            />
+          <div className="mt-3 space-y-2.5 border-t border-border/60 pt-3 print:mt-1 print:space-y-1 print:pt-1">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 print:grid-cols-4 print:gap-1">
+              <MetaItem label="Employee" value={payslip.employee.displayName} />
+              <MetaItem label="Position" value={position} />
+              <MetaItem
+                label="NIS NO."
+                value={payslip.employee.nisNumber ?? "—"}
+              />
+              <MetaItem
+                label="BIR NO."
+                value={payslip.employee.birNumber ?? "—"}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 print:grid-cols-4 print:gap-1">
+              <MetaItem
+                label="Salary"
+                value={
+                  salaryAmount != null ? formatMoney(salaryAmount) : "—"
+                }
+              />
+              <MetaItem
+                label="Travelling"
+                value={
+                  travellingAmount != null
+                    ? formatMoney(travellingAmount)
+                    : "—"
+                }
+              />
+              <MetaItem
+                label="Phone"
+                value={phoneAmount != null ? formatMoney(phoneAmount) : "—"}
+              />
+              <MetaItem
+                label="Taxable earnings"
+                value={formatMoney(payslip.monthlyTaxableEarnings)}
+              />
+            </div>
           </div>
         </header>
 
-        {/* Deductions — two compact columns when both groups exist */}
+        <section className="border-b border-border/70">
+          {earningsAboveGross.length > 0 ? (
+            <LinesTable
+              lines={earningsAboveGross}
+              currency={currency}
+              emptyLabel=""
+            />
+          ) : null}
+          <TotalRow
+            label="Gross pay"
+            amount={payslip.grossPay}
+            currency={currency}
+            emphasize
+          />
+        </section>
+
         <section className="border-b border-border/70">
           <div className="border-b border-border/60 px-3 py-1.5 sm:px-4 print:px-2.5 print:py-0.5">
             <SectionTitle>Deductions</SectionTitle>
           </div>
+          <LinesTable
+            lines={employeeDeductions}
+            currency={currency}
+            emptyLabel="No employee deductions calculated."
+          />
+          <TotalRow
+            label="Total deductions"
+            amount={employeeDeductionTotal}
+            currency={currency}
+            emphasize
+          />
+        </section>
 
-          {payslip.deductions.length === 0 ? (
-            <p className="px-3 py-2 text-xs text-muted-foreground sm:px-4 print:px-2.5 print:py-0.5">
-              No employee deductions calculated.
-            </p>
-          ) : hasBothDeductionGroups ? (
-            <div className="grid sm:grid-cols-2 sm:divide-x sm:divide-border/70 print:grid-cols-2 print:divide-x print:divide-border/70">
-              <div className="border-b border-border/60 sm:border-b-0 print:border-b-0">
-                <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
-                  Statutory / tax
+        <section className="border-b border-border/70">
+          <div className="border-t border-primary/20 bg-primary/5 px-3 py-2.5 print:border-border print:bg-transparent print:px-2.5 print:py-1 sm:px-4">
+            <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1.5 print:gap-y-0">
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary print:text-[8px]">
+                  Net pay
                 </p>
-                <CompactLinesTable
-                  lines={statutory}
+                <p className="mt-0.5 text-2xl font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl print:mt-0 print:text-base">
+                  {formatMoney(payslip.netPay, { currency })}
+                </p>
+              </div>
+              <p className="text-right text-[11px] leading-relaxed text-muted-foreground sm:text-xs print:text-[9px] print:leading-tight">
+                Gross{" "}
+                <Amount
+                  amount={payslip.grossPay}
                   currency={currency}
-                  emptyLabel="None"
+                  showCurrency
+                  className="font-medium text-foreground"
                 />
-              </div>
-              <div>
-                <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
-                  Bank transfers
-                </p>
-                <CompactLinesTable
-                  lines={bank}
+                <span className="mx-1 text-muted-foreground/70">−</span>
+                deductions{" "}
+                <Amount
+                  amount={payslip.totalDeductions}
                   currency={currency}
-                  emptyLabel="None"
+                  showCurrency
+                  className="font-medium text-foreground"
                 />
-              </div>
-            </div>
-          ) : singleDeductionGroup ? (
-            <div>
-              <p className="bg-muted/20 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
-                {singleDeductionGroup.title}
               </p>
-              <CompactLinesTable
-                lines={singleDeductionGroup.lines}
-                currency={currency}
-                emptyLabel="None"
-              />
-            </div>
-          ) : null}
-
-          {/* Totals + net — full width under both deduction columns */}
-          <div className="border-t border-border/70">
-            <div className="flex items-baseline justify-between gap-3 bg-muted/20 px-3 py-1.5 print:bg-transparent print:px-2.5 print:py-0.5 sm:px-4">
-              <p className="text-sm font-semibold text-foreground print:text-[10px]">
-                Total deductions
-              </p>
-              <Amount
-                amount={payslip.totalDeductions}
-                currency={currency}
-                showCurrency
-                className="text-sm font-semibold text-foreground print:text-[10px]"
-              />
-            </div>
-
-            <div className="border-t border-primary/20 bg-primary/5 px-3 py-2.5 print:border-border print:bg-transparent print:px-2.5 print:py-1 sm:px-4">
-              <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-1.5 print:gap-y-0">
-                <div className="min-w-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary print:text-[8px]">
-                    Net pay
-                  </p>
-                  <p className="mt-0.5 text-2xl font-semibold tracking-tight text-foreground tabular-nums sm:text-3xl print:mt-0 print:text-base">
-                    {formatMoney(payslip.netPay, { currency })}
-                  </p>
-                  {primaryBank ? (
-                    <p className="mt-1 text-xs text-muted-foreground sm:text-sm print:mt-0 print:text-[9px]">
-                      Net pay paid to primary bank — {primaryBank.bankName}
-                      <span className="ml-1.5 font-mono text-[11px] print:text-[9px]">
-                        ({primaryBank.accountNumberMasked})
-                      </span>
-                    </p>
-                  ) : null}
-                </div>
-                <p className="text-right text-[11px] leading-relaxed text-muted-foreground sm:text-xs print:text-[9px] print:leading-tight">
-                  Gross{" "}
-                  <Amount
-                    amount={payslip.grossPay}
-                    currency={currency}
-                    showCurrency
-                    className="font-medium text-foreground"
-                  />
-                  <span className="mx-1 text-muted-foreground/70">−</span>
-                  deductions{" "}
-                  <Amount
-                    amount={payslip.totalDeductions}
-                    currency={currency}
-                    showCurrency
-                    className="font-medium text-foreground"
-                  />
-                </p>
-              </div>
             </div>
           </div>
         </section>
 
-        {ytd && ytd.periodCount > 0 ? (
-          <section className="border-b border-border/70 px-3 py-2 sm:px-4 print:px-2.5 print:py-0.5">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 print:gap-y-0">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
-                Year to date · {ytd.year}
-                <span className="ml-1.5 font-normal normal-case tracking-normal">
-                  ({ytd.periodCount} period{ytd.periodCount === 1 ? "" : "s"})
-                </span>
-              </p>
-              <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] tabular-nums text-muted-foreground print:gap-x-2 print:text-[9px]">
-                <span>
-                  Gross{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.grossPay, { currency })}
-                  </span>
-                </span>
-                <span>
-                  Deductions{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.totalDeductions, { currency })}
-                  </span>
-                </span>
-                <span>
-                  PAYE{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.paye, { currency })}
-                  </span>
-                </span>
-                <span>
-                  NIS{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.nisEmployee, { currency })}
-                  </span>
-                </span>
-                <span>
-                  Health{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.healthSurcharge, { currency })}
-                  </span>
-                </span>
-                <span>
-                  Net{" "}
-                  <span className="font-medium text-foreground">
-                    {formatMoney(ytd.netPay, { currency })}
-                  </span>
-                </span>
-              </div>
-            </div>
-          </section>
+        {ytd ? (
+          <YtdSection
+            currency={currency}
+            ytd={ytd}
+            ytdBreakdown={ytdBreakdown}
+          />
         ) : null}
-
-        {payslip.employerContributions.length > 0 ? (
-          <section className="border-b border-border/70 px-3 py-2 sm:px-4 print:px-2.5 print:py-0.5">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground print:text-[8px]">
-              Employer contributions
-              <span className="ml-1.5 font-normal normal-case tracking-normal text-muted-foreground/80">
-                (informational — not deducted from net)
-              </span>
-            </p>
-            <ul className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 print:mt-0 print:gap-x-3">
-              {payslip.employerContributions.map((line) => (
-                <li
-                  key={line.label}
-                  className="flex items-baseline gap-1.5 text-xs print:text-[9px]"
-                >
-                  <span className="text-muted-foreground">
-                    {line.label}
-                    {line.detail ? (
-                      <span className="ml-1 text-[10px] print:text-[8px]">
-                        ({line.detail.split(" · ")[0]})
-                      </span>
-                    ) : null}
-                  </span>
-                  <Amount
-                    amount={line.amount}
-                    currency={currency}
-                    showCurrency
-                    className="font-medium text-foreground"
-                  />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-
-        <footer className="px-3 py-2.5 sm:px-4 print:px-2.5 print:py-1">
-          <p className="text-[11px] font-medium text-muted-foreground print:text-[9px] print:leading-tight">
-            {isOfficial
-              ? "Official payslip — amounts frozen from a posted pay run."
-              : "Preview — not an official payslip. Pay runs have not been posted."}
-          </p>
-          {footerNotes.length > 0 ? (
-            <ul className="mt-1 space-y-0.5 text-[10px] leading-relaxed text-muted-foreground/90 print:mt-0.5 print:space-y-0 print:text-[8px] print:leading-snug">
-              {footerNotes.map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
-          ) : null}
-        </footer>
       </article>
     </>
   );

@@ -9,16 +9,27 @@ import {
 
 import { formatMoney } from "@/src/lib/format";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
-import type {
-  PayslipLineItem,
-  PayslipPreview,
+import {
+  findPayslipMetaAllowanceAmount,
+  isPayslipMetaAllowanceLine,
+  payslipLineDetailForDisplay,
+  type PayslipLineItem,
+  type PayslipPreview,
 } from "@/src/modules/payroll/lib/payslip-preview";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import { sumMoney } from "@/src/modules/payroll/lib/money";
+import type {
+  PayslipYtdBreakdown,
+  PayslipYtdTotals,
+} from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
 
 export type PayslipPdfDocumentInput = {
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
   ytd: PayslipYtdTotals | null;
+  ytdBreakdown?: PayslipYtdBreakdown | null;
+  /** Kept for call-site compatibility — not rendered on the PDF payslip. */
+  projectedTaxYearPosition?: ProjectedTaxYearPosition | null;
   isOfficial: boolean;
 };
 
@@ -61,11 +72,13 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   metaGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
     marginBottom: 8,
   },
-  metaItem: { width: "25%", marginBottom: 5, paddingRight: 6 },
+  metaRow: {
+    flexDirection: "row",
+    marginBottom: 5,
+  },
+  metaItem: { width: "25%", paddingRight: 6 },
   metaValue: { fontSize: 8, fontFamily: "Helvetica-Bold", marginTop: 1 },
   sectionTitle: {
     fontSize: 7,
@@ -116,19 +129,15 @@ const styles = StyleSheet.create({
   },
   netAmount: { fontSize: 14, fontFamily: "Helvetica-Bold", marginTop: 1 },
   ytdRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 3 },
-  ytdItem: { width: "16.6%", marginBottom: 3 },
-  footer: {
-    marginTop: 8,
-    paddingTop: 6,
-    borderTopWidth: 1,
-    borderTopColor: "#e5e7eb",
-    fontSize: 6.5,
-    color: "#6b7280",
-  },
+  ytdItem: { width: "25%", marginBottom: 3 },
 });
 
 function money(amount: number, currency: string): string {
   return formatMoney(amount, { currency });
+}
+
+function isBankDeduction(line: PayslipLineItem): boolean {
+  return line.label.startsWith("Bank transfer");
 }
 
 function LineList({
@@ -145,17 +154,20 @@ function LineList({
   }
   return (
     <View>
-      {lines.map((line, index) => (
+      {lines.map((line, index) => {
+        const detail = payslipLineDetailForDisplay(line.detail);
+        return (
         <View key={`${line.label}-${index}`} style={styles.lineRow}>
           <View style={styles.lineLabel}>
             <Text>{line.label}</Text>
-            {line.detail ? (
-              <Text style={styles.lineDetail}>{line.detail}</Text>
+            {detail ? (
+              <Text style={styles.lineDetail}>{detail}</Text>
             ) : null}
           </View>
           <Text style={styles.amount}>{money(line.amount, currency)}</Text>
         </View>
-      ))}
+        );
+      })}
     </View>
   );
 }
@@ -169,15 +181,54 @@ function MetaItem({ label, value }: { label: string; value: string }) {
   );
 }
 
-function PayslipPage({ payslip, meta, ytd, isOfficial }: PayslipPdfDocumentInput) {
+function YtdMetricRow({
+  currency,
+  metrics,
+}: {
+  currency: string;
+  metrics: Array<{ label: string; amount: number }>;
+}) {
+  return (
+    <View style={styles.ytdRow}>
+      {metrics.map((metric) => (
+        <View key={metric.label} style={styles.ytdItem}>
+          <Text style={styles.label}>{metric.label}</Text>
+          <Text>{money(metric.amount, currency)}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+function PayslipPage({
+  payslip,
+  meta,
+  ytd,
+  ytdBreakdown = null,
+}: PayslipPdfDocumentInput) {
   const { currency } = payslip;
-  const primaryBank = payslip.bankDistribution?.find(
-    (line) => line.kind === "REMAINDER",
+  const showPrior =
+    ytdBreakdown != null && ytdBreakdown.prior.recordCount > 0;
+  const employeeDeductions = payslip.deductions.filter(
+    (line) => !isBankDeduction(line),
+  );
+  const employeeDeductionTotal = sumMoney(
+    ...employeeDeductions.map((line) => line.amount),
+  );
+  const salaryAmount =
+    findPayslipMetaAllowanceAmount(payslip.earnings, "salary") ??
+    (payslip.baseSalary > 0 ? payslip.baseSalary : undefined);
+  const travellingAmount = findPayslipMetaAllowanceAmount(
+    payslip.earnings,
+    "travel",
+  );
+  const phoneAmount = findPayslipMetaAllowanceAmount(payslip.earnings, "phone");
+  const earningsAboveGross = payslip.earnings.filter(
+    (line) => !isPayslipMetaAllowanceLine(line),
   );
 
   return (
     <Page size="A4" style={styles.page} wrap>
-      {/* wrap so dense slips continue onto a second page instead of clipping */}
       <View wrap>
         <View style={styles.headerRow} wrap={false}>
           <View>
@@ -188,51 +239,68 @@ function PayslipPage({ payslip, meta, ytd, isOfficial }: PayslipPdfDocumentInput
             <Text style={styles.payslipTag}>Payslip</Text>
             <Text style={styles.period}>{payslip.period.label}</Text>
             <Text style={[styles.label, { textAlign: "right" }]}>
-              Currency {currency}
+              {payslip.period.payFrequency} · {currency}
             </Text>
           </View>
         </View>
 
         <View style={styles.metaGrid}>
-          <MetaItem label="Employee" value={payslip.employee.displayName} />
-          <MetaItem
-            label="Employee no."
-            value={payslip.employee.employeeNumber}
-          />
-          <MetaItem label="Position" value={meta.jobTitle?.trim() || "—"} />
-          <MetaItem
-            label="Department"
-            value={meta.departmentName?.trim() || "—"}
-          />
-          <MetaItem label="NIS no." value={payslip.employee.nisNumber ?? "—"} />
-          <MetaItem label="BIR no." value={payslip.employee.birNumber ?? "—"} />
-          <MetaItem
-            label="Gross pay"
-            value={money(payslip.grossPay, currency)}
-          />
-          <MetaItem
-            label="Taxable"
-            value={money(payslip.monthlyTaxableEarnings, currency)}
-          />
+          <View style={styles.metaRow}>
+            <MetaItem label="Employee" value={payslip.employee.displayName} />
+            <MetaItem label="Position" value={meta.jobTitle?.trim() || "—"} />
+            <MetaItem
+              label="NIS NO."
+              value={payslip.employee.nisNumber ?? "—"}
+            />
+            <MetaItem
+              label="BIR NO."
+              value={payslip.employee.birNumber ?? "—"}
+            />
+          </View>
+          <View style={styles.metaRow}>
+            <MetaItem
+              label="Salary"
+              value={salaryAmount != null ? formatMoney(salaryAmount) : "—"}
+            />
+            <MetaItem
+              label="Travelling"
+              value={
+                travellingAmount != null ? formatMoney(travellingAmount) : "—"
+              }
+            />
+            <MetaItem
+              label="Phone"
+              value={phoneAmount != null ? formatMoney(phoneAmount) : "—"}
+            />
+            <MetaItem
+              label="Taxable earnings"
+              value={formatMoney(payslip.monthlyTaxableEarnings)}
+            />
+          </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Earnings</Text>
-        <LineList
-          lines={payslip.earnings}
-          currency={currency}
-          emptyLabel="No earnings on file."
-        />
+        {earningsAboveGross.length > 0 ? (
+          <LineList
+            lines={earningsAboveGross}
+            currency={currency}
+            emptyLabel=""
+          />
+        ) : null}
+        <View style={styles.totalRow} wrap={false}>
+          <Text style={styles.amount}>Gross pay</Text>
+          <Text style={styles.amount}>{money(payslip.grossPay, currency)}</Text>
+        </View>
 
         <Text style={styles.sectionTitle}>Deductions</Text>
         <LineList
-          lines={payslip.deductions}
+          lines={employeeDeductions}
           currency={currency}
           emptyLabel="No employee deductions calculated."
         />
         <View style={styles.totalRow} wrap={false}>
           <Text style={styles.amount}>Total deductions</Text>
           <Text style={styles.amount}>
-            {money(payslip.totalDeductions, currency)}
+            {money(employeeDeductionTotal, currency)}
           </Text>
         </View>
 
@@ -242,11 +310,6 @@ function PayslipPage({ payslip, meta, ytd, isOfficial }: PayslipPdfDocumentInput
             <Text style={styles.netAmount}>
               {money(payslip.netPay, currency)}
             </Text>
-            {primaryBank ? (
-              <Text style={styles.lineDetail}>
-                Paid to {primaryBank.bankName} ({primaryBank.accountNumberMasked})
-              </Text>
-            ) : null}
           </View>
           <Text style={styles.lineDetail}>
             Gross {money(payslip.grossPay, currency)} − deductions{" "}
@@ -254,61 +317,48 @@ function PayslipPage({ payslip, meta, ytd, isOfficial }: PayslipPdfDocumentInput
           </Text>
         </View>
 
-        {ytd && ytd.periodCount > 0 ? (
+        {ytd ? (
           <View wrap={false}>
             <Text style={styles.sectionTitle}>
-              Year to date · {ytd.year} ({ytd.periodCount} period
-              {ytd.periodCount === 1 ? "" : "s"})
+              Year to date · {ytd.year}
+              {showPrior
+                ? " (includes prior employer)"
+                : ytd.periodCount > 0
+                  ? ` (${ytd.periodCount} period${ytd.periodCount === 1 ? "" : "s"})`
+                  : " (this slip)"}
             </Text>
-            <View style={styles.ytdRow}>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Gross</Text>
-                <Text>{money(ytd.grossPay, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Deductions</Text>
-                <Text>{money(ytd.totalDeductions, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>PAYE</Text>
-                <Text>{money(ytd.paye, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>NIS</Text>
-                <Text>{money(ytd.nisEmployee, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Health</Text>
-                <Text>{money(ytd.healthSurcharge, currency)}</Text>
-              </View>
-              <View style={styles.ytdItem}>
-                <Text style={styles.label}>Net</Text>
-                <Text>{money(ytd.netPay, currency)}</Text>
-              </View>
-            </View>
-          </View>
-        ) : null}
-
-        {payslip.employerContributions.length > 0 ? (
-          <View>
-            <Text style={styles.sectionTitle}>
-              Employer contributions (informational — not deducted)
-            </Text>
-            <LineList
-              lines={payslip.employerContributions}
+            <YtdMetricRow
               currency={currency}
-              emptyLabel="None"
+              metrics={
+                showPrior && ytdBreakdown
+                  ? [
+                      {
+                        label: "Gross",
+                        amount: ytdBreakdown.combined.grossPay,
+                      },
+                      {
+                        label: "NIS",
+                        amount: ytdBreakdown.combined.nisEmployee,
+                      },
+                      {
+                        label: "Health Surcharge",
+                        amount: ytdBreakdown.combined.healthSurcharge,
+                      },
+                      { label: "PAYE", amount: ytdBreakdown.combined.paye },
+                    ]
+                  : [
+                      { label: "Gross", amount: ytd.grossPay },
+                      { label: "NIS", amount: ytd.nisEmployee },
+                      {
+                        label: "Health Surcharge",
+                        amount: ytd.healthSurcharge,
+                      },
+                      { label: "PAYE", amount: ytd.paye },
+                    ]
+              }
             />
           </View>
         ) : null}
-
-        <View style={styles.footer} wrap={false}>
-          <Text>
-            {isOfficial
-              ? "Official payslip — amounts frozen from a posted pay run."
-              : "Preview — not an official payslip. Pay runs have not been posted."}
-          </Text>
-        </View>
       </View>
     </Page>
   );

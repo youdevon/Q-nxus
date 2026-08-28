@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import {
   evaluateVacationForfeitureAlert,
+  VACATION_FORFEITURE_NOTICE_DAYS,
   VACATION_LEAVE_TYPE_CODE,
   type VacationForfeitureAlert,
 } from "@/src/modules/hr/lib/vacation-forfeiture";
@@ -14,6 +15,18 @@ export type VacationForfeitureQueueItem = VacationForfeitureAlert & {
   jobTitle: string;
 };
 
+function startOfUtcDay(value: Date): Date {
+  return new Date(
+    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()),
+  );
+}
+
+function addUtcDays(value: Date, days: number): Date {
+  const next = new Date(value);
+  next.setUTCDate(next.getUTCDate() + days);
+  return next;
+}
+
 /**
  * Org-wide list of current contracts in the vacation use-or-lose window.
  * For HR leave workspace monitoring (no notification side effects).
@@ -23,6 +36,10 @@ export async function getVacationForfeitureQueue(
   asOf: Date = new Date(),
   limit = 25,
 ): Promise<VacationForfeitureQueueItem[]> {
+  const today = startOfUtcDay(asOf);
+  const windowEnd = addUtcDays(today, VACATION_FORFEITURE_NOTICE_DAYS);
+  const candidateCap = Math.min(Math.max(limit * 4, 40), 120);
+
   const balances = await prisma.employeeLeaveBalance.findMany({
     where: {
       availableBalance: { gt: 0 },
@@ -33,7 +50,9 @@ export async function getVacationForfeitureQueue(
       contract: {
         isCurrent: true,
         status: { in: ["ACTIVE", "EXPIRED"] },
-        endDate: { not: null },
+        // Include already-ended contracts (daysUntilEnd < 0) and those ending
+        // within the notice window — push the filter into SQL before take.
+        endDate: { not: null, lte: windowEnd },
         employee: {
           organizationId,
           isArchived: false,
@@ -62,7 +81,12 @@ export async function getVacationForfeitureQueue(
         },
       },
     },
-    take: 200,
+    orderBy: {
+      contract: {
+        endDate: "asc",
+      },
+    },
+    take: candidateCap,
   });
 
   const items: VacationForfeitureQueueItem[] = [];
@@ -71,7 +95,7 @@ export async function getVacationForfeitureQueue(
     const alert = evaluateVacationForfeitureAlert({
       availableVacation: balance.availableBalance.toString(),
       contractEndDate: balance.contract.endDate,
-      asOf,
+      asOf: today,
     });
 
     if (!alert) {
@@ -90,8 +114,6 @@ export async function getVacationForfeitureQueue(
       jobTitle: balance.contract.jobTitle,
     });
   }
-
-  items.sort((a, b) => a.daysUntilEnd - b.daysUntilEnd);
 
   return items.slice(0, limit);
 }

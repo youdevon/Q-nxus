@@ -11,6 +11,7 @@ import type { LeaveWorkspaceData } from "@/src/modules/hr/data/get-leave-request
 import type { VacationForfeitureWarning } from "@/src/modules/hr/data/get-vacation-forfeiture-warning";
 import type { VacationForfeitureQueueItem } from "@/src/modules/hr/data/get-vacation-forfeiture-queue";
 import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { buildLeaveBalancesUrl } from "@/src/modules/hr/lib/leave-balances-url";
 import { formatDisplayDate } from "@/src/lib/format";
 
 function label(value: string): string {
@@ -258,14 +259,22 @@ export function LeaveWorkspace({
           title="Mandatory vacation cannot roll over"
         >
           <p>{vacationForfeitureWarning.message}</p>
-          <p className="mt-2">
+          <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
             <Link
               href="/me/leave/new"
               className="font-medium underline underline-offset-2 hover:text-foreground"
             >
               Request vacation leave
-            </Link>{" "}
-            so it finishes on or before{" "}
+            </Link>
+            <Link
+              href="/me/leave?focus=forfeiture"
+              className="font-medium underline underline-offset-2 hover:text-foreground"
+            >
+              Open My Leave
+            </Link>
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Leave must finish on or before{" "}
             {vacationForfeitureWarning.contractEndDateIso}.
           </p>
         </PageAlert>
@@ -388,11 +397,14 @@ export function LeaveWorkspace({
                             size="sm"
                             render={
                               <Link
-                                href={`/people/leave/balances?employeeId=${item.employeeId}`}
+                                href={buildLeaveBalancesUrl({
+                                  employeeId: item.employeeId,
+                                  focus: "forfeiture",
+                                })}
                               />
                             }
                           >
-                            Balances
+                            Review balances
                           </Button>
                         </div>
                       </div>

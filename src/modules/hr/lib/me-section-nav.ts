@@ -3,6 +3,7 @@ import {
   CalendarDays,
   FileSignature,
   FolderOpen,
+  Gift,
   ScrollText,
   UserRound,
   Wallet,
@@ -54,6 +55,13 @@ export const meSectionNavItems: readonly MeSectionNavItem[] = [
     href: "/me/contracts",
     description: "Your employment contracts",
     icon: FileSignature,
+    anyOf: ["people.profile.view_own"],
+  },
+  {
+    title: "Gratuity",
+    href: "/me/gratuity",
+    description: "Contract-end gratuity estimates and payments",
+    icon: Gift,
     anyOf: ["people.profile.view_own"],
   },
   {

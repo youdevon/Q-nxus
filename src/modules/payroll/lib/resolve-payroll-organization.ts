@@ -7,12 +7,14 @@ import { prisma } from "@/lib/prisma";
  */
 export async function resolvePayrollOrganization(input?: {
   actorUserId?: string | null;
-}): Promise<{ id: string; defaultCurrency: string }> {
+}): Promise<{ id: string; name: string; defaultCurrency: string }> {
   if (input?.actorUserId) {
     const user = await prisma.user.findUnique({
       where: { id: input.actorUserId },
       select: {
-        organization: { select: { id: true, defaultCurrency: true } },
+        organization: {
+          select: { id: true, name: true, defaultCurrency: true },
+        },
       },
     });
 
@@ -23,7 +25,7 @@ export async function resolvePayrollOrganization(input?: {
 
   const organization = await prisma.organization.findFirst({
     orderBy: { createdAt: "asc" },
-    select: { id: true, defaultCurrency: true },
+    select: { id: true, name: true, defaultCurrency: true },
   });
 
   if (!organization) {

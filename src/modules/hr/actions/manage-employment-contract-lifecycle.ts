@@ -6,6 +6,7 @@ import { unstable_rethrow } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import {
+  employeeStorageFolderLabel,
   resolveStoredFileAbsolutePath,
   storeUploadedFile,
 } from "@/src/lib/stored-file";
@@ -27,6 +28,14 @@ import {
 } from "@/src/modules/hr/lib/contract-workflow-settings";
 import { activateEmploymentContractInTransaction } from "@/src/modules/hr/services/activate-employment-contract";
 import { syncAssignedEmployeeAccessRoles } from "@/src/modules/hr/services/assign-employee-to-position";
+import { revalidatePathsAfterContractActivate } from "@/src/modules/hr/lib/revalidate-after-contract-activate";
+import {
+  notifyContractActivated,
+  notifyContractDecision,
+  notifyContractPendingApproval,
+  notifyContractReadyToActivate,
+  notifyContractSignatureNeeded,
+} from "@/src/modules/hr/services/notify-contract-lifecycle";
 
 export type ContractLifecycleState = {
   status: "idle" | "error" | "success";
@@ -39,15 +48,7 @@ function textValue(formData: FormData, key: string): string {
 }
 
 function revalidateContractPaths(employeeId: string, contractId: string) {
-  revalidatePath("/people");
-  revalidatePath(`/people/employees/${employeeId}`);
-  revalidatePath(`/people/employees/${employeeId}/contracts`);
-  revalidatePath(`/people/employees/${employeeId}/contracts/${contractId}`);
-  revalidatePath(`/people/employees/${employeeId}/documents`);
-  revalidatePath("/contracts");
-  revalidatePath("/me");
-  revalidatePath("/me/contracts");
-  revalidatePath("/people/leave/balances");
+  revalidatePathsAfterContractActivate(employeeId, contractId);
 }
 
 async function loadContractForLifecycle(contractId: string) {
@@ -163,6 +164,37 @@ export async function submitEmploymentContract(
     });
 
     revalidateContractPaths(contract.employeeId, contractId);
+
+    const employeePayload = {
+      employeeNumber: contract.employee.employeeNumber,
+      firstName: contract.employee.firstName,
+      lastName: contract.employee.lastName,
+      userId: contract.employee.user?.id ?? null,
+    };
+
+    if (
+      workflow.mode === "FINAL_APPROVER_POSITION" &&
+      workflow.finalApproverPositionId
+    ) {
+      await notifyContractPendingApproval({
+        organizationId: contract.employee.organizationId,
+        contractId,
+        employeeId: contract.employeeId,
+        employee: employeePayload,
+        actorUserId: actor.actor.userId,
+        approverPositionId: workflow.finalApproverPositionId,
+      });
+    } else {
+      await notifyContractSignatureNeeded({
+        organizationId: contract.employee.organizationId,
+        contractId,
+        employeeId: contract.employeeId,
+        employee: employeePayload,
+        missingParty: "both",
+        actorUserId: actor.actor.userId,
+      });
+    }
+
     return { status: "success", message: "Contract submitted." };
   } catch (error) {
     unstable_rethrow(error);
@@ -247,6 +279,34 @@ export async function decideEmploymentContract(
     });
 
     revalidateContractPaths(contract.employeeId, contractId);
+
+    const employeePayload = {
+      employeeNumber: contract.employee.employeeNumber,
+      firstName: contract.employee.firstName,
+      lastName: contract.employee.lastName,
+      userId: contract.employee.user?.id ?? null,
+    };
+
+    await notifyContractDecision({
+      organizationId: contract.employee.organizationId,
+      contractId,
+      employeeId: contract.employeeId,
+      employee: employeePayload,
+      decision: decision as "APPROVE" | "REJECT",
+      actorUserId: actor.actor.userId,
+    });
+
+    if (decision === "APPROVE") {
+      await notifyContractSignatureNeeded({
+        organizationId: contract.employee.organizationId,
+        contractId,
+        employeeId: contract.employeeId,
+        employee: employeePayload,
+        missingParty: "both",
+        actorUserId: actor.actor.userId,
+      });
+    }
+
     return {
       status: "success",
       message:
@@ -368,6 +428,62 @@ export async function signEmploymentContract(
   }
 
   revalidateContractPaths(contract.employeeId, contractId);
+
+  const refreshed = await prisma.employmentContract.findUnique({
+    where: { id: contractId },
+    select: {
+      employeeSignedAt: true,
+      orgSignedAt: true,
+    },
+  });
+  const employeePayload = {
+    employeeNumber: contract.employee.employeeNumber,
+    firstName: contract.employee.firstName,
+    lastName: contract.employee.lastName,
+    userId: contract.employee.user?.id ?? null,
+  };
+  const actorUserId = session.user.id;
+
+  const workflowSetting = await prisma.domainSetting.findFirst({
+    where: {
+      organizationId: contract.employee.organizationId,
+      settingCode: CONTRACT_WORKFLOW_SETTING_CODE,
+    },
+    select: { value: true },
+  });
+  const workflow = parseContractWorkflowSettings(workflowSetting?.value);
+
+  if (
+    refreshed &&
+    bothSignaturesComplete({
+      employeeSignedAt: refreshed.employeeSignedAt,
+      orgSignedAt: refreshed.orgSignedAt,
+      requireDualSignature: workflow.requireDualSignature,
+    })
+  ) {
+    await notifyContractReadyToActivate({
+      organizationId: contract.employee.organizationId,
+      contractId,
+      employeeId: contract.employeeId,
+      employee: employeePayload,
+      actorUserId,
+    });
+  } else if (refreshed) {
+    const missingParty = !refreshed.employeeSignedAt
+      ? "employee"
+      : !refreshed.orgSignedAt
+        ? "org"
+        : "both";
+    await notifyContractSignatureNeeded({
+      organizationId: contract.employee.organizationId,
+      contractId,
+      employeeId: contract.employeeId,
+      employee: employeePayload,
+      missingParty,
+      actorUserId,
+    });
+  }
+
   return { status: "success", message: "Signature recorded." };
 }
 
@@ -444,6 +560,17 @@ export async function activateEmploymentContract(
       }
     }
 
+    revalidateContractPaths(contract.employeeId, contractId);
+    // Payroll roster / readiness / payslip covered by revalidateContractPaths
+
+    if (result.historical) {
+      return {
+        status: "success",
+        message:
+          "Historical contract recorded as expired. It did not become the current contract or create leave balances.",
+      };
+    }
+
     let payrollMessage = "";
     try {
       const { syncPayrollReadinessAfterContractActivate } = await import(
@@ -469,9 +596,18 @@ export async function activateEmploymentContract(
       );
     }
 
-    revalidateContractPaths(contract.employeeId, contractId);
-    revalidatePath(`/people/employees/${contract.employeeId}`);
-    revalidatePath(`/payroll/employees/${contract.employeeId}`);
+    await notifyContractActivated({
+      contractId,
+      employeeId: contract.employeeId,
+      employee: {
+        employeeNumber: contract.employee.employeeNumber,
+        firstName: contract.employee.firstName,
+        lastName: contract.employee.lastName,
+        userId: contract.employee.user?.id ?? null,
+      },
+      actorUserId: actor.actor.userId,
+    });
+
     return {
       status: "success",
       message: `Contract activated.${payrollMessage}`,
@@ -511,6 +647,8 @@ export async function uploadEmploymentContractDocument(
         select: {
           organizationId: true,
           employeeNumber: true,
+          firstName: true,
+          lastName: true,
           fileFrozenAt: true,
         },
       },
@@ -531,7 +669,8 @@ export async function uploadEmploymentContractDocument(
   const previousStorageKey = contract.documentStorageKey;
   const previousStoredFileId = contract.storedFileId;
   const metadata = await getAuditRequestMetadata(formData);
-  const storageKey = `employee-file/${contract.employeeId}/contracts/${contractId}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}`;
+  const employeeFolder = employeeStorageFolderLabel(contract.employee);
+  const storageKey = `employee-file/${employeeFolder}/contracts/${contractId}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}`;
 
   try {
     const stored = await storeUploadedFile({

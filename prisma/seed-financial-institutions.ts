@@ -5,7 +5,6 @@ import {
   TT_FINANCIAL_INSTITUTIONS,
   type TtFinancialInstitutionCategoryId,
 } from "../src/modules/payroll/lib/tt-financial-institutions";
-import { accountNumberLastFour } from "../src/modules/payroll/lib/employee-bank-account-adapter";
 import { PAYROLL_BANKING_FEATURE_DEFAULTS } from "../src/modules/payroll/lib/payroll-banking-flags";
 import { ConfigurationStatus } from "../generated/prisma/client";
 
@@ -53,7 +52,9 @@ function stableInstitutionId(catalogKey: string): string {
  * Seed TT financial institutions from the curated catalog.
  *
  * Commercial banks (8): selectable, payroll deposits on.
- * ACH routing / participant codes left NULL — REQUIRES_CONFIRMATION.
+ * Known ABA / routing codes from the TT bank participant list are written to
+ * `routingCode`. Institutions without a catalog code keep routing null (or
+ * preserve any operator-set value on re-seed).
  * Other catalog entries: selectable for employees, supportsAchCredits=false.
  */
 export async function seedFinancialInstitutions(
@@ -62,6 +63,7 @@ export async function seedFinancialInstitutions(
   for (const entry of TT_FINANCIAL_INSTITUTIONS) {
     const isCommercial = COMMERCIAL_BANK_CATALOG_KEYS.has(entry.id);
     const id = stableInstitutionId(entry.id);
+    const routingCode = entry.routingCode?.trim() || null;
 
     await prisma.financialInstitution.upsert({
       where: { catalogKey: entry.id },
@@ -72,11 +74,8 @@ export async function seedFinancialInstitutions(
         institutionType: mapCategoryToType(entry.category),
         countryCode: "TT",
         currencyCode: "TTD",
-        // Do not invent ACH codes — leave null (REQUIRES_CONFIRMATION).
-        achParticipantCode: null,
-        routingCode: null,
-        supportsAchCredits: false,
-        supportsAchDebits: false,
+        // Apply catalog ABA when known; otherwise leave operator-confirmed codes.
+        ...(routingCode ? { routingCode } : {}),
         supportsPayrollDeposits: isCommercial || entry.category === "CREDIT_UNIONS",
         isSelectableForEmployees: true,
         isActive: true,
@@ -91,9 +90,8 @@ export async function seedFinancialInstitutions(
         institutionType: mapCategoryToType(entry.category),
         countryCode: "TT",
         currencyCode: "TTD",
-        // REQUIRES_CONFIRMATION — do not invent official ACH routing codes.
         achParticipantCode: null,
-        routingCode: null,
+        routingCode,
         supportsAchCredits: false,
         supportsAchDebits: false,
         supportsPayrollDeposits: isCommercial || entry.category === "CREDIT_UNIONS",
@@ -131,13 +129,16 @@ export async function seedPayrollBankingFeatureControls(
   }
 }
 
-/** Default MANUAL_REGISTER / generic CSV profiles (placeholder — no official bank layouts). */
+/** Default MANUAL_REGISTER / generic CSV / First Citizens profiles. */
 export async function seedBankExportProfiles(
   prisma: PrismaClient,
   organizationId: string,
 ): Promise<void> {
   const { DEFAULT_MANUAL_REGISTER_CONFIGURATION } = await import(
     "../src/modules/payroll/lib/bank-export-adapter"
+  );
+  const { DEFAULT_FIRST_CITIZENS_CONFIGURATION } = await import(
+    "../src/modules/payroll/lib/first-citizens-export"
   );
 
   await prisma.bankExportProfile.upsert({
@@ -210,118 +211,74 @@ export async function seedBankExportProfiles(
       },
     },
   });
-}
 
-/**
- * One-time copy of legacy PayrollBankAccount rows into EmployeeBankAccount
- * + EmployeePayrollAllocation when the employee has no employee bank rows yet.
- */
-export async function migratePayrollBankAccountsToEmployeeBankAccounts(
-  prisma: PrismaClient,
-): Promise<number> {
-  const institutions = await prisma.financialInstitution.findMany({
-    select: {
-      id: true,
-      catalogKey: true,
-      legalName: true,
-      displayName: true,
-      shortName: true,
-    },
-  });
-
-  const byName = new Map<string, string>();
-  for (const institution of institutions) {
-    byName.set(institution.legalName.toLowerCase(), institution.id);
-    byName.set(institution.displayName.toLowerCase(), institution.id);
-    byName.set(institution.shortName.toLowerCase(), institution.id);
-  }
-
-  const legacyRows = await prisma.payrollBankAccount.findMany({
-    include: {
-      payrollProfile: {
-        select: {
-          employeeId: true,
-          employee: {
-            select: {
-              organizationId: true,
-            },
-          },
-        },
+  await prisma.bankExportProfile.upsert({
+    where: {
+      organizationId_code: {
+        organizationId,
+        code: "FCB_MANUAL_WORKSHEET",
       },
     },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    update: {
+      name: "First Citizens manual-entry worksheet",
+      description:
+        "Control document matching First Citizens Business Online template columns. NOT a bank import file — use for manual entry or checking.",
+      adapterKind: "FIRST_CITIZENS_MANUAL_WORKSHEET",
+      isDefault: false,
+      isPlaceholder: false,
+      isActive: true,
+      configurationJson: DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+    },
+    create: {
+      organizationId,
+      code: "FCB_MANUAL_WORKSHEET",
+      name: "First Citizens manual-entry worksheet",
+      description:
+        "Control document matching First Citizens Business Online template columns. NOT a bank import file — use for manual entry or checking.",
+      adapterKind: "FIRST_CITIZENS_MANUAL_WORKSHEET",
+      isDefault: false,
+      isPlaceholder: false,
+      isActive: true,
+      configurationJson: DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+    },
   });
 
-  const byEmployee = new Map<string, typeof legacyRows>();
-  for (const row of legacyRows) {
-    const employeeId = row.payrollProfile.employeeId;
-    const list = byEmployee.get(employeeId) ?? [];
-    list.push(row);
-    byEmployee.set(employeeId, list);
-  }
-
-  let migrated = 0;
-
-  for (const [employeeId, accounts] of byEmployee) {
-    const existing = await prisma.employeeBankAccount.count({
-      where: { employeeId, isActive: true },
-    });
-    if (existing > 0) {
-      continue;
-    }
-
-    const organizationId = accounts[0]!.payrollProfile.employee.organizationId;
-
-    await prisma.$transaction(async (tx) => {
-      for (const [index, account] of accounts.entries()) {
-        const matchedId =
-          byName.get(account.bankName.trim().toLowerCase()) ?? null;
-
-        const created = await tx.employeeBankAccount.create({
-          data: {
-            organizationId,
-            employeeId,
-            financialInstitutionId: matchedId,
-            bankName: account.bankName,
-            branchName: account.branchName,
-            accountHolderName: account.accountName,
-            accountNumber: account.accountNumber,
-            accountNumberLastFour: accountNumberLastFour(account.accountNumber),
-            isPrimary: account.isPrimary,
-            isPayrollEnabled: true,
-            sortOrder: account.sortOrder ?? index,
-          },
-        });
-
-        const allocationType =
-          accounts.length === 1
-            ? "FULL_BALANCE"
-            : account.isPrimary
-              ? "REMAINDER"
-              : "FIXED_AMOUNT";
-
-        await tx.employeePayrollAllocation.create({
-          data: {
-            organizationId,
-            employeeId,
-            employeeBankAccountId: created.id,
-            allocationType,
-            fixedAmount:
-              allocationType === "FIXED_AMOUNT" && account.amount != null
-                ? account.amount
-                : null,
-            receivesRemainder:
-              allocationType === "REMAINDER" ||
-              allocationType === "FULL_BALANCE",
-            priority: index,
-            isActive: true,
-          },
-        });
-
-        migrated += 1;
-      }
-    });
-  }
-
-  return migrated;
+  await prisma.bankExportProfile.upsert({
+    where: {
+      organizationId_code: {
+        organizationId,
+        code: "FCB_IMPORT",
+      },
+    },
+    update: {
+      name: "First Citizens import file (disabled)",
+      description:
+        "Disabled until First Citizens confirms Default Transactions / NACHA layout. Do not label downloads as bank-compatible.",
+      adapterKind: "FIRST_CITIZENS_IMPORT",
+      isDefault: false,
+      isPlaceholder: true,
+      isActive: true,
+      configurationJson: {
+        ...DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+        exportFormat: "IMPORT_DISABLED",
+        importFileDisabled: true,
+      },
+    },
+    create: {
+      organizationId,
+      code: "FCB_IMPORT",
+      name: "First Citizens import file (disabled)",
+      description:
+        "Disabled until First Citizens confirms Default Transactions / NACHA layout. Do not label downloads as bank-compatible.",
+      adapterKind: "FIRST_CITIZENS_IMPORT",
+      isDefault: false,
+      isPlaceholder: true,
+      isActive: true,
+      configurationJson: {
+        ...DEFAULT_FIRST_CITIZENS_CONFIGURATION,
+        exportFormat: "IMPORT_DISABLED",
+        importFileDisabled: true,
+      },
+    },
+  });
 }

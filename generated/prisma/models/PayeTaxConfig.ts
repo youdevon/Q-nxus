@@ -27,12 +27,14 @@ export type AggregatePayeTaxConfig = {
 }
 
 export type PayeTaxConfigAvgAggregateOutputType = {
+  taxYear: number | null
   personalAllowanceAnnual: runtime.Decimal | null
   nisDeductiblePortion: runtime.Decimal | null
   approvedDeductionCapAnnual: runtime.Decimal | null
 }
 
 export type PayeTaxConfigSumAggregateOutputType = {
+  taxYear: number | null
   personalAllowanceAnnual: runtime.Decimal | null
   nisDeductiblePortion: runtime.Decimal | null
   approvedDeductionCapAnnual: runtime.Decimal | null
@@ -41,12 +43,18 @@ export type PayeTaxConfigSumAggregateOutputType = {
 export type PayeTaxConfigMinAggregateOutputType = {
   id: string | null
   organizationId: string | null
+  countryCode: string | null
+  taxYear: number | null
+  currencyCode: string | null
   personalAllowanceAnnual: runtime.Decimal | null
   nisDeductiblePortion: runtime.Decimal | null
   approvedDeductionCapAnnual: runtime.Decimal | null
   effectiveFrom: Date | null
   effectiveTo: Date | null
   versionLabel: string | null
+  sourceReference: string | null
+  approvedByUserId: string | null
+  approvedAt: Date | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,12 +63,18 @@ export type PayeTaxConfigMinAggregateOutputType = {
 export type PayeTaxConfigMaxAggregateOutputType = {
   id: string | null
   organizationId: string | null
+  countryCode: string | null
+  taxYear: number | null
+  currencyCode: string | null
   personalAllowanceAnnual: runtime.Decimal | null
   nisDeductiblePortion: runtime.Decimal | null
   approvedDeductionCapAnnual: runtime.Decimal | null
   effectiveFrom: Date | null
   effectiveTo: Date | null
   versionLabel: string | null
+  sourceReference: string | null
+  approvedByUserId: string | null
+  approvedAt: Date | null
   isActive: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -69,12 +83,18 @@ export type PayeTaxConfigMaxAggregateOutputType = {
 export type PayeTaxConfigCountAggregateOutputType = {
   id: number
   organizationId: number
+  countryCode: number
+  taxYear: number
+  currencyCode: number
   personalAllowanceAnnual: number
   nisDeductiblePortion: number
   approvedDeductionCapAnnual: number
   effectiveFrom: number
   effectiveTo: number
   versionLabel: number
+  sourceReference: number
+  approvedByUserId: number
+  approvedAt: number
   isActive: number
   createdAt: number
   updatedAt: number
@@ -83,12 +103,14 @@ export type PayeTaxConfigCountAggregateOutputType = {
 
 
 export type PayeTaxConfigAvgAggregateInputType = {
+  taxYear?: true
   personalAllowanceAnnual?: true
   nisDeductiblePortion?: true
   approvedDeductionCapAnnual?: true
 }
 
 export type PayeTaxConfigSumAggregateInputType = {
+  taxYear?: true
   personalAllowanceAnnual?: true
   nisDeductiblePortion?: true
   approvedDeductionCapAnnual?: true
@@ -97,12 +119,18 @@ export type PayeTaxConfigSumAggregateInputType = {
 export type PayeTaxConfigMinAggregateInputType = {
   id?: true
   organizationId?: true
+  countryCode?: true
+  taxYear?: true
+  currencyCode?: true
   personalAllowanceAnnual?: true
   nisDeductiblePortion?: true
   approvedDeductionCapAnnual?: true
   effectiveFrom?: true
   effectiveTo?: true
   versionLabel?: true
+  sourceReference?: true
+  approvedByUserId?: true
+  approvedAt?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -111,12 +139,18 @@ export type PayeTaxConfigMinAggregateInputType = {
 export type PayeTaxConfigMaxAggregateInputType = {
   id?: true
   organizationId?: true
+  countryCode?: true
+  taxYear?: true
+  currencyCode?: true
   personalAllowanceAnnual?: true
   nisDeductiblePortion?: true
   approvedDeductionCapAnnual?: true
   effectiveFrom?: true
   effectiveTo?: true
   versionLabel?: true
+  sourceReference?: true
+  approvedByUserId?: true
+  approvedAt?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -125,12 +159,18 @@ export type PayeTaxConfigMaxAggregateInputType = {
 export type PayeTaxConfigCountAggregateInputType = {
   id?: true
   organizationId?: true
+  countryCode?: true
+  taxYear?: true
+  currencyCode?: true
   personalAllowanceAnnual?: true
   nisDeductiblePortion?: true
   approvedDeductionCapAnnual?: true
   effectiveFrom?: true
   effectiveTo?: true
   versionLabel?: true
+  sourceReference?: true
+  approvedByUserId?: true
+  approvedAt?: true
   isActive?: true
   createdAt?: true
   updatedAt?: true
@@ -226,12 +266,18 @@ export type PayeTaxConfigGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 export type PayeTaxConfigGroupByOutputType = {
   id: string
   organizationId: string
+  countryCode: string
+  taxYear: number | null
+  currencyCode: string
   personalAllowanceAnnual: runtime.Decimal
   nisDeductiblePortion: runtime.Decimal
   approvedDeductionCapAnnual: runtime.Decimal
   effectiveFrom: Date
   effectiveTo: Date | null
   versionLabel: string | null
+  sourceReference: string | null
+  approvedByUserId: string | null
+  approvedAt: Date | null
   isActive: boolean
   createdAt: Date
   updatedAt: Date
@@ -263,12 +309,18 @@ export type PayeTaxConfigWhereInput = {
   NOT?: Prisma.PayeTaxConfigWhereInput | Prisma.PayeTaxConfigWhereInput[]
   id?: Prisma.StringFilter<"PayeTaxConfig"> | string
   organizationId?: Prisma.StringFilter<"PayeTaxConfig"> | string
+  countryCode?: Prisma.StringFilter<"PayeTaxConfig"> | string
+  taxYear?: Prisma.IntNullableFilter<"PayeTaxConfig"> | number | null
+  currencyCode?: Prisma.StringFilter<"PayeTaxConfig"> | string
   personalAllowanceAnnual?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableFilter<"PayeTaxConfig"> | Date | string | null
   versionLabel?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  sourceReference?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  approvedByUserId?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"PayeTaxConfig"> | Date | string | null
   isActive?: Prisma.BoolFilter<"PayeTaxConfig"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
@@ -279,12 +331,18 @@ export type PayeTaxConfigWhereInput = {
 export type PayeTaxConfigOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
+  taxYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  currencyCode?: Prisma.SortOrder
   personalAllowanceAnnual?: Prisma.SortOrder
   nisDeductiblePortion?: Prisma.SortOrder
   approvedDeductionCapAnnual?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   versionLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -299,12 +357,18 @@ export type PayeTaxConfigWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PayeTaxConfigWhereInput[]
   NOT?: Prisma.PayeTaxConfigWhereInput | Prisma.PayeTaxConfigWhereInput[]
   organizationId?: Prisma.StringFilter<"PayeTaxConfig"> | string
+  countryCode?: Prisma.StringFilter<"PayeTaxConfig"> | string
+  taxYear?: Prisma.IntNullableFilter<"PayeTaxConfig"> | number | null
+  currencyCode?: Prisma.StringFilter<"PayeTaxConfig"> | string
   personalAllowanceAnnual?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableFilter<"PayeTaxConfig"> | Date | string | null
   versionLabel?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  sourceReference?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  approvedByUserId?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"PayeTaxConfig"> | Date | string | null
   isActive?: Prisma.BoolFilter<"PayeTaxConfig"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
@@ -315,12 +379,18 @@ export type PayeTaxConfigWhereUniqueInput = Prisma.AtLeast<{
 export type PayeTaxConfigOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
+  taxYear?: Prisma.SortOrderInput | Prisma.SortOrder
+  currencyCode?: Prisma.SortOrder
   personalAllowanceAnnual?: Prisma.SortOrder
   nisDeductiblePortion?: Prisma.SortOrder
   approvedDeductionCapAnnual?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   versionLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  sourceReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -337,12 +407,18 @@ export type PayeTaxConfigScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PayeTaxConfigScalarWhereWithAggregatesInput | Prisma.PayeTaxConfigScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"PayeTaxConfig"> | string
   organizationId?: Prisma.StringWithAggregatesFilter<"PayeTaxConfig"> | string
+  countryCode?: Prisma.StringWithAggregatesFilter<"PayeTaxConfig"> | string
+  taxYear?: Prisma.IntNullableWithAggregatesFilter<"PayeTaxConfig"> | number | null
+  currencyCode?: Prisma.StringWithAggregatesFilter<"PayeTaxConfig"> | string
   personalAllowanceAnnual?: Prisma.DecimalWithAggregatesFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalWithAggregatesFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalWithAggregatesFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeWithAggregatesFilter<"PayeTaxConfig"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableWithAggregatesFilter<"PayeTaxConfig"> | Date | string | null
   versionLabel?: Prisma.StringNullableWithAggregatesFilter<"PayeTaxConfig"> | string | null
+  sourceReference?: Prisma.StringNullableWithAggregatesFilter<"PayeTaxConfig"> | string | null
+  approvedByUserId?: Prisma.StringNullableWithAggregatesFilter<"PayeTaxConfig"> | string | null
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PayeTaxConfig"> | Date | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"PayeTaxConfig"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PayeTaxConfig"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PayeTaxConfig"> | Date | string
@@ -350,12 +426,18 @@ export type PayeTaxConfigScalarWhereWithAggregatesInput = {
 
 export type PayeTaxConfigCreateInput = {
   id?: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -366,12 +448,18 @@ export type PayeTaxConfigCreateInput = {
 export type PayeTaxConfigUncheckedCreateInput = {
   id?: string
   organizationId: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -380,12 +468,18 @@ export type PayeTaxConfigUncheckedCreateInput = {
 
 export type PayeTaxConfigUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -396,12 +490,18 @@ export type PayeTaxConfigUpdateInput = {
 export type PayeTaxConfigUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -411,12 +511,18 @@ export type PayeTaxConfigUncheckedUpdateInput = {
 export type PayeTaxConfigCreateManyInput = {
   id?: string
   organizationId: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -424,12 +530,18 @@ export type PayeTaxConfigCreateManyInput = {
 
 export type PayeTaxConfigUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -438,12 +550,18 @@ export type PayeTaxConfigUpdateManyMutationInput = {
 export type PayeTaxConfigUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -467,18 +585,25 @@ export type PayeTaxConfigOrganizationIdEffectiveFromCompoundUniqueInput = {
 export type PayeTaxConfigCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
+  taxYear?: Prisma.SortOrder
+  currencyCode?: Prisma.SortOrder
   personalAllowanceAnnual?: Prisma.SortOrder
   nisDeductiblePortion?: Prisma.SortOrder
   approvedDeductionCapAnnual?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrder
   versionLabel?: Prisma.SortOrder
+  sourceReference?: Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PayeTaxConfigAvgOrderByAggregateInput = {
+  taxYear?: Prisma.SortOrder
   personalAllowanceAnnual?: Prisma.SortOrder
   nisDeductiblePortion?: Prisma.SortOrder
   approvedDeductionCapAnnual?: Prisma.SortOrder
@@ -487,12 +612,18 @@ export type PayeTaxConfigAvgOrderByAggregateInput = {
 export type PayeTaxConfigMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
+  taxYear?: Prisma.SortOrder
+  currencyCode?: Prisma.SortOrder
   personalAllowanceAnnual?: Prisma.SortOrder
   nisDeductiblePortion?: Prisma.SortOrder
   approvedDeductionCapAnnual?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrder
   versionLabel?: Prisma.SortOrder
+  sourceReference?: Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -501,18 +632,25 @@ export type PayeTaxConfigMaxOrderByAggregateInput = {
 export type PayeTaxConfigMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
+  countryCode?: Prisma.SortOrder
+  taxYear?: Prisma.SortOrder
+  currencyCode?: Prisma.SortOrder
   personalAllowanceAnnual?: Prisma.SortOrder
   nisDeductiblePortion?: Prisma.SortOrder
   approvedDeductionCapAnnual?: Prisma.SortOrder
   effectiveFrom?: Prisma.SortOrder
   effectiveTo?: Prisma.SortOrder
   versionLabel?: Prisma.SortOrder
+  sourceReference?: Prisma.SortOrder
+  approvedByUserId?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type PayeTaxConfigSumOrderByAggregateInput = {
+  taxYear?: Prisma.SortOrder
   personalAllowanceAnnual?: Prisma.SortOrder
   nisDeductiblePortion?: Prisma.SortOrder
   approvedDeductionCapAnnual?: Prisma.SortOrder
@@ -581,12 +719,18 @@ export type PayeTaxConfigUpdateOneRequiredWithoutBracketsNestedInput = {
 
 export type PayeTaxConfigCreateWithoutOrganizationInput = {
   id?: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -595,12 +739,18 @@ export type PayeTaxConfigCreateWithoutOrganizationInput = {
 
 export type PayeTaxConfigUncheckedCreateWithoutOrganizationInput = {
   id?: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -639,12 +789,18 @@ export type PayeTaxConfigScalarWhereInput = {
   NOT?: Prisma.PayeTaxConfigScalarWhereInput | Prisma.PayeTaxConfigScalarWhereInput[]
   id?: Prisma.StringFilter<"PayeTaxConfig"> | string
   organizationId?: Prisma.StringFilter<"PayeTaxConfig"> | string
+  countryCode?: Prisma.StringFilter<"PayeTaxConfig"> | string
+  taxYear?: Prisma.IntNullableFilter<"PayeTaxConfig"> | number | null
+  currencyCode?: Prisma.StringFilter<"PayeTaxConfig"> | string
   personalAllowanceAnnual?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFilter<"PayeTaxConfig"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
   effectiveTo?: Prisma.DateTimeNullableFilter<"PayeTaxConfig"> | Date | string | null
   versionLabel?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  sourceReference?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  approvedByUserId?: Prisma.StringNullableFilter<"PayeTaxConfig"> | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"PayeTaxConfig"> | Date | string | null
   isActive?: Prisma.BoolFilter<"PayeTaxConfig"> | boolean
   createdAt?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PayeTaxConfig"> | Date | string
@@ -652,12 +808,18 @@ export type PayeTaxConfigScalarWhereInput = {
 
 export type PayeTaxConfigCreateWithoutBracketsInput = {
   id?: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -667,12 +829,18 @@ export type PayeTaxConfigCreateWithoutBracketsInput = {
 export type PayeTaxConfigUncheckedCreateWithoutBracketsInput = {
   id?: string
   organizationId: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -696,12 +864,18 @@ export type PayeTaxConfigUpdateToOneWithWhereWithoutBracketsInput = {
 
 export type PayeTaxConfigUpdateWithoutBracketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -711,12 +885,18 @@ export type PayeTaxConfigUpdateWithoutBracketsInput = {
 export type PayeTaxConfigUncheckedUpdateWithoutBracketsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -724,12 +904,18 @@ export type PayeTaxConfigUncheckedUpdateWithoutBracketsInput = {
 
 export type PayeTaxConfigCreateManyOrganizationInput = {
   id?: string
+  countryCode?: string
+  taxYear?: number | null
+  currencyCode?: string
   personalAllowanceAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion: runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual: runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom: Date | string
   effectiveTo?: Date | string | null
   versionLabel?: string | null
+  sourceReference?: string | null
+  approvedByUserId?: string | null
+  approvedAt?: Date | string | null
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -737,12 +923,18 @@ export type PayeTaxConfigCreateManyOrganizationInput = {
 
 export type PayeTaxConfigUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -751,12 +943,18 @@ export type PayeTaxConfigUpdateWithoutOrganizationInput = {
 
 export type PayeTaxConfigUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -765,12 +963,18 @@ export type PayeTaxConfigUncheckedUpdateWithoutOrganizationInput = {
 
 export type PayeTaxConfigUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  taxYear?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
   personalAllowanceAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   nisDeductiblePortion?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   approvedDeductionCapAnnual?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   versionLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -810,12 +1014,18 @@ export type PayeTaxConfigCountOutputTypeCountBracketsArgs<ExtArgs extends runtim
 export type PayeTaxConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
+  countryCode?: boolean
+  taxYear?: boolean
+  currencyCode?: boolean
   personalAllowanceAnnual?: boolean
   nisDeductiblePortion?: boolean
   approvedDeductionCapAnnual?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   versionLabel?: boolean
+  sourceReference?: boolean
+  approvedByUserId?: boolean
+  approvedAt?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -827,12 +1037,18 @@ export type PayeTaxConfigSelect<ExtArgs extends runtime.Types.Extensions.Interna
 export type PayeTaxConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
+  countryCode?: boolean
+  taxYear?: boolean
+  currencyCode?: boolean
   personalAllowanceAnnual?: boolean
   nisDeductiblePortion?: boolean
   approvedDeductionCapAnnual?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   versionLabel?: boolean
+  sourceReference?: boolean
+  approvedByUserId?: boolean
+  approvedAt?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -842,12 +1058,18 @@ export type PayeTaxConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 export type PayeTaxConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
+  countryCode?: boolean
+  taxYear?: boolean
+  currencyCode?: boolean
   personalAllowanceAnnual?: boolean
   nisDeductiblePortion?: boolean
   approvedDeductionCapAnnual?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   versionLabel?: boolean
+  sourceReference?: boolean
+  approvedByUserId?: boolean
+  approvedAt?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -857,18 +1079,24 @@ export type PayeTaxConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 export type PayeTaxConfigSelectScalar = {
   id?: boolean
   organizationId?: boolean
+  countryCode?: boolean
+  taxYear?: boolean
+  currencyCode?: boolean
   personalAllowanceAnnual?: boolean
   nisDeductiblePortion?: boolean
   approvedDeductionCapAnnual?: boolean
   effectiveFrom?: boolean
   effectiveTo?: boolean
   versionLabel?: boolean
+  sourceReference?: boolean
+  approvedByUserId?: boolean
+  approvedAt?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PayeTaxConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "personalAllowanceAnnual" | "nisDeductiblePortion" | "approvedDeductionCapAnnual" | "effectiveFrom" | "effectiveTo" | "versionLabel" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["payeTaxConfig"]>
+export type PayeTaxConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "countryCode" | "taxYear" | "currencyCode" | "personalAllowanceAnnual" | "nisDeductiblePortion" | "approvedDeductionCapAnnual" | "effectiveFrom" | "effectiveTo" | "versionLabel" | "sourceReference" | "approvedByUserId" | "approvedAt" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["payeTaxConfig"]>
 export type PayeTaxConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   brackets?: boolean | Prisma.PayeTaxConfig$bracketsArgs<ExtArgs>
@@ -891,6 +1119,15 @@ export type $PayeTaxConfigPayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     organizationId: string
     /**
+     * ISO country for this schedule (default TT).
+     */
+    countryCode: string
+    /**
+     * Calendar tax year this schedule is intended for (defaults from effectiveFrom).
+     */
+    taxYear: number | null
+    currencyCode: string
+    /**
      * Resident personal allowance (annual), e.g. 90,000.
      */
     personalAllowanceAnnual: runtime.Decimal
@@ -905,6 +1142,12 @@ export type $PayeTaxConfigPayload<ExtArgs extends runtime.Types.Extensions.Inter
     effectiveFrom: Date
     effectiveTo: Date | null
     versionLabel: string | null
+    /**
+     * Official circular / gazette / advisor memo reference.
+     */
+    sourceReference: string | null
+    approvedByUserId: string | null
+    approvedAt: Date | null
     isActive: boolean
     createdAt: Date
     updatedAt: Date
@@ -1335,12 +1578,18 @@ export interface Prisma__PayeTaxConfigClient<T, Null = never, ExtArgs extends ru
 export interface PayeTaxConfigFieldRefs {
   readonly id: Prisma.FieldRef<"PayeTaxConfig", 'String'>
   readonly organizationId: Prisma.FieldRef<"PayeTaxConfig", 'String'>
+  readonly countryCode: Prisma.FieldRef<"PayeTaxConfig", 'String'>
+  readonly taxYear: Prisma.FieldRef<"PayeTaxConfig", 'Int'>
+  readonly currencyCode: Prisma.FieldRef<"PayeTaxConfig", 'String'>
   readonly personalAllowanceAnnual: Prisma.FieldRef<"PayeTaxConfig", 'Decimal'>
   readonly nisDeductiblePortion: Prisma.FieldRef<"PayeTaxConfig", 'Decimal'>
   readonly approvedDeductionCapAnnual: Prisma.FieldRef<"PayeTaxConfig", 'Decimal'>
   readonly effectiveFrom: Prisma.FieldRef<"PayeTaxConfig", 'DateTime'>
   readonly effectiveTo: Prisma.FieldRef<"PayeTaxConfig", 'DateTime'>
   readonly versionLabel: Prisma.FieldRef<"PayeTaxConfig", 'String'>
+  readonly sourceReference: Prisma.FieldRef<"PayeTaxConfig", 'String'>
+  readonly approvedByUserId: Prisma.FieldRef<"PayeTaxConfig", 'String'>
+  readonly approvedAt: Prisma.FieldRef<"PayeTaxConfig", 'DateTime'>
   readonly isActive: Prisma.FieldRef<"PayeTaxConfig", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"PayeTaxConfig", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PayeTaxConfig", 'DateTime'>

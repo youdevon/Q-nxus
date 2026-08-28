@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import {
   getOrgEmployeeFileCompleteness,
-  resolveStatutoryNumber,
   workforceCategoryBadgeLabel,
 } from "@/src/modules/hr/public";
 import { resolveBankAccountsForReadiness } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
@@ -13,7 +12,12 @@ import type {
 
 export type { PayrollReadinessData, PayrollReadinessRow };
 
-export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
+export async function getPayrollReadiness(options?: {
+  /** Soft file-completeness warnings. Default true for directory; skip for batch/calc. */
+  includeFileCompleteness?: boolean;
+}): Promise<PayrollReadinessData> {
+  const includeFileCompleteness = options?.includeFileCompleteness !== false;
+
   const employees = await prisma.employee.findMany({
     where: {
       isArchived: false,
@@ -43,9 +47,10 @@ export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
           id: true,
           bankName: true,
           branchName: true,
-          accountNumber: true,
+          // Presence check only — avoid loading encrypted full numbers.
           accountNumberLastFour: true,
           accountHolderName: true,
+          accountType: true,
           isPrimary: true,
           sortOrder: true,
           financialInstitutionId: true,
@@ -68,18 +73,8 @@ export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
         select: {
           payFrequency: true,
           paymentMethod: true,
-          nisNumber: true,
-          birNumber: true,
           exemptFromNis: true,
           exemptFromPaye: true,
-          bankAccounts: {
-            select: {
-              bankName: true,
-              accountNumber: true,
-              amount: true,
-              isPrimary: true,
-            },
-          },
         },
       },
       contracts: {
@@ -95,19 +90,21 @@ export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
     },
   });
 
-  const fileCompleteness = await getOrgEmployeeFileCompleteness({
-    mode: "summary",
-    employees: employees
-      .filter((employee) => employee.workforceCategory === "EMPLOYEE")
-      .map((employee) => ({
-        id: employee.id,
-        employeeNumber: employee.employeeNumber,
-        firstName: employee.firstName,
-        lastName: employee.lastName,
-        departmentId: employee.departmentId,
-        departmentName: employee.department?.name ?? null,
-      })),
-  });
+  const fileCompleteness = includeFileCompleteness
+    ? await getOrgEmployeeFileCompleteness({
+        mode: "summary",
+        employees: employees
+          .filter((employee) => employee.workforceCategory === "EMPLOYEE")
+          .map((employee) => ({
+            id: employee.id,
+            employeeNumber: employee.employeeNumber,
+            firstName: employee.firstName,
+            lastName: employee.lastName,
+            departmentId: employee.departmentId,
+            departmentName: employee.department?.name ?? null,
+          })),
+      })
+    : [];
 
   const completenessByEmployee = new Map(
     fileCompleteness.map((row) => [row.employeeId, row.completeness]),
@@ -122,9 +119,14 @@ export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
         id: account.id,
         bankName: account.bankName,
         branchName: account.branchName,
-        accountNumber: account.accountNumber,
+        accountNumber:
+          account.accountNumberLastFour &&
+          account.accountNumberLastFour.length > 0
+            ? `****${account.accountNumberLastFour}`
+            : "****",
         accountNumberLastFour: account.accountNumberLastFour,
         accountHolderName: account.accountHolderName,
+        accountType: account.accountType,
         isPrimary: account.isPrimary,
         sortOrder: account.sortOrder,
         financialInstitutionId: account.financialInstitutionId,
@@ -138,21 +140,13 @@ export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
         isActive: row.isActive,
         priority: row.priority,
       })),
-      legacyAccounts:
-        profile?.bankAccounts.map((account) => ({
-          bankName: account.bankName,
-          accountNumber: account.accountNumber,
-          amount:
-            account.amount != null ? Number(account.amount.toString()) : null,
-          isPrimary: account.isPrimary,
-        })) ?? [],
     });
 
     const readiness = evaluatePayrollReadiness({
       hasCurrentContract: contract != null,
       baseSalary: contract ? Number(contract.baseSalary.toString()) : null,
-      nisNumber: resolveStatutoryNumber(employee.nisNumber, profile?.nisNumber),
-      birNumber: resolveStatutoryNumber(employee.birNumber, profile?.birNumber),
+      nisNumber: employee.nisNumber?.trim() || null,
+      birNumber: employee.birNumber?.trim() || null,
       paymentMethod: profile?.paymentMethod ?? "BANK_TRANSFER",
       bankAccounts,
       exemptFromNis: profile?.exemptFromNis ?? false,
@@ -163,7 +157,7 @@ export async function getPayrollReadiness(): Promise<PayrollReadinessData> {
       ? readiness.blockingIssues
       : ["Payroll profile not set up.", ...readiness.blockingIssues];
 
-    const softWarnings: string[] = [];
+    const softWarnings: string[] = [...(readiness.softWarnings ?? [])];
     const file = completenessByEmployee.get(employee.id);
     if (file && !file.isComplete) {
       softWarnings.push(

@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CalendarDays, ClipboardList, Plus } from "lucide-react";
+import { AlertTriangle, CalendarDays, ClipboardList, Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { PageAlert } from "@/src/components/ui/page-alert";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { leaveStatusBadgeVariant } from "@/src/config/ui-colors";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
+import { getContractLeaveBalances } from "@/src/modules/hr/data/get-contract-leave-balances";
 import { getMyLeaveRequests } from "@/src/modules/hr/data/get-leave-requests";
+import { getVacationForfeitureWarningForEmployee } from "@/src/modules/hr/data/get-vacation-forfeiture-warning";
 import { requiresEmployeeFile } from "@/src/modules/hr/lib/workforce-category";
 import { formatDisplayDate } from "@/src/lib/format";
 
@@ -20,6 +23,10 @@ export const metadata: Metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+type SearchParams = Promise<{
+  focus?: string;
+}>;
 
 function label(value: string): string {
   return value
@@ -39,7 +46,11 @@ function formatQuantity(value: string): string {
   }).format(Number(value));
 }
 
-export default async function MyLeavePage() {
+export default async function MyLeavePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const capabilities = await getUserCapabilities();
 
   if (!capabilities?.can("leave.request")) {
@@ -51,13 +62,25 @@ export default async function MyLeavePage() {
     redirect("/me");
   }
 
-  const requests = await getMyLeaveRequests();
+  const employeeId = capabilities.employeeId;
+  if (!employeeId) {
+    redirect("/me");
+  }
+
+  const params = await searchParams;
+  const focusForfeiture = params.focus === "forfeiture";
+
+  const [requests, balances, forfeitureWarning] = await Promise.all([
+    getMyLeaveRequests(),
+    getContractLeaveBalances({ employeeId }),
+    getVacationForfeitureWarningForEmployee(employeeId),
+  ]);
 
   return (
     <PageShell size="lg">
       <MePageHeader
-        title="My leave requests"
-        description="Leave you have submitted for yourself."
+        title="My leave"
+        description="Your current-contract leave balances and requests."
         backHref="/me"
         backLabel="My profile"
         actions={
@@ -67,6 +90,95 @@ export default async function MyLeavePage() {
           </Button>
         }
       />
+
+      {forfeitureWarning ? (
+        <PageAlert
+          severity={forfeitureWarning.isUrgent ? "critical" : "warning"}
+          title={
+            focusForfeiture
+              ? "Vacation use-or-lose — opened from alert"
+              : "Mandatory vacation cannot roll over"
+          }
+        >
+          <p>{forfeitureWarning.message}</p>
+          <p className="mt-2">
+            <Link
+              href="/me/leave/new"
+              className="font-medium underline underline-offset-2 hover:text-foreground"
+            >
+              Request vacation leave
+            </Link>{" "}
+            so it finishes on or before {forfeitureWarning.contractEndDateIso}.
+          </p>
+        </PageAlert>
+      ) : null}
+
+      <section>
+        <div className="mb-4 flex items-center gap-2">
+          <CalendarDays className="size-4 text-muted-foreground" />
+          <SectionHeading>Current contract balances</SectionHeading>
+        </div>
+
+        {balances.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            No leave balances on your current employment contract yet.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px] text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-xs text-muted-foreground">
+                  <th className="px-3 py-3 font-medium">Leave type</th>
+                  <th className="px-3 py-3 text-right font-medium">
+                    Entitlement
+                  </th>
+                  <th className="px-3 py-3 text-right font-medium">Approved</th>
+                  <th className="px-3 py-3 text-right font-medium">Taken</th>
+                  <th className="px-3 py-3 text-right font-medium">Available</th>
+                </tr>
+              </thead>
+              <tbody>
+                {balances.map((balance) => {
+                  const highlightVac =
+                    focusForfeiture &&
+                    balance.leaveTypeCode === "VAC" &&
+                    Number(balance.availableBalance) > 0;
+
+                  return (
+                    <tr
+                      key={balance.id}
+                      className={
+                        highlightVac
+                          ? "border-b border-border bg-amber-500/10"
+                          : "border-b border-border last:border-b-0"
+                      }
+                    >
+                      <td className="px-3 py-3">
+                        <div className="flex items-center gap-2">
+                          <span>{balance.leaveTypeName}</span>
+                          <Badge variant="outline">{balance.leaveTypeCode}</Badge>
+                        </div>
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums">
+                        {formatQuantity(balance.entitlement)}
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums">
+                        {formatQuantity(balance.approved)}
+                      </td>
+                      <td className="px-3 py-3 text-right tabular-nums">
+                        {formatQuantity(balance.taken)}
+                      </td>
+                      <td className="px-3 py-3 text-right font-semibold tabular-nums">
+                        {formatQuantity(balance.availableBalance)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       <section>
         <div className="mb-4 flex items-center gap-2">

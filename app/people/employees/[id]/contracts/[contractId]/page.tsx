@@ -10,16 +10,20 @@ import { PageHeader } from "@/src/components/layout/page-header";
 import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
 import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { cn } from "@/lib/utils";
 import { formatDisplayDate, formatMoney } from "@/src/lib/format";
 import { ContractVersionHistoryTabs } from "@/src/modules/hr/components/contract-version-history-tabs";
 import { DeleteEmploymentContractButton } from "@/src/modules/hr/components/delete-employment-contract-button";
 import { EmploymentContractLifecyclePanel } from "@/src/modules/hr/components/employment-contract-lifecycle-panel";
 import { MarkContractCollectedButton } from "@/src/modules/hr/components/mark-contract-collected-button";
+import { ContractGratuityPanel } from "@/src/modules/hr/components/contract-gratuity-panel";
 import {
   calculateContractCompensation,
   getEmploymentContractProfile,
 } from "@/src/modules/hr/data/get-employment-contracts";
+import { getGratuitySettlementForContract } from "@/src/modules/payroll/data/get-gratuity-settlements";
 import { resolveEmployeeContractAccess } from "@/src/modules/hr/data/require-people-access";
+import { daysUntilExpiry } from "@/src/modules/hr/lib/correspondence-visibility";
 import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
 export const metadata: Metadata = {
@@ -35,13 +39,55 @@ function label(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function Detail({ labelText, value }: { labelText: string; value: string }) {
+function Detail({
+  labelText,
+  value,
+  valueClassName,
+}: {
+  labelText: string;
+  value: string;
+  valueClassName?: string;
+}) {
   return (
     <div>
       <p className="text-xs text-muted-foreground">{labelText}</p>
-      <p className="mt-1 whitespace-pre-wrap text-sm font-medium">{value}</p>
+      <p
+        className={cn(
+          "mt-1 whitespace-pre-wrap text-sm font-medium",
+          valueClassName,
+        )}
+      >
+        {value}
+      </p>
     </div>
   );
+}
+
+const CONTRACT_EXPIRY_WARNING_DAYS = 90;
+const CONTRACT_EXPIRY_CRITICAL_DAYS = 30;
+const CONTINUATION_CHANGE_TYPES = new Set(["RENEWAL", "EXTENSION"]);
+
+function formatDaysRemainingBeforeEnd(days: number): string {
+  if (days < 0) {
+    const elapsed = Math.abs(days);
+    return elapsed === 1
+      ? "Expired 1 day ago"
+      : `Expired ${elapsed} days ago`;
+  }
+
+  if (days === 0) {
+    return "Ends today";
+  }
+
+  return days === 1 ? "1 day remaining" : `${days} days remaining`;
+}
+
+function contractExpiryCountdownClass(days: number): string {
+  if (days <= CONTRACT_EXPIRY_CRITICAL_DAYS) {
+    return "text-red-600 dark:text-red-400";
+  }
+
+  return "text-amber-600 dark:text-amber-400";
 }
 
 function formatCollectedDisplay(value: string | null): string {
@@ -69,10 +115,27 @@ export default async function EmploymentContractPage({
     notFound();
   }
 
-  const compensation = calculateContractCompensation(contract);
+  const compensation = await calculateContractCompensation(contract);
+  const gratuitySettlement = contract.gratuityEligible
+    ? await getGratuitySettlementForContract(contractId)
+    : null;
+  const canManageGratuity = access.capabilities.can("payroll.manage");
   const historyHref = `/people/employees/${id}/contracts`;
   const isCollected = Boolean(contract.collectedAt);
   const isEmployeeSelf = currentUser?.employeeId === id;
+  const daysRemaining = contract.endDate
+    ? daysUntilExpiry(new Date(`${contract.endDate}T00:00:00.000Z`))
+    : null;
+  const hasContinuationContract = contract.amendments.some(
+    (successor) =>
+      CONTINUATION_CHANGE_TYPES.has(successor.changeType) &&
+      successor.status !== "CANCELLED",
+  );
+  const showExpiryCountdown =
+    !hasContinuationContract &&
+    daysRemaining !== null &&
+    daysRemaining <= CONTRACT_EXPIRY_WARNING_DAYS &&
+    (daysRemaining >= 0 || contract.isCurrent);
 
   const headerDescription = access.isSelfService
     ? `Your employment contract · ${contract.employee.employeeNumber}`
@@ -242,6 +305,13 @@ export default async function EmploymentContractPage({
                 : "No end date"
             }
           />
+          {showExpiryCountdown && daysRemaining !== null ? (
+            <Detail
+              labelText="Time remaining"
+              value={formatDaysRemainingBeforeEnd(daysRemaining)}
+              valueClassName={contractExpiryCountdownClass(daysRemaining)}
+            />
+          ) : null}
           <Detail
             labelText="Signed date"
             value={contract.signedDate ?? "Not recorded"}
@@ -323,12 +393,17 @@ export default async function EmploymentContractPage({
           />
 
           <Detail
-            labelText="Gratuity-eligible annual earnings"
+            labelText="Gratuity-eligible earnings (term)"
             value={formatMoney(compensation.gratuityEligibleAnnualEarnings, {
               currency: contract.currency,
             })}
           />
         </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          TT gratuity base: monthly eligible (base salary + allowances marked
+          included in gratuity) × inclusive contract months. Without an end
+          date, shown as a 12-month annualization of that monthly base.
+        </p>
       </section>
 
       <section>
@@ -408,78 +483,23 @@ export default async function EmploymentContractPage({
           Gratuity
         </h2>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <Detail
-            labelText="Eligible"
-            value={contract.gratuityEligible ? "Yes" : "No"}
-          />
-          <Detail
-            labelText="Gratuity rate"
-            value={
-              contract.gratuityRate
-                ? `${contract.gratuityRate}%`
-                : "Not applicable"
-            }
-          />
-          <Detail
-            labelText="Tax rate"
-            value={
-              contract.gratuityTaxRate
-                ? `${contract.gratuityTaxRate}%`
-                : "Not applicable"
-            }
-          />
-          <Detail
-            labelText="Contract months"
-            value={compensation.contractMonths ?? "Needs end date"}
-          />
-          <Detail
-            labelText="Eligible earnings (period)"
-            value={
-              compensation.estimatedGrossEarnings
-                ? formatMoney(compensation.estimatedGrossEarnings, {
-                    currency: contract.currency,
-                  })
-                : "Not applicable"
-            }
-          />
-          <Detail
-            labelText="Estimated gross gratuity"
-            value={
-              compensation.estimatedGrossGratuity
-                ? formatMoney(compensation.estimatedGrossGratuity, {
-                    currency: contract.currency,
-                  })
-                : "Not applicable"
-            }
-          />
-          <Detail
-            labelText="Estimated tax"
-            value={
-              compensation.estimatedTax
-                ? formatMoney(compensation.estimatedTax, {
-                    currency: contract.currency,
-                  })
-                : "Not applicable"
-            }
-          />
-          <Detail
-            labelText="Estimated net gratuity"
-            value={
-              compensation.estimatedNetGratuity
-                ? formatMoney(compensation.estimatedNetGratuity, {
-                    currency: contract.currency,
-                  })
-                : "Not applicable"
-            }
-          />
-          <Detail
-            labelText="Annual eligible earnings base"
-            value={formatMoney(compensation.gratuityEligibleAnnualEarnings, {
-              currency: contract.currency,
-            })}
-          />
-        </div>
+        <ContractGratuityPanel
+          settlement={gratuitySettlement}
+          canManage={canManageGratuity}
+          employeeId={id}
+          contractId={contractId}
+          fallback={{
+            eligible: contract.gratuityEligible,
+            rate: contract.gratuityRate,
+            taxRate: contract.gratuityTaxRate,
+            contractMonths: compensation.contractMonths,
+            estimatedGrossEarnings: compensation.estimatedGrossEarnings,
+            estimatedGrossGratuity: compensation.estimatedGrossGratuity,
+            estimatedTax: compensation.estimatedTax,
+            estimatedNetGratuity: compensation.estimatedNetGratuity,
+            currency: contract.currency,
+          }}
+        />
       </section>
     </PageShell>
   );

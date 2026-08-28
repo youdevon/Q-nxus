@@ -1,12 +1,18 @@
 import { archiveExpiredCorrespondenceRetention } from "@/src/modules/hr/services/archive-correspondence-retention";
+import { notifyAppraisalDueReminders } from "@/src/modules/hr/services/notify-appraisal-events";
 import { notifyContractExpiryReminders } from "@/src/modules/hr/services/notify-contract-expiry";
 import { notifyCorrespondenceAcknowledgementReminders } from "@/src/modules/hr/services/notify-correspondence-acknowledgement";
+import { notifyLifecycleTaskReminders } from "@/src/modules/hr/services/notify-lifecycle-task-reminders";
+import { notifyProbationEndingReminders } from "@/src/modules/hr/services/notify-probation-ending";
 import { notifyVacationForfeitureReminders } from "@/src/modules/hr/services/notify-vacation-forfeiture";
 import { archiveExpiredStoredFileRetention } from "@/src/modules/hr/services/stored-file-retention";
 import {
   processEmailQueue,
   recoverStuckEmailDeliveries,
 } from "@/src/modules/notifications/services/process-email-queue";
+import { purgeArchivedPriorEmploymentYtd } from "@/src/modules/payroll/services/purge-archived-prior-employment-ytd";
+import { notifyGratuityEndingReminders } from "@/src/modules/payroll/services/notify-gratuity-ending";
+import { postMonthlyGratuityAccruals } from "@/src/modules/payroll/services/gratuity-accruals";
 
 export type ScheduledJobResult = {
   job: string;
@@ -38,8 +44,28 @@ const jobs: ScheduledJob[] = [
     run: () => notifyContractExpiryReminders(),
   },
   {
+    name: "gratuity-ending-reminders",
+    run: () => notifyGratuityEndingReminders(),
+  },
+  {
+    name: "gratuity-monthly-accruals",
+    run: () => postMonthlyGratuityAccruals(),
+  },
+  {
+    name: "probation-ending-reminders",
+    run: () => notifyProbationEndingReminders(),
+  },
+  {
+    name: "appraisal-due-reminders",
+    run: () => notifyAppraisalDueReminders(),
+  },
+  {
     name: "vacation-forfeiture-reminders",
     run: () => notifyVacationForfeitureReminders(),
+  },
+  {
+    name: "lifecycle-task-reminders",
+    run: () => notifyLifecycleTaskReminders(),
   },
   {
     name: "correspondence-retention-archive",
@@ -48,6 +74,10 @@ const jobs: ScheduledJob[] = [
   {
     name: "stored-file-retention-archive",
     run: () => archiveExpiredStoredFileRetention(),
+  },
+  {
+    name: "prior-employment-archive-purge",
+    run: () => purgeArchivedPriorEmploymentYtd(),
   },
 ];
 

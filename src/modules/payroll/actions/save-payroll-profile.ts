@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
+import type { NisContributionCategory } from "@/generated/prisma/enums";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
@@ -16,6 +17,15 @@ import {
 } from "@/src/modules/payroll/lib/payroll-banking-flags";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
 import { replaceEmployeeBankSetup } from "@/src/modules/payroll/services/replace-employee-bank-setup";
+import { upsertEmployeeTaxProfileTd1Sync } from "@/src/modules/payroll/services/upsert-employee-tax-profile-td1-sync";
+import {
+  normalizeAchAccountType,
+  validateAchEmployeeInstructionFields,
+} from "@/src/modules/payroll/lib/ach-employee-fields";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type PayrollProfileFormState = {
   status: "idle" | "error";
@@ -33,8 +43,13 @@ const PAY_FREQUENCIES = [
 
 const PAYMENT_METHODS = ["BANK_TRANSFER", "CHEQUE", "CASH"] as const;
 
+const NIS_CATEGORY_OVERRIDES = ["NORMAL", "CLASS_Z", "EXEMPT"] as const satisfies ReadonlyArray<
+  NisContributionCategory
+>;
+
 type PayFrequency = (typeof PAY_FREQUENCIES)[number];
 type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+type NisCategoryOverride = (typeof NIS_CATEGORY_OVERRIDES)[number];
 
 type BankAccountInput = {
   financialInstitutionId: string | null;
@@ -42,6 +57,9 @@ type BankAccountInput = {
   branchName: string | null;
   accountNumber: string;
   accountName: string | null;
+  accountType: "SAVINGS" | "CHEQUING";
+  /** ACH ABA / routing when known (optional override of institution codes). */
+  routingNumber: string | null;
   amount: number | null;
   percentage: number | null;
   isPrimary: boolean;
@@ -55,6 +73,14 @@ function textValue(formData: FormData, key: string): string {
 function nullableText(formData: FormData, key: string): string | null {
   const value = textValue(formData, key);
   return value.length > 0 ? value : null;
+}
+
+function parseOptionalDate(value: string | null): Date | null {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return null;
+  }
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 function parseBankAccounts(raw: string): BankAccountInput[] | null {
@@ -91,6 +117,16 @@ function parseBankAccounts(raw: string): BankAccountInput[] | null {
     const accountName =
       typeof record.accountName === "string" && record.accountName.trim()
         ? record.accountName.trim()
+        : null;
+    const accountType = normalizeAchAccountType(
+      typeof record.accountType === "string" ? record.accountType : null,
+    );
+    if (!accountType) {
+      return null;
+    }
+    const routingNumber =
+      typeof record.routingNumber === "string" && record.routingNumber.trim()
+        ? record.routingNumber.trim()
         : null;
     const isPrimary = record.isPrimary === true;
     const rawInstitutionId =
@@ -138,6 +174,8 @@ function parseBankAccounts(raw: string): BankAccountInput[] | null {
       branchName,
       accountNumber,
       accountName,
+      accountType,
+      routingNumber,
       amount: isPrimary ? null : amount,
       percentage: isPrimary ? null : percentage,
       isPrimary,
@@ -186,19 +224,26 @@ function validateBankAccounts(
   accounts: BankAccountInput[],
 ): string | undefined {
   if (accounts.length === 0) {
-    return "Add at least one bank account for bank transfer.";
+    return "Add at least one payment instruction for bank transfer.";
   }
 
   for (const account of accounts) {
-    if (!account.bankName || !account.accountNumber) {
-      return "Every bank account needs a bank name and account number.";
+    const ach = validateAchEmployeeInstructionFields({
+      bankName: account.bankName,
+      accountNumber: account.accountNumber,
+      accountHolderName: account.accountName,
+      accountType: account.accountType,
+      financialInstitutionId: account.financialInstitutionId,
+    });
+    if (!ach.ok) {
+      return ach.errors[0];
     }
   }
 
   const primaryCount = accounts.filter((account) => account.isPrimary).length;
 
   if (primaryCount !== 1) {
-    return "Mark exactly one bank account as primary (receives the remainder of net pay).";
+    return "Mark exactly one payment instruction as primary (receives the remainder of net pay).";
   }
 
   for (const account of accounts) {
@@ -213,11 +258,11 @@ function validateBankAccounts(
       account.percentage <= 100;
 
     if (hasFixed && hasPercentage) {
-      return "Each secondary account needs either a fixed amount or a percentage — not both.";
+      return "Each secondary instruction needs either a fixed amount or a percentage — not both.";
     }
 
     if (!hasFixed && !hasPercentage) {
-      return "Each secondary bank account needs a fixed amount or percentage greater than zero.";
+      return "Each secondary payment instruction needs a fixed amount or percentage greater than zero.";
     }
   }
 
@@ -331,9 +376,31 @@ export async function savePayrollProfile(
   const notes = nullableText(formData, "notes");
   const pensionOnlyIncome = formData.get("pensionOnlyIncome") === "on";
   const exemptFromNis = formData.get("exemptFromNis") === "on";
+  const receivingNisRetirementBenefit =
+    formData.get("receivingNisRetirementBenefit") === "on";
   const exemptFromHealthSurcharge =
     formData.get("exemptFromHealthSurcharge") === "on";
   const exemptFromPaye = formData.get("exemptFromPaye") === "on";
+
+  const nisCategoryOverrideRaw = nullableText(formData, "nisCategoryOverride");
+  const nisCategoryOverride = NIS_CATEGORY_OVERRIDES.includes(
+    nisCategoryOverrideRaw as NisCategoryOverride,
+  )
+    ? (nisCategoryOverrideRaw as NisCategoryOverride)
+    : null;
+  const nisOverrideReason = nullableText(formData, "nisOverrideReason");
+  const nisOverrideEffectiveFromRaw = nullableText(
+    formData,
+    "nisOverrideEffectiveFrom",
+  );
+  const nisOverrideEffectiveToRaw = nullableText(
+    formData,
+    "nisOverrideEffectiveTo",
+  );
+  const nisOverrideEffectiveFrom = parseOptionalDate(
+    nisOverrideEffectiveFromRaw,
+  );
+  const nisOverrideEffectiveTo = parseOptionalDate(nisOverrideEffectiveToRaw);
 
   const td1Raw = textValue(formData, "td1OtherApprovedAnnual");
   let td1OtherApprovedAnnual: number | null = null;
@@ -443,8 +510,6 @@ export async function savePayrollProfile(
     };
   }
 
-  // Employee is SoT. Payroll without people.manage never writes NIS/BIR
-  // (profile only mirrors Employee — no profile-only lasting form values).
   const statutory = resolveEmployeeStatutoryWriteFromPayroll({
     actor: actor.actor,
     employee: {
@@ -456,8 +521,8 @@ export async function savePayrollProfile(
       birNumber: birFromForm,
     },
   });
-  const nisNumber = statutory.profile.nisNumber;
-  const birNumber = statutory.profile.birNumber;
+  const nisNumber = statutory.resolved.nisNumber;
+  const birNumber = statutory.resolved.birNumber;
 
   const contract = employee.contracts[0] ?? null;
   const accounts = bankAccounts ?? [];
@@ -503,6 +568,8 @@ export async function savePayrollProfile(
     bankAccounts: accounts.map((account) => ({
       bankName: account.bankName,
       accountNumber: account.accountNumber,
+      accountHolderName: account.accountName,
+      accountType: account.accountType,
       amount: account.amount,
       isPrimary: account.isPrimary,
     })),
@@ -515,17 +582,16 @@ export async function savePayrollProfile(
   const profileValues = {
     payFrequency: payFrequency!,
     paymentMethod: paymentMethod!,
-    nisNumber,
-    birNumber,
     notes,
-    td1OtherApprovedAnnual:
-      td1OtherApprovedAnnual == null
-        ? null
-        : new Prisma.Decimal(td1OtherApprovedAnnual.toFixed(2)),
     pensionOnlyIncome,
     exemptFromNis,
+    receivingNisRetirementBenefit,
     exemptFromHealthSurcharge,
     exemptFromPaye,
+    nisCategoryOverride,
+    nisOverrideReason,
+    nisOverrideEffectiveFrom,
+    nisOverrideEffectiveTo,
     isPayrollReady: readiness.isReady,
   };
 
@@ -569,26 +635,46 @@ export async function savePayrollProfile(
 
             const byId = await transaction.financialInstitution.findUnique({
               where: { id: account.financialInstitutionId },
-              select: { id: true, displayName: true },
+              select: {
+                id: true,
+                displayName: true,
+                routingCode: true,
+                achParticipantCode: true,
+              },
             });
             if (byId) {
               return {
                 ...account,
                 financialInstitutionId: byId.id,
                 bankName: account.bankName || byId.displayName,
+                routingNumber:
+                  account.routingNumber ||
+                  byId.routingCode ||
+                  byId.achParticipantCode ||
+                  null,
               };
             }
 
             const byCatalog =
               await transaction.financialInstitution.findUnique({
                 where: { catalogKey: account.financialInstitutionId },
-                select: { id: true, displayName: true },
+                select: {
+                  id: true,
+                  displayName: true,
+                  routingCode: true,
+                  achParticipantCode: true,
+                },
               });
             if (byCatalog) {
               return {
                 ...account,
                 financialInstitutionId: byCatalog.id,
                 bankName: account.bankName || byCatalog.displayName,
+                routingNumber:
+                  account.routingNumber ||
+                  byCatalog.routingCode ||
+                  byCatalog.achParticipantCode ||
+                  null,
               };
             }
 
@@ -617,7 +703,7 @@ export async function savePayrollProfile(
         auditBanks = bankWrite.auditBanks ?? [];
       } else {
         const existingBankCount = await transaction.employeeBankAccount.count({
-          where: { employeeId: employee.id },
+          where: { employeeId: employee.id, isActive: true },
         });
         if (existingBankCount > 0) {
           const canClearBanks = actor.actor.canAny(
@@ -631,16 +717,17 @@ export async function savePayrollProfile(
               "You need payroll bank account permissions to clear bank destinations.",
             );
           }
+          const { deactivateEmployeeBankSetup } = await import(
+            "@/src/modules/payroll/services/replace-employee-bank-setup"
+          );
+          await deactivateEmployeeBankSetup(transaction, {
+            employeeId: employee.id,
+            changeReason:
+              paymentMethod === "BANK_TRANSFER"
+                ? "Cleared payment instructions"
+                : `Payment method changed to ${paymentMethod}`,
+          });
         }
-        await transaction.employeePayrollAllocation.deleteMany({
-          where: { employeeId: employee.id },
-        });
-        await transaction.employeeBankAccount.deleteMany({
-          where: { employeeId: employee.id },
-        });
-        await transaction.payrollBankAccount.deleteMany({
-          where: { payrollProfileId: profile.id },
-        });
       }
 
       for (const update of allowanceTaxableUpdates) {
@@ -653,6 +740,15 @@ export async function savePayrollProfile(
           },
         });
       }
+
+      // Persist current-year TD1 on EmployeeTaxProfile (sole store).
+      await upsertEmployeeTaxProfileTd1Sync(transaction, {
+        organizationId: employee.organizationId,
+        employeeId: employee.id,
+        taxYear: taxYearFromAsOfKey(toStatutoryAsOfKey(new Date())),
+        td1OtherApprovedAnnual,
+        userId: actor.actor.userId,
+      });
 
       await recordAuditEvent(transaction, {
         userId: actor.actor.userId,

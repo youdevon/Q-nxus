@@ -18,8 +18,10 @@
     "notify:correspondence-backfill": "npx tsx scripts/backfill-correspondence-notifications.ts",
     "backfill:employee-login-emails": "npx tsx scripts/backfill-employee-login-emails.ts",
     "archive:correspondence-retention": "npx tsx scripts/archive-correspondence-retention.ts",
+    "purge:prior-employment-archive": "npx tsx scripts/purge-archived-prior-employment-ytd.ts",
     "seed:access": "npx tsx prisma/seed-access-roles.ts",
     "banking:backfill-accounts": "npx tsx scripts/backfill-employee-bank-accounts.ts",
+    "banking:backfill-routing": "npx tsx --env-file=.env scripts/backfill-employee-bank-routing.ts",
     "banking:migrate-encrypt": "npx tsx scripts/migrate-encrypt-bank-accounts.ts",
     "payroll:parallel": "npx tsx scripts/parallel-payroll-compare.ts"
   },
@@ -33,6 +35,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
     "lucide-react": "^1.24.0",
     "next": "16.2.10",
     "nodemailer": "^9.0.3",
@@ -47,6 +50,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/exceljs": "^0.5.3",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.1",
     "@types/pg": "^8.20.0",

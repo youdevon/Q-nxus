@@ -42,13 +42,13 @@ import {
   closePayRun,
   deleteDraftPayRun,
   deletePayrollLineItem,
-  emailPostedPayslips,
   excludePayslipFromPayRun,
   postPayRun,
   approveDraftPayRun,
   recalculateDraftPayRun,
   reconcilePayRun,
   reincludePayslipInPayRun,
+  releasePayRunPayslips,
   type PayRunFormState,
 } from "@/src/modules/payroll/actions/manage-pay-run";
 import type {
@@ -58,17 +58,23 @@ import type {
 import {
   canApprovePayRun,
   canClosePayRun,
+  canDeletePayRun,
   canPostPayRun,
+  canRecalculatePayRun,
   canReconcilePayRun,
+  isPayRunEditable,
   isPayRunPosted,
   payRunStatusLabel,
 } from "@/src/modules/payroll/lib/pay-run-lifecycle";
+import { canReleasePayRunPayslips } from "@/src/modules/payroll/lib/payslip-release";
 import {
   correctionCodeForKind,
   defaultAdjustmentLabel,
   isCorrectionAdjustmentCode,
   isSupplementalPayRunKind,
+  salaryAdjustmentDefaults,
   type PayrollAdjustmentKind,
+  type SalaryAdjustmentKind,
 } from "@/src/modules/payroll/lib/payroll-adjustment-line";
 import {
   formatDisplayDate,
@@ -76,6 +82,7 @@ import {
   formatMoney,
 } from "@/src/lib/format";
 import { PayrollNav } from "./payroll-nav";
+import { ReportDownloadButton } from "@/src/modules/reports/components/report-download-button";
 
 const initialState: PayRunFormState = {
   status: "idle",
@@ -90,7 +97,13 @@ function formatDateTime(iso: string | null) {
   return formatDisplayDateTime(iso, { fallback: "—" });
 }
 
-function RecalculatePayRunButton({ payRunId }: { payRunId: string }) {
+function RecalculatePayRunButton({
+  payRunId,
+  isApproved,
+}: {
+  payRunId: string;
+  isApproved: boolean;
+}) {
   const [state, formAction, pending] = useActionState(
     recalculateDraftPayRun,
     initialState,
@@ -110,7 +123,11 @@ function RecalculatePayRunButton({ payRunId }: { payRunId: string }) {
       <input type="hidden" name="payRunId" value={payRunId} />
       <Button type="submit" variant="outline" disabled={pending}>
         <RefreshCw />
-        {pending ? "Recalculating…" : "Recalculate"}
+        {pending
+          ? "Calculating…"
+          : isApproved
+            ? "Unlock & calculate all"
+            : "Calculate all"}
       </Button>
     </form>
   );
@@ -148,21 +165,28 @@ function ApprovePayRunButton({
         onClick={() => setOpen(true)}
       >
         <CircleCheck />
-        Approve for posting
+        Approve paysheet
       </Button>
       <DialogContent showCloseButton={!pending}>
         <DialogHeader>
-          <DialogTitle>Approve this pay run?</DialogTitle>
+          <DialogTitle>Approve and lock this paysheet?</DialogTitle>
           <DialogDescription>
             {noteRequired ? (
               <>
-                This run has {varianceFlagCount} net-pay exception
+                Approving recalculates every included employee, saves the draft
+                paysheet, then locks it for posting. This run has{" "}
+                {varianceFlagCount} net-pay exception
                 {varianceFlagCount === 1 ? "" : "s"} requiring explanation (see
-                Exceptions below). Add a note explaining the review before
-                approving. A different payroll officer must post this run.
+                Exceptions below). Add a note before approving. A different
+                payroll officer must post this run.
               </>
             ) : (
-              "A different payroll officer must post this run once approved."
+              <>
+                Approving recalculates every included employee, saves the draft
+                paysheet, then locks figures and membership for posting. Use
+                Unlock &amp; calculate all if you need to revise afterward. A
+                different payroll officer must post this run.
+              </>
             )}
           </DialogDescription>
         </DialogHeader>
@@ -198,7 +222,7 @@ function ApprovePayRunButton({
             </DialogClose>
             <Button type="submit" disabled={pending}>
               <CircleCheck />
-              {pending ? "Approving…" : "Approve"}
+              {pending ? "Calculating & approving…" : "Approve paysheet"}
             </Button>
           </DialogFooter>
         </form>
@@ -207,20 +231,24 @@ function ApprovePayRunButton({
   );
 }
 
-function DeleteDraftPayRunButton({
+function DeletePayRunButton({
   payRunId,
   runNumber,
   periodName,
+  status,
 }: {
   payRunId: string;
   runNumber: string;
   periodName: string;
+  status: string;
 }) {
   const [open, setOpen] = useState(false);
   const [state, formAction, pending] = useActionState(
     deleteDraftPayRun,
     initialState,
   );
+  const statusLabel = payRunStatusLabel(status);
+  const isFrozen = isPayRunPosted(status);
 
   useEffect(() => {
     if (state.status === "error") {
@@ -237,18 +265,29 @@ function DeleteDraftPayRunButton({
         onClick={() => setOpen(true)}
       >
         <Trash2 />
-        Delete draft
+        Delete{isFrozen ? "" : status === "DRAFT" ? " draft" : ""}
       </Button>
       <DialogContent showCloseButton={!pending}>
         <DialogHeader>
-          <DialogTitle>Delete draft pay run?</DialogTitle>
+          <DialogTitle>
+            Delete {statusLabel.toLowerCase()} pay run?
+          </DialogTitle>
           <DialogDescription>
-            This permanently removes draft pay run{" "}
+            This permanently removes pay run{" "}
             <span className="font-medium text-foreground">{runNumber}</span>{" "}
-            for {periodName}, including all draft payslip membership rows
-            (excluded employees included). The pay period will be freed so you
-            can create a new run for the same month. Posted payroll cannot be
-            deleted this way.
+            ({statusLabel}) for {periodName}, including payslips
+            {isFrozen
+              ? ", payment batches, and disbursement records"
+              : " (excluded employees included)"}
+            . The period will be freed when no other runs remain so you can
+            create a new run for the same month.
+            {isFrozen ? (
+              <>
+                {" "}
+                Use this only while testing — posted history cannot be
+                recovered.
+              </>
+            ) : null}
           </DialogDescription>
         </DialogHeader>
         {state.status === "error" ? (
@@ -269,7 +308,7 @@ function DeleteDraftPayRunButton({
             <input type="hidden" name="payRunId" value={payRunId} />
             <Button type="submit" variant="destructive" disabled={pending}>
               <Trash2 />
-              {pending ? "Deleting…" : "Delete draft"}
+              {pending ? "Deleting…" : "Delete pay run"}
             </Button>
           </form>
         </DialogFooter>
@@ -278,9 +317,15 @@ function DeleteDraftPayRunButton({
   );
 }
 
-function EmailPayslipsButton({ payRunId }: { payRunId: string }) {
+function ReleasePayslipsButton({
+  payRunId,
+  unreleasedCount,
+}: {
+  payRunId: string;
+  unreleasedCount: number;
+}) {
   const [state, formAction, pending] = useActionState(
-    emailPostedPayslips,
+    releasePayRunPayslips,
     initialState,
   );
 
@@ -293,12 +338,18 @@ function EmailPayslipsButton({ payRunId }: { payRunId: string }) {
     }
   }, [state]);
 
+  const disabled = pending || unreleasedCount === 0;
+
   return (
     <form action={formAction}>
       <input type="hidden" name="payRunId" value={payRunId} />
-      <Button type="submit" variant="outline" disabled={pending}>
+      <Button type="submit" variant="outline" disabled={disabled}>
         <FileText />
-        {pending ? "Queueing…" : "Email payslips"}
+        {pending
+          ? "Releasing…"
+          : unreleasedCount === 0
+            ? "Payslips released"
+            : "Release & email payslips"}
       </Button>
     </form>
   );
@@ -528,13 +579,11 @@ function RemoveLineItemButton({
 function LineItemRow({
   runId,
   line,
-  canManage,
-  isPosted,
+  canEdit,
 }: {
   runId: string;
   line: PayRunPayslipRow["lineItems"][number];
-  canManage: boolean;
-  isPosted: boolean;
+  canEdit: boolean;
 }) {
   const isAdjustment = isCorrectionAdjustmentCode(line.code);
 
@@ -542,16 +591,23 @@ function LineItemRow({
     <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
-          {isAdjustment ? <Badge variant="outline">Adjustment</Badge> : null}
+          {line.isAutoDelta ? (
+            <Badge variant="outline">Auto delta</Badge>
+          ) : isAdjustment ? (
+            <Badge variant="outline">Adjustment</Badge>
+          ) : null}
           <span className="font-medium text-foreground">{line.label}</span>
         </div>
         <p className="mt-0.5 text-muted-foreground">
           {line.lineType.toLowerCase()} · {line.amount}
           {line.isTaxable ? " · taxable" : ""}
-          {line.notes ? ` · ${line.notes}` : ""}
+          {line.notes && !line.isAutoDelta ? ` · ${line.notes}` : ""}
+          {line.isAutoDelta
+            ? " · refreshed when you calculate all from source vs current preview"
+            : ""}
         </p>
       </div>
-      {canManage && !isPosted ? (
+      {canEdit && !line.isAutoDelta ? (
         <RemoveLineItemButton payRunId={runId} lineItemId={line.id} />
       ) : null}
     </div>
@@ -690,6 +746,159 @@ function AddAdjustmentPanel({
   );
 }
 
+function SalaryAdjustmentPanel({
+  runId,
+  slip,
+  currency,
+}: {
+  runId: string;
+  slip: PayRunPayslipRow;
+  currency: string;
+}) {
+  const [kind, setKind] = useState<SalaryAdjustmentKind>("OVERPAYMENT_RECOVERY");
+  const [amount, setAmount] = useState("");
+  const [formKey, setFormKey] = useState(0);
+  const [state, formAction, pending] = useActionState(
+    addPayrollLineItem,
+    initialState,
+  );
+  const defaults = salaryAdjustmentDefaults(kind);
+  const parsedAmount = Number(amount);
+  const signedAmount =
+    Number.isFinite(parsedAmount) && parsedAmount > 0
+      ? parsedAmount * defaults.amountSign
+      : "";
+
+  useEffect(() => {
+    if (state.status === "error") {
+      toast.error(
+        state.fieldErrors?.notes ||
+          state.fieldErrors?.amount ||
+          state.message,
+      );
+    }
+    if (state.status === "success" && state.message) {
+      toast.success(state.message);
+      setFormKey((key) => key + 1);
+      setAmount("");
+      setKind("OVERPAYMENT_RECOVERY");
+    }
+  }, [state]);
+
+  return (
+    <div className="space-y-3 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Salary / overpayment adjustment
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Use when a past overpayment must be recovered, or this period’s salary
+          should be reduced. Does not change the employment contract — only this
+          draft paysheet. Recalculate after adding if totals look stale.
+        </p>
+      </div>
+
+      <form
+        key={formKey}
+        action={formAction}
+        className="grid gap-2 md:grid-cols-6"
+      >
+        <input type="hidden" name="payRunId" value={runId} />
+        <input type="hidden" name="payslipId" value={slip.id} />
+        <input type="hidden" name="lineType" value={defaults.lineType} />
+        <input type="hidden" name="code" value={defaults.code} />
+        <input type="hidden" name="label" value={defaults.label} />
+        <input type="hidden" name="amount" value={signedAmount} />
+        {defaults.isTaxable ? (
+          <input type="hidden" name="isTaxable" value="on" />
+        ) : null}
+
+        <fieldset className="grid gap-2 text-xs md:col-span-3">
+          <legend className="text-muted-foreground">Adjustment type</legend>
+          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 bg-background/80 p-2 has-[:checked]:border-foreground/40">
+            <input
+              type="radio"
+              className="mt-0.5"
+              checked={kind === "OVERPAYMENT_RECOVERY"}
+              onChange={() => setKind("OVERPAYMENT_RECOVERY")}
+            />
+            <span>
+              <span className="font-medium text-foreground">
+                Recover overpayment
+              </span>
+              <span className="mt-0.5 block text-muted-foreground">
+                Deducts from net pay this period (gross / salary line unchanged).
+              </span>
+            </span>
+          </label>
+          <label className="flex cursor-pointer items-start gap-2 rounded-md border border-border/70 bg-background/80 p-2 has-[:checked]:border-foreground/40">
+            <input
+              type="radio"
+              className="mt-0.5"
+              checked={kind === "SALARY_REDUCTION"}
+              onChange={() => setKind("SALARY_REDUCTION")}
+            />
+            <span>
+              <span className="font-medium text-foreground">
+                Reduce this period’s salary
+              </span>
+              <span className="mt-0.5 block text-muted-foreground">
+                Lowers taxable gross for this month (affects PAYE / NIS base).
+              </span>
+            </span>
+          </label>
+        </fieldset>
+
+        <label className="grid gap-1 text-xs">
+          <span className="text-muted-foreground">
+            Amount to {kind === "SALARY_REDUCTION" ? "reduce" : "recover"} (
+            {currency})
+          </span>
+          <input
+            type="number"
+            step="0.01"
+            min="0.01"
+            value={amount}
+            onChange={(event) => setAmount(event.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-2"
+            placeholder="0.00"
+            required
+            aria-invalid={Boolean(state.fieldErrors?.amount)}
+          />
+          {state.fieldErrors?.amount ? (
+            <p className="text-destructive">{state.fieldErrors.amount}</p>
+          ) : null}
+        </label>
+
+        <label className="grid gap-1 text-xs md:col-span-2">
+          <span className="text-muted-foreground">Reason (required)</span>
+          <input
+            name="notes"
+            className="h-9 rounded-md border border-input bg-background px-2"
+            placeholder="e.g. July overpayment of basic salary"
+            required
+            aria-invalid={Boolean(state.fieldErrors?.notes)}
+          />
+          {state.fieldErrors?.notes ? (
+            <p className="text-destructive">{state.fieldErrors.notes}</p>
+          ) : null}
+        </label>
+
+        <div className="flex items-end md:col-span-6">
+          <Button
+            type="submit"
+            size="sm"
+            disabled={pending || signedAmount === ""}
+          >
+            <Plus />
+            {pending ? "Adding…" : "Add salary adjustment"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 function AdvancedLineItemsForm({
   runId,
   slip,
@@ -751,7 +960,9 @@ function AdvancedLineItemsForm({
           <option value="BONUS">Bonus</option>
           <option value="COMMISSION">Commission</option>
           <option value="OTHER_EARNING">Other earning</option>
+          <option value="GRATUITY">Contract gratuity</option>
           <option value="OTHER_DEDUCTION">Other deduction</option>
+          <option value="GRATUITY_TAX">Gratuity tax</option>
         </select>
       </label>
       <label className="grid gap-1 text-xs md:col-span-2">
@@ -803,15 +1014,13 @@ function AdvancedLineItemsForm({
 function PayrollLineItemsEditor({
   runId,
   slip,
-  canManage,
-  isPosted,
+  canEdit,
   runKind,
   currency,
 }: {
   runId: string;
   slip: PayRunPayslipRow;
-  canManage: boolean;
-  isPosted: boolean;
+  canEdit: boolean;
   runKind: PayRunDetail["runKind"];
   currency: string;
 }) {
@@ -824,10 +1033,7 @@ function PayrollLineItemsEditor({
     (line) => !isCorrectionAdjustmentCode(line.code),
   );
 
-  if (
-    slip.lineItems.length === 0 &&
-    (isPosted || !canManage)
-  ) {
+  if (slip.lineItems.length === 0 && !canEdit) {
     return null;
   }
 
@@ -843,8 +1049,7 @@ function PayrollLineItemsEditor({
               key={line.id}
               runId={runId}
               line={line}
-              canManage={canManage}
-              isPosted={isPosted}
+              canEdit={canEdit}
             />
           ))}
         </div>
@@ -860,18 +1065,21 @@ function PayrollLineItemsEditor({
               key={line.id}
               runId={runId}
               line={line}
-              canManage={canManage}
-              isPosted={isPosted}
+              canEdit={canEdit}
             />
           ))}
         </div>
       ) : null}
 
-      {canManage && !isPosted && isSupplemental ? (
+      {canEdit && isSupplemental ? (
         <AddAdjustmentPanel runId={runId} slip={slip} currency={currency} />
       ) : null}
 
-      {canManage && !isPosted ? (
+      {canEdit && !isSupplemental ? (
+        <SalaryAdjustmentPanel runId={runId} slip={slip} currency={currency} />
+      ) : null}
+
+      {canEdit ? (
         isSupplemental ? (
           <div className="space-y-2">
             <Button
@@ -894,11 +1102,26 @@ function PayrollLineItemsEditor({
             ) : null}
           </div>
         ) : (
-          <AdvancedLineItemsForm
-            runId={runId}
-            slip={slip}
-            includeCorrectionCodes
-          />
+          <div className="space-y-2">
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowAdvanced((open) => !open)}
+            >
+              <Plus />
+              {showAdvanced
+                ? "Hide other line types"
+                : "Add overtime, bonus, or other line"}
+            </Button>
+            {showAdvanced ? (
+              <AdvancedLineItemsForm
+                runId={runId}
+                slip={slip}
+                includeCorrectionCodes
+              />
+            ) : null}
+          </div>
         )
       ) : null}
     </div>
@@ -907,8 +1130,10 @@ function PayrollLineItemsEditor({
 
 function CorrectionDeltaPanel({
   comparison,
+  runKind,
 }: {
   comparison: NonNullable<PayRunPayslipRow["comparison"]>;
+  runKind: PayRunDetail["runKind"];
 }) {
   const netToneClass =
     comparison.netDirection === "increase"
@@ -917,12 +1142,17 @@ function CorrectionDeltaPanel({
         ? "text-destructive"
         : "text-muted-foreground";
 
+  const correctedLabel =
+    runKind === "CORRECTION" ? "Corrected (implied)" : "This run";
+  const deltaLabel =
+    runKind === "CORRECTION" ? "Delta payment" : "Difference";
+
   return (
-    <div className="mt-3 space-y-2 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3 md:col-span-full">
+    <div className="mt-3 space-y-3 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3 md:col-span-full">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
         Correction delta vs {comparison.sourceLabel}
       </p>
-      <div className="grid grid-cols-[6rem_1fr_1fr_1fr] gap-x-3 gap-y-1 text-xs">
+      <div className="grid grid-cols-[7.5rem_1fr_1fr_1fr] gap-x-3 gap-y-1 text-xs">
         <span className="text-muted-foreground" />
         <span className="text-muted-foreground">Gross</span>
         <span className="text-muted-foreground">Deductions</span>
@@ -933,18 +1163,56 @@ function CorrectionDeltaPanel({
         <span>{comparison.original.totalDeductions}</span>
         <span>{comparison.original.netPay}</span>
 
-        <span className="text-muted-foreground">This run</span>
+        <span className="text-muted-foreground">{correctedLabel}</span>
         <span>{comparison.correction.grossPay}</span>
         <span>{comparison.correction.totalDeductions}</span>
         <span>{comparison.correction.netPay}</span>
 
-        <span className="font-medium text-foreground">Difference</span>
+        <span className="font-medium text-foreground">{deltaLabel}</span>
         <span className="font-medium">{comparison.delta.grossPay}</span>
         <span className="font-medium">{comparison.delta.totalDeductions}</span>
         <span className={`font-medium ${netToneClass}`}>
           {comparison.delta.netPay}
         </span>
       </div>
+
+      {comparison.lineDeltas.length > 0 ? (
+        <div className="space-y-1 border-t border-amber-500/30 pt-2">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Line-level deltas
+          </p>
+          <ul className="space-y-1 text-xs">
+            {comparison.lineDeltas.map((line) => {
+              const tone =
+                line.direction === "increase"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : line.direction === "decrease"
+                    ? "text-destructive"
+                    : "text-muted-foreground";
+              return (
+                <li
+                  key={`${line.lineType}-${line.label}`}
+                  className="flex items-center justify-between gap-3"
+                >
+                  <span className="text-muted-foreground">
+                    {line.label}
+                    <span className="ml-1 text-[0.65rem] uppercase tracking-wide">
+                      ({line.lineType === "EARNING" ? "earning" : "deduction"})
+                    </span>
+                  </span>
+                  <span className={`font-medium tabular-nums ${tone}`}>
+                    {line.amount}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : runKind === "CORRECTION" ? (
+        <p className="border-t border-amber-500/30 pt-2 text-xs text-muted-foreground">
+          No category differences vs the source run — nothing auto-suggested.
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -952,14 +1220,14 @@ function CorrectionDeltaPanel({
 function PayslipRow({
   runId,
   slip,
-  canManage,
+  canEdit,
   isPosted,
   runKind,
   currency,
 }: {
   runId: string;
   slip: PayRunPayslipRow;
-  canManage: boolean;
+  canEdit: boolean;
   isPosted: boolean;
   runKind: PayRunDetail["runKind"];
   currency: string;
@@ -980,6 +1248,15 @@ function PayslipRow({
           {[slip.jobTitle, slip.departmentName].filter(Boolean).join(" · ") ||
             "—"}
         </p>
+        {!slip.isExcluded && slip.payrollWarnings.length > 0 ? (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {slip.payrollWarnings.map((warning) => (
+              <Badge key={warning} variant="warning">
+                {warning}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
         {slip.isExcluded ? (
           <div className="mt-2 space-y-1 text-xs text-muted-foreground">
             <p>
@@ -1049,23 +1326,25 @@ function PayslipRow({
                 PDF
               </Button>
             ) : null}
-            {canManage && !isPosted ? (
+            {canEdit ? (
               <ExcludePayslipControls runId={runId} slip={slip} />
             ) : null}
           </>
-        ) : canManage && !isPosted ? (
+        ) : canEdit ? (
           <ReincludePayslipButton runId={runId} slip={slip} />
         ) : null}
       </div>
       {!slip.isExcluded && slip.comparison ? (
-        <CorrectionDeltaPanel comparison={slip.comparison} />
+        <CorrectionDeltaPanel
+          comparison={slip.comparison}
+          runKind={runKind}
+        />
       ) : null}
       {!slip.isExcluded ? (
         <PayrollLineItemsEditor
           runId={runId}
           slip={slip}
-          canManage={canManage}
-          isPosted={isPosted}
+          canEdit={canEdit}
           runKind={runKind}
           currency={currency}
         />
@@ -1173,6 +1452,8 @@ export function PayRunDetailView({
   }, [postState]);
 
   const isPosted = isPayRunPosted(run.status);
+  const isApproved = run.status === "APPROVED";
+  const canEdit = canManage && isPayRunEditable(run.status);
   const isSupplemental = isSupplementalPayRunKind(run.runKind);
   const unexplainedVarianceCount = run.varianceFlags.length;
   const included = run.payslips.filter((slip) => !slip.isExcluded);
@@ -1199,6 +1480,33 @@ export function PayRunDetailView({
         backLabel="Pay runs"
         actions={
           <PageActionsEnd>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link href={`/payroll/runs/${run.id}/paysheet`} />
+              }
+            >
+              <FileText />
+              View paysheet
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link
+                  href={`/payroll/runs/${run.id}/paysheet/print`}
+                  target="_blank"
+                />
+              }
+            >
+              <Printer />
+              Print paysheet
+            </Button>
+            <ReportDownloadButton
+              href={`/payroll/runs/${run.id}/paysheet/export?format=xlsx`}
+              label="Download Excel"
+            />
             {isPosted ? (
               <>
                 <Button
@@ -1207,7 +1515,7 @@ export function PayRunDetailView({
                   render={<Link href={`/payroll/runs/${run.id}/print`} />}
                 >
                   <Printer />
-                  Batch print
+                  Batch print slips
                 </Button>
                 <Button
                   nativeButton={false}
@@ -1228,18 +1536,37 @@ export function PayRunDetailView({
                     : "Prepare payments"}
                 </Button>
                 {canManage ? (
-                  <Button
-                    nativeButton={false}
-                    variant="outline"
-                    render={
-                      <Link href={`/payroll/runs/${run.id}/bank-export`} />
-                    }
-                  >
-                    <FileText />
-                    Bank CSV
-                  </Button>
+                  <>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={
+                        <Link href={`/payroll/runs/${run.id}/bank-export`} />
+                      }
+                    >
+                      <FileText />
+                      Bank CSV
+                    </Button>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={
+                        <Link
+                          href={`/payroll/runs/${run.id}/bank-export-xlsx`}
+                        />
+                      }
+                    >
+                      <FileDown />
+                      Download Excel (bank entry)
+                    </Button>
+                  </>
                 ) : null}
-                {canManage ? <EmailPayslipsButton payRunId={run.id} /> : null}
+                {canManage && canReleasePayRunPayslips(run.status) ? (
+                  <ReleasePayslipsButton
+                    payRunId={run.id}
+                    unreleasedCount={run.releaseSummary.unreleasedCount}
+                  />
+                ) : null}
                 {canManage ? (
                   <>
                     <Button
@@ -1267,22 +1594,38 @@ export function PayRunDetailView({
                 {canManage && canClosePayRun(run.status) ? (
                   <ClosePayRunButton payRunId={run.id} />
                 ) : null}
+                {canManage && canDeletePayRun(run.status) && isPosted ? (
+                  <DeletePayRunButton
+                    payRunId={run.id}
+                    runNumber={run.runNumber}
+                    periodName={run.period.name}
+                    status={run.status}
+                  />
+                ) : null}
               </>
             ) : null}
             {canManage && !isPosted ? (
               <>
-                <RecalculatePayRunButton payRunId={run.id} />
+                {canRecalculatePayRun(run.status) ? (
+                  <RecalculatePayRunButton
+                    payRunId={run.id}
+                    isApproved={isApproved}
+                  />
+                ) : null}
                 {canApprovePayRun(run.status) ? (
                   <ApprovePayRunButton
                     payRunId={run.id}
                     varianceFlagCount={unexplainedVarianceCount}
                   />
                 ) : null}
-                <DeleteDraftPayRunButton
-                  payRunId={run.id}
-                  runNumber={run.runNumber}
-                  periodName={run.period.name}
-                />
+                {canDeletePayRun(run.status) ? (
+                  <DeletePayRunButton
+                    payRunId={run.id}
+                    runNumber={run.runNumber}
+                    periodName={run.period.name}
+                    status={run.status}
+                  />
+                ) : null}
                 <form action={postAction}>
                   <input type="hidden" name="payRunId" value={run.id} />
                   <Button
@@ -1292,9 +1635,9 @@ export function PayRunDetailView({
                     <Lock />
                     {postPending
                       ? "Posting…"
-                      : run.status === "APPROVED"
-                        ? "Post pay run"
-                        : "Post (needs approval)"}
+                      : isApproved
+                        ? "Post paysheet"
+                        : "Post (approve first)"}
                   </Button>
                 </form>
               </>
@@ -1312,7 +1655,7 @@ export function PayRunDetailView({
         </div>
       ) : null}
 
-      <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-7">
         <div>
           <p className="text-xs text-muted-foreground">Status</p>
           <div className="mt-1 flex flex-wrap gap-2">
@@ -1340,60 +1683,128 @@ export function PayRunDetailView({
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Gross</p>
-          <p className="mt-1 text-lg font-semibold">{run.totalGross}</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalGross}
+          </p>
         </div>
         <div>
-          <p className="text-xs text-muted-foreground">Deductions</p>
-          <p className="mt-1 text-lg font-semibold">{run.totalDeductions}</p>
+          <p className="text-xs text-muted-foreground">PAYE</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalPaye}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground">NIS (employee)</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalNisEmployee}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground">Health Surcharge</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalHealthSurcharge}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-muted-foreground">Total deductions</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalDeductions}
+          </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Net</p>
-          <p className="mt-1 text-lg font-semibold">{run.totalNet}</p>
+          <p className="mt-1 text-lg font-semibold tabular-nums">
+            {run.totalNet}
+          </p>
         </div>
       </section>
 
       {isPosted ? (
-        <section className="mt-6 flex flex-wrap items-center justify-between gap-3 border-y border-border/60 py-3 text-sm">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-muted-foreground">Payments</span>
-            {paymentSummary?.prepared ? (
-              <>
-                <Badge variant="success">
-                  {paymentSummary.readyCount}/{paymentSummary.paymentCount} ready
-                </Badge>
-                {paymentSummary.batchCount > 0 ? (
-                  <Badge variant="outline">
-                    {paymentSummary.batchCount} batch
-                    {paymentSummary.batchCount === 1 ? "" : "es"}
-                    {paymentSummary.latestBatchStatus
-                      ? ` · ${paymentSummary.latestBatchStatus}`
-                      : ""}
+        <section className="mt-6 space-y-3 border-y border-border/60 py-3 text-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted-foreground">Payslip release</span>
+              {run.releaseSummary.releasedCount > 0 ? (
+                <>
+                  <Badge variant="success">
+                    {run.releaseSummary.releasedCount}/
+                    {run.releaseSummary.postedCount} released
                   </Badge>
-                ) : (
-                  <Badge variant="warning">No batch yet</Badge>
-                )}
-              </>
-            ) : (
-              <Badge variant="warning">Not prepared</Badge>
-            )}
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {!paymentSummary?.prepared ? (
+                  {run.releaseSummary.sentCount > 0 ? (
+                    <Badge variant="outline">
+                      {run.releaseSummary.sentCount} emailed
+                    </Badge>
+                  ) : null}
+                  {run.releaseSummary.pendingCount > 0 ? (
+                    <Badge variant="warning">
+                      {run.releaseSummary.pendingCount} pending
+                    </Badge>
+                  ) : null}
+                  {run.releaseSummary.failedCount > 0 ? (
+                    <Badge variant="destructive">
+                      {run.releaseSummary.failedCount} failed
+                    </Badge>
+                  ) : null}
+                  {run.releaseSummary.skippedCount > 0 ? (
+                    <Badge variant="outline">
+                      {run.releaseSummary.skippedCount} skipped
+                    </Badge>
+                  ) : null}
+                </>
+              ) : (
+                <Badge variant="warning">Not released</Badge>
+              )}
+            </div>
+            {run.releaseSummary.unreleasedCount > 0 ? (
               <p className="max-w-md text-xs text-muted-foreground">
-                Pay run is posted. Open payments to prepare disbursement
-                snapshots, then use Manual register or Bank CSV. Enable ACH only
-                after the bank confirms the export layout.
+                Release opens self-service access and queues absolute secure
+                links. Process the email queue to send.
               </p>
             ) : null}
-            <Button
-              nativeButton={false}
-              size="sm"
-              variant="outline"
-              render={<Link href={`/payroll/runs/${run.id}/payments`} />}
-            >
-              <Wallet />
-              {paymentSummary?.prepared ? "Open payments" : "Prepare payments"}
-            </Button>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-muted-foreground">Payments</span>
+              {paymentSummary?.prepared ? (
+                <>
+                  <Badge variant="success">
+                    {paymentSummary.readyCount}/{paymentSummary.paymentCount} ready
+                  </Badge>
+                  {paymentSummary.batchCount > 0 ? (
+                    <Badge variant="outline">
+                      {paymentSummary.batchCount} batch
+                      {paymentSummary.batchCount === 1 ? "" : "es"}
+                      {paymentSummary.latestBatchStatus
+                        ? ` · ${paymentSummary.latestBatchStatus}`
+                        : ""}
+                    </Badge>
+                  ) : (
+                    <Badge variant="warning">No batch yet</Badge>
+                  )}
+                </>
+              ) : (
+                <Badge variant="warning">Not prepared</Badge>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {!paymentSummary?.prepared ? (
+                <p className="max-w-md text-xs text-muted-foreground">
+                  Pay run is posted. Open payments to prepare disbursement
+                  snapshots, then use Manual register, Bank CSV, or Download
+                  Excel (bank entry) for bank-website entry. Enable ACH file
+                  export only after the bank confirms the export layout.
+                </p>
+              ) : null}
+              <Button
+                nativeButton={false}
+                size="sm"
+                variant="outline"
+                render={<Link href={`/payroll/runs/${run.id}/payments`} />}
+              >
+                <Wallet />
+                {paymentSummary?.prepared ? "Open payments" : "Prepare payments"}
+              </Button>
+            </div>
           </div>
         </section>
       ) : null}
@@ -1461,22 +1872,69 @@ export function PayRunDetailView({
 
       {!isPosted ? (
         <p className="mt-6 text-sm text-muted-foreground">
-          {isSupplemental ? (
+          {isApproved ? (
+            <>
+              This paysheet is approved and locked. Figures and membership
+              cannot change until you{" "}
+              <span className="font-medium text-foreground">
+                Unlock &amp; calculate all
+              </span>
+              , which returns the run to draft. Post freezes included payslips
+              permanently.
+            </>
+          ) : isSupplemental ? (
             <>
               This {run.runKind === "CORRECTION" ? "correction" : "off-cycle"}{" "}
               draft creates its own payslips — the original posted payslip is
-              not changed. Use <span className="font-medium text-foreground">Add adjustment</span>{" "}
-              for one-off earning or deduction deltas, then Recalculate if
-              needed. Posting freezes included payslips so later changes do not
-              rewrite history.
+              not changed.
+              {run.runKind === "CORRECTION" ? (
+                <>
+                  {" "}
+                  Category deltas vs the source run are auto-suggested as{" "}
+                  <span className="font-medium text-foreground">
+                    CORRECTION
+                  </span>{" "}
+                  lines so this run pays the difference. Use{" "}
+                  <span className="font-medium text-foreground">
+                    Add adjustment
+                  </span>{" "}
+                  for extra manual amounts, then{" "}
+                  <span className="font-medium text-foreground">
+                    Calculate all
+                  </span>{" "}
+                  to refresh auto lines from current master data.
+                </>
+              ) : (
+                <>
+                  {" "}
+                  Use{" "}
+                  <span className="font-medium text-foreground">
+                    Add adjustment
+                  </span>{" "}
+                  for one-off earning or deduction deltas, then{" "}
+                  <span className="font-medium text-foreground">
+                    Calculate all
+                  </span>{" "}
+                  if needed.
+                </>
+              )}{" "}
+              When the sheet is complete,{" "}
+              <span className="font-medium text-foreground">
+                Approve paysheet
+              </span>{" "}
+              recalculates everyone, saves the draft, and locks it for posting.
             </>
           ) : (
             <>
-              Draft amounts are snapshotted from the payslip preview calculation.
-              Use Recalculate to refresh included employees from current contracts
-              and statutory configs. Excluded employees stay out of totals and are
-              not posted. Posting freezes included payslips so later changes do not
-              rewrite history.
+              Draft amounts are snapshotted from the payslip calculation. Use{" "}
+              <span className="font-medium text-foreground">Calculate all</span>{" "}
+              to refresh included employees from current contracts and statutory
+              configs. Excluded employees stay out of totals and are not posted.
+              When the sheet is complete,{" "}
+              <span className="font-medium text-foreground">
+                Approve paysheet
+              </span>{" "}
+              recalculates everyone, saves the draft, and locks it for posting.
             </>
           )}
         </p>
@@ -1507,7 +1965,7 @@ export function PayRunDetailView({
                 key={slip.id}
                 runId={run.id}
                 slip={slip}
-                canManage={canManage}
+                canEdit={canEdit}
                 isPosted={isPosted}
                 runKind={run.runKind}
                 currency={run.currency}
@@ -1529,7 +1987,7 @@ export function PayRunDetailView({
                 key={slip.id}
                 runId={run.id}
                 slip={slip}
-                canManage={canManage}
+                canEdit={canEdit}
                 isPosted={isPosted}
                 runKind={run.runKind}
                 currency={run.currency}

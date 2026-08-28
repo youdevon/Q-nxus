@@ -2,7 +2,11 @@
  * Pay-run lifecycle helpers.
  *
  * DRAFT → APPROVED → POSTED → RECONCILED → CLOSED
- * Recalculation always returns the run to DRAFT and clears approval.
+ *
+ * DRAFT     — working paysheet; calculate, adjust, exclude/re-include
+ * APPROVED  — paysheet locked for posting; figures/membership frozen
+ *             Recalculate unlocks back to DRAFT and clears approval
+ * POSTED+   — amounts frozen permanently
  */
 
 export const PAY_RUN_STATUSES = [
@@ -15,9 +19,20 @@ export const PAY_RUN_STATUSES = [
 
 export type PayRunLifecycleStatus = (typeof PAY_RUN_STATUSES)[number];
 
-/** Amounts and membership may still be edited. */
+/**
+ * Run is still open (not frozen by post). Recalculate and delete are allowed.
+ * Does not imply line-item / membership edits — see `isPayRunEditable`.
+ */
 export function isPayRunMutable(status: string): boolean {
   return status === "DRAFT" || status === "APPROVED";
+}
+
+/**
+ * Paysheet figures and membership may be edited.
+ * APPROVED is intentionally not editable — Recalculate first to unlock.
+ */
+export function isPayRunEditable(status: string): boolean {
+  return status === "DRAFT";
 }
 
 /** Figures frozen; payment/export allowed. */
@@ -33,8 +48,14 @@ export function canApprovePayRun(status: string): boolean {
   return status === "DRAFT";
 }
 
+/** Recalculate is the unlock path from APPROVED as well as the draft refresh. */
+export function canRecalculatePayRun(status: string): boolean {
+  return isPayRunMutable(status);
+}
+
+/** Posting requires an approved paysheet — no draft shortcut. */
 export function canPostPayRun(status: string): boolean {
-  return status === "APPROVED" || status === "DRAFT";
+  return status === "APPROVED";
 }
 
 export function canReconcilePayRun(status: string): boolean {
@@ -43,6 +64,15 @@ export function canReconcilePayRun(status: string): boolean {
 
 export function canClosePayRun(status: string): boolean {
   return status === "RECONCILED" || status === "POSTED";
+}
+
+/**
+ * Delete is allowed in every lifecycle status so test environments can wipe
+ * approved / posted / closed runs and re-run the same period. Production
+ * callers should still treat this as destructive.
+ */
+export function canDeletePayRun(status: string): boolean {
+  return PAY_RUN_STATUSES.includes(status as PayRunLifecycleStatus);
 }
 
 export function payRunStatusLabel(status: string): string {

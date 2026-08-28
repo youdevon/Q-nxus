@@ -52,7 +52,13 @@ async function requireManageEmployee(employeeId: string) {
 
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-    select: { id: true, organizationId: true },
+    select: {
+      id: true,
+      organizationId: true,
+      firstName: true,
+      lastName: true,
+      employeeNumber: true,
+    },
   });
 
   if (!employee) {
@@ -268,6 +274,7 @@ export async function uploadChecklistCredentialDocument(
       }
 
       const stored = await storeEmployeeFileAttachment({
+        employee: access.employee,
         recordType: "credentials",
         recordId: credentialId,
         file: attachmentFile,
@@ -372,6 +379,7 @@ export async function uploadChecklistDirectAttachment(
     )?.storageKey;
 
     const stored = await storeEmployeeFileAttachment({
+      employee: access.employee,
       recordType: "checklist",
       recordId: row.id,
       file: attachmentFile,

@@ -11,6 +11,7 @@ import {
   getPreviousPayslipPeriod,
   maskAccountNumber,
   notesForPayslipDisplay,
+  payslipLineDetailForDisplay,
   PAYSLIP_PREVIEW_CAVEAT_NOTES,
   payslipPeriodToAsOfDate,
   resolveDefaultLivePayslipPeriod,
@@ -117,6 +118,7 @@ describe("applyFixedBankAllocations", () => {
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Primary Bank",
@@ -124,6 +126,7 @@ describe("applyFixedBankAllocations", () => {
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
   });
@@ -184,6 +187,7 @@ describe("distributeNetToBanks", () => {
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Primary Bank",
@@ -191,6 +195,7 @@ describe("distributeNetToBanks", () => {
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
   });
@@ -220,8 +225,22 @@ describe("notesForPayslipDisplay", () => {
   });
 });
 
+describe("payslipLineDetailForDisplay", () => {
+  it("hides override and internal PAYE estimate details", () => {
+    expect(
+      payslipLineDetailForDisplay(
+        "Override · August 2026 in-house payroll worksheet — master PAYE applied to remaining open periods.",
+      ),
+    ).toBeNull();
+    expect(payslipLineDetailForDisplay("Tax-year estimate 1482.44")).toBeNull();
+    expect(
+      payslipLineDetailForDisplay("Class XVI · 169.50/wk × 5"),
+    ).toBe("Class XVI · 169.50/wk × 5");
+  });
+});
+
 describe("assemblePayslipPreview", () => {
-  it("computes TTD 30,000 monthly stub: NIS 734.50, PAYE 5,496.46, Health by contribution weeks", () => {
+  it("computes TTD 30,000 monthly stub: NIS by Mondays, PAYE 5,496.46, Health by contribution weeks", () => {
     const preview = assemblePayslipPreview({
       employee: {
         id: "emp-1",
@@ -273,15 +292,17 @@ describe("assemblePayslipPreview", () => {
     expect(preview.grossPay).toBe(30_000);
     expect(preview.monthlyTaxableEarnings).toBe(30_000);
 
+    // July 2026 has 4 Mondays → NIS weekly × 4
     expect(preview.nis?.classCode).toBe("XVI");
-    expect(preview.nis?.employeeMonthly).toBe(734.5);
-    expect(preview.nis?.employerMonthly).toBe(1_469);
+    expect(preview.nis?.weeksInPeriod).toBe(4);
+    expect(preview.nis?.employeeMonthly).toBe(678);
+    expect(preview.nis?.employerMonthly).toBe(1_356);
 
     expect(preview.paye?.monthlyPaye).toBe(5_496.46);
     expect(preview.health?.periodAmount).toBe(33);
     expect(preview.health?.weeksInPeriod).toBe(4);
 
-    const statutoryTotal = 734.5 + 5_496.46 + 33;
+    const statutoryTotal = 678 + 5_496.46 + 33;
 
     expect(preview.totalDeductions).toBe(statutoryTotal + 500);
     expect(preview.netPay).toBe(
@@ -306,7 +327,7 @@ describe("assemblePayslipPreview", () => {
     expect(preview.employerContributions).toEqual([
       expect.objectContaining({
         label: "NIS (employer)",
-        amount: 1_469,
+        amount: 1_356,
       }),
     ]);
 
@@ -317,6 +338,7 @@ describe("assemblePayslipPreview", () => {
         accountNumberMasked: "••••7766",
         amount: 500,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Republic Bank",
@@ -324,8 +346,45 @@ describe("assemblePayslipPreview", () => {
         accountNumberMasked: "••••7890",
         amount: preview.netPay,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
+  });
+
+  it("uses 5 Mondays for August 2026 NIS and Health amounts", () => {
+    const preview = assemblePayslipPreview({
+      employee: {
+        id: "emp-aug",
+        employeeNumber: "E-108",
+        displayName: "August Example",
+        dateOfBirth: "1990-01-15",
+      },
+      currency: "TTD",
+      payFrequency: "MONTHLY",
+      paymentMethod: "CASH",
+      asOf: new Date("2026-08-15T12:00:00.000Z"),
+      earnings: [
+        {
+          label: "Base salary",
+          amount: 30_000,
+          frequency: "Monthly",
+          isTaxable: true,
+          source: "CONTRACT_SALARY",
+        },
+      ],
+      bankAccounts: [],
+      readiness: { isReady: true, blockingIssues: [] },
+      nisClasses: TT_NIS_2026_CLASSES,
+      payeConfig: TT_PAYE_2026_CONFIG,
+      healthConfig: TT_HEALTH_SURCHARGE_2026,
+    });
+
+    expect(preview.period.label).toBe("August 2026");
+    expect(preview.nis?.weeksInPeriod).toBe(5);
+    expect(preview.nis?.employeeMonthly).toBe(847.5);
+    expect(preview.nis?.employerMonthly).toBe(1_695);
+    expect(preview.health?.weeksInPeriod).toBe(5);
+    expect(preview.health?.periodAmount).toBe(41.25);
   });
 
   it("warns when fixed bank deductions exceed pay after statutory", () => {
@@ -593,7 +652,9 @@ describe("assemblePayslipPreview", () => {
       healthConfig: TT_HEALTH_SURCHARGE_2026,
     });
 
-    expect(preview.nis).toBeNull();
+    expect(preview.nis?.category).toBe("EXEMPT");
+    expect(preview.nis?.employeeMonthly).toBe(0);
+    expect(preview.nis?.employerMonthly).toBe(0);
     expect(preview.paye).toBeNull();
     expect(preview.health?.exempt).toBe(true);
     expect(preview.health?.exemptionReason).toBe("EMPLOYEE_OPT_OUT");

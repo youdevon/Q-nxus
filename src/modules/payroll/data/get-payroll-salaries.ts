@@ -1,8 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import {
-  resolveEmployeePositionTitle,
-  resolveStatutoryNumber,
-} from "@/src/modules/hr/public";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
 import { resolveBankAccountsForReadiness } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
 import { toMonthlyPeriodAmount } from "@/src/modules/payroll/lib/payslip-preview";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
@@ -103,6 +100,7 @@ export async function getPayrollSalaries(
           accountNumber: true,
           accountNumberLastFour: true,
           accountHolderName: true,
+          accountType: true,
           isPrimary: true,
           sortOrder: true,
           financialInstitutionId: true,
@@ -125,18 +123,8 @@ export async function getPayrollSalaries(
         select: {
           payFrequency: true,
           paymentMethod: true,
-          nisNumber: true,
-          birNumber: true,
           exemptFromNis: true,
           exemptFromPaye: true,
-          bankAccounts: {
-            select: {
-              bankName: true,
-              accountNumber: true,
-              amount: true,
-              isPrimary: true,
-            },
-          },
         },
       },
       contracts: {
@@ -209,6 +197,7 @@ export async function getPayrollSalaries(
         accountNumber: account.accountNumber,
         accountNumberLastFour: account.accountNumberLastFour,
         accountHolderName: account.accountHolderName,
+        accountType: account.accountType,
         isPrimary: account.isPrimary,
         sortOrder: account.sortOrder,
         financialInstitutionId: account.financialInstitutionId,
@@ -222,21 +211,13 @@ export async function getPayrollSalaries(
         isActive: row.isActive,
         priority: row.priority,
       })),
-      legacyAccounts:
-        profile?.bankAccounts.map((account) => ({
-          bankName: account.bankName,
-          accountNumber: account.accountNumber,
-          amount:
-            account.amount != null ? Number(account.amount.toString()) : null,
-          isPrimary: account.isPrimary,
-        })) ?? [],
     });
 
     const readiness = evaluatePayrollReadiness({
       hasCurrentContract: contract != null,
       baseSalary,
-      nisNumber: resolveStatutoryNumber(employee.nisNumber, profile?.nisNumber),
-      birNumber: resolveStatutoryNumber(employee.birNumber, profile?.birNumber),
+      nisNumber: employee.nisNumber?.trim() || null,
+      birNumber: employee.birNumber?.trim() || null,
       paymentMethod: profile?.paymentMethod ?? "BANK_TRANSFER",
       bankAccounts,
       exemptFromNis: profile?.exemptFromNis ?? false,

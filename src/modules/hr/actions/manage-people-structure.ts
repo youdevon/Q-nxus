@@ -13,6 +13,11 @@ export type StructureFormState = {
   status: "idle" | "success" | "error" | "conflict";
   message: string;
   entityId?: string;
+  createdEntity?: {
+    id: string;
+    title: string;
+    departmentId: string;
+  };
   fieldErrors?: {
     name?: string;
     code?: string;
@@ -528,11 +533,17 @@ export async function createPosition(
 
     revalidatePath("/people/structure");
     revalidatePath("/people/structure/chart");
+    revalidatePath("/people/employees", "layout");
 
     return {
       status: "success",
       message: "Position created successfully.",
       entityId: positionId,
+      createdEntity: {
+        id: positionId,
+        title,
+        departmentId,
+      },
     };
   } catch (error: unknown) {
     console.error("Unable to create position:", error);

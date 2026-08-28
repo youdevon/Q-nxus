@@ -391,8 +391,18 @@ export type EmployeeWhereInput = {
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
   appraisals?: Prisma.PerformanceAppraisalListRelationFilter
   payrollProfile?: Prisma.XOR<Prisma.PayrollProfileNullableScalarRelationFilter, Prisma.PayrollProfileWhereInput> | null
+  taxProfiles?: Prisma.EmployeeTaxProfileListRelationFilter
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdListRelationFilter
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceListRelationFilter
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideListRelationFilter
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionListRelationFilter
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentListRelationFilter
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideListRelationFilter
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementListRelationFilter
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryListRelationFilter
   payslips?: Prisma.PayslipListRelationFilter
   payrollLineItems?: Prisma.PayrollLineItemListRelationFilter
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemListRelationFilter
   bankAccounts?: Prisma.EmployeeBankAccountListRelationFilter
   payrollAllocations?: Prisma.EmployeePayrollAllocationListRelationFilter
   payrollPayments?: Prisma.PayrollPaymentListRelationFilter
@@ -450,8 +460,18 @@ export type EmployeeOrderByWithRelationInput = {
   assignments?: Prisma.EmployeeAssignmentOrderByRelationAggregateInput
   appraisals?: Prisma.PerformanceAppraisalOrderByRelationAggregateInput
   payrollProfile?: Prisma.PayrollProfileOrderByWithRelationInput
+  taxProfiles?: Prisma.EmployeeTaxProfileOrderByRelationAggregateInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdOrderByRelationAggregateInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceOrderByRelationAggregateInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideOrderByRelationAggregateInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionOrderByRelationAggregateInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentOrderByRelationAggregateInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideOrderByRelationAggregateInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementOrderByRelationAggregateInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryOrderByRelationAggregateInput
   payslips?: Prisma.PayslipOrderByRelationAggregateInput
   payrollLineItems?: Prisma.PayrollLineItemOrderByRelationAggregateInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemOrderByRelationAggregateInput
   bankAccounts?: Prisma.EmployeeBankAccountOrderByRelationAggregateInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationOrderByRelationAggregateInput
   payrollPayments?: Prisma.PayrollPaymentOrderByRelationAggregateInput
@@ -513,8 +533,18 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   assignments?: Prisma.EmployeeAssignmentListRelationFilter
   appraisals?: Prisma.PerformanceAppraisalListRelationFilter
   payrollProfile?: Prisma.XOR<Prisma.PayrollProfileNullableScalarRelationFilter, Prisma.PayrollProfileWhereInput> | null
+  taxProfiles?: Prisma.EmployeeTaxProfileListRelationFilter
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdListRelationFilter
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceListRelationFilter
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideListRelationFilter
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionListRelationFilter
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentListRelationFilter
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideListRelationFilter
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementListRelationFilter
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryListRelationFilter
   payslips?: Prisma.PayslipListRelationFilter
   payrollLineItems?: Prisma.PayrollLineItemListRelationFilter
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemListRelationFilter
   bankAccounts?: Prisma.EmployeeBankAccountListRelationFilter
   payrollAllocations?: Prisma.EmployeePayrollAllocationListRelationFilter
   payrollPayments?: Prisma.PayrollPaymentListRelationFilter
@@ -641,8 +671,18 @@ export type EmployeeCreateInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -697,8 +737,18 @@ export type EmployeeUncheckedCreateInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -753,8 +803,18 @@ export type EmployeeUpdateInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -809,8 +869,18 @@ export type EmployeeUncheckedUpdateInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1434,6 +1504,104 @@ export type EmployeeUpdateOneRequiredWithoutOffboardingCasesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOffboardingCasesInput, Prisma.EmployeeUpdateWithoutOffboardingCasesInput>, Prisma.EmployeeUncheckedUpdateWithoutOffboardingCasesInput>
 }
 
+export type EmployeeCreateNestedOneWithoutTaxProfilesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxProfilesInput, Prisma.EmployeeUncheckedCreateWithoutTaxProfilesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTaxProfilesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutTaxProfilesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxProfilesInput, Prisma.EmployeeUncheckedCreateWithoutTaxProfilesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTaxProfilesInput
+  upsert?: Prisma.EmployeeUpsertWithoutTaxProfilesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutTaxProfilesInput, Prisma.EmployeeUpdateWithoutTaxProfilesInput>, Prisma.EmployeeUncheckedUpdateWithoutTaxProfilesInput>
+}
+
+export type EmployeeCreateNestedOneWithoutPriorEmploymentYtdsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPriorEmploymentYtdsInput, Prisma.EmployeeUncheckedCreateWithoutPriorEmploymentYtdsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPriorEmploymentYtdsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutPriorEmploymentYtdsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPriorEmploymentYtdsInput, Prisma.EmployeeUncheckedCreateWithoutPriorEmploymentYtdsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPriorEmploymentYtdsInput
+  upsert?: Prisma.EmployeeUpsertWithoutPriorEmploymentYtdsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPriorEmploymentYtdsInput, Prisma.EmployeeUpdateWithoutPriorEmploymentYtdsInput>, Prisma.EmployeeUncheckedUpdateWithoutPriorEmploymentYtdsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutOpeningYtdBalancesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeUncheckedCreateWithoutOpeningYtdBalancesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOpeningYtdBalancesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutOpeningYtdBalancesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeUncheckedCreateWithoutOpeningYtdBalancesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOpeningYtdBalancesInput
+  upsert?: Prisma.EmployeeUpsertWithoutOpeningYtdBalancesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOpeningYtdBalancesInput, Prisma.EmployeeUpdateWithoutOpeningYtdBalancesInput>, Prisma.EmployeeUncheckedUpdateWithoutOpeningYtdBalancesInput>
+}
+
+export type EmployeeCreateNestedOneWithoutStatutoryOverridesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutStatutoryOverridesInput, Prisma.EmployeeUncheckedCreateWithoutStatutoryOverridesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutStatutoryOverridesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutStatutoryOverridesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutStatutoryOverridesInput, Prisma.EmployeeUncheckedCreateWithoutStatutoryOverridesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutStatutoryOverridesInput
+  upsert?: Prisma.EmployeeUpsertWithoutStatutoryOverridesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutStatutoryOverridesInput, Prisma.EmployeeUpdateWithoutStatutoryOverridesInput>, Prisma.EmployeeUncheckedUpdateWithoutStatutoryOverridesInput>
+}
+
+export type EmployeeCreateNestedOneWithoutAnnualPayrollProjectionsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAnnualPayrollProjectionsInput, Prisma.EmployeeUncheckedCreateWithoutAnnualPayrollProjectionsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAnnualPayrollProjectionsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutAnnualPayrollProjectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAnnualPayrollProjectionsInput, Prisma.EmployeeUncheckedCreateWithoutAnnualPayrollProjectionsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAnnualPayrollProjectionsInput
+  upsert?: Prisma.EmployeeUpsertWithoutAnnualPayrollProjectionsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutAnnualPayrollProjectionsInput, Prisma.EmployeeUpdateWithoutAnnualPayrollProjectionsInput>, Prisma.EmployeeUncheckedUpdateWithoutAnnualPayrollProjectionsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutTaxYearAdjustmentsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxYearAdjustmentsInput, Prisma.EmployeeUncheckedCreateWithoutTaxYearAdjustmentsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTaxYearAdjustmentsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutTaxYearAdjustmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxYearAdjustmentsInput, Prisma.EmployeeUncheckedCreateWithoutTaxYearAdjustmentsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTaxYearAdjustmentsInput
+  upsert?: Prisma.EmployeeUpsertWithoutTaxYearAdjustmentsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutTaxYearAdjustmentsInput, Prisma.EmployeeUpdateWithoutTaxYearAdjustmentsInput>, Prisma.EmployeeUncheckedUpdateWithoutTaxYearAdjustmentsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutEarningTreatmentOverridesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutEarningTreatmentOverridesInput, Prisma.EmployeeUncheckedCreateWithoutEarningTreatmentOverridesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutEarningTreatmentOverridesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutEarningTreatmentOverridesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutEarningTreatmentOverridesInput, Prisma.EmployeeUncheckedCreateWithoutEarningTreatmentOverridesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutEarningTreatmentOverridesInput
+  upsert?: Prisma.EmployeeUpsertWithoutEarningTreatmentOverridesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutEarningTreatmentOverridesInput, Prisma.EmployeeUpdateWithoutEarningTreatmentOverridesInput>, Prisma.EmployeeUncheckedUpdateWithoutEarningTreatmentOverridesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutPayrollProfileInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayrollProfileInput, Prisma.EmployeeUncheckedCreateWithoutPayrollProfileInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayrollProfileInput
@@ -1490,6 +1658,34 @@ export type EmployeeUpdateOneRequiredWithoutPayrollPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPayrollPaymentsInput, Prisma.EmployeeUpdateWithoutPayrollPaymentsInput>, Prisma.EmployeeUncheckedUpdateWithoutPayrollPaymentsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutGratuitySettlementsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutGratuitySettlementsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutGratuitySettlementsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutGratuitySettlementsInput
+  upsert?: Prisma.EmployeeUpsertWithoutGratuitySettlementsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutGratuitySettlementsInput, Prisma.EmployeeUpdateWithoutGratuitySettlementsInput>, Prisma.EmployeeUncheckedUpdateWithoutGratuitySettlementsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutGratuityAccrualEntriesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuityAccrualEntriesInput, Prisma.EmployeeUncheckedCreateWithoutGratuityAccrualEntriesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutGratuityAccrualEntriesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutGratuityAccrualEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuityAccrualEntriesInput, Prisma.EmployeeUncheckedCreateWithoutGratuityAccrualEntriesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutGratuityAccrualEntriesInput
+  upsert?: Prisma.EmployeeUpsertWithoutGratuityAccrualEntriesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutGratuityAccrualEntriesInput, Prisma.EmployeeUpdateWithoutGratuityAccrualEntriesInput>, Prisma.EmployeeUncheckedUpdateWithoutGratuityAccrualEntriesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutPayslipsInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayslipsInput, Prisma.EmployeeUncheckedCreateWithoutPayslipsInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayslipsInput
@@ -1516,6 +1712,20 @@ export type EmployeeUpdateOneRequiredWithoutPayrollLineItemsNestedInput = {
   upsert?: Prisma.EmployeeUpsertWithoutPayrollLineItemsInput
   connect?: Prisma.EmployeeWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPayrollLineItemsInput, Prisma.EmployeeUpdateWithoutPayrollLineItemsInput>, Prisma.EmployeeUncheckedUpdateWithoutPayrollLineItemsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutPayrollRecurringItemsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayrollRecurringItemsInput, Prisma.EmployeeUncheckedCreateWithoutPayrollRecurringItemsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayrollRecurringItemsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutPayrollRecurringItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPayrollRecurringItemsInput, Prisma.EmployeeUncheckedCreateWithoutPayrollRecurringItemsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPayrollRecurringItemsInput
+  upsert?: Prisma.EmployeeUpsertWithoutPayrollRecurringItemsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPayrollRecurringItemsInput, Prisma.EmployeeUpdateWithoutPayrollRecurringItemsInput>, Prisma.EmployeeUncheckedUpdateWithoutPayrollRecurringItemsInput>
 }
 
 export type EmployeeCreateWithoutOrganizationInput = {
@@ -1552,8 +1762,18 @@ export type EmployeeCreateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -1607,8 +1827,18 @@ export type EmployeeUncheckedCreateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1725,8 +1955,18 @@ export type EmployeeCreateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -1780,8 +2020,18 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -1851,8 +2101,18 @@ export type EmployeeUpdateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -1906,8 +2166,18 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1960,8 +2230,18 @@ export type EmployeeCreateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -2015,8 +2295,18 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2096,8 +2386,18 @@ export type EmployeeCreateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -2151,8 +2451,18 @@ export type EmployeeUncheckedCreateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2232,8 +2542,18 @@ export type EmployeeCreateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -2287,8 +2607,18 @@ export type EmployeeUncheckedCreateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2358,8 +2688,18 @@ export type EmployeeUpdateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -2413,8 +2753,18 @@ export type EmployeeUncheckedUpdateWithoutAssignmentsInput = {
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2469,8 +2819,18 @@ export type EmployeeCreateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -2524,8 +2884,18 @@ export type EmployeeUncheckedCreateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2595,8 +2965,18 @@ export type EmployeeUpdateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -2650,8 +3030,18 @@ export type EmployeeUncheckedUpdateWithoutLeaveBalancesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2705,8 +3095,18 @@ export type EmployeeCreateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -2760,8 +3160,18 @@ export type EmployeeUncheckedCreateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2831,8 +3241,18 @@ export type EmployeeUpdateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -2886,8 +3306,18 @@ export type EmployeeUncheckedUpdateWithoutLeaveTransactionsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2941,8 +3371,18 @@ export type EmployeeCreateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -2996,8 +3436,18 @@ export type EmployeeUncheckedCreateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3067,8 +3517,18 @@ export type EmployeeUpdateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -3122,8 +3582,18 @@ export type EmployeeUncheckedUpdateWithoutLeaveRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3177,8 +3647,18 @@ export type EmployeeCreateWithoutLeaveAcknowledgementsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -3232,8 +3712,18 @@ export type EmployeeUncheckedCreateWithoutLeaveAcknowledgementsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3303,8 +3793,18 @@ export type EmployeeUpdateWithoutLeaveAcknowledgementsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -3358,8 +3858,18 @@ export type EmployeeUncheckedUpdateWithoutLeaveAcknowledgementsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3413,8 +3923,18 @@ export type EmployeeCreateWithoutCorrespondencesInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -3468,8 +3988,18 @@ export type EmployeeUncheckedCreateWithoutCorrespondencesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3539,8 +4069,18 @@ export type EmployeeUpdateWithoutCorrespondencesInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -3594,8 +4134,18 @@ export type EmployeeUncheckedUpdateWithoutCorrespondencesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3649,8 +4199,18 @@ export type EmployeeCreateWithoutCredentialsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -3704,8 +4264,18 @@ export type EmployeeUncheckedCreateWithoutCredentialsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3775,8 +4345,18 @@ export type EmployeeUpdateWithoutCredentialsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -3830,8 +4410,18 @@ export type EmployeeUncheckedUpdateWithoutCredentialsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3885,8 +4475,18 @@ export type EmployeeCreateWithoutTrainingRecordsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -3940,8 +4540,18 @@ export type EmployeeUncheckedCreateWithoutTrainingRecordsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4011,8 +4621,18 @@ export type EmployeeUpdateWithoutTrainingRecordsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -4066,8 +4686,18 @@ export type EmployeeUncheckedUpdateWithoutTrainingRecordsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4121,8 +4751,18 @@ export type EmployeeCreateWithoutQualificationDocumentsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -4176,8 +4816,18 @@ export type EmployeeUncheckedCreateWithoutQualificationDocumentsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4247,8 +4897,18 @@ export type EmployeeUpdateWithoutQualificationDocumentsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -4302,8 +4962,18 @@ export type EmployeeUncheckedUpdateWithoutQualificationDocumentsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4357,8 +5027,18 @@ export type EmployeeCreateWithoutFileChecklistItemsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -4412,8 +5092,18 @@ export type EmployeeUncheckedCreateWithoutFileChecklistItemsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4483,8 +5173,18 @@ export type EmployeeUpdateWithoutFileChecklistItemsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -4538,8 +5238,18 @@ export type EmployeeUncheckedUpdateWithoutFileChecklistItemsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4593,8 +5303,18 @@ export type EmployeeCreateWithoutFileUpdateRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -4648,8 +5368,18 @@ export type EmployeeUncheckedCreateWithoutFileUpdateRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4719,8 +5449,18 @@ export type EmployeeUpdateWithoutFileUpdateRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -4774,8 +5514,18 @@ export type EmployeeUncheckedUpdateWithoutFileUpdateRequestsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4829,8 +5579,18 @@ export type EmployeeCreateWithoutCorrespondenceResponsesInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -4884,8 +5644,18 @@ export type EmployeeUncheckedCreateWithoutCorrespondenceResponsesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4955,8 +5725,18 @@ export type EmployeeUpdateWithoutCorrespondenceResponsesInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -5010,8 +5790,18 @@ export type EmployeeUncheckedUpdateWithoutCorrespondenceResponsesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5064,8 +5854,18 @@ export type EmployeeCreateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -5119,8 +5919,18 @@ export type EmployeeUncheckedCreateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5190,8 +6000,18 @@ export type EmployeeUpdateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -5245,8 +6065,18 @@ export type EmployeeUncheckedUpdateWithoutAppraisalsInput = {
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5300,8 +6130,18 @@ export type EmployeeCreateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -5355,8 +6195,18 @@ export type EmployeeUncheckedCreateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5426,8 +6276,18 @@ export type EmployeeUpdateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -5481,8 +6341,18 @@ export type EmployeeUncheckedUpdateWithoutContractsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5537,8 +6407,18 @@ export type EmployeeCreateWithoutOnboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -5592,8 +6472,18 @@ export type EmployeeUncheckedCreateWithoutOnboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5663,8 +6553,18 @@ export type EmployeeUpdateWithoutOnboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -5718,8 +6618,18 @@ export type EmployeeUncheckedUpdateWithoutOnboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5773,8 +6683,18 @@ export type EmployeeCreateWithoutOffboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -5828,8 +6748,18 @@ export type EmployeeUncheckedCreateWithoutOffboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5899,8 +6829,18 @@ export type EmployeeUpdateWithoutOffboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -5954,8 +6894,18 @@ export type EmployeeUncheckedUpdateWithoutOffboardingCasesInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5971,6 +6921,1938 @@ export type EmployeeUncheckedUpdateWithoutOffboardingCasesInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutTaxProfilesInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutTaxProfilesInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutTaxProfilesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxProfilesInput, Prisma.EmployeeUncheckedCreateWithoutTaxProfilesInput>
+}
+
+export type EmployeeUpsertWithoutTaxProfilesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutTaxProfilesInput, Prisma.EmployeeUncheckedUpdateWithoutTaxProfilesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxProfilesInput, Prisma.EmployeeUncheckedCreateWithoutTaxProfilesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutTaxProfilesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutTaxProfilesInput, Prisma.EmployeeUncheckedUpdateWithoutTaxProfilesInput>
+}
+
+export type EmployeeUpdateWithoutTaxProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutTaxProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutPriorEmploymentYtdsInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutPriorEmploymentYtdsInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutPriorEmploymentYtdsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPriorEmploymentYtdsInput, Prisma.EmployeeUncheckedCreateWithoutPriorEmploymentYtdsInput>
+}
+
+export type EmployeeUpsertWithoutPriorEmploymentYtdsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutPriorEmploymentYtdsInput, Prisma.EmployeeUncheckedUpdateWithoutPriorEmploymentYtdsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPriorEmploymentYtdsInput, Prisma.EmployeeUncheckedCreateWithoutPriorEmploymentYtdsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutPriorEmploymentYtdsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutPriorEmploymentYtdsInput, Prisma.EmployeeUncheckedUpdateWithoutPriorEmploymentYtdsInput>
+}
+
+export type EmployeeUpdateWithoutPriorEmploymentYtdsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutPriorEmploymentYtdsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutOpeningYtdBalancesInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutOpeningYtdBalancesInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutOpeningYtdBalancesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeUncheckedCreateWithoutOpeningYtdBalancesInput>
+}
+
+export type EmployeeUpsertWithoutOpeningYtdBalancesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutOpeningYtdBalancesInput, Prisma.EmployeeUncheckedUpdateWithoutOpeningYtdBalancesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOpeningYtdBalancesInput, Prisma.EmployeeUncheckedCreateWithoutOpeningYtdBalancesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutOpeningYtdBalancesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutOpeningYtdBalancesInput, Prisma.EmployeeUncheckedUpdateWithoutOpeningYtdBalancesInput>
+}
+
+export type EmployeeUpdateWithoutOpeningYtdBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutOpeningYtdBalancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutStatutoryOverridesInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutStatutoryOverridesInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutStatutoryOverridesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutStatutoryOverridesInput, Prisma.EmployeeUncheckedCreateWithoutStatutoryOverridesInput>
+}
+
+export type EmployeeUpsertWithoutStatutoryOverridesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutStatutoryOverridesInput, Prisma.EmployeeUncheckedUpdateWithoutStatutoryOverridesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutStatutoryOverridesInput, Prisma.EmployeeUncheckedCreateWithoutStatutoryOverridesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutStatutoryOverridesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutStatutoryOverridesInput, Prisma.EmployeeUncheckedUpdateWithoutStatutoryOverridesInput>
+}
+
+export type EmployeeUpdateWithoutStatutoryOverridesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutStatutoryOverridesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutAnnualPayrollProjectionsInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutAnnualPayrollProjectionsInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutAnnualPayrollProjectionsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAnnualPayrollProjectionsInput, Prisma.EmployeeUncheckedCreateWithoutAnnualPayrollProjectionsInput>
+}
+
+export type EmployeeUpsertWithoutAnnualPayrollProjectionsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutAnnualPayrollProjectionsInput, Prisma.EmployeeUncheckedUpdateWithoutAnnualPayrollProjectionsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAnnualPayrollProjectionsInput, Prisma.EmployeeUncheckedCreateWithoutAnnualPayrollProjectionsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutAnnualPayrollProjectionsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutAnnualPayrollProjectionsInput, Prisma.EmployeeUncheckedUpdateWithoutAnnualPayrollProjectionsInput>
+}
+
+export type EmployeeUpdateWithoutAnnualPayrollProjectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutAnnualPayrollProjectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutTaxYearAdjustmentsInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutTaxYearAdjustmentsInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutTaxYearAdjustmentsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxYearAdjustmentsInput, Prisma.EmployeeUncheckedCreateWithoutTaxYearAdjustmentsInput>
+}
+
+export type EmployeeUpsertWithoutTaxYearAdjustmentsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutTaxYearAdjustmentsInput, Prisma.EmployeeUncheckedUpdateWithoutTaxYearAdjustmentsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTaxYearAdjustmentsInput, Prisma.EmployeeUncheckedCreateWithoutTaxYearAdjustmentsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutTaxYearAdjustmentsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutTaxYearAdjustmentsInput, Prisma.EmployeeUncheckedUpdateWithoutTaxYearAdjustmentsInput>
+}
+
+export type EmployeeUpdateWithoutTaxYearAdjustmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutTaxYearAdjustmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutEarningTreatmentOverridesInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutEarningTreatmentOverridesInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutEarningTreatmentOverridesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutEarningTreatmentOverridesInput, Prisma.EmployeeUncheckedCreateWithoutEarningTreatmentOverridesInput>
+}
+
+export type EmployeeUpsertWithoutEarningTreatmentOverridesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutEarningTreatmentOverridesInput, Prisma.EmployeeUncheckedUpdateWithoutEarningTreatmentOverridesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutEarningTreatmentOverridesInput, Prisma.EmployeeUncheckedCreateWithoutEarningTreatmentOverridesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutEarningTreatmentOverridesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutEarningTreatmentOverridesInput, Prisma.EmployeeUncheckedUpdateWithoutEarningTreatmentOverridesInput>
+}
+
+export type EmployeeUpdateWithoutEarningTreatmentOverridesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutEarningTreatmentOverridesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
 }
 
@@ -6008,8 +8890,18 @@ export type EmployeeCreateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -6063,8 +8955,18 @@ export type EmployeeUncheckedCreateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6134,8 +9036,18 @@ export type EmployeeUpdateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -6189,8 +9101,18 @@ export type EmployeeUncheckedUpdateWithoutPayrollProfileInput = {
   contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6245,8 +9167,18 @@ export type EmployeeCreateWithoutBankAccountsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
@@ -6300,8 +9232,18 @@ export type EmployeeUncheckedCreateWithoutBankAccountsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6371,8 +9313,18 @@ export type EmployeeUpdateWithoutBankAccountsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
@@ -6426,8 +9378,18 @@ export type EmployeeUncheckedUpdateWithoutBankAccountsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6481,8 +9443,18 @@ export type EmployeeCreateWithoutPayrollAllocationsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
@@ -6536,8 +9508,18 @@ export type EmployeeUncheckedCreateWithoutPayrollAllocationsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6607,8 +9589,18 @@ export type EmployeeUpdateWithoutPayrollAllocationsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
@@ -6662,8 +9654,18 @@ export type EmployeeUncheckedUpdateWithoutPayrollAllocationsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6717,8 +9719,18 @@ export type EmployeeCreateWithoutPayrollPaymentsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
@@ -6772,8 +9784,18 @@ export type EmployeeUncheckedCreateWithoutPayrollPaymentsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6843,8 +9865,18 @@ export type EmployeeUpdateWithoutPayrollPaymentsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
@@ -6898,10 +9930,572 @@ export type EmployeeUncheckedUpdateWithoutPayrollPaymentsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutGratuitySettlementsInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutGratuitySettlementsInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutGratuitySettlementsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+}
+
+export type EmployeeUpsertWithoutGratuitySettlementsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedUpdateWithoutGratuitySettlementsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedCreateWithoutGratuitySettlementsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutGratuitySettlementsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutGratuitySettlementsInput, Prisma.EmployeeUncheckedUpdateWithoutGratuitySettlementsInput>
+}
+
+export type EmployeeUpdateWithoutGratuitySettlementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutGratuitySettlementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutGratuityAccrualEntriesInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutGratuityAccrualEntriesInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutGratuityAccrualEntriesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuityAccrualEntriesInput, Prisma.EmployeeUncheckedCreateWithoutGratuityAccrualEntriesInput>
+}
+
+export type EmployeeUpsertWithoutGratuityAccrualEntriesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutGratuityAccrualEntriesInput, Prisma.EmployeeUncheckedUpdateWithoutGratuityAccrualEntriesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutGratuityAccrualEntriesInput, Prisma.EmployeeUncheckedCreateWithoutGratuityAccrualEntriesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutGratuityAccrualEntriesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutGratuityAccrualEntriesInput, Prisma.EmployeeUncheckedUpdateWithoutGratuityAccrualEntriesInput>
+}
+
+export type EmployeeUpdateWithoutGratuityAccrualEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutGratuityAccrualEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6953,7 +10547,17 @@ export type EmployeeCreateWithoutPayslipsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -7008,7 +10612,17 @@ export type EmployeeUncheckedCreateWithoutPayslipsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7079,7 +10693,17 @@ export type EmployeeUpdateWithoutPayslipsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -7134,7 +10758,17 @@ export type EmployeeUncheckedUpdateWithoutPayslipsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7189,7 +10823,17 @@ export type EmployeeCreateWithoutPayrollLineItemsInput = {
   assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
@@ -7244,7 +10888,17 @@ export type EmployeeUncheckedCreateWithoutPayrollLineItemsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
   payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
   payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutEmployeeInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7315,7 +10969,17 @@ export type EmployeeUpdateWithoutPayrollLineItemsInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -7370,7 +11034,293 @@ export type EmployeeUncheckedUpdateWithoutPayrollLineItemsInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutPayrollRecurringItemsInput = {
+  id?: string
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeesInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  position?: Prisma.PositionCreateNestedOneWithoutEmployeesInput
+  contracts?: Prisma.EmploymentContractCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutPayrollRecurringItemsInput = {
+  id?: string
+  organizationId: string
+  departmentId?: string | null
+  positionId?: string | null
+  employeeNumber: string
+  firstName: string
+  middleName?: string | null
+  lastName: string
+  preferredName?: string | null
+  workEmail?: string | null
+  personalEmail?: string | null
+  phone?: string | null
+  address?: string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelationship?: string | null
+  dateOfBirth?: Date | string | null
+  nisNumber?: string | null
+  birNumber?: string | null
+  idType?: $Enums.EmployeeIdType | null
+  idNumber?: string | null
+  workforceCategory?: $Enums.WorkforceCategory
+  employmentStatus?: $Enums.EmploymentStatus
+  employmentType: $Enums.EmploymentType
+  hireDate: Date | string
+  terminationDate?: Date | string | null
+  isArchived?: boolean
+  fileFrozenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  contracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutEmployeeInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedCreateNestedManyWithoutEmployeeInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedCreateNestedOneWithoutEmployeeInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutEmployeeInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutEmployeeInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutEmployeeInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutEmployeeInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutEmployeeInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutEmployeeInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutEmployeeInput
+  bankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutEmployeeInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUncheckedCreateNestedManyWithoutAcknowledgerEmployeeInput
+  correspondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutEmployeeInput
+  credentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutEmployeeInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutEmployeeInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutEmployeeInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutPayrollRecurringItemsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPayrollRecurringItemsInput, Prisma.EmployeeUncheckedCreateWithoutPayrollRecurringItemsInput>
+}
+
+export type EmployeeUpsertWithoutPayrollRecurringItemsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutPayrollRecurringItemsInput, Prisma.EmployeeUncheckedUpdateWithoutPayrollRecurringItemsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPayrollRecurringItemsInput, Prisma.EmployeeUncheckedCreateWithoutPayrollRecurringItemsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutPayrollRecurringItemsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutPayrollRecurringItemsInput, Prisma.EmployeeUncheckedUpdateWithoutPayrollRecurringItemsInput>
+}
+
+export type EmployeeUpdateWithoutPayrollRecurringItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeesNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  position?: Prisma.PositionUpdateOneWithoutEmployeesNestedInput
+  contracts?: Prisma.EmploymentContractUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
+  payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
+  leaveBalances?: Prisma.EmployeeLeaveBalanceUpdateManyWithoutEmployeeNestedInput
+  leaveTransactions?: Prisma.LeaveBalanceTransactionUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  leaveAcknowledgements?: Prisma.LeaveRequestAcknowledgementUpdateManyWithoutAcknowledgerEmployeeNestedInput
+  correspondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutEmployeeNestedInput
+  credentials?: Prisma.EmployeeCredentialUpdateManyWithoutEmployeeNestedInput
+  trainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutEmployeeNestedInput
+  qualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutEmployeeNestedInput
+  fileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutEmployeeNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutEmployeeNestedInput
+  correspondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutEmployeeNestedInput
+  onboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutEmployeeNestedInput
+  offboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutEmployeeNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutPayrollRecurringItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelationship?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nisNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  birNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idType?: Prisma.NullableEnumEmployeeIdTypeFieldUpdateOperationsInput | $Enums.EmployeeIdType | null
+  idNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workforceCategory?: Prisma.EnumWorkforceCategoryFieldUpdateOperationsInput | $Enums.WorkforceCategory
+  employmentStatus?: Prisma.EnumEmploymentStatusFieldUpdateOperationsInput | $Enums.EmploymentStatus
+  employmentType?: Prisma.EnumEmploymentTypeFieldUpdateOperationsInput | $Enums.EmploymentType
+  hireDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  terminationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fileFrozenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7456,8 +11406,18 @@ export type EmployeeUpdateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -7511,8 +11471,18 @@ export type EmployeeUncheckedUpdateWithoutOrganizationInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7630,8 +11600,18 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -7685,8 +11665,18 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7804,8 +11794,18 @@ export type EmployeeUpdateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutEmployeeNestedInput
@@ -7859,8 +11859,18 @@ export type EmployeeUncheckedUpdateWithoutPositionInput = {
   assignments?: Prisma.EmployeeAssignmentUncheckedUpdateManyWithoutEmployeeNestedInput
   appraisals?: Prisma.PerformanceAppraisalUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollProfile?: Prisma.PayrollProfileUncheckedUpdateOneWithoutEmployeeNestedInput
+  taxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutEmployeeNestedInput
+  priorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutEmployeeNestedInput
+  openingYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  statutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  annualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutEmployeeNestedInput
+  taxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutEmployeeNestedInput
+  earningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutEmployeeNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutEmployeeNestedInput
   payslips?: Prisma.PayslipUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutEmployeeNestedInput
+  payrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutEmployeeNestedInput
   bankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutEmployeeNestedInput
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7921,8 +11931,18 @@ export type EmployeeCountOutputType = {
   contracts: number
   assignments: number
   appraisals: number
+  taxProfiles: number
+  priorEmploymentYtds: number
+  openingYtdBalances: number
+  statutoryOverrides: number
+  annualPayrollProjections: number
+  taxYearAdjustments: number
+  earningTreatmentOverrides: number
+  gratuitySettlements: number
+  gratuityAccrualEntries: number
   payslips: number
   payrollLineItems: number
+  payrollRecurringItems: number
   bankAccounts: number
   payrollAllocations: number
   payrollPayments: number
@@ -7945,8 +11965,18 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   contracts?: boolean | EmployeeCountOutputTypeCountContractsArgs
   assignments?: boolean | EmployeeCountOutputTypeCountAssignmentsArgs
   appraisals?: boolean | EmployeeCountOutputTypeCountAppraisalsArgs
+  taxProfiles?: boolean | EmployeeCountOutputTypeCountTaxProfilesArgs
+  priorEmploymentYtds?: boolean | EmployeeCountOutputTypeCountPriorEmploymentYtdsArgs
+  openingYtdBalances?: boolean | EmployeeCountOutputTypeCountOpeningYtdBalancesArgs
+  statutoryOverrides?: boolean | EmployeeCountOutputTypeCountStatutoryOverridesArgs
+  annualPayrollProjections?: boolean | EmployeeCountOutputTypeCountAnnualPayrollProjectionsArgs
+  taxYearAdjustments?: boolean | EmployeeCountOutputTypeCountTaxYearAdjustmentsArgs
+  earningTreatmentOverrides?: boolean | EmployeeCountOutputTypeCountEarningTreatmentOverridesArgs
+  gratuitySettlements?: boolean | EmployeeCountOutputTypeCountGratuitySettlementsArgs
+  gratuityAccrualEntries?: boolean | EmployeeCountOutputTypeCountGratuityAccrualEntriesArgs
   payslips?: boolean | EmployeeCountOutputTypeCountPayslipsArgs
   payrollLineItems?: boolean | EmployeeCountOutputTypeCountPayrollLineItemsArgs
+  payrollRecurringItems?: boolean | EmployeeCountOutputTypeCountPayrollRecurringItemsArgs
   bankAccounts?: boolean | EmployeeCountOutputTypeCountBankAccountsArgs
   payrollAllocations?: boolean | EmployeeCountOutputTypeCountPayrollAllocationsArgs
   payrollPayments?: boolean | EmployeeCountOutputTypeCountPayrollPaymentsArgs
@@ -7999,6 +12029,69 @@ export type EmployeeCountOutputTypeCountAppraisalsArgs<ExtArgs extends runtime.T
 /**
  * EmployeeCountOutputType without action
  */
+export type EmployeeCountOutputTypeCountTaxProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeTaxProfileWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountPriorEmploymentYtdsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeePriorEmploymentYtdWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountOpeningYtdBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeOpeningYtdBalanceWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountStatutoryOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeePayrollStatutoryOverrideWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountAnnualPayrollProjectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeAnnualPayrollProjectionWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountTaxYearAdjustmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeTaxYearAdjustmentWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountEarningTreatmentOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeEarningTreatmentOverrideWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountGratuitySettlementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeGratuitySettlementWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountGratuityAccrualEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.GratuityAccrualEntryWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
 export type EmployeeCountOutputTypeCountPayslipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PayslipWhereInput
 }
@@ -8008,6 +12101,13 @@ export type EmployeeCountOutputTypeCountPayslipsArgs<ExtArgs extends runtime.Typ
  */
 export type EmployeeCountOutputTypeCountPayrollLineItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PayrollLineItemWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountPayrollRecurringItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeePayrollRecurringItemWhereInput
 }
 
 /**
@@ -8161,8 +12261,18 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   assignments?: boolean | Prisma.Employee$assignmentsArgs<ExtArgs>
   appraisals?: boolean | Prisma.Employee$appraisalsArgs<ExtArgs>
   payrollProfile?: boolean | Prisma.Employee$payrollProfileArgs<ExtArgs>
+  taxProfiles?: boolean | Prisma.Employee$taxProfilesArgs<ExtArgs>
+  priorEmploymentYtds?: boolean | Prisma.Employee$priorEmploymentYtdsArgs<ExtArgs>
+  openingYtdBalances?: boolean | Prisma.Employee$openingYtdBalancesArgs<ExtArgs>
+  statutoryOverrides?: boolean | Prisma.Employee$statutoryOverridesArgs<ExtArgs>
+  annualPayrollProjections?: boolean | Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs>
+  taxYearAdjustments?: boolean | Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs>
+  earningTreatmentOverrides?: boolean | Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs>
+  gratuitySettlements?: boolean | Prisma.Employee$gratuitySettlementsArgs<ExtArgs>
+  gratuityAccrualEntries?: boolean | Prisma.Employee$gratuityAccrualEntriesArgs<ExtArgs>
   payslips?: boolean | Prisma.Employee$payslipsArgs<ExtArgs>
   payrollLineItems?: boolean | Prisma.Employee$payrollLineItemsArgs<ExtArgs>
+  payrollRecurringItems?: boolean | Prisma.Employee$payrollRecurringItemsArgs<ExtArgs>
   bankAccounts?: boolean | Prisma.Employee$bankAccountsArgs<ExtArgs>
   payrollAllocations?: boolean | Prisma.Employee$payrollAllocationsArgs<ExtArgs>
   payrollPayments?: boolean | Prisma.Employee$payrollPaymentsArgs<ExtArgs>
@@ -8297,8 +12407,18 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   assignments?: boolean | Prisma.Employee$assignmentsArgs<ExtArgs>
   appraisals?: boolean | Prisma.Employee$appraisalsArgs<ExtArgs>
   payrollProfile?: boolean | Prisma.Employee$payrollProfileArgs<ExtArgs>
+  taxProfiles?: boolean | Prisma.Employee$taxProfilesArgs<ExtArgs>
+  priorEmploymentYtds?: boolean | Prisma.Employee$priorEmploymentYtdsArgs<ExtArgs>
+  openingYtdBalances?: boolean | Prisma.Employee$openingYtdBalancesArgs<ExtArgs>
+  statutoryOverrides?: boolean | Prisma.Employee$statutoryOverridesArgs<ExtArgs>
+  annualPayrollProjections?: boolean | Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs>
+  taxYearAdjustments?: boolean | Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs>
+  earningTreatmentOverrides?: boolean | Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs>
+  gratuitySettlements?: boolean | Prisma.Employee$gratuitySettlementsArgs<ExtArgs>
+  gratuityAccrualEntries?: boolean | Prisma.Employee$gratuityAccrualEntriesArgs<ExtArgs>
   payslips?: boolean | Prisma.Employee$payslipsArgs<ExtArgs>
   payrollLineItems?: boolean | Prisma.Employee$payrollLineItemsArgs<ExtArgs>
+  payrollRecurringItems?: boolean | Prisma.Employee$payrollRecurringItemsArgs<ExtArgs>
   bankAccounts?: boolean | Prisma.Employee$bankAccountsArgs<ExtArgs>
   payrollAllocations?: boolean | Prisma.Employee$payrollAllocationsArgs<ExtArgs>
   payrollPayments?: boolean | Prisma.Employee$payrollPaymentsArgs<ExtArgs>
@@ -8339,8 +12459,18 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     assignments: Prisma.$EmployeeAssignmentPayload<ExtArgs>[]
     appraisals: Prisma.$PerformanceAppraisalPayload<ExtArgs>[]
     payrollProfile: Prisma.$PayrollProfilePayload<ExtArgs> | null
+    taxProfiles: Prisma.$EmployeeTaxProfilePayload<ExtArgs>[]
+    priorEmploymentYtds: Prisma.$EmployeePriorEmploymentYtdPayload<ExtArgs>[]
+    openingYtdBalances: Prisma.$EmployeeOpeningYtdBalancePayload<ExtArgs>[]
+    statutoryOverrides: Prisma.$EmployeePayrollStatutoryOverridePayload<ExtArgs>[]
+    annualPayrollProjections: Prisma.$EmployeeAnnualPayrollProjectionPayload<ExtArgs>[]
+    taxYearAdjustments: Prisma.$EmployeeTaxYearAdjustmentPayload<ExtArgs>[]
+    earningTreatmentOverrides: Prisma.$EmployeeEarningTreatmentOverridePayload<ExtArgs>[]
+    gratuitySettlements: Prisma.$EmployeeGratuitySettlementPayload<ExtArgs>[]
+    gratuityAccrualEntries: Prisma.$GratuityAccrualEntryPayload<ExtArgs>[]
     payslips: Prisma.$PayslipPayload<ExtArgs>[]
     payrollLineItems: Prisma.$PayrollLineItemPayload<ExtArgs>[]
+    payrollRecurringItems: Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>[]
     bankAccounts: Prisma.$EmployeeBankAccountPayload<ExtArgs>[]
     payrollAllocations: Prisma.$EmployeePayrollAllocationPayload<ExtArgs>[]
     payrollPayments: Prisma.$PayrollPaymentPayload<ExtArgs>[]
@@ -8384,11 +12514,11 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
      */
     dateOfBirth: Date | null
     /**
-     * National Insurance Scheme number — source of truth; payroll profile mirrors for readiness/snapshots.
+     * National Insurance Scheme number — source of truth for payroll readiness / payslip snapshots.
      */
     nisNumber: string | null
     /**
-     * Board of Inland Revenue file number — source of truth; payroll profile mirrors for readiness/snapshots.
+     * Board of Inland Revenue file number — source of truth for payroll readiness / payslip snapshots.
      */
     birNumber: string | null
     idType: $Enums.EmployeeIdType | null
@@ -8806,8 +12936,18 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   assignments<T extends Prisma.Employee$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   appraisals<T extends Prisma.Employee$appraisalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$appraisalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PerformanceAppraisalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollProfile<T extends Prisma.Employee$payrollProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollProfileArgs<ExtArgs>>): Prisma.Prisma__PayrollProfileClient<runtime.Types.Result.GetResult<Prisma.$PayrollProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  taxProfiles<T extends Prisma.Employee$taxProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$taxProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaxProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  priorEmploymentYtds<T extends Prisma.Employee$priorEmploymentYtdsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$priorEmploymentYtdsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePriorEmploymentYtdPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  openingYtdBalances<T extends Prisma.Employee$openingYtdBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$openingYtdBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOpeningYtdBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  statutoryOverrides<T extends Prisma.Employee$statutoryOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$statutoryOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayrollStatutoryOverridePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  annualPayrollProjections<T extends Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$annualPayrollProjectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeAnnualPayrollProjectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  taxYearAdjustments<T extends Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$taxYearAdjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaxYearAdjustmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  earningTreatmentOverrides<T extends Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$earningTreatmentOverridesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeEarningTreatmentOverridePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  gratuitySettlements<T extends Prisma.Employee$gratuitySettlementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$gratuitySettlementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeGratuitySettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  gratuityAccrualEntries<T extends Prisma.Employee$gratuityAccrualEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$gratuityAccrualEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GratuityAccrualEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payslips<T extends Prisma.Employee$payslipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payslipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayslipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollLineItems<T extends Prisma.Employee$payrollLineItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollLineItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollLineItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payrollRecurringItems<T extends Prisma.Employee$payrollRecurringItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollRecurringItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayrollRecurringItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bankAccounts<T extends Prisma.Employee$bankAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$bankAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeBankAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollAllocations<T extends Prisma.Employee$payrollAllocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollAllocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayrollAllocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollPayments<T extends Prisma.Employee$payrollPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$payrollPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9414,6 +13554,222 @@ export type Employee$payrollProfileArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+ * Employee.taxProfiles
+ */
+export type Employee$taxProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeTaxProfile
+   */
+  select?: Prisma.EmployeeTaxProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeTaxProfile
+   */
+  omit?: Prisma.EmployeeTaxProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeTaxProfileInclude<ExtArgs> | null
+  where?: Prisma.EmployeeTaxProfileWhereInput
+  orderBy?: Prisma.EmployeeTaxProfileOrderByWithRelationInput | Prisma.EmployeeTaxProfileOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeTaxProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeTaxProfileScalarFieldEnum | Prisma.EmployeeTaxProfileScalarFieldEnum[]
+}
+
+/**
+ * Employee.priorEmploymentYtds
+ */
+export type Employee$priorEmploymentYtdsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeePriorEmploymentYtd
+   */
+  select?: Prisma.EmployeePriorEmploymentYtdSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeePriorEmploymentYtd
+   */
+  omit?: Prisma.EmployeePriorEmploymentYtdOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeePriorEmploymentYtdInclude<ExtArgs> | null
+  where?: Prisma.EmployeePriorEmploymentYtdWhereInput
+  orderBy?: Prisma.EmployeePriorEmploymentYtdOrderByWithRelationInput | Prisma.EmployeePriorEmploymentYtdOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeePriorEmploymentYtdWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeePriorEmploymentYtdScalarFieldEnum | Prisma.EmployeePriorEmploymentYtdScalarFieldEnum[]
+}
+
+/**
+ * Employee.openingYtdBalances
+ */
+export type Employee$openingYtdBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeOpeningYtdBalance
+   */
+  select?: Prisma.EmployeeOpeningYtdBalanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeOpeningYtdBalance
+   */
+  omit?: Prisma.EmployeeOpeningYtdBalanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeOpeningYtdBalanceInclude<ExtArgs> | null
+  where?: Prisma.EmployeeOpeningYtdBalanceWhereInput
+  orderBy?: Prisma.EmployeeOpeningYtdBalanceOrderByWithRelationInput | Prisma.EmployeeOpeningYtdBalanceOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeOpeningYtdBalanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeOpeningYtdBalanceScalarFieldEnum | Prisma.EmployeeOpeningYtdBalanceScalarFieldEnum[]
+}
+
+/**
+ * Employee.statutoryOverrides
+ */
+export type Employee$statutoryOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeePayrollStatutoryOverride
+   */
+  select?: Prisma.EmployeePayrollStatutoryOverrideSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeePayrollStatutoryOverride
+   */
+  omit?: Prisma.EmployeePayrollStatutoryOverrideOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeePayrollStatutoryOverrideInclude<ExtArgs> | null
+  where?: Prisma.EmployeePayrollStatutoryOverrideWhereInput
+  orderBy?: Prisma.EmployeePayrollStatutoryOverrideOrderByWithRelationInput | Prisma.EmployeePayrollStatutoryOverrideOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeePayrollStatutoryOverrideWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeePayrollStatutoryOverrideScalarFieldEnum | Prisma.EmployeePayrollStatutoryOverrideScalarFieldEnum[]
+}
+
+/**
+ * Employee.annualPayrollProjections
+ */
+export type Employee$annualPayrollProjectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeAnnualPayrollProjection
+   */
+  select?: Prisma.EmployeeAnnualPayrollProjectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeAnnualPayrollProjection
+   */
+  omit?: Prisma.EmployeeAnnualPayrollProjectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeAnnualPayrollProjectionInclude<ExtArgs> | null
+  where?: Prisma.EmployeeAnnualPayrollProjectionWhereInput
+  orderBy?: Prisma.EmployeeAnnualPayrollProjectionOrderByWithRelationInput | Prisma.EmployeeAnnualPayrollProjectionOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeAnnualPayrollProjectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeAnnualPayrollProjectionScalarFieldEnum | Prisma.EmployeeAnnualPayrollProjectionScalarFieldEnum[]
+}
+
+/**
+ * Employee.taxYearAdjustments
+ */
+export type Employee$taxYearAdjustmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeTaxYearAdjustment
+   */
+  select?: Prisma.EmployeeTaxYearAdjustmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeTaxYearAdjustment
+   */
+  omit?: Prisma.EmployeeTaxYearAdjustmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeTaxYearAdjustmentInclude<ExtArgs> | null
+  where?: Prisma.EmployeeTaxYearAdjustmentWhereInput
+  orderBy?: Prisma.EmployeeTaxYearAdjustmentOrderByWithRelationInput | Prisma.EmployeeTaxYearAdjustmentOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeTaxYearAdjustmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeTaxYearAdjustmentScalarFieldEnum | Prisma.EmployeeTaxYearAdjustmentScalarFieldEnum[]
+}
+
+/**
+ * Employee.earningTreatmentOverrides
+ */
+export type Employee$earningTreatmentOverridesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeEarningTreatmentOverride
+   */
+  select?: Prisma.EmployeeEarningTreatmentOverrideSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeEarningTreatmentOverride
+   */
+  omit?: Prisma.EmployeeEarningTreatmentOverrideOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeEarningTreatmentOverrideInclude<ExtArgs> | null
+  where?: Prisma.EmployeeEarningTreatmentOverrideWhereInput
+  orderBy?: Prisma.EmployeeEarningTreatmentOverrideOrderByWithRelationInput | Prisma.EmployeeEarningTreatmentOverrideOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeEarningTreatmentOverrideWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeEarningTreatmentOverrideScalarFieldEnum | Prisma.EmployeeEarningTreatmentOverrideScalarFieldEnum[]
+}
+
+/**
+ * Employee.gratuitySettlements
+ */
+export type Employee$gratuitySettlementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeGratuitySettlement
+   */
+  select?: Prisma.EmployeeGratuitySettlementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeGratuitySettlement
+   */
+  omit?: Prisma.EmployeeGratuitySettlementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeGratuitySettlementInclude<ExtArgs> | null
+  where?: Prisma.EmployeeGratuitySettlementWhereInput
+  orderBy?: Prisma.EmployeeGratuitySettlementOrderByWithRelationInput | Prisma.EmployeeGratuitySettlementOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeGratuitySettlementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeGratuitySettlementScalarFieldEnum | Prisma.EmployeeGratuitySettlementScalarFieldEnum[]
+}
+
+/**
+ * Employee.gratuityAccrualEntries
+ */
+export type Employee$gratuityAccrualEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GratuityAccrualEntry
+   */
+  select?: Prisma.GratuityAccrualEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GratuityAccrualEntry
+   */
+  omit?: Prisma.GratuityAccrualEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GratuityAccrualEntryInclude<ExtArgs> | null
+  where?: Prisma.GratuityAccrualEntryWhereInput
+  orderBy?: Prisma.GratuityAccrualEntryOrderByWithRelationInput | Prisma.GratuityAccrualEntryOrderByWithRelationInput[]
+  cursor?: Prisma.GratuityAccrualEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.GratuityAccrualEntryScalarFieldEnum | Prisma.GratuityAccrualEntryScalarFieldEnum[]
+}
+
+/**
  * Employee.payslips
  */
 export type Employee$payslipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -9459,6 +13815,30 @@ export type Employee$payrollLineItemsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.PayrollLineItemScalarFieldEnum | Prisma.PayrollLineItemScalarFieldEnum[]
+}
+
+/**
+ * Employee.payrollRecurringItems
+ */
+export type Employee$payrollRecurringItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeePayrollRecurringItem
+   */
+  select?: Prisma.EmployeePayrollRecurringItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeePayrollRecurringItem
+   */
+  omit?: Prisma.EmployeePayrollRecurringItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeePayrollRecurringItemInclude<ExtArgs> | null
+  where?: Prisma.EmployeePayrollRecurringItemWhereInput
+  orderBy?: Prisma.EmployeePayrollRecurringItemOrderByWithRelationInput | Prisma.EmployeePayrollRecurringItemOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeePayrollRecurringItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeePayrollRecurringItemScalarFieldEnum | Prisma.EmployeePayrollRecurringItemScalarFieldEnum[]
 }
 
 /**

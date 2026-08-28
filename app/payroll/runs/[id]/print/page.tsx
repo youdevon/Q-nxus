@@ -39,6 +39,8 @@ export default async function PayRunPrintPage({
         payslip: doc.payslip,
         meta: doc.meta,
         ytd: doc.ytd,
+        ytdBreakdown: doc.ytdBreakdown,
+        projectedTaxYearPosition: doc.projectedTaxYearPosition,
         isOfficial: doc.isOfficial,
       }))}
     />

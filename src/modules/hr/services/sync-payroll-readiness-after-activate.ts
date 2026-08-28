@@ -8,12 +8,22 @@ export type SyncPayrollReadinessAfterActivateResult = {
   payrollTaskCompleted: boolean;
   payrollReady: boolean;
   blockingIssues: string[];
+  /** Denormalized PayrollProfile.isPayrollReady was written to match live readiness. */
+  payrollReadyFlagSynced: boolean;
+  draftRunsRecalculated: number;
 };
 
 /**
- * After a contract activates: complete ACTIVATE_CONTRACT when open, and
- * auto-complete PAYROLL_READINESS when setup is already ready. Otherwise
- * notify the actor that payroll setup still needs attention.
+ * After a contract activates: complete ACTIVATE_CONTRACT when open, sync the
+ * denormalized payroll-ready flag from the live current-contract evaluation,
+ * refresh open draft/approved pay-run salary snapshots, and auto-complete
+ * PAYROLL_READINESS when setup is already ready. Otherwise notify payroll
+ * staff (`payroll.setup` / `payroll.manage`) that setup still needs attention.
+ * The activating actor is not notified unless they already hold those
+ * permissions (employees must not receive other people's payroll alerts).
+ *
+ * Compensation itself is not copied — payroll always reads
+ * `EmploymentContract` where `isCurrent` + ACTIVE for base salary / allowances.
  */
 export async function syncPayrollReadinessAfterContractActivate(input: {
   employeeId: string;
@@ -70,6 +80,45 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
     "Payroll setup could not be evaluated.",
   ];
 
+  let payrollReadyFlagSynced = false;
+  if (setup?.profile) {
+    await prisma.payrollProfile.update({
+      where: { employeeId: input.employeeId },
+      data: { isPayrollReady: payrollReady },
+    });
+    payrollReadyFlagSynced = true;
+  }
+
+  let draftRunsRecalculated = 0;
+  try {
+    const contract = await prisma.employmentContract.findUnique({
+      where: { id: input.contractId },
+      select: { startDate: true },
+    });
+    const { recalculateAfterTaxChange } = await import(
+      "@/src/modules/payroll/services/recalculate-after-tax-change"
+    );
+    const {
+      taxYearFromAsOfKey,
+      toStatutoryAsOfKey,
+    } = await import("@/src/modules/payroll/lib/statutory-as-of");
+    const asOf = contract?.startDate ?? new Date();
+    const cascade = await recalculateAfterTaxChange({
+      organizationId: input.organizationId,
+      taxYear: taxYearFromAsOfKey(toStatutoryAsOfKey(asOf)),
+      actorUserId: input.actorUserId,
+      reason: "Employment contract activated",
+      employeeId: input.employeeId,
+      effectiveFrom: asOf,
+    });
+    draftRunsRecalculated = cascade.draftRunsRecalculated;
+  } catch (error) {
+    console.error(
+      "Draft pay-run refresh failed after contract activate:",
+      error,
+    );
+  }
+
   const payrollTask = openCase?.tasks.find(
     (task) => task.code === "PAYROLL_READINESS",
   );
@@ -84,18 +133,20 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
     });
     payrollTaskCompleted = true;
   } else if (!payrollReady) {
-    const actor = await prisma.user.findUnique({
-      where: { id: input.actorUserId },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        isActive: true,
-      },
-    });
+    // Staff only — never fan this out to the activating user unless they
+    // already hold payroll.setup / payroll.manage. Employees must not see
+    // other people's payroll readiness alerts.
+    const { resolveRecipientsByPermissions } = await import(
+      "@/src/modules/notifications/lib/resolve-notification-recipients"
+    );
 
-    if (actor?.isActive) {
+    const recipients = await resolveRecipientsByPermissions(
+      input.organizationId,
+      ["payroll.setup", "payroll.manage"],
+      { sendEmail: true },
+    );
+
+    if (recipients.length > 0) {
       const employeeLabel = setup?.employee
         ? `${setup.employee.employeeNumber} — ${setup.employee.displayName}`
         : input.employeeId;
@@ -110,14 +161,7 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
           actionUrl: `/payroll/employees/${input.employeeId}`,
           relatedType: "Employee",
           relatedId: input.employeeId,
-          recipients: [
-            {
-              userId: actor.id,
-              email: actor.email,
-              name: `${actor.firstName} ${actor.lastName}`,
-              sendEmail: true,
-            },
-          ],
+          recipients,
           email: {
             subject: "Payroll setup needed after contract activation",
             actionLabel: "Open payroll setup",
@@ -125,7 +169,7 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
         });
       } catch (error) {
         console.error(
-          "Unable to notify actor about payroll readiness after activate:",
+          "Unable to notify about payroll readiness after activate:",
           error,
         );
       }
@@ -137,5 +181,7 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
     payrollTaskCompleted,
     payrollReady,
     blockingIssues,
+    payrollReadyFlagSynced,
+    draftRunsRecalculated,
   };
 }

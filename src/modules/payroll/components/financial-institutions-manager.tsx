@@ -27,9 +27,9 @@ export function FinancialInstitutionsManager({
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        ACH routing and participant codes are placeholders until confirmed with
-        the originating bank — leave blank rather than inventing values
-        (REQUIRES_CONFIRMATION).
+        Known commercial-bank ABA / routing codes are seeded from the TT bank
+        participant list. Leave other institutions blank rather than inventing
+        values (REQUIRES_CONFIRMATION).
       </p>
 
       <div className="overflow-x-auto rounded-md border">

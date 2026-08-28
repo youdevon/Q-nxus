@@ -6,6 +6,7 @@ import {
   BarChart3,
   CalendarRange,
   CircleDollarSign,
+  Gift,
   Landmark,
   Users,
 } from "lucide-react";
@@ -31,6 +32,12 @@ const items = [
     title: "Salaries",
     href: "/payroll/salaries",
     icon: CircleDollarSign,
+    anyOf: payrollAccess,
+  },
+  {
+    title: "Gratuity",
+    href: "/payroll/gratuity",
+    icon: Gift,
     anyOf: payrollAccess,
   },
   {

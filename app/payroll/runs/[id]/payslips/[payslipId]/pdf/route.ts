@@ -1,5 +1,6 @@
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
-import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";import { renderPayslipsPdf } from "@/src/modules/payroll/lib/payslip-pdf";
+import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";
+import { renderPayslipsPdf } from "@/src/modules/payroll/lib/payslip-pdf";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -29,6 +30,8 @@ export async function GET(_request: Request, { params }: RouteContext) {
       payslip: result.payslip,
       meta: result.meta,
       ytd: result.ytd,
+      ytdBreakdown: result.ytdBreakdown,
+      projectedTaxYearPosition: result.projectedTaxYearPosition,
       isOfficial: result.isPosted,
     },
   ]);

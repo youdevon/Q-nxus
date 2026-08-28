@@ -19,11 +19,14 @@ import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import {
   approvePayRunPaymentBatch,
+  cancelPayRunPaymentBatch,
   createPayRunPaymentBatch,
   generatePayRunPaymentBatchFile,
   markPayRunAllocationReturned,
   preparePayRunPayments,
   regeneratePayRunAllocation,
+  reconcilePayRunPaymentBatch,
+  releasePayRunPaymentBatch,
   resolvePayRunAllocation,
   type PayrollPaymentActionState,
 } from "@/src/modules/payroll/actions/manage-payroll-payments";
@@ -99,12 +102,18 @@ function PaymentActionForm({
   );
 }
 
+export type PayRunPaymentsCapabilities = {
+  canPrepare: boolean;
+  canCreateBatch: boolean;
+  canExportFiles: boolean;
+};
+
 export function PayRunPaymentsView({
   data,
-  canManage,
+  capabilities,
 }: {
   data: PayRunPaymentsPageData;
-  canManage: boolean;
+  capabilities: PayRunPaymentsCapabilities;
 }) {
   const { paymentSummary, flags } = data;
   const isPosted = isPayRunPosted(data.status);
@@ -120,7 +129,7 @@ export function PayRunPaymentsView({
         backLabel="Pay run"
         actions={
           <PageActionsEnd>
-            {canManage && isPosted && !paymentSummary.prepared ? (
+            {capabilities.canPrepare && isPosted && !paymentSummary.prepared ? (
               <PaymentActionForm
                 action={preparePayRunPayments}
                 hidden={{ payRunId: data.payRunId }}
@@ -131,9 +140,9 @@ export function PayRunPaymentsView({
                 </Button>
               </PaymentActionForm>
             ) : null}
-            {canManage && isPosted && paymentSummary.prepared ? (
+            {isPosted && paymentSummary.prepared ? (
               <>
-                {flags.manualPaymentEnabled ? (
+                {capabilities.canCreateBatch && flags.manualPaymentEnabled ? (
                   <PaymentActionForm
                     action={createPayRunPaymentBatch}
                     hidden={{ payRunId: data.payRunId, mode: "manual" }}
@@ -144,7 +153,7 @@ export function PayRunPaymentsView({
                     </Button>
                   </PaymentActionForm>
                 ) : null}
-                {flags.achExportEnabled ? (
+                {capabilities.canCreateBatch && flags.achExportEnabled ? (
                   <PaymentActionForm
                     action={createPayRunPaymentBatch}
                     hidden={{ payRunId: data.payRunId, mode: "ach" }}
@@ -155,16 +164,32 @@ export function PayRunPaymentsView({
                     </Button>
                   </PaymentActionForm>
                 ) : null}
-                <Button
-                  nativeButton={false}
-                  variant="outline"
-                  render={
-                    <Link href={`/payroll/runs/${data.payRunId}/bank-export`} />
-                  }
-                >
-                  <Download />
-                  Bank CSV
-                </Button>
+                {capabilities.canExportFiles ? (
+                  <>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={
+                        <Link href={`/payroll/runs/${data.payRunId}/bank-export`} />
+                      }
+                    >
+                      <Download />
+                      Bank CSV
+                    </Button>
+                    <Button
+                      nativeButton={false}
+                      variant="outline"
+                      render={
+                        <Link
+                          href={`/payroll/runs/${data.payRunId}/bank-export-xlsx`}
+                        />
+                      }
+                    >
+                      <Download />
+                      Download Excel (bank entry)
+                    </Button>
+                  </>
+                ) : null}
               </>
             ) : null}
           </PageActionsEnd>
@@ -188,10 +213,19 @@ export function PayRunPaymentsView({
             Enable <code className="text-xs">ACH_EXPORT_ENABLED</code> in
             Administration → Feature controls when your bank layout is
             confirmed. Until then, use{" "}
-            <strong>Manual register batch</strong> or <strong>Bank CSV</strong>{" "}
-            — both remain available when manual payment export is on.
+            <strong>Manual register batch</strong>, <strong>Bank CSV</strong>,
+            or <strong>Download Excel (bank entry)</strong> — all remain
+            available when manual payment export is on.
           </p>
         </div>
+      ) : null}
+
+      {flags.achExportEnabled && !flags.allowBatchSelfApproval ? (
+        <p className="mb-4 text-sm text-muted-foreground">
+          Maker-checker is on: the user who prepares a batch cannot approve it
+          unless <code className="text-xs">ALLOW_BATCH_SELF_APPROVAL</code> is
+          enabled.
+        </p>
       ) : null}
 
       <section className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4">
@@ -280,6 +314,15 @@ export function PayRunPaymentsView({
                             Download
                           </Button>
                         ) : null}
+                        <Button
+                          nativeButton={false}
+                          size="sm"
+                          variant="outline"
+                          render={<Link href={batch.fcbWorksheetHref} />}
+                        >
+                          <Download />
+                          FCB worksheet
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -347,14 +390,21 @@ export function PayRunPaymentsView({
   );
 }
 
+export type AchPaymentBatchCapabilities = {
+  canApprove: boolean;
+  canGenerate: boolean;
+  canCancel: boolean;
+  canRelease: boolean;
+  canReconcile: boolean;
+  canManageReturns: boolean;
+};
+
 export function AchPaymentBatchDetailView({
   batch,
-  canManage,
-  canManageReturns = false,
+  capabilities,
 }: {
   batch: AchPaymentBatchDetailData;
-  canManage: boolean;
-  canManageReturns?: boolean;
+  capabilities: AchPaymentBatchCapabilities;
 }) {
   return (
     <PageShell size="lg">
@@ -367,7 +417,7 @@ export function AchPaymentBatchDetailView({
         backLabel="Payments"
         actions={
           <PageActionsEnd>
-            {canManage && batch.canApprove ? (
+            {capabilities.canApprove && batch.canApprove ? (
               <PaymentActionForm
                 action={approvePayRunPaymentBatch}
                 hidden={{
@@ -381,7 +431,7 @@ export function AchPaymentBatchDetailView({
                 </Button>
               </PaymentActionForm>
             ) : null}
-            {canManage && batch.canGenerate ? (
+            {capabilities.canGenerate && batch.canGenerate ? (
               <PaymentActionForm
                 action={generatePayRunPaymentBatchFile}
                 hidden={{
@@ -395,6 +445,46 @@ export function AchPaymentBatchDetailView({
                 </Button>
               </PaymentActionForm>
             ) : null}
+            {capabilities.canRelease && batch.canRelease ? (
+              <PaymentActionForm
+                action={releasePayRunPaymentBatch}
+                hidden={{
+                  batchId: batch.id,
+                  payRunId: batch.payRun.id,
+                }}
+              >
+                <Button type="submit" variant="outline">
+                  Mark released
+                </Button>
+              </PaymentActionForm>
+            ) : null}
+            {capabilities.canReconcile && batch.canReconcile ? (
+              <PaymentActionForm
+                action={reconcilePayRunPaymentBatch}
+                hidden={{
+                  batchId: batch.id,
+                  payRunId: batch.payRun.id,
+                }}
+              >
+                <Button type="submit" variant="outline">
+                  Mark reconciled
+                </Button>
+              </PaymentActionForm>
+            ) : null}
+            {capabilities.canCancel && batch.canCancel ? (
+              <PaymentActionForm
+                action={cancelPayRunPaymentBatch}
+                hidden={{
+                  batchId: batch.id,
+                  payRunId: batch.payRun.id,
+                  reason: "Cancelled from payment batch detail",
+                }}
+              >
+                <Button type="submit" variant="destructive">
+                  Cancel batch
+                </Button>
+              </PaymentActionForm>
+            ) : null}
             {batch.downloadHref ? (
               <Button
                 nativeButton={false}
@@ -404,9 +494,45 @@ export function AchPaymentBatchDetailView({
                 Download
               </Button>
             ) : null}
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={<Link href={batch.fcbWorksheetHref} />}
+            >
+              <Download />
+              FCB manual worksheet
+            </Button>
           </PageActionsEnd>
         }
       />
+
+      {batch.approvalBlockedReason ? (
+        <div
+          role="status"
+          className="mb-4 rounded-md border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm"
+        >
+          <p className="font-medium">Approval blocked</p>
+          <p className="mt-1 text-muted-foreground">
+            {batch.approvalBlockedReason}
+          </p>
+        </div>
+      ) : null}
+
+      {batch.importDisabledReason ? (
+        <div
+          role="status"
+          className="mb-4 rounded-md border border-border/70 bg-muted/30 px-4 py-3 text-sm"
+        >
+          <p className="font-medium">
+            First Citizens import file unavailable
+          </p>
+          <p className="mt-1 text-muted-foreground">
+            {batch.importDisabledReason} Use the{" "}
+            <strong>FCB manual worksheet</strong> for Business Online template
+            entry until the bank confirms Default Transactions layout.
+          </p>
+        </div>
+      ) : null}
 
       <section className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-4">
         <div>
@@ -440,6 +566,15 @@ export function AchPaymentBatchDetailView({
         </div>
       </section>
 
+      {batch.validationSummary != null ? (
+        <section className="mb-8">
+          <SectionHeading>Readiness / validation</SectionHeading>
+          <pre className="mt-3 max-h-64 overflow-auto rounded-md border border-border/70 bg-muted/20 p-3 text-xs">
+            {JSON.stringify(batch.validationSummary, null, 2)}
+          </pre>
+        </section>
+      ) : null}
+
       <section>
         <SectionHeading>Batch details</SectionHeading>
         <div className="mt-4 overflow-x-auto">
@@ -459,13 +594,13 @@ export function AchPaymentBatchDetailView({
             <tbody>
               {batch.details.map((detail) => {
                 const canReturn =
-                  canManageReturns &&
+                  capabilities.canManageReturns &&
                   (detail.allocationStatus === "EXPORTED" ||
                     detail.allocationStatus === "INCLUDED_IN_BATCH" ||
                     detail.allocationStatus === "READY" ||
                     detail.allocationStatus === "PAID");
                 const canResolve =
-                  canManageReturns &&
+                  capabilities.canManageReturns &&
                   (detail.allocationStatus === "RETURNED" ||
                     detail.allocationStatus === "REJECTED" ||
                     detail.allocationStatus === "FAILED");

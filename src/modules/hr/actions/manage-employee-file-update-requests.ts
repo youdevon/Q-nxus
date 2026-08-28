@@ -219,14 +219,16 @@ export async function submitEmployeeFileUpdateRequest(
   let storedFileId: string | null = null;
 
   if (file instanceof File && file.size > 0) {
-    const { storeUploadedFile, resolveStoredFileAbsolutePath } = await import(
-      "@/src/lib/stored-file"
-    );
+    const {
+      employeeStorageFolderLabel,
+      storeUploadedFile,
+      resolveStoredFileAbsolutePath,
+    } = await import("@/src/lib/stored-file");
     const { createStoredFileRecord } = await import(
       "@/src/modules/hr/lib/create-stored-file-record"
     );
 
-    storageKey = `employee-file/${employee.id}/file-requests/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}`;
+    storageKey = `employee-file/${employeeStorageFolderLabel(employee)}/file-requests/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80)}`;
     const stored = await storeUploadedFile({
       storageKey,
       file,

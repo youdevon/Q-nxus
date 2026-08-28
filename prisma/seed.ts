@@ -165,35 +165,6 @@ async function seedOrganization(): Promise<void> {
   });
 }
 
-async function seedApplicationSettings(): Promise<void> {
-  const existing = await prisma.applicationSetting.findFirst();
-
-  if (existing) {
-    await prisma.applicationSetting.update({
-      where: {
-        id: existing.id,
-      },
-      data: {
-        internalCodename: "Q-NXUS",
-        displayName: "Q-NXUS",
-        shortName: "Q-NXUS",
-        organizationName: "Q-NXUS Demo Organization",
-      },
-    });
-
-    return;
-  }
-
-  await prisma.applicationSetting.create({
-    data: {
-      internalCodename: "Q-NXUS",
-      displayName: "Q-NXUS",
-      shortName: "Q-NXUS",
-      organizationName: "Q-NXUS Demo Organization",
-    },
-  });
-}
-
 async function seedBusinessUnits(): Promise<void> {
   await prisma.businessUnit.upsert({
     where: {
@@ -729,7 +700,6 @@ async function main(): Promise<void> {
   console.log("Seeding Q-NXUS platform foundation...");
 
   await seedOrganization();
-  await seedApplicationSettings();
   await seedBusinessUnits();
   await seedLocations();
   await seedReferenceData();
@@ -744,7 +714,6 @@ async function main(): Promise<void> {
 
   const {
     seedFinancialInstitutions,
-    migratePayrollBankAccountsToEmployeeBankAccounts,
     seedBankExportProfiles,
   } = await import("./seed-financial-institutions");
   await seedFinancialInstitutions(prisma);
@@ -753,14 +722,11 @@ async function main(): Promise<void> {
     select: { id: true },
   });
   if (organization) {
+    const { seedGeneralDepartment } = await import("./seed-departments");
+    await seedGeneralDepartment(prisma, organization.id);
     await seedBankExportProfiles(prisma, organization.id);
-  }
-  const migratedBanks =
-    await migratePayrollBankAccountsToEmployeeBankAccounts(prisma);
-  if (migratedBanks > 0) {
-    console.log(
-      `Migrated ${migratedBanks} legacy PayrollBankAccount row(s) to EmployeeBankAccount.`,
-    );
+    const { seedGratuityPolicies } = await import("./seed-gratuity-policy");
+    await seedGratuityPolicies(prisma, organization.id);
   }
 
   console.log("Q-NXUS platform foundation seeded successfully.");

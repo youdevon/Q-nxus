@@ -35,6 +35,7 @@ export type ContractLeaveBalanceRecord = {
   /** Approved leave that has started or completed. */
   taken: string;
   expired: string;
+  openingBalance: string;
   availableBalance: string;
 };
 
@@ -44,63 +45,57 @@ export type LeaveBalanceEmployeeMatch = {
   name: string;
   workEmail: string | null;
   departmentName: string | null;
+  /** Current-contract leave snapshot for search results / deep links. */
+  leaveSummary: {
+    vacationAvailable: string;
+    sickAvailable: string;
+    totalAvailable: string;
+    totalTaken: string;
+    totalApproved: string;
+    leaveTypeCount: number;
+  } | null;
 };
 
 export type GetContractLeaveBalancesOptions = {
   employeeId: string;
 };
 
+function employeeTokenWhere(token: string): Prisma.EmployeeWhereInput {
+  return {
+    OR: [
+      { employeeNumber: { contains: token, mode: "insensitive" } },
+      { firstName: { contains: token, mode: "insensitive" } },
+      { middleName: { contains: token, mode: "insensitive" } },
+      { lastName: { contains: token, mode: "insensitive" } },
+      { preferredName: { contains: token, mode: "insensitive" } },
+      { workEmail: { contains: token, mode: "insensitive" } },
+      { personalEmail: { contains: token, mode: "insensitive" } },
+    ],
+  };
+}
+
 function employeeSearchWhere(
   organizationId: string,
   query: string,
 ): Prisma.EmployeeWhereInput {
+  const tokens = query
+    .trim()
+    .split(/\s+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+
+  if (tokens.length === 0) {
+    return {
+      organizationId,
+      isArchived: false,
+    };
+  }
+
+  // Every token must match some identity field so "Jane Doe" finds Jane Doe.
   return {
     organizationId,
     isArchived: false,
-    OR: [
-      {
-        employeeNumber: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-      {
-        firstName: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-      {
-        middleName: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-      {
-        lastName: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-      {
-        preferredName: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-      {
-        workEmail: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-      {
-        personalEmail: {
-          contains: query,
-          mode: "insensitive",
-        },
-      },
-    ],
+    AND: tokens.map((token) => employeeTokenWhere(token)),
   };
 }
 
@@ -119,7 +114,91 @@ function mapEmployeeMatch(employee: {
     name: `${employee.preferredName ?? employee.firstName} ${employee.lastName}`.trim(),
     workEmail: employee.workEmail,
     departmentName: employee.department?.name ?? null,
+    leaveSummary: null,
   };
+}
+
+function emptyLeaveSummary(): LeaveBalanceEmployeeMatch["leaveSummary"] {
+  return {
+    vacationAvailable: "0",
+    sickAvailable: "0",
+    totalAvailable: "0",
+    totalTaken: "0",
+    totalApproved: "0",
+    leaveTypeCount: 0,
+  };
+}
+
+async function attachLeaveSummaries(
+  matches: LeaveBalanceEmployeeMatch[],
+): Promise<LeaveBalanceEmployeeMatch[]> {
+  if (matches.length === 0) {
+    return matches;
+  }
+
+  const employeeIds = matches.map((match) => match.id);
+  const balances = await prisma.employeeLeaveBalance.findMany({
+    where: {
+      employeeId: { in: employeeIds },
+      contract: { isCurrent: true },
+    },
+    select: {
+      employeeId: true,
+      availableBalance: true,
+      taken: true,
+      reserved: true,
+      leaveType: { select: { code: true } },
+    },
+  });
+
+  const summaryByEmployee = new Map<
+    string,
+    NonNullable<LeaveBalanceEmployeeMatch["leaveSummary"]>
+  >();
+
+  for (const employeeId of employeeIds) {
+    summaryByEmployee.set(employeeId, emptyLeaveSummary()!);
+  }
+
+  for (const balance of balances) {
+    const summary = summaryByEmployee.get(balance.employeeId);
+    if (!summary) continue;
+
+    const available = Number(balance.availableBalance);
+    const taken = Number(balance.taken);
+    const reserved = Number(balance.reserved);
+    summary.leaveTypeCount += 1;
+    summary.totalAvailable = String(Number(summary.totalAvailable) + available);
+    summary.totalTaken = String(Number(summary.totalTaken) + taken);
+    summary.totalApproved = String(Number(summary.totalApproved) + reserved);
+
+    if (balance.leaveType.code === "VAC") {
+      summary.vacationAvailable = String(
+        Number(summary.vacationAvailable) + available,
+      );
+    }
+    if (balance.leaveType.code === "SICK") {
+      summary.sickAvailable = String(Number(summary.sickAvailable) + available);
+    }
+  }
+
+  for (const summary of summaryByEmployee.values()) {
+    for (const key of [
+      "vacationAvailable",
+      "sickAvailable",
+      "totalAvailable",
+      "totalTaken",
+      "totalApproved",
+    ] as const) {
+      const value = Number(summary[key]);
+      summary[key] = Number.isFinite(value) ? String(value) : "0";
+    }
+  }
+
+  return matches.map((match) => ({
+    ...match,
+    leaveSummary: summaryByEmployee.get(match.id) ?? emptyLeaveSummary(),
+  }));
 }
 
 export async function searchEmployeesForLeaveBalances(
@@ -170,11 +249,12 @@ export async function searchEmployeesForLeaveBalances(
     },
   });
 
-  return employees.map(mapEmployeeMatch);
+  return attachLeaveSummaries(employees.map(mapEmployeeMatch));
 }
 
 export async function getLeaveBalanceEmployee(
   employeeId: string,
+  options?: { includeLeaveSummary?: boolean },
 ): Promise<LeaveBalanceEmployeeMatch | null> {
   const employee = await prisma.employee.findFirst({
     where: {
@@ -200,7 +280,13 @@ export async function getLeaveBalanceEmployee(
     return null;
   }
 
-  return mapEmployeeMatch(employee);
+  const match = mapEmployeeMatch(employee);
+  if (options?.includeLeaveSummary === false) {
+    return match;
+  }
+
+  const [withSummary] = await attachLeaveSummaries([match]);
+  return withSummary ?? match;
 }
 
 export type CurrentContractLeaveEntitlementData = {
@@ -301,6 +387,7 @@ export async function getContractLeaveBalances(
         leaveTypeId: true,
         cycleStart: true,
         cycleEnd: true,
+        openingBalance: true,
         entitlement: true,
         accrued: true,
         carriedForward: true,
@@ -406,6 +493,7 @@ export async function getContractLeaveBalances(
       ),
       leaveTypeCode: balance.leaveType.code,
       leaveTypeName: balance.leaveType.name,
+      openingBalance: balance.openingBalance.toString(),
       entitlement: balance.entitlement.toString(),
       accrued: balance.accrued.toString(),
       carriedForward: balance.carriedForward.toString(),

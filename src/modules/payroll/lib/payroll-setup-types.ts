@@ -2,6 +2,108 @@ import type { HealthSurchargeResult } from "@/src/modules/payroll/lib/health-sur
 import type { NisContributionResult } from "@/src/modules/payroll/lib/nis-contribution";
 import type { PayeContributionResult } from "@/src/modules/payroll/lib/paye-contribution";
 import type { PayrollReadinessResult } from "@/src/modules/payroll/lib/payroll-readiness";
+import type {
+  EmployeeTaxProfileStatusCode,
+  OtherEmolumentIncomeStatusCode,
+  PersonalAllowanceSourceCode,
+  PreviousEmploymentStatusCode,
+  TaxCalculationMethodCode,
+} from "@/src/modules/payroll/lib/resolve-employee-tax-paye-inputs";
+
+export type EmployeeTaxProfileSetup = {
+  id: string | null;
+  taxYear: number;
+  taxCalculationMethod: TaxCalculationMethodCode;
+  taxProfileStatus: EmployeeTaxProfileStatusCode | null;
+  personalAllowance: string | null;
+  personalAllowanceSource: PersonalAllowanceSourceCode;
+  td1Submitted: boolean;
+  td1EffectiveDate: string | null;
+  td1ApprovedByIrd: boolean;
+  td1ApprovalReference: string | null;
+  td1OtherApprovedAnnual: string | null;
+  cumulativeCalculationEnabled: boolean;
+  previousEmploymentStatus: PreviousEmploymentStatusCode;
+  previousEmploymentDeclared: boolean;
+  previousEmploymentVerified: boolean;
+  previousEmploymentSource: string | null;
+  otherEmolumentIncomeStatus: OtherEmolumentIncomeStatusCode;
+  birDirectionPresent: boolean;
+  birDirectionReference: string | null;
+  notes: string | null;
+  /** Where resolved TD1 / method came from for calc preview. */
+  source: "tax_profile" | "none";
+};
+
+/** Current-employer opening YTD (system go-live migration — not prior employer). */
+export type OpeningYtdSetup = {
+  id: string | null;
+  taxYear: number;
+  asOfDate: string | null;
+  taxableIncomeYtd: string;
+  payeDeductedYtd: string;
+  nisEmployeeYtd: string | null;
+  healthSurchargeYtd: string | null;
+  verified: boolean;
+  notes: string | null;
+};
+
+export type PriorEmploymentDocumentSetup = {
+  id: string;
+  documentType: string;
+  label: string | null;
+  storedFileId: string;
+  fileName: string;
+  createdAt: string;
+};
+
+export type PriorEmploymentYtdSetup = {
+  id: string;
+  taxYear: number;
+  employerName: string;
+  employerBirNumber: string | null;
+  employmentStartDate: string | null;
+  employmentEndDate: string | null;
+  asOfDate: string;
+  taxableIncomeEntryMode: "DIRECT" | "WORKSHEET";
+  grossEarningsYtd: string | null;
+  nonTaxableAllowancesYtd: string | null;
+  taxableIncomeYtd: string;
+  payeDeductedYtd: string;
+  nisEmployeeYtd: string | null;
+  nisEmployerYtd: string | null;
+  healthSurchargeYtd: string | null;
+  otherApprovedDeductionsYtd: string | null;
+  verified: boolean;
+  notes: string | null;
+  documents: PriorEmploymentDocumentSetup[];
+};
+
+export type PriorEmploymentSetup = {
+  taxYear: number;
+  records: PriorEmploymentYtdSetup[];
+  totals: {
+    taxableIncomeYtd: number;
+    payeDeductedYtd: number;
+    nisEmployeeYtd: number;
+    healthSurchargeYtd: number;
+    otherApprovedDeductionsYtd: number;
+    recordCount: number;
+    verifiedCount: number;
+    allVerified: boolean;
+  };
+  /** Verified ACTIVE totals used by cumulative PAYE calc. */
+  verifiedTotals: {
+    taxableIncomeYtd: number;
+    payeDeductedYtd: number;
+    nisEmployeeYtd: number;
+    healthSurchargeYtd: number;
+    otherApprovedDeductionsYtd: number;
+    recordCount: number;
+    verifiedCount: number;
+    allVerified: boolean;
+  };
+};
 
 /** Client-safe payroll setup DTOs (no Prisma / pg). */
 
@@ -11,6 +113,8 @@ export type PayrollBankAccountRecord = {
   branchName: string | null;
   accountNumber: string;
   accountName: string | null;
+  /** SAVINGS | CHEQUING for ACH Payment Type (Savings/Checking Credit). */
+  accountType?: string | null;
   amount: string | null;
   /** Percentage of take-home when allocation type is PERCENTAGE. */
   percentage?: string | null;
@@ -18,6 +122,25 @@ export type PayrollBankAccountRecord = {
   sortOrder: number;
   financialInstitutionId?: string | null;
   accountNumberLastFour?: string | null;
+  verificationStatus?: string | null;
+  isVerified?: boolean;
+  verifiedAt?: string | null;
+  dataSource?: string | null;
+  routingNumber?: string | null;
+};
+
+export type PayrollBankAccountHistoryRecord = {
+  id: string;
+  bankName: string;
+  accountNumberMasked: string;
+  accountType: string | null;
+  verificationStatus: string;
+  dataSource: string;
+  isPrimary: boolean;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  archivedAt: string | null;
+  changeReason: string | null;
 };
 
 export type FinancialInstitutionOption = {
@@ -56,6 +179,7 @@ export type StatutoryPreview = {
 export type EmployeePayrollSetup = {
   employee: {
     id: string;
+    organizationId: string;
     employeeNumber: string;
     displayName: string;
     employmentStatus: string;
@@ -68,26 +192,31 @@ export type EmployeePayrollSetup = {
     id: string;
     payFrequency: string;
     paymentMethod: "BANK_TRANSFER" | "CHEQUE" | "CASH";
-    /** Mirrored copy; prefer employee values via resolveStatutoryNumber. */
-    nisNumber: string | null;
-    birNumber: string | null;
     notes: string | null;
+    /** Display TD1 from EmployeeTaxProfile (current tax year). */
     td1OtherApprovedAnnual: string | null;
     pensionOnlyIncome: boolean;
     exemptFromNis: boolean;
     exemptFromHealthSurcharge: boolean;
     exemptFromPaye: boolean;
+    receivingNisRetirementBenefit: boolean;
+    nisCategoryOverride: "NORMAL" | "CLASS_Z" | "EXEMPT" | null;
+    nisOverrideReason: string | null;
+    nisOverrideEffectiveFrom: string | null;
+    nisOverrideEffectiveTo: string | null;
     isPayrollReady: boolean;
     updatedAt: string;
   } | null;
-  /** Effective NIS/BIR for form defaults (employee SoT, profile fallback). */
+  /** Effective NIS/BIR for form defaults (Employee SoT). */
   statutoryNumbers: {
     nisNumber: string | null;
     birNumber: string | null;
-    /** True when the value comes from the employee record (or matches it). */
+    /** True when the value comes from the employee record. */
     fromEmployee: boolean;
   };
   bankAccounts: PayrollBankAccountRecord[];
+  /** Soft-deactivated / superseded instructions (history retained). */
+  bankAccountHistory: PayrollBankAccountHistoryRecord[];
   /** DB-backed institution directory for the bank select (Phase 1). */
   financialInstitutions: FinancialInstitutionOption[];
   bankingFlags: {
@@ -109,4 +238,13 @@ export type EmployeePayrollSetup = {
   payElements: PayrollPayElement[];
   readiness: PayrollReadinessResult;
   statutoryPreview: StatutoryPreview | null;
+  /** Per tax-year PAYE / TD1 treatment (Phase 2). */
+  taxProfile: EmployeeTaxProfileSetup;
+  /** Prior-employer YTD for the current tax year (Phase 3). */
+  priorEmployment: PriorEmploymentSetup;
+  /**
+   * Current-employer opening YTD for system go-live (same employer).
+   * Not prior-employer income.
+   */
+  openingYtd: OpeningYtdSetup;
 };

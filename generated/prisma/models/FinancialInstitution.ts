@@ -390,7 +390,6 @@ export type FinancialInstitutionWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"FinancialInstitution"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FinancialInstitution"> | Date | string
   archivedAt?: Prisma.DateTimeNullableFilter<"FinancialInstitution"> | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchListRelationFilter
   employeeBankAccounts?: Prisma.EmployeeBankAccountListRelationFilter
   paymentAllocations?: Prisma.PayrollPaymentAllocationListRelationFilter
 }
@@ -427,7 +426,6 @@ export type FinancialInstitutionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  branches?: Prisma.FinancialInstitutionBranchOrderByRelationAggregateInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountOrderByRelationAggregateInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationOrderByRelationAggregateInput
 }
@@ -467,7 +465,6 @@ export type FinancialInstitutionWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"FinancialInstitution"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FinancialInstitution"> | Date | string
   archivedAt?: Prisma.DateTimeNullableFilter<"FinancialInstitution"> | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchListRelationFilter
   employeeBankAccounts?: Prisma.EmployeeBankAccountListRelationFilter
   paymentAllocations?: Prisma.PayrollPaymentAllocationListRelationFilter
 }, "id" | "catalogKey">
@@ -578,7 +575,6 @@ export type FinancialInstitutionCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   archivedAt?: Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchCreateNestedManyWithoutInstitutionInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutFinancialInstitutionInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationCreateNestedManyWithoutFinancialInstitutionInput
 }
@@ -615,7 +611,6 @@ export type FinancialInstitutionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   archivedAt?: Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUncheckedCreateNestedManyWithoutInstitutionInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutFinancialInstitutionInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationUncheckedCreateNestedManyWithoutFinancialInstitutionInput
 }
@@ -652,7 +647,6 @@ export type FinancialInstitutionUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUpdateManyWithoutInstitutionNestedInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutFinancialInstitutionNestedInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationUpdateManyWithoutFinancialInstitutionNestedInput
 }
@@ -689,7 +683,6 @@ export type FinancialInstitutionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUncheckedUpdateManyWithoutInstitutionNestedInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutFinancialInstitutionNestedInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationUncheckedUpdateManyWithoutFinancialInstitutionNestedInput
 }
@@ -898,11 +891,6 @@ export type FinancialInstitutionMinOrderByAggregateInput = {
   archivedAt?: Prisma.SortOrder
 }
 
-export type FinancialInstitutionScalarRelationFilter = {
-  is?: Prisma.FinancialInstitutionWhereInput
-  isNot?: Prisma.FinancialInstitutionWhereInput
-}
-
 export type FinancialInstitutionNullableScalarRelationFilter = {
   is?: Prisma.FinancialInstitutionWhereInput | null
   isNot?: Prisma.FinancialInstitutionWhereInput | null
@@ -910,20 +898,6 @@ export type FinancialInstitutionNullableScalarRelationFilter = {
 
 export type EnumFinancialInstitutionTypeFieldUpdateOperationsInput = {
   set?: $Enums.FinancialInstitutionType
-}
-
-export type FinancialInstitutionCreateNestedOneWithoutBranchesInput = {
-  create?: Prisma.XOR<Prisma.FinancialInstitutionCreateWithoutBranchesInput, Prisma.FinancialInstitutionUncheckedCreateWithoutBranchesInput>
-  connectOrCreate?: Prisma.FinancialInstitutionCreateOrConnectWithoutBranchesInput
-  connect?: Prisma.FinancialInstitutionWhereUniqueInput
-}
-
-export type FinancialInstitutionUpdateOneRequiredWithoutBranchesNestedInput = {
-  create?: Prisma.XOR<Prisma.FinancialInstitutionCreateWithoutBranchesInput, Prisma.FinancialInstitutionUncheckedCreateWithoutBranchesInput>
-  connectOrCreate?: Prisma.FinancialInstitutionCreateOrConnectWithoutBranchesInput
-  upsert?: Prisma.FinancialInstitutionUpsertWithoutBranchesInput
-  connect?: Prisma.FinancialInstitutionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FinancialInstitutionUpdateToOneWithWhereWithoutBranchesInput, Prisma.FinancialInstitutionUpdateWithoutBranchesInput>, Prisma.FinancialInstitutionUncheckedUpdateWithoutBranchesInput>
 }
 
 export type FinancialInstitutionCreateNestedOneWithoutEmployeeBankAccountsInput = {
@@ -958,166 +932,6 @@ export type FinancialInstitutionUpdateOneWithoutPaymentAllocationsNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.FinancialInstitutionUpdateToOneWithWhereWithoutPaymentAllocationsInput, Prisma.FinancialInstitutionUpdateWithoutPaymentAllocationsInput>, Prisma.FinancialInstitutionUncheckedUpdateWithoutPaymentAllocationsInput>
 }
 
-export type FinancialInstitutionCreateWithoutBranchesInput = {
-  id?: string
-  catalogKey?: string | null
-  legalName: string
-  displayName: string
-  shortName: string
-  institutionType: $Enums.FinancialInstitutionType
-  countryCode?: string
-  currencyCode?: string
-  regulator?: string | null
-  regulatoryReference?: string | null
-  localInstitutionCode?: string | null
-  achParticipantCode?: string | null
-  swiftBic?: string | null
-  routingCode?: string | null
-  requiresBranchCode?: boolean
-  requiresAccountType?: boolean
-  requiresBeneficiaryId?: boolean
-  requiresAccountVerification?: boolean
-  supportsAchCredits?: boolean
-  supportsAchDebits?: boolean
-  supportsPayrollDeposits?: boolean
-  supportsInternalTransfers?: boolean
-  supportsExternalTransfers?: boolean
-  supportsSplitDeposits?: boolean
-  isSelectableForEmployees?: boolean
-  isActive?: boolean
-  effectiveFrom?: Date | string
-  effectiveTo?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  archivedAt?: Date | string | null
-  employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutFinancialInstitutionInput
-  paymentAllocations?: Prisma.PayrollPaymentAllocationCreateNestedManyWithoutFinancialInstitutionInput
-}
-
-export type FinancialInstitutionUncheckedCreateWithoutBranchesInput = {
-  id?: string
-  catalogKey?: string | null
-  legalName: string
-  displayName: string
-  shortName: string
-  institutionType: $Enums.FinancialInstitutionType
-  countryCode?: string
-  currencyCode?: string
-  regulator?: string | null
-  regulatoryReference?: string | null
-  localInstitutionCode?: string | null
-  achParticipantCode?: string | null
-  swiftBic?: string | null
-  routingCode?: string | null
-  requiresBranchCode?: boolean
-  requiresAccountType?: boolean
-  requiresBeneficiaryId?: boolean
-  requiresAccountVerification?: boolean
-  supportsAchCredits?: boolean
-  supportsAchDebits?: boolean
-  supportsPayrollDeposits?: boolean
-  supportsInternalTransfers?: boolean
-  supportsExternalTransfers?: boolean
-  supportsSplitDeposits?: boolean
-  isSelectableForEmployees?: boolean
-  isActive?: boolean
-  effectiveFrom?: Date | string
-  effectiveTo?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  archivedAt?: Date | string | null
-  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutFinancialInstitutionInput
-  paymentAllocations?: Prisma.PayrollPaymentAllocationUncheckedCreateNestedManyWithoutFinancialInstitutionInput
-}
-
-export type FinancialInstitutionCreateOrConnectWithoutBranchesInput = {
-  where: Prisma.FinancialInstitutionWhereUniqueInput
-  create: Prisma.XOR<Prisma.FinancialInstitutionCreateWithoutBranchesInput, Prisma.FinancialInstitutionUncheckedCreateWithoutBranchesInput>
-}
-
-export type FinancialInstitutionUpsertWithoutBranchesInput = {
-  update: Prisma.XOR<Prisma.FinancialInstitutionUpdateWithoutBranchesInput, Prisma.FinancialInstitutionUncheckedUpdateWithoutBranchesInput>
-  create: Prisma.XOR<Prisma.FinancialInstitutionCreateWithoutBranchesInput, Prisma.FinancialInstitutionUncheckedCreateWithoutBranchesInput>
-  where?: Prisma.FinancialInstitutionWhereInput
-}
-
-export type FinancialInstitutionUpdateToOneWithWhereWithoutBranchesInput = {
-  where?: Prisma.FinancialInstitutionWhereInput
-  data: Prisma.XOR<Prisma.FinancialInstitutionUpdateWithoutBranchesInput, Prisma.FinancialInstitutionUncheckedUpdateWithoutBranchesInput>
-}
-
-export type FinancialInstitutionUpdateWithoutBranchesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  catalogKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  legalName?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  shortName?: Prisma.StringFieldUpdateOperationsInput | string
-  institutionType?: Prisma.EnumFinancialInstitutionTypeFieldUpdateOperationsInput | $Enums.FinancialInstitutionType
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
-  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
-  regulator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  regulatoryReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  localInstitutionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  achParticipantCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  swiftBic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  routingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requiresBranchCode?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiresAccountType?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiresBeneficiaryId?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiresAccountVerification?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsAchCredits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsAchDebits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsPayrollDeposits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsInternalTransfers?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsExternalTransfers?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsSplitDeposits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isSelectableForEmployees?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutFinancialInstitutionNestedInput
-  paymentAllocations?: Prisma.PayrollPaymentAllocationUpdateManyWithoutFinancialInstitutionNestedInput
-}
-
-export type FinancialInstitutionUncheckedUpdateWithoutBranchesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  catalogKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  legalName?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  shortName?: Prisma.StringFieldUpdateOperationsInput | string
-  institutionType?: Prisma.EnumFinancialInstitutionTypeFieldUpdateOperationsInput | $Enums.FinancialInstitutionType
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
-  currencyCode?: Prisma.StringFieldUpdateOperationsInput | string
-  regulator?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  regulatoryReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  localInstitutionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  achParticipantCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  swiftBic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  routingCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  requiresBranchCode?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiresAccountType?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiresBeneficiaryId?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  requiresAccountVerification?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsAchCredits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsAchDebits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsPayrollDeposits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsInternalTransfers?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsExternalTransfers?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  supportsSplitDeposits?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isSelectableForEmployees?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutFinancialInstitutionNestedInput
-  paymentAllocations?: Prisma.PayrollPaymentAllocationUncheckedUpdateManyWithoutFinancialInstitutionNestedInput
-}
-
 export type FinancialInstitutionCreateWithoutEmployeeBankAccountsInput = {
   id?: string
   catalogKey?: string | null
@@ -1150,7 +964,6 @@ export type FinancialInstitutionCreateWithoutEmployeeBankAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   archivedAt?: Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchCreateNestedManyWithoutInstitutionInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationCreateNestedManyWithoutFinancialInstitutionInput
 }
 
@@ -1186,7 +999,6 @@ export type FinancialInstitutionUncheckedCreateWithoutEmployeeBankAccountsInput 
   createdAt?: Date | string
   updatedAt?: Date | string
   archivedAt?: Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUncheckedCreateNestedManyWithoutInstitutionInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationUncheckedCreateNestedManyWithoutFinancialInstitutionInput
 }
 
@@ -1238,7 +1050,6 @@ export type FinancialInstitutionUpdateWithoutEmployeeBankAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUpdateManyWithoutInstitutionNestedInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationUpdateManyWithoutFinancialInstitutionNestedInput
 }
 
@@ -1274,7 +1085,6 @@ export type FinancialInstitutionUncheckedUpdateWithoutEmployeeBankAccountsInput 
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUncheckedUpdateManyWithoutInstitutionNestedInput
   paymentAllocations?: Prisma.PayrollPaymentAllocationUncheckedUpdateManyWithoutFinancialInstitutionNestedInput
 }
 
@@ -1310,7 +1120,6 @@ export type FinancialInstitutionCreateWithoutPaymentAllocationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   archivedAt?: Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchCreateNestedManyWithoutInstitutionInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutFinancialInstitutionInput
 }
 
@@ -1346,7 +1155,6 @@ export type FinancialInstitutionUncheckedCreateWithoutPaymentAllocationsInput = 
   createdAt?: Date | string
   updatedAt?: Date | string
   archivedAt?: Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUncheckedCreateNestedManyWithoutInstitutionInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutFinancialInstitutionInput
 }
 
@@ -1398,7 +1206,6 @@ export type FinancialInstitutionUpdateWithoutPaymentAllocationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUpdateManyWithoutInstitutionNestedInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutFinancialInstitutionNestedInput
 }
 
@@ -1434,7 +1241,6 @@ export type FinancialInstitutionUncheckedUpdateWithoutPaymentAllocationsInput = 
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  branches?: Prisma.FinancialInstitutionBranchUncheckedUpdateManyWithoutInstitutionNestedInput
   employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutFinancialInstitutionNestedInput
 }
 
@@ -1444,13 +1250,11 @@ export type FinancialInstitutionUncheckedUpdateWithoutPaymentAllocationsInput = 
  */
 
 export type FinancialInstitutionCountOutputType = {
-  branches: number
   employeeBankAccounts: number
   paymentAllocations: number
 }
 
 export type FinancialInstitutionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  branches?: boolean | FinancialInstitutionCountOutputTypeCountBranchesArgs
   employeeBankAccounts?: boolean | FinancialInstitutionCountOutputTypeCountEmployeeBankAccountsArgs
   paymentAllocations?: boolean | FinancialInstitutionCountOutputTypeCountPaymentAllocationsArgs
 }
@@ -1463,13 +1267,6 @@ export type FinancialInstitutionCountOutputTypeDefaultArgs<ExtArgs extends runti
    * Select specific fields to fetch from the FinancialInstitutionCountOutputType
    */
   select?: Prisma.FinancialInstitutionCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * FinancialInstitutionCountOutputType without action
- */
-export type FinancialInstitutionCountOutputTypeCountBranchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.FinancialInstitutionBranchWhereInput
 }
 
 /**
@@ -1519,7 +1316,6 @@ export type FinancialInstitutionSelect<ExtArgs extends runtime.Types.Extensions.
   createdAt?: boolean
   updatedAt?: boolean
   archivedAt?: boolean
-  branches?: boolean | Prisma.FinancialInstitution$branchesArgs<ExtArgs>
   employeeBankAccounts?: boolean | Prisma.FinancialInstitution$employeeBankAccountsArgs<ExtArgs>
   paymentAllocations?: boolean | Prisma.FinancialInstitution$paymentAllocationsArgs<ExtArgs>
   _count?: boolean | Prisma.FinancialInstitutionCountOutputTypeDefaultArgs<ExtArgs>
@@ -1629,7 +1425,6 @@ export type FinancialInstitutionSelectScalar = {
 
 export type FinancialInstitutionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "catalogKey" | "legalName" | "displayName" | "shortName" | "institutionType" | "countryCode" | "currencyCode" | "regulator" | "regulatoryReference" | "localInstitutionCode" | "achParticipantCode" | "swiftBic" | "routingCode" | "requiresBranchCode" | "requiresAccountType" | "requiresBeneficiaryId" | "requiresAccountVerification" | "supportsAchCredits" | "supportsAchDebits" | "supportsPayrollDeposits" | "supportsInternalTransfers" | "supportsExternalTransfers" | "supportsSplitDeposits" | "isSelectableForEmployees" | "isActive" | "effectiveFrom" | "effectiveTo" | "createdAt" | "updatedAt" | "archivedAt", ExtArgs["result"]["financialInstitution"]>
 export type FinancialInstitutionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  branches?: boolean | Prisma.FinancialInstitution$branchesArgs<ExtArgs>
   employeeBankAccounts?: boolean | Prisma.FinancialInstitution$employeeBankAccountsArgs<ExtArgs>
   paymentAllocations?: boolean | Prisma.FinancialInstitution$paymentAllocationsArgs<ExtArgs>
   _count?: boolean | Prisma.FinancialInstitutionCountOutputTypeDefaultArgs<ExtArgs>
@@ -1640,7 +1435,6 @@ export type FinancialInstitutionIncludeUpdateManyAndReturn<ExtArgs extends runti
 export type $FinancialInstitutionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FinancialInstitution"
   objects: {
-    branches: Prisma.$FinancialInstitutionBranchPayload<ExtArgs>[]
     employeeBankAccounts: Prisma.$EmployeeBankAccountPayload<ExtArgs>[]
     paymentAllocations: Prisma.$PayrollPaymentAllocationPayload<ExtArgs>[]
   }
@@ -2079,7 +1873,6 @@ readonly fields: FinancialInstitutionFieldRefs;
  */
 export interface Prisma__FinancialInstitutionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  branches<T extends Prisma.FinancialInstitution$branchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FinancialInstitution$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FinancialInstitutionBranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employeeBankAccounts<T extends Prisma.FinancialInstitution$employeeBankAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FinancialInstitution$employeeBankAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeBankAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   paymentAllocations<T extends Prisma.FinancialInstitution$paymentAllocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FinancialInstitution$paymentAllocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollPaymentAllocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2532,30 +2325,6 @@ export type FinancialInstitutionDeleteManyArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many FinancialInstitutions to delete.
    */
   limit?: number
-}
-
-/**
- * FinancialInstitution.branches
- */
-export type FinancialInstitution$branchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the FinancialInstitutionBranch
-   */
-  select?: Prisma.FinancialInstitutionBranchSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the FinancialInstitutionBranch
-   */
-  omit?: Prisma.FinancialInstitutionBranchOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FinancialInstitutionBranchInclude<ExtArgs> | null
-  where?: Prisma.FinancialInstitutionBranchWhereInput
-  orderBy?: Prisma.FinancialInstitutionBranchOrderByWithRelationInput | Prisma.FinancialInstitutionBranchOrderByWithRelationInput[]
-  cursor?: Prisma.FinancialInstitutionBranchWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.FinancialInstitutionBranchScalarFieldEnum | Prisma.FinancialInstitutionBranchScalarFieldEnum[]
 }
 
 /**

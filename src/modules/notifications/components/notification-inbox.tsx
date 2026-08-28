@@ -6,13 +6,16 @@ import {
   CheckCheck,
   CheckCircle2,
   CircleAlert,
+  History,
   Info,
   MailOpen,
   TriangleAlert,
+  Wallet,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { formatDisplayDateTime } from "@/src/lib/format";
 import {
@@ -53,20 +56,36 @@ function formatDate(value: string): string {
   return formatDisplayDateTime(value);
 }
 
-export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
+const FILTERS = [
+  { key: "all", label: "All", href: "/notifications" },
+  { key: "payroll", label: "Payroll", href: "/notifications?module=payroll" },
+  { key: "unread", label: "Unread", href: "/notifications?unread=1" },
+] as const;
+
+export function NotificationInbox({
+  data,
+  activeFilter = "all",
+}: {
+  data: UserNotificationInbox;
+  activeFilter?: "all" | "payroll" | "unread";
+}) {
   const unread = data.notifications.filter(
     (notification) => notification.status === "UNREAD",
   );
 
-  const read = data.notifications.filter(
+  const history = data.notifications.filter(
     (notification) => notification.status !== "UNREAD",
   );
+
+  const payrollCount = data.notifications.filter(
+    (notification) => notification.moduleKey === "payroll",
+  ).length;
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 p-4 md:p-6 lg:p-8">
       <PageHeader
         title="Notifications"
-        description={`Alerts and actions for ${data.user.name}`}
+        description={`Alerts, approvals, and past payroll actions for ${data.user.name}. Read items stay here as a history trail.`}
         actions={
           data.unreadCount > 0 ? (
             <form action={markAllNotificationsRead}>
@@ -79,6 +98,21 @@ export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
         }
       />
 
+      <section className="flex flex-wrap gap-2">
+        {FILTERS.map((filter) => (
+          <Button
+            key={filter.key}
+            nativeButton={false}
+            size="sm"
+            variant={activeFilter === filter.key ? "default" : "outline"}
+            render={<Link href={filter.href} />}
+          >
+            {filter.key === "payroll" ? <Wallet className="size-3.5" /> : null}
+            {filter.label}
+          </Button>
+        ))}
+      </section>
+
       <section className="grid gap-8 md:grid-cols-3">
         <div>
           <p className="text-xs text-muted-foreground">Unread</p>
@@ -86,15 +120,15 @@ export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">Total notifications</p>
+          <p className="text-xs text-muted-foreground">Shown in this view</p>
           <p className="mt-1 text-2xl font-semibold">
             {data.notifications.length}
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-muted-foreground">User</p>
-          <p className="mt-1 text-sm font-medium">{data.user.email}</p>
+          <p className="text-xs text-muted-foreground">Payroll in this view</p>
+          <p className="mt-1 text-2xl font-semibold">{payrollCount}</p>
         </div>
       </section>
 
@@ -113,7 +147,8 @@ export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
             <p className="mt-3 text-sm font-medium">No unread notifications</p>
 
             <p className="mt-1 text-xs text-muted-foreground">
-              New alerts and approval requests will appear here.
+              New alerts and approval requests will appear here. Past payroll
+              approvals remain under History.
             </p>
           </div>
         ) : (
@@ -133,7 +168,13 @@ export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
 
                     <Badge variant="default">Unread</Badge>
 
-                    <Badge variant="outline">
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        notification.moduleKey === "payroll" &&
+                          "border-primary/40 text-primary",
+                      )}
+                    >
                       {label(notification.moduleKey)}
                     </Badge>
                   </div>
@@ -173,20 +214,25 @@ export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
 
       <section>
         <div className="mb-4 flex items-center gap-2">
-          <CheckCheck className="size-4 text-muted-foreground" />
+          <History className="size-4 text-muted-foreground" />
 
           <h2 className="text-sm font-semibold tracking-wide uppercase">
-            Earlier notifications
+            History
           </h2>
         </div>
 
-        {read.length === 0 ? (
+        <p className="mb-4 text-sm text-muted-foreground">
+          Past notifications stay available after you mark them read — including
+          who initiated and who approved payroll actions.
+        </p>
+
+        {history.length === 0 ? (
           <p className="py-10 text-center text-sm text-muted-foreground">
-            No earlier notifications.
+            No history yet. Completed approvals will appear here.
           </p>
         ) : (
           <div className="divide-y divide-border/70">
-            {read.map((notification) => (
+            {history.map((notification) => (
               <article
                 key={notification.recipientId}
                 className="grid gap-5 py-5 md:grid-cols-[2.5rem_1fr_auto]"
@@ -208,7 +254,15 @@ export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
                       <p className="font-medium">{notification.title}</p>
                     )}
 
-                    <Badge variant="outline">
+                    <Badge variant="secondary">Past</Badge>
+
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        notification.moduleKey === "payroll" &&
+                          "border-primary/40 text-primary",
+                      )}
+                    >
                       {label(notification.moduleKey)}
                     </Badge>
                   </div>
@@ -219,6 +273,9 @@ export function NotificationInbox({ data }: { data: UserNotificationInbox }) {
 
                   <p className="mt-3 text-xs text-muted-foreground">
                     {formatDate(notification.createdAt)}
+                    {notification.readAt
+                      ? ` · Read ${formatDate(notification.readAt)}`
+                      : null}
                   </p>
                 </div>
 

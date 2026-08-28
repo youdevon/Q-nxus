@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
 import { PayslipPrintView } from "@/src/modules/payroll/components/payslip-print-view";
+import { getApprovedProjectedTaxYearPosition } from "@/src/modules/payroll/data/get-annual-paye-projections";
 import { getEmployeePayslipPreview } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";
 import {
+  getPayslipYtdBreakdown,
   getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
@@ -15,6 +17,10 @@ import {
   resolveDefaultLivePayslipPeriod,
 } from "@/src/modules/payroll/lib/payslip-preview";
 import { periodKeyFromAsOf } from "@/src/modules/payroll/lib/payslip-ytd";
+import {
+  taxYearFromAsOfKey,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export const metadata: Metadata = {
   title: "Print payslip",
@@ -50,6 +56,7 @@ export default async function MyPayslipPrintPage({
     if (
       !posted ||
       !posted.isPosted ||
+      !posted.isReleased ||
       posted.payslip.employee.id !== capabilities.employeeId
     ) {
       notFound();
@@ -60,6 +67,8 @@ export default async function MyPayslipPrintPage({
         payslip={posted.payslip}
         meta={posted.meta}
         ytd={posted.ytd}
+        ytdBreakdown={posted.ytdBreakdown}
+        projectedTaxYearPosition={posted.projectedTaxYearPosition}
         isOfficial
       />
     );
@@ -103,6 +112,22 @@ export default async function MyPayslipPrintPage({
     periodKey: resolvedPeriodKey,
     current: payslipPreviewToYtdContribution(payslip),
   });
+  const ytdBreakdown = await getPayslipYtdBreakdown(
+    capabilities.employeeId,
+    ytd,
+  );
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    capabilities.employeeId,
+    taxYearFromAsOfKey(toStatutoryAsOfKey(new Date(payslip.period.asOf))),
+  );
 
-  return <PayslipPrintView payslip={payslip} meta={meta} ytd={ytd} />;
+  return (
+    <PayslipPrintView
+      payslip={payslip}
+      meta={meta}
+      ytd={ytd}
+      ytdBreakdown={ytdBreakdown}
+      projectedTaxYearPosition={projectedTaxYearPosition}
+    />
+  );
 }

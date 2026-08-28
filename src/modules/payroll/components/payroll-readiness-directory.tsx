@@ -47,7 +47,7 @@ export function PayrollReadinessDirectory({
 
       <PageHeader
         title="Payroll"
-        description="Payroll readiness for active employees. Every blocking issue must be resolved before an employee can be paid."
+        description="Payroll readiness for active employees. Blocking issues must be resolved before pay-run inclusion; warnings are shown but do not block payment."
         actions={
           data.readyCount > 0 ? (
             <PageActionsEnd>
@@ -165,9 +165,22 @@ export function PayrollReadinessDirectory({
                       {row.blockingIssues.map((issue) => (
                         <span
                           key={issue}
-                          className="inline-flex max-w-full rounded-md border border-warning/30 bg-warning/10 px-2 py-0.5 text-xs leading-snug text-warning-foreground break-words"
+                          className="inline-flex max-w-full rounded-md border border-warning/30 bg-warning/10 px-2 py-0.5 text-xs leading-snug text-warning-foreground break-words dark:border-warning/40 dark:bg-warning/15 dark:text-warning"
                         >
                           {issue}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  {row.isReady && row.softWarnings.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5">
+                      {row.softWarnings.map((warning) => (
+                        <span
+                          key={warning}
+                          className="inline-flex max-w-full rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-xs leading-snug text-amber-950 break-words dark:border-amber-500/40 dark:bg-amber-500/15 dark:text-amber-100"
+                        >
+                          {warning}
                         </span>
                       ))}
                     </div>

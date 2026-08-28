@@ -9,20 +9,31 @@
 
 import type { HealthSurchargeResult } from "@/src/modules/payroll/lib/health-surcharge";
 import {
-  countHealthContributionWeeks,
   computeHealthSurcharge,
   type HealthSurchargeConfigInput,
 } from "@/src/modules/payroll/lib/health-surcharge";
+import { countMondaysInRange } from "@/src/modules/payroll/lib/contribution-weeks";
 import type { NisContributionResult } from "@/src/modules/payroll/lib/nis-contribution";
 import {
-  computeNisContribution,
+  computeEmployeeNisStatutory,
   type NisEarningsClassInput,
 } from "@/src/modules/payroll/lib/nis-contribution";
+import type { NisClassZRateInput } from "@/src/modules/payroll/lib/nis-class-z";
+import type {
+  NisContributionCategory,
+  NisEligibilityConfigInput,
+} from "@/src/modules/payroll/lib/nis-eligibility";
 import type { PayeContributionResult } from "@/src/modules/payroll/lib/paye-contribution";
 import {
   computePayeContribution,
   type PayeTaxConfigInput,
 } from "@/src/modules/payroll/lib/paye-contribution";
+import { computeCumulativePayeContribution } from "@/src/modules/payroll/lib/cumulative-paye";
+import {
+  computeTaxYearPeriodPaye,
+  shouldUseTaxYearPeriodPaye,
+  type PreviousEmploymentStatusCode,
+} from "@/src/modules/payroll/lib/tax-year-period-paye";
 import {
   bankFixedAmountTotal,
   type PayrollReadinessResult,
@@ -44,12 +55,50 @@ export type PayslipLineItem = {
   detail?: string;
 };
 
+/** Label hints for earning lines promoted into the identity meta rows. */
+const PAYSLIP_META_SALARY_HINTS = ["base salary", "salary"] as const;
+const PAYSLIP_META_TRAVEL_HINTS = ["travel"] as const;
+const PAYSLIP_META_PHONE_HINTS = ["phone", "telephone"] as const;
+
+function labelMatchesHints(
+  label: string,
+  hints: readonly string[],
+): boolean {
+  const normalized = label.toLowerCase();
+  return hints.some((hint) => normalized.includes(hint));
+}
+
+/** Salary / travelling / phone lines shown in meta — not again above Gross. */
+export function isPayslipMetaAllowanceLine(line: PayslipLineItem): boolean {
+  return (
+    labelMatchesHints(line.label, PAYSLIP_META_SALARY_HINTS) ||
+    labelMatchesHints(line.label, PAYSLIP_META_TRAVEL_HINTS) ||
+    labelMatchesHints(line.label, PAYSLIP_META_PHONE_HINTS)
+  );
+}
+
+export function findPayslipMetaAllowanceAmount(
+  earnings: PayslipLineItem[],
+  kind: "salary" | "travel" | "phone",
+): number | undefined {
+  const hints =
+    kind === "salary"
+      ? PAYSLIP_META_SALARY_HINTS
+      : kind === "travel"
+        ? PAYSLIP_META_TRAVEL_HINTS
+        : PAYSLIP_META_PHONE_HINTS;
+  const match = earnings.find((line) => labelMatchesHints(line.label, hints));
+  return match?.amount;
+}
+
 export type PayslipBankLine = {
   bankName: string;
   accountNumber?: string;
   accountNumberMasked: string;
   amount: number;
   kind: "FIXED" | "PERCENTAGE" | "REMAINDER";
+  /** SAVINGS | CHEQUING when known — used by disbursement export fallback. */
+  accountType?: string | null;
 };
 
 export type PayslipEarningInput = {
@@ -74,6 +123,8 @@ export type PayslipBankAccountInput = {
   accountNumber: string;
   amount: number | null;
   isPrimary: boolean;
+  /** SAVINGS | CHEQUING — carried into bankDistribution when present. */
+  accountType?: string | null;
   /** Used when postNetSplitEnabled — percentage of full take-home (0–100). */
   percentage?: number | null;
   /** Used when postNetSplitEnabled. */
@@ -111,9 +162,49 @@ export type AssemblePayslipPreviewInput = {
   exemptFromNis?: boolean;
   exemptFromHealthSurcharge?: boolean;
   exemptFromPaye?: boolean;
+  receivingNisRetirementBenefit?: boolean;
+  nisCategoryOverride?: NisContributionCategory | null;
+  nisOverrideEffectiveFrom?: string | null;
+  nisOverrideEffectiveTo?: string | null;
   nisClasses: NisEarningsClassInput[];
+  classZRates?: NisClassZRateInput[];
+  nisEligibilityConfig?: NisEligibilityConfigInput;
   payeConfig: PayeTaxConfigInput | null;
   healthConfig: HealthSurchargeConfigInput | null;
+  /** Phase 4–5 / tax-year projection: cumulative or hire-aware PAYE. */
+  cumulativePaye?: {
+    enabled: boolean;
+    currentEmployerTaxableYtd: number;
+    currentEmployerPayePaidYtd: number;
+    currentEmployerNisPaidYtd: number;
+    priorTaxableYtd: number;
+    priorPayePaidYtd: number;
+    priorNisEmployeeYtd: number;
+    priorOtherApprovedYtd: number;
+    /** @deprecated Prefer tax-year projection; kept for legacy cumulative. */
+    monthsElapsed: number;
+    taxYear?: number;
+    employmentStartDate?: Date | null;
+    employmentEndDate?: Date | null;
+    previousEmploymentStatus?: PreviousEmploymentStatusCode | null;
+    recognizePriorEmployment?: boolean;
+    personalAllowanceOverride?: number | null;
+    td1Submitted?: boolean;
+    birDirectionPresent?: boolean;
+  };
+  /** Phase 6: treat non-taxable earnings explicitly (default uses isTaxable). */
+  taxTreatmentNotes?: string[];
+  /** Phase 7: absolute period overrides after computed statutory. */
+  statutoryOverrides?: {
+    payeAmount?: number | null;
+    nisEmployeeAmount?: number | null;
+    nisEmployerAmount?: number | null;
+    nisClassZAmount?: number | null;
+    healthSurchargeAmount?: number | null;
+    reason?: string | null;
+  };
+  /** Extra calc notes from tax profile / prior employment resolve. */
+  taxCalcNotes?: string[];
 };
 
 export type PayslipPreview = {
@@ -174,6 +265,44 @@ export function notesForPayslipDisplay(
   }
 
   return notes.filter((note) => !PREVIEW_CAVEAT_NOTE_SET.has(note));
+}
+
+/**
+ * Line `detail` text safe to show on employee-facing payslips.
+ * Hides override reasons and internal PAYE estimate audit strings.
+ */
+export function payslipLineDetailForDisplay(
+  detail: string | undefined | null,
+): string | null {
+  if (detail == null) {
+    return null;
+  }
+  const trimmed = detail.trim();
+  if (!trimmed) {
+    return null;
+  }
+  if (/^override\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/paye amount overridden/i.test(trimmed)) {
+    return null;
+  }
+  if (/tax-year paye\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/tax-year estimate\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/^annual tax\b/i.test(trimmed)) {
+    return null;
+  }
+  if (/employment start used for estimate/i.test(trimmed)) {
+    return null;
+  }
+  if (/prior-employer ytd\b/i.test(trimmed)) {
+    return null;
+  }
+  return trimmed;
 }
 
 /** Convert an allowance/salary amount at its source frequency to a monthly period amount. */
@@ -386,6 +515,7 @@ export function applyFixedBankAllocations(input: {
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: paidAmount,
       kind: "FIXED",
+      accountType: account.accountType ?? null,
     });
   }
 
@@ -404,6 +534,7 @@ export function applyFixedBankAllocations(input: {
     accountNumberMasked: maskAccountNumber(primary.accountNumber),
     amount: primaryRemainder,
     kind: "REMAINDER",
+    accountType: primary.accountType ?? null,
   });
 
   return { deductions, lines, primaryRemainder, warnings };
@@ -431,7 +562,10 @@ export function assemblePayslipPreview(
   const periodStart = input.periodStart ?? periodStartFromAsOf(asOf);
   const periodEnd = input.periodEnd ?? periodEndFromAsOf(asOf);
   const asOfIso = asOf.toISOString().slice(0, 10);
-  const warnings: string[] = [...input.readiness.blockingIssues];
+  const warnings: string[] = [
+    ...input.readiness.blockingIssues,
+    ...(input.readiness.softWarnings ?? []),
+  ];
   const notes: string[] = [...PAYSLIP_PREVIEW_CAVEAT_NOTES];
 
   const earnings: PayslipLineItem[] = [];
@@ -501,13 +635,46 @@ export function assemblePayslipPreview(
   const exemptFromHealthSurcharge = input.exemptFromHealthSurcharge ?? false;
 
   if (monthlyTaxableEarnings > 0) {
-    if (exemptFromNis) {
-      notes.push("NIS exempt (employee opt-out) — no employee or employer contribution.");
-    } else if (input.nisClasses.length > 0) {
-      nis = computeNisContribution({
+    const contributionWeeks = countMondaysInRange(periodStart, periodEnd);
+
+    if (input.nisClasses.length > 0) {
+      nis = computeEmployeeNisStatutory({
         monthlySalary: monthlyTaxableEarnings,
         classes: input.nisClasses,
+        classZRates: input.classZRates ?? [],
+        weeksInPeriod: contributionWeeks,
+        dateOfBirth: input.employee.dateOfBirth,
+        asOf: periodEnd,
+        exemptFromNis,
+        receivingNisRetirementBenefit:
+          input.receivingNisRetirementBenefit ?? false,
+        categoryOverride: input.nisCategoryOverride,
+        overrideEffectiveFrom: input.nisOverrideEffectiveFrom,
+        overrideEffectiveTo: input.nisOverrideEffectiveTo,
+        eligibilityConfig: input.nisEligibilityConfig,
       });
+      if (nis.category === "EXEMPT" && exemptFromNis) {
+        notes.push(
+          "NIS exempt (employee opt-out) — no employee or employer contribution.",
+        );
+      }
+      if (nis.transitionAlert) {
+        warnings.push(nis.transitionAlert);
+      }
+      if (nis.category === "CLASS_Z") {
+        notes.push(
+          `NIS Class Z — employee $0.00; employer injury coverage ${nis.classZEmployerMonthly.toFixed(2)} (${nis.classZEmployerWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod}).`,
+        );
+        if (nis.classZOverrideApplied) {
+          notes.push(
+            `Class Z override applied — calculated ${nis.classZCalculatedEmployerMonthly.toFixed(2)}, applied ${nis.classZEmployerMonthly.toFixed(2)}.`,
+          );
+        }
+      }
+    } else if (exemptFromNis) {
+      notes.push(
+        "NIS exempt (employee opt-out) — no employee or employer contribution.",
+      );
     } else {
       warnings.push("No active NIS earnings classes configured.");
     }
@@ -515,12 +682,94 @@ export function assemblePayslipPreview(
     if (exemptFromPaye) {
       notes.push("PAYE exempt (employee opt-out) — no income tax deducted.");
     } else if (input.payeConfig != null) {
-      paye = computePayeContribution({
-        monthlyTaxableEarnings,
-        config: input.payeConfig,
-        employeeNisWeekly: nis?.employeeWeekly ?? 0,
-        otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
-      });
+      const cumulative = input.cumulativePaye;
+      const taxYear =
+        cumulative?.taxYear ??
+        periodEnd.getUTCFullYear();
+      const useTaxYearProjection =
+        cumulative != null &&
+        (cumulative.enabled ||
+          shouldUseTaxYearPeriodPaye({
+            taxCalculationMethod: cumulative.enabled
+              ? "STANDARD_CUMULATIVE"
+              : "STANDARD_NON_CUMULATIVE",
+            cumulativeCalculationEnabled: cumulative.enabled,
+            employmentStartDate: cumulative.employmentStartDate,
+            taxYear,
+          }));
+
+      if (useTaxYearProjection && cumulative) {
+        const taxYearPaye = computeTaxYearPeriodPaye({
+          taxYear,
+          periodStart,
+          periodEnd,
+          employmentStartDate: cumulative.employmentStartDate ?? null,
+          employmentEndDate: cumulative.employmentEndDate ?? null,
+          config: input.payeConfig,
+          personalAllowanceOverride: cumulative.personalAllowanceOverride,
+          periodTaxableEarnings: monthlyTaxableEarnings,
+          currentEmployerTaxableYtdBefore: cumulative.currentEmployerTaxableYtd,
+          currentEmployerPayePaidYtdBefore: cumulative.currentEmployerPayePaidYtd,
+          priorTaxableYtd: cumulative.priorTaxableYtd,
+          priorPayePaidYtd: cumulative.priorPayePaidYtd,
+          previousEmploymentStatus: cumulative.previousEmploymentStatus,
+          recognizePriorEmployment:
+            cumulative.recognizePriorEmployment ??
+            (cumulative.priorTaxableYtd > 0 || cumulative.priorPayePaidYtd > 0),
+          employeeNisWeekly: nis?.employeeWeekly ?? 0,
+          nisEmployeePaidYtdBefore:
+            cumulative.currentEmployerNisPaidYtd +
+            cumulative.priorNisEmployeeYtd,
+          periodNisEmployee: nis && !nis.belowMinimum ? nis.employeeMonthly : 0,
+          otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
+          priorOtherApprovedYtd: cumulative.priorOtherApprovedYtd,
+          td1Submitted: cumulative.td1Submitted,
+          birDirectionPresent: cumulative.birDirectionPresent,
+        });
+        paye = taxYearPaye;
+        notes.push(
+          `Tax-year PAYE · ${taxYearPaye.remainingPeriodsIncludingThis} period${taxYearPaye.remainingPeriodsIncludingThis === 1 ? "" : "s"} remaining (incl. this) · estimated annual taxable ${taxYearPaye.projectedAnnualTaxable.toFixed(2)} · annual tax ${taxYearPaye.annualTax.toFixed(2)} − paid ${taxYearPaye.payePaidYtdBefore.toFixed(2)} → ${taxYearPaye.periodPaye.toFixed(2)}.`,
+        );
+        if (taxYearPaye.explain.employmentStartUsed) {
+          notes.push(
+            `Employment start used for estimate: ${taxYearPaye.explain.employmentStartUsed} (months before hire are not annualized).`,
+          );
+        }
+        for (const warning of taxYearPaye.warnings) {
+          warnings.push(warning);
+        }
+        if (taxYearPaye.payePositionStatus !== "NORMAL") {
+          notes.push(`PAYE position: ${taxYearPaye.payePositionStatus}.`);
+        }
+      } else if (cumulative?.enabled) {
+        const cumulativePaye = computeCumulativePayeContribution({
+          periodTaxableEarnings: monthlyTaxableEarnings,
+          currentEmployerTaxableYtd: cumulative.currentEmployerTaxableYtd,
+          currentEmployerPayePaidYtd: cumulative.currentEmployerPayePaidYtd,
+          priorTaxableYtd: cumulative.priorTaxableYtd,
+          priorPayePaidYtd: cumulative.priorPayePaidYtd,
+          monthsElapsed: cumulative.monthsElapsed,
+          config: input.payeConfig,
+          employeeNisWeekly: nis?.employeeWeekly ?? 0,
+          nisEmployeePaidYtdBefore:
+            cumulative.currentEmployerNisPaidYtd +
+            cumulative.priorNisEmployeeYtd,
+          periodNisEmployee: nis && !nis.belowMinimum ? nis.employeeMonthly : 0,
+          otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
+          priorOtherApprovedYtd: cumulative.priorOtherApprovedYtd,
+        });
+        paye = cumulativePaye;
+        notes.push(
+          `Cumulative PAYE · ${cumulative.monthsElapsed} month${cumulative.monthsElapsed === 1 ? "" : "s"} elapsed · tax to date ${cumulativePaye.taxToDate.toFixed(2)} − paid ${cumulativePaye.payePaidYtdBefore.toFixed(2)}.`,
+        );
+      } else {
+        paye = computePayeContribution({
+          monthlyTaxableEarnings,
+          config: input.payeConfig,
+          employeeNisWeekly: nis?.employeeWeekly ?? 0,
+          otherApprovedDeductionsAnnual: input.td1OtherApprovedAnnual ?? 0,
+        });
+      }
     } else {
       warnings.push("No active PAYE tax config configured.");
     }
@@ -533,7 +782,7 @@ export function assemblePayslipPreview(
         pensionOnlyIncome: input.pensionOnlyIncome ?? false,
         exemptFromHealthSurcharge,
         asOf,
-        weeksInPeriod: countHealthContributionWeeks(periodStart, periodEnd),
+        weeksInPeriod: contributionWeeks,
       });
 
       if (!exemptFromHealthSurcharge && !input.employee.dateOfBirth) {
@@ -550,21 +799,30 @@ export function assemblePayslipPreview(
 
   const deductions: PayslipLineItem[] = [];
 
-  if (nis && !nis.belowMinimum) {
+  if (nis && nis.category === "NORMAL" && !nis.belowMinimum) {
     deductions.push({
       label: "NIS (employee)",
       amount: nis.employeeMonthly,
-      detail: `Class ${nis.classCode} · ${nis.employeeWeekly.toFixed(2)}/wk × 4⅓`,
+      detail: `Class ${nis.classCode} · ${nis.employeeWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod}`,
     });
+  } else if (nis?.category === "CLASS_Z") {
+    notes.push("NIS employee contribution: $0.00 (Class Z).");
   } else if (nis?.belowMinimum) {
     notes.push("NIS: earnings below Class I floor — no employee contribution.");
   }
 
   if (paye) {
+    const taxYearMethod =
+      paye && "method" in paye && paye.method === "TAX_YEAR_PROJECTION";
+    const cumulativeEnabled = input.cumulativePaye?.enabled === true;
     deductions.push({
       label: "PAYE (income tax)",
       amount: paye.monthlyPaye,
-      detail: `Annual tax ${paye.annualTax.toFixed(2)} ÷ 12`,
+      detail: taxYearMethod
+        ? `Tax-year estimate ${paye.monthlyPaye.toFixed(2)}`
+        : cumulativeEnabled
+          ? `Cumulative period tax ${paye.monthlyPaye.toFixed(2)}`
+          : `Annual tax ${paye.annualTax.toFixed(2)} ÷ 12`,
     });
   }
 
@@ -578,6 +836,108 @@ export function assemblePayslipPreview(
     notes.push(
       `Health Surcharge exempt (${(health.exemptionReason ?? "unknown").replaceAll("_", " ").toLowerCase()}).`,
     );
+  }
+
+  const overrides = input.statutoryOverrides;
+  if (overrides) {
+    if (overrides.payeAmount != null && Number.isFinite(overrides.payeAmount)) {
+      const idx = deductions.findIndex((line) => line.label === "PAYE (income tax)");
+      const amount = roundToCents(Math.max(0, overrides.payeAmount));
+      if (idx >= 0) {
+        deductions[idx] = {
+          ...deductions[idx],
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        };
+      } else {
+        deductions.push({
+          label: "PAYE (income tax)",
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        });
+      }
+      notes.push("PAYE amount overridden for this period.");
+    }
+    if (
+      overrides.nisEmployeeAmount != null &&
+      Number.isFinite(overrides.nisEmployeeAmount)
+    ) {
+      const idx = deductions.findIndex((line) => line.label === "NIS (employee)");
+      const amount = roundToCents(Math.max(0, overrides.nisEmployeeAmount));
+      if (idx >= 0) {
+        deductions[idx] = {
+          ...deductions[idx],
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        };
+      } else if (amount > 0) {
+        deductions.push({
+          label: "NIS (employee)",
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        });
+      }
+      notes.push("NIS employee amount overridden for this period.");
+    }
+    if (
+      overrides.nisClassZAmount != null &&
+      Number.isFinite(overrides.nisClassZAmount) &&
+      nis?.category === "CLASS_Z"
+    ) {
+      const amount = roundToCents(Math.max(0, overrides.nisClassZAmount));
+      nis = {
+        ...nis,
+        classZEmployerMonthly: amount,
+        classZOverrideApplied: amount !== nis.classZCalculatedEmployerMonthly,
+        totalMonthly: amount,
+      };
+      notes.push("NIS Class Z employer amount overridden for this period.");
+    }
+    if (
+      overrides.nisEmployerAmount != null &&
+      Number.isFinite(overrides.nisEmployerAmount) &&
+      nis?.category === "NORMAL"
+    ) {
+      const amount = roundToCents(Math.max(0, overrides.nisEmployerAmount));
+      if (nis) {
+        nis = {
+          ...nis,
+          employerMonthly: amount,
+          totalMonthly: roundToCents(nis.employeeMonthly + amount),
+        };
+      }
+      notes.push("NIS employer amount overridden for this period.");
+    }
+    if (
+      overrides.healthSurchargeAmount != null &&
+      Number.isFinite(overrides.healthSurchargeAmount)
+    ) {
+      const idx = deductions.findIndex(
+        (line) => line.label === "Health Surcharge",
+      );
+      const amount = roundToCents(Math.max(0, overrides.healthSurchargeAmount));
+      if (idx >= 0) {
+        deductions[idx] = {
+          ...deductions[idx],
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        };
+      } else if (amount > 0) {
+        deductions.push({
+          label: "Health Surcharge",
+          amount,
+          detail: `Override${overrides.reason ? ` · ${overrides.reason}` : ""}`,
+        });
+      }
+      notes.push("Health Surcharge amount overridden for this period.");
+    }
+  }
+
+  if (input.taxCalcNotes?.length) {
+    notes.push(...input.taxCalcNotes);
+  }
+  if (input.taxTreatmentNotes?.length) {
+    notes.push(...input.taxTreatmentNotes);
   }
 
   for (const deduction of input.deductions ?? []) {
@@ -617,6 +977,7 @@ export function assemblePayslipPreview(
           percentage: kind === "PERCENTAGE" ? (account.percentage ?? null) : null,
           kind,
           priority: account.priority ?? index,
+          accountType: account.accountType ?? null,
         };
       });
       const allocated = applyPostNetBankAllocations({
@@ -646,7 +1007,13 @@ export function assemblePayslipPreview(
   const netPay = fromCents(subCents(toCents(grossPay), toCents(totalDeductions)));
 
   const employerContributions: PayslipLineItem[] = [];
-  if (nis && !nis.belowMinimum) {
+  if (nis?.category === "CLASS_Z" && nis.classZEmployerMonthly > 0) {
+    employerContributions.push({
+      label: "NIS Class Z (employer)",
+      amount: nis.classZEmployerMonthly,
+      detail: `Class Z · ${nis.classZEmployerWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod} · employer injury — not deducted from net`,
+    });
+  } else if (nis && nis.category === "NORMAL" && !nis.belowMinimum) {
     employerContributions.push({
       label: "NIS (employer)",
       amount: nis.employerMonthly,

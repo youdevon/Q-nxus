@@ -27,6 +27,7 @@ npx prisma generate
 | `vacation-forfeiture-reminders` | Unused VAC near contract end |
 | `correspondence-retention-archive` | Archive expired correspondence |
 | `stored-file-retention-archive` | Archive expired stored files |
+| `prior-employment-archive-purge` | Hard-delete aged ARCHIVED prior-YTD rows |
 
 Run all once: `npm run jobs:run`.
 
