@@ -1,6 +1,5 @@
 import { getOrganizationProfile } from "@/src/modules/admin/data/get-organization-profile";
 import { prisma } from "@/lib/prisma";
-import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
 import { getVerifiedEmployeeOpeningYtdAmounts } from "@/src/modules/payroll/data/get-employee-opening-ytd";
 import { getEmployeePayrollSetup } from "@/src/modules/payroll/data/get-employee-payroll-setup";
 import { getEmployeeStatutoryYtdBeforePeriod } from "@/src/modules/payroll/data/get-payslip-ytd";
@@ -136,21 +135,6 @@ export async function getEmployeePayslipPreview(
       prisma.employee.findUnique({
         where: { id: employeeId },
         select: {
-          hireDate: true,
-          terminationDate: true,
-          position: {
-            select: { title: true },
-          },
-          assignments: {
-            where: { isCurrent: true },
-            take: 1,
-            select: {
-              position: { select: { title: true } },
-            },
-          },
-          department: {
-            select: { name: true },
-          },
           leaveRequests: {
             where: {
               status: "APPROVED",
@@ -301,8 +285,12 @@ export async function getEmployeePayslipPreview(
   const coverage = resolveContractPaySegments({
     periodStart,
     periodEnd,
-    employeeHireDate: employeeExtras?.hireDate,
-    employeeTerminationDate: employeeExtras?.terminationDate,
+    employeeHireDate: setup.employee.hireDate
+      ? new Date(`${setup.employee.hireDate}T12:00:00.000Z`)
+      : null,
+    employeeTerminationDate: setup.employee.terminationDate
+      ? new Date(`${setup.employee.terminationDate}T12:00:00.000Z`)
+      : null,
     contracts: contracts.map((contract) => ({
       id: contract.id,
       isCurrent: contract.isCurrent,
@@ -493,7 +481,7 @@ export async function getEmployeePayslipPreview(
         resolvedTax.priorEmployment.otherApprovedDeductionsYtd,
       monthsElapsed: monthsElapsedFromPeriodEnd(periodEnd),
       taxYear,
-      employmentStartDate: employeeExtras?.hireDate ?? null,
+      employmentStartDate: setup.employee.hireDate,
       previousEmploymentStatus: resolvedTax.previousEmploymentStatus,
       recognizePriorEmployment:
         resolvedTax.previousEmploymentStatus === "PREVIOUS_EMPLOYMENT" &&
@@ -542,16 +530,8 @@ export async function getEmployeePayslipPreview(
         organization?.legalName?.trim() ||
         organization?.name?.trim() ||
         "Organization",
-      jobTitle: resolveEmployeePositionTitle({
-        assignmentPositionTitle:
-          employeeExtras?.assignments[0]?.position?.title,
-        positionTitle: employeeExtras?.position?.title,
-        contractJobTitle:
-          primarySegment?.jobTitle ??
-          setup.currentContract?.positionTitle ??
-          null,
-      }),
-      departmentName: employeeExtras?.department?.name ?? null,
+      jobTitle: setup.employee.jobTitle,
+      departmentName: setup.employee.departmentName,
     },
     statutory: {
       ...toPayslipStatutorySnapshot(statutoryBundle),

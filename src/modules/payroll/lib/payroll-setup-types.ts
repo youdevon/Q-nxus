@@ -183,7 +183,12 @@ export type EmployeePayrollSetup = {
     employeeNumber: string;
     displayName: string;
     employmentStatus: string;
+    /** HR master — drives NIS Class Z and Health Surcharge age rules. */
     dateOfBirth: string | null;
+    hireDate: string | null;
+    terminationDate: string | null;
+    departmentName: string | null;
+    jobTitle: string | null;
     /** Source-of-truth statutory numbers from the employee record. */
     nisNumber: string | null;
     birNumber: string | null;
@@ -193,8 +198,6 @@ export type EmployeePayrollSetup = {
     payFrequency: string;
     paymentMethod: "BANK_TRANSFER" | "CHEQUE" | "CASH";
     notes: string | null;
-    /** Display TD1 from EmployeeTaxProfile (current tax year). */
-    td1OtherApprovedAnnual: string | null;
     pensionOnlyIncome: boolean;
     exemptFromNis: boolean;
     exemptFromHealthSurcharge: boolean;
@@ -204,7 +207,6 @@ export type EmployeePayrollSetup = {
     nisOverrideReason: string | null;
     nisOverrideEffectiveFrom: string | null;
     nisOverrideEffectiveTo: string | null;
-    isPayrollReady: boolean;
     updatedAt: string;
   } | null;
   /** Effective NIS/BIR for form defaults (Employee SoT). */

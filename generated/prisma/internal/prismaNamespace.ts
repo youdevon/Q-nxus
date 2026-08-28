@@ -8761,7 +8761,6 @@ export const PayrollProfileScalarFieldEnum = {
   payFrequency: 'payFrequency',
   paymentMethod: 'paymentMethod',
   notes: 'notes',
-  isPayrollReady: 'isPayrollReady',
   pensionOnlyIncome: 'pensionOnlyIncome',
   exemptFromNis: 'exemptFromNis',
   receivingNisRetirementBenefit: 'receivingNisRetirementBenefit',

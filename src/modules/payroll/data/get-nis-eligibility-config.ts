@@ -3,7 +3,11 @@ import {
   DEFAULT_NIS_ELIGIBILITY,
   type NisEligibilityConfigInput,
 } from "@/src/modules/payroll/lib/nis-eligibility";
-import { toStatutoryAsOfDate } from "@/src/modules/payroll/lib/statutory-as-of";
+import {
+  statutoryScheduleCoversAsOf,
+  toStatutoryAsOfDate,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type NisEligibilityConfigRecord = {
   id: string;
@@ -63,4 +67,81 @@ export async function resolveNisEligibilityConfigInput(
 ): Promise<NisEligibilityConfigInput> {
   const config = await getNisEligibilityConfigAsOf(asOf);
   return config ? toNisEligibilityConfigInput(config) : DEFAULT_NIS_ELIGIBILITY;
+}
+
+export type NisEligibilityVersionSummary = {
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  versionLabel: string | null;
+  isActive: boolean;
+  isCurrent: boolean;
+  fullRetirementAge: number;
+  earlyRetirementAge: number;
+};
+
+export async function getNisEligibilityConfigVersions(): Promise<
+  NisEligibilityVersionSummary[]
+> {
+  const rows = await prisma.nisEligibilityConfig.findMany({
+    orderBy: [{ effectiveFrom: "desc" }],
+    select: {
+      effectiveFrom: true,
+      effectiveTo: true,
+      versionLabel: true,
+      isActive: true,
+      fullRetirementAge: true,
+      earlyRetirementAge: true,
+    },
+  });
+
+  const today = toStatutoryAsOfKey(new Date());
+  let currentAssigned = false;
+
+  return rows.map((row) => {
+    const effectiveFrom = toDateString(row.effectiveFrom);
+    const effectiveTo = row.effectiveTo ? toDateString(row.effectiveTo) : null;
+    const covers = statutoryScheduleCoversAsOf({
+      effectiveFrom,
+      effectiveTo,
+      isActive: row.isActive,
+      asOf: today,
+    });
+    const isCurrent = covers && !currentAssigned;
+    if (isCurrent) {
+      currentAssigned = true;
+    }
+
+    return {
+      effectiveFrom,
+      effectiveTo,
+      versionLabel: row.versionLabel,
+      isActive: row.isActive,
+      isCurrent,
+      fullRetirementAge: row.fullRetirementAge,
+      earlyRetirementAge: row.earlyRetirementAge,
+    };
+  });
+}
+
+export async function getNisEligibilityConfigForVersion(
+  effectiveFrom: string,
+): Promise<NisEligibilityConfigRecord | null> {
+  const row = await prisma.nisEligibilityConfig.findFirst({
+    where: { effectiveFrom: toStatutoryAsOfDate(effectiveFrom) },
+  });
+
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    fullRetirementAge: row.fullRetirementAge,
+    earlyRetirementAge: row.earlyRetirementAge,
+    effectiveFrom: toDateString(row.effectiveFrom),
+    effectiveTo: row.effectiveTo ? toDateString(row.effectiveTo) : null,
+    versionLabel: row.versionLabel,
+    isActive: row.isActive,
+    notes: row.notes,
+  };
 }

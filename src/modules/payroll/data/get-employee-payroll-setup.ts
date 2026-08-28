@@ -83,8 +83,15 @@ export async function getEmployeePayrollSetup(
       lastName: true,
       employmentStatus: true,
       dateOfBirth: true,
+      hireDate: true,
+      terminationDate: true,
       nisNumber: true,
       birNumber: true,
+      department: {
+        select: {
+          name: true,
+        },
+      },
       bankAccounts: {
         where: { isActive: true, archivedAt: null },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
@@ -152,7 +159,6 @@ export async function getEmployeePayrollSetup(
           nisOverrideReason: true,
           nisOverrideEffectiveFrom: true,
           nisOverrideEffectiveTo: true,
-          isPayrollReady: true,
           updatedAt: true,
         },
       },
@@ -490,6 +496,16 @@ export async function getEmployeePayrollSetup(
         ...(exemptFromPaye
           ? ["PAYE exempt (employee opt-out) — no income tax estimated."]
           : []),
+        ...(!employee.dateOfBirth && !exemptFromNis
+          ? [
+              "Date of birth is not set on the employee record — NIS age rules default to normal contributions.",
+            ]
+          : []),
+        ...(!employee.dateOfBirth && !exemptFromHealthSurcharge
+          ? [
+              "Date of birth is not set on the employee record — Health Surcharge age exemptions cannot be applied.",
+            ]
+          : []),
       ],
     };
   }
@@ -509,6 +525,18 @@ export async function getEmployeePayrollSetup(
       dateOfBirth: employee.dateOfBirth
         ? employee.dateOfBirth.toISOString().slice(0, 10)
         : null,
+      hireDate: employee.hireDate
+        ? employee.hireDate.toISOString().slice(0, 10)
+        : null,
+      terminationDate: employee.terminationDate
+        ? employee.terminationDate.toISOString().slice(0, 10)
+        : null,
+      departmentName: employee.department?.name ?? null,
+      jobTitle: resolveEmployeePositionTitle({
+        assignmentPositionTitle: employee.assignments[0]?.position?.title,
+        positionTitle: employee.position?.title,
+        contractJobTitle: employee.contracts[0]?.jobTitle,
+      }),
       nisNumber: employee.nisNumber,
       birNumber: employee.birNumber,
     },
@@ -518,7 +546,6 @@ export async function getEmployeePayrollSetup(
           payFrequency: profile.payFrequency,
           paymentMethod: profile.paymentMethod,
           notes: profile.notes,
-          td1OtherApprovedAnnual: displayTd1,
           pensionOnlyIncome: profile.pensionOnlyIncome,
           exemptFromNis: profile.exemptFromNis,
           exemptFromHealthSurcharge: profile.exemptFromHealthSurcharge,
@@ -532,7 +559,6 @@ export async function getEmployeePayrollSetup(
           nisOverrideEffectiveTo: profile.nisOverrideEffectiveTo
             ? profile.nisOverrideEffectiveTo.toISOString().slice(0, 10)
             : null,
-          isPayrollReady: profile.isPayrollReady,
           updatedAt: profile.updatedAt.toISOString(),
         }
       : null,

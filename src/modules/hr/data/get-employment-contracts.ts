@@ -3,7 +3,7 @@ import {
   calculateContractGratuity,
   monthlyEligibleEarnings,
   roundMoney,
-} from "@/src/modules/hr/services/calculate-contract-gratuity";
+} from "@/src/modules/payroll/lib/calculate-gratuity";
 import {
   defaultTtGratuityPolicyInput,
   getGratuityPolicyAsOf,

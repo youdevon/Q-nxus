@@ -8,15 +8,12 @@ export type SyncPayrollReadinessAfterActivateResult = {
   payrollTaskCompleted: boolean;
   payrollReady: boolean;
   blockingIssues: string[];
-  /** Denormalized PayrollProfile.isPayrollReady was written to match live readiness. */
-  payrollReadyFlagSynced: boolean;
   draftRunsRecalculated: number;
 };
 
 /**
- * After a contract activates: complete ACTIVATE_CONTRACT when open, sync the
- * denormalized payroll-ready flag from the live current-contract evaluation,
- * refresh open draft/approved pay-run salary snapshots, and auto-complete
+ * After a contract activates: complete ACTIVATE_CONTRACT when open, refresh
+ * open draft/approved pay-run salary snapshots, and auto-complete
  * PAYROLL_READINESS when setup is already ready. Otherwise notify payroll
  * staff (`payroll.setup` / `payroll.manage`) that setup still needs attention.
  * The activating actor is not notified unless they already hold those
@@ -79,15 +76,6 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
   const blockingIssues = setup?.readiness?.blockingIssues ?? [
     "Payroll setup could not be evaluated.",
   ];
-
-  let payrollReadyFlagSynced = false;
-  if (setup?.profile) {
-    await prisma.payrollProfile.update({
-      where: { employeeId: input.employeeId },
-      data: { isPayrollReady: payrollReady },
-    });
-    payrollReadyFlagSynced = true;
-  }
 
   let draftRunsRecalculated = 0;
   try {
@@ -181,7 +169,6 @@ export async function syncPayrollReadinessAfterContractActivate(input: {
     payrollTaskCompleted,
     payrollReady,
     blockingIssues,
-    payrollReadyFlagSynced,
     draftRunsRecalculated,
   };
 }

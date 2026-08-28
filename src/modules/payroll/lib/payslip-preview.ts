@@ -661,6 +661,15 @@ export function assemblePayslipPreview(
       if (nis.transitionAlert) {
         warnings.push(nis.transitionAlert);
       }
+      if (
+        !exemptFromNis &&
+        !input.employee.dateOfBirth &&
+        nis.category === "NORMAL"
+      ) {
+        warnings.push(
+          "Employee date of birth is not set — NIS Class Z age rules and exemptions cannot be applied.",
+        );
+      }
       if (nis.category === "CLASS_Z") {
         notes.push(
           `NIS Class Z — employee $0.00; employer injury coverage ${nis.classZEmployerMonthly.toFixed(2)} (${nis.classZEmployerWeekly.toFixed(2)}/wk × ${nis.weeksInPeriod}).`,

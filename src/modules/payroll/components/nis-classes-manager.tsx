@@ -448,40 +448,49 @@ export function NisClassesDirectory({
         backHref="/payroll/settings"
         backLabel="Payroll settings"
         actions={
-          canManage && selectedVersion ? (
-            <div className="flex flex-wrap gap-2">
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={
-                  <Link
-                    href={`/payroll/settings/nis/${selectedVersion.effectiveFrom}/edit`}
-                  />
-                }
-              >
-                Edit schedule
-              </Button>
-              <Button
-                nativeButton={false}
-                render={
-                  <Link
-                    href={`/payroll/settings/nis/new?copyFrom=${selectedVersion.effectiveFrom}`}
-                  />
-                }
-              >
-                <Copy />
-                New version
-              </Button>
-            </div>
-          ) : canManage ? (
+          <div className="flex flex-wrap gap-2">
             <Button
               nativeButton={false}
-              render={<Link href="/payroll/settings/nis/new" />}
+              variant="outline"
+              render={<Link href="/payroll/settings/nis/class-z" />}
             >
-              <Plus />
-              New schedule
+              Class Z settings
             </Button>
-          ) : undefined
+            {canManage && selectedVersion ? (
+              <>
+                <Button
+                  nativeButton={false}
+                  variant="outline"
+                  render={
+                    <Link
+                      href={`/payroll/settings/nis/${selectedVersion.effectiveFrom}/edit`}
+                    />
+                  }
+                >
+                  Edit schedule
+                </Button>
+                <Button
+                  nativeButton={false}
+                  render={
+                    <Link
+                      href={`/payroll/settings/nis/new?copyFrom=${selectedVersion.effectiveFrom}`}
+                    />
+                  }
+                >
+                  <Copy />
+                  New version
+                </Button>
+              </>
+            ) : canManage ? (
+              <Button
+                nativeButton={false}
+                render={<Link href="/payroll/settings/nis/new" />}
+              >
+                <Plus />
+                New schedule
+              </Button>
+            ) : undefined}
+          </div>
         }
       />
 

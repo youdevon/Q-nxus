@@ -596,34 +596,6 @@ export function PayrollProfileForm({
               )}
             </div>
 
-            <div className="min-w-0 space-y-2">
-              <label
-                className="text-sm font-medium"
-                htmlFor="td1OtherApprovedAnnual"
-              >
-                TD1 other approved deductions (annual TTD)
-              </label>
-              <Input
-                id="td1OtherApprovedAnnual"
-                name="td1OtherApprovedAnnual"
-                type="number"
-                min={0}
-                step={0.01}
-                defaultValue={setup.profile?.td1OtherApprovedAnnual ?? ""}
-                placeholder="Pension, annuity, tax-savings, etc."
-              />
-              {state.fieldErrors?.td1OtherApprovedAnnual && (
-                <p className="text-xs text-destructive">
-                  {state.fieldErrors.td1OtherApprovedAnnual}
-                </p>
-              )}
-              <p className="text-pretty text-xs text-muted-foreground">
-                Combined with 70% of employee NIS under the PAYE approved-
-                deduction cap. Synced with the {setup.taxProfile.taxYear} tax
-                profile below.
-              </p>
-            </div>
-
             <label className="flex min-w-0 items-start gap-2 text-sm font-medium md:items-end md:pb-2">
               <input
                 type="checkbox"

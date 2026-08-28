@@ -15,17 +15,11 @@ import {
   isPayrollBankingFeatureEnabled,
   PAYROLL_BANKING_FEATURE_FLAGS,
 } from "@/src/modules/payroll/lib/payroll-banking-flags";
-import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
 import { replaceEmployeeBankSetup } from "@/src/modules/payroll/services/replace-employee-bank-setup";
-import { upsertEmployeeTaxProfileTd1Sync } from "@/src/modules/payroll/services/upsert-employee-tax-profile-td1-sync";
 import {
   normalizeAchAccountType,
   validateAchEmployeeInstructionFields,
 } from "@/src/modules/payroll/lib/ach-employee-fields";
-import {
-  taxYearFromAsOfKey,
-  toStatutoryAsOfKey,
-} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type PayrollProfileFormState = {
   status: "idle" | "error";
@@ -402,17 +396,18 @@ export async function savePayrollProfile(
   );
   const nisOverrideEffectiveTo = parseOptionalDate(nisOverrideEffectiveToRaw);
 
-  const td1Raw = textValue(formData, "td1OtherApprovedAnnual");
-  let td1OtherApprovedAnnual: number | null = null;
+  let resolvedExemptFromNis = exemptFromNis;
+  if (nisCategoryOverride === "EXEMPT") {
+    resolvedExemptFromNis = true;
+  }
 
-  if (td1Raw) {
-    const parsed = Number(td1Raw);
-    if (!Number.isFinite(parsed) || parsed < 0) {
-      fieldErrors.td1OtherApprovedAnnual =
-        "Enter a valid annual approved deduction amount.";
-    } else {
-      td1OtherApprovedAnnual = parsed;
-    }
+  if (
+    resolvedExemptFromNis &&
+    nisCategoryOverride != null &&
+    nisCategoryOverride !== "EXEMPT"
+  ) {
+    fieldErrors.nisCategoryOverride =
+      "Remove the NIS category override or uncheck NIS exempt — these settings conflict.";
   }
 
   const bankAccountsRaw = textValue(formData, "bankAccountsJson");
@@ -559,24 +554,6 @@ export async function savePayrollProfile(
     }
   }
 
-  const readiness = evaluatePayrollReadiness({
-    hasCurrentContract: contract != null,
-    baseSalary: contract ? Number(contract.baseSalary.toString()) : null,
-    nisNumber,
-    birNumber,
-    paymentMethod: paymentMethod!,
-    bankAccounts: accounts.map((account) => ({
-      bankName: account.bankName,
-      accountNumber: account.accountNumber,
-      accountHolderName: account.accountName,
-      accountType: account.accountType,
-      amount: account.amount,
-      isPrimary: account.isPrimary,
-    })),
-    exemptFromNis,
-    exemptFromPaye,
-  });
-
   const metadata = await getAuditRequestMetadata(formData);
 
   const profileValues = {
@@ -584,7 +561,7 @@ export async function savePayrollProfile(
     paymentMethod: paymentMethod!,
     notes,
     pensionOnlyIncome,
-    exemptFromNis,
+    exemptFromNis: resolvedExemptFromNis,
     receivingNisRetirementBenefit,
     exemptFromHealthSurcharge,
     exemptFromPaye,
@@ -592,7 +569,6 @@ export async function savePayrollProfile(
     nisOverrideReason,
     nisOverrideEffectiveFrom,
     nisOverrideEffectiveTo,
-    isPayrollReady: readiness.isReady,
   };
 
   try {
@@ -740,15 +716,6 @@ export async function savePayrollProfile(
           },
         });
       }
-
-      // Persist current-year TD1 on EmployeeTaxProfile (sole store).
-      await upsertEmployeeTaxProfileTd1Sync(transaction, {
-        organizationId: employee.organizationId,
-        employeeId: employee.id,
-        taxYear: taxYearFromAsOfKey(toStatutoryAsOfKey(new Date())),
-        td1OtherApprovedAnnual,
-        userId: actor.actor.userId,
-      });
 
       await recordAuditEvent(transaction, {
         userId: actor.actor.userId,

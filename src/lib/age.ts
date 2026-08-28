@@ -61,3 +61,6 @@ export function ageFromDateOfBirth(
 
   return age >= 0 ? age : null;
 }
+
+/** Payroll statutory alias — same calculation as {@link ageFromDateOfBirth}. */
+export const ageInFullYears = ageFromDateOfBirth;

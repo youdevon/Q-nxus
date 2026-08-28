@@ -90,13 +90,22 @@ export default async function PayrollSettingsPage() {
             ) : null}
           </div>
 
-          <Button
-            nativeButton={false}
-            variant="outline"
-            render={<Link href="/payroll/settings/nis" />}
-          >
-            {canManage ? "Manage classes" : "View classes"}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={<Link href="/payroll/settings/nis/class-z" />}
+            >
+              {canManage ? "Manage Class Z" : "View Class Z"}
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={<Link href="/payroll/settings/nis" />}
+            >
+              {canManage ? "Manage classes" : "View classes"}
+            </Button>
+          </div>
         </div>
 
         <p className="mb-4 text-sm text-muted-foreground">

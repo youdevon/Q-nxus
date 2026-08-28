@@ -33,7 +33,7 @@ import type {
 import {
   calculateContractGratuity,
   TT_DEFAULT_GRATUITY_TAX_BANDS,
-} from "@/src/modules/hr/services/calculate-contract-gratuity";
+} from "@/src/modules/payroll/lib/calculate-gratuity";
 import { calculateContractLeaveEntitlementDays } from "@/src/modules/hr/lib/contract-leave-entitlement";
 import {
   isNonEmployeePayee,

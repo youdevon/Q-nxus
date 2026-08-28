@@ -80,7 +80,7 @@ export default async function EmployeePayrollPage({
               Tax year overview
             </p>
             <p className="text-pretty text-xs text-muted-foreground">
-              Profile summary, prior-employer YTD, posted slips, and statutory
+              Profile summary, prior-employer YTD, month history, and statutory
               overrides.
             </p>
           </div>

@@ -1,6 +1,6 @@
 /** NIS contribution category from employee age, retirement benefit, and overrides. */
 
-import { ageInFullYears } from "@/src/modules/payroll/lib/health-surcharge";
+import { ageFromDateOfBirth } from "@/src/lib/age";
 
 export type NisContributionCategory = "NORMAL" | "CLASS_Z" | "EXEMPT";
 
@@ -87,7 +87,7 @@ export function resolveNisEligibility(
     return {
       category: manual,
       age: input.dateOfBirth
-        ? ageInFullYears(input.dateOfBirth, input.asOf)
+        ? ageFromDateOfBirth(input.dateOfBirth, input.asOf)
         : null,
       reason: `Manual NIS category override (${manual})`,
       transitionAlert: null,
@@ -97,7 +97,7 @@ export function resolveNisEligibility(
   const config = input.eligibilityConfig ?? DEFAULT_NIS_ELIGIBILITY;
   const age =
     input.dateOfBirth != null
-      ? ageInFullYears(input.dateOfBirth, input.asOf)
+      ? ageFromDateOfBirth(input.dateOfBirth, input.asOf)
       : null;
 
   if (age == null) {

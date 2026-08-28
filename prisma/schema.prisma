@@ -2825,7 +2825,6 @@ model PayrollProfile {
   payFrequency   PayFrequency         @default(MONTHLY)
   paymentMethod  PayrollPaymentMethod @default(BANK_TRANSFER)
   notes          String?
-  isPayrollReady Boolean              @default(false)
   /// Health Surcharge: pension as only income source (exempt when true).
   pensionOnlyIncome      Boolean      @default(false)
   /// Opt out of NIS employee/employer contributions and NIS number readiness.

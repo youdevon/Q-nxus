@@ -102,8 +102,7 @@ export function EmployeeTaxProfileForm({ setup }: EmployeeTaxProfileFormProps) {
               Tax profile · {tax.taxYear}
             </SectionHeading>
             <p className="text-sm text-muted-foreground">
-              Per-tax-year PAYE / TD1 treatment. TD1 amounts sync with payroll
-              setup for the current year.
+              Per-tax-year PAYE / TD1 treatment for {tax.taxYear}.
             </p>
           </div>
           <Button type="submit" disabled={pending} size="sm">
@@ -208,8 +207,8 @@ export function EmployeeTaxProfileForm({ setup }: EmployeeTaxProfileFormProps) {
               </p>
             ) : (
               <p className="text-xs text-muted-foreground">
-                Synced to payroll setup for {tax.taxYear}. Source:{" "}
-                {tax.source.replaceAll("_", " ")}.
+                Combined with 70% of employee NIS under the PAYE approved-
+                deduction cap. Source: {tax.source.replaceAll("_", " ")}.
               </p>
             )}
           </div>

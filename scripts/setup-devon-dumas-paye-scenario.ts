@@ -189,14 +189,13 @@ async function main() {
     if (employee.payrollProfile) {
       await tx.payrollProfile.update({
         where: { id: employee.payrollProfile.id },
-        data: { payFrequency: "MONTHLY", isPayrollReady: true },
+        data: { payFrequency: "MONTHLY" },
       });
     } else {
       await tx.payrollProfile.create({
         data: {
           employeeId: employee.id,
           payFrequency: "MONTHLY",
-          isPayrollReady: true,
         },
       });
     }

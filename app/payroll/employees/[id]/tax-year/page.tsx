@@ -462,67 +462,6 @@ export default async function EmployeeTaxYearPage({
           ) : null}
         </section>
 
-        <section className="space-y-3">
-          <div className="space-y-1">
-            <SectionHeading>Posted payslips</SectionHeading>
-            <p className="text-sm text-muted-foreground">
-              Official slips in calendar year {taxYear}.
-            </p>
-          </div>
-          <div className="overflow-x-auto rounded-md border">
-            <table className="w-full min-w-[40rem] text-left text-sm">
-              <thead className="border-b bg-muted/40 text-xs text-muted-foreground">
-                <tr>
-                  <th className="px-3 py-2 font-medium">Period</th>
-                  <th className="px-3 py-2 font-medium">Run</th>
-                  <th className="px-3 py-2 font-medium text-right">Gross</th>
-                  <th className="px-3 py-2 font-medium text-right">PAYE</th>
-                  <th className="px-3 py-2 font-medium text-right">NIS</th>
-                  <th className="px-3 py-2 font-medium text-right">Net</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.postedPayslips.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="px-3 py-8 text-center text-muted-foreground"
-                    >
-                      No posted payslips in {taxYear}.
-                    </td>
-                  </tr>
-                ) : (
-                  data.postedPayslips.map((row) => (
-                    <tr key={row.id} className="border-b">
-                      <td className="px-3 py-2.5">
-                        <p className="font-medium">{row.periodName}</p>
-                        <p className="text-xs text-muted-foreground tabular-nums">
-                          {row.periodKey}
-                        </p>
-                      </td>
-                      <td className="px-3 py-2.5 text-xs">{row.runNumber}</td>
-                      <td className="px-3 py-2.5 text-right tabular-nums">
-                        {formatMoney(row.grossPay, { currency: row.currency })}
-                      </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums">
-                        {formatMoney(row.paye, { currency: row.currency })}
-                      </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums">
-                        {formatMoney(row.nisEmployee, {
-                          currency: row.currency,
-                        })}
-                      </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums font-medium">
-                        {formatMoney(row.netPay, { currency: row.currency })}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
         <EmployeeStatutoryOverridesPanel
           employeeId={id}
           overrides={data.statutoryOverrides}
