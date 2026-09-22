@@ -1,5 +1,6 @@
 import { EmailDeliveryStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { payslipDeliveryStatusFromEmailQueue } from "@/src/modules/payroll/lib/payslip-release";
 
 import { getSmtpConfiguration } from "./smtp-config";
 import { getSmtpTransport } from "./smtp-transport";
@@ -29,6 +30,31 @@ function errorMessage(error: unknown): string {
   }
 
   return String(error).slice(0, 4000);
+}
+
+async function syncPayslipEmailDeliveryStatus(input: {
+  relatedType: string | null;
+  relatedId: string | null;
+  emailStatus: string;
+}) {
+  if (input.relatedType !== "Payslip" || !input.relatedId) {
+    return;
+  }
+
+  const deliveryStatus = payslipDeliveryStatusFromEmailQueue(input.emailStatus);
+  if (deliveryStatus !== "SENT" && deliveryStatus !== "FAILED") {
+    return;
+  }
+
+  await prisma.payslip.updateMany({
+    where: {
+      id: input.relatedId,
+      emailDeliveryStatus: { in: ["PENDING", "FAILED"] },
+    },
+    data: {
+      emailDeliveryStatus: deliveryStatus,
+    },
+  });
 }
 
 export async function processEmailQueue(
@@ -163,6 +189,12 @@ export async function processEmailQueue(
         }),
       ]);
 
+      await syncPayslipEmailDeliveryStatus({
+        relatedType: email.relatedType,
+        relatedId: email.relatedId,
+        emailStatus: EmailDeliveryStatus.SENT,
+      });
+
       result.sent += 1;
     } catch (error: unknown) {
       const message = errorMessage(error);
@@ -200,6 +232,14 @@ export async function processEmailQueue(
           },
         }),
       ]);
+
+      if (exhausted) {
+        await syncPayslipEmailDeliveryStatus({
+          relatedType: email.relatedType,
+          relatedId: email.relatedId,
+          emailStatus: EmailDeliveryStatus.FAILED,
+        });
+      }
 
       result.failed += 1;
     }

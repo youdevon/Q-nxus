@@ -2,10 +2,12 @@ import path from "node:path";
 
 import {
   deleteStoredFile,
+  employeeStorageFolderLabel,
   readStoredFile,
   resolveStoredFileAbsolutePath,
   safeStoredFileName,
   storeUploadedFile,
+  type EmployeeStorageIdentity,
   type StoredFileMeta,
 } from "@/src/lib/stored-file";
 
@@ -22,15 +24,18 @@ export async function readLeaveAttachmentFile(
 }
 
 export async function storeLeaveAttachmentFile({
+  employee,
   leaveRequestId,
   file,
 }: {
+  employee: EmployeeStorageIdentity;
   leaveRequestId: string;
   file: File;
 }): Promise<StoredFileMeta> {
   const fileName = safeStoredFileName(file.name || "attachment");
   const storageKey = path.posix.join(
     STORAGE_PREFIX,
+    employeeStorageFolderLabel(employee),
     leaveRequestId,
     `${Date.now()}-${fileName}`,
   );
@@ -48,4 +53,3 @@ export async function deleteLeaveAttachmentFile(
 ): Promise<void> {
   return deleteStoredFile(storageKey, resolveLeaveAttachmentAbsolutePath);
 }
-

@@ -54,7 +54,10 @@ export async function requireContractManageAccess(): Promise<UserCapabilities> {
 export async function requireLeaveBalancesAccess(): Promise<UserCapabilities> {
   const capabilities = await requireAuthenticatedCapabilities();
 
-  if (!capabilities.canAny("leave.manage", "people.manage")) {
+  // leave.approve: reporting officers following forfeiture / leave alerts
+  if (
+    !capabilities.canAny("leave.manage", "people.manage", "leave.approve")
+  ) {
     notFound();
   }
 

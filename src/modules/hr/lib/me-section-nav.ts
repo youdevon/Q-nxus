@@ -3,6 +3,7 @@ import {
   CalendarDays,
   FileSignature,
   FolderOpen,
+  Gift,
   ScrollText,
   UserRound,
   Wallet,
@@ -22,8 +23,8 @@ export type MeSectionNavItem = {
 };
 
 /**
- * My Profile hamburger destinations — in-page section navigation for `/me/*`.
- * Not the People workspace menu.
+ * My Profile section destinations — used for header icon resolution.
+ * Primary navigation is `meProfileTabs`.
  */
 export const meSectionNavItems: readonly MeSectionNavItem[] = [
   {
@@ -54,6 +55,13 @@ export const meSectionNavItems: readonly MeSectionNavItem[] = [
     href: "/me/contracts",
     description: "Your employment contracts",
     icon: FileSignature,
+    anyOf: ["people.profile.view_own"],
+  },
+  {
+    title: "Gratuity",
+    href: "/me/gratuity",
+    description: "Contract-end gratuity estimates and payments",
+    icon: Gift,
     anyOf: ["people.profile.view_own"],
   },
   {

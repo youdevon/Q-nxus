@@ -1,73 +1,34 @@
-import { prisma } from "@/lib/prisma";
-import { requireLeaveManageAccess } from "@/src/modules/hr/data/require-people-access";
+import { getApplicationChrome } from "@/src/modules/admin/data/get-application-chrome";
+import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { getLeaveForfeitureSettings } from "@/src/modules/hr/data/get-leave-forfeiture-settings";
 import { getLeaveWorkflowSettings } from "@/src/modules/hr/data/get-leave-workflow-settings";
+import { getWorkflowPositionOptions } from "@/src/modules/hr/data/get-workflow-position-options";
+import { requireLeaveManageAccess } from "@/src/modules/hr/data/require-people-access";
 
 export async function getLeaveWorkflowSettingsPageData() {
   await requireLeaveManageAccess();
 
-  const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
-    select: { id: true, name: true },
-  });
+  const [user, chrome] = await Promise.all([
+    getCurrentUser(),
+    getApplicationChrome(),
+  ]);
 
-  if (!organization) {
-    throw new Error("No organization is configured.");
+  const organizationId = user?.organizationId;
+  if (!organizationId) {
+    throw new Error("No organization is configured for the current user.");
   }
 
   const [settings, forfeitureSettings, positions] = await Promise.all([
-    getLeaveWorkflowSettings(organization.id),
-    getLeaveForfeitureSettings(organization.id),
-    prisma.position.findMany({
-      where: {
-        isActive: true,
-        department: {
-          organizationId: organization.id,
-          isActive: true,
-        },
-      },
-      orderBy: [{ title: "asc" }],
-      select: {
-        id: true,
-        title: true,
-        code: true,
-        department: {
-          select: {
-            name: true,
-          },
-        },
-        assignments: {
-          where: { isCurrent: true },
-          take: 1,
-          select: {
-            employee: {
-              select: {
-                firstName: true,
-                lastName: true,
-              },
-            },
-          },
-        },
-      },
-    }),
+    getLeaveWorkflowSettings(organizationId),
+    getLeaveForfeitureSettings(organizationId),
+    getWorkflowPositionOptions(organizationId),
   ]);
 
   return {
-    organizationName: organization.name,
+    organizationName: chrome.organizationName,
     settings,
     forfeitureSettings,
-    positions: positions.map((position) => {
-      const holder = position.assignments[0]?.employee;
-      return {
-        id: position.id,
-        title: position.title,
-        code: position.code,
-        departmentName: position.department.name,
-        holderName: holder
-          ? `${holder.firstName} ${holder.lastName}`
-          : null,
-      };
-    }),
+    positions,
   };
 }
 

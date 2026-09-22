@@ -1,77 +1,58 @@
-import type { LifecycleTaskCode, Prisma } from "@/generated/prisma/client";
+import type {
+  OffboardingCaseReason,
+  OnboardingCaseType,
+  Prisma,
+} from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  defaultLifecycleTaskDueAt,
+  isLifecycleCaseAtRisk,
+  lifecycleTaskProgress,
+} from "@/src/modules/hr/lib/lifecycle-progress";
+import {
+  resolveTasksForOffboardingCase,
+  resolveTasksForOnboardingCase,
+} from "@/src/modules/hr/services/employee-lifecycle-templates";
+
+export { lifecycleTaskProgress };
 
 type Tx = Prisma.TransactionClient | typeof prisma;
 
-const ONBOARDING_TASKS: Array<{
-  code: LifecycleTaskCode;
-  label: string;
-  sortOrder: number;
-}> = [
-  {
-    code: "CREATE_DRAFT_CONTRACT",
-    label: "Create draft employment contract",
-    sortOrder: 10,
-  },
-  {
-    code: "SEED_FILE_CHECKLIST",
-    label: "Seed employee file checklist",
-    sortOrder: 20,
-  },
-  {
-    code: "ISSUE_ASSUMPTION_OF_DUTY",
-    label: "Issue assumption of duty letter",
-    sortOrder: 30,
-  },
-  {
-    code: "COMPLETE_REQUIRED_DOCS",
-    label: "Complete required employee-file documents",
-    sortOrder: 40,
-  },
-  {
-    code: "ACTIVATE_CONTRACT",
-    label: "Activate employment contract",
-    sortOrder: 50,
-  },
-  {
-    code: "PAYROLL_READINESS",
-    label: "Confirm payroll readiness",
-    sortOrder: 60,
-  },
-];
+async function allocateLifecycleCaseNumber(
+  client: Tx,
+  organizationId: string,
+  prefix: "ONB" | "OFB",
+): Promise<string> {
+  const year = new Date().getUTCFullYear();
+  const count =
+    prefix === "ONB"
+      ? await client.employeeOnboardingCase.count({ where: { organizationId } })
+      : await client.employeeOffboardingCase.count({
+          where: { organizationId },
+        });
 
-const OFFBOARDING_TASKS: Array<{
-  code: LifecycleTaskCode;
-  label: string;
-  sortOrder: number;
-}> = [
-  {
-    code: "CLOSE_CONTRACT",
-    label: "Close current employment contract",
-    sortOrder: 10,
-  },
-  {
-    code: "FREEZE_EMPLOYEE_FILE",
-    label: "Freeze employee file",
-    sortOrder: 20,
-  },
-  {
-    code: "FINAL_PAY_CHECK",
-    label: "Confirm final pay / gratuity check",
-    sortOrder: 30,
-  },
-  {
-    code: "REVOKE_ACCESS",
-    label: "Revoke system access",
-    sortOrder: 40,
-  },
-];
+  return `${prefix}-${year}-${String(count + 1).padStart(4, "0")}`;
+}
+
+function resolveOnboardingCaseType(
+  priorContractCount: number,
+  requested?: OnboardingCaseType | null,
+): OnboardingCaseType {
+  if (requested) {
+    return requested;
+  }
+  return priorContractCount > 0 ? "CONTINUING" : "NEW_HIRE";
+}
 
 export async function openEmployeeOnboardingCase(input: {
   organizationId: string;
   employeeId: string;
   openedByUserId: string | null;
   notes?: string | null;
+  caseType?: OnboardingCaseType | null;
+  proposedStartDate?: Date | null;
+  confirmedStartDate?: Date | null;
+  ownerUserId?: string | null;
   client?: Tx;
 }) {
   const client = input.client ?? prisma;
@@ -103,6 +84,15 @@ export async function openEmployeeOnboardingCase(input: {
   ]);
 
   const continuingEmployee = priorContractCount > 0;
+  const caseType = resolveOnboardingCaseType(
+    priorContractCount,
+    input.caseType,
+  );
+  const caseNumber = await allocateLifecycleCaseNumber(
+    client,
+    input.organizationId,
+    "ONB",
+  );
   const caseNotes = [
     input.notes?.trim() || null,
     continuingEmployee
@@ -112,17 +102,35 @@ export async function openEmployeeOnboardingCase(input: {
     .filter(Boolean)
     .join("\n");
 
+  const templateTasks = await resolveTasksForOnboardingCase({
+    organizationId: input.organizationId,
+    caseType,
+    client,
+  });
+
+  const ownerUserId = input.ownerUserId ?? input.openedByUserId;
+  const openedAt = new Date();
+  const defaultDueAt = defaultLifecycleTaskDueAt(openedAt);
+
   const created = await client.employeeOnboardingCase.create({
     data: {
       organizationId: input.organizationId,
       employeeId: input.employeeId,
+      caseNumber,
+      caseType,
       openedByUserId: input.openedByUserId,
+      ownerUserId,
+      proposedStartDate: input.proposedStartDate ?? null,
+      confirmedStartDate: input.confirmedStartDate ?? null,
+      openedAt,
       notes: caseNotes || null,
       tasks: {
-        create: ONBOARDING_TASKS.map((task) => ({
+        create: templateTasks.map((task) => ({
           code: task.code,
           label: task.label,
           sortOrder: task.sortOrder,
+          assigneeUserId: ownerUserId ?? null,
+          dueAt: (task.mandatory ?? true) ? defaultDueAt : null,
         })),
       },
     },
@@ -249,7 +257,11 @@ export async function openEmployeeOffboardingCase(input: {
   employeeId: string;
   openedByUserId: string | null;
   reason?: string | null;
+  reasonCode?: OffboardingCaseReason | null;
   notes?: string | null;
+  lastWorkingDate?: Date | null;
+  separationDate?: Date | null;
+  ownerUserId?: string | null;
   client?: Tx;
 }) {
   const client = input.client ?? prisma;
@@ -266,18 +278,42 @@ export async function openEmployeeOffboardingCase(input: {
     return existing;
   }
 
+  const caseNumber = await allocateLifecycleCaseNumber(
+    client,
+    input.organizationId,
+    "OFB",
+  );
+
+  const templateTasks = await resolveTasksForOffboardingCase({
+    organizationId: input.organizationId,
+    reasonCode: input.reasonCode ?? null,
+    client,
+  });
+
+  const ownerUserId = input.ownerUserId ?? input.openedByUserId;
+  const openedAt = new Date();
+  const defaultDueAt = defaultLifecycleTaskDueAt(openedAt);
+
   return client.employeeOffboardingCase.create({
     data: {
       organizationId: input.organizationId,
       employeeId: input.employeeId,
+      caseNumber,
       openedByUserId: input.openedByUserId,
+      ownerUserId,
       reason: input.reason ?? null,
+      reasonCode: input.reasonCode ?? null,
+      lastWorkingDate: input.lastWorkingDate ?? null,
+      separationDate: input.separationDate ?? null,
+      openedAt,
       notes: input.notes ?? null,
       tasks: {
-        create: OFFBOARDING_TASKS.map((task) => ({
+        create: templateTasks.map((task) => ({
           code: task.code,
           label: task.label,
           sortOrder: task.sortOrder,
+          assigneeUserId: ownerUserId ?? null,
+          dueAt: (task.mandatory ?? true) ? defaultDueAt : null,
         })),
       },
     },
@@ -442,14 +478,28 @@ export async function getEmployeeLifecycleCases(employeeId: string) {
       where: { employeeId },
       orderBy: { openedAt: "desc" },
       include: {
-        tasks: { orderBy: { sortOrder: "asc" } },
+        tasks: {
+          orderBy: { sortOrder: "asc" },
+          include: {
+            assignee: {
+              select: { id: true, firstName: true, lastName: true },
+            },
+          },
+        },
       },
     }),
     prisma.employeeOffboardingCase.findMany({
       where: { employeeId },
       orderBy: { openedAt: "desc" },
       include: {
-        tasks: { orderBy: { sortOrder: "asc" } },
+        tasks: {
+          orderBy: { sortOrder: "asc" },
+          include: {
+            assignee: {
+              select: { id: true, firstName: true, lastName: true },
+            },
+          },
+        },
       },
     }),
   ]);
@@ -501,6 +551,8 @@ export async function cancelEmployeeOnboardingCase(input: {
       where: { id: input.caseId },
       data: {
         status: "CANCELLED",
+        cancelledAt: new Date(),
+        cancelledReason: input.notes ?? "Cancelled.",
         ...(input.notes ? { notes: input.notes } : {}),
       },
     });
@@ -568,6 +620,8 @@ export async function cancelEmployeeOffboardingCase(input: {
       where: { id: input.caseId },
       data: {
         status: "CANCELLED",
+        cancelledAt: new Date(),
+        cancelledReason: input.notes ?? "Cancelled.",
         ...(input.notes ? { notes: input.notes } : {}),
       },
     });
@@ -585,5 +639,281 @@ export async function cancelEmployeeOffboardingCase(input: {
     accessRevoked,
     fileUnfrozen: freezeDone,
   };
+}
+
+export type OrgLifecycleQueueItem = {
+  kind: "onboarding" | "offboarding";
+  caseId: string;
+  caseNumber: string | null;
+  status: string;
+  caseTypeOrReason: string | null;
+  progressPercent: number;
+  atRisk: boolean;
+  openedAt: Date;
+  employeeId: string;
+  employeeNumber: string;
+  employeeName: string;
+  ownerName: string | null;
+};
+
+export async function getOrgLifecycleQueue(
+  organizationId: string,
+  limit = 50,
+): Promise<OrgLifecycleQueueItem[]> {
+  const [onboarding, offboarding] = await Promise.all([
+    prisma.employeeOnboardingCase.findMany({
+      where: {
+        organizationId,
+        status: { in: ["OPEN", "READY"] },
+      },
+      orderBy: { openedAt: "asc" },
+      take: limit,
+      select: {
+        id: true,
+        caseNumber: true,
+        caseType: true,
+        status: true,
+        openedAt: true,
+        employee: {
+          select: {
+            id: true,
+            employeeNumber: true,
+            firstName: true,
+            lastName: true,
+            preferredName: true,
+          },
+        },
+        owner: {
+          select: { firstName: true, lastName: true },
+        },
+        tasks: { select: { status: true, dueAt: true } },
+      },
+    }),
+    prisma.employeeOffboardingCase.findMany({
+      where: {
+        organizationId,
+        status: { in: ["OPEN", "CLEARED"] },
+      },
+      orderBy: { openedAt: "asc" },
+      take: limit,
+      select: {
+        id: true,
+        caseNumber: true,
+        reasonCode: true,
+        reason: true,
+        status: true,
+        openedAt: true,
+        employee: {
+          select: {
+            id: true,
+            employeeNumber: true,
+            firstName: true,
+            lastName: true,
+            preferredName: true,
+          },
+        },
+        owner: {
+          select: { firstName: true, lastName: true },
+        },
+        tasks: { select: { status: true, dueAt: true } },
+      },
+    }),
+  ]);
+
+  const now = new Date();
+  const items: OrgLifecycleQueueItem[] = [
+    ...onboarding.map((row) => ({
+      kind: "onboarding" as const,
+      caseId: row.id,
+      caseNumber: row.caseNumber,
+      status: row.status,
+      caseTypeOrReason: row.caseType,
+      progressPercent: lifecycleTaskProgress(row.tasks),
+      atRisk: isLifecycleCaseAtRisk(row.tasks, now),
+      openedAt: row.openedAt,
+      employeeId: row.employee.id,
+      employeeNumber: row.employee.employeeNumber,
+      employeeName:
+        `${row.employee.preferredName ?? row.employee.firstName} ${row.employee.lastName}`.trim(),
+      ownerName: row.owner
+        ? `${row.owner.firstName} ${row.owner.lastName}`.trim()
+        : null,
+    })),
+    ...offboarding.map((row) => ({
+      kind: "offboarding" as const,
+      caseId: row.id,
+      caseNumber: row.caseNumber,
+      status: row.status,
+      caseTypeOrReason: row.reasonCode ?? row.reason,
+      progressPercent: lifecycleTaskProgress(row.tasks),
+      atRisk: isLifecycleCaseAtRisk(row.tasks, now),
+      openedAt: row.openedAt,
+      employeeId: row.employee.id,
+      employeeNumber: row.employee.employeeNumber,
+      employeeName:
+        `${row.employee.preferredName ?? row.employee.firstName} ${row.employee.lastName}`.trim(),
+      ownerName: row.owner
+        ? `${row.owner.firstName} ${row.owner.lastName}`.trim()
+        : null,
+    })),
+  ];
+
+  items.sort((a, b) => a.openedAt.getTime() - b.openedAt.getTime());
+  return items.slice(0, limit);
+}
+
+type LifecycleTaskKind = "onboarding" | "offboarding";
+
+async function findLifecycleTaskForEmployee(
+  kind: LifecycleTaskKind,
+  taskId: string,
+  employeeId: string,
+) {
+  if (kind === "onboarding") {
+    const task = await prisma.employeeOnboardingTask.findUnique({
+      where: { id: taskId },
+      select: {
+        id: true,
+        status: true,
+        case: { select: { employeeId: true } },
+      },
+    });
+    if (!task || task.case.employeeId !== employeeId) {
+      return null;
+    }
+    return task;
+  }
+
+  const task = await prisma.employeeOffboardingTask.findUnique({
+    where: { id: taskId },
+    select: {
+      id: true,
+      status: true,
+      case: { select: { employeeId: true } },
+    },
+  });
+  if (!task || task.case.employeeId !== employeeId) {
+    return null;
+  }
+  return task;
+}
+
+export async function assignLifecycleTask(input: {
+  kind: LifecycleTaskKind;
+  taskId: string;
+  employeeId: string;
+  assigneeUserId: string | null;
+}) {
+  const existing = await findLifecycleTaskForEmployee(
+    input.kind,
+    input.taskId,
+    input.employeeId,
+  );
+  if (!existing) {
+    throw new Error("LIFECYCLE_TASK_NOT_FOUND");
+  }
+
+  if (input.assigneeUserId) {
+    const user = await prisma.user.findUnique({
+      where: { id: input.assigneeUserId },
+      select: { id: true, isActive: true },
+    });
+    if (!user?.isActive) {
+      throw new Error("LIFECYCLE_ASSIGNEE_INVALID");
+    }
+  }
+
+  const data = { assigneeUserId: input.assigneeUserId };
+  if (input.kind === "onboarding") {
+    return prisma.employeeOnboardingTask.update({
+      where: { id: input.taskId },
+      data,
+      select: { id: true, assigneeUserId: true },
+    });
+  }
+
+  return prisma.employeeOffboardingTask.update({
+    where: { id: input.taskId },
+    data,
+    select: { id: true, assigneeUserId: true },
+  });
+}
+
+export async function setLifecycleTaskDueAt(input: {
+  kind: LifecycleTaskKind;
+  taskId: string;
+  employeeId: string;
+  dueAt: Date | null;
+}) {
+  const existing = await findLifecycleTaskForEmployee(
+    input.kind,
+    input.taskId,
+    input.employeeId,
+  );
+  if (!existing) {
+    throw new Error("LIFECYCLE_TASK_NOT_FOUND");
+  }
+
+  const data = { dueAt: input.dueAt };
+  if (input.kind === "onboarding") {
+    return prisma.employeeOnboardingTask.update({
+      where: { id: input.taskId },
+      data,
+      select: { id: true, dueAt: true },
+    });
+  }
+
+  return prisma.employeeOffboardingTask.update({
+    where: { id: input.taskId },
+    data,
+    select: { id: true, dueAt: true },
+  });
+}
+
+export async function blockLifecycleTask(input: {
+  kind: LifecycleTaskKind;
+  taskId: string;
+  employeeId: string;
+  reason: string;
+}) {
+  const reason = input.reason.trim();
+  if (!reason) {
+    throw new Error("LIFECYCLE_BLOCK_REASON_REQUIRED");
+  }
+
+  const existing = await findLifecycleTaskForEmployee(
+    input.kind,
+    input.taskId,
+    input.employeeId,
+  );
+  if (!existing) {
+    throw new Error("LIFECYCLE_TASK_NOT_FOUND");
+  }
+
+  if (
+    existing.status === "COMPLETED" ||
+    existing.status === "SKIPPED"
+  ) {
+    throw new Error("LIFECYCLE_TASK_NOT_BLOCKABLE");
+  }
+
+  const data = {
+    status: "BLOCKED" as const,
+    notes: reason,
+  };
+
+  if (input.kind === "onboarding") {
+    return prisma.employeeOnboardingTask.update({
+      where: { id: input.taskId },
+      data,
+      select: { id: true, status: true, notes: true },
+    });
+  }
+
+  return prisma.employeeOffboardingTask.update({
+    where: { id: input.taskId },
+    data,
+    select: { id: true, status: true, notes: true },
+  });
 }
 

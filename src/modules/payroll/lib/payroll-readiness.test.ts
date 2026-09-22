@@ -5,6 +5,11 @@ import {
   evaluatePayrollReadiness,
 } from "./payroll-readiness";
 
+const achReady = {
+  accountHolderName: "Ada Lovelace",
+  accountType: "SAVINGS" as const,
+};
+
 describe("evaluatePayrollReadiness", () => {
   it("is ready with primary remainder and fixed secondary amounts", () => {
     const result = evaluatePayrollReadiness({
@@ -19,21 +24,24 @@ describe("evaluatePayrollReadiness", () => {
           accountNumber: "123",
           amount: null,
           isPrimary: true,
+          ...achReady,
         },
         {
           bankName: "RBC",
           accountNumber: "456",
           amount: 1500,
           isPrimary: false,
+          ...achReady,
         },
       ],
     });
 
     expect(result.isReady).toBe(true);
     expect(result.blockingIssues).toEqual([]);
+    expect(result.softWarnings).toEqual([]);
   });
 
-  it("flags missing NIS/BIR, missing primary, and invalid secondary amounts", () => {
+  it("flags missing NIS as blocking and missing BIR as a soft warning", () => {
     const result = evaluatePayrollReadiness({
       hasCurrentContract: true,
       baseSalary: 8000,
@@ -46,12 +54,14 @@ describe("evaluatePayrollReadiness", () => {
           accountNumber: "123",
           amount: 0,
           isPrimary: false,
+          ...achReady,
         },
         {
           bankName: "RBC",
           accountNumber: "456",
           amount: 500,
           isPrimary: false,
+          ...achReady,
         },
       ],
     });
@@ -60,14 +70,35 @@ describe("evaluatePayrollReadiness", () => {
     expect(result.blockingIssues).toEqual(
       expect.arrayContaining([
         "NIS number missing.",
-        "BIR number missing.",
-        "Exactly one bank account must be marked as primary (remainder).",
-        "Each secondary bank account needs a fixed amount greater than zero.",
+        "Exactly one payment instruction must be marked as primary (remainder).",
+        "Each secondary payment instruction needs a fixed amount greater than zero.",
       ]),
     );
+    expect(result.softWarnings).toEqual(["BIR number missing."]);
   });
 
   it("accepts a single primary remainder account with no fixed amount", () => {
+    const result = evaluatePayrollReadiness({
+      hasCurrentContract: true,
+      baseSalary: 5000,
+      nisNumber: "NIS-1",
+      birNumber: "BIR-1",
+      paymentMethod: "BANK_TRANSFER",
+      bankAccounts: [
+        {
+          bankName: "RBL",
+          accountNumber: "123",
+          amount: null,
+          isPrimary: true,
+          ...achReady,
+        },
+      ],
+    });
+
+    expect(result.isReady).toBe(true);
+  });
+
+  it("blocks bank transfer without ACH account holder or account type", () => {
     const result = evaluatePayrollReadiness({
       hasCurrentContract: true,
       baseSalary: 5000,
@@ -84,7 +115,13 @@ describe("evaluatePayrollReadiness", () => {
       ],
     });
 
-    expect(result.isReady).toBe(true);
+    expect(result.isReady).toBe(false);
+    expect(result.blockingIssues).toEqual(
+      expect.arrayContaining([
+        "Each payment instruction needs an account holder name (ACH Individual Name).",
+        "Each payment instruction needs account type Savings or Chequing (ACH Payment Type).",
+      ]),
+    );
   });
 
   it("does not require banks for cash payment", () => {
@@ -128,9 +165,42 @@ describe("evaluatePayrollReadiness", () => {
 
     expect(result.isReady).toBe(true);
     expect(result.blockingIssues).toEqual([]);
+    expect(result.softWarnings).toEqual([]);
   });
 
-  it("still requires BIR when only NIS-exempt", () => {
+  it("warns but stays ready when BIR is missing and employee is not PAYE-exempt", () => {
+    const result = evaluatePayrollReadiness({
+      hasCurrentContract: true,
+      baseSalary: 5000,
+      nisNumber: "NIS-1",
+      birNumber: null,
+      paymentMethod: "CASH",
+      bankAccounts: [],
+    });
+
+    expect(result.isReady).toBe(true);
+    expect(result.blockingIssues).toEqual([]);
+    expect(result.softWarnings).toEqual(["BIR number missing."]);
+  });
+
+  it("defaults month-by-month when there is no active contract", () => {
+    const result = evaluatePayrollReadiness({
+      hasCurrentContract: false,
+      baseSalary: null,
+      nisNumber: "NIS-1",
+      birNumber: "BIR-1",
+      paymentMethod: "CASH",
+      bankAccounts: [],
+    });
+
+    expect(result.isReady).toBe(true);
+    expect(result.blockingIssues).toEqual([]);
+    expect(result.softWarnings).toEqual([
+      "No active employment contract — paying on month-by-month basis (no contract salary).",
+    ]);
+  });
+
+  it("warns but stays ready when only NIS-exempt and BIR is missing", () => {
     const result = evaluatePayrollReadiness({
       hasCurrentContract: true,
       baseSalary: 5000,
@@ -141,8 +211,9 @@ describe("evaluatePayrollReadiness", () => {
       exemptFromNis: true,
     });
 
-    expect(result.isReady).toBe(false);
-    expect(result.blockingIssues).toEqual(["BIR number missing."]);
+    expect(result.isReady).toBe(true);
+    expect(result.blockingIssues).toEqual([]);
+    expect(result.softWarnings).toEqual(["BIR number missing."]);
   });
 });
 

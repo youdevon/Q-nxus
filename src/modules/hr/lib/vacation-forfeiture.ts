@@ -115,17 +115,22 @@ export function formatVacationForfeitureMessage(
     ? String(alert.availableDays)
     : String(Number(alert.availableDays.toFixed(2)));
 
-  const subject = options?.employeeName
-    ? `${options.employeeName} still has ${daysLabel} day(s) of available vacation`
+  const forOther = Boolean(options?.employeeName);
+  const subject = forOther
+    ? `${options!.employeeName} still has ${daysLabel} day(s) of available vacation`
     : `You still have ${daysLabel} day(s) of available vacation`;
+  const contractPossessive = forOther ? "Their contract" : "Your contract";
+  const schedulePhrase = forOther
+    ? "Schedule leave so it finishes on or before the contract end date"
+    : "Schedule leave so it finishes on or before the contract end date";
 
   if (alert.daysUntilEnd < 0) {
-    return `${subject}. Vacation cannot roll over to a new contract — unused days ending ${alert.contractEndDateIso} may already be forfeited. Schedule any remaining leave to finish by the contract end date.`;
+    return `${subject}. Vacation cannot roll over to a new contract — unused days ending ${alert.contractEndDateIso} may already be forfeited. ${schedulePhrase}.`;
   }
 
   if (alert.daysUntilEnd === 0) {
     return `${subject}. Vacation cannot roll over to a new contract — take it by today's contract end date (${alert.contractEndDateIso}). Leave must finish on or before that date.`;
   }
 
-  return `${subject}. Your contract ends on ${alert.contractEndDateIso} (${alert.daysUntilEnd} day(s) left). Vacation cannot roll over — schedule leave so it finishes on or before the contract end date.`;
+  return `${subject}. ${contractPossessive} ends on ${alert.contractEndDateIso} (${alert.daysUntilEnd} day(s) left). Vacation cannot roll over — ${schedulePhrase.charAt(0).toLowerCase()}${schedulePhrase.slice(1)}.`;
 }

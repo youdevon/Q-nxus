@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 
 export type EmployeeFormDepartment = {
@@ -43,14 +44,10 @@ export type EmployeeFormRecord = {
 export async function getEmployeeFormOptions(): Promise<
   EmployeeFormDepartment[]
 > {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   if (!organization) {
     return [];
@@ -86,9 +83,15 @@ export async function getEmployeeFormOptions(): Promise<
 export async function getEmployeeById(
   id: string,
 ): Promise<EmployeeFormRecord | null> {
-  const employee = await prisma.employee.findUnique({
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const employee = await prisma.employee.findFirst({
     where: {
       id,
+      organizationId,
     },
     select: {
       id: true,
@@ -151,6 +154,8 @@ export type EmployeeProfileRecord = EmployeeFormRecord & {
     title: string;
     code: string | null;
     description: string | null;
+    reportsToPositionId: string | null;
+    directReportCount: number;
   } | null;
   currentContract: {
     id: string;
@@ -159,6 +164,13 @@ export type EmployeeProfileRecord = EmployeeFormRecord & {
     endDate: string | null;
     baseSalary: string;
     currency: string;
+    allowances: {
+      id: string;
+      categoryName: string;
+      amount: string;
+      frequency: string;
+      isTaxable: boolean;
+    }[];
   } | null;
   contractCount: number;
 };
@@ -166,9 +178,15 @@ export type EmployeeProfileRecord = EmployeeFormRecord & {
 export async function getEmployeeProfile(
   id: string,
 ): Promise<EmployeeProfileRecord | null> {
-  const employee = await prisma.employee.findUnique({
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const employee = await prisma.employee.findFirst({
     where: {
       id,
+      organizationId,
     },
     select: {
       id: true,
@@ -216,6 +234,12 @@ export async function getEmployeeProfile(
           title: true,
           code: true,
           description: true,
+          reportsToPositionId: true,
+          _count: {
+            select: {
+              directReports: true,
+            },
+          },
         },
       },
       assignments: {
@@ -232,6 +256,10 @@ export async function getEmployeeProfile(
         },
       },
       contracts: {
+        where: {
+          isCurrent: true,
+        },
+        take: 1,
         orderBy: {
           startDate: "desc",
         },
@@ -243,6 +271,23 @@ export async function getEmployeeProfile(
           baseSalary: true,
           currency: true,
           isCurrent: true,
+          allowances: {
+            orderBy: { category: { name: "asc" } },
+            select: {
+              id: true,
+              amount: true,
+              frequency: true,
+              isTaxable: true,
+              category: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          contracts: true,
         },
       },
     },
@@ -252,8 +297,7 @@ export async function getEmployeeProfile(
     return null;
   }
 
-  const currentContract =
-    employee.contracts.find((contract) => contract.isCurrent) ?? null;
+  const currentContract = employee.contracts[0] ?? null;
 
   return {
     id: employee.id,
@@ -286,7 +330,16 @@ export async function getEmployeeProfile(
     updatedAt: employee.updatedAt.toISOString(),
     userId: employee.user?.id ?? null,
     department: employee.department,
-    position: employee.position,
+    position: employee.position
+      ? {
+          id: employee.position.id,
+          title: employee.position.title,
+          code: employee.position.code,
+          description: employee.position.description,
+          reportsToPositionId: employee.position.reportsToPositionId,
+          directReportCount: employee.position._count.directReports,
+        }
+      : null,
     currentContract: currentContract
       ? {
           id: currentContract.id,
@@ -301,8 +354,15 @@ export async function getEmployeeProfile(
           endDate: currentContract.endDate?.toISOString().slice(0, 10) ?? null,
           baseSalary: currentContract.baseSalary.toString(),
           currency: currentContract.currency,
+          allowances: currentContract.allowances.map((allowance) => ({
+            id: allowance.id,
+            categoryName: allowance.category.name,
+            amount: allowance.amount.toString(),
+            frequency: allowance.frequency,
+            isTaxable: allowance.isTaxable,
+          })),
         }
       : null,
-    contractCount: employee.contracts.length,
+    contractCount: employee._count.contracts,
   };
 }

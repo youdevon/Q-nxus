@@ -41,17 +41,26 @@ export default async function FinancialInstitutionsSettingsPage() {
       <PayrollNav />
       <PageHeader
         title="Financial institutions"
-        description="Trinidad & Tobago institution directory for employee bank selection. ACH codes are placeholders until confirmed."
+        description="Trinidad & Tobago institution directory for employee bank selection. For ACH salary files, use ACH banks & routing."
         backHref="/payroll/settings"
         backLabel="Payroll settings"
         actions={
-          <Button
-            nativeButton={false}
-            variant="outline"
-            render={<Link href="/payroll/settings" />}
-          >
-            Back to settings
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={<Link href="/payroll/settings/ach/banks" />}
+            >
+              ACH banks & routing
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={<Link href="/payroll/settings" />}
+            >
+              Back to settings
+            </Button>
+          </div>
         }
       />
       <FinancialInstitutionsManager

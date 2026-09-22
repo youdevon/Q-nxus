@@ -46,6 +46,7 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
   );
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [historicalRecord, setHistoricalRecord] = useState(false);
 
   const selectedBalance = data.balances.find(
     (balance) => balance.id === leaveBalanceId,
@@ -57,7 +58,8 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
   );
 
   const documentRequired = Boolean(
-    selectedBalance?.requiresDocument &&
+    !historicalRecord &&
+      selectedBalance?.requiresDocument &&
       (selectedBalance.documentRequiredAfter == null ||
         workingDays >= Number(selectedBalance.documentRequiredAfter)),
   );
@@ -68,6 +70,10 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
     }
   }, [state]);
 
+  const canSubmit =
+    data.balances.length > 0 &&
+    (historicalRecord || data.supervisor.canApprove);
+
   const headerTitle = isOnBehalf
     ? "Request leave for an employee"
     : "Request leave";
@@ -76,16 +82,15 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
     : `${data.employee.employeeName} · ${data.employee.employeeNumber}`;
   const headerActions = (
     <FormPageActions cancelHref={cancelHref}>
-      <Button
-        type="submit"
-        disabled={
-          pending ||
-          data.balances.length === 0 ||
-          !data.supervisor.canApprove
-        }
-      >
+      <Button type="submit" disabled={pending || !canSubmit}>
         <Send />
-        {pending ? "Submitting…" : "Submit request"}
+        {pending
+          ? historicalRecord
+            ? "Recording…"
+            : "Submitting…"
+          : historicalRecord
+            ? "Record past leave"
+            : "Submit request"}
       </Button>
     </FormPageActions>
   );
@@ -125,7 +130,7 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
           </p>
         ) : null}
 
-        {!data.supervisor.canApprove && (
+        {!data.supervisor.canApprove && !historicalRecord && (
           <div className="border-y border-amber-500/40 bg-amber-500/5 py-4 text-sm text-amber-900 dark:text-amber-200">
             <p className="font-medium">Approver not ready</p>
             <p className="mt-1 text-sm opacity-90">
@@ -196,6 +201,30 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
               </div>
 
               <div className="grid gap-5 md:grid-cols-2">
+                {isOnBehalf ? (
+                  <label className="md:col-span-2 flex items-start gap-3 rounded-md border border-border p-3">
+                    <input
+                      type="checkbox"
+                      name="historicalRecord"
+                      checked={historicalRecord}
+                      onChange={(event) =>
+                        setHistoricalRecord(event.target.checked)
+                      }
+                      className="mt-0.5 size-4"
+                    />
+                    <span>
+                      <span className="block text-sm font-medium">
+                        Record as past approved leave
+                      </span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        For paper cutover: skips notice and approval, posts the
+                        days as already taken, and requires an end date before
+                        today.
+                      </span>
+                    </span>
+                  </label>
+                ) : null}
+
                 <div className="md:col-span-2">
                   <label
                     htmlFor="leaveBalanceId"
@@ -310,7 +339,7 @@ export function LeaveRequestForm({ data }: { data: NewLeaveRequestData }) {
                     required={documentRequired}
                   />
                   <p className="mt-1 text-xs text-muted-foreground">
-                    PDF, Word, or image up to 5 MB.
+                    PDF, Word, or image up to 15 MB.
                   </p>
                   {state.fieldErrors?.attachment && (
                     <p className="mt-1 text-xs text-destructive">

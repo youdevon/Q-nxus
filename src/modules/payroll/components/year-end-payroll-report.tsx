@@ -1,12 +1,20 @@
+import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { formatMoney } from "@/src/lib/format";
 import type { YearEndEmployeeSummary } from "@/src/modules/payroll/data/get-year-end-payroll-summary";
+import {
+  ReportEmptyState,
+  ReportExportLinks,
+  ReportGenerateButton,
+  ReportPrintLink,
+} from "@/src/modules/reports/components/report-layout";
+import { reportPrintHref } from "@/src/modules/reports/lib/report-print";
 import { PayrollNav } from "./payroll-nav";
 
 export function YearEndPayrollReport({
@@ -22,8 +30,18 @@ export function YearEndPayrollReport({
       <PageHeader
         title="Year-end payroll summaries"
         description="Printable annual employee totals from posted payslips only. Use these totals for TD4 / annual summary preparation."
-        backHref="/payroll/reports"
+        backHref="/reports"
         backLabel="Reports"
+        actions={
+          <PageActionsEnd>
+            <ReportPrintLink
+              href={reportPrintHref("/payroll/reports/year-end", { year: String(year) })}
+            />
+            <ReportExportLinks
+              href={`/payroll/reports/year-end/export?year=${year}`}
+            />
+          </PageActionsEnd>
+        }
       />
 
       <form
@@ -43,11 +61,9 @@ export function YearEndPayrollReport({
             required
           />
         </label>
-        <Button type="submit" variant="outline">
-          Apply
-        </Button>
+        <ReportGenerateButton />
         <span className="pb-2 text-xs text-muted-foreground">
-          Use browser print for a printable annual summary.
+          Open Print for a clean document layout.
         </span>
       </form>
 
@@ -102,9 +118,10 @@ export function YearEndPayrollReport({
           </table>
         </div>
         {rows.length === 0 ? (
-          <p className="py-12 text-center text-sm text-muted-foreground">
-            No posted payslips found for {year}.
-          </p>
+          <ReportEmptyState
+            message={`No posted payslips found for ${year}.`}
+            hint="Choose another tax year above and click Generate report to refresh."
+          />
         ) : null}
       </section>
     </PageShell>

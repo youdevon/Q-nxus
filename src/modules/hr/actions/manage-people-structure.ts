@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { parsePositionSystemRoleCode } from "@/src/modules/auth/lib/position-system-roles";
 import { syncEmployeeAccessRoles } from "@/src/modules/auth/services/provision-employee-user";
@@ -13,6 +14,14 @@ export type StructureFormState = {
   status: "idle" | "success" | "error" | "conflict";
   message: string;
   entityId?: string;
+  createdEntity?: {
+    id: string;
+    /** Position title when creating a position. */
+    title?: string;
+    /** Department name when creating a department. */
+    name?: string;
+    departmentId?: string;
+  };
   fieldErrors?: {
     name?: string;
     code?: string;
@@ -122,14 +131,10 @@ export async function createDepartment(
   }
 
   try {
-    const organization = await prisma.organization.findFirst({
-      orderBy: {
-        createdAt: "asc",
-      },
-      select: {
-        id: true,
-      },
-    });
+    const __sessionOrganizationId = await getSessionOrganizationId();
+    const organization = __sessionOrganizationId
+      ? { id: __sessionOrganizationId }
+      : null;
 
     if (!organization) {
       return {
@@ -172,8 +177,8 @@ export async function createDepartment(
 
     const metadata = await getAuditRequestMetadata(formData);
 
-    const departmentId = await prisma.$transaction(async (transaction) => {
-      const department = await transaction.department.create({
+    const department = await prisma.$transaction(async (transaction) => {
+      const created = await transaction.department.create({
         data: {
           organizationId: organization.id,
           name,
@@ -189,13 +194,13 @@ export async function createDepartment(
           moduleKey: "hr",
           action: "CREATE",
           entityType: "Department",
-          entityId: department.id,
-          description: `Created department ${department.name}.`,
+          entityId: created.id,
+          description: `Created department ${created.name}.`,
           newValues: {
-            name: department.name,
-            code: department.code,
-            description: department.description,
-            isActive: department.isActive,
+            name: created.name,
+            code: created.code,
+            description: created.description,
+            isActive: created.isActive,
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
@@ -203,16 +208,21 @@ export async function createDepartment(
         },
       });
 
-      return department.id;
+      return created;
     });
 
     revalidatePath("/people/structure");
     revalidatePath("/people/structure/chart");
+    revalidatePath("/people/employees", "layout");
 
     return {
       status: "success",
       message: "Department created successfully.",
-      entityId: departmentId,
+      entityId: department.id,
+      createdEntity: {
+        id: department.id,
+        name: department.name,
+      },
     };
   } catch (error: unknown) {
     console.error("Unable to create department:", error);
@@ -528,11 +538,17 @@ export async function createPosition(
 
     revalidatePath("/people/structure");
     revalidatePath("/people/structure/chart");
+    revalidatePath("/people/employees", "layout");
 
     return {
       status: "success",
       message: "Position created successfully.",
       entityId: positionId,
+      createdEntity: {
+        id: positionId,
+        title,
+        departmentId,
+      },
     };
   } catch (error: unknown) {
     console.error("Unable to create position:", error);

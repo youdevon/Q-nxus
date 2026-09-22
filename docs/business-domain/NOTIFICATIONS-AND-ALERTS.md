@@ -52,6 +52,13 @@ The Notifications domain determines:
 
 - Whether delivery succeeded
 
+### In-app vs email delivery (do not collapse)
+
+`Notification` / `NotificationRecipient` own the in-app inbox (read state,
+permission-scoped recipients). `EmailDelivery` / `EmailDeliveryAttempt` own the
+outbound email queue and retry log. Keep both — see Architecture §6
+“Payroll complementary stores” (same complementary-store rule).
+
 ---
 
 ## 2. Domain Ownership
@@ -299,6 +306,38 @@ Initial Notification types may include:
 - Announcement
 
 Notification type and severity should remain separate concepts.
+
+### Implemented business-event audience (create-time)
+
+Recipients are resolved when the notification is created. Users without the listed permission (or named actor role) never receive a `NotificationRecipient` row. SYSTEM_ADMINISTRATOR is included with any permission query.
+
+| Event | Audience | Permission / rule |
+|-------|----------|-------------------|
+| Contract expiry (30/60/90) | HR / contract managers | `contracts.manage` or `people.manage` |
+| Probation ending (30/14/7) | HR / contract managers | `people.manage` or `contracts.manage` |
+| Contract pending approval | Approver position incumbents; fallback managers | Position assignment or `contracts.manage` |
+| Contract approved / rejected / signature / activate-ready | Employee, managers as applicable | Linked user + `contracts.manage` |
+| Appraisal due / submitted / reviewed | Supervisor or people managers / employee | `people.manage` or linked users |
+| Draft pay run ready / re-approval needed | Other payroll officers | `payroll.manage` (exclude actor) |
+| Pay run approved — ready to post | Maker + other payroll officers | `payroll.manage` (exclude approver) |
+| Pay run posted | Other payroll officers (+ maker/approver) | `payroll.manage` |
+| Payslips released | Employees with linked users | Employee user (in-app); email already queued |
+| ACH batch pending approval | Other payroll officers | `payroll.manage` (exclude actor) |
+| ACH batch approved — ready to generate | Preparer + other payroll officers | `payroll.manage` (exclude approver) |
+| ACH batch file ready | Payroll officers / preparer | `payroll.manage` |
+| Statutory override pending / decided | Approvers / requester | `payroll.statutory_override.approve` or `payroll.manage` |
+| Tax-year adjustment pending / decided | Approvers / requester | `payroll.tax_adjustments.approve` or `payroll.manage` |
+| Earning treatment override pending / decided | Approvers / requester | `payroll.tax_treatment.override` or `payroll.manage` |
+| Annual PAYE projection review / approved | Approvers / generator | `payroll.tax_projection.approve` or `payroll.manage` |
+| Projection approve → auto-applied PAYE overrides (open periods) | Included in projection-approved notice | Same audience; no separate pending override ping |
+| Payroll setup needed after activate | Actor + payroll setup staff | `payroll.setup` / `payroll.manage` |
+| Contract activated (employee) | Linked employee user | Direct |
+| Contract / probation ending (employee copy) | Linked employee user | Scheduled with HR copies |
+| Payment allocation returned / rejected | Linked employee user | Direct |
+
+Payroll approval messages append an actor trail when known, for example `Initiated by … · Approved by …` (or Rejected / Posted). The bell panel and `/notifications` inbox keep read items as history so past actions remain browsable after they complete. Filter with `?module=payroll`.
+
+Scheduled jobs: `contract-expiry-reminders`, `probation-ending-reminders`, `appraisal-due-reminders` (plus existing leave/lifecycle/correspondence jobs).
 
 ---
 

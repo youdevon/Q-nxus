@@ -1,18 +1,19 @@
 /**
- * Employee identity / statutory numbers are the source of truth.
- * PayrollProfile.nisNumber / birNumber remain as a mirrored copy for
- * payslip snapshots and historical readiness checks. Prefer employee,
- * then fall back to profile (legacy rows not yet backfilled).
+ * Employee identity fields used across HR and payroll.
+ *
+ * NIS/BIR numbers and date of birth live on `hr.employees` only (not PayrollProfile).
+ * Payroll may fill empty statutory numbers when the actor has `people.manage`.
  */
+
+/** Prefer the existing stored value; otherwise accept a new value from a form. */
 export function resolveStatutoryNumber(
-  employeeValue: string | null | undefined,
-  profileValue: string | null | undefined,
+  existingValue: string | null | undefined,
+  incomingValue: string | null | undefined,
 ): string | null {
-  const fromEmployee = employeeValue?.trim() || null;
-  if (fromEmployee) {
-    return fromEmployee;
+  const existing = existingValue?.trim() || null;
+  if (existing) {
+    return existing;
   }
 
-  const fromProfile = profileValue?.trim() || null;
-  return fromProfile;
+  return incomingValue?.trim() || null;
 }

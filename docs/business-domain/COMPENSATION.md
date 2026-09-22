@@ -28,6 +28,8 @@ It records what the organization has agreed to pay an Employee, including:
 
 Compensation belongs to the People domain.
 
+**Implemented source of truth:** approved base salary and contract allowances live on the current `EmploymentContract` (`isCurrent` + `ACTIVE`). Payroll salaries, payslip preview, and readiness evaluate those fields live — they are not denormalized onto `PayrollProfile` or `Employee`.
+
 Payroll consumes effective compensation information to calculate payments, but Payroll must not own or overwrite the authoritative compensation record.
 
 ---

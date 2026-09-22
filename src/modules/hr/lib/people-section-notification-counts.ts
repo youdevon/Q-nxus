@@ -5,6 +5,7 @@
 
 export const PEOPLE_SECTION_MENU_HREFS = [
   "/people",
+  "/people/lifecycle",
   "/people/documents",
   "/people/team-documents",
   "/people/leave",
@@ -121,6 +122,13 @@ export function mapActionUrlToPeopleSectionHref(
     path.startsWith("/people/leave/types/")
   ) {
     return "/people/leave/types";
+  }
+
+  if (
+    path === "/people/lifecycle" ||
+    path.startsWith("/people/lifecycle/")
+  ) {
+    return "/people/lifecycle";
   }
 
   if (

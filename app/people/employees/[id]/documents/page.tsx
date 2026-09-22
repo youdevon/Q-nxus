@@ -13,8 +13,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { PageActionsEnd } from "@/src/components/layout/page-actions";
-import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
-import { PageShell } from "@/src/components/layout/page-shell";
 import { PageAlert } from "@/src/components/ui/page-alert";
 import { CorrespondenceList } from "@/src/modules/hr/components/correspondence-list";
 import { EmployeeFileChecklist } from "@/src/modules/hr/components/employee-file-checklist";
@@ -24,7 +22,9 @@ import {
 } from "@/src/modules/hr/components/employee-file-completeness";
 import { EmployeeFileExtrasList } from "@/src/modules/hr/components/employee-file-extras-list";
 import { EmployeeFileUpdateRequestsList } from "@/src/modules/hr/components/employee-file-update-requests";
+import { EmployeeSectionChrome } from "@/src/modules/hr/components/employee-section-chrome";
 import { getEmployeeCorrespondenceList } from "@/src/modules/hr/data/get-employee-correspondence";
+import { getEmployeeEntityChrome } from "@/src/modules/hr/data/get-employee-entity-chrome";
 import { getEmployeeFileChecklist } from "@/src/modules/hr/data/get-employee-file-checklist";
 import { getEmployeeFileExtras } from "@/src/modules/hr/data/get-employee-file-extras";
 import { getEmployeeFileUpdateRequests } from "@/src/modules/hr/data/get-employee-file-update-requests";
@@ -66,9 +66,15 @@ export default async function EmployeeDocumentsPage({
     notFound();
   }
 
-  const employee = await getEmployeeById(id);
+  const [employee, chrome] = await Promise.all([
+    getEmployeeById(id),
+    getEmployeeEntityChrome(id),
+  ]);
   if (!employee || !requiresEmployeeFile(employee.workforceCategory)) {
     redirect(`/people/employees/${id}`);
+  }
+  if (!chrome) {
+    notFound();
   }
 
   const filters = {
@@ -107,85 +113,83 @@ export default async function EmployeeDocumentsPage({
     notFound();
   }
 
-  const profileHref = `/people/employees/${list.employee.id}`;
   const baseHref = `/people/employees/${list.employee.id}/documents`;
 
   return (
-    <PageShell size="lg">
-      <PeoplePageHeader
-        title="Employee file"
-        description={`${list.employee.firstName} ${list.employee.lastName} · ${list.employee.employeeNumber}${
-          access.isManagerView ? " · Manager view" : ""
-        }`}
-        backHref={profileHref}
-        backLabel="Employee"
-        actions={
-          access.canManage ? (
-            <PageActionsEnd>
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={
-                  <Link
-                    href={`/people/employees/${list.employee.id}/documents/print`}
-                    target="_blank"
-                  />
-                }
-              >
-                <Printer />
-                Print file pack
-              </Button>
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={
-                  <Link
-                    href={`/people/employees/${list.employee.id}/qualifications/new`}
-                  />
-                }
-              >
-                <ScrollText />
-                Add qualification
-              </Button>
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={
-                  <Link
-                    href={`/people/employees/${list.employee.id}/credentials/new`}
-                  />
-                }
-              >
-                <Award />
-                Add credential
-              </Button>
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={
-                  <Link
-                    href={`/people/employees/${list.employee.id}/training/new`}
-                  />
-                }
-              >
-                <GraduationCap />
-                Add training
-              </Button>
-              <Button
-                nativeButton={false}
-                render={
-                  <Link
-                    href={`/people/employees/${list.employee.id}/documents/new`}
-                  />
-                }
-              >
-                <Plus />
-                New letter
-              </Button>
-            </PageActionsEnd>
-          ) : undefined
-        }
-      />
+    <EmployeeSectionChrome
+      chrome={chrome}
+      current="file"
+      title="Employee file"
+      description={`${list.employee.firstName} ${list.employee.lastName} · ${list.employee.employeeNumber}${
+        access.isManagerView ? " · Manager view" : ""
+      }`}
+      actions={
+        access.canManage ? (
+          <PageActionsEnd>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link
+                  href={`/people/employees/${list.employee.id}/documents/print`}
+                  target="_blank"
+                />
+              }
+            >
+              <Printer />
+              Print file pack
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link
+                  href={`/people/employees/${list.employee.id}/qualifications/new`}
+                />
+              }
+            >
+              <ScrollText />
+              Add qualification
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link
+                  href={`/people/employees/${list.employee.id}/credentials/new`}
+                />
+              }
+            >
+              <Award />
+              Add credential
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link
+                  href={`/people/employees/${list.employee.id}/training/new`}
+                />
+              }
+            >
+              <GraduationCap />
+              Add training
+            </Button>
+            <Button
+              nativeButton={false}
+              render={
+                <Link
+                  href={`/people/employees/${list.employee.id}/documents/new`}
+                />
+              }
+            >
+              <Plus />
+              New letter
+            </Button>
+          </PageActionsEnd>
+        ) : undefined
+      }
+    >
 
       {access.isManagerView ? (
         <PageAlert severity="information" title="Manager access">
@@ -385,6 +389,6 @@ export default async function EmployeeDocumentsPage({
           }
         />
       ) : null}
-    </PageShell>
+    </EmployeeSectionChrome>
   );
 }

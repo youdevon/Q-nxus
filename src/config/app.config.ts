@@ -1,7 +1,7 @@
 /**
  * Build-time defaults for product chrome.
  * Live sidebar/org branding resolves via getApplicationChrome()
- * (Organization + ApplicationSetting), not these hardcoded values.
+ * (Organization), not these hardcoded values.
  */
 export const appConfig = {
   /** Internal platform codename — not typically shown to end users */

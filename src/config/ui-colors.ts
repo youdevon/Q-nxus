@@ -19,6 +19,8 @@ type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
  * Badges (semantic map — use helpers below; avoid ad-hoc colors)
  * - success: Active / Approved / Completed / Posted / Issued
  * - warning: Pending / Submitted / Draft / Expiring soon / On leave
+ *   (badge text uses warning-foreground in light, warning in dark — never
+ *   put warning-foreground on a translucent wash in dark mode)
  * - destructive: Rejected / Cancelled / Failed / Terminated / Overdue / Missing
  * - secondary: Inactive / Archived / Neutral meta (excluded, superseded, withdrawn)
  * - outline: Supplementary labels (category, kind, IDs) — not lifecycle status
@@ -143,6 +145,28 @@ export function recordStatusBadgeVariant(status: string): BadgeVariant {
 }
 
 /** Employment contract lifecycle (ACTIVE, DRAFT, SUPERSEDED, …). */
+/** Contract monitoring expiry column: red ≤30d, yellow ≤90d, green otherwise. */
+export function contractExpiryBadgeVariant(
+  category:
+    | "EXPIRED"
+    | "WITHIN_30_DAYS"
+    | "WITHIN_60_DAYS"
+    | "WITHIN_90_DAYS"
+    | "LATER"
+    | "NO_END_DATE"
+    | string,
+): BadgeVariant {
+  switch (category) {
+    case "WITHIN_30_DAYS":
+      return "destructive";
+    case "WITHIN_60_DAYS":
+    case "WITHIN_90_DAYS":
+      return "warning";
+    default:
+      return "success";
+  }
+}
+
 export function employmentContractStatusBadgeVariant(
   status: string,
 ): BadgeVariant {

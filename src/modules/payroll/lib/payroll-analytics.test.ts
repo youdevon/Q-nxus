@@ -1,14 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  assembleEmployeePaymentHistory,
-  assembleEmployeePaymentRoster,
   assembleMonthlyPayrollSummary,
   extractEmployerContributionFromSnapshot,
   isPeriodKeyInInclusiveRange,
   resolveDefaultMonthlyReportPeriodKey,
   resolveEmployeeHistoryPeriodRange,
-  resolveEmployeePaymentHistoryScope,
   shiftMonthlyPeriodKey,
   type PostedPayslipAnalyticsRow,
 } from "./payroll-analytics";
@@ -329,16 +326,6 @@ describe("assembleMonthlyPayrollSummary", () => {
         organizationCost: 23_301,
       },
     ]);
-
-    const regular = summary.byRunKind.find((item) => item.runKind === "REGULAR");
-    const correction = summary.byRunKind.find(
-      (item) => item.runKind === "CORRECTION",
-    );
-    expect(regular?.payslipCount).toBe(2);
-    expect(regular?.grossPay).toBe(22_000.55);
-    expect(correction?.payslipCount).toBe(1);
-    expect(correction?.grossPay).toBe(200);
-    expect(summary.runs).toHaveLength(2);
   });
 
   it("keeps mixed currencies separate and does not add bank allocations", () => {
@@ -371,208 +358,45 @@ describe("assembleMonthlyPayrollSummary", () => {
     expect(summary.totalsByCurrency[0]?.organizationCost).toBe(10_400);
     expect(summary.totalsByCurrency[1]?.organizationCost).toBe(2_050);
   });
-});
 
-describe("assembleEmployeePaymentHistory", () => {
-  it("includes corrections and builds monthly buckets with payslip links data", () => {
-    const history = assembleEmployeePaymentHistory({
-      employeeId: "e1",
-      startPeriodKey: "2026-01",
+  it("sums an inclusive multi-month range", () => {
+    const summary = assembleMonthlyPayrollSummary({
+      startPeriodKey: "2026-05",
       endPeriodKey: "2026-06",
       rows: [
         row({
           payslipId: "p1",
           employeeId: "e1",
-          periodKey: "2026-01",
-          periodName: "January 2026",
-          payRunId: "r1",
-          runNumber: "PR-2026-01-01",
-          postedAt: "2026-02-01T12:00:00.000Z",
+          periodKey: "2026-05",
+          periodName: "May 2026",
+          grossPay: 5_000,
+          employerContributions: 200,
         }),
         row({
           payslipId: "p2",
           employeeId: "e1",
           periodKey: "2026-06",
-          payRunId: "r2",
+          periodName: "June 2026",
+          grossPay: 5_000,
+          employerContributions: 200,
+          payRunId: "run-2",
           runNumber: "PR-2026-06-01",
         }),
         row({
           payslipId: "p3",
-          employeeId: "e1",
-          periodKey: "2026-06",
-          grossPay: 150,
-          totalDeductions: 0,
-          netPay: 150,
-          employerContributions: 0,
-          payRunId: "r3",
-          runNumber: "PR-2026-06-02",
-          runKind: "OFF_CYCLE",
-          postedAt: "2026-07-10T12:00:00.000Z",
-        }),
-        row({
-          payslipId: "p4",
           employeeId: "e2",
-          periodKey: "2026-06",
-        }),
-        row({
-          payslipId: "p5",
-          employeeId: "e1",
-          periodKey: "2025-12",
-          periodName: "December 2025",
+          periodKey: "2026-04",
+          periodName: "April 2026",
+          grossPay: 9_999,
         }),
       ],
     });
 
-    expect(history.payslipCount).toBe(3);
-    expect(history.runCount).toBe(3);
-    expect(history.totalsByCurrency[0]).toMatchObject({
-      grossPay: 20_150,
-      employerContributions: 1_000,
-      organizationCost: 21_150,
-    });
-    expect(history.months).toHaveLength(2);
-    expect(history.months[0]?.periodKey).toBe("2026-01");
-    expect(history.months[1]?.payslips.map((p) => p.runKind)).toEqual([
-      "REGULAR",
-      "OFF_CYCLE",
-    ]);
-    expect(
-      history.byRunKind.find((item) => item.runKind === "OFF_CYCLE")?.grossPay,
-    ).toBe(150);
-  });
-
-  it("returns an empty history when the employee has no posted pay in range", () => {
-    const history = assembleEmployeePaymentHistory({
-      employeeId: "e1",
-      startPeriodKey: "2026-01",
-      endPeriodKey: "2026-06",
-      rows: [],
-    });
-
-    expect(history.payslipCount).toBe(0);
-    expect(history.months).toEqual([]);
-    expect(history.totalsByCurrency).toEqual([]);
-  });
-});
-
-describe("assembleEmployeePaymentRoster", () => {
-  it("aggregates employees with totals, slip counts, and department names", () => {
-    const departmentsByEmployeeId = new Map<string, string | null>([
-      ["e1", "Engineering"],
-      ["e2", "Finance"],
-    ]);
-
-    const roster = assembleEmployeePaymentRoster({
-      startPeriodKey: "2026-01",
-      endPeriodKey: "2026-06",
-      departmentsByEmployeeId,
-      rows: [
-        row({
-          payslipId: "p1",
-          employeeId: "e1",
-          employeeNumber: "E001",
-          employeeName: "Ada Lovelace",
-          periodKey: "2026-01",
-          payRunId: "r1",
-          runNumber: "PR-2026-01-01",
-        }),
-        row({
-          payslipId: "p2",
-          employeeId: "e1",
-          employeeNumber: "E001",
-          employeeName: "Ada Lovelace",
-          periodKey: "2026-06",
-          grossPay: 150,
-          totalDeductions: 0,
-          netPay: 150,
-          employerContributions: 0,
-          payRunId: "r2",
-          runNumber: "PR-2026-06-02",
-          runKind: "OFF_CYCLE",
-        }),
-        row({
-          payslipId: "p3",
-          employeeId: "e2",
-          employeeNumber: "E002",
-          employeeName: "Grace Hopper",
-          periodKey: "2026-06",
-          grossPay: 8_000,
-          totalDeductions: 800,
-          netPay: 7_200,
-          employerContributions: 400,
-          payRunId: "r3",
-          runNumber: "PR-2026-06-01",
-        }),
-        row({
-          payslipId: "p4",
-          employeeId: "e1",
-          employeeNumber: "E001",
-          employeeName: "Ada Lovelace",
-          periodKey: "2025-12",
-        }),
-      ],
-    });
-
-    expect(roster.payslipCount).toBe(3);
-    expect(roster.employeeCount).toBe(2);
-    expect(roster.runCount).toBe(3);
-    expect(roster.totalsByCurrency[0]).toMatchObject({
-      grossPay: 18_150,
-      totalDeductions: 1_800,
-      netPay: 16_350,
-      employerContributions: 900,
-      organizationCost: 19_050,
-    });
-    expect(roster.employees).toHaveLength(2);
-    expect(roster.employees[0]).toMatchObject({
-      employeeId: "e1",
-      employeeName: "Ada Lovelace",
-      departmentName: "Engineering",
-      payslipCount: 2,
-    });
-    expect(roster.employees[0]?.totalsByCurrency[0]).toMatchObject({
-      grossPay: 10_150,
-      netPay: 9_150,
-    });
-    expect(roster.employees[1]).toMatchObject({
-      employeeId: "e2",
-      departmentName: "Finance",
-      payslipCount: 1,
-    });
-    expect(
-      roster.byRunKind.find((item) => item.runKind === "OFF_CYCLE")?.grossPay,
-    ).toBe(150);
-  });
-
-  it("returns an empty roster when there are no posted slips in range", () => {
-    const roster = assembleEmployeePaymentRoster({
-      startPeriodKey: "2026-01",
-      endPeriodKey: "2026-06",
-      rows: [],
-    });
-
-    expect(roster.employeeCount).toBe(0);
-    expect(roster.payslipCount).toBe(0);
-    expect(roster.employees).toEqual([]);
-    expect(roster.totalsByCurrency).toEqual([]);
-  });
-});
-
-describe("resolveEmployeePaymentHistoryScope", () => {
-  it("defaults to all employees", () => {
-    expect(resolveEmployeePaymentHistoryScope(null)).toBe("all");
-    expect(resolveEmployeePaymentHistoryScope("bogus")).toBe("all");
-  });
-
-  it("preserves employee deep links without an explicit scope", () => {
-    expect(
-      resolveEmployeePaymentHistoryScope(undefined, { employeeId: "e1" }),
-    ).toBe("employee");
-  });
-
-  it("accepts explicit scopes", () => {
-    expect(resolveEmployeePaymentHistoryScope("department")).toBe("department");
-    expect(resolveEmployeePaymentHistoryScope("employee")).toBe("employee");
-    expect(resolveEmployeePaymentHistoryScope("all")).toBe("all");
+    expect(summary.startPeriodKey).toBe("2026-05");
+    expect(summary.endPeriodKey).toBe("2026-06");
+    expect(summary.payslipCount).toBe(2);
+    expect(summary.employeeCount).toBe(1);
+    expect(summary.totalsByCurrency[0]?.grossPay).toBe(10_000);
+    expect(summary.periodName).toBe("May 2026 – June 2026");
   });
 });

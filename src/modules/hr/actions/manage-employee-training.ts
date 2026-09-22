@@ -81,7 +81,13 @@ export async function createEmployeeTrainingRecord(
 
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-    select: { id: true, organizationId: true, firstName: true, lastName: true },
+    select: {
+      id: true,
+      organizationId: true,
+      firstName: true,
+      lastName: true,
+      employeeNumber: true,
+    },
   });
 
   if (!employee) {
@@ -112,6 +118,7 @@ export async function createEmployeeTrainingRecord(
 
       if (attachmentFile) {
         const stored = await storeEmployeeFileAttachment({
+          employee,
           recordType: "training",
           recordId: created.id,
           file: attachmentFile,
@@ -194,7 +201,18 @@ export async function updateEmployeeTrainingRecord(
 
   const existing = await prisma.employeeTrainingRecord.findFirst({
     where: { id: trainingId, employeeId },
-    select: { id: true, courseName: true, storageKey: true },
+    select: {
+      id: true,
+      courseName: true,
+      storageKey: true,
+      employee: {
+        select: {
+          employeeNumber: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
   });
 
   if (!existing) {
@@ -224,6 +242,7 @@ export async function updateEmployeeTrainingRecord(
 
       if (attachmentFile) {
         const stored = await storeEmployeeFileAttachment({
+          employee: existing.employee,
           recordType: "training",
           recordId: existing.id,
           file: attachmentFile,

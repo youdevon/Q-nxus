@@ -1,6 +1,7 @@
 import { NotificationSeverity } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
+import { resolveRecipientsByPermissions } from "@/src/modules/notifications/lib/resolve-notification-recipients";
 import { createSystemNotification } from "@/src/modules/notifications/services/create-system-notification";
 
 function startOfUtcDay(value = new Date()): Date {
@@ -63,53 +64,36 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
               position: { select: { title: true } },
             },
           },
-        },
-      },
-    },
-  });
-
-  const managers = await prisma.user.findMany({
-    where: {
-      isActive: true,
-      roles: {
-        some: {
-          status: "ACTIVE",
-          role: {
-            isActive: true,
-            OR: [
-              { code: "SYSTEM_ADMINISTRATOR" },
-              { code: "HR_ADMINISTRATOR" },
-              {
-                permissions: {
-                  some: {
-                    permission: {
-                      code: {
-                        in: ["contracts.manage", "people.manage"],
-                      },
-                      isActive: true,
-                    },
-                  },
-                },
-              },
-            ],
+          user: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              isActive: true,
+            },
           },
         },
       },
     },
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-    },
   });
 
-  if (managers.length === 0) {
-    return {
-      considered: contracts.length,
-      notified: 0,
-      skipped: contracts.length,
-    };
+  const recipientsByOrg = new Map<
+    string,
+    Awaited<ReturnType<typeof resolveRecipientsByPermissions>>
+  >();
+
+  async function managersForOrg(organizationId: string) {
+    const cached = recipientsByOrg.get(organizationId);
+    if (cached) {
+      return cached;
+    }
+    const recipients = await resolveRecipientsByPermissions(organizationId, [
+      "contracts.manage",
+      "people.manage",
+    ]);
+    recipientsByOrg.set(organizationId, recipients);
+    return recipients;
   }
 
   let notified = 0;
@@ -121,6 +105,8 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
       skipped += 1;
       continue;
     }
+
+    const managers = await managersForOrg(contract.employee.organizationId);
 
     const endIso = contract.endDate.toISOString().slice(0, 10);
     const daysUntil = Math.ceil(
@@ -142,52 +128,94 @@ export async function notifyContractExpiryReminders(): Promise<ContractExpiryRem
       continue;
     }
 
-    const title = `Contract ${windowLabel}: ${contract.employee.firstName} ${contract.employee.lastName}`;
+    const positionLabel =
+      resolveEmployeePositionTitle({
+        assignmentPositionTitle:
+          contract.employee.assignments[0]?.position?.title,
+        positionTitle: contract.employee.position?.title,
+        contractJobTitle: contract.jobTitle,
+      }) ?? contract.jobTitle;
 
-    const existing = await prisma.notification.findFirst({
-      where: {
-        relatedType: "EmploymentContract",
-        relatedId: contract.id,
-        title,
-        createdAt: {
-          gte: dedupeSince,
+    const contractRef = contract.contractNumber
+      ? ` (${contract.contractNumber})`
+      : "";
+    const severity =
+      daysUntil < 0 || daysUntil <= 30
+        ? NotificationSeverity.WARNING
+        : NotificationSeverity.INFORMATION;
+
+    let createdAny = false;
+
+    if (managers.length > 0) {
+      const title = `Contract ${windowLabel}: ${contract.employee.firstName} ${contract.employee.lastName}`;
+      const existing = await prisma.notification.findFirst({
+        where: {
+          relatedType: "EmploymentContract",
+          relatedId: contract.id,
+          title,
+          createdAt: { gte: dedupeSince },
         },
-      },
-      select: { id: true },
-    });
+        select: { id: true },
+      });
 
-    if (existing) {
-      skipped += 1;
-      continue;
+      if (!existing) {
+        await createSystemNotification({
+          title,
+          message: `${contract.employee.employeeNumber} · ${positionLabel} ends ${endIso}${contractRef}.`,
+          severity,
+          moduleKey: "hr",
+          actionUrl: `/people/employees/${contract.employee.id}/contracts/${contract.id}`,
+          relatedType: "EmploymentContract",
+          relatedId: contract.id,
+          recipients: managers,
+        });
+        createdAny = true;
+      }
     }
 
-    await createSystemNotification({
-      title,
-      message: `${contract.employee.employeeNumber} · ${
-        resolveEmployeePositionTitle({
-          assignmentPositionTitle:
-            contract.employee.assignments[0]?.position?.title,
-          positionTitle: contract.employee.position?.title,
-          contractJobTitle: contract.jobTitle,
-        }) ?? contract.jobTitle
-      } ends ${endIso}${contract.contractNumber ? ` (${contract.contractNumber})` : ""}.`,
-      severity:
-        daysUntil < 0 || daysUntil <= 30
-          ? NotificationSeverity.WARNING
-          : NotificationSeverity.INFORMATION,
-      moduleKey: "hr",
-      actionUrl: `/people/employees/${contract.employee.id}/contracts/${contract.id}`,
-      relatedType: "EmploymentContract",
-      relatedId: contract.id,
-      recipients: managers.map((manager) => ({
-        userId: manager.id,
-        email: manager.email,
-        name: `${manager.firstName} ${manager.lastName}`,
-        sendEmail: false,
-      })),
-    });
+    const employeeUser = contract.employee.user;
+    if (employeeUser?.isActive) {
+      const employeeTitle =
+        daysUntil < 0
+          ? "Your employment contract has expired"
+          : `Your employment contract ends ${windowLabel}`;
+      const existingEmployee = await prisma.notification.findFirst({
+        where: {
+          relatedType: "EmploymentContract",
+          relatedId: contract.id,
+          title: employeeTitle,
+          createdAt: { gte: dedupeSince },
+        },
+        select: { id: true },
+      });
 
-    notified += 1;
+      if (!existingEmployee) {
+        await createSystemNotification({
+          title: employeeTitle,
+          message: `Your role as ${positionLabel} ends on ${endIso}${contractRef}. Contact HR if you have questions.`,
+          severity,
+          moduleKey: "hr",
+          actionUrl: "/me/contracts",
+          relatedType: "EmploymentContract",
+          relatedId: contract.id,
+          recipients: [
+            {
+              userId: employeeUser.id,
+              email: employeeUser.email,
+              name: `${employeeUser.firstName} ${employeeUser.lastName}`.trim(),
+              sendEmail: false,
+            },
+          ],
+        });
+        createdAny = true;
+      }
+    }
+
+    if (createdAny) {
+      notified += 1;
+    } else {
+      skipped += 1;
+    }
   }
 
   return {

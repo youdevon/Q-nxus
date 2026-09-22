@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/src/lib/format";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import {
+  getPayslipYtdBreakdown,
+  getPayslipYtdBreakdownBatch,
   getPostedPayslipYtd,
   getPostedPayslipYtdBatch,
+  getPreviewPayslipYtd,
   payslipPreviewToYtdContribution,
 } from "@/src/modules/payroll/data/get-payslip-ytd";
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
@@ -10,7 +14,12 @@ import { isPayRunPosted } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import { isPayslipIncludedInRun } from "@/src/modules/payroll/lib/pay-run-membership";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
-import type { PayslipYtdTotals } from "@/src/modules/payroll/lib/payslip-ytd";
+import type {
+  PayslipYtdBreakdown,
+  PayslipYtdTotals,
+} from "@/src/modules/payroll/lib/payslip-ytd";
+import type { ProjectedTaxYearPosition } from "@/src/modules/payroll/lib/projected-tax-year-position";
+import { getApprovedProjectedTaxYearPosition } from "@/src/modules/payroll/data/get-annual-paye-projections";
 
 function decimalLabel(value: { toString(): string }, currency: string) {
   return formatMoney(Number(value.toString()), { currency });
@@ -24,9 +33,14 @@ export type StoredPayslipResult = {
   periodKey: string;
   status: "DRAFT" | "EXCLUDED" | "POSTED";
   isPosted: boolean;
+  /** True once payroll has released the slip for employee self-service. */
+  isReleased: boolean;
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
-  ytd: PayslipYtdTotals | null;
+  /** Always assembled for the document (posted history + this slip/snapshot). */
+  ytd: PayslipYtdTotals;
+  ytdBreakdown: PayslipYtdBreakdown;
+  projectedTaxYearPosition: ProjectedTaxYearPosition | null;
 };
 
 export type PayRunBatchPrintDocument = {
@@ -37,6 +51,8 @@ export type PayRunBatchPrintDocument = {
   payslip: PayslipPreview;
   meta: PayslipDocumentMeta;
   ytd: PayslipYtdTotals | null;
+  ytdBreakdown: PayslipYtdBreakdown | null;
+  projectedTaxYearPosition: ProjectedTaxYearPosition | null;
   isOfficial: boolean;
 };
 
@@ -51,8 +67,16 @@ export type PayRunBatchPrintResult = {
 export async function getStoredPayslip(
   payslipId: string,
 ): Promise<StoredPayslipResult | null> {
-  const row = await prisma.payslip.findUnique({
-    where: { id: payslipId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const row = await prisma.payslip.findFirst({
+    where: {
+      id: payslipId,
+      organizationId,
+    },
     include: {
       payRun: {
         select: {
@@ -84,6 +108,10 @@ export async function getStoredPayslip(
   }
 
   const isPosted = row.status === "POSTED";
+  const isReleased = isPosted && row.releasedAt != null;
+  const current = payslipPreviewToYtdContribution(snapshot.payslip);
+  // Always assemble YTD for the document: posted path includes this slip +
+  // earlier posted periods; draft/ready uses prior posted + this snapshot.
   const ytd = isPosted
     ? await getPostedPayslipYtd({
         employeeId: row.employeeId,
@@ -92,9 +120,18 @@ export async function getStoredPayslip(
         periodEnd: row.payrollPeriod.periodEnd,
         postedAt: row.payRun.postedAt,
         createdAt: row.createdAt,
-        current: payslipPreviewToYtdContribution(snapshot.payslip),
+        current,
       })
-    : null;
+    : await getPreviewPayslipYtd({
+        employeeId: row.employeeId,
+        periodKey: row.payrollPeriod.periodKey,
+        current,
+      });
+  const ytdBreakdown = await getPayslipYtdBreakdown(row.employeeId, ytd);
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    row.employeeId,
+    row.payrollPeriod.year,
+  );
 
   return {
     id: row.id,
@@ -104,9 +141,12 @@ export async function getStoredPayslip(
     periodKey: row.payrollPeriod.periodKey,
     status: row.status,
     isPosted,
+    isReleased,
     payslip: snapshot.payslip,
     meta: snapshot.meta,
     ytd,
+    ytdBreakdown,
+    projectedTaxYearPosition,
   };
 }
 
@@ -114,8 +154,13 @@ export async function getStoredPayslip(
 export async function getPayRunBatchPrint(
   payRunId: string,
 ): Promise<PayRunBatchPrintResult | null> {
-  const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId },
     include: {
       payrollPeriod: {
         select: {
@@ -159,20 +204,50 @@ export async function getPayRunBatchPrint(
     });
 
   const ytdByPayslipId = await getPostedPayslipYtdBatch(ytdInputs);
+  const breakdownByPayslipId = await getPayslipYtdBreakdownBatch(
+    ytdInputs
+      .map((input) => {
+        const ytd = ytdByPayslipId.get(input.payslipId);
+        if (!ytd) {
+          return null;
+        }
+        return {
+          key: input.payslipId,
+          employeeId: input.employeeId,
+          currentEmployer: ytd,
+        };
+      })
+      .filter(
+        (row): row is {
+          key: string;
+          employeeId: string;
+          currentEmployer: PayslipYtdTotals;
+        } => row != null,
+      ),
+  );
 
-  const documents: PayRunBatchPrintDocument[] = printable.map((slip) => {
-    const snapshot = parsePayslipSnapshot(slip.snapshot)!;
-    return {
-      id: slip.id,
-      employeeId: slip.employeeId,
-      employeeName: slip.employeeName,
-      employeeNumber: slip.employeeNumber,
-      payslip: snapshot.payslip,
-      meta: snapshot.meta,
-      ytd: ytdByPayslipId.get(slip.id) ?? null,
-      isOfficial: slip.status === "POSTED",
-    };
-  });
+  const documents: PayRunBatchPrintDocument[] = await Promise.all(
+    printable.map(async (slip) => {
+      const snapshot = parsePayslipSnapshot(slip.snapshot)!;
+      const projectedTaxYearPosition =
+        await getApprovedProjectedTaxYearPosition(
+          slip.employeeId,
+          run.payrollPeriod.year,
+        );
+      return {
+        id: slip.id,
+        employeeId: slip.employeeId,
+        employeeName: slip.employeeName,
+        employeeNumber: slip.employeeNumber,
+        payslip: snapshot.payslip,
+        meta: snapshot.meta,
+        ytd: ytdByPayslipId.get(slip.id) ?? null,
+        ytdBreakdown: breakdownByPayslipId.get(slip.id) ?? null,
+        projectedTaxYearPosition,
+        isOfficial: slip.status === "POSTED",
+      };
+    }),
+  );
 
   return {
     id: run.id,
@@ -201,23 +276,24 @@ export type SelfServicePayslipHistoryItem = {
 export type EmployeePayslipHistory = {
   /** Distinct years that have posted payslips, most recent first. */
   years: number[];
-  /** Selected year, or null when showing the last 12 months. */
+  /** Selected year, or null when showing the default window / all. */
   selectedYear: number | null;
   items: SelfServicePayslipHistoryItem[];
 };
 
 /**
  * Posted payslip history for one employee (self-service, own record only).
- * Defaults to the last 12 months; pass a year to filter to that calendar year.
+ * Defaults to the last 12 months; pass a year to filter, or `all: true` for every slip.
  */
 export async function getEmployeePostedPayslipHistory(
   employeeId: string,
-  options?: { year?: number | null },
+  options?: { year?: number | null; all?: boolean },
 ): Promise<EmployeePayslipHistory> {
   const slips = await prisma.payslip.findMany({
     where: {
       employeeId,
       status: "POSTED",
+      releasedAt: { not: null },
     },
     orderBy: [
       { payrollPeriod: { periodEnd: "desc" } },
@@ -250,12 +326,16 @@ export async function getEmployeePostedPayslipHistory(
   const twelveMonthsAgo = new Date();
   twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
 
-  const filtered = slips.filter((slip) => {
-    if (requestedYear != null) {
-      return slip.payrollPeriod.year === requestedYear;
-    }
-    return slip.payrollPeriod.periodEnd.getTime() >= twelveMonthsAgo.getTime();
-  });
+  const filtered = options?.all
+    ? slips
+    : slips.filter((slip) => {
+        if (requestedYear != null) {
+          return slip.payrollPeriod.year === requestedYear;
+        }
+        return (
+          slip.payrollPeriod.periodEnd.getTime() >= twelveMonthsAgo.getTime()
+        );
+      });
 
   return {
     years,
@@ -285,6 +365,7 @@ export async function getMostRecentPostedPayslip(
     where: {
       employeeId,
       status: "POSTED",
+      releasedAt: { not: null },
     },
     orderBy: [
       { payrollPeriod: { periodEnd: "desc" } },
@@ -329,6 +410,11 @@ export async function getMostRecentPostedPayslip(
     createdAt: row.createdAt,
     current: payslipPreviewToYtdContribution(snapshot.payslip),
   });
+  const ytdBreakdown = await getPayslipYtdBreakdown(row.employeeId, ytd);
+  const projectedTaxYearPosition = await getApprovedProjectedTaxYearPosition(
+    row.employeeId,
+    row.payrollPeriod.year,
+  );
 
   return {
     id: row.id,
@@ -338,8 +424,11 @@ export async function getMostRecentPostedPayslip(
     periodKey: row.payrollPeriod.periodKey,
     status: row.status,
     isPosted: true,
+    isReleased: true,
     payslip: snapshot.payslip,
     meta: snapshot.meta,
     ytd,
+    ytdBreakdown,
+    projectedTaxYearPosition,
   };
 }

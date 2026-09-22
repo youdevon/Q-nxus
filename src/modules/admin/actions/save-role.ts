@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { resolveRoleCode } from "@/src/modules/admin/lib/role-code";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
@@ -90,14 +91,10 @@ export async function saveRole(
   }
 
   try {
-    const organization = await prisma.organization.findFirst({
-      orderBy: {
-        createdAt: "asc",
-      },
-      select: {
-        id: true,
-      },
-    });
+    const __sessionOrganizationId = await getSessionOrganizationId();
+    const organization = __sessionOrganizationId
+      ? { id: __sessionOrganizationId }
+      : null;
 
     if (!organization) {
       return {
@@ -576,14 +573,10 @@ export async function duplicateRoleAsCustom(
   }
 
   try {
-    const organization = await prisma.organization.findFirst({
-      orderBy: {
-        createdAt: "asc",
-      },
-      select: {
-        id: true,
-      },
-    });
+    const __sessionOrganizationId = await getSessionOrganizationId();
+    const organization = __sessionOrganizationId
+      ? { id: __sessionOrganizationId }
+      : null;
 
     if (!organization) {
       return {

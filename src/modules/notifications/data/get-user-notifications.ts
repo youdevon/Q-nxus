@@ -83,8 +83,8 @@ export async function getUnreadNotificationActionUrls(): Promise<
 }
 
 export async function getUserNotifications(
-  limit = 100,
-  options?: { unreadOnly?: boolean },
+  limit = 250,
+  options?: { unreadOnly?: boolean; moduleKey?: string },
 ): Promise<UserNotificationInbox | null> {
   const user = await getCurrentUser();
 
@@ -96,13 +96,16 @@ export async function getUserNotifications(
     where: {
       userId: user.id,
       ...(options?.unreadOnly ? { status: "UNREAD" as const } : {}),
+      ...(options?.moduleKey
+        ? { notification: { moduleKey: options.moduleKey } }
+        : {}),
     },
     orderBy: {
       notification: {
         createdAt: "desc",
       },
     },
-    take: Math.max(1, Math.min(limit, 250)),
+    take: Math.max(1, Math.min(limit, 500)),
     select: {
       notificationId: true,
       status: true,
@@ -126,6 +129,7 @@ export async function getUserNotifications(
 
   const notifications: UserNotificationRecord[] = recipients.map(
     (recipient) => ({
+      // markNotificationRead expects notificationId in the recipientId field
       recipientId: recipient.notificationId,
       notificationId: recipient.notification.id,
       title: recipient.notification.title,
@@ -142,15 +146,17 @@ export async function getUserNotifications(
     }),
   );
 
+  const unreadCount = await prisma.notificationRecipient.count({
+    where: unreadRecipientWhere(user.id),
+  });
+
   return {
     user: {
       id: user.id,
       name: `${user.firstName} ${user.lastName}`,
       email: user.email,
     },
-    unreadCount: notifications.filter(
-      (notification) => notification.status === "UNREAD",
-    ).length,
+    unreadCount,
     notifications,
   };
 }

@@ -1,5 +1,15 @@
 import { prisma } from "@/lib/prisma";
-import { calculateContractGratuityEstimate } from "@/src/modules/hr/services/calculate-contract-gratuity";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
+import {
+  calculateContractGratuity,
+  monthlyEligibleEarnings,
+  roundMoney,
+} from "@/src/modules/payroll/lib/calculate-gratuity";
+import {
+  defaultTtGratuityPolicyInput,
+  getGratuityPolicyAsOf,
+  toGratuityPolicyInput,
+} from "@/src/modules/payroll/data/get-gratuity-policy";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 
 export type EmploymentContractListRecord = {
@@ -17,6 +27,7 @@ export type EmploymentContractListRecord = {
   gratuityRate: string | null;
   gratuityTaxRate: string | null;
   isCurrent: boolean;
+  sourceContractId: string | null;
   signedDate: string | null;
   collectedAt: string | null;
   terminationDate: string | null;
@@ -59,6 +70,7 @@ function mapContract(contract: {
   gratuityRate: { toString(): string } | null;
   gratuityTaxRate: { toString(): string } | null;
   isCurrent: boolean;
+  sourceContractId?: string | null;
   signedDate: Date | null;
   collectedAt: Date | null;
   terminationDate: Date | null;
@@ -82,6 +94,7 @@ function mapContract(contract: {
     gratuityRate: contract.gratuityRate?.toString() ?? null,
     gratuityTaxRate: contract.gratuityTaxRate?.toString() ?? null,
     isCurrent: contract.isCurrent,
+    sourceContractId: contract.sourceContractId ?? null,
     signedDate: contract.signedDate?.toISOString().slice(0, 10) ?? null,
     collectedAt: contract.collectedAt?.toISOString() ?? null,
     terminationDate:
@@ -161,6 +174,7 @@ export async function getEmployeeContractHistory(
           gratuityRate: true,
           gratuityTaxRate: true,
           isCurrent: true,
+          sourceContractId: true,
           signedDate: true,
           collectedAt: true,
           terminationDate: true,
@@ -294,6 +308,7 @@ export async function getEmploymentContractProfile(
       gratuityRate: true,
       gratuityTaxRate: true,
       isCurrent: true,
+      sourceContractId: true,
       signedDate: true,
       collectedAt: true,
       terminationDate: true,
@@ -382,9 +397,22 @@ export async function getEmploymentContractProfile(
 
   const previousVersions: EmploymentContractProfile["previousVersions"] = [];
 
+  // Amendment history only — stop at renewal/extension boundaries so prior
+  // employment periods stay out of this list.
+  const amendmentChangeTypes = new Set([
+    "AMENDMENT",
+    "SALARY_ADJUSTMENT",
+    "POSITION_CHANGE",
+  ]);
+
+  let linkChangeType: string = contract.changeType;
   let walkId = contract.sourceContract?.id ?? null;
 
   while (walkId) {
+    if (!amendmentChangeTypes.has(linkChangeType)) {
+      break;
+    }
+
     const previous = await prisma.employmentContract.findFirst({
       where: {
         id: walkId,
@@ -424,6 +452,7 @@ export async function getEmploymentContractProfile(
       isCurrent: previous.isCurrent,
     });
 
+    linkChangeType = previous.changeType;
     walkId = previous.sourceContractId;
   }
 
@@ -564,14 +593,10 @@ function contractExpiryCategory(
 }
 
 export async function getContractMonitoringDashboard(): Promise<ContractMonitoringDashboard> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   if (!organization) {
     return {
@@ -661,7 +686,23 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
 
-  const records = contracts.map((contract) => {
+  const policyCache = new Map<
+    string,
+    Awaited<ReturnType<typeof getGratuityPolicyAsOf>>
+  >();
+
+  async function policyAsOfCached(endDate: Date) {
+    const key = endDate.toISOString().slice(0, 10);
+    if (policyCache.has(key)) {
+      return policyCache.get(key) ?? null;
+    }
+    const policy = await getGratuityPolicyAsOf(endDate);
+    policyCache.set(key, policy);
+    return policy;
+  }
+
+  const records = await Promise.all(
+    contracts.map(async (contract) => {
     let daysUntilExpiry: number | null = null;
 
     if (contract.endDate) {
@@ -678,12 +719,12 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
     let estimatedTax: number | null = null;
     let estimatedNetGratuity: number | null = null;
 
-    if (
-      contract.gratuityEligible &&
-      contract.endDate &&
-      contract.gratuityRate
-    ) {
-      const estimate = calculateContractGratuityEstimate({
+    if (contract.gratuityEligible && contract.endDate) {
+      const policyRecord = await policyAsOfCached(contract.endDate);
+      const policy = policyRecord
+        ? toGratuityPolicyInput(policyRecord)
+        : defaultTtGratuityPolicyInput();
+      const estimate = calculateContractGratuity({
         startDate: contract.startDate,
         endDate: contract.endDate,
         baseSalary: contract.baseSalary.toString(),
@@ -692,8 +733,8 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
           frequency: allowance.frequency,
           includedInGratuity: allowance.includedInGratuity,
         })),
-        gratuityRate: contract.gratuityRate.toString(),
-        gratuityTaxRate: contract.gratuityTaxRate?.toString() ?? 0,
+        ratePercent: contract.gratuityRate?.toString() ?? null,
+        policy,
       });
 
       estimatedGrossEarnings = estimate.estimatedGrossEarnings;
@@ -734,7 +775,8 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
       estimatedTax: estimatedTax?.toFixed(2) ?? null,
       estimatedNetGratuity: estimatedNetGratuity?.toFixed(2) ?? null,
     } satisfies ContractMonitoringRecord;
-  });
+  }),
+  );
 
   const currentRecords = records.filter((contract) => contract.isCurrent);
 
@@ -766,8 +808,11 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
       expiringWithin90Days: currentRecords.filter(
         (contract) => contract.expiryCategory === "WITHIN_90_DAYS",
       ).length,
-      expired: currentRecords.filter(
-        (contract) => contract.expiryCategory === "EXPIRED",
+      expired: records.filter(
+        (contract) =>
+          contract.expiryCategory === "EXPIRED" ||
+          contract.status === "EXPIRED" ||
+          contract.status === "TERMINATED",
       ).length,
       missingEndDate: currentRecords.filter(
         (contract) => contract.expiryCategory === "NO_END_DATE",
@@ -789,14 +834,10 @@ export type AllowanceCategoryRecord = {
 export async function getAllowanceCategories(): Promise<
   AllowanceCategoryRecord[]
 > {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   if (!organization) {
     return [];
@@ -830,6 +871,11 @@ export type ContractCompensationSummary = {
   annualGrossCompensation: string;
   taxableAllowanceAnnualTotal: string;
   nonTaxableAllowanceAnnualTotal: string;
+  /**
+   * TT gratuity eligible gross for the contract term when an end date exists
+   * (monthly eligible × inclusive months). Otherwise annualized monthly
+   * eligible (× 12) as a provisional base.
+   */
   gratuityEligibleAnnualEarnings: string;
   contractMonths: string | null;
   estimatedGrossEarnings: string | null;
@@ -855,7 +901,7 @@ function annualizeAllowance(amount: number, frequency: string): number {
   }
 }
 
-export function calculateContractCompensation(contract: {
+export async function calculateContractCompensation(contract: {
   baseSalary: string;
   startDate: string;
   endDate: string | null;
@@ -868,14 +914,13 @@ export function calculateContractCompensation(contract: {
     isTaxable: boolean;
     includedInGratuity: boolean;
   }[];
-}): ContractCompensationSummary {
+}): Promise<ContractCompensationSummary> {
   const monthlyBaseSalary = Number(contract.baseSalary);
 
   let annualRecurringAllowances = 0;
   let oneTimeAllowances = 0;
   let taxableAllowanceAnnualTotal = 0;
   let nonTaxableAllowanceAnnualTotal = 0;
-  let gratuityEligibleAllowanceAnnualTotal = 0;
 
   for (const allowance of contract.allowances) {
     const amount = Number(allowance.amount);
@@ -894,10 +939,6 @@ export function calculateContractCompensation(contract: {
     } else {
       nonTaxableAllowanceAnnualTotal += annualValue;
     }
-
-    if (allowance.includedInGratuity) {
-      gratuityEligibleAllowanceAnnualTotal += annualValue;
-    }
   }
 
   const monthlyRecurringAllowances = annualRecurringAllowances / 12;
@@ -910,8 +951,15 @@ export function calculateContractCompensation(contract: {
   const annualGrossCompensation =
     annualBaseSalary + annualRecurringAllowances + oneTimeAllowances;
 
-  const gratuityEligibleAnnualEarnings =
-    annualBaseSalary + gratuityEligibleAllowanceAnnualTotal;
+  // Same monthly eligible base as TT PCT_OF_TERM_EARNINGS (calculate-gratuity).
+  const monthlyGratuityEligible = monthlyEligibleEarnings(
+    monthlyBaseSalary,
+    contract.allowances,
+  );
+  // Provisional annualized figure when term length is unknown.
+  let gratuityEligibleAnnualEarnings = roundMoney(
+    monthlyGratuityEligible * 12,
+  );
 
   let contractMonths: string | null = null;
   let estimatedGrossEarnings: string | null = null;
@@ -919,21 +967,31 @@ export function calculateContractCompensation(contract: {
   let estimatedTax: string | null = null;
   let estimatedNetGratuity: string | null = null;
 
-  if (contract.gratuityEligible && contract.endDate && contract.gratuityRate) {
-    const estimate = calculateContractGratuityEstimate({
+  if (contract.endDate) {
+    const asOf = new Date(`${contract.endDate}T00:00:00.000Z`);
+    const policyRecord = await getGratuityPolicyAsOf(asOf);
+    const policy = policyRecord
+      ? toGratuityPolicyInput(policyRecord)
+      : defaultTtGratuityPolicyInput();
+    const estimate = calculateContractGratuity({
       startDate: new Date(`${contract.startDate}T00:00:00.000Z`),
-      endDate: new Date(`${contract.endDate}T00:00:00.000Z`),
+      endDate: asOf,
       baseSalary: contract.baseSalary,
       allowances: contract.allowances,
-      gratuityRate: contract.gratuityRate,
-      gratuityTaxRate: contract.gratuityTaxRate,
+      ratePercent: contract.gratuityRate,
+      policy,
     });
 
-    contractMonths = String(estimate.contractMonths);
-    estimatedGrossEarnings = estimate.estimatedGrossEarnings.toFixed(2);
-    estimatedGrossGratuity = estimate.estimatedGrossGratuity.toFixed(2);
-    estimatedTax = estimate.estimatedTax.toFixed(2);
-    estimatedNetGratuity = estimate.estimatedNetGratuity.toFixed(2);
+    // TT eligible gross for the term — the total the rate% is applied to.
+    gratuityEligibleAnnualEarnings = estimate.estimatedGrossEarnings;
+
+    if (contract.gratuityEligible) {
+      contractMonths = String(estimate.contractMonths);
+      estimatedGrossEarnings = estimate.estimatedGrossEarnings.toFixed(2);
+      estimatedGrossGratuity = estimate.estimatedGrossGratuity.toFixed(2);
+      estimatedTax = estimate.estimatedTax.toFixed(2);
+      estimatedNetGratuity = estimate.estimatedNetGratuity.toFixed(2);
+    }
   }
 
   return {

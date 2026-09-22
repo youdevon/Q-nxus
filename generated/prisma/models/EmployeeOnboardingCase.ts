@@ -28,11 +28,18 @@ export type EmployeeOnboardingCaseMinAggregateOutputType = {
   id: string | null
   organizationId: string | null
   employeeId: string | null
+  caseNumber: string | null
+  caseType: $Enums.OnboardingCaseType | null
   status: $Enums.OnboardingCaseStatus | null
   openedByUserId: string | null
+  ownerUserId: string | null
+  proposedStartDate: Date | null
+  confirmedStartDate: Date | null
   openedAt: Date | null
   readyAt: Date | null
   completedAt: Date | null
+  cancelledAt: Date | null
+  cancelledReason: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -42,11 +49,18 @@ export type EmployeeOnboardingCaseMaxAggregateOutputType = {
   id: string | null
   organizationId: string | null
   employeeId: string | null
+  caseNumber: string | null
+  caseType: $Enums.OnboardingCaseType | null
   status: $Enums.OnboardingCaseStatus | null
   openedByUserId: string | null
+  ownerUserId: string | null
+  proposedStartDate: Date | null
+  confirmedStartDate: Date | null
   openedAt: Date | null
   readyAt: Date | null
   completedAt: Date | null
+  cancelledAt: Date | null
+  cancelledReason: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -56,11 +70,18 @@ export type EmployeeOnboardingCaseCountAggregateOutputType = {
   id: number
   organizationId: number
   employeeId: number
+  caseNumber: number
+  caseType: number
   status: number
   openedByUserId: number
+  ownerUserId: number
+  proposedStartDate: number
+  confirmedStartDate: number
   openedAt: number
   readyAt: number
   completedAt: number
+  cancelledAt: number
+  cancelledReason: number
   notes: number
   createdAt: number
   updatedAt: number
@@ -72,11 +93,18 @@ export type EmployeeOnboardingCaseMinAggregateInputType = {
   id?: true
   organizationId?: true
   employeeId?: true
+  caseNumber?: true
+  caseType?: true
   status?: true
   openedByUserId?: true
+  ownerUserId?: true
+  proposedStartDate?: true
+  confirmedStartDate?: true
   openedAt?: true
   readyAt?: true
   completedAt?: true
+  cancelledAt?: true
+  cancelledReason?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -86,11 +114,18 @@ export type EmployeeOnboardingCaseMaxAggregateInputType = {
   id?: true
   organizationId?: true
   employeeId?: true
+  caseNumber?: true
+  caseType?: true
   status?: true
   openedByUserId?: true
+  ownerUserId?: true
+  proposedStartDate?: true
+  confirmedStartDate?: true
   openedAt?: true
   readyAt?: true
   completedAt?: true
+  cancelledAt?: true
+  cancelledReason?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -100,11 +135,18 @@ export type EmployeeOnboardingCaseCountAggregateInputType = {
   id?: true
   organizationId?: true
   employeeId?: true
+  caseNumber?: true
+  caseType?: true
   status?: true
   openedByUserId?: true
+  ownerUserId?: true
+  proposedStartDate?: true
+  confirmedStartDate?: true
   openedAt?: true
   readyAt?: true
   completedAt?: true
+  cancelledAt?: true
+  cancelledReason?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -187,11 +229,18 @@ export type EmployeeOnboardingCaseGroupByOutputType = {
   id: string
   organizationId: string
   employeeId: string
+  caseNumber: string | null
+  caseType: $Enums.OnboardingCaseType
   status: $Enums.OnboardingCaseStatus
   openedByUserId: string | null
+  ownerUserId: string | null
+  proposedStartDate: Date | null
+  confirmedStartDate: Date | null
   openedAt: Date
   readyAt: Date | null
   completedAt: Date | null
+  cancelledAt: Date | null
+  cancelledReason: string | null
   notes: string | null
   createdAt: Date
   updatedAt: Date
@@ -222,17 +271,25 @@ export type EmployeeOnboardingCaseWhereInput = {
   id?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
   organizationId?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
   employeeId?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
+  caseNumber?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  ownerUserId?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  proposedStartDate?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  confirmedStartDate?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
   openedAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   readyAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledReason?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
   notes?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   openedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tasks?: Prisma.EmployeeOnboardingTaskListRelationFilter
 }
 
@@ -240,50 +297,74 @@ export type EmployeeOnboardingCaseOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  caseNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  caseType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   openedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  proposedStartDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmedStartDate?: Prisma.SortOrderInput | Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   readyAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledReason?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   organization?: Prisma.OrganizationOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
   openedBy?: Prisma.UserOrderByWithRelationInput
+  owner?: Prisma.UserOrderByWithRelationInput
   tasks?: Prisma.EmployeeOnboardingTaskOrderByRelationAggregateInput
 }
 
 export type EmployeeOnboardingCaseWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  organizationId_caseNumber?: Prisma.EmployeeOnboardingCaseOrganizationIdCaseNumberCompoundUniqueInput
   AND?: Prisma.EmployeeOnboardingCaseWhereInput | Prisma.EmployeeOnboardingCaseWhereInput[]
   OR?: Prisma.EmployeeOnboardingCaseWhereInput[]
   NOT?: Prisma.EmployeeOnboardingCaseWhereInput | Prisma.EmployeeOnboardingCaseWhereInput[]
   organizationId?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
   employeeId?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
+  caseNumber?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  ownerUserId?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  proposedStartDate?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  confirmedStartDate?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
   openedAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   readyAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledReason?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
   notes?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   openedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tasks?: Prisma.EmployeeOnboardingTaskListRelationFilter
-}, "id">
+}, "id" | "organizationId_caseNumber">
 
 export type EmployeeOnboardingCaseOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  caseNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  caseType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   openedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  ownerUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  proposedStartDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmedStartDate?: Prisma.SortOrderInput | Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   readyAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cancelledReason?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -299,11 +380,18 @@ export type EmployeeOnboardingCaseScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"EmployeeOnboardingCase"> | string
   organizationId?: Prisma.StringWithAggregatesFilter<"EmployeeOnboardingCase"> | string
   employeeId?: Prisma.StringWithAggregatesFilter<"EmployeeOnboardingCase"> | string
+  caseNumber?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeWithAggregatesFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusWithAggregatesFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | string | null
+  ownerUserId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | string | null
+  proposedStartDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string | null
+  confirmedStartDate?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string | null
   openedAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string
   readyAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledReason?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOnboardingCase"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeOnboardingCase"> | Date | string
@@ -311,16 +399,23 @@ export type EmployeeOnboardingCaseScalarWhereWithAggregatesInput = {
 
 export type EmployeeOnboardingCaseCreateInput = {
   id?: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeOnboardingCasesInput
   employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingCasesInput
   openedBy?: Prisma.UserCreateNestedOneWithoutOpenedOnboardingCasesInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOnboardingCasesInput
   tasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCaseInput
 }
 
@@ -328,11 +423,18 @@ export type EmployeeOnboardingCaseUncheckedCreateInput = {
   id?: string
   organizationId: string
   employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
   openedByUserId?: string | null
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -341,16 +443,23 @@ export type EmployeeOnboardingCaseUncheckedCreateInput = {
 
 export type EmployeeOnboardingCaseUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeOnboardingCasesNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingCasesNestedInput
   openedBy?: Prisma.UserUpdateOneWithoutOpenedOnboardingCasesNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedOnboardingCasesNestedInput
   tasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCaseNestedInput
 }
 
@@ -358,11 +467,18 @@ export type EmployeeOnboardingCaseUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -373,11 +489,18 @@ export type EmployeeOnboardingCaseCreateManyInput = {
   id?: string
   organizationId: string
   employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
   openedByUserId?: string | null
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -385,10 +508,16 @@ export type EmployeeOnboardingCaseCreateManyInput = {
 
 export type EmployeeOnboardingCaseUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,11 +527,18 @@ export type EmployeeOnboardingCaseUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -418,15 +554,27 @@ export type EmployeeOnboardingCaseOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type EmployeeOnboardingCaseOrganizationIdCaseNumberCompoundUniqueInput = {
+  organizationId: string
+  caseNumber: string
+}
+
 export type EmployeeOnboardingCaseCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  caseNumber?: Prisma.SortOrder
+  caseType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   openedByUserId?: Prisma.SortOrder
+  ownerUserId?: Prisma.SortOrder
+  proposedStartDate?: Prisma.SortOrder
+  confirmedStartDate?: Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   readyAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelledReason?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -436,11 +584,18 @@ export type EmployeeOnboardingCaseMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  caseNumber?: Prisma.SortOrder
+  caseType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   openedByUserId?: Prisma.SortOrder
+  ownerUserId?: Prisma.SortOrder
+  proposedStartDate?: Prisma.SortOrder
+  confirmedStartDate?: Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   readyAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelledReason?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -450,11 +605,18 @@ export type EmployeeOnboardingCaseMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   organizationId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  caseNumber?: Prisma.SortOrder
+  caseType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   openedByUserId?: Prisma.SortOrder
+  ownerUserId?: Prisma.SortOrder
+  proposedStartDate?: Prisma.SortOrder
+  confirmedStartDate?: Prisma.SortOrder
   openedAt?: Prisma.SortOrder
   readyAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  cancelledAt?: Prisma.SortOrder
+  cancelledReason?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -514,10 +676,24 @@ export type EmployeeOnboardingCaseCreateNestedManyWithoutOpenedByInput = {
   connect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
 }
 
+export type EmployeeOnboardingCaseCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput> | Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput[] | Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput | Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.EmployeeOnboardingCaseCreateManyOwnerInputEnvelope
+  connect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+}
+
 export type EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOpenedByInput = {
   create?: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOpenedByInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOpenedByInput> | Prisma.EmployeeOnboardingCaseCreateWithoutOpenedByInput[] | Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOpenedByInput[]
   connectOrCreate?: Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOpenedByInput | Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOpenedByInput[]
   createMany?: Prisma.EmployeeOnboardingCaseCreateManyOpenedByInputEnvelope
+  connect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+}
+
+export type EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOwnerInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput> | Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput[] | Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput | Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput[]
+  createMany?: Prisma.EmployeeOnboardingCaseCreateManyOwnerInputEnvelope
   connect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
 }
 
@@ -535,6 +711,20 @@ export type EmployeeOnboardingCaseUpdateManyWithoutOpenedByNestedInput = {
   deleteMany?: Prisma.EmployeeOnboardingCaseScalarWhereInput | Prisma.EmployeeOnboardingCaseScalarWhereInput[]
 }
 
+export type EmployeeOnboardingCaseUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput> | Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput[] | Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput | Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.EmployeeOnboardingCaseUpsertWithWhereUniqueWithoutOwnerInput | Prisma.EmployeeOnboardingCaseUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.EmployeeOnboardingCaseCreateManyOwnerInputEnvelope
+  set?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  delete?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  connect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  update?: Prisma.EmployeeOnboardingCaseUpdateWithWhereUniqueWithoutOwnerInput | Prisma.EmployeeOnboardingCaseUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.EmployeeOnboardingCaseUpdateManyWithWhereWithoutOwnerInput | Prisma.EmployeeOnboardingCaseUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.EmployeeOnboardingCaseScalarWhereInput | Prisma.EmployeeOnboardingCaseScalarWhereInput[]
+}
+
 export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput = {
   create?: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOpenedByInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOpenedByInput> | Prisma.EmployeeOnboardingCaseCreateWithoutOpenedByInput[] | Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOpenedByInput[]
   connectOrCreate?: Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOpenedByInput | Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOpenedByInput[]
@@ -546,6 +736,20 @@ export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByNestedInput 
   connect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
   update?: Prisma.EmployeeOnboardingCaseUpdateWithWhereUniqueWithoutOpenedByInput | Prisma.EmployeeOnboardingCaseUpdateWithWhereUniqueWithoutOpenedByInput[]
   updateMany?: Prisma.EmployeeOnboardingCaseUpdateManyWithWhereWithoutOpenedByInput | Prisma.EmployeeOnboardingCaseUpdateManyWithWhereWithoutOpenedByInput[]
+  deleteMany?: Prisma.EmployeeOnboardingCaseScalarWhereInput | Prisma.EmployeeOnboardingCaseScalarWhereInput[]
+}
+
+export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput> | Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput[] | Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput[]
+  connectOrCreate?: Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput | Prisma.EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput[]
+  upsert?: Prisma.EmployeeOnboardingCaseUpsertWithWhereUniqueWithoutOwnerInput | Prisma.EmployeeOnboardingCaseUpsertWithWhereUniqueWithoutOwnerInput[]
+  createMany?: Prisma.EmployeeOnboardingCaseCreateManyOwnerInputEnvelope
+  set?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  delete?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  connect?: Prisma.EmployeeOnboardingCaseWhereUniqueInput | Prisma.EmployeeOnboardingCaseWhereUniqueInput[]
+  update?: Prisma.EmployeeOnboardingCaseUpdateWithWhereUniqueWithoutOwnerInput | Prisma.EmployeeOnboardingCaseUpdateWithWhereUniqueWithoutOwnerInput[]
+  updateMany?: Prisma.EmployeeOnboardingCaseUpdateManyWithWhereWithoutOwnerInput | Prisma.EmployeeOnboardingCaseUpdateManyWithWhereWithoutOwnerInput[]
   deleteMany?: Prisma.EmployeeOnboardingCaseScalarWhereInput | Prisma.EmployeeOnboardingCaseScalarWhereInput[]
 }
 
@@ -591,6 +795,10 @@ export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeNestedInput 
   deleteMany?: Prisma.EmployeeOnboardingCaseScalarWhereInput | Prisma.EmployeeOnboardingCaseScalarWhereInput[]
 }
 
+export type EnumOnboardingCaseTypeFieldUpdateOperationsInput = {
+  set?: $Enums.OnboardingCaseType
+}
+
 export type EnumOnboardingCaseStatusFieldUpdateOperationsInput = {
   set?: $Enums.OnboardingCaseStatus
 }
@@ -611,26 +819,40 @@ export type EmployeeOnboardingCaseUpdateOneRequiredWithoutTasksNestedInput = {
 
 export type EmployeeOnboardingCaseCreateWithoutOrganizationInput = {
   id?: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingCasesInput
   openedBy?: Prisma.UserCreateNestedOneWithoutOpenedOnboardingCasesInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOnboardingCasesInput
   tasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCaseInput
 }
 
 export type EmployeeOnboardingCaseUncheckedCreateWithoutOrganizationInput = {
   id?: string
   employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
   openedByUserId?: string | null
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -670,11 +892,18 @@ export type EmployeeOnboardingCaseScalarWhereInput = {
   id?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
   organizationId?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
   employeeId?: Prisma.StringFilter<"EmployeeOnboardingCase"> | string
+  caseNumber?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFilter<"EmployeeOnboardingCase"> | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  ownerUserId?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
+  proposedStartDate?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  confirmedStartDate?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
   openedAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   readyAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledAt?: Prisma.DateTimeNullableFilter<"EmployeeOnboardingCase"> | Date | string | null
+  cancelledReason?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
   notes?: Prisma.StringNullableFilter<"EmployeeOnboardingCase"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeOnboardingCase"> | Date | string
@@ -682,15 +911,22 @@ export type EmployeeOnboardingCaseScalarWhereInput = {
 
 export type EmployeeOnboardingCaseCreateWithoutOpenedByInput = {
   id?: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeOnboardingCasesInput
   employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingCasesInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOnboardingCasesInput
   tasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCaseInput
 }
 
@@ -698,10 +934,17 @@ export type EmployeeOnboardingCaseUncheckedCreateWithoutOpenedByInput = {
   id?: string
   organizationId: string
   employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -715,6 +958,58 @@ export type EmployeeOnboardingCaseCreateOrConnectWithoutOpenedByInput = {
 
 export type EmployeeOnboardingCaseCreateManyOpenedByInputEnvelope = {
   data: Prisma.EmployeeOnboardingCaseCreateManyOpenedByInput | Prisma.EmployeeOnboardingCaseCreateManyOpenedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmployeeOnboardingCaseCreateWithoutOwnerInput = {
+  id?: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
+  status?: $Enums.OnboardingCaseStatus
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
+  openedAt?: Date | string
+  readyAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeOnboardingCasesInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingCasesInput
+  openedBy?: Prisma.UserCreateNestedOneWithoutOpenedOnboardingCasesInput
+  tasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCaseInput
+}
+
+export type EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput = {
+  id?: string
+  organizationId: string
+  employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
+  status?: $Enums.OnboardingCaseStatus
+  openedByUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
+  openedAt?: Date | string
+  readyAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.EmployeeOnboardingTaskUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type EmployeeOnboardingCaseCreateOrConnectWithoutOwnerInput = {
+  where: Prisma.EmployeeOnboardingCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput>
+}
+
+export type EmployeeOnboardingCaseCreateManyOwnerInputEnvelope = {
+  data: Prisma.EmployeeOnboardingCaseCreateManyOwnerInput | Prisma.EmployeeOnboardingCaseCreateManyOwnerInput[]
   skipDuplicates?: boolean
 }
 
@@ -734,28 +1029,58 @@ export type EmployeeOnboardingCaseUpdateManyWithWhereWithoutOpenedByInput = {
   data: Prisma.XOR<Prisma.EmployeeOnboardingCaseUpdateManyMutationInput, Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByInput>
 }
 
+export type EmployeeOnboardingCaseUpsertWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.EmployeeOnboardingCaseWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmployeeOnboardingCaseUpdateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedUpdateWithoutOwnerInput>
+  create: Prisma.XOR<Prisma.EmployeeOnboardingCaseCreateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedCreateWithoutOwnerInput>
+}
+
+export type EmployeeOnboardingCaseUpdateWithWhereUniqueWithoutOwnerInput = {
+  where: Prisma.EmployeeOnboardingCaseWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmployeeOnboardingCaseUpdateWithoutOwnerInput, Prisma.EmployeeOnboardingCaseUncheckedUpdateWithoutOwnerInput>
+}
+
+export type EmployeeOnboardingCaseUpdateManyWithWhereWithoutOwnerInput = {
+  where: Prisma.EmployeeOnboardingCaseScalarWhereInput
+  data: Prisma.XOR<Prisma.EmployeeOnboardingCaseUpdateManyMutationInput, Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerInput>
+}
+
 export type EmployeeOnboardingCaseCreateWithoutEmployeeInput = {
   id?: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeOnboardingCasesInput
   openedBy?: Prisma.UserCreateNestedOneWithoutOpenedOnboardingCasesInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOnboardingCasesInput
   tasks?: Prisma.EmployeeOnboardingTaskCreateNestedManyWithoutCaseInput
 }
 
 export type EmployeeOnboardingCaseUncheckedCreateWithoutEmployeeInput = {
   id?: string
   organizationId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
   openedByUserId?: string | null
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -790,27 +1115,41 @@ export type EmployeeOnboardingCaseUpdateManyWithWhereWithoutEmployeeInput = {
 
 export type EmployeeOnboardingCaseCreateWithoutTasksInput = {
   id?: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   organization: Prisma.OrganizationCreateNestedOneWithoutEmployeeOnboardingCasesInput
   employee: Prisma.EmployeeCreateNestedOneWithoutOnboardingCasesInput
   openedBy?: Prisma.UserCreateNestedOneWithoutOpenedOnboardingCasesInput
+  owner?: Prisma.UserCreateNestedOneWithoutOwnedOnboardingCasesInput
 }
 
 export type EmployeeOnboardingCaseUncheckedCreateWithoutTasksInput = {
   id?: string
   organizationId: string
   employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
   openedByUserId?: string | null
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -834,27 +1173,41 @@ export type EmployeeOnboardingCaseUpdateToOneWithWhereWithoutTasksInput = {
 
 export type EmployeeOnboardingCaseUpdateWithoutTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeOnboardingCasesNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingCasesNestedInput
   openedBy?: Prisma.UserUpdateOneWithoutOpenedOnboardingCasesNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedOnboardingCasesNestedInput
 }
 
 export type EmployeeOnboardingCaseUncheckedUpdateWithoutTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -863,11 +1216,18 @@ export type EmployeeOnboardingCaseUncheckedUpdateWithoutTasksInput = {
 export type EmployeeOnboardingCaseCreateManyOrganizationInput = {
   id?: string
   employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
   openedByUserId?: string | null
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -875,26 +1235,40 @@ export type EmployeeOnboardingCaseCreateManyOrganizationInput = {
 
 export type EmployeeOnboardingCaseUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingCasesNestedInput
   openedBy?: Prisma.UserUpdateOneWithoutOpenedOnboardingCasesNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedOnboardingCasesNestedInput
   tasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCaseNestedInput
 }
 
 export type EmployeeOnboardingCaseUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -904,11 +1278,18 @@ export type EmployeeOnboardingCaseUncheckedUpdateWithoutOrganizationInput = {
 export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -918,10 +1299,37 @@ export type EmployeeOnboardingCaseCreateManyOpenedByInput = {
   id?: string
   organizationId: string
   employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmployeeOnboardingCaseCreateManyOwnerInput = {
+  id?: string
+  organizationId: string
+  employeeId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
+  status?: $Enums.OnboardingCaseStatus
+  openedByUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
+  openedAt?: Date | string
+  readyAt?: Date | string | null
+  completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -929,15 +1337,22 @@ export type EmployeeOnboardingCaseCreateManyOpenedByInput = {
 
 export type EmployeeOnboardingCaseUpdateWithoutOpenedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeOnboardingCasesNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingCasesNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedOnboardingCasesNestedInput
   tasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCaseNestedInput
 }
 
@@ -945,10 +1360,17 @@ export type EmployeeOnboardingCaseUncheckedUpdateWithoutOpenedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -959,10 +1381,79 @@ export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmployeeOnboardingCaseUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
+  status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeOnboardingCasesNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutOnboardingCasesNestedInput
+  openedBy?: Prisma.UserUpdateOneWithoutOpenedOnboardingCasesNestedInput
+  tasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCaseNestedInput
+}
+
+export type EmployeeOnboardingCaseUncheckedUpdateWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
+  status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.EmployeeOnboardingTaskUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
+  status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -971,11 +1462,18 @@ export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutOpenedByInput = {
 export type EmployeeOnboardingCaseCreateManyEmployeeInput = {
   id?: string
   organizationId: string
+  caseNumber?: string | null
+  caseType?: $Enums.OnboardingCaseType
   status?: $Enums.OnboardingCaseStatus
   openedByUserId?: string | null
+  ownerUserId?: string | null
+  proposedStartDate?: Date | string | null
+  confirmedStartDate?: Date | string | null
   openedAt?: Date | string
   readyAt?: Date | string | null
   completedAt?: Date | string | null
+  cancelledAt?: Date | string | null
+  cancelledReason?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -983,26 +1481,40 @@ export type EmployeeOnboardingCaseCreateManyEmployeeInput = {
 
 export type EmployeeOnboardingCaseUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutEmployeeOnboardingCasesNestedInput
   openedBy?: Prisma.UserUpdateOneWithoutOpenedOnboardingCasesNestedInput
+  owner?: Prisma.UserUpdateOneWithoutOwnedOnboardingCasesNestedInput
   tasks?: Prisma.EmployeeOnboardingTaskUpdateManyWithoutCaseNestedInput
 }
 
 export type EmployeeOnboardingCaseUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1012,11 +1524,18 @@ export type EmployeeOnboardingCaseUncheckedUpdateWithoutEmployeeInput = {
 export type EmployeeOnboardingCaseUncheckedUpdateManyWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseType?: Prisma.EnumOnboardingCaseTypeFieldUpdateOperationsInput | $Enums.OnboardingCaseType
   status?: Prisma.EnumOnboardingCaseStatusFieldUpdateOperationsInput | $Enums.OnboardingCaseStatus
   openedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  proposedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedStartDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   readyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1057,17 +1576,25 @@ export type EmployeeOnboardingCaseSelect<ExtArgs extends runtime.Types.Extension
   id?: boolean
   organizationId?: boolean
   employeeId?: boolean
+  caseNumber?: boolean
+  caseType?: boolean
   status?: boolean
   openedByUserId?: boolean
+  ownerUserId?: boolean
+  proposedStartDate?: boolean
+  confirmedStartDate?: boolean
   openedAt?: boolean
   readyAt?: boolean
   completedAt?: boolean
+  cancelledAt?: boolean
+  cancelledReason?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   openedBy?: boolean | Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs>
+  owner?: boolean | Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs>
   tasks?: boolean | Prisma.EmployeeOnboardingCase$tasksArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeOnboardingCaseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employeeOnboardingCase"]>
@@ -1076,55 +1603,79 @@ export type EmployeeOnboardingCaseSelectCreateManyAndReturn<ExtArgs extends runt
   id?: boolean
   organizationId?: boolean
   employeeId?: boolean
+  caseNumber?: boolean
+  caseType?: boolean
   status?: boolean
   openedByUserId?: boolean
+  ownerUserId?: boolean
+  proposedStartDate?: boolean
+  confirmedStartDate?: boolean
   openedAt?: boolean
   readyAt?: boolean
   completedAt?: boolean
+  cancelledAt?: boolean
+  cancelledReason?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   openedBy?: boolean | Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs>
+  owner?: boolean | Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["employeeOnboardingCase"]>
 
 export type EmployeeOnboardingCaseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   organizationId?: boolean
   employeeId?: boolean
+  caseNumber?: boolean
+  caseType?: boolean
   status?: boolean
   openedByUserId?: boolean
+  ownerUserId?: boolean
+  proposedStartDate?: boolean
+  confirmedStartDate?: boolean
   openedAt?: boolean
   readyAt?: boolean
   completedAt?: boolean
+  cancelledAt?: boolean
+  cancelledReason?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   openedBy?: boolean | Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs>
+  owner?: boolean | Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs>
 }, ExtArgs["result"]["employeeOnboardingCase"]>
 
 export type EmployeeOnboardingCaseSelectScalar = {
   id?: boolean
   organizationId?: boolean
   employeeId?: boolean
+  caseNumber?: boolean
+  caseType?: boolean
   status?: boolean
   openedByUserId?: boolean
+  ownerUserId?: boolean
+  proposedStartDate?: boolean
+  confirmedStartDate?: boolean
   openedAt?: boolean
   readyAt?: boolean
   completedAt?: boolean
+  cancelledAt?: boolean
+  cancelledReason?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeOnboardingCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "status" | "openedByUserId" | "openedAt" | "readyAt" | "completedAt" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeOnboardingCase"]>
+export type EmployeeOnboardingCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "caseNumber" | "caseType" | "status" | "openedByUserId" | "ownerUserId" | "proposedStartDate" | "confirmedStartDate" | "openedAt" | "readyAt" | "completedAt" | "cancelledAt" | "cancelledReason" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeOnboardingCase"]>
 export type EmployeeOnboardingCaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   openedBy?: boolean | Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs>
+  owner?: boolean | Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs>
   tasks?: boolean | Prisma.EmployeeOnboardingCase$tasksArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeOnboardingCaseCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1132,11 +1683,13 @@ export type EmployeeOnboardingCaseIncludeCreateManyAndReturn<ExtArgs extends run
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   openedBy?: boolean | Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs>
+  owner?: boolean | Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs>
 }
 export type EmployeeOnboardingCaseIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   openedBy?: boolean | Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs>
+  owner?: boolean | Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs>
 }
 
 export type $EmployeeOnboardingCasePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1145,17 +1698,25 @@ export type $EmployeeOnboardingCasePayload<ExtArgs extends runtime.Types.Extensi
     organization: Prisma.$OrganizationPayload<ExtArgs>
     employee: Prisma.$EmployeePayload<ExtArgs>
     openedBy: Prisma.$UserPayload<ExtArgs> | null
+    owner: Prisma.$UserPayload<ExtArgs> | null
     tasks: Prisma.$EmployeeOnboardingTaskPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     organizationId: string
     employeeId: string
+    caseNumber: string | null
+    caseType: $Enums.OnboardingCaseType
     status: $Enums.OnboardingCaseStatus
     openedByUserId: string | null
+    ownerUserId: string | null
+    proposedStartDate: Date | null
+    confirmedStartDate: Date | null
     openedAt: Date
     readyAt: Date | null
     completedAt: Date | null
+    cancelledAt: Date | null
+    cancelledReason: string | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -1556,6 +2117,7 @@ export interface Prisma__EmployeeOnboardingCaseClient<T, Null = never, ExtArgs e
   organization<T extends Prisma.OrganizationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrganizationDefaultArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   openedBy<T extends Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeOnboardingCase$openedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  owner<T extends Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeOnboardingCase$ownerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tasks<T extends Prisma.EmployeeOnboardingCase$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeOnboardingCase$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeOnboardingTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1589,11 +2151,18 @@ export interface EmployeeOnboardingCaseFieldRefs {
   readonly id: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
   readonly organizationId: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
   readonly employeeId: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
+  readonly caseNumber: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
+  readonly caseType: Prisma.FieldRef<"EmployeeOnboardingCase", 'OnboardingCaseType'>
   readonly status: Prisma.FieldRef<"EmployeeOnboardingCase", 'OnboardingCaseStatus'>
   readonly openedByUserId: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
+  readonly ownerUserId: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
+  readonly proposedStartDate: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
+  readonly confirmedStartDate: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
   readonly openedAt: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
   readonly readyAt: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
+  readonly cancelledAt: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
+  readonly cancelledReason: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
   readonly notes: Prisma.FieldRef<"EmployeeOnboardingCase", 'String'>
   readonly createdAt: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EmployeeOnboardingCase", 'DateTime'>
@@ -2001,6 +2570,25 @@ export type EmployeeOnboardingCaseDeleteManyArgs<ExtArgs extends runtime.Types.E
  * EmployeeOnboardingCase.openedBy
  */
 export type EmployeeOnboardingCase$openedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * EmployeeOnboardingCase.owner
+ */
+export type EmployeeOnboardingCase$ownerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the User
    */

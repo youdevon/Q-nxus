@@ -237,11 +237,13 @@ export async function createContractLeaveBalances(
         adjustments: true,
         carriedForward: true,
         accrued: true,
+        openingBalance: true,
       },
     });
 
     if (existing) {
-      const availableBalance = plan.entitlement
+      const availableBalance = existing.openingBalance
+        .plus(plan.entitlement)
         .plus(existing.accrued)
         .plus(existing.carriedForward)
         .plus(existing.adjustments)

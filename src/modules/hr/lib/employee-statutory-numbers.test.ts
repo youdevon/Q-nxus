@@ -11,7 +11,7 @@ function actorWith(...permissions: string[]) {
 }
 
 describe("resolveEmployeeStatutoryWriteFromPayroll", () => {
-  it("never writes Employee or profile-only form values without people.manage", () => {
+  it("never writes Employee without people.manage", () => {
     const result = resolveEmployeeStatutoryWriteFromPayroll({
       actor: actorWith("payroll.setup"),
       employee: { nisNumber: null, birNumber: null },
@@ -19,7 +19,7 @@ describe("resolveEmployeeStatutoryWriteFromPayroll", () => {
     });
 
     expect(result.employeeUpdate).toBeNull();
-    expect(result.profile).toEqual({
+    expect(result.resolved).toEqual({
       nisNumber: null,
       birNumber: null,
     });
@@ -33,7 +33,7 @@ describe("resolveEmployeeStatutoryWriteFromPayroll", () => {
     });
 
     expect(result.employeeUpdate).toBeNull();
-    expect(result.profile).toEqual({
+    expect(result.resolved).toEqual({
       nisNumber: "EXISTING-NIS",
       birNumber: null,
     });
@@ -50,7 +50,7 @@ describe("resolveEmployeeStatutoryWriteFromPayroll", () => {
       nisNumber: "1234567",
       birNumber: "KEEP",
     });
-    expect(result.profile).toEqual({
+    expect(result.resolved).toEqual({
       nisNumber: "1234567",
       birNumber: "KEEP",
     });
@@ -64,6 +64,6 @@ describe("resolveEmployeeStatutoryWriteFromPayroll", () => {
     });
 
     expect(result.employeeUpdate).toBeNull();
-    expect(result.profile).toEqual({ nisNumber: "NIS", birNumber: "BIR" });
+    expect(result.resolved).toEqual({ nisNumber: "NIS", birNumber: "BIR" });
   });
 });

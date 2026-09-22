@@ -10,6 +10,7 @@ import {
   Prisma,
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { formatSequenceReference } from "@/src/modules/admin/lib/numbering-sequence";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { normalizeLoginEmail } from "@/src/modules/auth/lib/employee-login-email";
@@ -21,10 +22,12 @@ import {
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
 import {
+  formatInternalBoardReference,
   isFullEmployee,
   parseWorkforceCategory,
   WorkforceCategory,
 } from "@/src/modules/hr/lib/workforce-category";
+import { redactIdentityForAudit } from "@/src/modules/hr/lib/redact-identity";
 import { syncHireAccessRoles } from "@/src/modules/hr/services/sync-hire-access-roles";
 
 export type EmployeeFormState = {
@@ -293,8 +296,14 @@ export async function createEmployee(
     };
   }
 
+  const workforceCategoryHint =
+    parseWorkforceCategory(textValue(formData, "workforceCategory")) ??
+    WorkforceCategory.EMPLOYEE;
+  const requiresLoginEmail =
+    workforceCategoryHint !== WorkforceCategory.BOARD;
+
   const validation = validateEmployee(formData, {
-    requirePersonalEmail: true,
+    requirePersonalEmail: requiresLoginEmail,
   });
 
   if (!validation.valid) {
@@ -305,14 +314,10 @@ export async function createEmployee(
     };
   }
 
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   if (!organization) {
     return {
@@ -341,27 +346,33 @@ export async function createEmployee(
     };
   }
 
-  const loginEmail = normalizeLoginEmail(validation.values.personalEmail!);
-  const existingLoginUser = await prisma.user.findUnique({
-    where: {
-      email: loginEmail,
-    },
-    select: {
-      id: true,
-      employeeId: true,
-    },
-  });
+  const personalEmail = validation.values.personalEmail;
+  const loginEmail = personalEmail
+    ? normalizeLoginEmail(personalEmail)
+    : null;
 
-  if (existingLoginUser?.employeeId) {
-    return {
-      status: "error",
-      message:
-        "That personal email is already used as a login for another employee.",
-      fieldErrors: {
-        personalEmail:
-          "This email is already linked to another employee's user account.",
+  if (loginEmail) {
+    const existingLoginUser = await prisma.user.findUnique({
+      where: {
+        email: loginEmail,
       },
-    };
+      select: {
+        id: true,
+        employeeId: true,
+      },
+    });
+
+    if (existingLoginUser?.employeeId) {
+      return {
+        status: "error",
+        message:
+          "That personal email is already used as a login for another employee.",
+        fieldErrors: {
+          personalEmail:
+            "This email is already linked to another employee's user account.",
+        },
+      };
+    }
   }
 
   try {
@@ -394,12 +405,21 @@ export async function createEmployee(
         },
       });
 
-      const employeeNumber = formatSequenceReference({
-        value: updatedSequence.currentNumber,
-        minimumLength: updatedSequence.minimumLength,
-        prefix: updatedSequence.prefix,
-        suffix: updatedSequence.suffix,
-      });
+      // Payroll and audit joins require a stable identifier, but board members
+      // must not receive an employee/file number in the UI. Keep an internal
+      // BRD reference while sharing the concurrency-safe numbering counter.
+      const employeeNumber =
+        validation.values.workforceCategory === WorkforceCategory.BOARD
+          ? formatInternalBoardReference(
+              updatedSequence.currentNumber,
+              updatedSequence.minimumLength,
+            )
+          : formatSequenceReference({
+              value: updatedSequence.currentNumber,
+              minimumLength: updatedSequence.minimumLength,
+              prefix: updatedSequence.prefix,
+              suffix: updatedSequence.suffix,
+            });
 
       const created = await transaction.employee.create({
         data: {
@@ -470,7 +490,9 @@ export async function createEmployee(
         });
       }
 
-      await provisionEmployeeUser(created.id, transaction);
+      if (loginEmail) {
+        await provisionEmployeeUser(created.id, transaction);
+      }
 
       await recordAuditEvent(transaction, {
         userId: actor.actor.userId,
@@ -494,10 +516,10 @@ export async function createEmployee(
           emergencyContactPhone: created.emergencyContactPhone,
           emergencyContactRelationship: created.emergencyContactRelationship,
           dateOfBirth: created.dateOfBirth,
-          nisNumber: created.nisNumber,
-          birNumber: created.birNumber,
+          nisNumber: redactIdentityForAudit(created.nisNumber),
+          birNumber: redactIdentityForAudit(created.birNumber),
           idType: created.idType,
-          idNumber: created.idNumber,
+          idNumber: redactIdentityForAudit(created.idNumber),
           workforceCategory: created.workforceCategory,
           employmentStatus: created.employmentStatus,
           employmentType: created.employmentType,
@@ -517,7 +539,11 @@ export async function createEmployee(
     await syncHireAccessRoles(employee.id);
 
     revalidatePath("/people");
-    redirect(`/people/employees/${employee.id}`);
+    redirect(
+      employee.workforceCategory === WorkforceCategory.BOARD
+        ? `/people/employees/${employee.id}/contracts/new`
+        : `/people/employees/${employee.id}`,
+    );
   } catch (error: unknown) {
     unstable_rethrow(error);
 
@@ -582,9 +608,18 @@ export async function updateEmployee(
     };
   }
 
-  const current = await prisma.employee.findUnique({
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return {
+      status: "error",
+      message: "No organization is associated with this session.",
+    };
+  }
+
+  const current = await prisma.employee.findFirst({
     where: {
       id,
+      organizationId,
     },
   });
 
@@ -609,6 +644,7 @@ export async function updateEmployee(
       const updateResult = await transaction.employee.updateMany({
         where: {
           id,
+          organizationId,
           updatedAt: current.updatedAt,
         },
         data: {
@@ -647,17 +683,6 @@ export async function updateEmployee(
         },
       });
 
-      // Mirror NIS/BIR onto payroll profile when one exists (employee is SoT).
-      await transaction.payrollProfile.updateMany({
-        where: {
-          employeeId: id,
-        },
-        data: {
-          nisNumber: validation.values.nisNumber,
-          birNumber: validation.values.birNumber,
-        },
-      });
-
       const linkedUser = await transaction.user.findFirst({
         where: {
           employeeId: id,
@@ -693,10 +718,10 @@ export async function updateEmployee(
           emergencyContactPhone: current.emergencyContactPhone,
           emergencyContactRelationship: current.emergencyContactRelationship,
           dateOfBirth: current.dateOfBirth,
-          nisNumber: current.nisNumber,
-          birNumber: current.birNumber,
+          nisNumber: redactIdentityForAudit(current.nisNumber),
+          birNumber: redactIdentityForAudit(current.birNumber),
           idType: current.idType,
-          idNumber: current.idNumber,
+          idNumber: redactIdentityForAudit(current.idNumber),
           workforceCategory: current.workforceCategory,
           employmentStatus: current.employmentStatus,
           employmentType: current.employmentType,
@@ -718,10 +743,10 @@ export async function updateEmployee(
           emergencyContactPhone: updated.emergencyContactPhone,
           emergencyContactRelationship: updated.emergencyContactRelationship,
           dateOfBirth: updated.dateOfBirth,
-          nisNumber: updated.nisNumber,
-          birNumber: updated.birNumber,
+          nisNumber: redactIdentityForAudit(updated.nisNumber),
+          birNumber: redactIdentityForAudit(updated.birNumber),
           idType: updated.idType,
-          idNumber: updated.idNumber,
+          idNumber: redactIdentityForAudit(updated.idNumber),
           workforceCategory: updated.workforceCategory,
           employmentStatus: updated.employmentStatus,
           employmentType: updated.employmentType,

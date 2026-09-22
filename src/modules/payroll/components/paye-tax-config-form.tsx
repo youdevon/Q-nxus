@@ -152,6 +152,42 @@ export function PayeTaxConfigForm({
             />
           </div>
 
+          <div className="space-y-2">
+            <label className="text-sm font-medium" htmlFor="taxYear">
+              Tax year
+            </label>
+            <Input
+              id="taxYear"
+              name="taxYear"
+              type="number"
+              min={2000}
+              max={2100}
+              defaultValue={
+                sourceId
+                  ? String(new Date().getUTCFullYear())
+                  : String(
+                      config?.taxYear ??
+                        config?.effectiveFrom?.slice(0, 4) ??
+                        new Date().getUTCFullYear(),
+                    )
+              }
+              disabled={!canManage}
+            />
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm font-medium" htmlFor="sourceReference">
+              Source reference (optional)
+            </label>
+            <Input
+              id="sourceReference"
+              name="sourceReference"
+              defaultValue={sourceId ? "" : (config?.sourceReference ?? "")}
+              placeholder="Gazette / circular / advisor memo"
+              disabled={!canManage}
+            />
+          </div>
+
           <label className="flex items-end gap-2 pb-2 text-sm font-medium">
             <input
               type="checkbox"
@@ -392,14 +428,14 @@ export function PayeTaxDirectory({
                   </Badge>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Personal allowance{" "}
+                  Tax year {config.taxYear} · Personal allowance{" "}
                   {formatMoney(config.personalAllowanceAnnual, {
-                    currency: "TTD",
+                    currency: config.currencyCode || "TTD",
                   })}
                   /yr · NIS deductible{" "}
                   {(Number(config.nisDeductiblePortion) * 100).toFixed(0)}% · Cap{" "}
                   {formatMoney(config.approvedDeductionCapAnnual, {
-                    currency: "TTD",
+                    currency: config.currencyCode || "TTD",
                   })}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">

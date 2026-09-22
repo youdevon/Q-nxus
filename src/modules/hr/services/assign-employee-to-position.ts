@@ -250,11 +250,107 @@ export async function assignEmployeeToPosition(
       },
     });
 
-    if (currentAssignment && input.startDate <= currentAssignment.startDate) {
+    const sameUtcDay = (left: Date, right: Date) =>
+      left.toISOString().slice(0, 10) === right.toISOString().slice(0, 10);
+
+    // Hire/onboarding often creates a current assignment with no position.
+    // Upgrading that placeholder to a real seat on the same date must not be
+    // blocked by the "must begin after current assignment" rule.
+    const upgradingUnassignedSeat =
+      Boolean(currentAssignment) &&
+      currentAssignment!.positionId == null &&
+      Boolean(input.positionId) &&
+      sameUtcDay(input.startDate, currentAssignment!.startDate);
+
+    if (
+      currentAssignment &&
+      !upgradingUnassignedSeat &&
+      input.startDate <= currentAssignment.startDate
+    ) {
       throw new AssignEmployeeError(
         "The new assignment must begin after the current assignment started.",
         "validation",
       );
+    }
+
+    const jobDescriptionId = await resolveJobDescriptionId(
+      transaction,
+      input.positionId,
+      input.startDate,
+    );
+
+    if (upgradingUnassignedSeat && currentAssignment) {
+      const assignment = await transaction.employeeAssignment.update({
+        where: { id: currentAssignment.id },
+        data: {
+          departmentId: input.departmentId,
+          positionId: input.positionId,
+          jobDescriptionId,
+          assignmentType: input.assignmentType,
+          isActing: input.isActing ?? false,
+          referenceNumber: input.referenceNumber ?? null,
+          reason:
+            input.reason ??
+            "Position assigned as part of employment contract activation.",
+          notes: input.notes ?? null,
+        },
+      });
+
+      await transaction.employee.update({
+        where: { id: input.employeeId },
+        data: {
+          departmentId: input.departmentId,
+          positionId: input.positionId,
+        },
+      });
+
+      assertCurrentSeatMatchesAssignment(
+        {
+          departmentId: input.departmentId,
+          positionId: input.positionId,
+        },
+        {
+          departmentId: assignment.departmentId,
+          positionId: assignment.positionId,
+        },
+      );
+
+      if (position?.title) {
+        await transaction.employmentContract.updateMany({
+          where: {
+            employeeId: input.employeeId,
+            isCurrent: true,
+          },
+          data: {
+            jobTitle: position.title,
+          },
+        });
+      }
+
+      await recordAuditEvent(transaction, {
+        userId: input.actorUserId,
+        organizationId: employee.organizationId,
+        moduleKey: "hr",
+        action: "ASSIGN",
+        entityType: "EmployeeAssignment",
+        entityId: assignment.id,
+        description: `Assigned ${employee.employeeNumber} — ${employee.firstName} ${employee.lastName} to ${position?.title ?? department.name}.`,
+        newValues: {
+          employeeId: input.employeeId,
+          departmentId: input.departmentId,
+          positionId: input.positionId,
+          jobDescriptionId,
+          assignmentType: assignment.assignmentType,
+          startDate: assignment.startDate,
+          isActing: assignment.isActing,
+          referenceNumber: assignment.referenceNumber,
+          reason: assignment.reason,
+          upgradedUnassignedSeat: true,
+        },
+        ...input.audit,
+      });
+
+      return assignment.id;
     }
 
     if (currentAssignment) {
@@ -271,12 +367,6 @@ export async function assignEmployeeToPosition(
         },
       });
     }
-
-    const jobDescriptionId = await resolveJobDescriptionId(
-      transaction,
-      input.positionId,
-      input.startDate,
-    );
 
     const assignment = await transaction.employeeAssignment.create({
       data: {

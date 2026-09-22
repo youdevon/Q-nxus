@@ -21,7 +21,10 @@ import {
   describeLeaveReportingLineIssue,
   resolveLeaveReportingLine,
 } from "@/src/modules/hr/data/resolve-leave-reporting-line";
-import { applyLeaveReserve } from "@/src/modules/hr/lib/leave-balance-math";
+import {
+  applyLeaveReserve,
+  applyLeaveTakeDirect,
+} from "@/src/modules/hr/lib/leave-balance-math";
 import {
   isLeaveRequestMode,
   LEAVE_ON_BEHALF_PERMISSION,
@@ -161,8 +164,17 @@ export async function createLeaveRequest(
   const endDate = parseDate(textValue(formData, "endDate"));
   const reason = nullableText(formData, "reason");
   const employeeComment = nullableText(formData, "employeeComment");
+  const historicalRecord = formData.get("historicalRecord") === "on";
 
   const fieldErrors: Record<string, string> = {};
+
+  if (historicalRecord && mode !== "onBehalf") {
+    return {
+      status: "error",
+      message:
+        "Past approved leave can only be recorded on behalf of an employee.",
+    };
+  }
 
   if (!leaveTypeId) {
     fieldErrors.leaveTypeId = "Select a leave type.";
@@ -184,6 +196,21 @@ export async function createLeaveRequest(
     fieldErrors.endDate = "The end date cannot be before the start date.";
   }
 
+  if (historicalRecord && endDate) {
+    const todayUtc = new Date(
+      Date.UTC(
+        new Date().getUTCFullYear(),
+        new Date().getUTCMonth(),
+        new Date().getUTCDate(),
+      ),
+    );
+
+    if (endDate.getTime() >= todayUtc.getTime()) {
+      fieldErrors.endDate =
+        "Historical leave must end before today. Uncheck past approved leave for future or current requests.";
+    }
+  }
+
   if (Object.keys(fieldErrors).length > 0) {
     return {
       status: "error",
@@ -201,6 +228,7 @@ export async function createLeaveRequest(
       leaveTypeId,
       startDate: startDate!,
       endDate: endDate!,
+      skipNotice: historicalRecord,
     });
   } catch (error) {
     return {
@@ -252,7 +280,7 @@ export async function createLeaveRequest(
       ? attachmentEntry
       : null;
 
-  if (validated.requiresDocument && !attachmentFile) {
+  if (!historicalRecord && validated.requiresDocument && !attachmentFile) {
     return {
       status: "error",
       message:
@@ -267,61 +295,6 @@ export async function createLeaveRequest(
   const needsFinalApprover = leaveWorkflowRequiresFinalApprover(workflow.mode);
   const usesAcknowledgements = leaveWorkflowUsesAcknowledgements(workflow.mode);
 
-  if (needsFinalApprover && !workflow.finalApproverPositionId) {
-    return {
-      status: "error",
-      message:
-        "Leave workflow requires a final approver position. Ask HR to configure it under People → Leave workflow.",
-    };
-  }
-
-  const supervisor =
-    workflow.mode === "FINAL_ONLY" || usesAcknowledgements
-      ? null
-      : await resolveEmployeeSupervisor(targetEmployee.id);
-
-  if (
-    workflow.mode !== "FINAL_ONLY" &&
-    !usesAcknowledgements &&
-    !supervisor?.supervisorUserId
-  ) {
-    return {
-      status: "error",
-      message: describeSupervisorResolutionIssue(supervisor),
-    };
-  }
-
-  let reportingLine: Awaited<
-    ReturnType<typeof resolveLeaveReportingLine>
-  > | null = null;
-
-  if (needsFinalApprover && workflow.finalApproverPositionId) {
-    reportingLine = await resolveLeaveReportingLine({
-      employeeId: targetEmployee.id,
-      organizationId: targetEmployee.organizationId,
-      finalApproverPositionId: workflow.finalApproverPositionId,
-    });
-
-    if (reportingLine.issue) {
-      return {
-        status: "error",
-        message: describeLeaveReportingLineIssue(reportingLine),
-      };
-    }
-  }
-
-  const acknowledgementNodes =
-    usesAcknowledgements && reportingLine
-      ? reportingLine.acknowledgementChain.filter((node) => node.userId)
-      : [];
-
-  const initialStatus =
-    usesAcknowledgements && acknowledgementNodes.length > 0
-      ? LeaveRequestStatus.AWAITING_ACKNOWLEDGEMENT
-      : LeaveRequestStatus.PENDING_APPROVAL;
-
-  const finalApprover = reportingLine?.finalApprover ?? null;
-
   type ApprovalStepCreate = {
     stepNumber: number;
     approverUserId: string | null;
@@ -329,10 +302,86 @@ export async function createLeaveRequest(
     status: "PENDING";
   };
 
+  let acknowledgementNodes: Awaited<
+    ReturnType<typeof resolveLeaveReportingLine>
+  >["acknowledgementChain"] = [];
   let approvalStepsCreate: ApprovalStepCreate[] = [];
+  let supervisor: Awaited<ReturnType<typeof resolveEmployeeSupervisor>> = null;
+  let finalApprover: Awaited<
+    ReturnType<typeof resolveLeaveReportingLine>
+  >["finalApprover"] | null = null;
+  let initialStatus: LeaveRequestStatus = LeaveRequestStatus.PENDING_APPROVAL;
 
-  if (usesAcknowledgements) {
-    if (acknowledgementNodes.length === 0 && finalApprover?.userId) {
+  if (historicalRecord) {
+    initialStatus = LeaveRequestStatus.APPROVED;
+  } else {
+    if (needsFinalApprover && !workflow.finalApproverPositionId) {
+      return {
+        status: "error",
+        message:
+          "Leave workflow requires a final approver position. Ask HR to configure it under People → Leave workflow.",
+      };
+    }
+
+    supervisor =
+      workflow.mode === "FINAL_ONLY" || usesAcknowledgements
+        ? null
+        : await resolveEmployeeSupervisor(targetEmployee.id);
+
+    if (
+      workflow.mode !== "FINAL_ONLY" &&
+      !usesAcknowledgements &&
+      !supervisor?.supervisorUserId
+    ) {
+      return {
+        status: "error",
+        message: describeSupervisorResolutionIssue(supervisor),
+      };
+    }
+
+    let reportingLine: Awaited<
+      ReturnType<typeof resolveLeaveReportingLine>
+    > | null = null;
+
+    if (needsFinalApprover && workflow.finalApproverPositionId) {
+      reportingLine = await resolveLeaveReportingLine({
+        employeeId: targetEmployee.id,
+        organizationId: targetEmployee.organizationId,
+        finalApproverPositionId: workflow.finalApproverPositionId,
+      });
+
+      if (reportingLine.issue) {
+        return {
+          status: "error",
+          message: describeLeaveReportingLineIssue(reportingLine),
+        };
+      }
+    }
+
+    acknowledgementNodes =
+      usesAcknowledgements && reportingLine
+        ? reportingLine.acknowledgementChain.filter((node) => node.userId)
+        : [];
+
+    initialStatus =
+      usesAcknowledgements && acknowledgementNodes.length > 0
+        ? LeaveRequestStatus.AWAITING_ACKNOWLEDGEMENT
+        : LeaveRequestStatus.PENDING_APPROVAL;
+
+    finalApprover = reportingLine?.finalApprover ?? null;
+
+    if (usesAcknowledgements) {
+      if (acknowledgementNodes.length === 0 && finalApprover?.userId) {
+        approvalStepsCreate = [
+          {
+            stepNumber: 1,
+            approverUserId: finalApprover.userId,
+            approverPositionId: finalApprover.positionId,
+            status: "PENDING",
+          },
+        ];
+      }
+    } else if (workflow.mode === "FINAL_ONLY" && finalApprover?.userId) {
       approvalStepsCreate = [
         {
           stepNumber: 1,
@@ -341,32 +390,23 @@ export async function createLeaveRequest(
           status: "PENDING",
         },
       ];
+    } else if (supervisor?.supervisorUserId) {
+      approvalStepsCreate = [
+        {
+          stepNumber: 1,
+          approverUserId: supervisor.supervisorUserId,
+          approverPositionId: supervisor.supervisorPositionId,
+          status: "PENDING",
+        },
+      ];
     }
-  } else if (workflow.mode === "FINAL_ONLY" && finalApprover?.userId) {
-    approvalStepsCreate = [
-      {
-        stepNumber: 1,
-        approverUserId: finalApprover.userId,
-        approverPositionId: finalApprover.positionId,
-        status: "PENDING",
-      },
-    ];
-  } else if (supervisor?.supervisorUserId) {
-    approvalStepsCreate = [
-      {
-        stepNumber: 1,
-        approverUserId: supervisor.supervisorUserId,
-        approverPositionId: supervisor.supervisorPositionId,
-        status: "PENDING",
-      },
-    ];
-  }
 
-  if (approvalStepsCreate.length === 0 && acknowledgementNodes.length === 0) {
-    return {
-      status: "error",
-      message: "No leave approver could be assigned for this request.",
-    };
+    if (approvalStepsCreate.length === 0 && acknowledgementNodes.length === 0) {
+      return {
+        status: "error",
+        message: "No leave approver could be assigned for this request.",
+      };
+    }
   }
 
   const metadata = await getAuditRequestMetadata(formData);
@@ -397,6 +437,14 @@ export async function createLeaveRequest(
           employeeComment,
           status: initialStatus,
           submittedAt: new Date(),
+          ...(historicalRecord
+            ? {
+                approvedAt: new Date(),
+                finalDecisionByUserId: actorUser.id,
+                finalDecisionComment:
+                  "Recorded as past approved leave during cutover.",
+              }
+            : {}),
           createdByUserId: actorUser.id,
           days: {
             create: validated.days.map((day) => ({
@@ -439,6 +487,7 @@ export async function createLeaveRequest(
 
       if (attachmentFile) {
         const stored = await storeLeaveAttachmentFile({
+          employee: targetEmployee,
           leaveRequestId: created.id,
           file: attachmentFile,
         });
@@ -474,14 +523,15 @@ export async function createLeaveRequest(
           );
         }
 
-        const next = applyLeaveReserve(
-          {
-            reserved: balance.reserved.toString(),
-            taken: balance.taken.toString(),
-            availableBalance: balance.availableBalance.toString(),
-          },
-          validated.requestedQuantity.toString(),
-        );
+        const snapshot = {
+          reserved: balance.reserved.toString(),
+          taken: balance.taken.toString(),
+          availableBalance: balance.availableBalance.toString(),
+        };
+        const quantity = validated.requestedQuantity.toString();
+        const next = historicalRecord
+          ? applyLeaveTakeDirect(snapshot, quantity)
+          : applyLeaveReserve(snapshot, quantity);
 
         const balanceResult = await transaction.employeeLeaveBalance.updateMany(
           {
@@ -512,22 +562,27 @@ export async function createLeaveRequest(
             contractId: validated.contractId,
             leaveTypeId: validated.leaveTypeId,
             leaveBalanceId: balance.id,
-            transactionType: LeaveBalanceTransactionType.REQUEST_RESERVED,
+            transactionType: historicalRecord
+              ? LeaveBalanceTransactionType.LEAVE_TAKEN
+              : LeaveBalanceTransactionType.REQUEST_RESERVED,
             quantity: validated.requestedQuantity,
             balanceBefore: balance.availableBalance,
             balanceAfter: new Prisma.Decimal(next.availableBalance),
             effectiveDate: startDate!,
             referenceType: "LeaveRequest",
             referenceId: created.id,
-            description: `Reserved leave for request ${requestNumber}.`,
+            description: historicalRecord
+              ? `Historical leave taken for request ${requestNumber}.`
+              : `Reserved leave for request ${requestNumber}.`,
             createdByUserId: actorUser.id,
           },
         });
       }
 
       const actorLabel = `${actorUser.firstName} ${actorUser.lastName}`.trim();
-      const auditDescription =
-        mode === "onBehalf"
+      const auditDescription = historicalRecord
+        ? `Recorded historical leave ${requestNumber} for ${targetEmployee.employeeNumber} by ${actorLabel}.`
+        : mode === "onBehalf"
           ? `Submitted leave request ${requestNumber} on behalf of ${targetEmployee.employeeNumber} by ${actorLabel}.`
           : `Submitted leave request ${requestNumber} for ${targetEmployee.employeeNumber}.`;
 
@@ -545,6 +600,7 @@ export async function createLeaveRequest(
             contractId: validated.contractId,
             employeeId: targetEmployee.id,
             mode,
+            historicalRecord,
             requestedOnBehalf:
               mode === "onBehalf"
                 ? {
@@ -558,7 +614,7 @@ export async function createLeaveRequest(
             endDate: endDate!.toISOString(),
             requestedQuantity: validated.requestedQuantity.toString(),
             status: initialStatus,
-            workflowMode: workflow.mode,
+            workflowMode: historicalRecord ? null : workflow.mode,
             approverUserId: approvalStepsCreate[0]?.approverUserId ?? null,
             acknowledgementCount: acknowledgementNodes.length,
           },
@@ -571,86 +627,88 @@ export async function createLeaveRequest(
       return created;
     });
 
-    const quantityLabel = leaveRequest.requestedQuantity.toString();
-    const dateRange = `${startDate!.toISOString().slice(0, 10)} to ${endDate!.toISOString().slice(0, 10)}`;
-    const employeeDisplayName = `${targetEmployee.firstName} ${targetEmployee.lastName}`;
-    const requestSubject =
-      mode === "onBehalf"
-        ? `${employeeDisplayName} (requested by ${actorUser.firstName} ${actorUser.lastName})`
-        : employeeDisplayName;
+    if (!historicalRecord) {
+      const quantityLabel = leaveRequest.requestedQuantity.toString();
+      const dateRange = `${startDate!.toISOString().slice(0, 10)} to ${endDate!.toISOString().slice(0, 10)}`;
+      const employeeDisplayName = `${targetEmployee.firstName} ${targetEmployee.lastName}`;
+      const requestSubject =
+        mode === "onBehalf"
+          ? `${employeeDisplayName} (requested by ${actorUser.firstName} ${actorUser.lastName})`
+          : employeeDisplayName;
 
-    if (acknowledgementNodes.length > 0) {
-      try {
-        await createSystemNotification({
-          title: "Leave acknowledgement required",
-          message: `${requestSubject} requested ${quantityLabel} day(s) of ${leaveRequest.leaveType.name} from ${dateRange}. Please acknowledge before final approval.`,
-          severity: NotificationSeverity.INFORMATION,
-          moduleKey: "hr",
-          actionUrl: `/people/leave/${leaveRequest.id}`,
-          relatedType: "LeaveRequest",
-          relatedId: leaveRequest.id,
-          recipients: acknowledgementNodes
-            .filter((node) => node.userId)
-            .map((node) => ({
-              userId: node.userId!,
-              email: node.userEmail,
-              name: node.userName,
-              sendEmail: Boolean(node.userEmail),
-            })),
-          email: {
-            subject: `Leave acknowledgement · ${leaveRequest.requestNumber}`,
-            actionLabel: "Review leave request",
-          },
-        });
-      } catch (notificationError) {
-        console.error(
-          "Leave request created but acknowledgement notification failed:",
-          notificationError,
-        );
-      }
-    } else {
-      const notifyUserId =
-        approvalStepsCreate[0]?.approverUserId ??
-        finalApprover?.userId ??
-        supervisor?.supervisorUserId ??
-        null;
-      const notifyEmail =
-        finalApprover?.userId === notifyUserId
-          ? finalApprover.userEmail
-          : supervisor?.supervisorUserEmail;
-      const notifyName =
-        finalApprover?.userId === notifyUserId
-          ? finalApprover.userName
-          : supervisor?.supervisorUserName;
-
-      if (notifyUserId) {
+      if (acknowledgementNodes.length > 0) {
         try {
           await createSystemNotification({
-            title: "Leave approval required",
-            message: `${requestSubject} requested ${quantityLabel} day(s) of ${leaveRequest.leaveType.name} from ${dateRange}.`,
+            title: "Leave acknowledgement required",
+            message: `${requestSubject} requested ${quantityLabel} day(s) of ${leaveRequest.leaveType.name} from ${dateRange}. Please acknowledge before final approval.`,
             severity: NotificationSeverity.INFORMATION,
             moduleKey: "hr",
             actionUrl: `/people/leave/${leaveRequest.id}`,
             relatedType: "LeaveRequest",
             relatedId: leaveRequest.id,
-            recipients: [
-              {
-                userId: notifyUserId,
-                email: notifyEmail,
-                name: notifyName,
-                sendEmail: Boolean(notifyEmail),
-              },
-            ],
+            recipients: acknowledgementNodes
+              .filter((node) => node.userId)
+              .map((node) => ({
+                userId: node.userId!,
+                email: node.userEmail,
+                name: node.userName,
+                sendEmail: Boolean(node.userEmail),
+              })),
             email: {
-              subject: `Leave approval required · ${leaveRequest.requestNumber}`,
+              subject: `Leave acknowledgement · ${leaveRequest.requestNumber}`,
               actionLabel: "Review leave request",
             },
           });
         } catch (notificationError) {
           console.error(
-            "Leave request created but approver notification failed:",
+            "Leave request created but acknowledgement notification failed:",
             notificationError,
           );
+        }
+      } else {
+        const notifyUserId =
+          approvalStepsCreate[0]?.approverUserId ??
+          finalApprover?.userId ??
+          supervisor?.supervisorUserId ??
+          null;
+        const notifyEmail =
+          finalApprover?.userId === notifyUserId
+            ? finalApprover.userEmail
+            : supervisor?.supervisorUserEmail;
+        const notifyName =
+          finalApprover?.userId === notifyUserId
+            ? finalApprover.userName
+            : supervisor?.supervisorUserName;
+
+        if (notifyUserId) {
+          try {
+            await createSystemNotification({
+              title: "Leave approval required",
+              message: `${requestSubject} requested ${quantityLabel} day(s) of ${leaveRequest.leaveType.name} from ${dateRange}.`,
+              severity: NotificationSeverity.INFORMATION,
+              moduleKey: "hr",
+              actionUrl: `/people/leave/${leaveRequest.id}`,
+              relatedType: "LeaveRequest",
+              relatedId: leaveRequest.id,
+              recipients: [
+                {
+                  userId: notifyUserId,
+                  email: notifyEmail,
+                  name: notifyName,
+                  sendEmail: Boolean(notifyEmail),
+                },
+              ],
+              email: {
+                subject: `Leave approval required · ${leaveRequest.requestNumber}`,
+                actionLabel: "Review leave request",
+              },
+            });
+          } catch (notificationError) {
+            console.error(
+              "Leave request created but approver notification failed:",
+              notificationError,
+            );
+          }
         }
       }
     }

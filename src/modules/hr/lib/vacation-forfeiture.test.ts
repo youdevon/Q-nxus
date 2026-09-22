@@ -131,4 +131,20 @@ describe("evaluateVacationForfeitureAlert", () => {
     expect(message).toMatch(/on or before the contract end date/i);
     expect(message).toContain("2026-08-01");
   });
+
+  it("uses third-person contract wording for authority alerts", () => {
+    const alert = evaluateVacationForfeitureAlert({
+      availableVacation: "7",
+      contractEndDate: new Date("2026-08-03T00:00:00.000Z"),
+      asOf,
+    });
+
+    expect(alert).not.toBeNull();
+    const message = formatVacationForfeitureMessage(alert!, {
+      employeeName: "Jaden Baird",
+    });
+    expect(message).toContain("Jaden Baird still has 7 day(s)");
+    expect(message).toContain("Their contract ends on 2026-08-03");
+    expect(message).not.toContain("Your contract ends");
+  });
 });

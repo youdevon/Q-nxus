@@ -73,10 +73,12 @@ export function NotificationBell() {
           )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="my-0" />
-        <div className="max-h-80 overflow-y-auto">
+        <div className="max-h-96 overflow-y-auto">
           {notifications.length === 0 ? (
             <p className="px-3 py-8 text-center text-sm text-muted-foreground">
-              {isLoading ? "Loading notifications…" : "You’re all caught up"}
+              {isLoading
+                ? "Loading notifications…"
+                : "No recent notifications"}
             </p>
           ) : (
             notifications.map((notification) => {
@@ -94,7 +96,9 @@ export function NotificationBell() {
                     ) : undefined
                   }
                   onClick={() => {
-                    void markAsRead(notification.id);
+                    if (!notification.read) {
+                      void markAsRead(notification.id);
+                    }
                   }}
                 >
                   <NotificationItem
@@ -107,18 +111,32 @@ export function NotificationBell() {
           )}
         </div>
         <DropdownMenuSeparator className="my-0" />
-        <DropdownMenuItem
-          className="cursor-pointer justify-center rounded-none px-3 py-2.5 text-xs font-medium text-muted-foreground focus:bg-transparent focus:text-foreground data-highlighted:bg-transparent"
-          nativeButton={false}
-          render={
-            <Link
-              href="/notifications"
-              className="block w-full text-center outline-none"
-            />
-          }
-        >
-          View all notifications
-        </DropdownMenuItem>
+        <div className="flex divide-x divide-border">
+          <DropdownMenuItem
+            className="flex-1 cursor-pointer justify-center rounded-none px-2 py-2.5 text-xs font-medium text-muted-foreground focus:bg-transparent focus:text-foreground data-highlighted:bg-transparent"
+            nativeButton={false}
+            render={
+              <Link
+                href="/notifications?module=payroll"
+                className="block w-full text-center outline-none"
+              />
+            }
+          >
+            Payroll history
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex-1 cursor-pointer justify-center rounded-none px-2 py-2.5 text-xs font-medium text-muted-foreground focus:bg-transparent focus:text-foreground data-highlighted:bg-transparent"
+            nativeButton={false}
+            render={
+              <Link
+                href="/notifications"
+                className="block w-full text-center outline-none"
+              />
+            }
+          >
+            View all
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

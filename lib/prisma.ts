@@ -15,6 +15,20 @@ if (!connectionString) {
   );
 }
 
+if (process.env.NODE_ENV === "production") {
+  const url = connectionString.toLowerCase();
+  const sslOk =
+    url.includes("sslmode=require") ||
+    url.includes("sslmode=verify-full") ||
+    url.includes("sslmode=verify-ca") ||
+    url.includes("ssl=true");
+  if (!sslOk && process.env.DATABASE_SSL_ALLOW_INSECURE !== "true") {
+    throw new Error(
+      "Production DATABASE_URL must enable TLS (e.g. sslmode=require). Set DATABASE_SSL_ALLOW_INSECURE=true only as an explicit escape hatch.",
+    );
+  }
+}
+
 const adapter = new PrismaPg({
   connectionString,
 });

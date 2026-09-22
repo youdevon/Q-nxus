@@ -22,14 +22,10 @@ describe("lifecycle task actions", () => {
     });
   });
 
-  it("routes offboarding close to close page when current contract known", () => {
-    expect(
-      resolveOffboardingTaskAction("CLOSE_CONTRACT", "e1", {
-        currentContractId: "c2",
-      }),
-    ).toEqual({
-      label: "Close contract",
-      href: "/people/employees/e1/contracts/c2/close",
+  it("routes final pay check to the gratuity queue", () => {
+    expect(resolveOffboardingTaskAction("FINAL_PAY_CHECK", "e1")).toEqual({
+      label: "Open gratuity queue",
+      href: `/payroll/gratuity?year=${new Date().getUTCFullYear()}`,
     });
   });
 });

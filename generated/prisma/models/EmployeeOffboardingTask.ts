@@ -42,6 +42,7 @@ export type EmployeeOffboardingTaskMinAggregateOutputType = {
   status: $Enums.LifecycleTaskStatus | null
   sortOrder: number | null
   dueAt: Date | null
+  assigneeUserId: string | null
   completedAt: Date | null
   completedByUserId: string | null
   relatedEntityType: string | null
@@ -59,6 +60,7 @@ export type EmployeeOffboardingTaskMaxAggregateOutputType = {
   status: $Enums.LifecycleTaskStatus | null
   sortOrder: number | null
   dueAt: Date | null
+  assigneeUserId: string | null
   completedAt: Date | null
   completedByUserId: string | null
   relatedEntityType: string | null
@@ -76,6 +78,7 @@ export type EmployeeOffboardingTaskCountAggregateOutputType = {
   status: number
   sortOrder: number
   dueAt: number
+  assigneeUserId: number
   completedAt: number
   completedByUserId: number
   relatedEntityType: number
@@ -103,6 +106,7 @@ export type EmployeeOffboardingTaskMinAggregateInputType = {
   status?: true
   sortOrder?: true
   dueAt?: true
+  assigneeUserId?: true
   completedAt?: true
   completedByUserId?: true
   relatedEntityType?: true
@@ -120,6 +124,7 @@ export type EmployeeOffboardingTaskMaxAggregateInputType = {
   status?: true
   sortOrder?: true
   dueAt?: true
+  assigneeUserId?: true
   completedAt?: true
   completedByUserId?: true
   relatedEntityType?: true
@@ -137,6 +142,7 @@ export type EmployeeOffboardingTaskCountAggregateInputType = {
   status?: true
   sortOrder?: true
   dueAt?: true
+  assigneeUserId?: true
   completedAt?: true
   completedByUserId?: true
   relatedEntityType?: true
@@ -241,6 +247,7 @@ export type EmployeeOffboardingTaskGroupByOutputType = {
   status: $Enums.LifecycleTaskStatus
   sortOrder: number
   dueAt: Date | null
+  assigneeUserId: string | null
   completedAt: Date | null
   completedByUserId: string | null
   relatedEntityType: string | null
@@ -281,6 +288,7 @@ export type EmployeeOffboardingTaskWhereInput = {
   status?: Prisma.EnumLifecycleTaskStatusFilter<"EmployeeOffboardingTask"> | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFilter<"EmployeeOffboardingTask"> | number
   dueAt?: Prisma.DateTimeNullableFilter<"EmployeeOffboardingTask"> | Date | string | null
+  assigneeUserId?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeOffboardingTask"> | Date | string | null
   completedByUserId?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
   relatedEntityType?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
@@ -289,6 +297,7 @@ export type EmployeeOffboardingTaskWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"EmployeeOffboardingTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeOffboardingTask"> | Date | string
   case?: Prisma.XOR<Prisma.EmployeeOffboardingCaseScalarRelationFilter, Prisma.EmployeeOffboardingCaseWhereInput>
+  assignee?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   completedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
@@ -300,6 +309,7 @@ export type EmployeeOffboardingTaskOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  assigneeUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   relatedEntityType?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -308,6 +318,7 @@ export type EmployeeOffboardingTaskOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   case?: Prisma.EmployeeOffboardingCaseOrderByWithRelationInput
+  assignee?: Prisma.UserOrderByWithRelationInput
   completedBy?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -323,6 +334,7 @@ export type EmployeeOffboardingTaskWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumLifecycleTaskStatusFilter<"EmployeeOffboardingTask"> | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFilter<"EmployeeOffboardingTask"> | number
   dueAt?: Prisma.DateTimeNullableFilter<"EmployeeOffboardingTask"> | Date | string | null
+  assigneeUserId?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeOffboardingTask"> | Date | string | null
   completedByUserId?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
   relatedEntityType?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
@@ -331,6 +343,7 @@ export type EmployeeOffboardingTaskWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"EmployeeOffboardingTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeOffboardingTask"> | Date | string
   case?: Prisma.XOR<Prisma.EmployeeOffboardingCaseScalarRelationFilter, Prisma.EmployeeOffboardingCaseWhereInput>
+  assignee?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   completedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "caseId_code">
 
@@ -342,6 +355,7 @@ export type EmployeeOffboardingTaskOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  assigneeUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   relatedEntityType?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -367,6 +381,7 @@ export type EmployeeOffboardingTaskScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumLifecycleTaskStatusWithAggregatesFilter<"EmployeeOffboardingTask"> | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntWithAggregatesFilter<"EmployeeOffboardingTask"> | number
   dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeOffboardingTask"> | Date | string | null
+  assigneeUserId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOffboardingTask"> | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeOffboardingTask"> | Date | string | null
   completedByUserId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOffboardingTask"> | string | null
   relatedEntityType?: Prisma.StringNullableWithAggregatesFilter<"EmployeeOffboardingTask"> | string | null
@@ -390,6 +405,7 @@ export type EmployeeOffboardingTaskCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   case: Prisma.EmployeeOffboardingCaseCreateNestedOneWithoutTasksInput
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedOffboardingTasksInput
   completedBy?: Prisma.UserCreateNestedOneWithoutCompletedOffboardingTasksInput
 }
 
@@ -401,6 +417,7 @@ export type EmployeeOffboardingTaskUncheckedCreateInput = {
   status?: $Enums.LifecycleTaskStatus
   sortOrder?: number
   dueAt?: Date | string | null
+  assigneeUserId?: string | null
   completedAt?: Date | string | null
   completedByUserId?: string | null
   relatedEntityType?: string | null
@@ -424,6 +441,7 @@ export type EmployeeOffboardingTaskUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   case?: Prisma.EmployeeOffboardingCaseUpdateOneRequiredWithoutTasksNestedInput
+  assignee?: Prisma.UserUpdateOneWithoutAssignedOffboardingTasksNestedInput
   completedBy?: Prisma.UserUpdateOneWithoutCompletedOffboardingTasksNestedInput
 }
 
@@ -435,6 +453,7 @@ export type EmployeeOffboardingTaskUncheckedUpdateInput = {
   status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assigneeUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -452,6 +471,7 @@ export type EmployeeOffboardingTaskCreateManyInput = {
   status?: $Enums.LifecycleTaskStatus
   sortOrder?: number
   dueAt?: Date | string | null
+  assigneeUserId?: string | null
   completedAt?: Date | string | null
   completedByUserId?: string | null
   relatedEntityType?: string | null
@@ -484,6 +504,7 @@ export type EmployeeOffboardingTaskUncheckedUpdateManyInput = {
   status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assigneeUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -516,6 +537,7 @@ export type EmployeeOffboardingTaskCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
+  assigneeUserId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   completedByUserId?: Prisma.SortOrder
   relatedEntityType?: Prisma.SortOrder
@@ -537,6 +559,7 @@ export type EmployeeOffboardingTaskMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
+  assigneeUserId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   completedByUserId?: Prisma.SortOrder
   relatedEntityType?: Prisma.SortOrder
@@ -554,6 +577,7 @@ export type EmployeeOffboardingTaskMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
+  assigneeUserId?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   completedByUserId?: Prisma.SortOrder
   relatedEntityType?: Prisma.SortOrder
@@ -574,10 +598,24 @@ export type EmployeeOffboardingTaskCreateNestedManyWithoutCompletedByInput = {
   connect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
 }
 
+export type EmployeeOffboardingTaskCreateNestedManyWithoutAssigneeInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeOffboardingTaskCreateManyAssigneeInputEnvelope
+  connect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+}
+
 export type EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutCompletedByInput = {
   create?: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutCompletedByInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutCompletedByInput> | Prisma.EmployeeOffboardingTaskCreateWithoutCompletedByInput[] | Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutCompletedByInput[]
   connectOrCreate?: Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutCompletedByInput | Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutCompletedByInput[]
   createMany?: Prisma.EmployeeOffboardingTaskCreateManyCompletedByInputEnvelope
+  connect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+}
+
+export type EmployeeOffboardingTaskUncheckedCreateNestedManyWithoutAssigneeInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeOffboardingTaskCreateManyAssigneeInputEnvelope
   connect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
 }
 
@@ -595,6 +633,20 @@ export type EmployeeOffboardingTaskUpdateManyWithoutCompletedByNestedInput = {
   deleteMany?: Prisma.EmployeeOffboardingTaskScalarWhereInput | Prisma.EmployeeOffboardingTaskScalarWhereInput[]
 }
 
+export type EmployeeOffboardingTaskUpdateManyWithoutAssigneeNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput[]
+  upsert?: Prisma.EmployeeOffboardingTaskUpsertWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskUpsertWithWhereUniqueWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeOffboardingTaskCreateManyAssigneeInputEnvelope
+  set?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  delete?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  connect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  update?: Prisma.EmployeeOffboardingTaskUpdateWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskUpdateWithWhereUniqueWithoutAssigneeInput[]
+  updateMany?: Prisma.EmployeeOffboardingTaskUpdateManyWithWhereWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskUpdateManyWithWhereWithoutAssigneeInput[]
+  deleteMany?: Prisma.EmployeeOffboardingTaskScalarWhereInput | Prisma.EmployeeOffboardingTaskScalarWhereInput[]
+}
+
 export type EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedInput = {
   create?: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutCompletedByInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutCompletedByInput> | Prisma.EmployeeOffboardingTaskCreateWithoutCompletedByInput[] | Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutCompletedByInput[]
   connectOrCreate?: Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutCompletedByInput | Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutCompletedByInput[]
@@ -606,6 +658,20 @@ export type EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByNestedIn
   connect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
   update?: Prisma.EmployeeOffboardingTaskUpdateWithWhereUniqueWithoutCompletedByInput | Prisma.EmployeeOffboardingTaskUpdateWithWhereUniqueWithoutCompletedByInput[]
   updateMany?: Prisma.EmployeeOffboardingTaskUpdateManyWithWhereWithoutCompletedByInput | Prisma.EmployeeOffboardingTaskUpdateManyWithWhereWithoutCompletedByInput[]
+  deleteMany?: Prisma.EmployeeOffboardingTaskScalarWhereInput | Prisma.EmployeeOffboardingTaskScalarWhereInput[]
+}
+
+export type EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput[]
+  upsert?: Prisma.EmployeeOffboardingTaskUpsertWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskUpsertWithWhereUniqueWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeOffboardingTaskCreateManyAssigneeInputEnvelope
+  set?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  delete?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  connect?: Prisma.EmployeeOffboardingTaskWhereUniqueInput | Prisma.EmployeeOffboardingTaskWhereUniqueInput[]
+  update?: Prisma.EmployeeOffboardingTaskUpdateWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskUpdateWithWhereUniqueWithoutAssigneeInput[]
+  updateMany?: Prisma.EmployeeOffboardingTaskUpdateManyWithWhereWithoutAssigneeInput | Prisma.EmployeeOffboardingTaskUpdateManyWithWhereWithoutAssigneeInput[]
   deleteMany?: Prisma.EmployeeOffboardingTaskScalarWhereInput | Prisma.EmployeeOffboardingTaskScalarWhereInput[]
 }
 
@@ -665,6 +731,7 @@ export type EmployeeOffboardingTaskCreateWithoutCompletedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   case: Prisma.EmployeeOffboardingCaseCreateNestedOneWithoutTasksInput
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedOffboardingTasksInput
 }
 
 export type EmployeeOffboardingTaskUncheckedCreateWithoutCompletedByInput = {
@@ -675,6 +742,7 @@ export type EmployeeOffboardingTaskUncheckedCreateWithoutCompletedByInput = {
   status?: $Enums.LifecycleTaskStatus
   sortOrder?: number
   dueAt?: Date | string | null
+  assigneeUserId?: string | null
   completedAt?: Date | string | null
   relatedEntityType?: string | null
   relatedEntityId?: string | null
@@ -690,6 +758,50 @@ export type EmployeeOffboardingTaskCreateOrConnectWithoutCompletedByInput = {
 
 export type EmployeeOffboardingTaskCreateManyCompletedByInputEnvelope = {
   data: Prisma.EmployeeOffboardingTaskCreateManyCompletedByInput | Prisma.EmployeeOffboardingTaskCreateManyCompletedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmployeeOffboardingTaskCreateWithoutAssigneeInput = {
+  id?: string
+  code: $Enums.LifecycleTaskCode
+  label: string
+  status?: $Enums.LifecycleTaskStatus
+  sortOrder?: number
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  relatedEntityType?: string | null
+  relatedEntityId?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  case: Prisma.EmployeeOffboardingCaseCreateNestedOneWithoutTasksInput
+  completedBy?: Prisma.UserCreateNestedOneWithoutCompletedOffboardingTasksInput
+}
+
+export type EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput = {
+  id?: string
+  caseId: string
+  code: $Enums.LifecycleTaskCode
+  label: string
+  status?: $Enums.LifecycleTaskStatus
+  sortOrder?: number
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  completedByUserId?: string | null
+  relatedEntityType?: string | null
+  relatedEntityId?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmployeeOffboardingTaskCreateOrConnectWithoutAssigneeInput = {
+  where: Prisma.EmployeeOffboardingTaskWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput>
+}
+
+export type EmployeeOffboardingTaskCreateManyAssigneeInputEnvelope = {
+  data: Prisma.EmployeeOffboardingTaskCreateManyAssigneeInput | Prisma.EmployeeOffboardingTaskCreateManyAssigneeInput[]
   skipDuplicates?: boolean
 }
 
@@ -720,6 +832,7 @@ export type EmployeeOffboardingTaskScalarWhereInput = {
   status?: Prisma.EnumLifecycleTaskStatusFilter<"EmployeeOffboardingTask"> | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFilter<"EmployeeOffboardingTask"> | number
   dueAt?: Prisma.DateTimeNullableFilter<"EmployeeOffboardingTask"> | Date | string | null
+  assigneeUserId?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeOffboardingTask"> | Date | string | null
   completedByUserId?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
   relatedEntityType?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
@@ -727,6 +840,22 @@ export type EmployeeOffboardingTaskScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"EmployeeOffboardingTask"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeOffboardingTask"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeOffboardingTask"> | Date | string
+}
+
+export type EmployeeOffboardingTaskUpsertWithWhereUniqueWithoutAssigneeInput = {
+  where: Prisma.EmployeeOffboardingTaskWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmployeeOffboardingTaskUpdateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedUpdateWithoutAssigneeInput>
+  create: Prisma.XOR<Prisma.EmployeeOffboardingTaskCreateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedCreateWithoutAssigneeInput>
+}
+
+export type EmployeeOffboardingTaskUpdateWithWhereUniqueWithoutAssigneeInput = {
+  where: Prisma.EmployeeOffboardingTaskWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmployeeOffboardingTaskUpdateWithoutAssigneeInput, Prisma.EmployeeOffboardingTaskUncheckedUpdateWithoutAssigneeInput>
+}
+
+export type EmployeeOffboardingTaskUpdateManyWithWhereWithoutAssigneeInput = {
+  where: Prisma.EmployeeOffboardingTaskScalarWhereInput
+  data: Prisma.XOR<Prisma.EmployeeOffboardingTaskUpdateManyMutationInput, Prisma.EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeInput>
 }
 
 export type EmployeeOffboardingTaskCreateWithoutCaseInput = {
@@ -742,6 +871,7 @@ export type EmployeeOffboardingTaskCreateWithoutCaseInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignee?: Prisma.UserCreateNestedOneWithoutAssignedOffboardingTasksInput
   completedBy?: Prisma.UserCreateNestedOneWithoutCompletedOffboardingTasksInput
 }
 
@@ -752,6 +882,7 @@ export type EmployeeOffboardingTaskUncheckedCreateWithoutCaseInput = {
   status?: $Enums.LifecycleTaskStatus
   sortOrder?: number
   dueAt?: Date | string | null
+  assigneeUserId?: string | null
   completedAt?: Date | string | null
   completedByUserId?: string | null
   relatedEntityType?: string | null
@@ -795,7 +926,25 @@ export type EmployeeOffboardingTaskCreateManyCompletedByInput = {
   status?: $Enums.LifecycleTaskStatus
   sortOrder?: number
   dueAt?: Date | string | null
+  assigneeUserId?: string | null
   completedAt?: Date | string | null
+  relatedEntityType?: string | null
+  relatedEntityId?: string | null
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type EmployeeOffboardingTaskCreateManyAssigneeInput = {
+  id?: string
+  caseId: string
+  code: $Enums.LifecycleTaskCode
+  label: string
+  status?: $Enums.LifecycleTaskStatus
+  sortOrder?: number
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  completedByUserId?: string | null
   relatedEntityType?: string | null
   relatedEntityId?: string | null
   notes?: string | null
@@ -817,6 +966,7 @@ export type EmployeeOffboardingTaskUpdateWithoutCompletedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   case?: Prisma.EmployeeOffboardingCaseUpdateOneRequiredWithoutTasksNestedInput
+  assignee?: Prisma.UserUpdateOneWithoutAssignedOffboardingTasksNestedInput
 }
 
 export type EmployeeOffboardingTaskUncheckedUpdateWithoutCompletedByInput = {
@@ -827,6 +977,7 @@ export type EmployeeOffboardingTaskUncheckedUpdateWithoutCompletedByInput = {
   status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assigneeUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedEntityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -843,7 +994,59 @@ export type EmployeeOffboardingTaskUncheckedUpdateManyWithoutCompletedByInput = 
   status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assigneeUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedEntityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmployeeOffboardingTaskUpdateWithoutAssigneeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.EnumLifecycleTaskCodeFieldUpdateOperationsInput | $Enums.LifecycleTaskCode
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedEntityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  case?: Prisma.EmployeeOffboardingCaseUpdateOneRequiredWithoutTasksNestedInput
+  completedBy?: Prisma.UserUpdateOneWithoutCompletedOffboardingTasksNestedInput
+}
+
+export type EmployeeOffboardingTaskUncheckedUpdateWithoutAssigneeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.EnumLifecycleTaskCodeFieldUpdateOperationsInput | $Enums.LifecycleTaskCode
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relatedEntityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmployeeOffboardingTaskUncheckedUpdateManyWithoutAssigneeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  caseId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.EnumLifecycleTaskCodeFieldUpdateOperationsInput | $Enums.LifecycleTaskCode
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
+  sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedEntityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -858,6 +1061,7 @@ export type EmployeeOffboardingTaskCreateManyCaseInput = {
   status?: $Enums.LifecycleTaskStatus
   sortOrder?: number
   dueAt?: Date | string | null
+  assigneeUserId?: string | null
   completedAt?: Date | string | null
   completedByUserId?: string | null
   relatedEntityType?: string | null
@@ -880,6 +1084,7 @@ export type EmployeeOffboardingTaskUpdateWithoutCaseInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignee?: Prisma.UserUpdateOneWithoutAssignedOffboardingTasksNestedInput
   completedBy?: Prisma.UserUpdateOneWithoutCompletedOffboardingTasksNestedInput
 }
 
@@ -890,6 +1095,7 @@ export type EmployeeOffboardingTaskUncheckedUpdateWithoutCaseInput = {
   status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assigneeUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -906,6 +1112,7 @@ export type EmployeeOffboardingTaskUncheckedUpdateManyWithoutCaseInput = {
   status?: Prisma.EnumLifecycleTaskStatusFieldUpdateOperationsInput | $Enums.LifecycleTaskStatus
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  assigneeUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   relatedEntityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -925,6 +1132,7 @@ export type EmployeeOffboardingTaskSelect<ExtArgs extends runtime.Types.Extensio
   status?: boolean
   sortOrder?: boolean
   dueAt?: boolean
+  assigneeUserId?: boolean
   completedAt?: boolean
   completedByUserId?: boolean
   relatedEntityType?: boolean
@@ -933,6 +1141,7 @@ export type EmployeeOffboardingTaskSelect<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   case?: boolean | Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs>
   completedBy?: boolean | Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs>
 }, ExtArgs["result"]["employeeOffboardingTask"]>
 
@@ -944,6 +1153,7 @@ export type EmployeeOffboardingTaskSelectCreateManyAndReturn<ExtArgs extends run
   status?: boolean
   sortOrder?: boolean
   dueAt?: boolean
+  assigneeUserId?: boolean
   completedAt?: boolean
   completedByUserId?: boolean
   relatedEntityType?: boolean
@@ -952,6 +1162,7 @@ export type EmployeeOffboardingTaskSelectCreateManyAndReturn<ExtArgs extends run
   createdAt?: boolean
   updatedAt?: boolean
   case?: boolean | Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs>
   completedBy?: boolean | Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs>
 }, ExtArgs["result"]["employeeOffboardingTask"]>
 
@@ -963,6 +1174,7 @@ export type EmployeeOffboardingTaskSelectUpdateManyAndReturn<ExtArgs extends run
   status?: boolean
   sortOrder?: boolean
   dueAt?: boolean
+  assigneeUserId?: boolean
   completedAt?: boolean
   completedByUserId?: boolean
   relatedEntityType?: boolean
@@ -971,6 +1183,7 @@ export type EmployeeOffboardingTaskSelectUpdateManyAndReturn<ExtArgs extends run
   createdAt?: boolean
   updatedAt?: boolean
   case?: boolean | Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs>
   completedBy?: boolean | Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs>
 }, ExtArgs["result"]["employeeOffboardingTask"]>
 
@@ -982,6 +1195,7 @@ export type EmployeeOffboardingTaskSelectScalar = {
   status?: boolean
   sortOrder?: boolean
   dueAt?: boolean
+  assigneeUserId?: boolean
   completedAt?: boolean
   completedByUserId?: boolean
   relatedEntityType?: boolean
@@ -991,17 +1205,20 @@ export type EmployeeOffboardingTaskSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeeOffboardingTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "caseId" | "code" | "label" | "status" | "sortOrder" | "dueAt" | "completedAt" | "completedByUserId" | "relatedEntityType" | "relatedEntityId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeOffboardingTask"]>
+export type EmployeeOffboardingTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "caseId" | "code" | "label" | "status" | "sortOrder" | "dueAt" | "assigneeUserId" | "completedAt" | "completedByUserId" | "relatedEntityType" | "relatedEntityId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["employeeOffboardingTask"]>
 export type EmployeeOffboardingTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   case?: boolean | Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs>
   completedBy?: boolean | Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs>
 }
 export type EmployeeOffboardingTaskIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   case?: boolean | Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs>
   completedBy?: boolean | Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs>
 }
 export type EmployeeOffboardingTaskIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   case?: boolean | Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs>
   completedBy?: boolean | Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs>
 }
 
@@ -1009,6 +1226,7 @@ export type $EmployeeOffboardingTaskPayload<ExtArgs extends runtime.Types.Extens
   name: "EmployeeOffboardingTask"
   objects: {
     case: Prisma.$EmployeeOffboardingCasePayload<ExtArgs>
+    assignee: Prisma.$UserPayload<ExtArgs> | null
     completedBy: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1019,6 +1237,7 @@ export type $EmployeeOffboardingTaskPayload<ExtArgs extends runtime.Types.Extens
     status: $Enums.LifecycleTaskStatus
     sortOrder: number
     dueAt: Date | null
+    assigneeUserId: string | null
     completedAt: Date | null
     completedByUserId: string | null
     relatedEntityType: string | null
@@ -1421,6 +1640,7 @@ readonly fields: EmployeeOffboardingTaskFieldRefs;
 export interface Prisma__EmployeeOffboardingTaskClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   case<T extends Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeOffboardingCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeOffboardingCaseClient<runtime.Types.Result.GetResult<Prisma.$EmployeeOffboardingCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  assignee<T extends Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeOffboardingTask$assigneeArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   completedBy<T extends Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeOffboardingTask$completedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1458,6 +1678,7 @@ export interface EmployeeOffboardingTaskFieldRefs {
   readonly status: Prisma.FieldRef<"EmployeeOffboardingTask", 'LifecycleTaskStatus'>
   readonly sortOrder: Prisma.FieldRef<"EmployeeOffboardingTask", 'Int'>
   readonly dueAt: Prisma.FieldRef<"EmployeeOffboardingTask", 'DateTime'>
+  readonly assigneeUserId: Prisma.FieldRef<"EmployeeOffboardingTask", 'String'>
   readonly completedAt: Prisma.FieldRef<"EmployeeOffboardingTask", 'DateTime'>
   readonly completedByUserId: Prisma.FieldRef<"EmployeeOffboardingTask", 'String'>
   readonly relatedEntityType: Prisma.FieldRef<"EmployeeOffboardingTask", 'String'>
@@ -1863,6 +2084,25 @@ export type EmployeeOffboardingTaskDeleteManyArgs<ExtArgs extends runtime.Types.
    * Limit how many EmployeeOffboardingTasks to delete.
    */
   limit?: number
+}
+
+/**
+ * EmployeeOffboardingTask.assignee
+ */
+export type EmployeeOffboardingTask$assigneeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

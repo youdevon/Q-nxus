@@ -4,7 +4,7 @@ import { ChevronLeft, type LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { PageActions } from "@/src/components/layout/page-actions";
-import { UI_SURFACE, UI_TYPOGRAPHY } from "@/src/config/ui-typography";
+import { UI_MOTION, UI_SURFACE, UI_TYPOGRAPHY } from "@/src/config/ui-typography";
 
 export {
   FormPageActions,
@@ -25,6 +25,14 @@ type PageHeaderProps = {
   backLabel?: string;
   /** Lucide icon beside the title (same visual language as sidebar). */
   icon?: LucideIcon;
+  /** Optional badge beside the title (e.g. position). */
+  badge?: ReactNode;
+  /**
+   * Optional role/identity wash on the full header band (e.g. employee
+   * leadership gradient). When set, the default title left-bar accent is
+   * skipped so color lives on the band instead.
+   */
+  titleAccentClassName?: string;
   /**
    * Header actions. Forms: FormPageActions (Cancel left, Save right).
    * Detail pages: PageActionsEnd for Edit / primary only — back lives in backHref.
@@ -39,6 +47,8 @@ export function PageHeader({
   backHref,
   backLabel = "Back",
   icon: Icon,
+  badge,
+  titleAccentClassName,
   actions,
   className,
 }: PageHeaderProps) {
@@ -46,28 +56,33 @@ export function PageHeader({
     <div
       data-slot="page-header"
       className={cn(
-        `flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between ${UI_SURFACE.pageHeaderBand}`,
+        "group/page-header flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between",
+        UI_SURFACE.pageHeaderBand,
+        titleAccentClassName,
         className,
       )}
     >
-      <div className={`min-w-0 space-y-1.5 ${UI_SURFACE.pageTitleAccent}`}>
+      <div
+        className={cn(
+          "min-w-0 space-y-1.5",
+          !titleAccentClassName && UI_SURFACE.pageTitleAccent,
+        )}
+      >
         {backHref ? (
-          <Link
-            href={backHref}
-            className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
+          <Link href={backHref} className={UI_MOTION.backLink}>
             <ChevronLeft className="size-3.5" aria-hidden />
             {backLabel}
           </Link>
         ) : null}
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           {Icon ? (
             <Icon
-              className="size-5 shrink-0 text-muted-foreground"
+              className={cn("size-5 shrink-0", UI_MOTION.iconHover)}
               aria-hidden
             />
           ) : null}
           <h1 className={UI_TYPOGRAPHY.pageTitle}>{title}</h1>
+          {badge}
         </div>
         {description ? (
           <p className={UI_TYPOGRAPHY.pageDescription}>{description}</p>

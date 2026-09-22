@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CircleCheck, CalendarRange, Plus } from "lucide-react";
+import { CircleCheck, CalendarRange, Landmark, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -73,6 +73,7 @@ export function PayRunsDirectory({
       <PageHeader
         title="Pay runs"
         description="Monthly payroll periods and pay runs. Draft runs snapshot current calc; posting freezes amounts."
+        icon={CalendarRange}
         actions={
           canManage ? (
             <Button
@@ -88,75 +89,90 @@ export function PayRunsDirectory({
 
       <section>
         <div className="mb-4 flex items-center gap-2">
-          <CalendarRange className="size-4 text-muted-foreground" />
-          <SectionHeading>Runs & periods</SectionHeading>
+          <SectionHeading icon={CalendarRange}>Runs & periods</SectionHeading>
         </div>
 
         {runs.length === 0 ? (
           <p className="py-12 text-center text-sm text-muted-foreground">
             No pay runs yet.
             {canManage
-              ? " Create a monthly period to include payroll-ready employees."
+              ? " Create a monthly period run for employees or board members."
               : ""}
           </p>
         ) : (
           <div className="divide-y divide-border/70">
-            {runs.map((run) => (
-              <div
-                key={run.id}
-                className="grid gap-3 py-5 md:grid-cols-[1fr_8rem_8rem_8rem_auto]"
-              >
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium">{run.runNumber}</p>
-                    <Badge variant={payRunStatusBadgeVariant(run.status)}>
-                      {isPayRunPosted(run.status) ? (
-                        <>
-                          <CircleCheck />
-                          {payRunStatusLabel(run.status)}
-                        </>
-                      ) : (
-                        payRunStatusLabel(run.status)
-                      )}
-                    </Badge>
-                    {runKindLabel(run.runKind) ? (
-                      <Badge variant="outline">{runKindLabel(run.runKind)}</Badge>
-                    ) : null}
+            {runs.map((run) => {
+              const posted = isPayRunPosted(run.status);
+              return (
+                <div
+                  key={run.id}
+                  className="grid gap-3 py-5 md:grid-cols-[1fr_8rem_8rem_8rem_auto]"
+                >
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium">{run.runNumber}</p>
+                      <Badge variant={payRunStatusBadgeVariant(run.status)}>
+                        {posted ? (
+                          <>
+                            <CircleCheck />
+                            {payRunStatusLabel(run.status)}
+                          </>
+                        ) : (
+                          payRunStatusLabel(run.status)
+                        )}
+                      </Badge>
+                      {runKindLabel(run.runKind) ? (
+                        <Badge variant="outline">
+                          {runKindLabel(run.runKind)}
+                        </Badge>
+                      ) : null}
+                      <Badge variant="outline">{run.payeeGroupLabel}</Badge>
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {run.period.name} · {run.employeeCount} people
+                    </p>
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {run.period.name} · {run.employeeCount} employees
-                  </p>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Gross</p>
+                    <p className="text-sm font-medium">{run.totalGross}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Net</p>
+                    <p className="text-sm font-medium">{run.totalNet}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">
+                      {posted ? "Posted" : "Created"}
+                    </p>
+                    <p className="text-sm font-medium">
+                      {formatDate(posted ? run.postedAt : run.createdAt)}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 md:justify-end">
+                    {canManage && posted ? (
+                      <Button
+                        nativeButton={false}
+                        size="sm"
+                        render={
+                          <Link href={`/payroll/runs/${run.id}/ach`} />
+                        }
+                      >
+                        <Landmark />
+                        Generate ACH
+                      </Button>
+                    ) : null}
+                    <Button
+                      nativeButton={false}
+                      size="sm"
+                      variant="outline"
+                      render={<Link href={`/payroll/runs/${run.id}`} />}
+                    >
+                      Open
+                    </Button>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Gross</p>
-                  <p className="text-sm font-medium">{run.totalGross}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Net</p>
-                  <p className="text-sm font-medium">{run.totalNet}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    {isPayRunPosted(run.status) ? "Posted" : "Created"}
-                  </p>
-                  <p className="text-sm font-medium">
-                    {formatDate(
-                      isPayRunPosted(run.status) ? run.postedAt : run.createdAt,
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-center md:justify-end">
-                  <Button
-                    nativeButton={false}
-                    size="sm"
-                    variant="outline"
-                    render={<Link href={`/payroll/runs/${run.id}`} />}
-                  >
-                    Open
-                  </Button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>

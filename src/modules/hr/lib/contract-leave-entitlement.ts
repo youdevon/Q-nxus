@@ -1,4 +1,4 @@
-import { inclusiveContractMonths } from "@/src/modules/hr/services/calculate-contract-gratuity";
+import { inclusiveContractMonths } from "@/src/modules/payroll/lib/calculate-gratuity";
 
 const MONTHS_PER_YEAR = 12;
 

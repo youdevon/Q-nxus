@@ -8,14 +8,18 @@ import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { formatSequenceReference } from "@/src/modules/admin/lib/numbering-sequence";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
-import { queueEmail } from "@/src/modules/notifications/services/email-queue";
 import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
 import { buildMonthlyPeriodBounds } from "@/src/modules/payroll/lib/pay-period";
+import {
+  effectivePayRunPayeeGroup,
+  LEGACY_REGULAR_PAYEE_GROUP,
+  parsePayRunPayeeGroup,
+  payRunPayeeGroupLabel,
+} from "@/src/modules/payroll/lib/pay-run-payee-group";
 import {
   aggregatePayRunTotals,
   buildEmployeePayRunSnapshot,
   toPayslipCreateData,
-  toPayslipRecalcUpdateData,
   type PayRunEmployeeSnapshot,
 } from "@/src/modules/payroll/lib/build-pay-run-snapshots";
 import {
@@ -24,17 +28,38 @@ import {
   normalizeExclusionReason,
   type PayRunMembershipStatus,
 } from "@/src/modules/payroll/lib/pay-run-membership";
-import { planPeriodAfterDraftPayRunDelete } from "@/src/modules/payroll/lib/pay-run-delete";
+import { planPeriodAfterPayRunDelete } from "@/src/modules/payroll/lib/pay-run-delete";
+import {
+  collectPayRunNotificationRefs,
+  purgeNotificationsForRelatedEntities,
+} from "@/src/modules/notifications/services/purge-related-notifications";
 import {
   canApprovePayRun,
   canClosePayRun,
+  canDeletePayRun,
+  payRunStatusLabel,
   canPostPayRun,
+  canRecalculatePayRun,
   canReconcilePayRun,
-  isPayRunMutable,
+  isPayRunEditable,
   isPayRunPosted,
 } from "@/src/modules/payroll/lib/pay-run-lifecycle";
+import {
+  notifyPayRunApproved,
+  notifyPayRunPosted,
+  notifyPayRunReadyForReview,
+} from "@/src/modules/payroll/services/notify-payroll-events";
+import { markGratuitySettlementsPaidForPayRun } from "@/src/modules/payroll/actions/manage-gratuity-settlement";
 import { postPayRunInTransaction } from "@/src/modules/payroll/services/post-pay-run";
-import { recalculateDraftPayRunCore } from "@/src/modules/payroll/services/recalculate-draft-pay-run";
+import {
+  recalculateDraftPayRunCore,
+  rebuildDraftPayslipFromLineItems,
+} from "@/src/modules/payroll/services/recalculate-draft-pay-run";
+import { releasePayRunPayslipsCore } from "@/src/modules/payroll/services/release-pay-run-payslips";
+import {
+  loadPayrollOrganizationName,
+  planCorrectionDeltaForEmployee,
+} from "@/src/modules/payroll/services/sync-correction-delta-lines";
 import {
   findEmployeesBlockedFromPayRun,
   formatBlockedEmployees,
@@ -80,7 +105,9 @@ function normalizeLineItemCode(
   | "BONUS"
   | "COMMISSION"
   | "OTHER_EARNING"
-  | "OTHER_DEDUCTION" {
+  | "OTHER_DEDUCTION"
+  | "GRATUITY"
+  | "GRATUITY_TAX" {
   const normalized = value.toUpperCase();
   const earningCodes = new Set([
     "CORRECTION_EARNING",
@@ -88,8 +115,13 @@ function normalizeLineItemCode(
     "BONUS",
     "COMMISSION",
     "OTHER_EARNING",
+    "GRATUITY",
   ]);
-  const deductionCodes = new Set(["CORRECTION_DEDUCTION", "OTHER_DEDUCTION"]);
+  const deductionCodes = new Set([
+    "CORRECTION_DEDUCTION",
+    "OTHER_DEDUCTION",
+    "GRATUITY_TAX",
+  ]);
 
   if (lineType === "EARNING" && earningCodes.has(normalized)) {
     return normalized as "CORRECTION_EARNING";
@@ -208,18 +240,28 @@ async function collectReadyEmployeeSnapshots(
   asOf: Date,
   periodStart?: Date,
   periodEnd?: Date,
+  options?: {
+    payeeGroup?: "EMPLOYEE" | "BOARD" | "AGENT" | "CONTRACTOR";
+  },
 ): Promise<
   | { ok: true; rows: PayRunEmployeeSnapshot[] }
   | { ok: false; message: string }
 > {
-  const readiness = await getPayrollReadiness();
+  const readiness = await getPayrollReadiness({
+    includeFileCompleteness: false,
+    ...(options?.payeeGroup
+      ? { workforceCategories: [options.payeeGroup] }
+      : {}),
+  });
   const readyRows = readiness.rows.filter((row) => row.isReady);
 
   if (readyRows.length === 0) {
+    const groupLabel = options?.payeeGroup
+      ? ` in the ${options.payeeGroup.toLowerCase().replaceAll("_", " ")} group`
+      : "";
     return {
       ok: false,
-      message:
-        "No payroll-ready employees to include. Complete payroll setup before creating a pay run.",
+      message: `No payroll-ready people${groupLabel} to include. Complete payroll setup before creating a pay run.`,
     };
   }
 
@@ -282,6 +324,7 @@ export async function createMonthlyPayPeriod(
   }
 
   const periodKey = textValue(formData, "periodKey");
+  const payeeGroup = parsePayRunPayeeGroup(textValue(formData, "payeeGroup"));
   const bounds = buildMonthlyPeriodBounds(periodKey);
   const fieldErrors: Record<string, string> = {};
 
@@ -289,7 +332,11 @@ export async function createMonthlyPayPeriod(
     fieldErrors.periodKey = "Enter a valid month as YYYY-MM.";
   }
 
-  if (Object.keys(fieldErrors).length > 0 || !bounds) {
+  if (!payeeGroup) {
+    fieldErrors.payeeGroup = "Select which group this pay run is for.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0 || !bounds || !payeeGroup) {
     return {
       status: "error",
       message: "Review the pay period details.",
@@ -301,7 +348,7 @@ export async function createMonthlyPayPeriod(
     actorUserId: actor.actor.userId,
   });
 
-  const existing = await prisma.payrollPeriod.findUnique({
+  const existingPeriod = await prisma.payrollPeriod.findUnique({
     where: {
       organizationId_periodKey_frequency: {
         organizationId: organization.id,
@@ -309,14 +356,36 @@ export async function createMonthlyPayPeriod(
         frequency: "MONTHLY",
       },
     },
-    select: { id: true },
+    select: {
+      id: true,
+      name: true,
+      payRuns: {
+        where: {
+          runKind: "REGULAR",
+        },
+        select: { id: true, runNumber: true, status: true, payeeGroup: true },
+        take: 20,
+      },
+    },
   });
 
-  if (existing) {
+  // Legacy null payeeGroup = Employees. Backfill so later months are not blocked.
+  const legacyNullRuns =
+    existingPeriod?.payRuns.filter((run) => run.payeeGroup == null) ?? [];
+
+  const conflictingRun = existingPeriod?.payRuns.find(
+    (run) => effectivePayRunPayeeGroup(run.payeeGroup) === payeeGroup,
+  );
+
+  if (conflictingRun) {
+    const groupLabel =
+      payRunPayeeGroupLabel(payeeGroup)?.toLowerCase() ?? "group";
     return {
       status: "error",
-      message: `A ${bounds.name} payroll period already exists.`,
-      fieldErrors: { periodKey: "This period already exists." },
+      message: `A ${groupLabel} regular run already exists for ${existingPeriod!.name} (${conflictingRun.runNumber}). Open that run, or pick another payee group.`,
+      fieldErrors: {
+        payeeGroup: "This group already has a regular run for that month.",
+      },
     };
   }
 
@@ -324,6 +393,7 @@ export async function createMonthlyPayPeriod(
     bounds.asOf,
     bounds.periodStart,
     bounds.periodEnd,
+    { payeeGroup },
   );
 
   if (!collected.ok) {
@@ -338,21 +408,42 @@ export async function createMonthlyPayPeriod(
 
   try {
     payRunId = await prisma.$transaction(async (transaction) => {
-      const period = await transaction.payrollPeriod.create({
-        data: {
-          organizationId: organization.id,
-          name: bounds.name,
-          year: bounds.year,
-          month: bounds.month,
-          frequency: "MONTHLY",
-          periodKey: bounds.periodKey,
-          periodStart: bounds.periodStart,
-          periodEnd: bounds.periodEnd,
-          status: "OPEN",
-          notes,
-          createdById: actor.actor.userId,
-        },
-      });
+      const period =
+        existingPeriod ??
+        (await transaction.payrollPeriod.create({
+          data: {
+            organizationId: organization.id,
+            name: bounds.name,
+            year: bounds.year,
+            month: bounds.month,
+            frequency: "MONTHLY",
+            periodKey: bounds.periodKey,
+            periodStart: bounds.periodStart,
+            periodEnd: bounds.periodEnd,
+            status: "OPEN",
+            notes,
+            createdById: actor.actor.userId,
+          },
+          select: { id: true, name: true },
+        }));
+
+      // If period already existed, keep its OPEN status for additional group runs.
+      if (existingPeriod) {
+        await transaction.payrollPeriod.updateMany({
+          where: { id: existingPeriod.id, status: "CLOSED" },
+          data: { status: "OPEN" },
+        });
+
+        if (legacyNullRuns.length > 0) {
+          await transaction.payRun.updateMany({
+            where: {
+              id: { in: legacyNullRuns.map((run) => run.id) },
+              payeeGroup: null,
+            },
+            data: { payeeGroup: LEGACY_REGULAR_PAYEE_GROUP },
+          });
+        }
+      }
 
       const runNumber = await allocatePayRunNumber(
         transaction,
@@ -366,6 +457,7 @@ export async function createMonthlyPayPeriod(
           runNumber,
           status: "DRAFT",
           runKind: "REGULAR",
+          payeeGroup,
           currency: organization.defaultCurrency || "TTD",
           employeeCount: totals.employeeCount,
           totalGross: new Prisma.Decimal(totals.totalGross),
@@ -395,10 +487,11 @@ export async function createMonthlyPayPeriod(
           action: "CREATE",
           entityType: "PayRun",
           entityId: payRun.id,
-          description: `Created draft pay run ${runNumber} for ${bounds.name} with ${totals.employeeCount} employees.`,
+          description: `Created draft ${payRunPayeeGroupLabel(payeeGroup)?.toLowerCase() ?? "pay"} run ${runNumber} for ${bounds.name} with ${totals.employeeCount} people.`,
           newValues: {
             runNumber,
             periodKey: bounds.periodKey,
+            payeeGroup,
             employeeCount: totals.employeeCount,
             totalNet: totals.totalNet,
           },
@@ -419,6 +512,21 @@ export async function createMonthlyPayPeriod(
           ? error.message
           : "Could not create the payroll period.",
     };
+  }
+
+  const createdRun = await prisma.payRun.findUnique({
+    where: { id: payRunId },
+    select: { runNumber: true },
+  });
+  if (createdRun) {
+    await notifyPayRunReadyForReview({
+      organizationId: organization.id,
+      payRunId,
+      runNumber: createdRun.runNumber,
+      periodName: bounds.name,
+      actorUserId: actor.actor.userId,
+      reason: "created",
+    });
   }
 
   revalidatePath("/payroll");
@@ -511,7 +619,35 @@ export async function createSupplementalPayRun(
   );
 
   const snapshots: PayRunEmployeeSnapshot[] = [];
+  const correctionPlans: Array<{
+    employeeId: string;
+    snapshot: PayRunEmployeeSnapshot;
+    suggestedLines: Awaited<
+      ReturnType<typeof planCorrectionDeltaForEmployee>
+    >["suggestedLines"];
+  }> = [];
   const blocked: string[] = [];
+
+  const organizationName =
+    runKind === "CORRECTION"
+      ? await loadPayrollOrganizationName(organization.id)
+      : "";
+
+  const sourceSlipsByEmployee =
+    runKind === "CORRECTION"
+      ? new Map(
+          (
+            await prisma.payslip.findMany({
+              where: {
+                payRunId: source.id,
+                employeeId: { in: uniqueEmployeeIds },
+                status: "POSTED",
+              },
+              select: { employeeId: true, snapshot: true },
+            })
+          ).map((slip) => [slip.employeeId, slip.snapshot] as const),
+        )
+      : new Map<string, unknown>();
 
   for (const employeeId of uniqueEmployeeIds) {
     const ready = readyById.get(employeeId);
@@ -524,6 +660,34 @@ export async function createSupplementalPayRun(
             }`
           : `Unknown employee (${employeeId}).`,
       );
+      continue;
+    }
+
+    if (runKind === "CORRECTION") {
+      const planned = await planCorrectionDeltaForEmployee({
+        employeeId,
+        periodStart: source.payrollPeriod.periodStart,
+        periodEnd: source.payrollPeriod.periodEnd,
+        organizationName,
+        sourceSnapshotRaw: sourceSlipsByEmployee.get(employeeId) ?? null,
+        manualLines: [],
+      });
+
+      if (!planned.snapshot) {
+        blocked.push(
+          `${ready.displayName} (${ready.employeeNumber}): ${
+            planned.message || "Could not calculate correction delta."
+          }`,
+        );
+        continue;
+      }
+
+      snapshots.push(planned.snapshot);
+      correctionPlans.push({
+        employeeId,
+        snapshot: planned.snapshot,
+        suggestedLines: planned.suggestedLines,
+      });
       continue;
     }
 
@@ -586,6 +750,7 @@ export async function createSupplementalPayRun(
           runNumber,
           status: "DRAFT",
           runKind,
+          payeeGroup: source.payeeGroup,
           sourcePayRunId: source.id,
           currency: source.currency || organization.defaultCurrency || "TTD",
           employeeCount: totals.employeeCount,
@@ -609,6 +774,45 @@ export async function createSupplementalPayRun(
         ),
       });
 
+      if (runKind === "CORRECTION" && correctionPlans.length > 0) {
+        const createdSlips = await transaction.payslip.findMany({
+          where: { payRunId: payRun.id },
+          select: { id: true, employeeId: true },
+        });
+        const payslipIdByEmployee = new Map(
+          createdSlips.map((slip) => [slip.employeeId, slip.id]),
+        );
+
+        const autoLineRows = correctionPlans.flatMap((plan) => {
+          const payslipId = payslipIdByEmployee.get(plan.employeeId);
+          if (!payslipId || plan.suggestedLines.length === 0) {
+            return [];
+          }
+          return plan.suggestedLines.map((line) => ({
+            organizationId: organization.id,
+            payRunId: payRun.id,
+            payslipId,
+            employeeId: plan.employeeId,
+            lineType: line.lineType,
+            code: line.code,
+            label: line.label,
+            amount: new Prisma.Decimal(line.amount),
+            isTaxable: line.isTaxable,
+            notes: line.notes,
+            createdById: actor.actor.userId,
+          }));
+        });
+
+        if (autoLineRows.length > 0) {
+          await transaction.payrollLineItem.createMany({ data: autoLineRows });
+        }
+      }
+
+      const autoLineCount = correctionPlans.reduce(
+        (sum, plan) => sum + plan.suggestedLines.length,
+        0,
+      );
+
       await transaction.auditEvent.create({
         data: {
           userId: actor.actor.userId,
@@ -616,14 +820,22 @@ export async function createSupplementalPayRun(
           action: "CREATE",
           entityType: "PayRun",
           entityId: payRun.id,
-          description: `Created ${kindLabel} draft pay run ${runNumber} for ${source.payrollPeriod.name} (${totals.employeeCount} employees), sourced from ${source.runNumber}.`,
+          description: `Created ${kindLabel} draft pay run ${runNumber} for ${source.payrollPeriod.name} (${totals.employeeCount} employees), sourced from ${source.runNumber}.${
+            runKind === "CORRECTION"
+              ? ` Auto-suggested ${autoLineCount} correction delta line${autoLineCount === 1 ? "" : "s"}.`
+              : ""
+          }`,
           newValues: {
             runNumber,
             runKind,
+            payeeGroup: source.payeeGroup,
             sourcePayRunId: source.id,
             periodKey: source.payrollPeriod.periodKey,
             employeeCount: totals.employeeCount,
             totalNet: totals.totalNet,
+            ...(runKind === "CORRECTION"
+              ? { autoCorrectionLineCount: autoLineCount }
+              : {}),
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
@@ -642,6 +854,21 @@ export async function createSupplementalPayRun(
           ? error.message
           : "Could not create the supplemental pay run.",
     };
+  }
+
+  const createdRun = await prisma.payRun.findUnique({
+    where: { id: payRunId },
+    select: { runNumber: true },
+  });
+  if (createdRun) {
+    await notifyPayRunReadyForReview({
+      organizationId: organization.id,
+      payRunId,
+      runNumber: createdRun.runNumber,
+      periodName: source.payrollPeriod.name,
+      actorUserId: actor.actor.userId,
+      reason: "created",
+    });
   }
 
   revalidatePath("/payroll");
@@ -678,8 +905,12 @@ export async function excludePayslipFromPayRun(
     };
   }
 
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payslips: {
         select: {
@@ -700,10 +931,13 @@ export async function excludePayslipFromPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
-  if (!isPayRunMutable(payRun.status)) {
+  if (!isPayRunEditable(payRun.status)) {
     return {
       status: "error",
-      message: "Employees can only be excluded from draft or approved pay runs.",
+      message:
+        payRun.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock and return it to draft before excluding anyone."
+          : "Employees can only be excluded from draft pay runs.",
     };
   }
 
@@ -788,6 +1022,7 @@ export async function excludePayslipFromPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
   return {
     status: "success",
     message: `${payslip.employeeName} excluded from this pay run.`,
@@ -811,8 +1046,12 @@ export async function reincludePayslipInPayRun(
     return { status: "error", message: "Pay run and payslip are required." };
   }
 
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payslips: {
         select: {
@@ -833,10 +1072,13 @@ export async function reincludePayslipInPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
-  if (!isPayRunMutable(payRun.status)) {
+  if (!isPayRunEditable(payRun.status)) {
     return {
       status: "error",
-      message: "Employees can only be re-included on draft or approved pay runs.",
+      message:
+        payRun.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock and return it to draft before re-including anyone."
+          : "Employees can only be re-included on draft pay runs.",
     };
   }
 
@@ -913,6 +1155,7 @@ export async function reincludePayslipInPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
   return {
     status: "success",
     message: `${payslip.employeeName} re-included in this pay run.`,
@@ -922,9 +1165,10 @@ export async function reincludePayslipInPayRun(
 async function recalculateDraftPayslipWithLineItems(input: {
   payRunId: string;
   payslipId: string;
+  organizationId: string;
 }): Promise<{ ok: true } | { ok: false; message: string }> {
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: input.payRunId },
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: input.payRunId, organizationId: input.organizationId },
     include: {
       payrollPeriod: {
         select: { periodStart: true, periodEnd: true },
@@ -952,10 +1196,13 @@ async function recalculateDraftPayslipWithLineItems(input: {
     },
   });
 
-  if (!payRun || !isPayRunMutable(payRun.status)) {
+  if (!payRun || !isPayRunEditable(payRun.status)) {
     return {
       ok: false,
-      message: "Only draft or approved pay runs can be updated.",
+      message:
+        payRun?.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock before editing line items."
+          : "Only draft pay runs can be updated.",
     };
   }
 
@@ -965,59 +1212,21 @@ async function recalculateDraftPayslipWithLineItems(input: {
     return { ok: false, message: "Only included draft payslips can be updated." };
   }
 
-  const snapshot = await buildEmployeePayRunSnapshot(
-    payslip.employeeId,
-    payRun.payrollPeriod.periodEnd,
-    {
-      periodStart: payRun.payrollPeriod.periodStart,
-      periodEnd: payRun.payrollPeriod.periodEnd,
-      lineItems: payslip.lineItems,
+  const rebuilt = await rebuildDraftPayslipFromLineItems({
+    payRun: {
+      id: payRun.id,
+      organizationId: payRun.organizationId,
+      status: payRun.status,
+      runKind: payRun.runKind,
+      payrollPeriod: payRun.payrollPeriod,
     },
-  );
-
-  if (!snapshot || !snapshot.isReady) {
-    return {
-      ok: false,
-      message:
-        snapshot?.blockingIssues.join(" ") ||
-        "Could not calculate payslip snapshot.",
-    };
-  }
-
-  await prisma.$transaction(async (transaction) => {
-    await transaction.payslip.update({
-      where: { id: payslip.id },
-      data: toPayslipRecalcUpdateData(snapshot),
-    });
-
-    const amountRows = payRun.payslips.map((row) =>
-      row.id === payslip.id
-        ? {
-            status: row.status,
-            grossPay: snapshot.grossPay,
-            totalDeductions: snapshot.totalDeductions,
-            netPay: snapshot.netPay,
-          }
-        : {
-            status: row.status,
-            grossPay: decimalNumber(row.grossPay),
-            totalDeductions: decimalNumber(row.totalDeductions),
-            netPay: decimalNumber(row.netPay),
-          },
-    );
-    const totals = aggregateIncludedPayRunTotals(amountRows);
-
-    await transaction.payRun.update({
-      where: { id: payRun.id },
-      data: {
-        employeeCount: totals.employeeCount,
-        totalGross: new Prisma.Decimal(totals.totalGross),
-        totalDeductions: new Prisma.Decimal(totals.totalDeductions),
-        totalNet: new Prisma.Decimal(totals.totalNet),
-        ...approvalDowngradeData(payRun.status),
-      },
-    });
+    payslip,
+    siblingPayslips: payRun.payslips,
   });
+
+  if (!rebuilt.ok) {
+    return rebuilt;
+  }
 
   return { ok: true };
 }
@@ -1070,6 +1279,14 @@ export async function addPayrollLineItem(
     }
   }
 
+  if (
+    !notes &&
+    (label.toLowerCase().includes("overpayment recovery") ||
+      label.toLowerCase().includes("salary adjustment"))
+  ) {
+    fieldErrors.notes = "Reason is required for salary / overpayment adjustments.";
+  }
+
   if (Object.keys(fieldErrors).length > 0 || amount == null || !lineType || !code) {
     return {
       status: "error",
@@ -1080,8 +1297,13 @@ export async function addPayrollLineItem(
 
   const isTaxable =
     lineType === "EARNING" ? textValue(formData, "isTaxable") === "on" : false;
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payslips: {
         where: { id: payslipId },
@@ -1092,12 +1314,15 @@ export async function addPayrollLineItem(
 
   if (
     !payRun ||
-    !isPayRunMutable(payRun.status) ||
+    !isPayRunEditable(payRun.status) ||
     payRun.payslips.length === 0
   ) {
     return {
       status: "error",
-      message: "Line items can only be added to included draft payslips.",
+      message:
+        payRun?.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock before adding line items."
+          : "Line items can only be added to included draft payslips.",
     };
   }
 
@@ -1133,6 +1358,7 @@ export async function addPayrollLineItem(
     const recalculated = await recalculateDraftPayslipWithLineItems({
       payRunId: payRun.id,
       payslipId: payslip.id,
+      organizationId: organization.id,
     });
 
     if (!recalculated.ok) {
@@ -1202,8 +1428,16 @@ export async function deletePayrollLineItem(
     return { status: "error", message: "Pay run and line item are required." };
   }
 
-  const line = await prisma.payrollLineItem.findUnique({
-    where: { id: lineItemId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const line = await prisma.payrollLineItem.findFirst({
+    where: {
+      id: lineItemId,
+      organizationId: organization.id,
+      payRunId,
+    },
     include: {
       payRun: { select: { id: true, runNumber: true, status: true } },
       payslip: { select: { id: true, employeeName: true } },
@@ -1213,11 +1447,14 @@ export async function deletePayrollLineItem(
   if (
     !line ||
     line.payRunId !== payRunId ||
-    !isPayRunMutable(line.payRun.status)
+    !isPayRunEditable(line.payRun.status)
   ) {
     return {
       status: "error",
-      message: "Line items can only be removed from draft or approved pay runs.",
+      message:
+        line?.payRun.status === "APPROVED"
+          ? "This paysheet is approved. Calculate all employees to unlock before removing line items."
+          : "Line items can only be removed from draft pay runs.",
     };
   }
 
@@ -1228,6 +1465,7 @@ export async function deletePayrollLineItem(
     const recalculated = await recalculateDraftPayslipWithLineItems({
       payRunId: line.payRunId,
       payslipId: line.payslipId,
+      organizationId: organization.id,
     });
 
     if (!recalculated.ok) {
@@ -1334,7 +1572,15 @@ export async function recalculateDraftPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
+  if (!canRecalculatePayRun(payRun.status)) {
+    return {
+      status: "error",
+      message: "Only draft or approved pay runs can be recalculated.",
+    };
+  }
+
   const metadata = await getAuditRequestMetadata(formData);
+  const hadApproval = Boolean(payRun.approvedAt);
   const result = await recalculateDraftPayRunCore({
     payRun,
     actorUserId: actor.actor.userId,
@@ -1347,11 +1593,25 @@ export async function recalculateDraftPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
+  if (hadApproval) {
+    await notifyPayRunReadyForReview({
+      organizationId: organization.id,
+      payRunId: payRun.id,
+      runNumber: payRun.runNumber,
+      periodName: payRun.payrollPeriod.name,
+      actorUserId: actor.actor.userId,
+      reason: "approval_cleared",
+    });
+  }
+
   return {
     status: "success",
-    message: `Recalculated ${result.employeeCount} included employee${
+    message: `Calculated ${result.employeeCount} included employee${
       result.employeeCount === 1 ? "" : "s"
-    }. Prior approval (if any) was cleared.${
+    } and saved the draft paysheet.${
+      hadApproval ? " Prior approval was cleared — approve again before posting." : ""
+    }${
       result.excludedCount > 0
         ? ` ${result.excludedCount} excluded left unchanged.`
         : ""
@@ -1387,14 +1647,40 @@ export async function approveDraftPayRun(
 
   const payRun = await prisma.payRun.findUnique({
     where: { id: payRunId, organizationId: organization.id },
-    select: {
-      id: true,
-      runNumber: true,
-      status: true,
-      createdById: true,
-      approvedAt: true,
-      approvedById: true,
-      payslips: { select: { status: true } },
+    include: {
+      payrollPeriod: {
+        select: {
+          id: true,
+          name: true,
+          periodStart: true,
+          periodEnd: true,
+        },
+      },
+      payslips: {
+        select: {
+          id: true,
+          status: true,
+          employeeId: true,
+          employeeNumber: true,
+          employeeName: true,
+          exclusionReason: true,
+          excludedAt: true,
+          excludedByUserId: true,
+          grossPay: true,
+          totalDeductions: true,
+          netPay: true,
+          lineItems: {
+            select: {
+              lineType: true,
+              code: true,
+              label: true,
+              amount: true,
+              isTaxable: true,
+              notes: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -1403,7 +1689,13 @@ export async function approveDraftPayRun(
   }
 
   if (!canApprovePayRun(payRun.status)) {
-    return { status: "error", message: "Only draft pay runs can be approved." };
+    return {
+      status: "error",
+      message:
+        payRun.status === "APPROVED"
+          ? "This paysheet is already approved. Post it, or calculate all employees to unlock and revise."
+          : "Only draft pay runs can be approved.",
+    };
   }
 
   const included = filterIncludedPayRunRows(payRun.payslips);
@@ -1427,6 +1719,23 @@ export async function approveDraftPayRun(
   }
 
   const metadata = await getAuditRequestMetadata(formData);
+
+  // Fresh calculation is the paysheet save — approve locks those figures.
+  const recalc = await recalculateDraftPayRunCore({
+    payRun,
+    actorUserId: actor.actor.userId,
+    metadata,
+    reason: "manual",
+    clearApproval: true,
+  });
+
+  if (!recalc.ok) {
+    return {
+      status: "error",
+      message: `Could not approve — calculation failed. ${recalc.message}`,
+    };
+  }
+
   const approvedAt = new Date();
 
   try {
@@ -1448,7 +1757,7 @@ export async function approveDraftPayRun(
           action: "UPDATE",
           entityType: "PayRun",
           entityId: payRun.id,
-          description: `Approved draft pay run ${payRun.runNumber} for posting.`,
+          description: `Approved paysheet for pay run ${payRun.runNumber} after calculating ${recalc.employeeCount} included employees.`,
           oldValues: {
             status: payRun.status,
             approvedAt: payRun.approvedAt?.toISOString() ?? null,
@@ -1459,6 +1768,9 @@ export async function approveDraftPayRun(
             approvedAt: approvedAt.toISOString(),
             approvedById: actor.actor.userId,
             approvalNote,
+            employeeCount: recalc.employeeCount,
+            totalNet: recalc.totalNet,
+            figuresChangedOnApprove: recalc.figuresChanged,
           },
           ipAddress: metadata.ipAddress,
           userAgent: metadata.userAgent,
@@ -1476,9 +1788,24 @@ export async function approveDraftPayRun(
   }
 
   revalidatePayRunPaths(payRun.id);
+
+  await notifyPayRunApproved({
+    organizationId: organization.id,
+    payRunId: payRun.id,
+    runNumber: payRun.runNumber,
+    createdById: payRun.createdById,
+    actorUserId: actor.actor.userId,
+  });
+
   return {
     status: "success",
-    message: "Pay run approved. A different user can now post it.",
+    message: `Paysheet calculated for ${recalc.employeeCount} employee${
+      recalc.employeeCount === 1 ? "" : "s"
+    } and locked for posting.${
+      recalc.figuresChanged
+        ? " Totals were refreshed during approval — review before posting."
+        : ""
+    }`,
   };
 }
 
@@ -1546,7 +1873,8 @@ export async function postPayRun(
   if (!canPostPayRun(payRunForRecalc.status)) {
     return {
       status: "error",
-      message: "Only approved (or draft, as a safety fallback) pay runs can be posted.",
+      message:
+        "Only an approved paysheet can be posted. Calculate all employees, then approve, then post.",
     };
   }
 
@@ -1621,6 +1949,7 @@ export async function postPayRun(
           id: true,
           name: true,
           periodKey: true,
+          periodStart: true,
           periodEnd: true,
         },
       },
@@ -1684,7 +2013,22 @@ export async function postPayRun(
     };
   }
 
+  await markGratuitySettlementsPaidForPayRun(payRun.id, {
+    actorUserId: actor.actor.userId,
+  });
+
   revalidatePayRunPaths(payRun.id);
+
+  await notifyPayRunPosted({
+    organizationId: organization.id,
+    payRunId: payRun.id,
+    runNumber: payRun.runNumber,
+    periodName: payRun.payrollPeriod.name,
+    actorUserId: actor.actor.userId,
+    createdById: payRun.createdById,
+    approvedById: payRun.approvedById,
+  });
+
   redirect(`/payroll/runs/${payRun.id}`);
 }
 
@@ -1837,7 +2181,7 @@ export async function closePayRun(
   return { status: "success", message: "Pay run closed." };
 }
 
-export async function emailPostedPayslips(
+export async function releasePayRunPayslips(
   _previousState: PayRunFormState,
   formData: FormData,
 ): Promise<PayRunFormState> {
@@ -1853,76 +2197,55 @@ export async function emailPostedPayslips(
     return { status: "error", message: "Pay run is required." };
   }
 
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
-    include: {
-      payrollPeriod: { select: { name: true } },
-      payslips: {
-        where: { status: "POSTED" },
-        include: {
-          employee: {
-            select: {
-              firstName: true,
-              lastName: true,
-              workEmail: true,
-              personalEmail: true,
-              user: { select: { id: true, email: true } },
-            },
-          },
-        },
-      },
-    },
-  });
+  const metadata = await getAuditRequestMetadata(formData);
 
-  if (!payRun || !isPayRunPosted(payRun.status)) {
-    return {
-      status: "error",
-      message: "Payslip emails can only be queued for posted pay runs.",
-    };
-  }
+  try {
+    const result = await releasePayRunPayslipsCore({
+      payRunId,
+      actorUserId: actor.actor.userId,
+      metadata,
+    });
 
-  let queued = 0;
-  let skipped = 0;
-
-  for (const slip of payRun.payslips) {
-    const email =
-      slip.employee.workEmail ??
-      slip.employee.personalEmail ??
-      slip.employee.user?.email ??
-      null;
-
-    if (!email) {
-      skipped += 1;
-      continue;
+    if (result.released === 0) {
+      return {
+        status: "error",
+        message:
+          result.alreadyReleased > 0
+            ? "All posted payslips on this run are already released."
+            : "No posted payslips available to release.",
+      };
     }
 
-    const employeeName =
-      `${slip.employee.firstName} ${slip.employee.lastName}`.trim() ||
-      slip.employeeName;
-    const url = `/payroll/runs/${payRun.id}/payslips/${slip.id}/print`;
+    revalidatePayRunPaths(payRunId);
+    revalidatePath("/me/payslips");
+    revalidatePath("/me/payslip");
 
-    await queueEmail({
-      templateKey: "payroll.payslip.posted",
-      moduleKey: "payroll",
-      relatedType: "Payslip",
-      relatedId: slip.id,
-      recipientUserId: slip.employee.user?.id ?? null,
-      recipientEmail: email,
-      recipientName: employeeName,
-      subject: `Payslip available: ${payRun.payrollPeriod.name}`,
-      textBody: `Your payslip for ${payRun.payrollPeriod.name} is available: ${url}`,
-      htmlBody: `<p>Your payslip for ${payRun.payrollPeriod.name} is available.</p><p><a href="${url}">Open printable payslip</a></p>`,
-    });
-    queued += 1;
+    return {
+      status: "success",
+      message: `Released ${result.released} payslip${result.released === 1 ? "" : "s"}; queued ${result.queued} email${result.queued === 1 ? "" : "s"}${
+        result.skipped > 0
+          ? `; skipped ${result.skipped} without email.`
+          : "."
+      }`,
+    };
+  } catch (error) {
+    console.error("releasePayRunPayslips failed:", error);
+    return {
+      status: "error",
+      message:
+        error instanceof Error
+          ? error.message
+          : "Could not release payslips.",
+    };
   }
+}
 
-  revalidatePayRunPaths(payRun.id);
-  return {
-    status: "success",
-    message: `Queued ${queued} payslip email${queued === 1 ? "" : "s"}${
-      skipped > 0 ? `; skipped ${skipped} without email.` : "."
-    }`,
-  };
+/** @deprecated Prefer releasePayRunPayslips — kept as alias for older callers. */
+export async function emailPostedPayslips(
+  previousState: PayRunFormState,
+  formData: FormData,
+): Promise<PayRunFormState> {
+  return releasePayRunPayslips(previousState, formData);
 }
 
 export async function deleteDraftPayRun(
@@ -1941,8 +2264,12 @@ export async function deleteDraftPayRun(
     return { status: "error", message: "Pay run is required." };
   }
 
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payrollPeriod: {
         select: {
@@ -1962,11 +2289,10 @@ export async function deleteDraftPayRun(
     return { status: "error", message: "Pay run not found." };
   }
 
-  if (!isPayRunMutable(payRun.status)) {
+  if (!canDeletePayRun(payRun.status)) {
     return {
       status: "error",
-      message:
-        "Posted pay runs cannot be deleted. Posted payroll history is immutable.",
+      message: "This pay run cannot be deleted.",
     };
   }
 
@@ -1975,6 +2301,7 @@ export async function deleteDraftPayRun(
   const periodName = payRun.payrollPeriod.name;
   const periodKey = payRun.payrollPeriod.periodKey;
   const payslipCount = payRun._count.payslips;
+  const statusLabel = payRunStatusLabel(payRun.status);
 
   try {
     await prisma.$transaction(async (transaction) => {
@@ -1992,7 +2319,7 @@ export async function deleteDraftPayRun(
         },
       });
 
-      const periodPlan = planPeriodAfterDraftPayRunDelete({
+      const periodPlan = planPeriodAfterPayRunDelete({
         periodId: payRun.payrollPeriodId,
         periodStatus: payRun.payrollPeriod.status,
         remainingPayRunCount,
@@ -2006,12 +2333,12 @@ export async function deleteDraftPayRun(
           action: "DELETE",
           entityType: "PayRun",
           entityId: payRun.id,
-          description: `Deleted draft pay run ${runNumber} for ${periodName} (${payslipCount} payslip${
+          description: `Deleted ${statusLabel.toLowerCase()} pay run ${runNumber} for ${periodName} (${payslipCount} payslip${
             payslipCount === 1 ? "" : "s"
           }).`,
           oldValues: {
             runNumber,
-            status: "DRAFT",
+            status: payRun.status,
             periodKey,
             periodName,
             periodStatus: payRun.payrollPeriod.status,
@@ -2024,7 +2351,13 @@ export async function deleteDraftPayRun(
         },
       });
 
-      // Payslips cascade via payRunId (including EXCLUDED membership rows).
+      const notificationRefs = await collectPayRunNotificationRefs(
+        transaction,
+        payRun.id,
+      );
+      await purgeNotificationsForRelatedEntities(transaction, notificationRefs);
+
+      // Payslips, payments, ACH batches cascade via payRunId.
       await transaction.payRun.delete({
         where: { id: payRun.id },
       });
@@ -2047,7 +2380,7 @@ export async function deleteDraftPayRun(
       message:
         error instanceof Error
           ? error.message
-          : "Could not delete the draft pay run.",
+          : "Could not delete the pay run.",
     };
   }
 
@@ -2055,6 +2388,7 @@ export async function deleteDraftPayRun(
   revalidatePath("/payroll/runs");
   revalidatePath(`/payroll/runs/${payRunId}`);
   revalidatePath(`/payroll/runs/${payRunId}/print`);
+  revalidatePath("/notifications");
   revalidatePath("/me");
   redirect(
     `/payroll/runs?deleted=${encodeURIComponent(runNumber)}`,

@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  startTransition,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { ChevronDown, Search, SlidersHorizontal, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -109,6 +116,18 @@ export function ListSearchFilters({
   const hasClearableState =
     hasActiveSearch || activeFilterCount > 0 || Boolean(showMode);
 
+  function navigateToSearch(nextQuery: string) {
+    const href = buildListFilterUrl(basePath, {
+      ...valuesRef.current,
+      [searchParam]: nextQuery || undefined,
+    });
+
+    startTransition(() => {
+      router.replace(href, { scroll: false });
+      router.refresh();
+    });
+  }
+
   // Keep the input in sync with URL-driven props (Clear, back/forward),
   // but do not clobber text while the user is actively typing.
   useEffect(() => {
@@ -119,27 +138,38 @@ export function ListSearchFilters({
     setQuery(searchValue);
   }, [searchValue]);
 
-  // Live-update only the search query param (preserves other filters; resets page).
+  // Live-update the search query as the user types (no Enter required).
   useEffect(() => {
     if (query.trim() === searchValue.trim()) {
       return;
     }
 
     const timeoutId = window.setTimeout(() => {
-      const nextQuery = query.trim();
-      const href = buildListFilterUrl(basePath, {
-        ...valuesRef.current,
-        [searchParam]: nextQuery || undefined,
-      });
-      router.replace(href, { scroll: false });
+      navigateToSearch(query.trim());
     }, SEARCH_DEBOUNCE_MS);
 
     return () => window.clearTimeout(timeoutId);
+    // navigateToSearch closes over latest valuesRef / router; omit from deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional
   }, [query, searchValue, basePath, searchParam, router]);
+
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
+    // Filters still use native GET. Search typing is live; Enter should not
+    // fight the debounced replace with a second full navigation.
+    if (fields.length === 0 || !filtersOpen) {
+      event.preventDefault();
+      navigateToSearch(query.trim());
+    }
+  }
 
   return (
     <section aria-label="Search and filters" className="pb-1">
-      <form method="get" action={basePath} className="space-y-4">
+      <form
+        method="get"
+        action={basePath}
+        className="space-y-4"
+        onSubmit={onSubmit}
+      >
         {showMode ? <input type="hidden" name="show" value={showMode} /> : null}
         {typeof values.sort === "string" && values.sort ? (
           <input type="hidden" name="sort" value={values.sort} />
@@ -157,7 +187,7 @@ export function ListSearchFilters({
               name={searchParam}
               type="search"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onValueChange={setQuery}
               placeholder={searchPlaceholder}
               className="pl-8"
               aria-label="Search"

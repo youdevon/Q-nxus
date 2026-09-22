@@ -10,6 +10,11 @@ import {
   getEmploymentContractProfile,
 } from "@/src/modules/hr/data/get-employment-contracts";
 import { requireContractManageAccess } from "@/src/modules/hr/data/require-people-access";
+import {
+  defaultTtGratuityPolicyInput,
+  getCurrentGratuityPolicy,
+  toGratuityPolicyInput,
+} from "@/src/modules/payroll/data/get-gratuity-policy";
 
 export const metadata: Metadata = {
   title: "Renew Employment Contract",
@@ -35,17 +40,23 @@ export default async function RenewEmploymentContractPage({
     allowanceCategories,
     leaveEntitlementDefaults,
     departments,
+    gratuityPolicyRecord,
   ] = await Promise.all([
     getEmployeeContractHistory(id),
     getEmploymentContractProfile(id, contractId),
     getAllowanceCategories(),
     getContractLeaveEntitlementDefaults(id),
     getEmployeeFormOptions(),
+    getCurrentGratuityPolicy(),
   ]);
 
   if (!history || !sourceContract) {
     notFound();
   }
+
+  const gratuityPolicy = gratuityPolicyRecord
+    ? toGratuityPolicyInput(gratuityPolicyRecord)
+    : defaultTtGratuityPolicyInput();
 
   return (
     <EmploymentContractForm
@@ -55,6 +66,7 @@ export default async function RenewEmploymentContractPage({
       leaveEntitlementDefaults={leaveEntitlementDefaults}
       departments={departments}
       mode="renew"
+      gratuityPolicy={gratuityPolicy}
     />
   );
 }

@@ -30,6 +30,7 @@ export type PostNetAllocationAccountInput = {
   kind: "FIXED" | "PERCENTAGE" | "REMAINDER";
   /** Lower runs first within the same kind. */
   priority: number;
+  accountType?: string | null;
 };
 
 export type PostNetSplitResult = {
@@ -133,10 +134,10 @@ export function applyPostNetBankAllocations(input: {
     remainingCents = subCents(remainingCents, wantCents);
     lines.push({
       bankName: account.bankName,
-      accountNumber: account.accountNumber,
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: fromCents(wantCents),
       kind: "FIXED",
+      accountType: account.accountType ?? null,
     });
   }
 
@@ -161,10 +162,10 @@ export function applyPostNetBankAllocations(input: {
     remainingCents = subCents(remainingCents, wantCents);
     lines.push({
       bankName: account.bankName,
-      accountNumber: account.accountNumber,
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: fromCents(wantCents),
       kind: "PERCENTAGE",
+      accountType: account.accountType ?? null,
     });
   }
 
@@ -172,10 +173,10 @@ export function applyPostNetBankAllocations(input: {
   const remainderAmount = fromCents(remainingCents);
   lines.push({
     bankName: remainder.bankName,
-    accountNumber: remainder.accountNumber,
     accountNumberMasked: maskAccountNumber(remainder.accountNumber),
     amount: remainderAmount,
     kind: "REMAINDER",
+    accountType: remainder.accountType ?? null,
   });
 
   const allocatedTotal = sumMoney(...lines.map((line) => line.amount));

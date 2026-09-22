@@ -20,7 +20,6 @@ import {
 import {
   computeNisContribution,
   NIS_CLASS_I_MONTHLY_MIN,
-  NIS_WEEKS_PER_MONTH,
   toNisClassInputs,
   type NisEarningsClassRecord,
 } from "@/src/modules/payroll/lib/nis-contribution";
@@ -145,6 +144,7 @@ export function NisClassForm({
     return computeNisContribution({
       monthlySalary: 30_000,
       classes: parsed,
+      weeksInPeriod: 4,
     });
   }, [rows, effectiveFrom, effectiveTo, versionLabel, isActive]);
 
@@ -175,7 +175,7 @@ export function NisClassForm({
           title={
             isNewVersion ? "New NIS Class Schedule" : "Edit NIS Class Schedule"
           }
-          description="Fixed weekly employee and employer amounts by monthly earnings band. Monthly equivalents use 4⅓ weeks (13 ÷ 3)."
+          description="Fixed weekly employee and employer amounts by monthly earnings band. Period amounts = weekly × Mondays in the pay period (typically 4 or 5)."
           backHref="/payroll/settings/nis"
           backLabel="NIS classes"
           actions={
@@ -267,11 +267,12 @@ export function NisClassForm({
               contribution.
             </li>
             <li>
-              • Monthly employee/employer amounts = weekly amount ×{" "}
-              {NIS_WEEKS_PER_MONTH.toFixed(3)} weeks.
+              • Period employee/employer amounts = weekly amount × Mondays in
+              the pay period (4 or 5 contribution weeks). Illustrative
+              &quot;Employee / 4 wks&quot; below uses 4 weeks.
             </li>
             <li>
-              • Preview at TTD 30,000/month → Class{" "}
+              • Preview at TTD 30,000/month (4 weeks) → Class{" "}
               {previewContribution.classCode ?? "—"}: employee{" "}
               {formatMoney(previewContribution.employeeMonthly, {
                 currency: "TTD",
@@ -447,40 +448,49 @@ export function NisClassesDirectory({
         backHref="/payroll/settings"
         backLabel="Payroll settings"
         actions={
-          canManage && selectedVersion ? (
-            <div className="flex flex-wrap gap-2">
-              <Button
-                nativeButton={false}
-                variant="outline"
-                render={
-                  <Link
-                    href={`/payroll/settings/nis/${selectedVersion.effectiveFrom}/edit`}
-                  />
-                }
-              >
-                Edit schedule
-              </Button>
-              <Button
-                nativeButton={false}
-                render={
-                  <Link
-                    href={`/payroll/settings/nis/new?copyFrom=${selectedVersion.effectiveFrom}`}
-                  />
-                }
-              >
-                <Copy />
-                New version
-              </Button>
-            </div>
-          ) : canManage ? (
+          <div className="flex flex-wrap gap-2">
             <Button
               nativeButton={false}
-              render={<Link href="/payroll/settings/nis/new" />}
+              variant="outline"
+              render={<Link href="/payroll/settings/nis/class-z" />}
             >
-              <Plus />
-              New schedule
+              Class Z settings
             </Button>
-          ) : undefined
+            {canManage && selectedVersion ? (
+              <>
+                <Button
+                  nativeButton={false}
+                  variant="outline"
+                  render={
+                    <Link
+                      href={`/payroll/settings/nis/${selectedVersion.effectiveFrom}/edit`}
+                    />
+                  }
+                >
+                  Edit schedule
+                </Button>
+                <Button
+                  nativeButton={false}
+                  render={
+                    <Link
+                      href={`/payroll/settings/nis/new?copyFrom=${selectedVersion.effectiveFrom}`}
+                    />
+                  }
+                >
+                  <Copy />
+                  New version
+                </Button>
+              </>
+            ) : canManage ? (
+              <Button
+                nativeButton={false}
+                render={<Link href="/payroll/settings/nis/new" />}
+              >
+                <Plus />
+                New schedule
+              </Button>
+            ) : undefined}
+          </div>
         }
       />
 
@@ -549,16 +559,14 @@ export function NisClassesDirectory({
                       <th className="py-2 pr-4 font-medium">Monthly earnings</th>
                       <th className="py-2 pr-4 font-medium">Employee / week</th>
                       <th className="py-2 pr-4 font-medium">Employer / week</th>
-                      <th className="py-2 font-medium">Employee / month</th>
+                      <th className="py-2 font-medium">Employee / 4 wks</th>
                     </tr>
                   </thead>
                   <tbody>
                     {classes.map((row) => {
                       const employeeMonthly =
                         Math.round(
-                          Number(row.employeeWeeklyAmount) *
-                            NIS_WEEKS_PER_MONTH *
-                            100,
+                          Number(row.employeeWeeklyAmount) * 4 * 100,
                         ) / 100;
 
                       return (

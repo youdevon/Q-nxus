@@ -14,7 +14,9 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model EmployeeBankAccount
- * Employee-owned bank account (Phase 1 source of truth for payroll destinations).
+ * Employee-owned bank account / payment destination (source of truth with allocations).
+ * Together with EmployeePayrollAllocation this is the payment-instruction model —
+ * not a separate payroll employee list (HR Employee remains SoT).
  */
 export type EmployeeBankAccountModel = runtime.Types.Result.DefaultSelection<Prisma.$EmployeeBankAccountPayload>
 
@@ -40,6 +42,7 @@ export type EmployeeBankAccountMinAggregateOutputType = {
   employeeId: string | null
   financialInstitutionId: string | null
   bankName: string | null
+  routingNumber: string | null
   branchCode: string | null
   branchName: string | null
   accountHolderName: string | null
@@ -59,6 +62,9 @@ export type EmployeeBankAccountMinAggregateOutputType = {
   effectiveTo: Date | null
   isActive: boolean | null
   sortOrder: number | null
+  dataSource: $Enums.BankingDataSource | null
+  changeReason: string | null
+  supersedesAccountId: string | null
   createdByUserId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -71,6 +77,7 @@ export type EmployeeBankAccountMaxAggregateOutputType = {
   employeeId: string | null
   financialInstitutionId: string | null
   bankName: string | null
+  routingNumber: string | null
   branchCode: string | null
   branchName: string | null
   accountHolderName: string | null
@@ -90,6 +97,9 @@ export type EmployeeBankAccountMaxAggregateOutputType = {
   effectiveTo: Date | null
   isActive: boolean | null
   sortOrder: number | null
+  dataSource: $Enums.BankingDataSource | null
+  changeReason: string | null
+  supersedesAccountId: string | null
   createdByUserId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -102,6 +112,7 @@ export type EmployeeBankAccountCountAggregateOutputType = {
   employeeId: number
   financialInstitutionId: number
   bankName: number
+  routingNumber: number
   branchCode: number
   branchName: number
   accountHolderName: number
@@ -121,6 +132,9 @@ export type EmployeeBankAccountCountAggregateOutputType = {
   effectiveTo: number
   isActive: number
   sortOrder: number
+  dataSource: number
+  changeReason: number
+  supersedesAccountId: number
   createdByUserId: number
   createdAt: number
   updatedAt: number
@@ -143,6 +157,7 @@ export type EmployeeBankAccountMinAggregateInputType = {
   employeeId?: true
   financialInstitutionId?: true
   bankName?: true
+  routingNumber?: true
   branchCode?: true
   branchName?: true
   accountHolderName?: true
@@ -162,6 +177,9 @@ export type EmployeeBankAccountMinAggregateInputType = {
   effectiveTo?: true
   isActive?: true
   sortOrder?: true
+  dataSource?: true
+  changeReason?: true
+  supersedesAccountId?: true
   createdByUserId?: true
   createdAt?: true
   updatedAt?: true
@@ -174,6 +192,7 @@ export type EmployeeBankAccountMaxAggregateInputType = {
   employeeId?: true
   financialInstitutionId?: true
   bankName?: true
+  routingNumber?: true
   branchCode?: true
   branchName?: true
   accountHolderName?: true
@@ -193,6 +212,9 @@ export type EmployeeBankAccountMaxAggregateInputType = {
   effectiveTo?: true
   isActive?: true
   sortOrder?: true
+  dataSource?: true
+  changeReason?: true
+  supersedesAccountId?: true
   createdByUserId?: true
   createdAt?: true
   updatedAt?: true
@@ -205,6 +227,7 @@ export type EmployeeBankAccountCountAggregateInputType = {
   employeeId?: true
   financialInstitutionId?: true
   bankName?: true
+  routingNumber?: true
   branchCode?: true
   branchName?: true
   accountHolderName?: true
@@ -224,6 +247,9 @@ export type EmployeeBankAccountCountAggregateInputType = {
   effectiveTo?: true
   isActive?: true
   sortOrder?: true
+  dataSource?: true
+  changeReason?: true
+  supersedesAccountId?: true
   createdByUserId?: true
   createdAt?: true
   updatedAt?: true
@@ -323,6 +349,7 @@ export type EmployeeBankAccountGroupByOutputType = {
   employeeId: string
   financialInstitutionId: string | null
   bankName: string
+  routingNumber: string | null
   branchCode: string | null
   branchName: string | null
   accountHolderName: string | null
@@ -342,6 +369,9 @@ export type EmployeeBankAccountGroupByOutputType = {
   effectiveTo: Date | null
   isActive: boolean
   sortOrder: number
+  dataSource: $Enums.BankingDataSource
+  changeReason: string | null
+  supersedesAccountId: string | null
   createdByUserId: string | null
   createdAt: Date
   updatedAt: Date
@@ -377,6 +407,7 @@ export type EmployeeBankAccountWhereInput = {
   employeeId?: Prisma.StringFilter<"EmployeeBankAccount"> | string
   financialInstitutionId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   bankName?: Prisma.StringFilter<"EmployeeBankAccount"> | string
+  routingNumber?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   branchCode?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   branchName?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   accountHolderName?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
@@ -396,6 +427,9 @@ export type EmployeeBankAccountWhereInput = {
   effectiveTo?: Prisma.DateTimeNullableFilter<"EmployeeBankAccount"> | Date | string | null
   isActive?: Prisma.BoolFilter<"EmployeeBankAccount"> | boolean
   sortOrder?: Prisma.IntFilter<"EmployeeBankAccount"> | number
+  dataSource?: Prisma.EnumBankingDataSourceFilter<"EmployeeBankAccount"> | $Enums.BankingDataSource
+  changeReason?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
+  supersedesAccountId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   createdByUserId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeBankAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeBankAccount"> | Date | string
@@ -413,6 +447,7 @@ export type EmployeeBankAccountOrderByWithRelationInput = {
   employeeId?: Prisma.SortOrder
   financialInstitutionId?: Prisma.SortOrderInput | Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  routingNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   branchCode?: Prisma.SortOrderInput | Prisma.SortOrder
   branchName?: Prisma.SortOrderInput | Prisma.SortOrder
   accountHolderName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -432,6 +467,9 @@ export type EmployeeBankAccountOrderByWithRelationInput = {
   effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
+  dataSource?: Prisma.SortOrder
+  changeReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  supersedesAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -452,6 +490,7 @@ export type EmployeeBankAccountWhereUniqueInput = Prisma.AtLeast<{
   employeeId?: Prisma.StringFilter<"EmployeeBankAccount"> | string
   financialInstitutionId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   bankName?: Prisma.StringFilter<"EmployeeBankAccount"> | string
+  routingNumber?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   branchCode?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   branchName?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   accountHolderName?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
@@ -471,6 +510,9 @@ export type EmployeeBankAccountWhereUniqueInput = Prisma.AtLeast<{
   effectiveTo?: Prisma.DateTimeNullableFilter<"EmployeeBankAccount"> | Date | string | null
   isActive?: Prisma.BoolFilter<"EmployeeBankAccount"> | boolean
   sortOrder?: Prisma.IntFilter<"EmployeeBankAccount"> | number
+  dataSource?: Prisma.EnumBankingDataSourceFilter<"EmployeeBankAccount"> | $Enums.BankingDataSource
+  changeReason?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
+  supersedesAccountId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   createdByUserId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeBankAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeBankAccount"> | Date | string
@@ -488,6 +530,7 @@ export type EmployeeBankAccountOrderByWithAggregationInput = {
   employeeId?: Prisma.SortOrder
   financialInstitutionId?: Prisma.SortOrderInput | Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  routingNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   branchCode?: Prisma.SortOrderInput | Prisma.SortOrder
   branchName?: Prisma.SortOrderInput | Prisma.SortOrder
   accountHolderName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -507,6 +550,9 @@ export type EmployeeBankAccountOrderByWithAggregationInput = {
   effectiveTo?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
+  dataSource?: Prisma.SortOrder
+  changeReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  supersedesAccountId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -527,6 +573,7 @@ export type EmployeeBankAccountScalarWhereWithAggregatesInput = {
   employeeId?: Prisma.StringWithAggregatesFilter<"EmployeeBankAccount"> | string
   financialInstitutionId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
   bankName?: Prisma.StringWithAggregatesFilter<"EmployeeBankAccount"> | string
+  routingNumber?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
   branchCode?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
   branchName?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
   accountHolderName?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
@@ -546,6 +593,9 @@ export type EmployeeBankAccountScalarWhereWithAggregatesInput = {
   effectiveTo?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeBankAccount"> | Date | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"EmployeeBankAccount"> | boolean
   sortOrder?: Prisma.IntWithAggregatesFilter<"EmployeeBankAccount"> | number
+  dataSource?: Prisma.EnumBankingDataSourceWithAggregatesFilter<"EmployeeBankAccount"> | $Enums.BankingDataSource
+  changeReason?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
+  supersedesAccountId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
   createdByUserId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeBankAccount"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeBankAccount"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeBankAccount"> | Date | string
@@ -555,6 +605,7 @@ export type EmployeeBankAccountScalarWhereWithAggregatesInput = {
 export type EmployeeBankAccountCreateInput = {
   id?: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -574,6 +625,9 @@ export type EmployeeBankAccountCreateInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -591,6 +645,7 @@ export type EmployeeBankAccountUncheckedCreateInput = {
   employeeId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -610,6 +665,9 @@ export type EmployeeBankAccountUncheckedCreateInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -621,6 +679,7 @@ export type EmployeeBankAccountUncheckedCreateInput = {
 export type EmployeeBankAccountUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -640,6 +699,9 @@ export type EmployeeBankAccountUpdateInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -657,6 +719,7 @@ export type EmployeeBankAccountUncheckedUpdateInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -676,6 +739,9 @@ export type EmployeeBankAccountUncheckedUpdateInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -690,6 +756,7 @@ export type EmployeeBankAccountCreateManyInput = {
   employeeId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -709,6 +776,9 @@ export type EmployeeBankAccountCreateManyInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -718,6 +788,7 @@ export type EmployeeBankAccountCreateManyInput = {
 export type EmployeeBankAccountUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -737,6 +808,9 @@ export type EmployeeBankAccountUpdateManyMutationInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -749,6 +823,7 @@ export type EmployeeBankAccountUncheckedUpdateManyInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -768,6 +843,9 @@ export type EmployeeBankAccountUncheckedUpdateManyInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -790,6 +868,7 @@ export type EmployeeBankAccountCountOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   financialInstitutionId?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  routingNumber?: Prisma.SortOrder
   branchCode?: Prisma.SortOrder
   branchName?: Prisma.SortOrder
   accountHolderName?: Prisma.SortOrder
@@ -809,6 +888,9 @@ export type EmployeeBankAccountCountOrderByAggregateInput = {
   effectiveTo?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
+  dataSource?: Prisma.SortOrder
+  changeReason?: Prisma.SortOrder
+  supersedesAccountId?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -825,6 +907,7 @@ export type EmployeeBankAccountMaxOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   financialInstitutionId?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  routingNumber?: Prisma.SortOrder
   branchCode?: Prisma.SortOrder
   branchName?: Prisma.SortOrder
   accountHolderName?: Prisma.SortOrder
@@ -844,6 +927,9 @@ export type EmployeeBankAccountMaxOrderByAggregateInput = {
   effectiveTo?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
+  dataSource?: Prisma.SortOrder
+  changeReason?: Prisma.SortOrder
+  supersedesAccountId?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -856,6 +942,7 @@ export type EmployeeBankAccountMinOrderByAggregateInput = {
   employeeId?: Prisma.SortOrder
   financialInstitutionId?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
+  routingNumber?: Prisma.SortOrder
   branchCode?: Prisma.SortOrder
   branchName?: Prisma.SortOrder
   accountHolderName?: Prisma.SortOrder
@@ -875,6 +962,9 @@ export type EmployeeBankAccountMinOrderByAggregateInput = {
   effectiveTo?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   sortOrder?: Prisma.SortOrder
+  dataSource?: Prisma.SortOrder
+  changeReason?: Prisma.SortOrder
+  supersedesAccountId?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1029,6 +1119,10 @@ export type EnumBankAccountVerificationStatusFieldUpdateOperationsInput = {
   set?: $Enums.BankAccountVerificationStatus
 }
 
+export type EnumBankingDataSourceFieldUpdateOperationsInput = {
+  set?: $Enums.BankingDataSource
+}
+
 export type EmployeeBankAccountCreateNestedOneWithoutAllocationsInput = {
   create?: Prisma.XOR<Prisma.EmployeeBankAccountCreateWithoutAllocationsInput, Prisma.EmployeeBankAccountUncheckedCreateWithoutAllocationsInput>
   connectOrCreate?: Prisma.EmployeeBankAccountCreateOrConnectWithoutAllocationsInput
@@ -1062,6 +1156,7 @@ export type EmployeeBankAccountUpdateOneWithoutPaymentAllocationsNestedInput = {
 export type EmployeeBankAccountCreateWithoutOrganizationInput = {
   id?: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1081,6 +1176,9 @@ export type EmployeeBankAccountCreateWithoutOrganizationInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1096,6 +1194,7 @@ export type EmployeeBankAccountUncheckedCreateWithoutOrganizationInput = {
   employeeId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1115,6 +1214,9 @@ export type EmployeeBankAccountUncheckedCreateWithoutOrganizationInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1158,6 +1260,7 @@ export type EmployeeBankAccountScalarWhereInput = {
   employeeId?: Prisma.StringFilter<"EmployeeBankAccount"> | string
   financialInstitutionId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   bankName?: Prisma.StringFilter<"EmployeeBankAccount"> | string
+  routingNumber?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   branchCode?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   branchName?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   accountHolderName?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
@@ -1177,6 +1280,9 @@ export type EmployeeBankAccountScalarWhereInput = {
   effectiveTo?: Prisma.DateTimeNullableFilter<"EmployeeBankAccount"> | Date | string | null
   isActive?: Prisma.BoolFilter<"EmployeeBankAccount"> | boolean
   sortOrder?: Prisma.IntFilter<"EmployeeBankAccount"> | number
+  dataSource?: Prisma.EnumBankingDataSourceFilter<"EmployeeBankAccount"> | $Enums.BankingDataSource
+  changeReason?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
+  supersedesAccountId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   createdByUserId?: Prisma.StringNullableFilter<"EmployeeBankAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeBankAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmployeeBankAccount"> | Date | string
@@ -1186,6 +1292,7 @@ export type EmployeeBankAccountScalarWhereInput = {
 export type EmployeeBankAccountCreateWithoutEmployeeInput = {
   id?: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1205,6 +1312,9 @@ export type EmployeeBankAccountCreateWithoutEmployeeInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1220,6 +1330,7 @@ export type EmployeeBankAccountUncheckedCreateWithoutEmployeeInput = {
   organizationId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1239,6 +1350,9 @@ export type EmployeeBankAccountUncheckedCreateWithoutEmployeeInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1276,6 +1390,7 @@ export type EmployeeBankAccountUpdateManyWithWhereWithoutEmployeeInput = {
 export type EmployeeBankAccountCreateWithoutFinancialInstitutionInput = {
   id?: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1295,6 +1410,9 @@ export type EmployeeBankAccountCreateWithoutFinancialInstitutionInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1310,6 +1428,7 @@ export type EmployeeBankAccountUncheckedCreateWithoutFinancialInstitutionInput =
   organizationId: string
   employeeId: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1329,6 +1448,9 @@ export type EmployeeBankAccountUncheckedCreateWithoutFinancialInstitutionInput =
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1366,6 +1488,7 @@ export type EmployeeBankAccountUpdateManyWithWhereWithoutFinancialInstitutionInp
 export type EmployeeBankAccountCreateWithoutAllocationsInput = {
   id?: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1385,6 +1508,9 @@ export type EmployeeBankAccountCreateWithoutAllocationsInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1401,6 +1527,7 @@ export type EmployeeBankAccountUncheckedCreateWithoutAllocationsInput = {
   employeeId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1420,6 +1547,9 @@ export type EmployeeBankAccountUncheckedCreateWithoutAllocationsInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1446,6 +1576,7 @@ export type EmployeeBankAccountUpdateToOneWithWhereWithoutAllocationsInput = {
 export type EmployeeBankAccountUpdateWithoutAllocationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1465,6 +1596,9 @@ export type EmployeeBankAccountUpdateWithoutAllocationsInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1481,6 +1615,7 @@ export type EmployeeBankAccountUncheckedUpdateWithoutAllocationsInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1500,6 +1635,9 @@ export type EmployeeBankAccountUncheckedUpdateWithoutAllocationsInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1510,6 +1648,7 @@ export type EmployeeBankAccountUncheckedUpdateWithoutAllocationsInput = {
 export type EmployeeBankAccountCreateWithoutPaymentAllocationsInput = {
   id?: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1529,6 +1668,9 @@ export type EmployeeBankAccountCreateWithoutPaymentAllocationsInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1545,6 +1687,7 @@ export type EmployeeBankAccountUncheckedCreateWithoutPaymentAllocationsInput = {
   employeeId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1564,6 +1707,9 @@ export type EmployeeBankAccountUncheckedCreateWithoutPaymentAllocationsInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1590,6 +1736,7 @@ export type EmployeeBankAccountUpdateToOneWithWhereWithoutPaymentAllocationsInpu
 export type EmployeeBankAccountUpdateWithoutPaymentAllocationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1609,6 +1756,9 @@ export type EmployeeBankAccountUpdateWithoutPaymentAllocationsInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1625,6 +1775,7 @@ export type EmployeeBankAccountUncheckedUpdateWithoutPaymentAllocationsInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1644,6 +1795,9 @@ export type EmployeeBankAccountUncheckedUpdateWithoutPaymentAllocationsInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1656,6 +1810,7 @@ export type EmployeeBankAccountCreateManyOrganizationInput = {
   employeeId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1675,6 +1830,9 @@ export type EmployeeBankAccountCreateManyOrganizationInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1684,6 +1842,7 @@ export type EmployeeBankAccountCreateManyOrganizationInput = {
 export type EmployeeBankAccountUpdateWithoutOrganizationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1703,6 +1862,9 @@ export type EmployeeBankAccountUpdateWithoutOrganizationInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1718,6 +1880,7 @@ export type EmployeeBankAccountUncheckedUpdateWithoutOrganizationInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1737,6 +1900,9 @@ export type EmployeeBankAccountUncheckedUpdateWithoutOrganizationInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1750,6 +1916,7 @@ export type EmployeeBankAccountUncheckedUpdateManyWithoutOrganizationInput = {
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1769,6 +1936,9 @@ export type EmployeeBankAccountUncheckedUpdateManyWithoutOrganizationInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1780,6 +1950,7 @@ export type EmployeeBankAccountCreateManyEmployeeInput = {
   organizationId: string
   financialInstitutionId?: string | null
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1799,6 +1970,9 @@ export type EmployeeBankAccountCreateManyEmployeeInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1808,6 +1982,7 @@ export type EmployeeBankAccountCreateManyEmployeeInput = {
 export type EmployeeBankAccountUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1827,6 +2002,9 @@ export type EmployeeBankAccountUpdateWithoutEmployeeInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1842,6 +2020,7 @@ export type EmployeeBankAccountUncheckedUpdateWithoutEmployeeInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1861,6 +2040,9 @@ export type EmployeeBankAccountUncheckedUpdateWithoutEmployeeInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1874,6 +2056,7 @@ export type EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeInput = {
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   financialInstitutionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1893,6 +2076,9 @@ export type EmployeeBankAccountUncheckedUpdateManyWithoutEmployeeInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1904,6 +2090,7 @@ export type EmployeeBankAccountCreateManyFinancialInstitutionInput = {
   organizationId: string
   employeeId: string
   bankName: string
+  routingNumber?: string | null
   branchCode?: string | null
   branchName?: string | null
   accountHolderName?: string | null
@@ -1923,6 +2110,9 @@ export type EmployeeBankAccountCreateManyFinancialInstitutionInput = {
   effectiveTo?: Date | string | null
   isActive?: boolean
   sortOrder?: number
+  dataSource?: $Enums.BankingDataSource
+  changeReason?: string | null
+  supersedesAccountId?: string | null
   createdByUserId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1932,6 +2122,7 @@ export type EmployeeBankAccountCreateManyFinancialInstitutionInput = {
 export type EmployeeBankAccountUpdateWithoutFinancialInstitutionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1951,6 +2142,9 @@ export type EmployeeBankAccountUpdateWithoutFinancialInstitutionInput = {
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1966,6 +2160,7 @@ export type EmployeeBankAccountUncheckedUpdateWithoutFinancialInstitutionInput =
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1985,6 +2180,9 @@ export type EmployeeBankAccountUncheckedUpdateWithoutFinancialInstitutionInput =
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1998,6 +2196,7 @@ export type EmployeeBankAccountUncheckedUpdateManyWithoutFinancialInstitutionInp
   organizationId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   bankName?: Prisma.StringFieldUpdateOperationsInput | string
+  routingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountHolderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2017,6 +2216,9 @@ export type EmployeeBankAccountUncheckedUpdateManyWithoutFinancialInstitutionInp
   effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sortOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  dataSource?: Prisma.EnumBankingDataSourceFieldUpdateOperationsInput | $Enums.BankingDataSource
+  changeReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  supersedesAccountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2069,6 +2271,7 @@ export type EmployeeBankAccountSelect<ExtArgs extends runtime.Types.Extensions.I
   employeeId?: boolean
   financialInstitutionId?: boolean
   bankName?: boolean
+  routingNumber?: boolean
   branchCode?: boolean
   branchName?: boolean
   accountHolderName?: boolean
@@ -2088,6 +2291,9 @@ export type EmployeeBankAccountSelect<ExtArgs extends runtime.Types.Extensions.I
   effectiveTo?: boolean
   isActive?: boolean
   sortOrder?: boolean
+  dataSource?: boolean
+  changeReason?: boolean
+  supersedesAccountId?: boolean
   createdByUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2106,6 +2312,7 @@ export type EmployeeBankAccountSelectCreateManyAndReturn<ExtArgs extends runtime
   employeeId?: boolean
   financialInstitutionId?: boolean
   bankName?: boolean
+  routingNumber?: boolean
   branchCode?: boolean
   branchName?: boolean
   accountHolderName?: boolean
@@ -2125,6 +2332,9 @@ export type EmployeeBankAccountSelectCreateManyAndReturn<ExtArgs extends runtime
   effectiveTo?: boolean
   isActive?: boolean
   sortOrder?: boolean
+  dataSource?: boolean
+  changeReason?: boolean
+  supersedesAccountId?: boolean
   createdByUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2140,6 +2350,7 @@ export type EmployeeBankAccountSelectUpdateManyAndReturn<ExtArgs extends runtime
   employeeId?: boolean
   financialInstitutionId?: boolean
   bankName?: boolean
+  routingNumber?: boolean
   branchCode?: boolean
   branchName?: boolean
   accountHolderName?: boolean
@@ -2159,6 +2370,9 @@ export type EmployeeBankAccountSelectUpdateManyAndReturn<ExtArgs extends runtime
   effectiveTo?: boolean
   isActive?: boolean
   sortOrder?: boolean
+  dataSource?: boolean
+  changeReason?: boolean
+  supersedesAccountId?: boolean
   createdByUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2174,6 +2388,7 @@ export type EmployeeBankAccountSelectScalar = {
   employeeId?: boolean
   financialInstitutionId?: boolean
   bankName?: boolean
+  routingNumber?: boolean
   branchCode?: boolean
   branchName?: boolean
   accountHolderName?: boolean
@@ -2193,13 +2408,16 @@ export type EmployeeBankAccountSelectScalar = {
   effectiveTo?: boolean
   isActive?: boolean
   sortOrder?: boolean
+  dataSource?: boolean
+  changeReason?: boolean
+  supersedesAccountId?: boolean
   createdByUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   archivedAt?: boolean
 }
 
-export type EmployeeBankAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "financialInstitutionId" | "bankName" | "branchCode" | "branchName" | "accountHolderName" | "accountNumber" | "accountNumberLastFour" | "accountType" | "currencyCode" | "nickname" | "isPrimary" | "isPayrollEnabled" | "isVerified" | "verificationStatus" | "verificationMethod" | "verifiedAt" | "verifiedByUserId" | "effectiveFrom" | "effectiveTo" | "isActive" | "sortOrder" | "createdByUserId" | "createdAt" | "updatedAt" | "archivedAt", ExtArgs["result"]["employeeBankAccount"]>
+export type EmployeeBankAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "employeeId" | "financialInstitutionId" | "bankName" | "routingNumber" | "branchCode" | "branchName" | "accountHolderName" | "accountNumber" | "accountNumberLastFour" | "accountType" | "currencyCode" | "nickname" | "isPrimary" | "isPayrollEnabled" | "isVerified" | "verificationStatus" | "verificationMethod" | "verifiedAt" | "verifiedByUserId" | "effectiveFrom" | "effectiveTo" | "isActive" | "sortOrder" | "dataSource" | "changeReason" | "supersedesAccountId" | "createdByUserId" | "createdAt" | "updatedAt" | "archivedAt", ExtArgs["result"]["employeeBankAccount"]>
 export type EmployeeBankAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -2237,6 +2455,10 @@ export type $EmployeeBankAccountPayload<ExtArgs extends runtime.Types.Extensions
      * Display / free-text name (institution displayName, or custom when Other).
      */
     bankName: string
+    /**
+     * ABA / routing identifier when supplied (else use institution.routingCode).
+     */
+    routingNumber: string | null
     branchCode: string | null
     branchName: string | null
     accountHolderName: string | null
@@ -2263,6 +2485,12 @@ export type $EmployeeBankAccountPayload<ExtArgs extends runtime.Types.Extensions
     effectiveTo: Date | null
     isActive: boolean
     sortOrder: number
+    dataSource: $Enums.BankingDataSource
+    changeReason: string | null
+    /**
+     * Prior version retained on soft-replace (history; never mutate frozen payment snapshots).
+     */
+    supersedesAccountId: string | null
     createdByUserId: string | null
     createdAt: Date
     updatedAt: Date
@@ -2700,6 +2928,7 @@ export interface EmployeeBankAccountFieldRefs {
   readonly employeeId: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
   readonly financialInstitutionId: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
   readonly bankName: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
+  readonly routingNumber: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
   readonly branchCode: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
   readonly branchName: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
   readonly accountHolderName: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
@@ -2719,6 +2948,9 @@ export interface EmployeeBankAccountFieldRefs {
   readonly effectiveTo: Prisma.FieldRef<"EmployeeBankAccount", 'DateTime'>
   readonly isActive: Prisma.FieldRef<"EmployeeBankAccount", 'Boolean'>
   readonly sortOrder: Prisma.FieldRef<"EmployeeBankAccount", 'Int'>
+  readonly dataSource: Prisma.FieldRef<"EmployeeBankAccount", 'BankingDataSource'>
+  readonly changeReason: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
+  readonly supersedesAccountId: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
   readonly createdByUserId: Prisma.FieldRef<"EmployeeBankAccount", 'String'>
   readonly createdAt: Prisma.FieldRef<"EmployeeBankAccount", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EmployeeBankAccount", 'DateTime'>

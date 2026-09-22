@@ -6,7 +6,6 @@ import type { LucideIcon } from "lucide-react";
 
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageActionsEnd } from "@/src/components/layout/page-actions";
-import { MeSectionMenu } from "@/src/modules/hr/components/me-section-menu";
 import { resolveMeSectionIcon } from "@/src/modules/hr/lib/me-section-nav";
 
 type MePageHeaderProps = {
@@ -20,15 +19,20 @@ type MePageHeaderProps = {
    * Do not pass Lucide components from Server Components — that breaks RSC serialization.
    */
   icon?: LucideIcon | null;
-  /** Primary page actions — rendered left of the section hamburger. */
+  /** Optional badge beside the title (e.g. position). */
+  badge?: ReactNode;
+  /**
+   * Optional role/identity wash on the full header band (e.g. employee
+   * leadership gradient).
+   */
+  titleAccentClassName?: string;
+  /** Primary page actions. */
   actions?: ReactNode;
   className?: string;
 };
 
 /**
- * Self-service (`/me`) page header with in-page section hamburger.
- * Client boundary matches PeoplePageHeader so Fast Refresh never confuses
- * this wrapper with the hook-free PageHeader module.
+ * Self-service (`/me`) page header. Section navigation lives in MeProfileTabs.
  */
 export function MePageHeader({
   title,
@@ -36,6 +40,8 @@ export function MePageHeader({
   backHref,
   backLabel,
   icon,
+  badge,
+  titleAccentClassName,
   actions,
   className,
 }: MePageHeaderProps) {
@@ -52,12 +58,11 @@ export function MePageHeader({
       backHref={backHref}
       backLabel={backLabel}
       icon={resolvedIcon}
+      badge={badge}
+      titleAccentClassName={titleAccentClassName}
       className={className}
       actions={
-        <PageActionsEnd>
-          {actions}
-          <MeSectionMenu />
-        </PageActionsEnd>
+        actions ? <PageActionsEnd>{actions}</PageActionsEnd> : undefined
       }
     />
   );

@@ -4,9 +4,14 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
+import {
+  recalculateAfterTaxChange,
+  taxYearForEffectiveFrom,
+} from "@/src/modules/payroll/services/recalculate-after-tax-change";
 
 export type HealthSurchargeFormState = {
   status: "idle" | "error";
@@ -140,10 +145,10 @@ export async function saveHealthSurchargeConfig(
     };
   }
 
-  const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+    const organization = __sessionOrganizationId
+      ? { id: __sessionOrganizationId }
+      : null;
 
   if (!organization) {
     return { status: "error", message: "No organization is configured." };
@@ -229,5 +234,13 @@ export async function saveHealthSurchargeConfig(
   }
 
   revalidateHealthPaths();
+  await recalculateAfterTaxChange({
+    organizationId: organization.id,
+    taxYear: taxYearForEffectiveFrom(effectiveFrom!),
+    actorUserId: actor.actor.userId,
+    reason: `Health Surcharge config effective ${effectiveFromKey}`,
+    effectiveFrom: effectiveFrom!,
+    metadata,
+  });
   redirect("/payroll/settings/health");
 }

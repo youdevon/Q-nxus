@@ -400,9 +400,11 @@ async function transitionAppraisal(
       criteria: true,
       employee: {
         select: {
+          organizationId: true,
           employeeNumber: true,
           firstName: true,
           lastName: true,
+          user: { select: { id: true } },
         },
       },
     },
@@ -461,6 +463,34 @@ async function transitionAppraisal(
   });
 
   revalidateAppraisal(employeeId, appraisalId);
+
+  const employeeLabel = `${appraisal.employee.employeeNumber} — ${appraisal.employee.firstName} ${appraisal.employee.lastName}`;
+  if (options.nextStatus === PerformanceAppraisalStatus.SUBMITTED) {
+    const { notifyAppraisalSubmitted } = await import(
+      "@/src/modules/hr/services/notify-appraisal-events"
+    );
+    await notifyAppraisalSubmitted({
+      organizationId: appraisal.employee.organizationId,
+      appraisalId,
+      employeeId,
+      employeeLabel,
+      supervisorUserId: appraisal.supervisorUserId,
+      actorUserId: userId,
+    });
+  } else if (
+    options.nextStatus === PerformanceAppraisalStatus.SUPERVISOR_REVIEWED
+  ) {
+    const { notifyAppraisalReviewed } = await import(
+      "@/src/modules/hr/services/notify-appraisal-events"
+    );
+    await notifyAppraisalReviewed({
+      appraisalId,
+      employeeId,
+      employeeLabel,
+      employeeUserId: appraisal.employee.user?.id ?? null,
+      actorUserId: userId,
+    });
+  }
 }
 
 export async function submitPerformanceAppraisal(

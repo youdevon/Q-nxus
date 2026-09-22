@@ -252,6 +252,26 @@ Payroll may store immutable snapshots of:
 
 These snapshots preserve historical payroll accuracy after employee records change.
 
+### Payroll complementary stores (do not collapse)
+
+These tables look related but are **intentional complementary stores**, not
+duplicates. Do not merge them when “cleaning up” the schema:
+
+| Pair | Canonical roles |
+|------|-----------------|
+| `EmployeeOpeningYtdBalance` vs `EmployeePriorEmploymentYtd` | Same-employer go-live / migration YTD vs other-employer YTD this tax year. Both feed PAYE; see `PAYROLL-STATUTORY-VALIDATION.md`. |
+| `EmployeeTaxProfile` vs `PayrollProfile` | Per tax-year TD1 / PAYE method vs pay frequency, payment method, readiness, statutory opt-outs. Compensation SoT remains `EmploymentContract`. |
+| `PayrollLineItem` vs `Payslip.snapshot` (+ denormalized slip columns) | Mutable draft variable inputs vs frozen posted payslip. Line items feed calc into the snapshot; posted history never rewrites from live line items. |
+| `PayrollComponentDefinition` / `EmployeePayrollRecurringItem` / `PayrollLineItem` | Org catalog → standing per-employee items → per-run overrides. |
+| `Notification` (+ recipients) vs `EmailDelivery` (+ attempts) | In-app alerts vs outbound email queue. |
+| `EmployeeFilePack` (+ items) vs `EmployeeFileChecklistItem` | Org document pack template vs per-employee checklist instance. |
+
+Retired / dropped (do not reintroduce):
+
+- `PayrollBankAccount` → `EmployeeBankAccount` + `EmployeePayrollAllocation`
+- `FinancialInstitutionBranch` → branch fields on accounts / payment snapshots
+- `ApplicationSetting` → `Organization` (product label via `appConfig`)
+
 ---
 
 ## 7. Event-Driven Communication

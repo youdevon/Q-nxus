@@ -88,7 +88,13 @@ export async function createEmployeeCredential(
 
   const employee = await prisma.employee.findUnique({
     where: { id: employeeId },
-    select: { id: true, organizationId: true, firstName: true, lastName: true },
+    select: {
+      id: true,
+      organizationId: true,
+      firstName: true,
+      lastName: true,
+      employeeNumber: true,
+    },
   });
 
   if (!employee) {
@@ -121,6 +127,7 @@ export async function createEmployeeCredential(
 
       if (attachmentFile) {
         const stored = await storeEmployeeFileAttachment({
+          employee,
           recordType: "credentials",
           recordId: created.id,
           file: attachmentFile,
@@ -198,7 +205,18 @@ export async function updateEmployeeCredential(
 
   const existing = await prisma.employeeCredential.findFirst({
     where: { id: credentialId, employeeId },
-    select: { id: true, name: true, storageKey: true },
+    select: {
+      id: true,
+      name: true,
+      storageKey: true,
+      employee: {
+        select: {
+          employeeNumber: true,
+          firstName: true,
+          lastName: true,
+        },
+      },
+    },
   });
 
   if (!existing) {
@@ -228,6 +246,7 @@ export async function updateEmployeeCredential(
 
       if (attachmentFile) {
         const stored = await storeEmployeeFileAttachment({
+          employee: existing.employee,
           recordType: "credentials",
           recordId: existing.id,
           file: attachmentFile,

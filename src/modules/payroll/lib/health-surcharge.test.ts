@@ -28,6 +28,12 @@ describe("computeHealthSurcharge", () => {
     ).toBe(4);
     expect(
       countHealthContributionWeeks(
+        new Date("2026-08-01T12:00:00.000Z"),
+        new Date("2026-08-31T12:00:00.000Z"),
+      ),
+    ).toBe(5);
+    expect(
+      countHealthContributionWeeks(
         new Date("2026-06-01T12:00:00.000Z"),
         new Date("2026-06-30T12:00:00.000Z"),
       ),

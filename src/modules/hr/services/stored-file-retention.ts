@@ -50,11 +50,14 @@ export async function archiveExpiredStoredFileRetention(input?: {
 export async function setStoredFileLegalHold(input: {
   storedFileId: string;
   legalHold: boolean;
+  organizationId: string;
 }) {
-  return prisma.storedFile.update({
-    where: { id: input.storedFileId },
+  return prisma.storedFile.updateMany({
+    where: {
+      id: input.storedFileId,
+      organizationId: input.organizationId,
+    },
     data: { legalHold: input.legalHold },
-    select: { id: true, legalHold: true },
   });
 }
 

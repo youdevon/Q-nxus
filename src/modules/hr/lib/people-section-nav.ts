@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   ClipboardList,
   FolderOpen,
+  ListChecks,
   Network,
   Users,
 } from "lucide-react";
@@ -36,6 +37,13 @@ export const peopleSectionNavItems: readonly PeopleSectionNavItem[] = [
     anyOf: ["people.directory.view", "people.manage"],
   },
   {
+    title: "Hire / exit",
+    href: "/people/lifecycle",
+    description: "Open onboarding and offboarding cases",
+    icon: ListChecks,
+    anyOf: ["people.manage"],
+  },
+  {
     title: "Documents",
     href: "/people/documents",
     description: "Organization correspondence and files",
@@ -60,7 +68,7 @@ export const peopleSectionNavItems: readonly PeopleSectionNavItem[] = [
         title: "Balances",
         href: "/people/leave/balances",
         description: "Employee leave balance overview",
-        anyOf: ["leave.manage", "people.manage"],
+        anyOf: ["leave.manage", "people.manage", "leave.approve"],
       },
       {
         title: "Workflow",
@@ -120,6 +128,9 @@ export function isPeopleSectionActive(
 ): boolean {
   if (href === "/people") {
     return pathname === "/people" || pathname.startsWith("/people/employees");
+  }
+  if (href === "/people/lifecycle") {
+    return pathname.startsWith("/people/lifecycle");
   }
   if (href === "/people/structure") {
     return pathname.startsWith("/people/structure");

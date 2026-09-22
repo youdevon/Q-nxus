@@ -4,6 +4,8 @@ import { Printer, X } from "lucide-react";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
+import { closePrintView } from "@/src/lib/close-print-view";
+import { formatDisplayDate } from "@/src/lib/format";
 import type { EmployeeFilePrintPack } from "@/src/modules/hr/data/get-employee-file-print-pack";
 import { checklistStatusLabel } from "@/src/modules/hr/lib/employee-file-checklist";
 import {
@@ -12,7 +14,6 @@ import {
   qualificationDocumentMetaParts,
   qualificationUsesSubjectEntries,
 } from "@/src/modules/hr/lib/qualification-document-labels";
-import { formatDisplayDate } from "@/src/lib/format";
 
 function formatDate(value: string | null): string {
   return formatDisplayDate(value, { fallback: "—" });
@@ -25,7 +26,13 @@ function label(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-export function EmployeeFilePrintView({ pack }: { pack: EmployeeFilePrintPack }) {
+export function EmployeeFilePrintView({
+  pack,
+  closeHref = "/people",
+}: {
+  pack: EmployeeFilePrintPack;
+  closeHref?: string;
+}) {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       window.print();
@@ -51,7 +58,7 @@ export function EmployeeFilePrintView({ pack }: { pack: EmployeeFilePrintPack })
             <Button
               type="button"
               variant="ghost"
-              onClick={() => window.history.back()}
+              onClick={() => closePrintView(closeHref)}
             >
               <X />
               Close

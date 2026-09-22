@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { Prisma } from "@/generated/prisma/client";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
@@ -12,6 +13,10 @@ import {
   TT_NIS_2026_CLASSES,
   TT_NIS_2026_EFFECTIVE_FROM,
 } from "@/src/modules/payroll/lib/nis-seed-data";
+import {
+  recalculateAfterTaxChange,
+  taxYearForEffectiveFrom,
+} from "@/src/modules/payroll/services/recalculate-after-tax-change";
 
 export type NisClassFormState = {
   status: "idle" | "error";
@@ -169,14 +174,10 @@ function parseClassesJson(raw: string): {
 }
 
 async function getOrganizationId(): Promise<string | null> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   return organization?.id ?? null;
 }
@@ -335,6 +336,14 @@ export async function saveNisClassVersion(
   }
 
   revalidateNisPaths();
+  await recalculateAfterTaxChange({
+    organizationId,
+    taxYear: taxYearForEffectiveFrom(effectiveFrom!),
+    actorUserId: actor.actor.userId,
+    reason: `NIS class schedule effective ${effectiveFromKey}`,
+    effectiveFrom: effectiveFrom!,
+    metadata,
+  });
   redirect(`/payroll/settings/nis?version=${effectiveFromKey}`);
 }
 

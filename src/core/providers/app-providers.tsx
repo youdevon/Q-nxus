@@ -14,25 +14,17 @@ import {
   type AuthCapabilities,
 } from "@/src/modules/auth/context/auth-provider";
 import { NotificationProvider } from "@/src/modules/notifications";
-
-function isPayslipPrintRoute(pathname: string) {
-  return (
-    pathname === "/me/payslip/print" ||
-    pathname === "/payroll/print/ready" ||
-    /^\/payroll\/employees\/[^/]+\/payslip\/print\/?$/.test(pathname) ||
-    /^\/people\/employees\/[^/]+\/payroll\/payslip\/print\/?$/.test(pathname) ||
-    /^\/payroll\/runs\/[^/]+\/payslips\/[^/]+\/print\/?$/.test(pathname) ||
-    /^\/payroll\/runs\/[^/]+\/print\/?$/.test(pathname)
-  );
-}
+import { isPrintDocumentRoute } from "@/src/lib/is-print-document-route";
 
 function isShellLessRoute(pathname: string) {
   return (
     pathname === "/login" ||
     pathname.startsWith("/login/") ||
+    pathname === "/privacy" ||
+    pathname.startsWith("/privacy/") ||
     pathname === "/account/change-password" ||
     pathname.startsWith("/account/change-password/") ||
-    isPayslipPrintRoute(pathname)
+    isPrintDocumentRoute(pathname)
   );
 }
 

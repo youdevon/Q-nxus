@@ -1,9 +1,16 @@
 /**
  * HR public façade — stable imports for cross-module consumers (especially payroll).
  *
- * Prefer `@/src/modules/hr/public` over deep paths under `lib/` / `data/` so
- * internal layout can move without breaking payroll and other modules.
+ * Source-of-truth map:
+ * - Employee.dateOfBirth, hireDate, NIS/BIR → `hr.employees` (HR employee form)
+ * - Job title / department labels → live employee seat + position assignment
+ * - Payroll flags (NIS exempt, Class Z benefit, etc.) → `PayrollProfile`
+ * - TD1 / tax method → `EmployeeTaxProfile`
+ *
+ * Prefer `@/src/modules/hr/public` over deep paths under `lib/` / `data/`.
  */
+
+export { ageFromDateOfBirth, ageInFullYears } from "@/src/lib/age";
 
 export {
   resolveStatutoryNumber,

@@ -1,12 +1,17 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
+import { resolveEmployeePositionTitle } from "@/src/modules/hr/public";
 import {
-  resolveEmployeePositionTitle,
-  resolveStatutoryNumber,
-} from "@/src/modules/hr/public";
+  workforceCategoryBadgeLabel,
+} from "@/src/modules/hr/lib/workforce-category";
 import { resolveBankAccountsForReadiness } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
 import { toMonthlyPeriodAmount } from "@/src/modules/payroll/lib/payslip-preview";
 import { evaluatePayrollReadiness } from "@/src/modules/payroll/lib/payroll-readiness";
 import { addCents, fromCents, toCents } from "@/src/modules/payroll/lib/money";
+import {
+  PAY_RUN_PAYEE_GROUP_OPTIONS,
+  parsePayRunPayeeGroup,
+} from "@/src/modules/payroll/lib/pay-run-payee-group";
 import type {
   PayrollSalariesData,
   PayrollSalariesFilters,
@@ -15,151 +20,172 @@ import type {
 
 export type { PayrollSalariesData, PayrollSalariesFilters, PayrollSalaryRow };
 
-
 /**
- * Roster of active employees with current-contract salary info.
- * Master salary view only — not posted payroll history.
+ * Roster of active payees with current-contract pay info.
+ * Master pay view only — not posted payroll history.
+ * Supports payee-group filter so employee vs board (etc.) stay separable.
  */
 export async function getPayrollSalaries(
   filters: PayrollSalariesFilters = {},
 ): Promise<PayrollSalariesData> {
-  const query = filters.query?.trim();
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return { rows: [], totalCount: 0, groupCounts: [] };
+  }
 
-  const employees = await prisma.employee.findMany({
-    where: {
-      isArchived: false,
-      employmentStatus: {
-        in: ["ACTIVE", "ON_LEAVE"],
-      },
-      ...(query
-        ? {
-            OR: [
-              {
-                employeeNumber: {
-                  contains: query,
-                  mode: "insensitive",
-                },
-              },
-              {
-                firstName: {
-                  contains: query,
-                  mode: "insensitive",
-                },
-              },
-              {
-                lastName: {
-                  contains: query,
-                  mode: "insensitive",
-                },
-              },
-              {
-                preferredName: {
-                  contains: query,
-                  mode: "insensitive",
-                },
-              },
-            ],
-          }
-        : {}),
+  const query = filters.query?.trim();
+  const payeeGroup = parsePayRunPayeeGroup(filters.payeeGroup);
+
+  const activePayeeWhere = {
+    organizationId,
+    isArchived: false,
+    employmentStatus: {
+      in: ["ACTIVE", "ON_LEAVE"] as const,
     },
-    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
-    select: {
-      id: true,
-      employeeNumber: true,
-      firstName: true,
-      lastName: true,
-      nisNumber: true,
-      birNumber: true,
-      department: {
-        select: {
-          name: true,
-        },
+  };
+
+  const [employees, categoryGroups] = await Promise.all([
+    prisma.employee.findMany({
+      where: {
+        ...activePayeeWhere,
+        ...(payeeGroup ? { workforceCategory: payeeGroup } : {}),
+        ...(query
+          ? {
+              OR: [
+                {
+                  employeeNumber: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  firstName: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  lastName: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  preferredName: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {}),
       },
-      position: {
-        select: {
-          title: true,
+      orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
+      select: {
+        id: true,
+        employeeNumber: true,
+        firstName: true,
+        lastName: true,
+        workforceCategory: true,
+        nisNumber: true,
+        birNumber: true,
+        department: {
+          select: {
+            name: true,
+          },
         },
-      },
-      assignments: {
-        where: {
-          isCurrent: true,
+        position: {
+          select: {
+            title: true,
+          },
         },
-        take: 1,
-        select: {
-          position: {
-            select: {
-              title: true,
+        assignments: {
+          where: {
+            isCurrent: true,
+          },
+          take: 1,
+          select: {
+            position: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
+        bankAccounts: {
+          where: { isActive: true, archivedAt: null },
+          orderBy: [{ sortOrder: "asc" }],
+          select: {
+            id: true,
+            bankName: true,
+            branchName: true,
+            accountNumber: true,
+            accountNumberLastFour: true,
+            accountHolderName: true,
+            accountType: true,
+            isPrimary: true,
+            sortOrder: true,
+            financialInstitutionId: true,
+          },
+        },
+        payrollAllocations: {
+          where: { isActive: true },
+          orderBy: [{ priority: "asc" }],
+          select: {
+            employeeBankAccountId: true,
+            allocationType: true,
+            fixedAmount: true,
+            percentage: true,
+            receivesRemainder: true,
+            isActive: true,
+            priority: true,
+          },
+        },
+        payrollProfile: {
+          select: {
+            payFrequency: true,
+            paymentMethod: true,
+            exemptFromNis: true,
+            exemptFromPaye: true,
+          },
+        },
+        contracts: {
+          where: {
+            isCurrent: true,
+            status: "ACTIVE",
+          },
+          take: 1,
+          select: {
+            jobTitle: true,
+            baseSalary: true,
+            currency: true,
+            allowances: {
+              select: {
+                amount: true,
+                frequency: true,
+                isTaxable: true,
+              },
             },
           },
         },
       },
-      bankAccounts: {
-        where: { isActive: true, archivedAt: null },
-        orderBy: [{ sortOrder: "asc" }],
-        select: {
-          id: true,
-          bankName: true,
-          branchName: true,
-          accountNumber: true,
-          accountNumberLastFour: true,
-          accountHolderName: true,
-          isPrimary: true,
-          sortOrder: true,
-          financialInstitutionId: true,
-        },
-      },
-      payrollAllocations: {
-        where: { isActive: true },
-        orderBy: [{ priority: "asc" }],
-        select: {
-          employeeBankAccountId: true,
-          allocationType: true,
-          fixedAmount: true,
-          percentage: true,
-          receivesRemainder: true,
-          isActive: true,
-          priority: true,
-        },
-      },
-      payrollProfile: {
-        select: {
-          payFrequency: true,
-          paymentMethod: true,
-          nisNumber: true,
-          birNumber: true,
-          exemptFromNis: true,
-          exemptFromPaye: true,
-          bankAccounts: {
-            select: {
-              bankName: true,
-              accountNumber: true,
-              amount: true,
-              isPrimary: true,
-            },
-          },
-        },
-      },
-      contracts: {
-        where: {
-          isCurrent: true,
-          status: "ACTIVE",
-        },
-        take: 1,
-        select: {
-          jobTitle: true,
-          baseSalary: true,
-          currency: true,
-          allowances: {
-            select: {
-              amount: true,
-              frequency: true,
-              isTaxable: true,
-            },
-          },
-        },
-      },
-    },
-  });
+    }),
+    prisma.employee.groupBy({
+      by: ["workforceCategory"],
+      where: activePayeeWhere,
+      _count: { _all: true },
+    }),
+  ]);
+
+  const countByCategory = new Map(
+    categoryGroups.map((row) => [row.workforceCategory, row._count._all]),
+  );
+
+  const groupCounts = PAY_RUN_PAYEE_GROUP_OPTIONS.map((option) => ({
+    value: option.value,
+    label: option.label,
+    count: countByCategory.get(option.value) ?? 0,
+  }));
 
   const rows: PayrollSalaryRow[] = employees.map((employee) => {
     const contract = employee.contracts[0] ?? null;
@@ -190,7 +216,10 @@ export async function getPayrollSalaries(
         const monthlyCents = toCents(monthly);
         allowancesCents = addCents(allowancesCents, monthlyCents);
         if (allowance.isTaxable) {
-          taxableAllowancesCents = addCents(taxableAllowancesCents, monthlyCents);
+          taxableAllowancesCents = addCents(
+            taxableAllowancesCents,
+            monthlyCents,
+          );
         }
       }
       const baseSalaryCents = toCents(baseSalary);
@@ -209,6 +238,7 @@ export async function getPayrollSalaries(
         accountNumber: account.accountNumber,
         accountNumberLastFour: account.accountNumberLastFour,
         accountHolderName: account.accountHolderName,
+        accountType: account.accountType,
         isPrimary: account.isPrimary,
         sortOrder: account.sortOrder,
         financialInstitutionId: account.financialInstitutionId,
@@ -222,21 +252,13 @@ export async function getPayrollSalaries(
         isActive: row.isActive,
         priority: row.priority,
       })),
-      legacyAccounts:
-        profile?.bankAccounts.map((account) => ({
-          bankName: account.bankName,
-          accountNumber: account.accountNumber,
-          amount:
-            account.amount != null ? Number(account.amount.toString()) : null,
-          isPrimary: account.isPrimary,
-        })) ?? [],
     });
 
     const readiness = evaluatePayrollReadiness({
       hasCurrentContract: contract != null,
       baseSalary,
-      nisNumber: resolveStatutoryNumber(employee.nisNumber, profile?.nisNumber),
-      birNumber: resolveStatutoryNumber(employee.birNumber, profile?.birNumber),
+      nisNumber: employee.nisNumber?.trim() || null,
+      birNumber: employee.birNumber?.trim() || null,
       paymentMethod: profile?.paymentMethod ?? "BANK_TRANSFER",
       bankAccounts,
       exemptFromNis: profile?.exemptFromNis ?? false,
@@ -247,6 +269,10 @@ export async function getPayrollSalaries(
       employeeId: employee.id,
       employeeNumber: employee.employeeNumber,
       displayName: `${employee.firstName} ${employee.lastName}`,
+      workforceCategory: employee.workforceCategory,
+      workforceCategoryLabel: workforceCategoryBadgeLabel(
+        employee.workforceCategory,
+      ),
       departmentName: employee.department?.name ?? null,
       positionTitle,
       payFrequency: profile?.payFrequency ?? null,
@@ -263,5 +289,6 @@ export async function getPayrollSalaries(
   return {
     rows,
     totalCount: rows.length,
+    groupCounts,
   };
 }

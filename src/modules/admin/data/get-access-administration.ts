@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 export type AccessUserListItem = {
   id: string;
@@ -53,14 +54,10 @@ export type RoleTemplateOption = {
 };
 
 async function getOrganizationId(): Promise<string | null> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   return organization?.id ?? null;
 }

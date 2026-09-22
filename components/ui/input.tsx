@@ -3,9 +3,33 @@ import { Input as InputPrimitive } from "@base-ui/react/input";
 
 import { cn } from "@/lib/utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+type InputProps = Omit<React.ComponentProps<"input">, "value" | "defaultValue"> &
+  Pick<
+    React.ComponentProps<typeof InputPrimitive>,
+    "value" | "defaultValue" | "onValueChange"
+  >;
+
+function Input({
+  className,
+  type,
+  onChange,
+  onValueChange,
+  defaultValue,
+  value,
+  ...props
+}: InputProps) {
+  // Base UI warns when an uncontrolled FieldControl's defaultValue changes
+  // after init. Remount the primitive when that happens so filter/edit forms
+  // that swap defaults stay correct without converting every field to
+  // controlled state.
+  const remountKey =
+    value === undefined && defaultValue !== undefined
+      ? `default:${String(defaultValue)}`
+      : undefined;
+
   return (
     <InputPrimitive
+      key={remountKey}
       type={type}
       data-slot="input"
       className={cn(
@@ -13,6 +37,12 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         className,
       )}
       {...props}
+      defaultValue={defaultValue}
+      value={value}
+      // Base UI's controlled path is onValueChange; keep onChange for callers
+      // that still use the native event shape. Set after spread so they win.
+      onValueChange={onValueChange}
+      onChange={onChange}
     />
   );
 }

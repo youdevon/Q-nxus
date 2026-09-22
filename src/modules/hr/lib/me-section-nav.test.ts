@@ -14,6 +14,7 @@ describe("meSectionNavItems", () => {
       "/me/documents",
       "/me/qualifications",
       "/me/contracts",
+      "/me/gratuity",
       "/me/leave",
       "/me/payslips",
     ]);
@@ -34,6 +35,7 @@ describe("filterMeSectionNavItems", () => {
     expect(visible.map((item) => item.href)).toEqual([
       "/me",
       "/me/contracts",
+      "/me/gratuity",
       "/me/payslips",
     ]);
   });
@@ -49,6 +51,7 @@ describe("filterMeSectionNavItems", () => {
       "/me/documents",
       "/me/qualifications",
       "/me/contracts",
+      "/me/gratuity",
       "/me/leave",
       "/me/payslips",
     ]);

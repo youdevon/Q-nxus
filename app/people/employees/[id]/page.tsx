@@ -121,25 +121,56 @@ export default async function EmployeePage({ params }: EmployeePageProps) {
             onboarding={lifecycle.onboarding.map((row) => ({
               id: row.id,
               status: row.status,
-            tasks: row.tasks.map((task) => ({
-              id: task.id,
-              code: task.code,
-              label: task.label,
-              status: task.status,
-              notes: task.notes,
-            })),
-          }))}
-          offboarding={lifecycle.offboarding.map((row) => ({
-            id: row.id,
-            status: row.status,
-            tasks: row.tasks.map((task) => ({
-              id: task.id,
-              code: task.code,
-              label: task.label,
-              status: task.status,
-              notes: task.notes,
-            })),
-          }))}
+              caseNumber: row.caseNumber,
+              caseType: row.caseType,
+              progressPercent: Math.round(
+                (row.tasks.filter(
+                  (task) =>
+                    task.status === "COMPLETED" || task.status === "SKIPPED",
+                ).length /
+                  Math.max(row.tasks.length, 1)) *
+                  100,
+              ),
+              tasks: row.tasks.map((task) => ({
+                id: task.id,
+                code: task.code,
+                label: task.label,
+                status: task.status,
+                dueAt: task.dueAt?.toISOString() ?? null,
+                assigneeUserId: task.assigneeUserId,
+                assigneeName: task.assignee
+                  ? `${task.assignee.firstName} ${task.assignee.lastName}`.trim()
+                  : null,
+                notes: task.notes,
+              })),
+            }))}
+            offboarding={lifecycle.offboarding.map((row) => ({
+              id: row.id,
+              status: row.status,
+              caseNumber: row.caseNumber,
+              reasonCode: row.reasonCode,
+              reason: row.reason,
+              progressPercent: Math.round(
+                (row.tasks.filter(
+                  (task) =>
+                    task.status === "COMPLETED" || task.status === "SKIPPED",
+                ).length /
+                  Math.max(row.tasks.length, 1)) *
+                  100,
+              ),
+              tasks: row.tasks.map((task) => ({
+                id: task.id,
+                code: task.code,
+                label: task.label,
+                status: task.status,
+                dueAt: task.dueAt?.toISOString() ?? null,
+                assigneeUserId: task.assigneeUserId,
+                assigneeName: task.assignee
+                  ? `${task.assignee.firstName} ${task.assignee.lastName}`.trim()
+                  : null,
+                notes: task.notes,
+              })),
+            }))}
           />
 
           {suggestions.length > 0 ? (

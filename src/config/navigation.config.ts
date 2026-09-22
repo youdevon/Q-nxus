@@ -3,6 +3,7 @@ import {
   Briefcase,
   ClipboardList,
   LayoutDashboard,
+  Package,
   Settings,
   Users,
   Wallet,
@@ -16,7 +17,7 @@ export type NavItem = {
   title: string;
   href: string;
   icon: LucideIcon;
-  module?: "core" | "hr" | "payroll" | "admin";
+  module?: "core" | "hr" | "payroll" | "admin" | "assets";
   /** Permission codes that grant access to this item. Empty = authenticated only. */
   anyOf?: string[];
   /**
@@ -90,6 +91,13 @@ export const navigationConfig: NavSection[] = [
         icon: Briefcase,
         module: "hr",
         anyOf: ["contracts.view", "contracts.manage"],
+      },
+      {
+        title: "Assets",
+        href: "/assets",
+        icon: Package,
+        module: "assets",
+        anyOf: ["assets.view", "assets.manage"],
       },
     ],
   },

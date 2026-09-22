@@ -18,9 +18,14 @@ const initialState: DeleteEmploymentContractState = {
 export function DeleteEmploymentContractButton({
   employeeId,
   contractId,
+  cleanupEligible = false,
+  redirectTo,
 }: {
   employeeId: string;
   contractId: string;
+  /** Expired / past-ended — stronger confirm; server uses cleanup delete rules. */
+  cleanupEligible?: boolean;
+  redirectTo?: string;
 }) {
   const [state, action, pending] = useActionState(
     deleteEmploymentContract,
@@ -38,7 +43,9 @@ export function DeleteEmploymentContractButton({
       action={action}
       onSubmit={(event) => {
         const confirmed = window.confirm(
-          "Permanently delete this employment contract?\n\nDelete only if it was created in error. Prefer Amend for corrections after the contract has been used. This cannot be undone.",
+          cleanupEligible
+            ? "Permanently delete this expired contract?\n\nLater expired amendments/renewals in the same chain are deleted too. A current live contract is kept (only the history link is cleared). Related leave data for removed contracts is deleted. Payslips are kept. This cannot be undone."
+            : "Permanently delete this employment contract?\n\nDelete only if it was created in error. Prefer Amend for corrections after the contract has been used. This cannot be undone.",
         );
 
         if (!confirmed) {
@@ -49,9 +56,12 @@ export function DeleteEmploymentContractButton({
       <input type="hidden" name="employeeId" value={employeeId} />
       <input type="hidden" name="contractId" value={contractId} />
       <input type="hidden" name="confirmed" value="on" />
-      <Button type="submit" variant="destructive" disabled={pending}>
+      {redirectTo ? (
+        <input type="hidden" name="redirectTo" value={redirectTo} />
+      ) : null}
+      <Button type="submit" variant="destructive" disabled={pending} size="sm">
         <Trash2 />
-        {pending ? "Deleting…" : "Delete"}
+        {pending ? "Deleting…" : cleanupEligible ? "Delete expired" : "Delete"}
       </Button>
     </form>
   );

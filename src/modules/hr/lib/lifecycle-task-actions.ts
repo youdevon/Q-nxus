@@ -81,13 +81,13 @@ export function resolveOffboardingTaskAction(
       };
     case "FINAL_PAY_CHECK":
       return {
-        label: "Payroll setup",
-        href: `/payroll/employees/${employeeId}`,
+        label: "Open gratuity queue",
+        href: `/payroll/gratuity?year=${new Date().getUTCFullYear()}`,
       };
     case "REVOKE_ACCESS":
       return {
         label: "Manage access",
-        href: `/administration/access/users`,
+        href: `/administration/access`,
       };
     default:
       return null;

@@ -81,10 +81,16 @@ function revalidateCorrespondencePaths(
 }
 
 async function storeOptionalAttachment({
+  employee,
   correspondenceId,
   formData,
   uploadedByUserId,
 }: {
+  employee: {
+    employeeNumber: string;
+    firstName: string;
+    lastName: string;
+  };
   correspondenceId: string;
   formData: FormData;
   uploadedByUserId: string;
@@ -100,6 +106,7 @@ async function storeOptionalAttachment({
   }
 
   const stored = await storeCorrespondenceAttachmentFile({
+    employee,
     correspondenceId,
     file: attachmentFile,
   });
@@ -331,6 +338,7 @@ export async function createEmployeeCorrespondence(
     });
 
     await storeOptionalAttachment({
+      employee,
       correspondenceId: createdId,
       formData,
       uploadedByUserId: actor.actor.userId,
@@ -393,6 +401,7 @@ export async function updateEmployeeCorrespondence(
           id: true,
           firstName: true,
           lastName: true,
+          employeeNumber: true,
         },
       },
     },
@@ -475,6 +484,7 @@ export async function updateEmployeeCorrespondence(
     });
 
     await storeOptionalAttachment({
+      employee: existing.employee,
       correspondenceId: existing.id,
       formData,
       uploadedByUserId: actor.actor.userId,

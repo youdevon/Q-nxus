@@ -31,10 +31,17 @@ export default async function StoredPayslipPage({
       payslip={result.payslip}
       meta={result.meta}
       ytd={result.ytd}
-      backHref={`/payroll/runs/${result.payRunId}`}
-      backLabel={`Pay run ${result.runNumber}`}
+      ytdBreakdown={result.ytdBreakdown}
+      projectedTaxYearPosition={result.projectedTaxYearPosition}
+      backHref={`/payroll/runs/${result.payRunId}/payslips`}
+      backLabel="Payslips"
       printHref={`/payroll/runs/${result.payRunId}/payslips/${result.id}/print`}
       printLabel="Print payslip"
+      pdfHref={
+        result.isPosted
+          ? `/payroll/runs/${result.payRunId}/payslips/${result.id}/pdf`
+          : undefined
+      }
       title={result.isPosted ? "Posted payslip" : "Draft payslip"}
       description={`${result.payslip.employee.displayName} · ${result.periodName} · ${result.runNumber}`}
       isOfficial={result.isPosted}

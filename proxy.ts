@@ -6,13 +6,28 @@ import {
   SESSION_COOKIE_NAME,
 } from "@/src/modules/auth/lib/session"
 
-const PUBLIC_PATHS = ["/login"]
+const PUBLIC_PATHS = ["/login", "/privacy"]
 const PASSWORD_CHANGE_PATH = "/account/change-password"
 
 function matchesPath(pathname: string, paths: string[]) {
   return paths.some(
     (path) =>
       pathname === path || pathname.startsWith(`${path}/`),
+  )
+}
+
+function isApiPath(pathname: string) {
+  return pathname === "/api" || pathname.startsWith("/api/")
+}
+
+/**
+ * `fetch` follows redirects, so sending an API caller to `/login` resolves as a
+ * 200 HTML page that reads as corrupt JSON. Answer with a status instead.
+ */
+function apiAuthFailure(status: 401 | 403) {
+  return NextResponse.json(
+    { error: status === 401 ? "unauthenticated" : "password_change_required" },
+    { status },
   )
 }
 
@@ -28,6 +43,10 @@ export async function proxy(request: NextRequest) {
   const session = await parseSessionTokenEdge(token, secret)
 
   if (!session && !isPublic) {
+    if (isApiPath(pathname)) {
+      return apiAuthFailure(401)
+    }
+
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = "/login"
     loginUrl.searchParams.set(
@@ -51,6 +70,10 @@ export async function proxy(request: NextRequest) {
     !isPasswordChange &&
     !isPublic
   ) {
+    if (isApiPath(pathname)) {
+      return apiAuthFailure(403)
+    }
+
     const changeUrl = request.nextUrl.clone()
     changeUrl.pathname = PASSWORD_CHANGE_PATH
     changeUrl.searchParams.set(

@@ -30,9 +30,10 @@ export default async function PeoplePage({
 }: {
   searchParams: SearchParams;
 }) {
-  await requirePeopleDirectoryAccess();
-
-  const params = await searchParams;
+  const [, params] = await Promise.all([
+    requirePeopleDirectoryAccess(),
+    searchParams,
+  ]);
 
   const filters: EmployeeDirectoryFilters = {
     query: params.query,

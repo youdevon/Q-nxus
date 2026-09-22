@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 import { requireCurrentUser } from "@/src/modules/auth/data/get-current-user";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
@@ -50,7 +51,7 @@ function serializeRequest(request: {
     firstName: string;
     lastName: string;
   } | null;
-  approvalSteps: {
+  approvalSteps?: {
     id: string;
     stepNumber: number;
     status: string;
@@ -120,7 +121,7 @@ function serializeRequest(request: {
     finalDecisionByName: request.finalDecisionBy
       ? `${request.finalDecisionBy.firstName} ${request.finalDecisionBy.lastName}`
       : null,
-    approvalSteps: request.approvalSteps.map((step) => ({
+    approvalSteps: (request.approvalSteps ?? []).map((step) => ({
       id: step.id,
       stepNumber: step.stepNumber,
       status: step.status,
@@ -270,6 +271,78 @@ const requestSelect = {
   },
 } as const;
 
+/** List/card rows — omit approval/ack graphs until the detail page. */
+const listRequestSelect = {
+  id: true,
+  requestNumber: true,
+  startDate: true,
+  endDate: true,
+  requestedQuantity: true,
+  reason: true,
+  employeeComment: true,
+  status: true,
+  submittedAt: true,
+  approvedAt: true,
+  rejectedAt: true,
+  cancelledAt: true,
+  withdrawnAt: true,
+  finalDecisionComment: true,
+  createdAt: true,
+  leaveType: {
+    select: {
+      code: true,
+      name: true,
+      colour: true,
+    },
+  },
+  contract: {
+    select: {
+      contractNumber: true,
+      jobTitle: true,
+    },
+  },
+  employee: {
+    select: {
+      id: true,
+      employeeNumber: true,
+      firstName: true,
+      lastName: true,
+      position: {
+        select: {
+          title: true,
+        },
+      },
+      assignments: {
+        where: {
+          isCurrent: true,
+        },
+        take: 1,
+        select: {
+          position: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  finalDecisionBy: {
+    select: {
+      firstName: true,
+      lastName: true,
+    },
+  },
+} as const;
+
+const WORKSPACE_QUEUE_LIMIT = 40;
+const CURRENTLY_ON_LEAVE_LIMIT = 100;
+const MY_LEAVE_REQUESTS_LIMIT = 50;
+
+type ListRequestRow = Prisma.LeaveRequestGetPayload<{
+  select: typeof listRequestSelect;
+}>;
+
 function currentYearStartUtc(): Date {
   const year = new Date().getUTCFullYear();
 
@@ -330,7 +403,7 @@ const awaitingDecisionStatuses = [
 ] as const;
 
 export async function getLeaveWorkspace(options?: {
-  /** Cap the main request list (queues stay uncapped / small). Default 100. */
+  /** Cap the main request list. Default 100. Queues use {@link WORKSPACE_QUEUE_LIMIT}. */
   requestLimit?: number;
 }) {
   const user = await requireCurrentUser();
@@ -368,6 +441,76 @@ export async function getLeaveWorkspace(options?: {
     Math.min(options?.requestLimit ?? 100, 250),
   );
 
+  const myApprovalsWhere: Prisma.LeaveRequestWhereInput = {
+    organizationId,
+    status: {
+      in: ["SUBMITTED", "PENDING_APPROVAL"],
+    },
+    approvalSteps: {
+      some: {
+        status: "PENDING",
+        approverUserId: user.id,
+      },
+    },
+  };
+
+  const myAcknowledgementsWhere: Prisma.LeaveRequestWhereInput = {
+    organizationId,
+    status: "AWAITING_ACKNOWLEDGEMENT",
+    acknowledgements: {
+      some: {
+        status: "PENDING",
+        acknowledgerUserId: user.id,
+      },
+    },
+  };
+
+  const managerApprovalsWhere: Prisma.LeaveRequestWhereInput = {
+    organizationId,
+    status: {
+      in: ["SUBMITTED", "PENDING_APPROVAL", "AWAITING_ACKNOWLEDGEMENT"],
+    },
+    OR: [
+      {
+        approvalSteps: {
+          some: {
+            status: "PENDING",
+          },
+        },
+      },
+      {
+        acknowledgements: {
+          some: {
+            status: "PENDING",
+          },
+        },
+      },
+    ],
+  };
+
+  const hrConfirmationsWhere: Prisma.LeaveRequestWhereInput = {
+    organizationId,
+    status: "MANAGER_APPROVED",
+    approvalSteps: {
+      some: {
+        status: "PENDING",
+      },
+    },
+  };
+
+  const currentlyOnLeaveWhere: Prisma.LeaveRequestWhereInput = {
+    organizationId,
+    status: "APPROVED",
+    startDate: {
+      lte: today,
+    },
+    endDate: {
+      gte: today,
+    },
+  };
+
+  const emptyList: ListRequestRow[] = [];
+
   const [
     allRequests,
     pendingMyApprovals,
@@ -378,6 +521,11 @@ export async function getLeaveWorkspace(options?: {
     approvedYtdAggregate,
     pendingRequestsCount,
     currentlyOnLeaveRequests,
+    pendingMyApprovalCount,
+    pendingMyAcknowledgementCount,
+    pendingManagerApprovalCount,
+    pendingHrConfirmationCount,
+    currentlyOnLeavePersonIds,
   ] = await Promise.all([
     prisma.leaveRequest.findMany({
       where: {
@@ -392,23 +540,12 @@ export async function getLeaveWorkspace(options?: {
         },
       ],
       take: requestLimit,
-      select: requestSelect,
+      select: listRequestSelect,
     }),
     // Assigned manager/final queue (anyone with leave.approve / leave.manage).
     canApprove
       ? prisma.leaveRequest.findMany({
-          where: {
-            organizationId,
-            status: {
-              in: ["SUBMITTED", "PENDING_APPROVAL"],
-            },
-            approvalSteps: {
-              some: {
-                status: "PENDING",
-                approverUserId: user.id,
-              },
-            },
-          },
+          where: myApprovalsWhere,
           orderBy: [
             {
               submittedAt: "asc",
@@ -417,21 +554,13 @@ export async function getLeaveWorkspace(options?: {
               createdAt: "asc",
             },
           ],
-          select: requestSelect,
+          take: WORKSPACE_QUEUE_LIMIT,
+          select: listRequestSelect,
         })
-      : Promise.resolve([]),
+      : Promise.resolve(emptyList),
     canApprove
       ? prisma.leaveRequest.findMany({
-          where: {
-            organizationId,
-            status: "AWAITING_ACKNOWLEDGEMENT",
-            acknowledgements: {
-              some: {
-                status: "PENDING",
-                acknowledgerUserId: user.id,
-              },
-            },
-          },
+          where: myAcknowledgementsWhere,
           orderBy: [
             {
               submittedAt: "asc",
@@ -440,34 +569,14 @@ export async function getLeaveWorkspace(options?: {
               createdAt: "asc",
             },
           ],
-          select: requestSelect,
+          take: WORKSPACE_QUEUE_LIMIT,
+          select: listRequestSelect,
         })
-      : Promise.resolve([]),
+      : Promise.resolve(emptyList),
     // Org-wide awaiting manager — HR oversight (not assigned to current user).
     canManageLeave
       ? prisma.leaveRequest.findMany({
-          where: {
-            organizationId,
-            status: {
-              in: ["SUBMITTED", "PENDING_APPROVAL", "AWAITING_ACKNOWLEDGEMENT"],
-            },
-            OR: [
-              {
-                approvalSteps: {
-                  some: {
-                    status: "PENDING",
-                  },
-                },
-              },
-              {
-                acknowledgements: {
-                  some: {
-                    status: "PENDING",
-                  },
-                },
-              },
-            ],
-          },
+          where: managerApprovalsWhere,
           orderBy: [
             {
               submittedAt: "asc",
@@ -476,20 +585,13 @@ export async function getLeaveWorkspace(options?: {
               createdAt: "asc",
             },
           ],
-          select: requestSelect,
+          take: WORKSPACE_QUEUE_LIMIT,
+          select: listRequestSelect,
         })
-      : Promise.resolve([]),
+      : Promise.resolve(emptyList),
     canManageLeave
       ? prisma.leaveRequest.findMany({
-          where: {
-            organizationId,
-            status: "MANAGER_APPROVED",
-            approvalSteps: {
-              some: {
-                status: "PENDING",
-              },
-            },
-          },
+          where: hrConfirmationsWhere,
           orderBy: [
             {
               submittedAt: "asc",
@@ -498,9 +600,10 @@ export async function getLeaveWorkspace(options?: {
               createdAt: "asc",
             },
           ],
-          select: requestSelect,
+          take: WORKSPACE_QUEUE_LIMIT,
+          select: listRequestSelect,
         })
-      : Promise.resolve([]),
+      : Promise.resolve(emptyList),
     prisma.employeeLeaveBalance.aggregate({
       where: balanceScopeWhere,
       _sum: {
@@ -528,16 +631,7 @@ export async function getLeaveWorkspace(options?: {
       },
     }),
     prisma.leaveRequest.findMany({
-      where: {
-        organizationId,
-        status: "APPROVED",
-        startDate: {
-          lte: today,
-        },
-        endDate: {
-          gte: today,
-        },
-      },
+      where: currentlyOnLeaveWhere,
       orderBy: [
         {
           employee: {
@@ -553,6 +647,7 @@ export async function getLeaveWorkspace(options?: {
           startDate: "asc",
         },
       ],
+      take: CURRENTLY_ON_LEAVE_LIMIT,
       select: {
         id: true,
         startDate: true,
@@ -574,6 +669,23 @@ export async function getLeaveWorkspace(options?: {
         },
       },
     }),
+    canApprove
+      ? prisma.leaveRequest.count({ where: myApprovalsWhere })
+      : Promise.resolve(0),
+    canApprove
+      ? prisma.leaveRequest.count({ where: myAcknowledgementsWhere })
+      : Promise.resolve(0),
+    canManageLeave
+      ? prisma.leaveRequest.count({ where: managerApprovalsWhere })
+      : Promise.resolve(0),
+    canManageLeave
+      ? prisma.leaveRequest.count({ where: hrConfirmationsWhere })
+      : Promise.resolve(0),
+    prisma.leaveRequest.findMany({
+      where: currentlyOnLeaveWhere,
+      distinct: ["employeeId"],
+      select: { employeeId: true },
+    }),
   ]);
 
   const currentlyOnLeave = currentlyOnLeaveRequests.map((request) => ({
@@ -587,9 +699,7 @@ export async function getLeaveWorkspace(options?: {
     employeeName: `${request.employee.preferredName ?? request.employee.firstName} ${request.employee.lastName}`,
   }));
 
-  const currentlyOnLeavePersonCount = new Set(
-    currentlyOnLeave.map((item) => item.employeeId),
-  ).size;
+  const currentlyOnLeavePersonCount = currentlyOnLeavePersonIds.length;
 
   // For managers who are not HR, "pending approvals" is their assigned queue.
   // For HR, prefer the HR confirmation queue as the primary attention count,
@@ -615,10 +725,10 @@ export async function getLeaveWorkspace(options?: {
       approvedYtdDays:
         approvedYtdAggregate._sum.requestedQuantity?.toString() ?? "0",
       pendingRequestsCount,
-      pendingMyApprovalCount: pendingMyApprovals.length,
-      pendingMyAcknowledgementCount: pendingMyAcknowledgements.length,
-      pendingHrConfirmationCount: pendingHrConfirmations.length,
-      pendingManagerApprovalCount: pendingManagerApprovals.length,
+      pendingMyApprovalCount,
+      pendingMyAcknowledgementCount,
+      pendingHrConfirmationCount,
+      pendingManagerApprovalCount,
       currentlyOnLeaveCount: currentlyOnLeavePersonCount,
     },
     currentlyOnLeave,
@@ -655,7 +765,8 @@ export async function getMyLeaveRequests() {
         createdAt: "desc",
       },
     ],
-    select: requestSelect,
+    take: MY_LEAVE_REQUESTS_LIMIT,
+    select: listRequestSelect,
   });
 
   return requests.map(serializeRequest);

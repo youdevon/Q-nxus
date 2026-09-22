@@ -2,13 +2,20 @@
  * Year-to-date totals for payslip documents.
  *
  * Rules:
- * - Only POSTED payslips count toward history.
+ * - Only POSTED payslips count toward prior history.
  * - Calendar year comes from the payroll period (`year` / period key).
  * - Posted slip view: YTD = prior posted in year + this slip.
- * - Live preview: YTD = prior posted in year + this preview period.
+ * - Live preview / draft stored slip: YTD = prior posted in year + this period snapshot.
+ * - Documents should always receive assembled YTD (never omit the block when a slip renders).
+ * - Phase 9: prior-employer / current-employer / combined split.
+ *   Combined Gross on the slip includes prior taxable income; NIS / Health /
+ *   PAYE add prior statutory YTD. Display loads all ACTIVE prior rows for the
+ *   tax year; PAYE withholding still uses verified totals only.
  */
 
 import { sumMoney } from "@/src/modules/payroll/lib/money";
+import type { PriorEmploymentYtdTotals } from "@/src/modules/payroll/lib/prior-employment-ytd";
+import { emptyPriorEmploymentYtdTotals } from "@/src/modules/payroll/lib/prior-employment-ytd";
 
 export type PayslipYtdContribution = {
   grossPay: number;
@@ -17,6 +24,8 @@ export type PayslipYtdContribution = {
   paye: number;
   nisEmployee: number;
   healthSurcharge: number;
+  /** Taxable employment earnings for the period (for cumulative PAYE). */
+  taxableEarnings?: number;
 };
 
 export type PayslipYtdTotals = {
@@ -28,6 +37,31 @@ export type PayslipYtdTotals = {
   paye: number;
   nisEmployee: number;
   healthSurcharge: number;
+  taxableEarnings: number;
+};
+
+/** Phase 9: prior / current-employer / combined YTD labels. */
+export type PayslipYtdBreakdown = {
+  year: number;
+  prior: {
+    taxableIncome: number;
+    paye: number;
+    nisEmployee: number;
+    healthSurcharge: number;
+    recordCount: number;
+  };
+  currentEmployer: PayslipYtdTotals;
+  combined: {
+    year: number;
+    grossPay: number;
+    totalDeductions: number;
+    netPay: number;
+    paye: number;
+    nisEmployee: number;
+    healthSurcharge: number;
+    taxableEarnings: number;
+    periodCount: number;
+  };
 };
 
 export function emptyPayslipYtd(year: number): PayslipYtdTotals {
@@ -40,6 +74,7 @@ export function emptyPayslipYtd(year: number): PayslipYtdTotals {
     paye: 0,
     nisEmployee: 0,
     healthSurcharge: 0,
+    taxableEarnings: 0,
   };
 }
 
@@ -68,6 +103,54 @@ export function assemblePayslipYtd(input: {
     healthSurcharge: sumMoney(
       ...contributions.map((row) => row.healthSurcharge),
     ),
+    taxableEarnings: sumMoney(
+      ...contributions.map((row) => row.taxableEarnings ?? row.grossPay),
+    ),
+  };
+}
+
+export function assemblePayslipYtdBreakdown(input: {
+  year: number;
+  currentEmployer: PayslipYtdTotals;
+  prior?: PriorEmploymentYtdTotals | null;
+}): PayslipYtdBreakdown {
+  const prior = input.prior ?? emptyPriorEmploymentYtdTotals();
+
+  return {
+    year: input.year,
+    prior: {
+      taxableIncome: prior.taxableIncomeYtd,
+      paye: prior.payeDeductedYtd,
+      nisEmployee: prior.nisEmployeeYtd,
+      healthSurcharge: prior.healthSurchargeYtd,
+      recordCount: prior.recordCount,
+    },
+    currentEmployer: input.currentEmployer,
+    combined: {
+      year: input.year,
+      // Slip "Gross" YTD uses prior taxable income (TD4 / letter YTD), same as
+      // taxableEarnings — prior employers do not store a separate gross figure.
+      grossPay: sumMoney(
+        input.currentEmployer.grossPay,
+        prior.taxableIncomeYtd,
+      ),
+      totalDeductions: input.currentEmployer.totalDeductions,
+      netPay: input.currentEmployer.netPay,
+      paye: sumMoney(input.currentEmployer.paye, prior.payeDeductedYtd),
+      nisEmployee: sumMoney(
+        input.currentEmployer.nisEmployee,
+        prior.nisEmployeeYtd,
+      ),
+      healthSurcharge: sumMoney(
+        input.currentEmployer.healthSurcharge,
+        prior.healthSurchargeYtd,
+      ),
+      taxableEarnings: sumMoney(
+        input.currentEmployer.taxableEarnings,
+        prior.taxableIncomeYtd,
+      ),
+      periodCount: input.currentEmployer.periodCount + prior.recordCount,
+    },
   };
 }
 

@@ -2,6 +2,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { AuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
+import { resolveActorOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { decryptAccountNumber } from "@/src/modules/payroll/lib/bank-account-crypto";
 import { toPayslipBankAccountInputs } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
 import {
@@ -16,6 +17,7 @@ import {
 import { applyPostNetBankAllocations } from "@/src/modules/payroll/lib/post-net-bank-allocations";
 import { isPayRunPosted } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
+import { filterEffectiveBankSetup } from "@/src/modules/payroll/lib/effective-dated-banking";
 import {
   buildPaymentDraftFromPayslip,
   summarizePreparedPayments,
@@ -23,6 +25,7 @@ import {
   type PreparePaymentsSummary,
   type PreparedPaymentDraft,
 } from "@/src/modules/payroll/lib/prepare-payroll-payments";
+import { invalidateAchBatchesIfPayrollChanged } from "@/src/modules/payroll/services/invalidate-ach-batches";
 
 export type PreparePayrollPaymentsResult =
   | {
@@ -247,9 +250,17 @@ export async function preparePayrollPaymentsForPayRun(input: {
   actorUserId: string;
   audit?: AuditRequestMetadata;
 }): Promise<PreparePayrollPaymentsResult> {
-  const run = await prisma.payRun.findUnique({
-    where: { id: input.payRunId },
+  const organizationId = await resolveActorOrganizationId({
+    actorUserId: input.actorUserId,
+  });
+  if (!organizationId) {
+    return { ok: false, error: "No organization is associated with this user." };
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: input.payRunId, organizationId },
     include: {
+      payrollPeriod: { select: { periodEnd: true } },
       payslips: {
         where: { status: "POSTED" },
         orderBy: [{ employeeName: "asc" }],
@@ -274,6 +285,14 @@ export async function preparePayrollPaymentsForPayRun(input: {
       where: { payRunId: run.id },
       select: { id: true, paymentStatus: true, allocatedAmount: true },
     });
+
+    await invalidateAchBatchesIfPayrollChanged({
+      payRunId: run.id,
+      organizationId: run.organizationId,
+      actorUserId: input.actorUserId,
+      audit: input.audit,
+    });
+
     return {
       ok: true,
       alreadyPrepared: true,
@@ -308,7 +327,8 @@ export async function preparePayrollPaymentsForPayRun(input: {
   const requireVerifiedAccounts = await requiresVerifiedBankAccounts();
 
   const employeeIds = [...new Set(run.payslips.map((slip) => slip.employeeId))];
-  const bankAccounts = await prisma.employeeBankAccount.findMany({
+  const asOf = run.payrollPeriod?.periodEnd ?? new Date();
+  const bankAccountsRaw = await prisma.employeeBankAccount.findMany({
     where: {
       organizationId: run.organizationId,
       employeeId: { in: employeeIds },
@@ -323,6 +343,8 @@ export async function preparePayrollPaymentsForPayRun(input: {
     },
     orderBy: [{ sortOrder: "asc" }],
   });
+
+  const bankAccounts = filterEffectiveBankSetup(bankAccountsRaw, asOf);
 
   const accountsByEmployee = new Map<string, typeof bankAccounts>();
   for (const account of bankAccounts) {

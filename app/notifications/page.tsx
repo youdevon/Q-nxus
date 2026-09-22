@@ -10,12 +10,32 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function NotificationsPage() {
-  const data = await getUserNotifications();
+type NotificationsPageProps = {
+  searchParams: Promise<{ module?: string; unread?: string }>;
+};
+
+export default async function NotificationsPage({
+  searchParams,
+}: NotificationsPageProps) {
+  const params = await searchParams;
+  const moduleKey =
+    params.module?.trim().toLowerCase() === "payroll" ? "payroll" : undefined;
+  const unreadOnly = params.unread === "1" || params.unread === "true";
+
+  const data = await getUserNotifications(250, {
+    moduleKey,
+    unreadOnly,
+  });
 
   if (!data) {
     notFound();
   }
 
-  return <NotificationInbox data={data} />;
+  const activeFilter = unreadOnly
+    ? "unread"
+    : moduleKey === "payroll"
+      ? "payroll"
+      : "all";
+
+  return <NotificationInbox data={data} activeFilter={activeFilter} />;
 }

@@ -3,6 +3,11 @@ import {
   type HealthSurchargeConfigRecord,
   toHealthConfigInput,
 } from "@/src/modules/payroll/lib/health-surcharge";
+import {
+  statutoryScheduleCoversAsOf,
+  toStatutoryAsOfDate,
+  toStatutoryAsOfKey,
+} from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type { HealthSurchargeConfigRecord };
 export { toHealthConfigInput };
@@ -11,17 +16,36 @@ function toDateString(value: Date): string {
   return value.toISOString().slice(0, 10);
 }
 
-function coversToday(
-  effectiveFrom: string,
-  effectiveTo: string | null,
-  isActive: boolean,
-  today: string,
-): boolean {
-  return (
-    isActive &&
-    effectiveFrom <= today &&
-    (effectiveTo == null || effectiveTo >= today)
-  );
+function mapHealthConfig(
+  config: {
+    id: string;
+    higherWeeklyAmount: { toString(): string };
+    lowerWeeklyAmount: { toString(): string };
+    weeklyEarningsThreshold: { toString(): string };
+    monthlyEarningsThreshold: { toString(): string };
+    underAgeExempt: number;
+    seniorAgeExempt: number;
+    effectiveFrom: Date;
+    effectiveTo: Date | null;
+    versionLabel: string | null;
+    isActive: boolean;
+  },
+  isCurrent: boolean,
+): HealthSurchargeConfigRecord {
+  return {
+    id: config.id,
+    higherWeeklyAmount: config.higherWeeklyAmount.toString(),
+    lowerWeeklyAmount: config.lowerWeeklyAmount.toString(),
+    weeklyEarningsThreshold: config.weeklyEarningsThreshold.toString(),
+    monthlyEarningsThreshold: config.monthlyEarningsThreshold.toString(),
+    underAgeExempt: config.underAgeExempt,
+    seniorAgeExempt: config.seniorAgeExempt,
+    effectiveFrom: toDateString(config.effectiveFrom),
+    effectiveTo: config.effectiveTo ? toDateString(config.effectiveTo) : null,
+    versionLabel: config.versionLabel,
+    isActive: config.isActive,
+    isCurrent,
+  };
 }
 
 export async function getHealthSurchargeConfigs(): Promise<
@@ -31,7 +55,7 @@ export async function getHealthSurchargeConfigs(): Promise<
     orderBy: { effectiveFrom: "desc" },
   });
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = toStatutoryAsOfKey(new Date());
   let currentAssigned = false;
 
   return configs.map((config) => {
@@ -40,38 +64,72 @@ export async function getHealthSurchargeConfigs(): Promise<
       ? toDateString(config.effectiveTo)
       : null;
     const isCurrent =
-      coversToday(effectiveFrom, effectiveTo, config.isActive, today) &&
-      !currentAssigned;
+      statutoryScheduleCoversAsOf({
+        effectiveFrom,
+        effectiveTo,
+        isActive: config.isActive,
+        asOf: today,
+      }) && !currentAssigned;
 
     if (isCurrent) {
       currentAssigned = true;
     }
 
-    return {
-      id: config.id,
-      higherWeeklyAmount: config.higherWeeklyAmount.toString(),
-      lowerWeeklyAmount: config.lowerWeeklyAmount.toString(),
-      weeklyEarningsThreshold: config.weeklyEarningsThreshold.toString(),
-      monthlyEarningsThreshold: config.monthlyEarningsThreshold.toString(),
-      underAgeExempt: config.underAgeExempt,
-      seniorAgeExempt: config.seniorAgeExempt,
-      effectiveFrom,
-      effectiveTo,
-      versionLabel: config.versionLabel,
-      isActive: config.isActive,
-      isCurrent,
-    };
+    return mapHealthConfig(config, isCurrent);
   });
 }
 
+export async function getHealthSurchargeConfigAsOf(
+  asOf: Date | string,
+): Promise<HealthSurchargeConfigRecord | null> {
+  const asOfKey = toStatutoryAsOfKey(asOf);
+  const asOfDate = toStatutoryAsOfDate(asOfKey);
+
+  const config = await prisma.healthSurchargeConfig.findFirst({
+    where: {
+      isActive: true,
+      effectiveFrom: { lte: asOfDate },
+      OR: [{ effectiveTo: null }, { effectiveTo: { gte: asOfDate } }],
+    },
+    orderBy: { effectiveFrom: "desc" },
+  });
+
+  if (!config) {
+    return null;
+  }
+
+  return mapHealthConfig(config, true);
+}
+
+/** @deprecated Prefer {@link getHealthSurchargeConfigAsOf} with an explicit period date. */
 export async function getCurrentHealthSurchargeConfig(): Promise<HealthSurchargeConfigRecord | null> {
-  const configs = await getHealthSurchargeConfigs();
-  return configs.find((config) => config.isCurrent) ?? null;
+  return getHealthSurchargeConfigAsOf(new Date());
 }
 
 export async function getHealthSurchargeConfig(
   id: string,
 ): Promise<HealthSurchargeConfigRecord | null> {
-  const configs = await getHealthSurchargeConfigs();
-  return configs.find((config) => config.id === id) ?? null;
+  const config = await prisma.healthSurchargeConfig.findUnique({
+    where: { id },
+  });
+
+  if (!config) {
+    return null;
+  }
+
+  const today = toStatutoryAsOfKey(new Date());
+  const effectiveFrom = toDateString(config.effectiveFrom);
+  const effectiveTo = config.effectiveTo
+    ? toDateString(config.effectiveTo)
+    : null;
+
+  return mapHealthConfig(
+    config,
+    statutoryScheduleCoversAsOf({
+      effectiveFrom,
+      effectiveTo,
+      isActive: config.isActive,
+      asOf: today,
+    }),
+  );
 }

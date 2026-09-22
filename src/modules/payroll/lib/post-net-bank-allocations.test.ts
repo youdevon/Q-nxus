@@ -39,24 +39,24 @@ describe("applyPostNetBankAllocations", () => {
     expect(result.lines).toEqual([
       {
         bankName: "Fixed Bank",
-        accountNumber: "111100001111",
         accountNumberMasked: "••••1111",
         amount: 3_000,
         kind: "FIXED",
+      accountType: null,
       },
       {
         bankName: "Percent Bank",
-        accountNumber: "222200002222",
         accountNumberMasked: "••••2222",
         amount: 5_000,
         kind: "PERCENTAGE",
+      accountType: null,
       },
       {
         bankName: "Remainder Bank",
-        accountNumber: "333300003333",
         accountNumberMasked: "••••3333",
         amount: 12_000,
         kind: "REMAINDER",
+      accountType: null,
       },
     ]);
     expect(result.allocatedTotal).toBe(20_000);

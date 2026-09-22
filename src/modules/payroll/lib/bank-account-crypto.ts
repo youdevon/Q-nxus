@@ -19,6 +19,13 @@ function resolveEncryptionKeyMaterial(): string {
   if (dedicated && dedicated.length >= 16) {
     return dedicated;
   }
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "BANK_ACCOUNT_ENCRYPTION_KEY is required in production (min 16 characters). Do not rely on AUTH_SECRET for bank encryption.",
+    );
+  }
+
   const authSecret = process.env.AUTH_SECRET?.trim();
   if (authSecret && authSecret.length >= 16) {
     return authSecret;

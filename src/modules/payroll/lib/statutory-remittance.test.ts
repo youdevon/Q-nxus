@@ -100,6 +100,29 @@ describe("extractStatutoryRemittanceRow", () => {
       health: 0,
     });
   });
+
+  it("reads Class Z employer lines from a posted snapshot", () => {
+    const row = extractStatutoryRemittanceRow(
+      {
+        version: 1,
+        payslip: {
+          ...snapshotFixture({}).payslip,
+          employerContributions: [
+            { label: "NIS Class Z (employer)", amount: 101.72 },
+          ],
+          nis: {
+            category: "CLASS_Z",
+            classZEmployerMonthly: 101.72,
+            employerMonthly: 0,
+          },
+        },
+        meta: snapshotFixture({}).meta,
+      },
+      "TTD",
+    );
+
+    expect(row.nisEmployer).toBe(101.72);
+  });
 });
 
 describe("aggregateStatutoryRemittance", () => {

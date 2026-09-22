@@ -36,7 +36,10 @@ type DepartmentDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   department?: DepartmentRecord | null;
-  onSuccess?: (entityId?: string) => void;
+  onSuccess?: (
+    entityId?: string,
+    createdEntity?: StructureFormState["createdEntity"],
+  ) => void;
 };
 
 function DepartmentDialogForm({
@@ -44,7 +47,10 @@ function DepartmentDialogForm({
   onSuccess,
 }: {
   department?: DepartmentRecord | null;
-  onSuccess: (entityId?: string) => void;
+  onSuccess: (
+    entityId?: string,
+    createdEntity?: StructureFormState["createdEntity"],
+  ) => void;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const formId = useId();
@@ -55,7 +61,7 @@ function DepartmentDialogForm({
     if (state.status === "success") {
       toast.success(state.message);
       formRef.current?.reset();
-      onSuccess(state.entityId ?? department?.id);
+      onSuccess(state.entityId ?? department?.id, state.createdEntity);
     }
 
     if (state.status === "error") {
@@ -175,8 +181,8 @@ export function DepartmentStructureDialog({
           <DepartmentDialogForm
             key={department?.id ?? "new-department"}
             department={department}
-            onSuccess={(entityId) => {
-              onSuccess?.(entityId);
+            onSuccess={(entityId, createdEntity) => {
+              onSuccess?.(entityId, createdEntity);
               onOpenChange(false);
             }}
           />
@@ -201,7 +207,10 @@ type PositionDialogProps = {
     updatedAt: string;
     departmentName: string;
   } | null;
-  onSuccess?: (entityId?: string) => void;
+  onSuccess?: (
+    entityId?: string,
+    createdEntity?: StructureFormState["createdEntity"],
+  ) => void;
 };
 
 function PositionDialogForm({
@@ -213,7 +222,10 @@ function PositionDialogForm({
   departments: DepartmentRecord[];
   defaultDepartmentId?: string;
   position?: PositionDialogProps["position"];
-  onSuccess: (entityId?: string) => void;
+  onSuccess: (
+    entityId?: string,
+    createdEntity?: StructureFormState["createdEntity"],
+  ) => void;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const formId = useId();
@@ -224,7 +236,7 @@ function PositionDialogForm({
     if (state.status === "success") {
       toast.success(state.message);
       formRef.current?.reset();
-      onSuccess(state.entityId ?? position?.id);
+      onSuccess(state.entityId ?? position?.id, state.createdEntity);
     }
 
     if (state.status === "error") {
@@ -392,8 +404,8 @@ export function PositionStructureDialog({
             departments={departments}
             defaultDepartmentId={defaultDepartmentId}
             position={position}
-            onSuccess={(entityId) => {
-              onSuccess?.(entityId);
+            onSuccess={(entityId, createdEntity) => {
+              onSuccess?.(entityId, createdEntity);
               onOpenChange(false);
             }}
           />

@@ -25,12 +25,15 @@ export async function validateContractLeaveRequest({
   leaveTypeId,
   startDate,
   endDate,
+  skipNotice = false,
 }: {
   employeeId: string;
   contractId: string;
   leaveTypeId: string;
   startDate: Date;
   endDate: Date;
+  /** When true, bypass minimumNoticeDays (historical / cutover entry). */
+  skipNotice?: boolean;
 }): Promise<ValidatedContractLeaveRequest> {
   const contract = await prisma.employmentContract.findFirst({
     where: {
@@ -83,7 +86,7 @@ export async function validateContractLeaveRequest({
     throw new Error("The selected leave type is invalid or inactive.");
   }
 
-  if (leaveType.minimumNoticeDays > 0) {
+  if (!skipNotice && leaveType.minimumNoticeDays > 0) {
     const today = new Date();
     const todayUtc = new Date(
       Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),

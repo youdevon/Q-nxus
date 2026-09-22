@@ -5,10 +5,10 @@ import { BriefcaseBusiness, Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
-import { PageShell } from "@/src/components/layout/page-shell";
+import { EmployeeSectionChrome } from "@/src/modules/hr/components/employee-section-chrome";
 import { formatDisplayDate } from "@/src/lib/format";
 import { getEmployeeAssignmentHistory } from "@/src/modules/hr/data/get-employee-assignments";
+import { getEmployeeEntityChrome } from "@/src/modules/hr/data/get-employee-entity-chrome";
 import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
 export const metadata: Metadata = {
@@ -34,33 +34,34 @@ export default async function EmployeeAssignmentsPage({
   await requirePeopleManageAccess();
 
   const { id } = await params;
-  const data = await getEmployeeAssignmentHistory(id);
+  const [data, chrome] = await Promise.all([
+    getEmployeeAssignmentHistory(id),
+    getEmployeeEntityChrome(id),
+  ]);
 
-  if (!data) {
+  if (!data || !chrome) {
     notFound();
   }
 
   return (
-    <PageShell size="lg">
-      <PeoplePageHeader
-        title="Assignment History"
-        description={`${data.employee.firstName} ${data.employee.lastName} · ${data.employee.employeeNumber}`}
-        backHref={`/people/employees/${data.employee.id}`}
-        backLabel="Employee"
-        actions={
-          <Button
-            nativeButton={false}
-            render={
-              <Link
-                href={`/people/employees/${data.employee.id}/assignments/new`}
-              />
-            }
-          >
-            <Plus />
-            Assign to position
-          </Button>
-        }
-      />
+    <EmployeeSectionChrome
+      chrome={chrome}
+      current="assignments"
+      title="Assignment History"
+      actions={
+        <Button
+          nativeButton={false}
+          render={
+            <Link
+              href={`/people/employees/${data.employee.id}/assignments/new`}
+            />
+          }
+        >
+          <Plus />
+          Assign to position
+        </Button>
+      }
+    >
 
       <section className="grid grid-cols-2 gap-8 md:grid-cols-3">
         <div>
@@ -172,6 +173,6 @@ export default async function EmployeeAssignmentsPage({
           </div>
         )}
       </section>
-    </PageShell>
+    </EmployeeSectionChrome>
   );
 }

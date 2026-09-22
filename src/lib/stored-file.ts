@@ -9,7 +9,7 @@ export type StoredFileMeta = {
   fileSize: number;
 };
 
-export const DEFAULT_STORED_FILE_MAX_BYTES = 5 * 1024 * 1024;
+export const DEFAULT_STORED_FILE_MAX_BYTES = 15 * 1024 * 1024;
 
 export const DEFAULT_STORED_FILE_MIME_TYPES = new Set([
   "application/pdf",
@@ -22,8 +22,33 @@ export const DEFAULT_STORED_FILE_MIME_TYPES = new Set([
 
 export const UPLOADS_ROOT = path.join(process.cwd(), "uploads");
 
+export type EmployeeStorageIdentity = {
+  employeeNumber: string;
+  firstName: string;
+  lastName: string;
+};
+
 export function safeStoredFileName(fileName: string): string {
   return fileName.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 120);
+}
+
+/**
+ * Folder label under uploads/ for an employee file, e.g. `19-Dumas_Devon`.
+ */
+export function employeeStorageFolderLabel(
+  employee: EmployeeStorageIdentity,
+): string {
+  const number = safeStoredFileName(
+    employee.employeeNumber.trim() || "unknown",
+  );
+  const last = safeStoredFileName(employee.lastName.trim() || "Unknown");
+  const first = safeStoredFileName(employee.firstName.trim() || "Unknown");
+  return `${number}-${last}_${first}`;
+}
+
+export function formatStoredFileMaxBytesLabel(maxBytes: number): string {
+  const mb = maxBytes / (1024 * 1024);
+  return Number.isInteger(mb) ? `${mb} MB` : `${mb.toFixed(1)} MB`;
 }
 
 /**
@@ -70,7 +95,9 @@ export async function storeUploadedFile(input: {
   }
 
   if (input.file.size > maxBytes) {
-    throw new Error("Attachments must be 5 MB or smaller.");
+    throw new Error(
+      `Attachments must be ${formatStoredFileMaxBytesLabel(maxBytes)} or smaller.`,
+    );
   }
 
   const mimeType = input.file.type || null;

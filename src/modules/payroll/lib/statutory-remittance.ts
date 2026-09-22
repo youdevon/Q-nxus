@@ -10,6 +10,7 @@
 import {
   addCents,
   fromCents,
+  roundToCents,
   sumMoney,
   toCents,
 } from "@/src/modules/payroll/lib/money";
@@ -55,6 +56,30 @@ function employerContributionAmount(
   return sumMoney(...amounts);
 }
 
+/** Employer NIS from a payslip snapshot (lines first, then NIS block fallback). */
+export function extractEmployerNisFromSnapshot(snapshot: unknown): number {
+  const parsed = parsePayslipSnapshot(snapshot);
+  const fromLines = sumMoney(
+    employerContributionAmount(parsed, "NIS (employer)"),
+    employerContributionAmount(parsed, "NIS Class Z (employer)"),
+  );
+  if (fromLines > 0) {
+    return roundToCents(fromLines);
+  }
+
+  const nis = parsed?.payslip.nis;
+  if (nis?.category === "CLASS_Z" && (nis.classZEmployerMonthly ?? 0) > 0) {
+    return roundToCents(nis.classZEmployerMonthly);
+  }
+
+  const monthly = nis?.employerMonthly;
+  if (typeof monthly === "number" && Number.isFinite(monthly) && monthly > 0) {
+    return roundToCents(monthly);
+  }
+
+  return 0;
+}
+
 /** Extract one payslip's statutory amounts from its frozen snapshot JSON. */
 export function extractStatutoryRemittanceRow(
   snapshot: unknown,
@@ -66,7 +91,7 @@ export function extractStatutoryRemittanceRow(
     currency: currency || "TTD",
     paye: deductionAmount(parsed, "PAYE (income tax)"),
     nisEmployee: deductionAmount(parsed, "NIS (employee)"),
-    nisEmployer: employerContributionAmount(parsed, "NIS (employer)"),
+    nisEmployer: extractEmployerNisFromSnapshot(snapshot),
     health: deductionAmount(parsed, "Health Surcharge"),
   };
 }

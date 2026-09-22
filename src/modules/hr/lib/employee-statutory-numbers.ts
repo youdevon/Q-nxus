@@ -9,21 +9,19 @@ export type StatutoryNumberPair = {
 /**
  * Resolve how payroll may touch Employee NIS/BIR.
  *
- * Employee remains source of truth:
+ * Employee is the sole store:
  * - Existing Employee values always win.
- * - Without `people.manage`, Employee is never updated and PayrollProfile only
- *   mirrors Employee (form values are not persisted as profile-only lasting data).
+ * - Without `people.manage`, Employee is never updated (form values are ignored).
  * - With `people.manage`, empty Employee fields may be filled from the form
- *   (same gap-fill as resolveStatutoryNumber) and written back to Employee;
- *   PayrollProfile mirrors the resolved Employee values for readiness/snapshots.
+ *   and written back to Employee.
  */
 export function resolveEmployeeStatutoryWriteFromPayroll(input: {
   actor: Pick<UserCapabilities, "can">;
   employee: StatutoryNumberPair;
   form: StatutoryNumberPair;
 }): {
-  /** Values to store on PayrollProfile (mirror of Employee / resolved Employee). */
-  profile: StatutoryNumberPair;
+  /** Resolved NIS/BIR for readiness / payslip (Employee SoT after optional write). */
+  resolved: StatutoryNumberPair;
   /** Patch for Employee — null means do not update Employee. */
   employeeUpdate: StatutoryNumberPair | null;
 } {
@@ -36,7 +34,7 @@ export function resolveEmployeeStatutoryWriteFromPayroll(input: {
 
   if (!canManagePeople) {
     return {
-      profile: {
+      resolved: {
         nisNumber: employeeNis,
         birNumber: employeeBir,
       },
@@ -51,7 +49,7 @@ export function resolveEmployeeStatutoryWriteFromPayroll(input: {
     nisNumber !== employeeNis || birNumber !== employeeBir;
 
   return {
-    profile: { nisNumber, birNumber },
+    resolved: { nisNumber, birNumber },
     employeeUpdate: employeeChanged ? { nisNumber, birNumber } : null,
   };
 }

@@ -116,6 +116,27 @@ export async function markPaymentAllocationReturned(input: {
     clientHostName: input.audit?.clientHostName,
   });
 
+  try {
+    const { notifyPaymentAllocationReturned } = await import(
+      "@/src/modules/payroll/services/notify-payroll-events"
+    );
+    await notifyPaymentAllocationReturned({
+      allocationId: allocation.id,
+      employeeId: allocation.payrollPayment.employeeId,
+      payRunId: allocation.payrollPayment.payRunId,
+      outcome: input.outcome,
+      amount: returnedAmount,
+      currencyCode: allocation.currencyCode,
+      accountMasked: allocation.accountNumberMasked,
+      returnReason: input.returnReason?.trim() || null,
+    });
+  } catch (notifyError) {
+    console.error(
+      "Unable to notify employee about returned payment allocation:",
+      notifyError,
+    );
+  }
+
   return { ok: true, allocationId: allocation.id, status: input.outcome };
 }
 

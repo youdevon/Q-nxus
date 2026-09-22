@@ -30,14 +30,26 @@ export default async function PayRunPaymentBatchPage({ params }: PageProps) {
     notFound();
   }
 
+  const canManage = capabilities.can("payroll.manage");
+  const canPrepare =
+    capabilities.can("payroll.payment_batches.prepare") || canManage;
+  const canApprove =
+    capabilities.can("payroll.payment_batches.approve") || canManage;
+  const canExport =
+    capabilities.can("payroll.payment_batches.export") || canManage;
+
   return (
     <AchPaymentBatchDetailView
       batch={batch}
-      canManage={capabilities.can("payroll.manage")}
-      canManageReturns={
-        capabilities.can("payroll.payment_returns.manage") ||
-        capabilities.can("payroll.manage")
-      }
+      capabilities={{
+        canApprove,
+        canGenerate: canExport,
+        canCancel: canPrepare,
+        canRelease: canExport,
+        canReconcile: canExport,
+        canManageReturns:
+          capabilities.can("payroll.payment_returns.manage") || canManage,
+      }}
     />
   );
 }

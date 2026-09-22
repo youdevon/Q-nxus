@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 export type OrganizationChartPosition = {
   id: string;
@@ -43,10 +44,13 @@ type FlatPosition = Omit<OrganizationChartPosition, "directReports"> & {
 };
 
 export async function getOrganizationChart(): Promise<OrganizationChartData | null> {
+  const sessionOrgId = await getSessionOrganizationId();
+  if (!sessionOrgId) {
+    return null;
+  }
+
   const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
+    where: { id: sessionOrgId },
     select: {
       id: true,
       name: true,

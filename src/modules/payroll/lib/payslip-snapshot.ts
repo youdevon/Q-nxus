@@ -5,18 +5,37 @@
 
 import type { PayslipDocumentMeta } from "@/src/modules/payroll/data/get-employee-payslip-preview";
 import { sumMoney } from "@/src/modules/payroll/lib/money";
-import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
+import {
+  maskAccountNumber,
+  type PayslipBankLine,
+  type PayslipPreview,
+} from "@/src/modules/payroll/lib/payslip-preview";
 
 export type PayslipStatutorySnapshot = {
+  /** Period date used to resolve schedules (YYYY-MM-DD). */
+  asOf?: string | null;
+  /** Calendar tax year for the calculation. */
+  taxYear?: number | null;
+  countryCode?: string | null;
+  currencyCode?: string | null;
   payeConfigId: string | null;
   payeVersionLabel: string | null;
   payeEffectiveFrom: string | null;
+  payeTaxYear?: number | null;
+  payeSourceReference?: string | null;
   healthConfigId: string | null;
   healthVersionLabel: string | null;
   healthEffectiveFrom: string | null;
   nisVersionLabel: string | null;
   nisEffectiveFrom: string | null;
   nisClassCount: number;
+  /** Prior-employer YTD pin (Phase 3; applied in Phase 4 cumulative). */
+  priorEmployment?: {
+    taxableIncomeYtd: number;
+    payeDeductedYtd: number;
+    recordCount: number;
+    allVerified: boolean;
+  } | null;
 };
 
 export type PayslipSnapshotPayload = {
@@ -66,16 +85,64 @@ function isPayslipBankLine(value: unknown): boolean {
     return false;
   }
 
+  const hasMasked =
+    typeof value.accountNumberMasked === "string" &&
+    value.accountNumberMasked.length > 0;
+  const hasPlain =
+    typeof value.accountNumber === "string" && value.accountNumber.length > 0;
+
   return (
     typeof value.bankName === "string" &&
+    (hasMasked || hasPlain) &&
     (value.accountNumber === undefined ||
       typeof value.accountNumber === "string") &&
-    typeof value.accountNumberMasked === "string" &&
+    (value.accountNumberMasked === undefined ||
+      typeof value.accountNumberMasked === "string") &&
     typeof value.amount === "number" &&
     (value.kind === "FIXED" ||
       value.kind === "PERCENTAGE" ||
       value.kind === "REMAINDER")
   );
+}
+
+/** Drop plaintext account numbers from bank lines; derive mask when needed. */
+function redactPayslipBankLine(value: Record<string, unknown>): PayslipBankLine {
+  const plaintext =
+    typeof value.accountNumber === "string" ? value.accountNumber : undefined;
+  const existingMasked =
+    typeof value.accountNumberMasked === "string"
+      ? value.accountNumberMasked
+      : undefined;
+
+  const accountNumberMasked =
+    existingMasked && existingMasked.length > 0
+      ? existingMasked
+      : plaintext
+        ? maskAccountNumber(plaintext)
+        : "••••";
+
+  return {
+    bankName: value.bankName as string,
+    accountNumberMasked,
+    amount: value.amount as number,
+    kind: value.kind as PayslipBankLine["kind"],
+    ...(typeof value.accountType === "string" || value.accountType === null
+      ? { accountType: value.accountType as string | null }
+      : {}),
+  };
+}
+
+function redactPayslipPreview(payslip: PayslipPreview): PayslipPreview {
+  if (!payslip.bankDistribution) {
+    return payslip;
+  }
+
+  return {
+    ...payslip,
+    bankDistribution: payslip.bankDistribution.map((line) =>
+      redactPayslipBankLine(line as unknown as Record<string, unknown>),
+    ),
+  };
 }
 
 function isPayslipPreview(value: unknown): value is PayslipPreview {
@@ -134,10 +201,12 @@ export function buildPayslipSnapshot(
   meta: PayslipDocumentMeta,
   statutory?: PayslipStatutorySnapshot | null,
 ): PayslipSnapshotPayload {
+  const redactedPayslip = redactPayslipPreview(payslip);
+
   if (statutory) {
     return {
       version: 2,
-      payslip,
+      payslip: redactedPayslip,
       meta,
       statutory,
     };
@@ -145,7 +214,7 @@ export function buildPayslipSnapshot(
 
   return {
     version: 1,
-    payslip,
+    payslip: redactedPayslip,
     meta,
   };
 }
@@ -192,7 +261,7 @@ export function parsePayslipSnapshot(
   if (version === 2) {
     return {
       version: 2,
-      payslip: raw.payslip,
+      payslip: redactPayslipPreview(raw.payslip),
       meta: raw.meta,
       statutory: isRecord(raw.statutory)
         ? (raw.statutory as PayslipStatutorySnapshot)
@@ -202,7 +271,7 @@ export function parsePayslipSnapshot(
 
   return {
     version: 1,
-    payslip: raw.payslip,
+    payslip: redactPayslipPreview(raw.payslip),
     meta: raw.meta,
   };
 }

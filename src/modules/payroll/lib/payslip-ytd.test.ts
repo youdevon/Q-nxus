@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   assemblePayslipYtd,
+  assemblePayslipYtdBreakdown,
   emptyPayslipYtd,
   type PayslipYtdContribution,
   periodKeyFromAsOf,
@@ -70,6 +71,7 @@ describe("assemblePayslipYtd", () => {
       paye: 0,
       nisEmployee: 0,
       healthSurcharge: 0,
+      taxableEarnings: 20_000,
     });
   });
 
@@ -117,5 +119,97 @@ describe("assemblePayslipYtd", () => {
     expect(ytd.paye).toBe(0.03);
     expect(ytd.nisEmployee).toBe(0.03);
     expect(ytd.healthSurcharge).toBe(0.05);
+  });
+});
+
+describe("assemblePayslipYtdBreakdown", () => {
+  it("splits prior / this employer / combined when prior records exist", () => {
+    const currentEmployer = {
+      year: 2026,
+      periodCount: 2,
+      grossPay: 36_000,
+      totalDeductions: 8_000,
+      netPay: 28_000,
+      paye: 5_000,
+      nisEmployee: 1_469,
+      healthSurcharge: 71.5,
+      taxableEarnings: 36_000,
+    };
+
+    const breakdown = assemblePayslipYtdBreakdown({
+      year: 2026,
+      currentEmployer,
+      prior: {
+        taxableIncomeYtd: 45_000,
+        payeDeductedYtd: 6_250,
+        nisEmployeeYtd: 2_200,
+        nisEmployerYtd: 4_400,
+        healthSurchargeYtd: 107.25,
+        otherApprovedDeductionsYtd: 0,
+        recordCount: 1,
+        verifiedCount: 1,
+        allVerified: true,
+      },
+    });
+
+    expect(breakdown.prior).toEqual({
+      taxableIncome: 45_000,
+      paye: 6_250,
+      nisEmployee: 2_200,
+      healthSurcharge: 107.25,
+      recordCount: 1,
+    });
+    expect(breakdown.currentEmployer).toEqual(currentEmployer);
+    expect(breakdown.combined.paye).toBe(11_250);
+    expect(breakdown.combined.nisEmployee).toBe(3_669);
+    expect(breakdown.combined.healthSurcharge).toBe(178.75);
+    expect(breakdown.combined.taxableEarnings).toBe(81_000);
+    // Gross YTD on the slip = this-employer gross + prior taxable income.
+    expect(breakdown.combined.grossPay).toBe(81_000);
+    expect(breakdown.combined.periodCount).toBe(3);
+  });
+
+  it("folds Devon mid-year joiner prior into combined Gross / PAYE", () => {
+    const breakdown = assemblePayslipYtdBreakdown({
+      year: 2026,
+      currentEmployer: {
+        year: 2026,
+        periodCount: 1,
+        grossPay: 18_000,
+        totalDeductions: 3_500,
+        netPay: 14_500,
+        paye: 2_796.46,
+        nisEmployee: 500,
+        healthSurcharge: 33,
+        taxableEarnings: 18_000,
+      },
+      prior: {
+        taxableIncomeYtd: 69_000,
+        payeDeductedYtd: 3_645,
+        nisEmployeeYtd: 0,
+        nisEmployerYtd: 0,
+        healthSurchargeYtd: 0,
+        otherApprovedDeductionsYtd: 0,
+        recordCount: 1,
+        verifiedCount: 1,
+        allVerified: true,
+      },
+    });
+
+    expect(breakdown.combined.grossPay).toBe(87_000);
+    expect(breakdown.combined.paye).toBe(6_441.46);
+    expect(breakdown.combined.nisEmployee).toBe(500);
+    expect(breakdown.combined.healthSurcharge).toBe(33);
+    expect(breakdown.prior.recordCount).toBe(1);
+  });
+
+  it("keeps prior.recordCount at 0 when there is no prior employer", () => {
+    const breakdown = assemblePayslipYtdBreakdown({
+      year: 2026,
+      currentEmployer: emptyPayslipYtd(2026),
+    });
+
+    expect(breakdown.prior.recordCount).toBe(0);
+    expect(breakdown.combined.paye).toBe(0);
   });
 });

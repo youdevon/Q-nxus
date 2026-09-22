@@ -18,6 +18,8 @@ Examples may include:
 
 - Administration
 
+- General — org-wide and support roles without a specific operational unit (e.g. custodian, cleaner); seeded with code `GENERAL`
+
 The Department is owned by the People domain and may be referenced by Payroll, Leave, Reporting, Workflow and future domains.
 
 ---

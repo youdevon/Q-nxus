@@ -1,6 +1,14 @@
 /** Trinidad & Tobago Health Surcharge calculation helpers (client-safe). */
 
+import { ageFromDateOfBirth } from "@/src/lib/age";
+import { countMondaysInRange } from "@/src/modules/payroll/lib/contribution-weeks";
 import { roundToCents } from "@/src/modules/payroll/lib/money";
+
+/** @deprecated Import from `@/src/lib/age` — kept for existing payroll imports. */
+export { ageFromDateOfBirth as ageInFullYears } from "@/src/lib/age";
+
+/** @deprecated Prefer `countMondaysInRange` — kept for existing call sites. */
+export const countHealthContributionWeeks = countMondaysInRange;
 
 /** Serializable Health Surcharge config passed from server pages into client components. */
 export type HealthSurchargeConfigRecord = {
@@ -62,65 +70,6 @@ export type HealthSurchargeResult = {
   tier: "HIGHER" | "LOWER" | "EXEMPT";
 };
 
-export function ageInFullYears(
-  dateOfBirth: Date | string,
-  asOf: Date = new Date(),
-): number {
-  const birth =
-    typeof dateOfBirth === "string"
-      ? new Date(`${dateOfBirth.slice(0, 10)}T00:00:00.000Z`)
-      : dateOfBirth;
-
-  let age = asOf.getUTCFullYear() - birth.getUTCFullYear();
-  const monthDelta = asOf.getUTCMonth() - birth.getUTCMonth();
-  const dayDelta = asOf.getUTCDate() - birth.getUTCDate();
-
-  if (monthDelta < 0 || (monthDelta === 0 && dayDelta < 0)) {
-    age -= 1;
-  }
-
-  return age;
-}
-
-function startOfUtcDay(date: Date): Date {
-  return new Date(
-    Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12),
-  );
-}
-
-/**
- * Trinidad-style monthly Health Surcharge contribution weeks.
- *
- * The pay period is charged for each Monday in the calendar period, producing
- * the expected 4-week / 5-week month behavior instead of a 52/12 average.
- */
-export function countHealthContributionWeeks(
-  periodStart: Date,
-  periodEnd: Date,
-): number {
-  const start = startOfUtcDay(periodStart);
-  const end = startOfUtcDay(periodEnd);
-
-  if (start.getTime() > end.getTime()) {
-    return 0;
-  }
-
-  const firstMonday = new Date(start);
-  const daysUntilMonday = (8 - firstMonday.getUTCDay()) % 7;
-  firstMonday.setUTCDate(firstMonday.getUTCDate() + daysUntilMonday);
-
-  let weeks = 0;
-  for (
-    const cursor = firstMonday;
-    cursor.getTime() <= end.getTime();
-    cursor.setUTCDate(cursor.getUTCDate() + 7)
-  ) {
-    weeks += 1;
-  }
-
-  return weeks;
-}
-
 /**
  * Fixed weekly Health Surcharge by earnings tier, with age / pension exemptions.
  *
@@ -165,7 +114,7 @@ export function computeHealthSurcharge(input: {
   let ageYears = input.ageYears ?? null;
 
   if (ageYears == null && input.dateOfBirth) {
-    ageYears = ageInFullYears(input.dateOfBirth, asOf);
+    ageYears = ageFromDateOfBirth(input.dateOfBirth, asOf);
   }
 
   if (ageYears != null && ageYears < input.config.underAgeExempt) {
