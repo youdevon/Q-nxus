@@ -114,15 +114,20 @@ export async function notifyVacationForfeitureReminders(
   const today = startOfUtcDay(options.asOf ?? new Date());
   const windowEnd = addUtcDays(today, 30);
 
-  const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
+  const organizations = await prisma.organization.findMany({
     select: { id: true },
+    orderBy: { createdAt: "asc" },
   });
 
-  if (!organization) {
+  if (organizations.length === 0) {
     return { considered: 0, notified: 0, skipped: 0 };
   }
 
+  let considered = 0;
+  let notified = 0;
+  let skipped = 0;
+
+  for (const organization of organizations) {
   const settings =
     options.settings ?? (await getLeaveForfeitureSettings(organization.id));
 
@@ -198,8 +203,6 @@ export async function notifyVacationForfeitureReminders(
       ? await resolveHrRecipients(organization.id, settings)
       : [];
 
-  let notified = 0;
-  let skipped = 0;
   const dedupeSince = addUtcDays(today, -14);
 
   for (const balance of balances) {
@@ -379,8 +382,11 @@ export async function notifyVacationForfeitureReminders(
     notified += 1;
   }
 
+  considered += balances.length;
+  }
+
   return {
-    considered: balances.length,
+    considered,
     notified,
     skipped,
   };

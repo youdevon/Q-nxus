@@ -12,7 +12,14 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const capabilities = await getUserCapabilities();
 
-  if (!capabilities?.canAny("people.directory.view", "people.manage")) {
+  if (
+    !capabilities?.canAny(
+      "people.directory.view",
+      "people.manage",
+      "payroll.view",
+      "payroll.manage",
+    )
+  ) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 

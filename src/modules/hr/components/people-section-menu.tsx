@@ -19,28 +19,11 @@ import {
 import {
   aggregatePeopleSectionCounts,
   formatNotificationBadgeCount,
-  sumVisiblePeopleSectionCounts,
   type PeopleSectionMenuHref,
 } from "@/src/modules/hr/lib/people-section-notification-counts";
 import { useNotifications } from "@/src/modules/notifications/context/notification-provider";
 import { cn } from "@/lib/utils";
 import { UI_ELEVATION } from "@/src/config/ui-elevation";
-
-function collectVisibleHrefs(
-  visibleItems: Array<{
-    href: string;
-    children?: Array<{ href: string }>;
-  }>,
-): string[] {
-  const hrefs: string[] = [];
-  for (const item of visibleItems) {
-    hrefs.push(item.href);
-    for (const child of item.children ?? []) {
-      hrefs.push(child.href);
-    }
-  }
-  return hrefs;
-}
 
 function CountBadge({ count }: { count: number }) {
   if (count <= 0) {
@@ -59,8 +42,6 @@ function CountBadge({ count }: { count: number }) {
 
 /**
  * People section hamburger — sits in the page header action row (right side).
- * Isolated from `people-nav.tsx` so Fast Refresh never reuses the old hook-free
- * `PeopleNav` fiber after this menu picks up extra hooks.
  */
 export function PeopleSectionMenu() {
   const pathname = usePathname();
@@ -86,10 +67,6 @@ export function PeopleSectionMenu() {
     .filter((item): item is NonNullable<typeof item> => item !== null);
 
   const sectionCounts = aggregatePeopleSectionCounts(unreadActionUrls);
-  const totalBadgeCount = sumVisiblePeopleSectionCounts(
-    sectionCounts,
-    collectVisibleHrefs(visibleItems),
-  );
 
   if (visibleItems.length === 0) {
     return null;
@@ -110,22 +87,13 @@ export function PeopleSectionMenu() {
             <Button
               variant="outline"
               size="icon"
-              aria-label={
-                totalBadgeCount > 0
-                  ? `People section menu, ${totalBadgeCount} notifications`
-                  : "People section menu"
-              }
+              aria-label="People section menu"
               aria-expanded={open}
-              className="relative size-8 shrink-0"
+              className="size-8 shrink-0"
             />
           }
         >
           <Menu />
-          {totalBadgeCount > 0 ? (
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-white">
-              {formatNotificationBadgeCount(totalBadgeCount)}
-            </span>
-          ) : null}
         </DropdownMenuTrigger>
 
         <DropdownMenuContent

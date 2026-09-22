@@ -2,6 +2,7 @@ import { cache } from "react";
 
 import { appConfig } from "@/src/config/app.config";
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 /**
  * Live chrome for sidebar / shell / email branding.
@@ -22,15 +23,18 @@ export type ApplicationChrome = {
 
 export const getApplicationChrome = cache(
   async (): Promise<ApplicationChrome> => {
-    const organization = await prisma.organization.findFirst({
-      orderBy: { createdAt: "asc" },
-      select: {
-        name: true,
-        shortName: true,
-        legalName: true,
-        code: true,
-      },
-    });
+    const organizationId = await getSessionOrganizationId();
+    const organization = organizationId
+      ? await prisma.organization.findFirst({
+          where: { id: organizationId },
+          select: {
+            name: true,
+            shortName: true,
+            legalName: true,
+            code: true,
+          },
+        })
+      : null;
 
     const organizationName =
       organization?.name?.trim() ||

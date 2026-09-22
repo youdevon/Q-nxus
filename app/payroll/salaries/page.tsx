@@ -12,6 +12,7 @@ export const dynamic = "force-dynamic";
 
 type SearchParams = Promise<{
   query?: string;
+  payeeGroup?: string;
 }>;
 
 export default async function PayrollSalariesPage({
@@ -23,6 +24,8 @@ export default async function PayrollSalariesPage({
   const params = await searchParams;
   const filters = {
     query: typeof params.query === "string" ? params.query : undefined,
+    payeeGroup:
+      typeof params.payeeGroup === "string" ? params.payeeGroup : undefined,
   };
   const data = await getPayrollSalaries(filters);
 

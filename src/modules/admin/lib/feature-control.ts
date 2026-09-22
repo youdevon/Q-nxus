@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 /**
  * Runtime feature flag gate. FeatureControl rows are organization-scoped.
@@ -14,18 +15,15 @@ async function loadFeatureEnabled(
   featureCode: string,
   defaultEnabled: boolean,
 ): Promise<boolean> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
+  const organizationId = await getSessionOrganizationId();
 
-  if (!organization) {
+  if (!organizationId) {
     return defaultEnabled;
   }
 
   const control = await prisma.featureControl.findFirst({
     where: {
-      organizationId: organization.id,
+      organizationId,
       featureCode,
     },
     select: {

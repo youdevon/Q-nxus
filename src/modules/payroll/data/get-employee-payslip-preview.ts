@@ -38,6 +38,7 @@ import { applyRecurringItemsForPeriod } from "@/src/modules/payroll/lib/recurrin
 import { loadEmployeeRecurringItems } from "@/src/modules/payroll/services/recurring-payroll-balances";
 import {
   taxYearFromAsOfKey,
+  toStatutoryAsOfDate,
   toStatutoryAsOfKey,
 } from "@/src/modules/payroll/lib/statutory-as-of";
 
@@ -481,7 +482,12 @@ export async function getEmployeePayslipPreview(
         resolvedTax.priorEmployment.otherApprovedDeductionsYtd,
       monthsElapsed: monthsElapsedFromPeriodEnd(periodEnd),
       taxYear,
-      employmentStartDate: setup.employee.hireDate,
+      employmentStartDate: setup.employee.hireDate
+        ? toStatutoryAsOfDate(setup.employee.hireDate)
+        : null,
+      employmentEndDate: setup.employee.terminationDate
+        ? toStatutoryAsOfDate(setup.employee.terminationDate)
+        : null,
       previousEmploymentStatus: resolvedTax.previousEmploymentStatus,
       recognizePriorEmployment:
         resolvedTax.previousEmploymentStatus === "PREVIOUS_EMPLOYMENT" &&

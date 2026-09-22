@@ -14,6 +14,8 @@ type ReportLayoutProps = {
   actions?: React.ReactNode;
   backHref?: string;
   backLabel?: string;
+  /** Optional chrome above the page header (nav, sticky entity strip). */
+  beforeHeader?: React.ReactNode;
 };
 
 export function ReportLayout({
@@ -24,9 +26,11 @@ export function ReportLayout({
   actions,
   backHref = "/reports",
   backLabel = "Reports",
+  beforeHeader,
 }: ReportLayoutProps) {
   return (
     <PageShell size="lg">
+      {beforeHeader}
       <PageHeader
         title={title}
         description={description}
@@ -106,9 +110,9 @@ export function ReportEmptyState({
   hint?: string;
 }) {
   return (
-    <div className="py-12 text-center text-sm text-muted-foreground">
-      <p>{message}</p>
-      {hint ? <p className="mx-auto mt-2 max-w-md text-xs">{hint}</p> : null}
+    <div className="py-12 text-center text-sm text-muted-foreground space-y-2">
+      <p className="font-medium text-foreground">{message}</p>
+      {hint ? <p className="mx-auto max-w-md text-xs">{hint}</p> : null}
     </div>
   );
 }

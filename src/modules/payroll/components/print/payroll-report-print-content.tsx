@@ -1,11 +1,11 @@
-import { formatMoney, formatDisplayDate } from "@/src/lib/format";
-import type { EmployeePaymentHistoryReportData } from "@/src/modules/payroll/data/get-employee-payment-history";
+import { cn } from "@/lib/utils";
+import { formatMoney } from "@/src/lib/format";
 import type { MonthlyPayrollReportData } from "@/src/modules/payroll/data/get-monthly-payroll-summary";
 import type { StatutoryRemittanceReport } from "@/src/modules/payroll/data/get-statutory-remittance";
 import type { YearEndEmployeeSummary } from "@/src/modules/payroll/data/get-year-end-payroll-summary";
 import {
+  formatPayrollPeriodRangeLabel,
   runKindLabel,
-  type PayrollMoneyTotals,
 } from "@/src/modules/payroll/lib/payroll-analytics";
 import { formatPayslipPeriodLabel } from "@/src/modules/payroll/lib/payslip-preview";
 import {
@@ -18,81 +18,32 @@ import {
   ReportPrintTableRow,
 } from "@/src/modules/reports/components/report-print-table";
 
-function moneySummaryItems(
-  totals: PayrollMoneyTotals[],
-  mixed: boolean,
-): Array<{ label: string; value: string }> {
-  if (totals.length === 0) {
-    return [];
-  }
-
-  if (mixed) {
-    return totals.flatMap((total) => [
-      {
-        label: `Gross (${total.currency})`,
-        value: formatMoney(total.grossPay, { currency: total.currency }),
-      },
-      {
-        label: `Net (${total.currency})`,
-        value: formatMoney(total.netPay, { currency: total.currency }),
-      },
-    ]);
-  }
-
-  const total = totals[0];
-  return [
-    {
-      label: "Gross",
-      value: formatMoney(total.grossPay, { currency: total.currency }),
-    },
-    {
-      label: "Deductions",
-      value: formatMoney(total.totalDeductions, { currency: total.currency }),
-    },
-    {
-      label: "Net",
-      value: formatMoney(total.netPay, { currency: total.currency }),
-    },
-    {
-      label: "Employer contributions",
-      value: formatMoney(total.employerContributions, {
-        currency: total.currency,
-      }),
-    },
-    {
-      label: "Org payroll cost",
-      value: formatMoney(total.organizationCost, { currency: total.currency }),
-    },
-  ];
+function money(amount: number, currency: string) {
+  return formatMoney(amount, { currency });
 }
 
-function currencyStack(
-  totals: PayrollMoneyTotals[],
-  field: keyof Pick<
-    PayrollMoneyTotals,
-    "grossPay" | "totalDeductions" | "netPay" | "employerContributions"
-  >,
-) {
-  return totals.map((total) => (
-    <div key={total.currency}>
-      {formatMoney(total[field], { currency: total.currency })}
-    </div>
-  ));
-}
+const employerCellClass =
+  "border-l border-sky-300 bg-sky-50 text-sky-950 print:border-neutral-400 print:bg-neutral-100 print:text-neutral-900";
+const nisTotalCellClass =
+  "bg-sky-100 font-medium text-sky-950 print:bg-neutral-200 print:text-neutral-900";
 
 export function MonthlyPayrollReportPrintContent({
   data,
 }: {
   data: MonthlyPayrollReportData;
 }) {
-  const { summary, selectedPeriodKey } = data;
+  const { summary, period, register } = data;
   const periodLabel =
     summary.periodName ??
-    formatPayslipPeriodLabel(selectedPeriodKey) ??
-    selectedPeriodKey;
-  const mixed = summary.totalsByCurrency.length > 1;
+    formatPayrollPeriodRangeLabel(period.startPeriodKey, period.endPeriodKey);
 
-  if (summary.payslipCount === 0) {
+  if (!data.generated) {
+    return (
+      <ReportPrintEmptyState message="Generate the report on the Posted payroll page, then print again." />
+    );
+  }
+
+  if (!register || register.payslipCount === 0) {
     return (
       <ReportPrintEmptyState
         message={`No posted payslips for ${periodLabel}.`}
@@ -100,81 +51,202 @@ export function MonthlyPayrollReportPrintContent({
     );
   }
 
+  const { currency, totals, rows, mode } = register;
+  const showSlipMeta = mode === "slip";
+  const headers = [
+    ...(showSlipMeta ? ["Period", "Run"] : []),
+    "Emp #",
+    "Employee",
+    "Department",
+    "Basic",
+    "Allowances",
+    "Gross",
+    "PAYE",
+    "NIS (ee)",
+    "Health",
+    "Other",
+    "Deductions",
+    "Net",
+    "NIS (er)",
+    "NIS payment",
+  ];
+  const alignRightFrom = showSlipMeta ? 5 : 3;
+
   return (
-    <>
+    <div className="space-y-6">
       <ReportPrintSummaryGrid
         items={[
-          { label: "Payslips", value: summary.payslipCount },
-          { label: "Employees", value: summary.employeeCount },
-          ...moneySummaryItems(summary.totalsByCurrency, mixed),
+          { label: "Employees", value: String(register.employeeCount) },
+          { label: "Payslips", value: String(register.payslipCount) },
+          { label: "Gross", value: money(totals.grossPay, currency) },
+          { label: "PAYE", value: money(totals.paye, currency) },
+          { label: "NIS (ee)", value: money(totals.nisEmployee, currency) },
+          { label: "Health", value: money(totals.healthSurcharge, currency) },
+          {
+            label: "Total deductions",
+            value: money(totals.totalDeductions, currency),
+          },
+          { label: "Net pay", value: money(totals.netPay, currency) },
+          { label: "NIS (er)", value: money(totals.nisEmployer, currency) },
+          { label: "NIS payment", value: money(totals.nisPayment, currency) },
         ]}
       />
 
-      {summary.byRunKind.length > 0 ? (
-        <ReportPrintSection title="By run type">
-          <ReportPrintTable
-            headers={["Run type", "Gross", "Net", "Employer", "Slips / people"]}
-            alignRightFrom={1}
-          >
-            {summary.byRunKind.map((item) => (
-              <ReportPrintTableRow key={`${item.runKind}-${item.currency}`}>
-                <ReportPrintTableCell>
-                  {runKindLabel(item.runKind)}
-                  {mixed ? ` (${item.currency})` : ""}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {formatMoney(item.grossPay, { currency: item.currency })}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {formatMoney(item.netPay, { currency: item.currency })}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {formatMoney(item.employerContributions, {
-                    currency: item.currency,
-                  })}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {item.payslipCount} / {item.employeeCount}
-                </ReportPrintTableCell>
-              </ReportPrintTableRow>
-            ))}
-          </ReportPrintTable>
-        </ReportPrintSection>
-      ) : null}
-
-      {summary.runs.length > 0 ? (
-        <ReportPrintSection title="Posted runs">
-          <ReportPrintTable
-            headers={["Run", "Gross", "Net", "Posted"]}
-            alignRightFrom={1}
-          >
-            {summary.runs.map((run) => (
-              <ReportPrintTableRow key={`${run.payRunId}-${run.currency}`}>
-                <ReportPrintTableCell>
-                  <div>{run.runNumber}</div>
-                  <ReportPrintMuted>
-                    {run.employeeCount} employees · {run.payslipCount} payslips
-                    {mixed ? ` · ${run.currency}` : ""}
-                    {run.runKind !== "REGULAR"
-                      ? ` · ${runKindLabel(run.runKind)}`
-                      : ""}
-                  </ReportPrintMuted>
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {formatMoney(run.grossPay, { currency: run.currency })}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {formatMoney(run.netPay, { currency: run.currency })}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell>
-                  {formatDisplayDate(run.postedAt, { fallback: "—" })}
-                </ReportPrintTableCell>
-              </ReportPrintTableRow>
-            ))}
-          </ReportPrintTable>
-        </ReportPrintSection>
-      ) : null}
-    </>
+      <ReportPrintSection
+        title={
+          mode === "employee"
+            ? "Payroll register (auto-calculated)"
+            : "Payroll register"
+        }
+      >
+        <ReportPrintTable
+          headers={headers}
+          alignRightFrom={alignRightFrom}
+          className="text-[11px]"
+        >
+          {rows.map((row) => (
+            <ReportPrintTableRow key={row.key}>
+              {showSlipMeta ? (
+                <>
+                  <ReportPrintTableCell>
+                    {row.periodName ?? "—"}
+                  </ReportPrintTableCell>
+                  <ReportPrintTableCell>
+                    <div>{row.runNumber ?? "—"}</div>
+                    {row.runKind && row.runKind !== "REGULAR" ? (
+                      <ReportPrintMuted>
+                        {runKindLabel(row.runKind)}
+                      </ReportPrintMuted>
+                    ) : null}
+                  </ReportPrintTableCell>
+                </>
+              ) : null}
+              <ReportPrintTableCell>{row.employeeNumber}</ReportPrintTableCell>
+              <ReportPrintTableCell>
+                <div className="font-medium">{row.employeeName}</div>
+                {row.jobTitle ? (
+                  <ReportPrintMuted>{row.jobTitle}</ReportPrintMuted>
+                ) : null}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell>
+                {row.departmentName ?? "—"}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.baseSalary, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.allowancesTotal, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.grossPay, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.paye, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.nisEmployee, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.healthSurcharge, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.otherDeductions, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                {money(row.totalDeductions, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell align="right">
+                <span className="font-medium">
+                  {money(row.netPay, currency)}
+                </span>
+              </ReportPrintTableCell>
+              <ReportPrintTableCell
+                align="right"
+                className={employerCellClass}
+              >
+                {money(row.nisEmployer, currency)}
+              </ReportPrintTableCell>
+              <ReportPrintTableCell
+                align="right"
+                className={nisTotalCellClass}
+              >
+                {money(row.nisPayment, currency)}
+              </ReportPrintTableCell>
+            </ReportPrintTableRow>
+          ))}
+          <ReportPrintTableRow>
+            {showSlipMeta ? (
+              <>
+                <ReportPrintTableCell>{""}</ReportPrintTableCell>
+                <ReportPrintTableCell>{""}</ReportPrintTableCell>
+              </>
+            ) : null}
+            <ReportPrintTableCell>{""}</ReportPrintTableCell>
+            <ReportPrintTableCell>
+              <span className="font-semibold">TOTAL</span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell>{""}</ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.baseSalary, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.allowancesTotal, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.grossPay, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.paye, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.nisEmployee, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.healthSurcharge, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.otherDeductions, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.totalDeductions, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell align="right">
+              <span className="font-semibold">
+                {money(totals.netPay, currency)}
+              </span>
+            </ReportPrintTableCell>
+            <ReportPrintTableCell
+              align="right"
+              className={cn(employerCellClass, "font-semibold")}
+            >
+              {money(totals.nisEmployer, currency)}
+            </ReportPrintTableCell>
+            <ReportPrintTableCell
+              align="right"
+              className={cn(nisTotalCellClass, "font-semibold")}
+            >
+              {money(totals.nisPayment, currency)}
+            </ReportPrintTableCell>
+          </ReportPrintTableRow>
+        </ReportPrintTable>
+      </ReportPrintSection>
+    </div>
   );
 }
 
@@ -207,7 +279,9 @@ export function StatutoryRemittanceReportPrintContent({
       {totalsByCurrency.map((total) => (
         <ReportPrintSection
           key={total.currency}
-          title={mixed ? `Statutory totals (${total.currency})` : "Statutory totals"}
+          title={
+            mixed ? `Statutory totals (${total.currency})` : "Statutory totals"
+          }
         >
           <ReportPrintSummaryGrid
             items={[
@@ -301,169 +375,4 @@ export function YearEndPayrollReportPrintContent({
       ))}
     </ReportPrintTable>
   );
-}
-
-export function EmployeePaymentHistoryReportPrintContent({
-  data,
-}: {
-  data: EmployeePaymentHistoryReportData;
-}) {
-  const {
-    scope,
-    period,
-    selectedEmployee,
-    history,
-    roster,
-    selectedDepartmentName,
-  } = data;
-  const mixed =
-    (history?.totalsByCurrency.length ?? roster?.totalsByCurrency.length ?? 0) >
-    1;
-  const periodLabel = `${formatPayslipPeriodLabel(period.startPeriodKey) ?? period.startPeriodKey} – ${formatPayslipPeriodLabel(period.endPeriodKey) ?? period.endPeriodKey}`;
-
-  if (scope === "employee" && selectedEmployee && history) {
-    if (history.payslipCount === 0) {
-      return (
-        <ReportPrintEmptyState
-          message={`No posted payslips for ${selectedEmployee.displayName} in ${periodLabel}.`}
-        />
-      );
-    }
-
-    return (
-      <>
-        <ReportPrintSummaryGrid
-          items={[
-            { label: "Employee", value: selectedEmployee.displayName },
-            { label: "Period", value: periodLabel },
-            { label: "Payslips", value: history.payslipCount },
-            ...moneySummaryItems(history.totalsByCurrency, mixed),
-          ]}
-        />
-
-        <ReportPrintSection title="Monthly breakdown">
-          <ReportPrintTable
-            headers={["Period", "Run", "Gross", "Net", "Employer"]}
-            alignRightFrom={2}
-          >
-            {history.months.flatMap((month) =>
-              month.payslips.map((slip) => (
-                <ReportPrintTableRow key={slip.payslipId}>
-                  <ReportPrintTableCell>{month.periodName}</ReportPrintTableCell>
-                  <ReportPrintTableCell>
-                    <div>{slip.runNumber}</div>
-                    {slip.runKind !== "REGULAR" ? (
-                      <ReportPrintMuted>{runKindLabel(slip.runKind)}</ReportPrintMuted>
-                    ) : null}
-                  </ReportPrintTableCell>
-                  <ReportPrintTableCell align="right">
-                    {formatMoney(slip.grossPay, { currency: slip.currency })}
-                  </ReportPrintTableCell>
-                  <ReportPrintTableCell align="right">
-                    {formatMoney(slip.netPay, { currency: slip.currency })}
-                  </ReportPrintTableCell>
-                  <ReportPrintTableCell align="right">
-                    {formatMoney(slip.employerContributions, {
-                      currency: slip.currency,
-                    })}
-                  </ReportPrintTableCell>
-                </ReportPrintTableRow>
-              )),
-            )}
-          </ReportPrintTable>
-        </ReportPrintSection>
-      </>
-    );
-  }
-
-  if ((scope === "all" || scope === "department") && roster) {
-    if (roster.payslipCount === 0) {
-      return (
-        <ReportPrintEmptyState
-          message={`No posted payslips in ${periodLabel}.`}
-        />
-      );
-    }
-
-    const scopeLabel =
-      scope === "department"
-        ? (selectedDepartmentName ?? "Department")
-        : "All employees";
-
-    return (
-      <>
-        <ReportPrintSummaryGrid
-          items={[
-            { label: "Scope", value: scopeLabel },
-            { label: "Period", value: periodLabel },
-            { label: "Employees", value: roster.employeeCount },
-            { label: "Payslips", value: roster.payslipCount },
-            ...moneySummaryItems(roster.totalsByCurrency, mixed),
-          ]}
-        />
-
-        <ReportPrintSection title="Employees">
-          <ReportPrintTable
-            headers={["Employee", "Slips", "Gross", "Deductions", "Net", "Employer"]}
-            alignRightFrom={1}
-          >
-            {roster.employees.map((employee) => (
-              <ReportPrintTableRow key={employee.employeeId}>
-                <ReportPrintTableCell>
-                  <div>{employee.employeeName}</div>
-                  <ReportPrintMuted>
-                    {employee.employeeNumber}
-                    {employee.departmentName
-                      ? ` · ${employee.departmentName}`
-                      : ""}
-                  </ReportPrintMuted>
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {employee.payslipCount}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {currencyStack(employee.totalsByCurrency, "grossPay")}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {currencyStack(employee.totalsByCurrency, "totalDeductions")}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {currencyStack(employee.totalsByCurrency, "netPay")}
-                </ReportPrintTableCell>
-                <ReportPrintTableCell align="right">
-                  {currencyStack(
-                    employee.totalsByCurrency,
-                    "employerContributions",
-                  )}
-                </ReportPrintTableCell>
-              </ReportPrintTableRow>
-            ))}
-          </ReportPrintTable>
-        </ReportPrintSection>
-      </>
-    );
-  }
-
-  return (
-    <ReportPrintEmptyState message="Select filters on the report page, then print again." />
-  );
-}
-
-export function employeePaymentHistoryMetaLines(
-  data: EmployeePaymentHistoryReportData,
-): string[] {
-  const periodLabel = `${formatPayslipPeriodLabel(data.period.startPeriodKey) ?? data.period.startPeriodKey} – ${formatPayslipPeriodLabel(data.period.endPeriodKey) ?? data.period.endPeriodKey}`;
-
-  if (data.scope === "employee" && data.selectedEmployee) {
-    return [
-      `${data.selectedEmployee.displayName} (${data.selectedEmployee.employeeNumber})`,
-      periodLabel,
-    ];
-  }
-
-  if (data.scope === "department" && data.selectedDepartmentName) {
-    return [`Department: ${data.selectedDepartmentName}`, periodLabel];
-  }
-
-  return [`All employees · ${periodLabel}`];
 }

@@ -9,7 +9,7 @@ import { toCsv } from "@/src/modules/payroll/lib/payroll-exports";
 import { maskAccountNumber } from "@/src/modules/payroll/lib/payslip-preview";
 import { sumMoney } from "@/src/modules/payroll/lib/money";
 import {
-  FirstCitizensImportDisabledAdapter,
+  FirstCitizensImportAdapter,
   FirstCitizensManualWorksheetAdapter,
 } from "@/src/modules/payroll/lib/first-citizens-export";
 
@@ -40,6 +40,8 @@ export type BankExportGenerateInput = {
   currencyCode: string;
   details: BankExportDetailLine[];
   configurationJson: unknown;
+  /** ISO date or Date — ACH effective / pay date (NACHA Individual ID). */
+  effectivePaymentDate?: Date | string | null;
 };
 
 export type BankExportGenerateResult = {
@@ -299,7 +301,7 @@ export function resolveBankExportAdapter(
     return new FirstCitizensManualWorksheetAdapter();
   }
   if (kind === "FIRST_CITIZENS_IMPORT") {
-    return new FirstCitizensImportDisabledAdapter();
+    return new FirstCitizensImportAdapter();
   }
   if (kind === "MANUAL_REGISTER" || kind === "GENERIC_CSV") {
     return new GenericCsvBankExportAdapter(kind);

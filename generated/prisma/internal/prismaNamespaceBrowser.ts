@@ -143,7 +143,10 @@ export const ModelName = {
   NotificationRecipient: 'NotificationRecipient',
   EmailDelivery: 'EmailDelivery',
   EmailDeliveryAttempt: 'EmailDeliveryAttempt',
-  AuditEvent: 'AuditEvent'
+  AuditEvent: 'AuditEvent',
+  Asset: 'Asset',
+  AssetAssignment: 'AssetAssignment',
+  AssetDocument: 'AssetDocument'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1537,6 +1540,8 @@ export const FinancialInstitutionScalarFieldEnum = {
   achParticipantCode: 'achParticipantCode',
   swiftBic: 'swiftBic',
   routingCode: 'routingCode',
+  accountNumberMinLength: 'accountNumberMinLength',
+  accountNumberMaxLength: 'accountNumberMaxLength',
   requiresBranchCode: 'requiresBranchCode',
   requiresAccountType: 'requiresAccountType',
   requiresBeneficiaryId: 'requiresBeneficiaryId',
@@ -1707,6 +1712,7 @@ export const AchPaymentBatchScalarFieldEnum = {
   payrollNetTotal: 'payrollNetTotal',
   detailCount: 'detailCount',
   effectivePaymentDate: 'effectivePaymentDate',
+  exportFormat: 'exportFormat',
   achType: 'achType',
   purposeCode: 'purposeCode',
   entryDescription: 'entryDescription',
@@ -1718,6 +1724,13 @@ export const AchPaymentBatchScalarFieldEnum = {
   fileStorageKey: 'fileStorageKey',
   fileContentHash: 'fileContentHash',
   fileMimeType: 'fileMimeType',
+  bankValidationStatus: 'bankValidationStatus',
+  fcbErrorCode: 'fcbErrorCode',
+  fcbErrorMessage: 'fcbErrorMessage',
+  fcbValidationErrorJson: 'fcbValidationErrorJson',
+  correctedAt: 'correctedAt',
+  replacementBatchId: 'replacementBatchId',
+  isRegenerated: 'isRegenerated',
   preparedByUserId: 'preparedByUserId',
   preparedAt: 'preparedAt',
   approvedByUserId: 'approvedByUserId',
@@ -1751,9 +1764,13 @@ export const AchPaymentBatchDetailScalarFieldEnum = {
   abaNumber: 'abaNumber',
   accountNumberMasked: 'accountNumberMasked',
   paymentType: 'paymentType',
+  transactionCode: 'transactionCode',
+  traceNumber: 'traceNumber',
   purposeCode: 'purposeCode',
   addenda: 'addenda',
   allocationKind: 'allocationKind',
+  excludedFromExport: 'excludedFromExport',
+  exclusionReason: 'exclusionReason',
   createdAt: 'createdAt'
 } as const
 
@@ -2002,6 +2019,7 @@ export const PayRunScalarFieldEnum = {
   runNumber: 'runNumber',
   status: 'status',
   runKind: 'runKind',
+  payeeGroup: 'payeeGroup',
   sourcePayRunId: 'sourcePayRunId',
   currency: 'currency',
   employeeCount: 'employeeCount',
@@ -2212,6 +2230,73 @@ export const AuditEventScalarFieldEnum = {
 } as const
 
 export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof typeof AuditEventScalarFieldEnum]
+
+
+export const AssetScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  assetNumber: 'assetNumber',
+  assetTag: 'assetTag',
+  category: 'category',
+  assetType: 'assetType',
+  manufacturer: 'manufacturer',
+  modelName: 'modelName',
+  computerName: 'computerName',
+  serialNumber: 'serialNumber',
+  description: 'description',
+  status: 'status',
+  condition: 'condition',
+  purchaseDate: 'purchaseDate',
+  receivedDate: 'receivedDate',
+  purchaseCost: 'purchaseCost',
+  currencyCode: 'currencyCode',
+  warrantyEndsOn: 'warrantyEndsOn',
+  notes: 'notes',
+  assignedEmployeeId: 'assignedEmployeeId',
+  locationId: 'locationId',
+  parentAssetId: 'parentAssetId',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
+
+
+export const AssetAssignmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  assetId: 'assetId',
+  employeeId: 'employeeId',
+  locationId: 'locationId',
+  assignmentType: 'assignmentType',
+  assignedAt: 'assignedAt',
+  expectedReturnAt: 'expectedReturnAt',
+  returnedAt: 'returnedAt',
+  conditionAtIssue: 'conditionAtIssue',
+  conditionAtReturn: 'conditionAtReturn',
+  notes: 'notes',
+  assignedByUserId: 'assignedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetAssignmentScalarFieldEnum = (typeof AssetAssignmentScalarFieldEnum)[keyof typeof AssetAssignmentScalarFieldEnum]
+
+
+export const AssetDocumentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  assetId: 'assetId',
+  storedFileId: 'storedFileId',
+  kind: 'kind',
+  notes: 'notes',
+  uploadedByUserId: 'uploadedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetDocumentScalarFieldEnum = (typeof AssetDocumentScalarFieldEnum)[keyof typeof AssetDocumentScalarFieldEnum]
 
 
 export const SortOrder = {

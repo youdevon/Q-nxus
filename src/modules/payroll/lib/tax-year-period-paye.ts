@@ -31,6 +31,7 @@ import {
   countEmploymentMonthlyPeriods,
   type PayFrequencyCode,
 } from "@/src/modules/payroll/lib/remaining-payroll-periods";
+import { toStatutoryAsOfDate } from "@/src/modules/payroll/lib/statutory-as-of";
 
 export type PayePositionStatus =
   | "NORMAL"
@@ -50,8 +51,8 @@ export type TaxYearPeriodPayeInput = {
   periodStart: Date;
   periodEnd: Date;
   /** Employee hire / employment start with this employer. */
-  employmentStartDate: Date | null;
-  employmentEndDate?: Date | null;
+  employmentStartDate: Date | string | null;
+  employmentEndDate?: Date | string | null;
   payFrequency?: PayFrequencyCode;
   config: PayeTaxConfigInput;
   /** Personal allowance override from TD1 / profile; null = statutory. */
@@ -104,10 +105,8 @@ function isoDate(value: Date): string {
   return value.toISOString().slice(0, 10);
 }
 
-function utcDay(value: Date): Date {
-  return new Date(
-    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()),
-  );
+function utcDay(value: Date | string): Date {
+  return toStatutoryAsOfDate(value);
 }
 
 /**
@@ -117,7 +116,7 @@ function utcDay(value: Date): Date {
 export function shouldUseTaxYearPeriodPaye(input: {
   taxCalculationMethod?: string | null;
   cumulativeCalculationEnabled?: boolean;
-  employmentStartDate?: Date | null;
+  employmentStartDate?: Date | string | null;
   taxYear: number;
 }): boolean {
   if (input.cumulativeCalculationEnabled) {

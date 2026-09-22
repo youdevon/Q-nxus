@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 export type AdministrationDashboardData = {
   organization: {
@@ -35,22 +36,23 @@ export type AdministrationDashboardData = {
 };
 
 export async function getAdministrationDashboard(): Promise<AdministrationDashboardData> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-      code: true,
-      name: true,
-      shortName: true,
-      legalName: true,
-      status: true,
-      defaultTimeZone: true,
-      defaultCurrency: true,
-      defaultLanguage: true,
-    },
-  });
+  const sessionOrgId = await getSessionOrganizationId();
+  const organization = sessionOrgId
+    ? await prisma.organization.findFirst({
+        where: { id: sessionOrgId },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          shortName: true,
+          legalName: true,
+          status: true,
+          defaultTimeZone: true,
+          defaultCurrency: true,
+          defaultLanguage: true,
+        },
+      })
+    : null;
 
   if (!organization) {
     return {

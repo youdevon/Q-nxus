@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/src/lib/format";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import {
   getPayslipYtdBreakdown,
   getPayslipYtdBreakdownBatch,
@@ -66,8 +67,16 @@ export type PayRunBatchPrintResult = {
 export async function getStoredPayslip(
   payslipId: string,
 ): Promise<StoredPayslipResult | null> {
-  const row = await prisma.payslip.findUnique({
-    where: { id: payslipId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const row = await prisma.payslip.findFirst({
+    where: {
+      id: payslipId,
+      organizationId,
+    },
     include: {
       payRun: {
         select: {
@@ -145,8 +154,13 @@ export async function getStoredPayslip(
 export async function getPayRunBatchPrint(
   payRunId: string,
 ): Promise<PayRunBatchPrintResult | null> {
-  const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId },
     include: {
       payrollPeriod: {
         select: {
@@ -262,18 +276,18 @@ export type SelfServicePayslipHistoryItem = {
 export type EmployeePayslipHistory = {
   /** Distinct years that have posted payslips, most recent first. */
   years: number[];
-  /** Selected year, or null when showing the last 12 months. */
+  /** Selected year, or null when showing the default window / all. */
   selectedYear: number | null;
   items: SelfServicePayslipHistoryItem[];
 };
 
 /**
  * Posted payslip history for one employee (self-service, own record only).
- * Defaults to the last 12 months; pass a year to filter to that calendar year.
+ * Defaults to the last 12 months; pass a year to filter, or `all: true` for every slip.
  */
 export async function getEmployeePostedPayslipHistory(
   employeeId: string,
-  options?: { year?: number | null },
+  options?: { year?: number | null; all?: boolean },
 ): Promise<EmployeePayslipHistory> {
   const slips = await prisma.payslip.findMany({
     where: {
@@ -312,12 +326,16 @@ export async function getEmployeePostedPayslipHistory(
   const twelveMonthsAgo = new Date();
   twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
 
-  const filtered = slips.filter((slip) => {
-    if (requestedYear != null) {
-      return slip.payrollPeriod.year === requestedYear;
-    }
-    return slip.payrollPeriod.periodEnd.getTime() >= twelveMonthsAgo.getTime();
-  });
+  const filtered = options?.all
+    ? slips
+    : slips.filter((slip) => {
+        if (requestedYear != null) {
+          return slip.payrollPeriod.year === requestedYear;
+        }
+        return (
+          slip.payrollPeriod.periodEnd.getTime() >= twelveMonthsAgo.getTime()
+        );
+      });
 
   return {
     years,

@@ -36,11 +36,11 @@ async function main() {
       profile.adapterKind === "FIRST_CITIZENS_IMPORT"
         ? {
             ...normalized,
-            exportFormat: "IMPORT_DISABLED",
-            importFileDisabled: true,
-            importDisabledReason:
-              normalized.importDisabledReason ??
-              DEFAULT_FIRST_CITIZENS_CONFIGURATION.importDisabledReason,
+            exportFormat: "NACHA_TYPE6",
+            importFileDisabled: normalized.importFileDisabled === true,
+            odfiRoutingNumber:
+              normalized.odfiRoutingNumber ??
+              DEFAULT_FIRST_CITIZENS_CONFIGURATION.odfiRoutingNumber,
           }
         : normalized;
 

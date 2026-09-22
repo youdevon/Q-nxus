@@ -12,6 +12,7 @@ import {
 } from "@/src/lib/stored-file";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { getSessionContext } from "@/src/modules/auth/data/get-session-context";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import {
   bothSignaturesComplete,
   canActivateContract,
@@ -52,8 +53,16 @@ function revalidateContractPaths(employeeId: string, contractId: string) {
 }
 
 async function loadContractForLifecycle(contractId: string) {
-  return prisma.employmentContract.findUnique({
-    where: { id: contractId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  return prisma.employmentContract.findFirst({
+    where: {
+      id: contractId,
+      employee: { organizationId },
+    },
     select: {
       id: true,
       employeeId: true,
@@ -636,8 +645,13 @@ export async function uploadEmploymentContractDocument(
     return { status: "error", message: "Choose a PDF or document to upload." };
   }
 
-  const contract = await prisma.employmentContract.findUnique({
-    where: { id: contractId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return { status: "error", message: "No organization is associated with this session." };
+  }
+
+  const contract = await prisma.employmentContract.findFirst({
+    where: { id: contractId, employee: { organizationId } },
     select: {
       id: true,
       employeeId: true,

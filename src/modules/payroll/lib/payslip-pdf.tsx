@@ -35,8 +35,10 @@ export type PayslipPdfDocumentInput = {
 
 const styles = StyleSheet.create({
   page: {
-    paddingHorizontal: 28,
-    paddingVertical: 24,
+    paddingTop: 36,
+    paddingBottom: 36,
+    paddingLeft: 36,
+    paddingRight: 36,
     fontSize: 8,
     color: "#111827",
     fontFamily: "Helvetica",
@@ -228,7 +230,7 @@ function PayslipPage({
   );
 
   return (
-    <Page size="A4" style={styles.page} wrap>
+    <Page size="LETTER" orientation="portrait" style={styles.page} wrap>
       <View wrap>
         <View style={styles.headerRow} wrap={false}>
           <View>
@@ -374,9 +376,15 @@ function PayslipPdf({ documents }: { documents: PayslipPdfDocumentInput[] }) {
   );
 }
 
-/** Render one or more payslips to a single PDF buffer (A4 portrait; one page each). */
+/** Render one or more payslips to a single PDF buffer (Letter portrait; one page each). */
 export async function renderPayslipsPdf(
   documents: PayslipPdfDocumentInput[],
 ): Promise<Buffer> {
   return renderToBuffer(<PayslipPdf documents={documents} />);
 }
+
+/** US Letter portrait in PDF points (72 dpi): 8.5in × 11in. */
+export const PAYSLIP_PDF_LETTER_PORTRAIT_POINTS = {
+  width: 612,
+  height: 792,
+} as const;

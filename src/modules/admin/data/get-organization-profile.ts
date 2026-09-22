@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 export type OrganizationProfile = {
   id: string;
@@ -27,10 +28,13 @@ export type OrganizationProfile = {
 /** Deduped per React request — layout chrome + org page share one lookup. */
 export const getOrganizationProfile = cache(
   async (): Promise<OrganizationProfile | null> => {
+    const sessionOrgId = await getSessionOrganizationId();
+    if (!sessionOrgId) {
+      return null;
+    }
+
     return prisma.organization.findFirst({
-      orderBy: {
-        createdAt: "asc",
-      },
+      where: { id: sessionOrgId },
       select: {
         id: true,
         code: true,

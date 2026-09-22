@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   FIRST_CITIZENS_MANUAL_ENTRY_COLUMNS,
-  FirstCitizensImportDisabledAdapter,
+  FirstCitizensImportAdapter,
   FirstCitizensManualWorksheetAdapter,
   buildFirstCitizensManualCsv,
   mapDetailToFirstCitizensEntry,
@@ -364,28 +364,41 @@ describe("First Citizens manual worksheet", () => {
     expect(result.ok).toBe(true);
   });
 
-  it("disables First Citizens import file generation", () => {
-    const adapter = new FirstCitizensImportDisabledAdapter();
-    const validation = adapter.validate({
+  it("resolves First Citizens NACHA import adapter", () => {
+    const adapter = new FirstCitizensImportAdapter();
+    const resolved = resolveBankExportAdapter("FIRST_CITIZENS_IMPORT");
+    expect(resolved.kind).toBe("FIRST_CITIZENS_IMPORT");
+    expect(adapter.kind).toBe("FIRST_CITIZENS_IMPORT");
+
+    const allowed = adapter.validate({
       batchNumber: "ACH-1",
       runNumber: "PAY-1",
       currencyCode: "TTD",
-      configurationJson: {},
-      details: [],
+      effectivePaymentDate: "2026-08-31",
+      configurationJson: {
+        companyAchId: "265001",
+        importFileDisabled: true,
+        importDisabledReason: "Paused",
+        entryDescription: "Salary",
+      },
+      details: [
+        {
+          sequence: 1,
+          employeeNumber: "19",
+          employeeName: "Devon Dumas",
+          bankName: "First Citizens",
+          accountNumber: "200002659431",
+          accountNumberMasked: "••••9431",
+          amount: 100,
+          currencyCode: "TTD",
+          allocationKind: "PRIMARY_REMAINDER",
+          abaNumber: "010100903",
+          accountType: "SAVINGS",
+          paymentType: "Savings Credit",
+        },
+      ],
     });
-    expect(validation.ok).toBe(false);
-    expect(() =>
-      adapter.generate({
-        batchNumber: "ACH-1",
-        runNumber: "PAY-1",
-        currencyCode: "TTD",
-        configurationJson: {},
-        details: [],
-      }),
-    ).toThrow(/disabled/i);
-
-    const resolved = resolveBankExportAdapter("FIRST_CITIZENS_IMPORT");
-    expect(resolved.kind).toBe("FIRST_CITIZENS_IMPORT");
+    expect(allowed.ok).toBe(true);
   });
 });
 

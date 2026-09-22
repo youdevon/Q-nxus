@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import {
   calculateContractGratuity,
   monthlyEligibleEarnings,
@@ -592,14 +593,10 @@ function contractExpiryCategory(
 }
 
 export async function getContractMonitoringDashboard(): Promise<ContractMonitoringDashboard> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   if (!organization) {
     return {
@@ -689,6 +686,21 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
 
+  const policyCache = new Map<
+    string,
+    Awaited<ReturnType<typeof getGratuityPolicyAsOf>>
+  >();
+
+  async function policyAsOfCached(endDate: Date) {
+    const key = endDate.toISOString().slice(0, 10);
+    if (policyCache.has(key)) {
+      return policyCache.get(key) ?? null;
+    }
+    const policy = await getGratuityPolicyAsOf(endDate);
+    policyCache.set(key, policy);
+    return policy;
+  }
+
   const records = await Promise.all(
     contracts.map(async (contract) => {
     let daysUntilExpiry: number | null = null;
@@ -708,7 +720,7 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
     let estimatedNetGratuity: number | null = null;
 
     if (contract.gratuityEligible && contract.endDate) {
-      const policyRecord = await getGratuityPolicyAsOf(contract.endDate);
+      const policyRecord = await policyAsOfCached(contract.endDate);
       const policy = policyRecord
         ? toGratuityPolicyInput(policyRecord)
         : defaultTtGratuityPolicyInput();
@@ -796,8 +808,11 @@ export async function getContractMonitoringDashboard(): Promise<ContractMonitori
       expiringWithin90Days: currentRecords.filter(
         (contract) => contract.expiryCategory === "WITHIN_90_DAYS",
       ).length,
-      expired: currentRecords.filter(
-        (contract) => contract.expiryCategory === "EXPIRED",
+      expired: records.filter(
+        (contract) =>
+          contract.expiryCategory === "EXPIRED" ||
+          contract.status === "EXPIRED" ||
+          contract.status === "TERMINATED",
       ).length,
       missingEndDate: currentRecords.filter(
         (contract) => contract.expiryCategory === "NO_END_DATE",
@@ -819,14 +834,10 @@ export type AllowanceCategoryRecord = {
 export async function getAllowanceCategories(): Promise<
   AllowanceCategoryRecord[]
 > {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   if (!organization) {
     return [];

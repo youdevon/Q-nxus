@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 export type DomainSettingRecord = {
   id: string;
@@ -17,14 +18,10 @@ export type DomainSettingRecord = {
 };
 
 export async function getDomainSettings(): Promise<DomainSettingRecord[]> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   if (!organization) {
     return [];

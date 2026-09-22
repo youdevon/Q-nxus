@@ -2,7 +2,8 @@
  * Contract gratuity calculation — policy-driven (TT MoF/IRD defaults via GratuityPolicy).
  *
  * Primary formula (PCT_OF_TERM_EARNINGS):
- *   Gross = Eligible Gross Earnings × rate%
+ *   Eligible = base salary × contract months (allowances excluded)
+ *   Gross = Eligible × rate%
  * Tax (TIERED, IRD):
  *   25% on first band, 30% on remainder (no personal allowance)
  */
@@ -85,48 +86,16 @@ export function roundMoney(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-function annualizeAllowance(amount: number, frequency: string): number {
-  switch (frequency) {
-    case "WEEKLY":
-      return amount * 52;
-    case "BIWEEKLY":
-      return amount * 26;
-    case "PER_PAY_PERIOD":
-      return amount * 12;
-    case "ANNUAL":
-      return amount;
-    case "ONE_TIME":
-      return 0;
-    default:
-      return amount * 12;
-  }
-}
-
+/**
+ * Monthly earnings base for gratuity.
+ * Policy: base salary only — allowances are never included.
+ * `allowances` is kept for call-site compatibility and ignored.
+ */
 export function monthlyEligibleEarnings(
   baseSalary: number,
-  allowances: GratuityAllowanceInput[],
+  _allowances: GratuityAllowanceInput[] = [],
 ): number {
-  let annualAllowances = 0;
-
-  for (const allowance of allowances) {
-    if (!allowance.includedInGratuity) {
-      continue;
-    }
-
-    const amount = Number(allowance.amount);
-
-    if (!Number.isFinite(amount) || amount <= 0) {
-      continue;
-    }
-
-    if (allowance.frequency === "ONE_TIME") {
-      continue;
-    }
-
-    annualAllowances += annualizeAllowance(amount, allowance.frequency);
-  }
-
-  return baseSalary + annualAllowances / 12;
+  return baseSalary;
 }
 
 /** IRD-style progressive tax on contract gratuity (no personal allowance). */

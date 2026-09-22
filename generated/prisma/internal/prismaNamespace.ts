@@ -476,7 +476,10 @@ export const ModelName = {
   NotificationRecipient: 'NotificationRecipient',
   EmailDelivery: 'EmailDelivery',
   EmailDeliveryAttempt: 'EmailDeliveryAttempt',
-  AuditEvent: 'AuditEvent'
+  AuditEvent: 'AuditEvent',
+  Asset: 'Asset',
+  AssetAssignment: 'AssetAssignment',
+  AssetDocument: 'AssetDocument'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -492,7 +495,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "organizationHoliday" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeeOpeningYtdBalance" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "nisClassZRate" | "nisEligibilityConfig" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "gratuityAccrualEntry" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent"
+    modelProps: "organization" | "organizationHoliday" | "user" | "role" | "userRole" | "permission" | "rolePermission" | "businessUnit" | "location" | "referenceDataSet" | "referenceDataValue" | "featureControl" | "domainSetting" | "numberingSequence" | "moduleStatus" | "department" | "position" | "employee" | "positionJobDescription" | "jobDescriptionCriterion" | "employeeAssignment" | "leaveType" | "leaveEntitlementRule" | "employeeLeaveBalance" | "leaveBalanceTransaction" | "leaveRequest" | "leaveRequestDay" | "leaveApprovalStep" | "leaveRequestAcknowledgement" | "leaveAttachment" | "employeeCorrespondence" | "correspondenceTemplate" | "employeeCredential" | "employeeTrainingRecord" | "employeeQualificationDocument" | "employeeQualificationEntry" | "employeeFileChecklistItem" | "employeeFileUpdateRequest" | "employeeCorrespondenceAttachment" | "employeeCorrespondenceResponse" | "performanceAppraisal" | "performanceAppraisalCriterion" | "employmentContract" | "employmentContractApprovalStep" | "allowanceCategory" | "employmentContractAllowance" | "storedFile" | "employeeFilePack" | "employeeFilePackItem" | "employeeLifecycleTemplate" | "employeeLifecycleTemplateTask" | "employeeOnboardingCase" | "employeeOnboardingTask" | "employeeOffboardingCase" | "employeeOffboardingTask" | "employeeTaxProfile" | "employeePriorEmploymentYtd" | "employeeOpeningYtdBalance" | "employeePriorEmploymentDocument" | "employeePayrollStatutoryOverride" | "employeeAnnualPayrollProjection" | "employeeTaxYearAdjustment" | "employeeEarningTreatmentOverride" | "payrollProfile" | "financialInstitution" | "employeeBankAccount" | "employeePayrollAllocation" | "payrollPayment" | "payrollPaymentAllocation" | "bankExportProfile" | "achPaymentBatch" | "achPaymentBatchDetail" | "nisEarningsClass" | "nisClassZRate" | "nisEligibilityConfig" | "payeTaxConfig" | "payeTaxBracket" | "healthSurchargeConfig" | "gratuityPolicy" | "gratuityTaxBand" | "employeeGratuitySettlement" | "gratuityAccrualEntry" | "payrollPeriod" | "payRun" | "payslip" | "payrollLineItem" | "payrollComponentDefinition" | "employeePayrollRecurringItem" | "notification" | "notificationRecipient" | "emailDelivery" | "emailDeliveryAttempt" | "auditEvent" | "asset" | "assetAssignment" | "assetDocument"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -7378,6 +7381,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Asset: {
+      payload: Prisma.$AssetPayload<ExtArgs>
+      fields: Prisma.AssetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        findFirst: {
+          args: Prisma.AssetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        findMany: {
+          args: Prisma.AssetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
+        }
+        create: {
+          args: Prisma.AssetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        createMany: {
+          args: Prisma.AssetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
+        }
+        delete: {
+          args: Prisma.AssetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        update: {
+          args: Prisma.AssetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetPayload>
+        }
+        aggregate: {
+          args: Prisma.AssetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAsset>
+        }
+        groupBy: {
+          args: Prisma.AssetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetCountAggregateOutputType> | number
+        }
+      }
+    }
+    AssetAssignment: {
+      payload: Prisma.$AssetAssignmentPayload<ExtArgs>
+      fields: Prisma.AssetAssignmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssetAssignmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssetAssignmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>
+        }
+        findFirst: {
+          args: Prisma.AssetAssignmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssetAssignmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>
+        }
+        findMany: {
+          args: Prisma.AssetAssignmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>[]
+        }
+        create: {
+          args: Prisma.AssetAssignmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>
+        }
+        createMany: {
+          args: Prisma.AssetAssignmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssetAssignmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>[]
+        }
+        delete: {
+          args: Prisma.AssetAssignmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>
+        }
+        update: {
+          args: Prisma.AssetAssignmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssetAssignmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssetAssignmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssetAssignmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssetAssignmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetAssignmentPayload>
+        }
+        aggregate: {
+          args: Prisma.AssetAssignmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssetAssignment>
+        }
+        groupBy: {
+          args: Prisma.AssetAssignmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetAssignmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssetAssignmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetAssignmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    AssetDocument: {
+      payload: Prisma.$AssetDocumentPayload<ExtArgs>
+      fields: Prisma.AssetDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssetDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssetDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.AssetDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssetDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.AssetDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.AssetDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.AssetDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssetDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.AssetDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>
+        }
+        update: {
+          args: Prisma.AssetDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssetDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssetDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssetDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssetDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssetDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.AssetDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssetDocument>
+        }
+        groupBy: {
+          args: Prisma.AssetDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssetDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssetDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -8792,6 +9017,8 @@ export const FinancialInstitutionScalarFieldEnum = {
   achParticipantCode: 'achParticipantCode',
   swiftBic: 'swiftBic',
   routingCode: 'routingCode',
+  accountNumberMinLength: 'accountNumberMinLength',
+  accountNumberMaxLength: 'accountNumberMaxLength',
   requiresBranchCode: 'requiresBranchCode',
   requiresAccountType: 'requiresAccountType',
   requiresBeneficiaryId: 'requiresBeneficiaryId',
@@ -8962,6 +9189,7 @@ export const AchPaymentBatchScalarFieldEnum = {
   payrollNetTotal: 'payrollNetTotal',
   detailCount: 'detailCount',
   effectivePaymentDate: 'effectivePaymentDate',
+  exportFormat: 'exportFormat',
   achType: 'achType',
   purposeCode: 'purposeCode',
   entryDescription: 'entryDescription',
@@ -8973,6 +9201,13 @@ export const AchPaymentBatchScalarFieldEnum = {
   fileStorageKey: 'fileStorageKey',
   fileContentHash: 'fileContentHash',
   fileMimeType: 'fileMimeType',
+  bankValidationStatus: 'bankValidationStatus',
+  fcbErrorCode: 'fcbErrorCode',
+  fcbErrorMessage: 'fcbErrorMessage',
+  fcbValidationErrorJson: 'fcbValidationErrorJson',
+  correctedAt: 'correctedAt',
+  replacementBatchId: 'replacementBatchId',
+  isRegenerated: 'isRegenerated',
   preparedByUserId: 'preparedByUserId',
   preparedAt: 'preparedAt',
   approvedByUserId: 'approvedByUserId',
@@ -9006,9 +9241,13 @@ export const AchPaymentBatchDetailScalarFieldEnum = {
   abaNumber: 'abaNumber',
   accountNumberMasked: 'accountNumberMasked',
   paymentType: 'paymentType',
+  transactionCode: 'transactionCode',
+  traceNumber: 'traceNumber',
   purposeCode: 'purposeCode',
   addenda: 'addenda',
   allocationKind: 'allocationKind',
+  excludedFromExport: 'excludedFromExport',
+  exclusionReason: 'exclusionReason',
   createdAt: 'createdAt'
 } as const
 
@@ -9257,6 +9496,7 @@ export const PayRunScalarFieldEnum = {
   runNumber: 'runNumber',
   status: 'status',
   runKind: 'runKind',
+  payeeGroup: 'payeeGroup',
   sourcePayRunId: 'sourcePayRunId',
   currency: 'currency',
   employeeCount: 'employeeCount',
@@ -9467,6 +9707,73 @@ export const AuditEventScalarFieldEnum = {
 } as const
 
 export type AuditEventScalarFieldEnum = (typeof AuditEventScalarFieldEnum)[keyof typeof AuditEventScalarFieldEnum]
+
+
+export const AssetScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  assetNumber: 'assetNumber',
+  assetTag: 'assetTag',
+  category: 'category',
+  assetType: 'assetType',
+  manufacturer: 'manufacturer',
+  modelName: 'modelName',
+  computerName: 'computerName',
+  serialNumber: 'serialNumber',
+  description: 'description',
+  status: 'status',
+  condition: 'condition',
+  purchaseDate: 'purchaseDate',
+  receivedDate: 'receivedDate',
+  purchaseCost: 'purchaseCost',
+  currencyCode: 'currencyCode',
+  warrantyEndsOn: 'warrantyEndsOn',
+  notes: 'notes',
+  assignedEmployeeId: 'assignedEmployeeId',
+  locationId: 'locationId',
+  parentAssetId: 'parentAssetId',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetScalarFieldEnum = (typeof AssetScalarFieldEnum)[keyof typeof AssetScalarFieldEnum]
+
+
+export const AssetAssignmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  assetId: 'assetId',
+  employeeId: 'employeeId',
+  locationId: 'locationId',
+  assignmentType: 'assignmentType',
+  assignedAt: 'assignedAt',
+  expectedReturnAt: 'expectedReturnAt',
+  returnedAt: 'returnedAt',
+  conditionAtIssue: 'conditionAtIssue',
+  conditionAtReturn: 'conditionAtReturn',
+  notes: 'notes',
+  assignedByUserId: 'assignedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetAssignmentScalarFieldEnum = (typeof AssetAssignmentScalarFieldEnum)[keyof typeof AssetAssignmentScalarFieldEnum]
+
+
+export const AssetDocumentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  assetId: 'assetId',
+  storedFileId: 'storedFileId',
+  kind: 'kind',
+  notes: 'notes',
+  uploadedByUserId: 'uploadedByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssetDocumentScalarFieldEnum = (typeof AssetDocumentScalarFieldEnum)[keyof typeof AssetDocumentScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -10581,6 +10888,20 @@ export type ListEnumAchPaymentBatchStatusFieldRefInput<$PrismaModel> = FieldRefI
 
 
 /**
+ * Reference to a field of type 'AchBankValidationStatus'
+ */
+export type EnumAchBankValidationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AchBankValidationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AchBankValidationStatus[]'
+ */
+export type ListEnumAchBankValidationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AchBankValidationStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'GratuityFormulaKind'
  */
 export type EnumGratuityFormulaKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GratuityFormulaKind'>
@@ -10689,6 +11010,20 @@ export type EnumPayRunKindFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'PayRunKind[]'
  */
 export type ListEnumPayRunKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayRunKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PayRunPayeeGroup'
+ */
+export type EnumPayRunPayeeGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayRunPayeeGroup'>
+    
+
+
+/**
+ * Reference to a field of type 'PayRunPayeeGroup[]'
+ */
+export type ListEnumPayRunPayeeGroupFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PayRunPayeeGroup[]'>
     
 
 
@@ -10829,6 +11164,90 @@ export type EnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputTy
  * Reference to a field of type 'EmailDeliveryStatus[]'
  */
 export type ListEnumEmailDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailDeliveryStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetCategory'
+ */
+export type EnumAssetCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetCategory[]'
+ */
+export type ListEnumAssetCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetCategory[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetType'
+ */
+export type EnumAssetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetType'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetType[]'
+ */
+export type ListEnumAssetTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetStatus'
+ */
+export type EnumAssetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetStatus[]'
+ */
+export type ListEnumAssetStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetCondition'
+ */
+export type EnumAssetConditionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetCondition'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetCondition[]'
+ */
+export type ListEnumAssetConditionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetCondition[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetAssignmentType'
+ */
+export type EnumAssetAssignmentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetAssignmentType'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetAssignmentType[]'
+ */
+export type ListEnumAssetAssignmentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetAssignmentType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetDocumentKind'
+ */
+export type EnumAssetDocumentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetDocumentKind'>
+    
+
+
+/**
+ * Reference to a field of type 'AssetDocumentKind[]'
+ */
+export type ListEnumAssetDocumentKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AssetDocumentKind[]'>
     
 
 
@@ -11048,6 +11467,9 @@ export type GlobalOmitConfig = {
   emailDelivery?: Prisma.EmailDeliveryOmit
   emailDeliveryAttempt?: Prisma.EmailDeliveryAttemptOmit
   auditEvent?: Prisma.AuditEventOmit
+  asset?: Prisma.AssetOmit
+  assetAssignment?: Prisma.AssetAssignmentOmit
+  assetDocument?: Prisma.AssetDocumentOmit
 }
 
 /* Types for Logging */

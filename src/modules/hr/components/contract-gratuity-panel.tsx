@@ -131,7 +131,7 @@ export function ContractGratuityPanel({
         />
         <Detail
           labelText="Tax rate"
-          value="Org policy (IRD tiers)"
+          value="Org policy (Payroll → Settings → Gratuity)"
         />
         <Detail
           labelText="Contract months"
@@ -142,7 +142,7 @@ export function ContractGratuityPanel({
           }
         />
         <Detail
-          labelText="Gratuity-eligible earnings (term)"
+          labelText="Eligible earnings (base × months)"
           value={
             fallback.estimatedGrossEarnings
               ? formatMoney(fallback.estimatedGrossEarnings, {
@@ -162,7 +162,7 @@ export function ContractGratuityPanel({
           }
         />
         <Detail
-          labelText="Estimated tax"
+          labelText="Government tax"
           value={
             fallback.estimatedTax
               ? formatMoney(fallback.estimatedTax, {
@@ -172,7 +172,7 @@ export function ContractGratuityPanel({
           }
         />
         <Detail
-          labelText="Estimated net gratuity"
+          labelText="Employee receives (after tax)"
           value={
             fallback.estimatedNetGratuity
               ? formatMoney(fallback.estimatedNetGratuity, {
@@ -243,19 +243,19 @@ export function ContractGratuityPanel({
 
       <div className="grid gap-6 md:grid-cols-3">
         <Detail
-          labelText={`${amountLabel} gross`}
+          labelText={`${amountLabel} gross gratuity`}
           value={formatMoney(settlement.grossAmount, {
             currency: settlement.currency,
           })}
         />
         <Detail
-          labelText={`${amountLabel} tax`}
+          labelText="Government tax"
           value={formatMoney(settlement.taxAmount, {
             currency: settlement.currency,
           })}
         />
         <Detail
-          labelText={`${amountLabel} net`}
+          labelText="Employee receives (after tax)"
           value={formatMoney(settlement.netAmount, {
             currency: settlement.currency,
           })}

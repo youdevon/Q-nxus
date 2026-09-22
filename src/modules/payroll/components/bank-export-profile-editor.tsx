@@ -136,8 +136,9 @@ export function BankExportProfileEditor({
                   Maps to First Citizens Business Online ACH fields. Global
                   Addenda and Entry Description are required by the bank form.
                   Discretionary Data defaults to the payroll period name when
-                  blank. Import file generation stays disabled until the bank
-                  confirms layout.
+                  blank. Salary file download uses{" "}
+                  <code className="text-[11px]">FCB_ACH_SALARY_YYYYMMDD.txt</code>{" "}
+                  (legacy NACHA type-6, no headers). Company ACH ID is optional.
                 </p>
               </div>
               <div className="grid gap-2 sm:grid-cols-2">
@@ -157,10 +158,11 @@ export function BankExportProfileEditor({
                 </div>
                 <div className="grid gap-2">
                   <label className="text-xs text-muted-foreground">
-                    Company ACH ID
+                    Company ACH ID (optional / legacy)
                   </label>
                   <Input
                     value={fcb.companyAchId ?? ""}
+                    placeholder="265001"
                     onChange={(event) =>
                       setFcb((current) => ({
                         ...current,
@@ -285,6 +287,21 @@ export function BankExportProfileEditor({
                 </div>
                 <div className="grid gap-2">
                   <label className="text-xs text-muted-foreground">
+                    ODFI routing (NACHA trace)
+                  </label>
+                  <Input
+                    value={fcb.odfiRoutingNumber ?? ""}
+                    placeholder="010100013"
+                    onChange={(event) =>
+                      setFcb((current) => ({
+                        ...current,
+                        odfiRoutingNumber: event.target.value || null,
+                      }))
+                    }
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <label className="text-xs text-muted-foreground">
                     Export format label
                   </label>
                   <Input
@@ -302,7 +319,7 @@ export function BankExportProfileEditor({
                 <input
                   type="checkbox"
                   className="size-4"
-                  checked={fcb.importFileDisabled !== false}
+                  checked={fcb.importFileDisabled === true}
                   onChange={(event) =>
                     setFcb((current) => ({
                       ...current,
@@ -310,12 +327,17 @@ export function BankExportProfileEditor({
                     }))
                   }
                 />
-                Keep import-file download disabled (recommended until bank
-                confirms)
+                Reserve kill switch for future Default Transactions format
               </label>
+              <p className="text-xs text-muted-foreground">
+                Does not block{" "}
+                <code className="text-[11px]">FCB_ACH_SALARY_*.txt</code>{" "}
+                (legacy NACHA no-header V1). Use Payroll → ACH settings to
+                enable/disable salary file export.
+              </p>
               <div className="grid gap-2">
                 <label className="text-xs text-muted-foreground">
-                  Import disabled reason
+                  Default Transactions note (optional)
                 </label>
                 <Textarea
                   rows={2}

@@ -3,10 +3,9 @@ import type { EmployeeFileCompletenessRow } from "@/src/modules/hr/data/get-org-
 import type { MonthlyPayrollReportData } from "@/src/modules/payroll/data/get-monthly-payroll-summary";
 import type { PayRunPaysheetData } from "@/src/modules/payroll/data/get-pay-run-paysheet";
 import type { StatutoryRemittanceReport } from "@/src/modules/payroll/data/get-statutory-remittance";
-import type { EmployeePaymentHistoryReportData } from "@/src/modules/payroll/data/get-employee-payment-history";
 import type { YearEndEmployeeSummary } from "@/src/modules/payroll/data/get-year-end-payroll-summary";
 import type { PayrollReadinessData } from "@/src/modules/payroll/lib/payroll-readiness-types";
-import { runKindLabel } from "@/src/modules/payroll/lib/payroll-analytics";
+import { runKindLabel, formatPayrollPeriodRangeLabel } from "@/src/modules/payroll/lib/payroll-analytics";
 import { formatPayslipPeriodLabel } from "@/src/modules/payroll/lib/payslip-preview";
 import type { ContractExpiryReport } from "@/src/modules/reports/data/get-contract-expiry-report";
 import type { EmployeeNisDetailReport } from "@/src/modules/reports/data/get-employee-nis-detail-report";
@@ -16,7 +15,7 @@ import type { PayRunApprovalLogReport } from "@/src/modules/reports/data/get-pay
 import type { PaymentExceptionsReport } from "@/src/modules/reports/data/get-payment-exceptions-report";
 import type { PayslipDeliveryReport } from "@/src/modules/reports/data/get-payslip-delivery-report";
 import type { PriorEmploymentExceptionsReport } from "@/src/modules/reports/data/get-prior-employment-exceptions-report";
-import type { ReportExportTable } from "@/src/modules/reports/lib/report-export-table";
+import type { ReportExportColumn, ReportExportTable } from "@/src/modules/reports/lib/report-export-table";
 
 function expiryLabel(category: string): string {
   switch (category) {
@@ -74,49 +73,199 @@ function priorEmploymentReasonLabel(reason: string): string {
   }
 }
 
+function monthlyPayrollScopeLabel(data: MonthlyPayrollReportData): string {
+  if (data.scope === "selected") {
+    if (data.selectedEmployees.length === 1) {
+      const employee = data.selectedEmployees[0]!;
+      return `${employee.displayName} (${employee.employeeNumber})`;
+    }
+    return `${data.selectedEmployees.length} selected employees`;
+  }
+  if (data.scope === "department") {
+    return data.selectedDepartmentName ?? "Department";
+  }
+  return "All employees";
+}
+
 export function buildMonthlyPayrollExportTable(
   data: MonthlyPayrollReportData,
 ): ReportExportTable {
   const periodLabel =
     data.summary.periodName ??
-    formatPayslipPeriodLabel(data.selectedPeriodKey) ??
-    data.selectedPeriodKey;
+    formatPayrollPeriodRangeLabel(
+      data.period.startPeriodKey,
+      data.period.endPeriodKey,
+    );
+  const scopeLabel = monthlyPayrollScopeLabel(data);
+  const register = data.register;
+  const currency = register?.currency ?? "TTD";
+  const showSlipMeta = register?.mode === "slip";
+
+  const columns: ReportExportColumn[] = [
+    ...(showSlipMeta
+      ? ([
+          { header: "Period", key: "periodName", width: 14 },
+          { header: "Run", key: "runNumber", width: 12 },
+          { header: "Run type", key: "runKind", width: 12 },
+        ] satisfies ReportExportColumn[])
+      : []),
+    { header: "Emp #", key: "employeeNumber", width: 12 },
+    { header: "Employee", key: "employeeName", width: 28 },
+    { header: "Department", key: "departmentName", width: 20 },
+    { header: "Job title", key: "jobTitle", width: 20 },
+    {
+      header: "Basic",
+      key: "baseSalary",
+      kind: "currency",
+      currency,
+      width: 16,
+    },
+    {
+      header: "Allowances",
+      key: "allowancesTotal",
+      kind: "currency",
+      currency,
+      width: 16,
+    },
+    {
+      header: "Gross",
+      key: "grossPay",
+      kind: "currency",
+      currency,
+      width: 16,
+    },
+    { header: "PAYE", key: "paye", kind: "currency", currency, width: 15 },
+    {
+      header: "NIS (ee)",
+      key: "nisEmployee",
+      kind: "currency",
+      currency,
+      width: 15,
+    },
+    {
+      header: "Health",
+      key: "healthSurcharge",
+      kind: "currency",
+      currency,
+      width: 15,
+    },
+    {
+      header: "Other ded.",
+      key: "otherDeductions",
+      kind: "currency",
+      currency,
+      width: 15,
+    },
+    {
+      header: "Total ded.",
+      key: "totalDeductions",
+      kind: "currency",
+      currency,
+      width: 16,
+    },
+    { header: "Net", key: "netPay", kind: "currency", currency, width: 16 },
+    {
+      header: "NIS (er)",
+      key: "nisEmployer",
+      kind: "currency",
+      currency,
+      width: 15,
+      xlsxSection: "employer",
+    },
+    {
+      header: "NIS payment",
+      key: "nisPayment",
+      kind: "currency",
+      currency,
+      width: 15,
+      xlsxSection: "employer-total",
+    },
+    ...(showSlipMeta
+      ? []
+      : ([
+          {
+            header: "Payslips",
+            key: "payslipCount",
+            kind: "integer",
+            width: 10,
+          },
+        ] satisfies ReportExportColumn[])),
+  ];
+
+  const rows = (register?.rows ?? []).map((row) => ({
+    periodName: row.periodName ?? "",
+    runNumber: row.runNumber ?? "",
+    runKind: row.runKind ? runKindLabel(row.runKind) : "",
+    employeeNumber: row.employeeNumber,
+    employeeName: row.employeeName,
+    departmentName: row.departmentName ?? "",
+    jobTitle: row.jobTitle ?? "",
+    baseSalary: row.baseSalary,
+    allowancesTotal: row.allowancesTotal,
+    grossPay: row.grossPay,
+    paye: row.paye,
+    nisEmployee: row.nisEmployee,
+    healthSurcharge: row.healthSurcharge,
+    otherDeductions: row.otherDeductions,
+    totalDeductions: row.totalDeductions,
+    netPay: row.netPay,
+    nisEmployer: row.nisEmployer,
+    nisPayment: row.nisPayment,
+    payslipCount: row.payslipCount,
+  }));
 
   return {
-    title: "Monthly payroll",
-    sheetName: "Monthly payroll",
+    title: "Posted payroll",
+    sheetName: "Payroll register",
     metadata: [
+      { label: "Scope", value: scopeLabel },
       { label: "Period", value: periodLabel },
-      { label: "Payslips", value: String(data.summary.payslipCount) },
-      { label: "Employees", value: String(data.summary.employeeCount) },
-    ],
-    columns: [
-      { header: "Run number", key: "runNumber", width: 14 },
-      { header: "Run type", key: "runKind", width: 12 },
-      { header: "Currency", key: "currency", width: 10 },
-      { header: "Gross pay", key: "grossPay", kind: "currency", width: 14 },
-      { header: "Net pay", key: "netPay", kind: "currency", width: 14 },
+      { label: "Currency", value: currency },
       {
-        header: "Employer contributions",
-        key: "employerContributions",
-        kind: "currency",
-        width: 18,
+        label: "Employees",
+        value: String(register?.employeeCount ?? data.summary.employeeCount),
       },
-      { header: "Payslips", key: "payslipCount", kind: "integer", width: 10 },
-      { header: "Employees", key: "employeeCount", kind: "integer", width: 10 },
-      { header: "Posted", key: "postedAt", kind: "date", width: 12 },
+      {
+        label: "Payslips",
+        value: String(register?.payslipCount ?? data.summary.payslipCount),
+      },
+      ...(register?.mode === "employee"
+        ? [
+            {
+              label: "Note",
+              value:
+                "Multi-employee rows are auto-calculated totals for the selected period",
+            },
+          ]
+        : []),
     ],
-    rows: data.summary.runs.map((run) => ({
-      runNumber: run.runNumber,
-      runKind: runKindLabel(run.runKind),
-      currency: run.currency,
-      grossPay: run.grossPay,
-      netPay: run.netPay,
-      employerContributions: run.employerContributions,
-      payslipCount: run.payslipCount,
-      employeeCount: run.employeeCount,
-      postedAt: run.postedAt?.slice(0, 10) ?? "",
-    })),
+    columns,
+    rows:
+      rows.length > 0
+        ? rows
+        : [
+            {
+              employeeName: "No posted payments in this period.",
+            },
+          ],
+    totalsRow:
+      register && register.rows.length > 0
+        ? {
+            employeeName: "TOTAL",
+            baseSalary: register.totals.baseSalary,
+            allowancesTotal: register.totals.allowancesTotal,
+            grossPay: register.totals.grossPay,
+            paye: register.totals.paye,
+            nisEmployee: register.totals.nisEmployee,
+            healthSurcharge: register.totals.healthSurcharge,
+            otherDeductions: register.totals.otherDeductions,
+            totalDeductions: register.totals.totalDeductions,
+            netPay: register.totals.netPay,
+            nisEmployer: register.totals.nisEmployer,
+            nisPayment: register.totals.nisPayment,
+            payslipCount: register.payslipCount,
+          }
+        : undefined,
   };
 }
 
@@ -159,129 +308,7 @@ export function buildStatutoryRemittanceExportTable(
   };
 }
 
-export function buildEmployeePaymentHistoryExportTable(
-  data: EmployeePaymentHistoryReportData,
-): ReportExportTable {
-  const periodLabel = `${data.period.startPeriodKey} to ${data.period.endPeriodKey}`;
 
-  if (data.scope === "employee" && data.history) {
-    const payslipRows = data.history.months.flatMap((month) =>
-      month.payslips.map((slip) => ({
-        periodKey: month.periodKey,
-        periodName: month.periodName,
-        employeeNumber: slip.employeeNumber,
-        employeeName: slip.employeeName,
-        runNumber: slip.runNumber,
-        runKind: runKindLabel(slip.runKind),
-        currency: slip.currency,
-        grossPay: slip.grossPay,
-        totalDeductions: slip.totalDeductions,
-        netPay: slip.netPay,
-        employerContributions: slip.employerContributions,
-        postedAt: slip.postedAt?.slice(0, 10) ?? "",
-      })),
-    );
-
-    return {
-      title: "Employee payment history",
-      sheetName: "Payment history",
-      metadata: [
-        {
-          label: "Employee",
-          value: data.selectedEmployee
-            ? `${data.selectedEmployee.displayName} (${data.selectedEmployee.employeeNumber})`
-            : "—",
-        },
-        { label: "Period", value: periodLabel },
-        { label: "Preset", value: data.period.preset },
-      ],
-      columns: [
-        { header: "Period", key: "periodName", width: 16 },
-        { header: "Run", key: "runNumber", width: 12 },
-        { header: "Run type", key: "runKind", width: 12 },
-        { header: "Currency", key: "currency", width: 10 },
-        { header: "Gross", key: "grossPay", kind: "currency", width: 14 },
-        {
-          header: "Deductions",
-          key: "totalDeductions",
-          kind: "currency",
-          width: 14,
-        },
-        { header: "Net", key: "netPay", kind: "currency", width: 14 },
-        {
-          header: "Employer",
-          key: "employerContributions",
-          kind: "currency",
-          width: 14,
-        },
-        { header: "Posted", key: "postedAt", kind: "date", width: 12 },
-      ],
-      rows: payslipRows,
-    };
-  }
-
-  const roster = data.roster;
-  if (!roster) {
-    return {
-      title: "Employee payment history",
-      sheetName: "Payment history",
-      metadata: [{ label: "Period", value: periodLabel }],
-      columns: [{ header: "Message", key: "message", width: 40 }],
-      rows: [{ message: "No posted payments in this period." }],
-    };
-  }
-
-  const rows = roster.employees.flatMap((employee) =>
-    employee.totalsByCurrency.map((total) => ({
-      employeeNumber: employee.employeeNumber,
-      employeeName: employee.employeeName,
-      departmentName: employee.departmentName ?? "",
-      currency: total.currency,
-      grossPay: total.grossPay,
-      totalDeductions: total.totalDeductions,
-      netPay: total.netPay,
-      employerContributions: total.employerContributions,
-      payslipCount: employee.payslipCount,
-    })),
-  );
-
-  const scopeLabel =
-    data.scope === "department"
-      ? `Department: ${data.selectedDepartmentName ?? data.selectedDepartmentId ?? "—"}`
-      : "All employees";
-
-  return {
-    title: "Employee payment history",
-    sheetName: "Payment history",
-    metadata: [
-      { label: "Scope", value: scopeLabel },
-      { label: "Period", value: periodLabel },
-      { label: "Employees", value: String(roster.employeeCount) },
-    ],
-    columns: [
-      { header: "Employee #", key: "employeeNumber", width: 12 },
-      { header: "Employee", key: "employeeName", width: 22 },
-      { header: "Department", key: "departmentName", width: 18 },
-      { header: "Currency", key: "currency", width: 10 },
-      { header: "Gross", key: "grossPay", kind: "currency", width: 14 },
-      {
-        header: "Deductions",
-        key: "totalDeductions",
-        kind: "currency",
-        width: 14,
-      },
-      { header: "Net", key: "netPay", kind: "currency", width: 14 },
-      {
-        header: "Employer",
-        key: "employerContributions",
-        kind: "currency",
-        width: 14,
-      },
-      { header: "Payslips", key: "payslipCount", kind: "integer", width: 10 },
-    ],
-    rows,
-  };
-}
 
 export function buildYearEndPayrollExportTable(
   year: number,

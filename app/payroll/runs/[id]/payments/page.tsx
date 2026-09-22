@@ -13,12 +13,17 @@ export const dynamic = "force-dynamic";
 
 type PageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ achError?: string | string[] }>;
 };
 
-export default async function PayRunPaymentsPage({ params }: PageProps) {
-  const [{ id }, capabilities] = await Promise.all([
+export default async function PayRunPaymentsPage({
+  params,
+  searchParams,
+}: PageProps) {
+  const [{ id }, capabilities, query] = await Promise.all([
     params,
     requirePayrollViewAccess(),
+    searchParams,
   ]);
   const data = await getPayRunPaymentsPage(id);
 
@@ -35,9 +40,16 @@ export default async function PayRunPaymentsPage({ params }: PageProps) {
     capabilities.can("payroll.bank_accounts.view_sensitive") ||
     capabilities.can("payroll.manage");
 
+  const achErrorRaw = query.achError;
+  const achError =
+    typeof achErrorRaw === "string" && achErrorRaw.trim()
+      ? achErrorRaw.trim()
+      : null;
+
   return (
     <PayRunPaymentsView
       data={data}
+      achError={achError}
       capabilities={{
         canPrepare,
         canCreateBatch,

@@ -5,7 +5,10 @@ import { notifyCorrespondenceAcknowledgementReminders } from "@/src/modules/hr/s
 import { notifyLifecycleTaskReminders } from "@/src/modules/hr/services/notify-lifecycle-task-reminders";
 import { notifyProbationEndingReminders } from "@/src/modules/hr/services/notify-probation-ending";
 import { notifyVacationForfeitureReminders } from "@/src/modules/hr/services/notify-vacation-forfeiture";
-import { archiveExpiredStoredFileRetention } from "@/src/modules/hr/services/stored-file-retention";
+import {
+  archiveExpiredStoredFileRetention,
+  purgeArchivedStoredFileBinaries,
+} from "@/src/modules/hr/services/stored-file-retention";
 import {
   processEmailQueue,
   recoverStuckEmailDeliveries,
@@ -74,6 +77,10 @@ const jobs: ScheduledJob[] = [
   {
     name: "stored-file-retention-archive",
     run: () => archiveExpiredStoredFileRetention(),
+  },
+  {
+    name: "stored-file-binary-purge",
+    run: () => purgeArchivedStoredFileBinaries({ olderThanDays: 30 }),
   },
   {
     name: "prior-employment-archive-purge",

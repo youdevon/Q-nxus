@@ -518,3 +518,19 @@ export type EmailDeliveryAttempt = Prisma.EmailDeliveryAttemptModel
  * 
  */
 export type AuditEvent = Prisma.AuditEventModel
+/**
+ * Model Asset
+ * One identifiable company-controlled item (laptop, phone, etc.).
+ */
+export type Asset = Prisma.AssetModel
+/**
+ * Model AssetAssignment
+ * Custody timeline — one open assignment (returnedAt null) per asset.
+ * Custodian is either an employee or an office/location (not both).
+ */
+export type AssetAssignment = Prisma.AssetAssignmentModel
+/**
+ * Model AssetDocument
+ * 
+ */
+export type AssetDocument = Prisma.AssetDocumentModel

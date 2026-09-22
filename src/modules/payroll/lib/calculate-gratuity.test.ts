@@ -63,7 +63,7 @@ describe("TT MoF example", () => {
     expect(result.estimatedNetGratuity).toBe(28_800);
   });
 
-  it("uses term months for eligible gross, not a fixed calendar year", () => {
+  it("uses base salary × term months (allowances excluded)", () => {
     const result = calculateContractGratuity({
       startDate: new Date("2025-01-01T00:00:00.000Z"),
       endDate: new Date("2026-12-31T00:00:00.000Z"),
@@ -84,11 +84,11 @@ describe("TT MoF example", () => {
       },
     });
 
-    // monthly eligible = 18_000; inclusive months = 24 → 432_000 (not 18_000 × 12)
+    // monthly eligible = base only 16_000; inclusive months = 24 → 384_000
     expect(result.contractMonths).toBe(24);
-    expect(result.monthlyEligibleEarnings).toBe(18_000);
-    expect(result.estimatedGrossEarnings).toBe(432_000);
-    expect(result.estimatedGrossGratuity).toBe(86_400);
+    expect(result.monthlyEligibleEarnings).toBe(16_000);
+    expect(result.estimatedGrossEarnings).toBe(384_000);
+    expect(result.estimatedGrossGratuity).toBe(76_800);
   });
 });
 

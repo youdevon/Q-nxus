@@ -18,59 +18,16 @@ import {
 import { PositionStructureDialog } from "@/src/modules/hr/components/organization-structure-dialogs";
 import type { EmployeeAssignmentHistory } from "@/src/modules/hr/data/get-employee-assignments";
 import type { EmployeeFormDepartment } from "@/src/modules/hr/data/get-employee-form-data";
-import type { DepartmentRecord } from "@/src/modules/hr/data/get-people-structure";
+import {
+  appendPositionToDepartments,
+  toStructureDepartments,
+  type CreatedPositionEntity,
+} from "@/src/modules/hr/lib/department-position-options";
 
 const initialState: EmployeeAssignmentFormState = {
   status: "idle",
   message: "",
 };
-
-function toStructureDepartments(
-  departments: EmployeeFormDepartment[],
-): DepartmentRecord[] {
-  return departments.map((department) => ({
-    id: department.id,
-    name: department.name,
-    code: null,
-    description: null,
-    isActive: true,
-    updatedAt: "",
-    employeeCount: 0,
-    positions: department.positions.map((position) => ({
-      id: position.id,
-      title: position.title,
-      code: null,
-      description: null,
-      systemRoleCode: null,
-      reportsToPositionId: null,
-      isActive: true,
-      updatedAt: "",
-      employeeCount: 0,
-    })),
-  }));
-}
-
-function appendPositionToDepartments(
-  departments: EmployeeFormDepartment[],
-  created: { id: string; title: string; departmentId: string },
-): EmployeeFormDepartment[] {
-  return departments.map((department) => {
-    if (department.id !== created.departmentId) {
-      return department;
-    }
-
-    if (department.positions.some((position) => position.id === created.id)) {
-      return department;
-    }
-
-    return {
-      ...department,
-      positions: [...department.positions, created].sort((left, right) =>
-        left.title.localeCompare(right.title),
-      ),
-    };
-  });
-}
 
 export function EmployeeAssignmentForm({
   history,
@@ -133,18 +90,24 @@ export function EmployeeAssignmentForm({
 
   function handlePositionCreated(
     entityId?: string,
-    createdEntity?: { id: string; title: string; departmentId: string },
+    createdEntity?: CreatedPositionEntity,
   ) {
-    if (!entityId || !createdEntity) {
+    if (!entityId || !createdEntity?.title || !createdEntity.departmentId) {
       return;
     }
 
-    setDepartments((current) => appendPositionToDepartments(current, createdEntity));
+    const created = {
+      id: createdEntity.id,
+      title: createdEntity.title,
+      departmentId: createdEntity.departmentId,
+    };
 
-    if (createdEntity.departmentId === departmentId) {
+    setDepartments((current) => appendPositionToDepartments(current, created));
+
+    if (created.departmentId === departmentId) {
       setPositionId(entityId);
     } else {
-      setDepartmentId(createdEntity.departmentId);
+      setDepartmentId(created.departmentId);
       setPositionId(entityId);
     }
 

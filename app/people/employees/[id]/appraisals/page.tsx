@@ -5,8 +5,8 @@ import { ClipboardCheck, Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
-import { PageShell } from "@/src/components/layout/page-shell";
+import { EmployeeSectionChrome } from "@/src/modules/hr/components/employee-section-chrome";
+import { getEmployeeEntityChrome } from "@/src/modules/hr/data/get-employee-entity-chrome";
 import { getEmployeeAppraisalHistory } from "@/src/modules/hr/data/get-performance-appraisals";
 import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
@@ -33,33 +33,34 @@ export default async function EmployeeAppraisalsPage({
   await requirePeopleManageAccess();
 
   const { id } = await params;
-  const history = await getEmployeeAppraisalHistory(id);
+  const [history, chrome] = await Promise.all([
+    getEmployeeAppraisalHistory(id),
+    getEmployeeEntityChrome(id),
+  ]);
 
-  if (!history) {
+  if (!history || !chrome) {
     notFound();
   }
 
   return (
-    <PageShell size="lg">
-      <PeoplePageHeader
-        title="Performance Appraisals"
-        description={`${history.employee.firstName} ${history.employee.lastName} · ${history.employee.employeeNumber}`}
-        backHref={`/people/employees/${history.employee.id}`}
-        backLabel="Employee"
-        actions={
-          <Button
-            nativeButton={false}
-            render={
-              <Link
-                href={`/people/employees/${history.employee.id}/appraisals/new`}
-              />
-            }
-          >
-            <Plus />
-            New appraisal
-          </Button>
-        }
-      />
+    <EmployeeSectionChrome
+      chrome={chrome}
+      current="appraisals"
+      title="Performance Appraisals"
+      actions={
+        <Button
+          nativeButton={false}
+          render={
+            <Link
+              href={`/people/employees/${history.employee.id}/appraisals/new`}
+            />
+          }
+        >
+          <Plus />
+          New appraisal
+        </Button>
+      }
+    >
 
       <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <div>
@@ -183,6 +184,6 @@ export default async function EmployeeAppraisalsPage({
           </div>
         )}
       </section>
-    </PageShell>
+    </EmployeeSectionChrome>
   );
 }

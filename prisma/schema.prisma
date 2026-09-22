@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["core", "hr", "payroll", "notifications", "audit"]
+  schemas  = ["core", "hr", "payroll", "notifications", "audit", "assets"]
 }
 
 enum ModuleHealth {
@@ -526,6 +526,16 @@ enum WorkforceCategory {
   @@schema("hr")
 }
 
+/// Which workforce category a regular pay run includes (kept separate so board fees don't mix with salary).
+enum PayRunPayeeGroup {
+  EMPLOYEE
+  BOARD
+  AGENT
+  CONTRACTOR
+
+  @@schema("payroll")
+}
+
 /// Government / travel identity document used for employee verification.
 enum EmployeeIdType {
   NATIONAL_ID
@@ -652,6 +662,9 @@ model Organization {
   achPaymentBatches        AchPaymentBatch[]
   bankExportProfiles       BankExportProfile[]
   auditEvents              AuditEvent[]
+  assets                   Asset[]
+  assetAssignments         AssetAssignment[]
+  assetDocuments           AssetDocument[]
 
   @@index([status])
   @@map("organizations")
@@ -734,6 +747,8 @@ model User {
   assignedOnboardingTasks            EmployeeOnboardingTask[] @relation("OnboardingTaskAssignee")
   assignedOffboardingTasks           EmployeeOffboardingTask[] @relation("OffboardingTaskAssignee")
   createdPayrollRecurringItems       EmployeePayrollRecurringItem[] @relation("PayrollRecurringItemCreator")
+  assignedAssetAssignments           AssetAssignment[] @relation("AssetAssignmentAssignedBy")
+  uploadedAssetDocuments             AssetDocument[] @relation("AssetDocumentUploader")
 
   employeeId String?   @unique
   employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
@@ -871,6 +886,8 @@ model Location {
   updatedAt      DateTime            @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id])
+  assets            Asset[]
+  assetAssignments  AssetAssignment[]
 
   @@unique([organizationId, code])
   @@index([organizationId, status])
@@ -1138,6 +1155,9 @@ model Employee {
   correspondenceResponses EmployeeCorrespondenceResponse[]
   onboardingCases EmployeeOnboardingCase[]
   offboardingCases EmployeeOffboardingCase[]
+
+  assignedAssets Asset[] @relation("AssetCurrentAssignee")
+  assetAssignments AssetAssignment[]
 
   user User?
 
@@ -2107,6 +2127,7 @@ model StoredFile {
   fileUpdateRequests  EmployeeFileUpdateRequest[]
   employeeTaxProfiles EmployeeTaxProfile[]
   priorEmploymentDocuments EmployeePriorEmploymentDocument[]
+  assetDocuments AssetDocument[]
 
   @@unique([organizationId, storageKey])
   @@index([organizationId])
@@ -2917,6 +2938,9 @@ model FinancialInstitution {
   swiftBic                     String?
   /// ACH / local routing code — null until confirmed. REQUIRES_CONFIRMATION.
   routingCode                  String?
+  /// Optional ACH account-length guidance (warnings during export).
+  accountNumberMinLength       Int?
+  accountNumberMaxLength       Int?
   requiresBranchCode           Boolean                   @default(false)
   requiresAccountType          Boolean                   @default(false)
   requiresBeneficiaryId        Boolean                   @default(false)
@@ -3076,6 +3100,21 @@ enum AchPaymentBatchStatus {
   /// Marked released in Q-NXUS after bank portal release (manual confirmation).
   RELEASED
   RECONCILED
+  /// ACH file invalidated because payroll amounts changed after generation.
+  INVALIDATED
+
+  @@schema("payroll")
+}
+
+/// Bank-side lifecycle for an ACH file (separate from internal batch status).
+enum AchBankValidationStatus {
+  GENERATED
+  UPLOADED_FOR_VALIDATION
+  VALIDATION_FAILED
+  BANK_VALIDATED
+  SUBMITTED
+  PROCESSED
+  REJECTED
 
   @@schema("payroll")
 }
@@ -3212,6 +3251,8 @@ model AchPaymentBatch {
   payrollNetTotal     Decimal?             @db.Decimal(14, 2)
   detailCount         Int                  @default(0)
   effectivePaymentDate DateTime?           @db.Date
+  /// Explicit export format id (e.g. FCB_TT_LEGACY_NACHA_NO_HEADER_V1).
+  exportFormat        String?
   /// PPD (payroll default) or CCD (future company payments).
   achType             String?
   purposeCode         String?
@@ -3224,6 +3265,13 @@ model AchPaymentBatch {
   fileStorageKey      String?
   fileContentHash     String?
   fileMimeType        String?
+  bankValidationStatus AchBankValidationStatus?
+  fcbErrorCode        String?
+  fcbErrorMessage     String?
+  fcbValidationErrorJson Json?
+  correctedAt         DateTime?
+  replacementBatchId  String?
+  isRegenerated       Boolean              @default(false)
   preparedByUserId    String?
   preparedAt          DateTime?
   approvedByUserId    String?
@@ -3268,9 +3316,15 @@ model AchPaymentBatchDetail {
   abaNumber                  String?
   accountNumberMasked        String
   paymentType                String?
+  /// Frozen ACH transaction code (22 / 32).
+  transactionCode            String?
+  /// Frozen 15-digit ACH trace number.
+  traceNumber                String?
   purposeCode                String?
   addenda                    String?
   allocationKind             String
+  excludedFromExport         Boolean  @default(false)
+  exclusionReason            String?
   createdAt                  DateTime @default(now())
 
   achPaymentBatch          AchPaymentBatch            @relation(fields: [achPaymentBatchId], references: [id], onDelete: Cascade)
@@ -3765,6 +3819,10 @@ model PayRun {
   runNumber       String
   status          PayRunStatus @default(DRAFT)
   runKind         PayRunKind   @default(REGULAR)
+  /// Workforce category included in this regular run.
+  /// Null only for non-regular / transitional rows; legacy REGULAR nulls
+  /// are backfilled to EMPLOYEE (see effectivePayRunPayeeGroup).
+  payeeGroup      PayRunPayeeGroup?
   /// Optional link to the posted run this correction/off-cycle adjusts.
   sourcePayRunId  String?
   currency        String       @default("TTD")
@@ -3798,6 +3856,7 @@ model PayRun {
   @@index([payrollPeriodId])
   @@index([organizationId, status])
   @@index([organizationId, runKind])
+  @@index([organizationId, payeeGroup])
   @@index([organizationId, createdAt])
   @@index([sourcePayRunId])
   @@index([approvedById])
@@ -4099,4 +4158,179 @@ model AuditEvent {
   @@index([createdAt])
   @@map("audit_events")
   @@schema("audit")
+}
+
+// ---------------------------------------------------------------------------
+// Assets — register + custody (MVP)
+// ---------------------------------------------------------------------------
+
+enum AssetStatus {
+  AVAILABLE
+  ASSIGNED
+  IN_REPAIR
+  RETIRED
+  LOST
+  STOLEN
+
+  @@schema("assets")
+}
+
+enum AssetCondition {
+  NEW
+  GOOD
+  FAIR
+  POOR
+
+  @@schema("assets")
+}
+
+enum AssetCategory {
+  COMPUTER_EQUIPMENT
+  MOBILE_DEVICES
+  OFFICE_EQUIPMENT
+  FURNITURE
+  OTHER
+
+  @@schema("assets")
+}
+
+enum AssetType {
+  LAPTOP
+  DESKTOP
+  MONITOR
+  PHONE
+  TABLET
+  DOCK
+  KEYBOARD
+  MOUSE
+  PRINTER
+  OTHER
+
+  @@schema("assets")
+}
+
+enum AssetAssignmentType {
+  ISSUE
+  TRANSFER
+  RETURN
+  OFFBOARDING
+  LOAN
+  REPLACEMENT
+  OFFICE
+
+  @@schema("assets")
+}
+
+enum AssetDocumentKind {
+  RECEIPT
+  PHOTO
+  HANDOVER
+  OTHER
+
+  @@schema("assets")
+}
+
+/// One identifiable company-controlled item (laptop, phone, etc.).
+model Asset {
+  id                   String         @id @default(cuid())
+  organizationId       String
+  assetNumber          String
+  assetTag             String?
+  category             AssetCategory  @default(COMPUTER_EQUIPMENT)
+  assetType            AssetType      @default(LAPTOP)
+  manufacturer         String?
+  modelName            String?
+  /// Hostname / network / device name (laptops, printers, switches, etc.).
+  computerName         String?
+  serialNumber         String?
+  description          String?
+  status               AssetStatus    @default(AVAILABLE)
+  condition            AssetCondition @default(GOOD)
+  purchaseDate         DateTime?      @db.Date
+  receivedDate         DateTime?      @db.Date
+  purchaseCost         Decimal?       @db.Decimal(14, 2)
+  currencyCode         String         @default("TTD")
+  warrantyEndsOn       DateTime?      @db.Date
+  notes                String?
+  assignedEmployeeId   String?
+  locationId           String?
+  /// Parent in a kit (e.g. desktop). Children point here (e.g. monitor).
+  parentAssetId        String?
+  archivedAt           DateTime?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  organization     Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignedEmployee Employee?         @relation("AssetCurrentAssignee", fields: [assignedEmployeeId], references: [id], onDelete: SetNull)
+  location         Location?         @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  parentAsset      Asset?            @relation("AssetKit", fields: [parentAssetId], references: [id], onDelete: SetNull)
+  childAssets      Asset[]           @relation("AssetKit")
+  assignments      AssetAssignment[]
+  documents        AssetDocument[]
+
+  @@unique([organizationId, assetNumber])
+  @@unique([organizationId, serialNumber])
+  @@index([organizationId, status])
+  @@index([organizationId, assetType])
+  @@index([organizationId, warrantyEndsOn])
+  @@index([assignedEmployeeId])
+  @@index([locationId])
+  @@index([parentAssetId])
+  @@map("assets")
+  @@schema("assets")
+}
+
+/// Custody timeline — one open assignment (returnedAt null) per asset.
+/// Custodian is either an employee or an office/location (not both).
+model AssetAssignment {
+  id               String              @id @default(cuid())
+  organizationId   String
+  assetId          String
+  employeeId       String?
+  locationId       String?
+  assignmentType   AssetAssignmentType @default(ISSUE)
+  assignedAt       DateTime            @default(now())
+  expectedReturnAt DateTime?
+  returnedAt       DateTime?
+  conditionAtIssue AssetCondition?
+  conditionAtReturn AssetCondition?
+  notes            String?
+  assignedByUserId String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  asset        Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  employee     Employee?    @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  location     Location?    @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  assignedBy   User?        @relation("AssetAssignmentAssignedBy", fields: [assignedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, assetId, returnedAt])
+  @@index([employeeId, returnedAt])
+  @@index([locationId, returnedAt])
+  @@index([assetId, assignedAt])
+  @@map("asset_assignments")
+  @@schema("assets")
+}
+
+model AssetDocument {
+  id               String            @id @default(cuid())
+  organizationId   String
+  assetId          String
+  storedFileId     String
+  kind             AssetDocumentKind @default(OTHER)
+  notes            String?
+  uploadedByUserId String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  asset        Asset        @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  storedFile   StoredFile   @relation(fields: [storedFileId], references: [id], onDelete: Restrict)
+  uploadedBy   User?        @relation("AssetDocumentUploader", fields: [uploadedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, assetId])
+  @@index([storedFileId])
+  @@map("asset_documents")
+  @@schema("assets")
 }

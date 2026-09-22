@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useActionState, useEffect, useMemo, useState } from "react";
-import { Save, UserRound } from "lucide-react";
+import { Save, UserRound, Users } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { FormPageActions } from "@/src/components/layout/page-actions";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { cn } from "@/lib/utils";
 import { ageFromDateOfBirth } from "@/src/lib/age";
 import {
   createEmployee,
@@ -23,13 +24,17 @@ import type {
   EmployeeFormRecord,
 } from "@/src/modules/hr/data/get-employee-form-data";
 import {
+  BOARD_MEMBER_UI,
   isFullEmployee,
+  WorkforceCategory,
   WORKFORCE_CATEGORY_OPTIONS,
 } from "@/src/modules/hr/lib/workforce-category";
 
 type EmployeeFormProps = {
   employee?: EmployeeFormRecord;
   departments: EmployeeFormDepartment[];
+  /** Prefill workforce category on create (e.g. BOARD from ?category=). */
+  initialWorkforceCategory?: string;
 };
 
 const initialState: EmployeeFormState = {
@@ -37,7 +42,24 @@ const initialState: EmployeeFormState = {
   message: "",
 };
 
-export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
+function resolveInitialCategory(
+  employee: EmployeeFormRecord | undefined,
+  initialWorkforceCategory: string | undefined,
+): string {
+  if (employee?.workforceCategory) {
+    return employee.workforceCategory;
+  }
+  const match = WORKFORCE_CATEGORY_OPTIONS.find(
+    (option) => option.value === initialWorkforceCategory,
+  );
+  return match?.value ?? WorkforceCategory.EMPLOYEE;
+}
+
+export function EmployeeForm({
+  employee,
+  departments,
+  initialWorkforceCategory,
+}: EmployeeFormProps) {
   const action = employee ? updateEmployee : createEmployee;
   const [state, formAction, pending] = useActionState(action, initialState);
 
@@ -48,9 +70,13 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
     employee?.dateOfBirth ?? "",
   );
   const [workforceCategory, setWorkforceCategory] = useState(
-    employee?.workforceCategory ?? "EMPLOYEE",
+    resolveInitialCategory(employee, initialWorkforceCategory),
   );
   const showOrgAssignment = isFullEmployee(workforceCategory);
+  const boardMode = workforceCategory === WorkforceCategory.BOARD;
+  /** Existing board payees keep category locked; create flow always allows switching. */
+  const lockBoardCategory =
+    employee?.workforceCategory === WorkforceCategory.BOARD;
 
   const positions = useMemo(
     () =>
@@ -84,8 +110,19 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
           }
           description={
             employee
-              ? `Manage ${employee.employeeNumber}.`
-              : "Create a workforce profile. Personal email becomes their login for self-service."
+              ? boardMode
+                ? "Manage board payee and contact details."
+                : `Manage ${employee.employeeNumber}.`
+              : "Create an employee or payee (agent, board, contractor). Choose the workforce category below. Personal email becomes their login for self-service."
+          }
+          icon={boardMode ? Users : undefined}
+          titleAccentClassName={boardMode ? BOARD_MEMBER_UI.headerBand : undefined}
+          badge={
+            boardMode && !employee ? (
+              <Badge variant="outline" className={BOARD_MEMBER_UI.badge}>
+                Board member
+              </Badge>
+            ) : undefined
           }
           backHref={employee ? `/people/employees/${employee.id}` : "/people"}
           backLabel={employee ? "Profile" : "People"}
@@ -108,7 +145,11 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
                   Job description
                 </Button>
               ) : null}
-              <Button type="submit" disabled={pending}>
+              <Button
+                type="submit"
+                disabled={pending}
+                className={boardMode ? BOARD_MEMBER_UI.button : undefined}
+              >
                 <Save />
                 {pending ? "Saving…" : employee ? "Save" : "Create"}
               </Button>
@@ -123,12 +164,22 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
 
             <div className="flex flex-wrap items-center gap-2">
               <UserRound className="size-4 text-muted-foreground" />
-              <span className="font-mono text-sm font-medium">
-                {employee.employeeNumber}
-              </span>
-              <Badge variant="outline">
-                {employee.employmentStatus.replaceAll("_", " ").toLowerCase()}
-              </Badge>
+              {boardMode ? (
+                <Badge variant="outline" className={BOARD_MEMBER_UI.badge}>
+                  Board member
+                </Badge>
+              ) : (
+                <>
+                  <span className="font-mono text-sm font-medium">
+                    {employee.employeeNumber}
+                  </span>
+                  <Badge variant="outline">
+                    {employee.employmentStatus
+                      .replaceAll("_", " ")
+                      .toLowerCase()}
+                  </Badge>
+                </>
+              )}
             </div>
           </>
         )}
@@ -262,59 +313,65 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               />
             </div>
 
-            <div>
-              <label
-                htmlFor="emergencyContactName"
-                className="text-sm font-medium"
-              >
-                Emergency contact name
-              </label>
-              <Input
-                id="emergencyContactName"
-                name="emergencyContactName"
-                defaultValue={employee?.emergencyContactName ?? ""}
-                className="mt-2"
-                autoComplete="name"
-              />
-            </div>
+            {!boardMode ? (
+              <>
+                <div>
+                  <label
+                    htmlFor="emergencyContactName"
+                    className="text-sm font-medium"
+                  >
+                    Emergency contact name
+                  </label>
+                  <Input
+                    id="emergencyContactName"
+                    name="emergencyContactName"
+                    defaultValue={employee?.emergencyContactName ?? ""}
+                    className="mt-2"
+                    autoComplete="name"
+                  />
+                </div>
 
-            <div>
-              <label
-                htmlFor="emergencyContactPhone"
-                className="text-sm font-medium"
-              >
-                Emergency contact phone
-              </label>
-              <Input
-                id="emergencyContactPhone"
-                name="emergencyContactPhone"
-                type="tel"
-                defaultValue={employee?.emergencyContactPhone ?? ""}
-                className="mt-2"
-                autoComplete="tel"
-              />
-            </div>
+                <div>
+                  <label
+                    htmlFor="emergencyContactPhone"
+                    className="text-sm font-medium"
+                  >
+                    Emergency contact phone
+                  </label>
+                  <Input
+                    id="emergencyContactPhone"
+                    name="emergencyContactPhone"
+                    type="tel"
+                    defaultValue={employee?.emergencyContactPhone ?? ""}
+                    className="mt-2"
+                    autoComplete="tel"
+                  />
+                </div>
 
-            <div>
-              <label
-                htmlFor="emergencyContactRelationship"
-                className="text-sm font-medium"
-              >
-                Emergency contact relationship
-              </label>
-              <Input
-                id="emergencyContactRelationship"
-                name="emergencyContactRelationship"
-                defaultValue={employee?.emergencyContactRelationship ?? ""}
-                placeholder="e.g. Spouse, Parent"
-                className="mt-2"
-              />
-            </div>
+                <div>
+                  <label
+                    htmlFor="emergencyContactRelationship"
+                    className="text-sm font-medium"
+                  >
+                    Emergency contact relationship
+                  </label>
+                  <Input
+                    id="emergencyContactRelationship"
+                    name="emergencyContactRelationship"
+                    defaultValue={
+                      employee?.emergencyContactRelationship ?? ""
+                    }
+                    placeholder="e.g. Spouse, Parent"
+                    className="mt-2"
+                  />
+                </div>
+              </>
+            ) : null}
 
             <div>
               <label htmlFor="personalEmail" className="text-sm font-medium">
                 Personal email
-                {!employee ? (
+                {!employee && !boardMode ? (
                   <span className="text-destructive"> *</span>
                 ) : null}
               </label>
@@ -324,13 +381,13 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
                 type="email"
                 defaultValue={employee?.personalEmail ?? ""}
                 className="mt-2"
-                required={!employee}
+                required={!employee && !boardMode}
                 autoComplete="email"
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                Used as the login email for this person&apos;s account. They get
-                self-service access only (profile and payslips); broader roles
-                are assigned later under Administration → Access.
+                {boardMode
+                  ? "Optional. Only needed if this board member should log in for self-service."
+                  : "Used as the login email for this person's account. They get self-service access only (profile and payslips); broader roles are assigned later under Administration → Access."}
               </p>
               {state.fieldErrors?.personalEmail && (
                 <p className="mt-1 text-xs text-destructive">
@@ -422,46 +479,54 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
 
         <section>
           <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
-            Workforce details
+            {boardMode ? "Board engagement" : "Workforce details"}
           </h2>
 
           <div className="grid gap-5 md:grid-cols-2">
-            <div>
-              <label
-                htmlFor="workforceCategory"
-                className="text-sm font-medium"
-              >
-                Workforce category
-              </label>
-              <select
-                id="workforceCategory"
+            {lockBoardCategory ? (
+              <input
+                type="hidden"
                 name="workforceCategory"
-                value={workforceCategory}
-                onChange={(event) => {
-                  setWorkforceCategory(event.target.value);
-                  if (!isFullEmployee(event.target.value)) {
-                    setDepartmentId("");
-                  }
-                }}
-                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-                required
-              >
-                {WORKFORCE_CATEGORY_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Agents, board members, and contractors are payees with
-                time-bounded contracts. They do not get an employee file.
-              </p>
-              {state.fieldErrors?.workforceCategory && (
-                <p className="mt-1 text-xs text-destructive">
-                  {state.fieldErrors.workforceCategory}
+                value={WorkforceCategory.BOARD}
+              />
+            ) : (
+              <div>
+                <label
+                  htmlFor="workforceCategory"
+                  className="text-sm font-medium"
+                >
+                  Workforce category
+                </label>
+                <select
+                  id="workforceCategory"
+                  name="workforceCategory"
+                  value={workforceCategory}
+                  onChange={(event) => {
+                    setWorkforceCategory(event.target.value);
+                    if (!isFullEmployee(event.target.value)) {
+                      setDepartmentId("");
+                    }
+                  }}
+                  className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+                  required
+                >
+                  {WORKFORCE_CATEGORY_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Agents, board members, and contractors are payees with
+                  time-bounded contracts. They do not get an employee file.
                 </p>
-              )}
-            </div>
+                {state.fieldErrors?.workforceCategory && (
+                  <p className="mt-1 text-xs text-destructive">
+                    {state.fieldErrors.workforceCategory}
+                  </p>
+                )}
+              </div>
+            )}
 
             <div>
               <label htmlFor="workEmail" className="text-sm font-medium">
@@ -485,52 +550,79 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               )}
             </div>
 
-            <div>
-              <label htmlFor="employmentType" className="text-sm font-medium">
-                Employment type
-              </label>
-              <select
-                id="employmentType"
-                name="employmentType"
-                defaultValue={
-                  employee?.employmentType ??
-                  (showOrgAssignment ? "PERMANENT" : "CONSULTANT")
-                }
-                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-                required
-              >
-                <option value="PERMANENT">Permanent</option>
-                <option value="CONTRACT">Contract</option>
-                <option value="TEMPORARY">Temporary</option>
-                <option value="PART_TIME">Part time</option>
-                <option value="INTERN">Intern</option>
-                <option value="CONSULTANT">Consultant</option>
-              </select>
-            </div>
+            {boardMode ? (
+              <>
+                <input
+                  type="hidden"
+                  name="employmentType"
+                  value={employee?.employmentType ?? "CONSULTANT"}
+                />
+                <input
+                  type="hidden"
+                  name="employmentStatus"
+                  value={employee?.employmentStatus ?? "ACTIVE"}
+                />
+              </>
+            ) : (
+              <>
+                <div>
+                  <label
+                    htmlFor="employmentType"
+                    className="text-sm font-medium"
+                  >
+                    Employment type
+                  </label>
+                  <select
+                    id="employmentType"
+                    name="employmentType"
+                    defaultValue={
+                      employee?.employmentType ??
+                      (showOrgAssignment ? "PERMANENT" : "CONSULTANT")
+                    }
+                    className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+                    required
+                  >
+                    <option value="PERMANENT">Permanent</option>
+                    <option value="CONTRACT">Contract</option>
+                    <option value="TEMPORARY">Temporary</option>
+                    <option value="PART_TIME">Part time</option>
+                    <option value="INTERN">Intern</option>
+                    <option value="CONSULTANT">Consultant</option>
+                  </select>
+                </div>
 
-            <div>
-              <label htmlFor="employmentStatus" className="text-sm font-medium">
-                Status
-              </label>
-              <select
-                id="employmentStatus"
-                name="employmentStatus"
-                defaultValue={employee?.employmentStatus ?? "ACTIVE"}
-                className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
-                required
-              >
-                <option value="ACTIVE">Active</option>
-                <option value="ON_LEAVE">On leave</option>
-                <option value="SUSPENDED">Suspended</option>
-                <option value="TERMINATED">Terminated</option>
-                <option value="RETIRED">Retired</option>
-                <option value="INACTIVE">Inactive</option>
-              </select>
-            </div>
+                <div>
+                  <label
+                    htmlFor="employmentStatus"
+                    className="text-sm font-medium"
+                  >
+                    Status
+                  </label>
+                  <select
+                    id="employmentStatus"
+                    name="employmentStatus"
+                    defaultValue={employee?.employmentStatus ?? "ACTIVE"}
+                    className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
+                    required
+                  >
+                    <option value="ACTIVE">Active</option>
+                    <option value="ON_LEAVE">On leave</option>
+                    <option value="SUSPENDED">Suspended</option>
+                    <option value="TERMINATED">Terminated</option>
+                    <option value="RETIRED">Retired</option>
+                    <option value="INACTIVE">Inactive</option>
+                  </select>
+                </div>
+              </>
+            )}
 
             <div>
               <label htmlFor="hireDate" className="text-sm font-medium">
-                {showOrgAssignment ? "Hire date" : "Engagement start"}
+                {boardMode
+                  ? "Board appointment start"
+                  : showOrgAssignment
+                    ? "Hire date"
+                    : "Engagement start"}
               </label>
               <Input
                 id="hireDate"
@@ -547,7 +639,7 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               )}
             </div>
 
-            {employee ? (
+            {employee && !boardMode ? (
               <div>
                 <label
                   htmlFor="terminationDate"
@@ -573,6 +665,14 @@ export function EmployeeForm({ employee, departments }: EmployeeFormProps) {
               </div>
             ) : null}
           </div>
+          {boardMode ? (
+            <p className="mt-4 text-xs text-muted-foreground">
+              An internal payee reference is generated automatically and kept
+              out of this form. Add the board role and appointment end on the
+              engagement contract, then complete Payroll setup for fees,
+              statutory treatment, and banking.
+            </p>
+          ) : null}
         </section>
 
         {!employee && showOrgAssignment ? (

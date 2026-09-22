@@ -35,8 +35,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { StickyEntityContext } from "@/src/components/layout/sticky-entity-context";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { payRunStatusBadgeVariant, payslipStatusBadgeVariant } from "@/src/config/ui-colors";
+import { UI_TYPOGRAPHY } from "@/src/config/ui-typography";
 import {
   addPayrollLineItem,
   closePayRun,
@@ -48,7 +50,6 @@ import {
   recalculateDraftPayRun,
   reconcilePayRun,
   reincludePayslipInPayRun,
-  releasePayRunPayslips,
   type PayRunFormState,
 } from "@/src/modules/payroll/actions/manage-pay-run";
 import type {
@@ -62,11 +63,10 @@ import {
   canPostPayRun,
   canRecalculatePayRun,
   canReconcilePayRun,
-  isPayRunEditable,
   isPayRunPosted,
   payRunStatusLabel,
 } from "@/src/modules/payroll/lib/pay-run-lifecycle";
-import { canReleasePayRunPayslips } from "@/src/modules/payroll/lib/payslip-release";
+import { payRunEntityTabs } from "@/src/modules/payroll/lib/pay-run-entity-tabs";
 import {
   correctionCodeForKind,
   defaultAdjustmentLabel,
@@ -82,7 +82,6 @@ import {
   formatMoney,
 } from "@/src/lib/format";
 import { PayrollNav } from "./payroll-nav";
-import { ReportDownloadButton } from "@/src/modules/reports/components/report-download-button";
 
 const initialState: PayRunFormState = {
   status: "idle",
@@ -314,44 +313,6 @@ function DeletePayRunButton({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-}
-
-function ReleasePayslipsButton({
-  payRunId,
-  unreleasedCount,
-}: {
-  payRunId: string;
-  unreleasedCount: number;
-}) {
-  const [state, formAction, pending] = useActionState(
-    releasePayRunPayslips,
-    initialState,
-  );
-
-  useEffect(() => {
-    if (state.status === "error") {
-      toast.error(state.message);
-    }
-    if (state.status === "success" && state.message) {
-      toast.success(state.message);
-    }
-  }, [state]);
-
-  const disabled = pending || unreleasedCount === 0;
-
-  return (
-    <form action={formAction}>
-      <input type="hidden" name="payRunId" value={payRunId} />
-      <Button type="submit" variant="outline" disabled={disabled}>
-        <FileText />
-        {pending
-          ? "Releasing…"
-          : unreleasedCount === 0
-            ? "Payslips released"
-            : "Release & email payslips"}
-      </Button>
-    </form>
   );
 }
 
@@ -913,6 +874,11 @@ function AdvancedLineItemsForm({
     initialState,
   );
   const [formKey, setFormKey] = useState(0);
+  const [lineType, setLineType] = useState<"EARNING" | "DEDUCTION">("DEDUCTION");
+  const [code, setCode] = useState(
+    includeCorrectionCodes ? "CORRECTION_DEDUCTION" : "OTHER_DEDUCTION",
+  );
+  const [label, setLabel] = useState("");
 
   useEffect(() => {
     if (state.status === "error") {
@@ -921,8 +887,23 @@ function AdvancedLineItemsForm({
     if (state.status === "success" && state.message) {
       toast.success(state.message);
       setFormKey((key) => key + 1);
+      setLineType("DEDUCTION");
+      setCode(
+        includeCorrectionCodes ? "CORRECTION_DEDUCTION" : "OTHER_DEDUCTION",
+      );
+      setLabel("");
     }
-  }, [state]);
+  }, [state, includeCorrectionCodes]);
+
+  function applyStatutoryCatchUpPreset(
+    statutoryLabel: "NIS (employee)" | "PAYE (income tax)",
+  ) {
+    setLineType("DEDUCTION");
+    setCode(
+      includeCorrectionCodes ? "CORRECTION_DEDUCTION" : "OTHER_DEDUCTION",
+    );
+    setLabel(statutoryLabel);
+  }
 
   return (
     <form
@@ -932,12 +913,37 @@ function AdvancedLineItemsForm({
     >
       <input type="hidden" name="payRunId" value={runId} />
       <input type="hidden" name="payslipId" value={slip.id} />
+      <div className="md:col-span-6 flex flex-wrap items-center gap-2">
+        <p className="text-xs text-muted-foreground">
+          Prior-month NIS/PAYE catch-up — use exact labels (positive = recover,
+          negative = refund):
+        </p>
+        <Button
+          type="button"
+          size="xs"
+          variant="outline"
+          onClick={() => applyStatutoryCatchUpPreset("NIS (employee)")}
+        >
+          NIS catch-up
+        </Button>
+        <Button
+          type="button"
+          size="xs"
+          variant="outline"
+          onClick={() => applyStatutoryCatchUpPreset("PAYE (income tax)")}
+        >
+          PAYE catch-up
+        </Button>
+      </div>
       <label className="grid gap-1 text-xs">
         <span className="text-muted-foreground">Type</span>
         <select
           name="lineType"
           className="h-9 rounded-md border border-input bg-background px-2"
-          defaultValue="EARNING"
+          value={lineType}
+          onChange={(event) =>
+            setLineType(event.target.value as "EARNING" | "DEDUCTION")
+          }
         >
           <option value="EARNING">Earning</option>
           <option value="DEDUCTION">Deduction</option>
@@ -948,7 +954,8 @@ function AdvancedLineItemsForm({
         <select
           name="code"
           className="h-9 rounded-md border border-input bg-background px-2"
-          defaultValue="OVERTIME"
+          value={code}
+          onChange={(event) => setCode(event.target.value)}
         >
           {includeCorrectionCodes ? (
             <>
@@ -969,6 +976,8 @@ function AdvancedLineItemsForm({
         <span className="text-muted-foreground">Label</span>
         <input
           name="label"
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
           className="h-9 rounded-md border border-input bg-background px-2"
           placeholder="e.g. July overtime"
           required
@@ -1217,7 +1226,7 @@ function CorrectionDeltaPanel({
   );
 }
 
-function PayslipRow({
+export function PayRunPayslipRow({
   runId,
   slip,
   canEdit,
@@ -1313,17 +1322,17 @@ function PayslipRow({
               render={<Link href={slip.printHref} />}
             >
               <Printer />
-              Print
+              Print · Letter
             </Button>
             {isPosted ? (
               <Button
                 nativeButton={false}
                 size="sm"
                 variant="outline"
-                render={<Link href={`${slip.viewHref}/pdf`} />}
+                render={<a href={`${slip.viewHref}/pdf`} download />}
               >
                 <FileDown />
-                PDF
+                PDF · Letter
               </Button>
             ) : null}
             {canEdit ? (
@@ -1453,25 +1462,41 @@ export function PayRunDetailView({
 
   const isPosted = isPayRunPosted(run.status);
   const isApproved = run.status === "APPROVED";
-  const canEdit = canManage && isPayRunEditable(run.status);
   const isSupplemental = isSupplementalPayRunKind(run.runKind);
   const unexplainedVarianceCount = run.varianceFlags.length;
-  const included = run.payslips.filter((slip) => !slip.isExcluded);
-  const excluded = run.payslips.filter((slip) => slip.isExcluded);
   const kindSuffix =
     run.runKind === "CORRECTION"
       ? " · Correction"
       : run.runKind === "OFF_CYCLE"
         ? " · Off-cycle"
         : "";
+  const groupSuffix = run.payeeGroupLabel ? ` · ${run.payeeGroupLabel}` : "";
   const employeeSummary =
     run.excludedCount > 0
-      ? `${run.period.name}${kindSuffix} · ${run.employeeCount} included · ${run.excludedCount} excluded`
-      : `${run.period.name}${kindSuffix} · ${run.employeeCount} employees`;
+      ? `${run.period.name}${kindSuffix}${groupSuffix} · ${run.employeeCount} included · ${run.excludedCount} excluded`
+      : `${run.period.name}${kindSuffix}${groupSuffix} · ${run.employeeCount} people`;
 
   return (
     <PageShell size="lg">
       <PayrollNav />
+
+      <StickyEntityContext
+        title={run.runNumber}
+        meta={employeeSummary}
+        badge={
+          <Badge variant={payRunStatusBadgeVariant(run.status)}>
+            {isPosted ? (
+              <>
+                <CircleCheck />
+                {payRunStatusLabel(run.status)}
+              </>
+            ) : (
+              payRunStatusLabel(run.status)
+            )}
+          </Badge>
+        }
+        tabs={[...payRunEntityTabs(run.id, "overview")]}
+      />
 
       <PageHeader
         title={`Pay run ${run.runNumber}`}
@@ -1480,51 +1505,8 @@ export function PayRunDetailView({
         backLabel="Pay runs"
         actions={
           <PageActionsEnd>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link href={`/payroll/runs/${run.id}/paysheet`} />
-              }
-            >
-              <FileText />
-              View paysheet
-            </Button>
-            <Button
-              nativeButton={false}
-              variant="outline"
-              render={
-                <Link
-                  href={`/payroll/runs/${run.id}/paysheet/print`}
-                  target="_blank"
-                />
-              }
-            >
-              <Printer />
-              Print paysheet
-            </Button>
-            <ReportDownloadButton
-              href={`/payroll/runs/${run.id}/paysheet/export?format=xlsx`}
-              label="Download Excel"
-            />
             {isPosted ? (
               <>
-                <Button
-                  nativeButton={false}
-                  variant="outline"
-                  render={<Link href={`/payroll/runs/${run.id}/print`} />}
-                >
-                  <Printer />
-                  Batch print slips
-                </Button>
-                <Button
-                  nativeButton={false}
-                  variant="outline"
-                  render={<Link href={`/payroll/runs/${run.id}/pdf`} />}
-                >
-                  <FileDown />
-                  Download all PDFs
-                </Button>
                 <Button
                   nativeButton={false}
                   variant="outline"
@@ -1560,12 +1542,6 @@ export function PayRunDetailView({
                       Download Excel (bank entry)
                     </Button>
                   </>
-                ) : null}
-                {canManage && canReleasePayRunPayslips(run.status) ? (
-                  <ReleasePayslipsButton
-                    payRunId={run.id}
-                    unreleasedCount={run.releaseSummary.unreleasedCount}
-                  />
                 ) : null}
                 {canManage ? (
                   <>
@@ -1683,37 +1659,37 @@ export function PayRunDetailView({
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Gross</p>
-          <p className="mt-1 text-lg font-semibold tabular-nums">
+          <p className={`mt-1 ${UI_TYPOGRAPHY.moneyValue}`}>
             {run.totalGross}
           </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">PAYE</p>
-          <p className="mt-1 text-lg font-semibold tabular-nums">
+          <p className={`mt-1 ${UI_TYPOGRAPHY.moneyValue}`}>
             {run.totalPaye}
           </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">NIS (employee)</p>
-          <p className="mt-1 text-lg font-semibold tabular-nums">
+          <p className={`mt-1 ${UI_TYPOGRAPHY.moneyValue}`}>
             {run.totalNisEmployee}
           </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Health Surcharge</p>
-          <p className="mt-1 text-lg font-semibold tabular-nums">
+          <p className={`mt-1 ${UI_TYPOGRAPHY.moneyValue}`}>
             {run.totalHealthSurcharge}
           </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Total deductions</p>
-          <p className="mt-1 text-lg font-semibold tabular-nums">
+          <p className={`mt-1 ${UI_TYPOGRAPHY.moneyValue}`}>
             {run.totalDeductions}
           </p>
         </div>
         <div>
           <p className="text-xs text-muted-foreground">Net</p>
-          <p className="mt-1 text-lg font-semibold tabular-nums">
+          <p className={`mt-1 ${UI_TYPOGRAPHY.moneyHero}`}>
             {run.totalNet}
           </p>
         </div>
@@ -1756,10 +1732,22 @@ export function PayRunDetailView({
               )}
             </div>
             {run.releaseSummary.unreleasedCount > 0 ? (
-              <p className="max-w-md text-xs text-muted-foreground">
-                Release opens self-service access and queues absolute secure
-                links. Process the email queue to send.
-              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="max-w-md text-xs text-muted-foreground">
+                  Release opens self-service access and queues absolute secure
+                  links. Process the email queue to send.
+                </p>
+                <Button
+                  nativeButton={false}
+                  size="sm"
+                  variant="outline"
+                  render={
+                    <Link href={`/payroll/runs/${run.id}/payslips`} />
+                  }
+                >
+                  Open payslips
+                </Button>
+              </div>
             ) : null}
           </div>
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border/40 pt-3">
@@ -1947,55 +1935,6 @@ export function PayRunDetailView({
       )}
 
       <ExceptionsPanel flags={run.varianceFlags} currency={run.currency} />
-
-      <section className="mt-10">
-        <div className="mb-4 flex items-center gap-2">
-          <Wallet className="size-4 text-muted-foreground" />
-          <SectionHeading>Payslips</SectionHeading>
-        </div>
-
-        {included.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">
-            No included employees in this run.
-          </p>
-        ) : (
-          <div className="divide-y divide-border/70">
-            {included.map((slip) => (
-              <PayslipRow
-                key={slip.id}
-                runId={run.id}
-                slip={slip}
-                canEdit={canEdit}
-                isPosted={isPosted}
-                runKind={run.runKind}
-                currency={run.currency}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {excluded.length > 0 ? (
-        <section className="mt-10">
-          <div className="mb-4 flex items-center gap-2">
-            <UserX className="size-4 text-muted-foreground" />
-            <SectionHeading>Excluded from this run</SectionHeading>
-          </div>
-          <div className="divide-y divide-border/70">
-            {excluded.map((slip) => (
-              <PayslipRow
-                key={slip.id}
-                runId={run.id}
-                slip={slip}
-                canEdit={canEdit}
-                isPosted={isPosted}
-                runKind={run.runKind}
-                currency={run.currency}
-              />
-            ))}
-          </div>
-        </section>
-      ) : null}
 
       {isPosted ? (
         <section className="mt-10 rounded-lg border border-border/70 bg-muted/15 p-4 text-xs text-muted-foreground">

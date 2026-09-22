@@ -12,6 +12,7 @@ import {
   UPLOADS_ROOT,
 } from "@/src/lib/stored-file";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
+import { resolveActorOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import {
   resolveBankExportAdapter,
   type BankExportDetailLine,
@@ -114,8 +115,15 @@ export async function createAchPaymentBatch(input: {
     };
   }
 
-  const run = await prisma.payRun.findUnique({
-    where: { id: input.payRunId },
+  const organizationId = await resolveActorOrganizationId({
+    actorUserId: input.actorUserId,
+  });
+  if (!organizationId) {
+    return { ok: false, error: "No organization is associated with this user." };
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: input.payRunId, organizationId },
     include: {
       payrollPeriod: { select: { periodEnd: true, periodKey: true, name: true } },
       payrollPayments: {
@@ -266,16 +274,31 @@ export async function createAchPaymentBatch(input: {
             },
             orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
           })
-        : await prisma.bankExportProfile.findFirst({
+        : // Prefer NACHA type-6 import file, then worksheet / generic CSV.
+          ((await prisma.bankExportProfile.findFirst({
             where: {
               organizationId: run.organizationId,
               isActive: true,
-              adapterKind: {
-                in: ["GENERIC_CSV", "FIRST_CITIZENS_MANUAL_WORKSHEET"],
-              },
+              OR: [
+                { code: "FCB_IMPORT" },
+                { adapterKind: "FIRST_CITIZENS_IMPORT" },
+              ],
             },
             orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
-          });
+          })) ??
+            (await prisma.bankExportProfile.findFirst({
+              where: {
+                organizationId: run.organizationId,
+                isActive: true,
+                adapterKind: {
+                  in: [
+                    "FIRST_CITIZENS_MANUAL_WORKSHEET",
+                    "GENERIC_CSV",
+                  ],
+                },
+              },
+              orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
+            })));
 
   if (!profile) {
     return {
@@ -350,7 +373,13 @@ export async function createAchPaymentBatch(input: {
   let invalidBankOrAccountTypeCount = 0;
 
   if (fcbConfig) {
-    if (!fcbConfig.balanceAccountMasked?.trim()) {
+    const isNachaImport = profile.adapterKind === "FIRST_CITIZENS_IMPORT";
+    if (isNachaImport) {
+      // FCB_TT_LEGACY_NACHA_NO_HEADER_V1 uses FCB_ACH_SALARY_YYYYMMDD.txt —
+      // Company ACH ID is optional (legacy FCB_Payroll_{id}_* filenames only).
+      // importFileDisabled was the old "Default Transactions unconfirmed" kill
+      // switch; legacy no-header export is gated by ACH feature settings instead.
+    } else if (!fcbConfig.balanceAccountMasked?.trim()) {
       fcbIssues.push({
         severity: "blocking",
         code: "FCB_BALANCE_ACCOUNT",
@@ -385,13 +414,18 @@ export async function createAchPaymentBatch(input: {
       const paymentType = resolveFirstCitizensPaymentType({
         accountType: bank?.accountType ?? allocation.accountType,
       });
-      if (!individualName.trim() || !aba || !paymentType) {
+      const abaOk = isNachaImport
+        ? Boolean(fcbModule.normalizeNachaAbaNumber(aba))
+        : Boolean(aba);
+      if (!individualName.trim() || !abaOk || !paymentType) {
         invalidBankOrAccountTypeCount += 1;
         fcbIssues.push({
           severity: "blocking",
           code: "FCB_ROW",
           employeeNumber: payment.payslip.employeeNumber,
-          message: `Employee ${payment.payslip.employeeNumber} is missing ACH fields (Individual Name, ABA/institution, or Savings/Chequing type).`,
+          message: isNachaImport
+            ? `Employee ${payment.payslip.employeeNumber} needs Individual Name, a 9-digit ABA/routing number, and Savings/Chequing type.`
+            : `Employee ${payment.payslip.employeeNumber} is missing ACH fields (Individual Name, ABA/institution, or Savings/Chequing type).`,
         });
       }
     }
@@ -432,6 +466,10 @@ export async function createAchPaymentBatch(input: {
     };
   }
 
+  // Legacy no-header V1 is the production export path. Profile.importFileDisabled
+  // remains available as an emergency kill switch for Default Transactions only —
+  // it must not block FCB_ACH_SALARY_* generation once ACH export is enabled.
+
   const initialStatus = !readiness.readyForApproval
     ? "VALIDATION_FAILED"
     : approvalRequired &&
@@ -440,14 +478,6 @@ export async function createAchPaymentBatch(input: {
       ? "PENDING_APPROVAL"
       : "READY_FOR_APPROVAL";
   const now = new Date();
-
-  if (profile.adapterKind === "FIRST_CITIZENS_IMPORT") {
-    return {
-      ok: false,
-      error:
-        "First Citizens import file profile is disabled until the bank confirms the file layout. Use the First Citizens manual-entry worksheet instead.",
-    };
-  }
 
   const batch = await prisma.$transaction(async (tx) => {
     const created = await tx.achPaymentBatch.create({
@@ -462,6 +492,10 @@ export async function createAchPaymentBatch(input: {
         payrollNetTotal: new Prisma.Decimal(payrollDisbursementTotal.toFixed(2)),
         detailCount: available.length,
         effectivePaymentDate: run.payrollPeriod.periodEnd,
+        exportFormat:
+          profile.adapterKind === "FIRST_CITIZENS_IMPORT"
+            ? "FCB_TT_LEGACY_NACHA_NO_HEADER_V1"
+            : null,
         achType: fcbConfig?.achType ?? "PPD",
         purposeCode: fcbHeader?.purposeCode ?? null,
         entryDescription: fcbHeader?.entryDescription ?? null,
@@ -776,6 +810,8 @@ export async function generateAchPaymentBatchFile(input: {
     currencyCode: batch.currencyCode,
     details,
     configurationJson: resolvedConfig,
+    effectivePaymentDate:
+      batch.effectivePaymentDate ?? period.periodEnd ?? null,
   });
 
   if (!validation.ok) {
@@ -788,6 +824,8 @@ export async function generateAchPaymentBatchFile(input: {
     currencyCode: batch.currencyCode,
     details,
     configurationJson: resolvedConfig,
+    effectivePaymentDate:
+      batch.effectivePaymentDate ?? period.periodEnd ?? null,
   });
 
   if (

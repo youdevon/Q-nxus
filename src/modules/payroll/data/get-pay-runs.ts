@@ -13,6 +13,7 @@ import { isPayslipIncludedInRun } from "@/src/modules/payroll/lib/pay-run-member
 import { summarizePayslipDelivery } from "@/src/modules/payroll/lib/payslip-release";
 import { resolvePayrollOrganization } from "@/src/modules/payroll/lib/resolve-payroll-organization";
 import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
+import { payRunPayeeGroupLabel } from "@/src/modules/payroll/lib/pay-run-payee-group";
 import { extractStatutoryRemittanceRow } from "@/src/modules/payroll/lib/statutory-remittance";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
 import { roundToCents } from "@/src/modules/payroll/lib/money";
@@ -41,6 +42,8 @@ export type PayRunListItem = {
   runNumber: string;
   status: PayRunLifecycleStatusFilter;
   runKind: "REGULAR" | "CORRECTION" | "OFF_CYCLE";
+  payeeGroup: string | null;
+  payeeGroupLabel: string | null;
   currency: string;
   employeeCount: number;
   totalGross: string;
@@ -113,6 +116,8 @@ export type PayRunDetail = {
   runNumber: string;
   status: PayRunLifecycleStatusFilter;
   runKind: "REGULAR" | "CORRECTION" | "OFF_CYCLE";
+  payeeGroup: string | null;
+  payeeGroupLabel: string | null;
   sourcePayRunId: string | null;
   sourceRunNumber: string | null;
   currency: string;
@@ -209,6 +214,7 @@ export async function listPayRuns(options?: {
       runNumber: true,
       status: true,
       runKind: true,
+      payeeGroup: true,
       currency: true,
       employeeCount: true,
       totalGross: true,
@@ -232,6 +238,8 @@ export async function listPayRuns(options?: {
     runNumber: run.runNumber,
     status: run.status,
     runKind: run.runKind,
+    payeeGroup: run.payeeGroup,
+    payeeGroupLabel: payRunPayeeGroupLabel(run.payeeGroup),
     currency: run.currency,
     employeeCount: run.employeeCount,
     totalGross: formatMoney(Number(run.totalGross.toString())),
@@ -404,7 +412,10 @@ export async function getPayRunDetail(
           ORDER BY p."employeeId", pp."periodEnd" DESC
         `
       : Promise.resolve([] as Array<{ employeeId: string; netPay: Prisma.Decimal }>),
-    getPayrollReadiness({ includeFileCompleteness: false }),
+    getPayrollReadiness({
+      includeFileCompleteness: false,
+      employeeIds: includedEmployeeIds,
+    }),
   ]);
 
   const payrollWarningsByEmployee = new Map(
@@ -617,6 +628,8 @@ export async function getPayRunDetail(
     runNumber: run.runNumber,
     status: run.status,
     runKind: run.runKind,
+    payeeGroup: run.payeeGroup,
+    payeeGroupLabel: payRunPayeeGroupLabel(run.payeeGroup),
     sourcePayRunId: run.sourcePayRunId,
     sourceRunNumber: run.sourcePayRun?.runNumber ?? null,
     currency: run.currency,

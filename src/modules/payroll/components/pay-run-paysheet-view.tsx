@@ -8,10 +8,15 @@ import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { formatMoney } from "@/src/lib/format";
 import type { PayRunPaysheetData } from "@/src/modules/payroll/data/get-pay-run-paysheet";
 import { payRunStatusBadgeVariant } from "@/src/config/ui-colors";
+import { UI_TYPOGRAPHY } from "@/src/config/ui-typography";
+import { StickyEntityContext } from "@/src/components/layout/sticky-entity-context";
+import { payRunEntityTabs } from "@/src/modules/payroll/lib/pay-run-entity-tabs";
 import {
-  ReportExportLinks,
+  ReportCsvLink,
   ReportLayout,
+  ReportXlsxLink,
 } from "@/src/modules/reports/components/report-layout";
+import { PayrollNav } from "./payroll-nav";
 
 function money(amount: number, currency: string) {
   return formatMoney(amount, { currency });
@@ -82,20 +87,36 @@ export function PayRunPaysheetView({ data }: { data: PayRunPaysheetData }) {
       description={`${data.periodName} · ${kindLabel} · ${data.includedCount} employee${data.includedCount === 1 ? "" : "s"}`}
       backHref={`/payroll/runs/${data.payRunId}`}
       backLabel="Pay run"
+      beforeHeader={
+        <>
+          <PayrollNav />
+          <StickyEntityContext
+            title={data.runNumber}
+            meta={`${data.periodName} · ${kindLabel} · ${data.includedCount} employee${data.includedCount === 1 ? "" : "s"}`}
+            badge={
+              <Badge variant={payRunStatusBadgeVariant(data.status)}>
+                {data.statusLabel}
+              </Badge>
+            }
+            tabs={[...payRunEntityTabs(data.payRunId, "paysheet")]}
+          />
+        </>
+      }
       actions={
         <PageActionsEnd>
-          <Badge variant={payRunStatusBadgeVariant(data.status)}>
-            {data.statusLabel}
-          </Badge>
           <Button
             nativeButton={false}
             variant="outline"
             render={<Link href={`${base}/print`} target="_blank" />}
           >
             <Printer />
-            Print
+            Print paysheet
           </Button>
-          <ReportExportLinks href={`${base}/export`} />
+          <ReportCsvLink href={`${base}/export`} />
+          <ReportXlsxLink
+            href={`${base}/export?format=xlsx`}
+            label="Download Excel"
+          />
         </PageActionsEnd>
       }
     >
@@ -124,7 +145,7 @@ export function PayRunPaysheetView({ data }: { data: PayRunPaysheetData }) {
             >
               {item.label}
             </p>
-            <p className="mt-1 text-sm font-semibold tabular-nums">
+            <p className={`mt-1 ${UI_TYPOGRAPHY.moneyValue} ${item.label === "Net pay" ? UI_TYPOGRAPHY.moneyHero : ""}`}>
               {item.value}
             </p>
           </div>

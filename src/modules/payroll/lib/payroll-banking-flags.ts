@@ -51,7 +51,7 @@ export const PAYROLL_BANKING_FEATURE_DEFAULTS: ReadonlyArray<{
   {
     featureCode: PAYROLL_BANKING_FEATURE_FLAGS.ACH_EXPORT_ENABLED,
     isEnabled: false,
-    reason: "Phase 1 — ACH file export deferred.",
+    reason: "Off by default — enable from Payroll Settings when ready to export ACH files.",
   },
   {
     featureCode:

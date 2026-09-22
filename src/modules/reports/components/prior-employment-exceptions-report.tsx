@@ -58,7 +58,7 @@ export function PriorEmploymentExceptionsReportView({
             <ReportTableRow key={row.employeeId}>
               <ReportTableCell>
                 <Link
-                  href={`/payroll/employees/${row.employeeId}/prior-employment`}
+                  href={`/payroll/employees/${row.employeeId}#prior-employment-form`}
                   className="font-medium hover:underline"
                 >
                   {row.displayName}

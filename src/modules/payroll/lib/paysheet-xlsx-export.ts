@@ -1,4 +1,12 @@
 import type { PayRunPaysheetWorkbookData } from "@/src/modules/payroll/data/get-pay-run-paysheet";
+import {
+  applyXlsxTableColumnFonts,
+  estimateScaledXlsxColumnWidth,
+  XLSX_FONT,
+  XLSX_LAYOUT,
+  xlsxHeaderSectionFont,
+  xlsxTableFont,
+} from "@/src/lib/xlsx-typography";
 import { sanitizeReportFileName } from "@/src/modules/reports/lib/export-xlsx";
 
 /** Max contribution weeks shown as columns (Monday weeks in a month). */
@@ -43,26 +51,8 @@ const SHEET_THEMES = {
   },
 } as const;
 
-/** Visual scale for table cells — doubled for on-screen readability. */
-const CELL_SCALE = 2;
-
-const FONT = {
-  family: "Calibri",
-  /** Column headers, data rows, and totals. */
-  tableSize: 20,
-  /** Organization / title block above each sheet table. */
-  headerSectionSize: 24,
-} as const;
-
-const LAYOUT = {
-  dataRowHeight: 28 * CELL_SCALE,
-  headerRowHeight: 34 * CELL_SCALE,
-  totalsRowHeight: 30 * CELL_SCALE,
-  metadataRowHeight: 28 * CELL_SCALE,
-  previewBannerHeight: 32 * CELL_SCALE,
-  defaultRowHeight: 26 * CELL_SCALE,
-  viewZoom: 80,
-} as const;
+/** Shared paysheet layout (row heights, zoom) — from app-wide XLSX style. */
+const LAYOUT = XLSX_LAYOUT;
 
 type CellRange = {
   fromRow: number;
@@ -76,27 +66,24 @@ function sheetFont(options?: {
   color?: string;
   size?: number;
 }) {
-  return {
-    name: FONT.family,
-    size: options?.size ?? FONT.tableSize,
-    bold: options?.bold ?? false,
-    color: { argb: options?.color ?? COLORS.titleText },
-  };
+  const color = options?.color ?? COLORS.titleText;
+  if (options?.size === XLSX_FONT.headerSectionSize) {
+    return xlsxHeaderSectionFont({ color });
+  }
+  return xlsxTableFont({
+    bold: options?.bold,
+    color,
+  });
 }
 
 function headerSectionFont(options?: { color?: string }) {
-  return sheetFont({
-    size: FONT.headerSectionSize,
-    bold: true,
-    color: options?.color,
+  return xlsxHeaderSectionFont({
+    color: options?.color ?? COLORS.titleText,
   });
 }
 
 function applyTableFonts(sheet: Worksheet, columnCount: number) {
-  const font = sheetFont();
-  for (let column = 1; column <= columnCount; column += 1) {
-    sheet.getColumn(column).font = font;
-  }
+  applyXlsxTableColumnFonts(sheet, columnCount);
 }
 
 const thinBorder = {
@@ -124,23 +111,6 @@ function currencyNumFmt(currency: string): string {
   return currency === "TTD" ? '"TTD "#,##0.00' : `"${currency}" #,##0.00`;
 }
 
-function currencyDisplaySample(
-  value: string | number | null | undefined,
-  currency: string,
-): string {
-  if (value == null || value === "") {
-    return `${currency} 0.00`;
-  }
-  const amount = Number(value);
-  if (!Number.isFinite(amount)) {
-    return String(value);
-  }
-  return `${currency} ${amount.toLocaleString("en-TT", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-}
-
 type ColumnWidthSpec = {
   header: string;
   values: Array<string | number | null | undefined>;
@@ -151,32 +121,14 @@ type ColumnWidthSpec = {
 };
 
 function estimateColumnWidth(spec: ColumnWidthSpec): number {
-  const kind = spec.kind ?? "text";
-  const currency = spec.currency ?? "TTD";
-
-  const valueLengths = spec.values.map((value) => {
-    if (kind === "currency") {
-      return currencyDisplaySample(value, currency).length;
-    }
-    if (kind === "integer") {
-      if (value == null || value === "") {
-        return 0;
-      }
-      return String(value).length;
-    }
-    return value == null ? 0 : String(value).length;
+  return estimateScaledXlsxColumnWidth({
+    header: spec.header,
+    values: spec.values,
+    kind: spec.kind,
+    currency: spec.currency,
+    min: spec.min,
+    max: spec.max,
   });
-
-  const maxValueLen = valueLengths.reduce(
-    (max, length) => Math.max(max, length),
-    0,
-  );
-  const computed = Math.max(spec.header.length, maxValueLen) + 2;
-  const kindFloor =
-    kind === "currency" ? 16 : kind === "integer" ? 10 : 12;
-  const min = (spec.min ?? kindFloor) * CELL_SCALE;
-  const max = (spec.max ?? (kind === "text" ? 48 : 24)) * CELL_SCALE;
-  return Math.min(Math.max(computed * CELL_SCALE, min), max);
 }
 
 function applyColumnWidths(
@@ -247,7 +199,7 @@ function writePreviewBanner(sheet: Worksheet, rowIndex: number, columnSpan: numb
   cell.value = "DRAFT / PREVIEW — NOT POSTED";
   cell.font = sheetFont({
     bold: true,
-    size: FONT.headerSectionSize,
+    size: XLSX_FONT.headerSectionSize,
     color: COLORS.headerText,
   });
   cell.fill = {

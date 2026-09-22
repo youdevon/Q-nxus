@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useEffect, useMemo, useState } from "react";
-import { FileSignature, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { FileSignature, Plus, Save } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -32,14 +33,25 @@ import type {
 } from "@/src/modules/hr/data/get-employment-contracts";
 import {
   calculateContractGratuity,
-  TT_DEFAULT_GRATUITY_TAX_BANDS,
+  type GratuityPolicyInput,
 } from "@/src/modules/payroll/lib/calculate-gratuity";
 import { calculateContractLeaveEntitlementDays } from "@/src/modules/hr/lib/contract-leave-entitlement";
+import {
+  appendDepartmentOption,
+  appendPositionToDepartments,
+  toStructureDepartments,
+  type CreatedDepartmentEntity,
+  type CreatedPositionEntity,
+} from "@/src/modules/hr/lib/department-position-options";
 import {
   isNonEmployeePayee,
   suggestedContractTypeForCategory,
   workforceCategoryBadgeLabel,
 } from "@/src/modules/hr/lib/workforce-category";
+import {
+  DepartmentStructureDialog,
+  PositionStructureDialog,
+} from "@/src/modules/hr/components/organization-structure-dialogs";
 import {
   ContractAllowanceEditor,
   type ContractAllowanceInput,
@@ -134,12 +146,21 @@ function resolveInitialDepartmentId(
   departments: EmployeeFormDepartment[],
   departmentId: string | null,
   positionId: string | null,
+  preferBoardDepartment = false,
 ): string {
   if (departmentId) {
     return departmentId;
   }
 
   if (!positionId) {
+    if (preferBoardDepartment) {
+      const boardDepartment = departments.find((department) =>
+        /board/i.test(department.name),
+      );
+      if (boardDepartment) {
+        return boardDepartment.id;
+      }
+    }
     return "";
   }
 
@@ -157,8 +178,9 @@ export function EmploymentContractForm({
   sourceContract,
   allowanceCategories,
   leaveEntitlementDefaults = [],
-  departments = [],
+  departments: initialDepartments = [],
   mode = "create",
+  gratuityPolicy,
 }: {
   history: EmployeeContractHistory;
   sourceContract?: EmploymentContractProfile | null;
@@ -166,7 +188,10 @@ export function EmploymentContractForm({
   leaveEntitlementDefaults?: ContractLeaveEntitlementDefault[];
   departments?: EmployeeFormDepartment[];
   mode?: EmploymentContractFormMode;
+  /** Org policy from Payroll → Settings → Gratuity (rate + tax). */
+  gratuityPolicy: GratuityPolicyInput;
 }) {
+  const router = useRouter();
   const resolvedMode: EmploymentContractFormMode =
     mode === "create" && sourceContract ? "amend" : mode;
 
@@ -192,6 +217,7 @@ export function EmploymentContractForm({
   const categoryLabel = workforceCategoryBadgeLabel(
     history.employee.workforceCategory,
   );
+  const isBoardMember = history.employee.workforceCategory === "BOARD";
 
   const [state, action, pending] = useActionState(
     createEmploymentContract,
@@ -201,16 +227,25 @@ export function EmploymentContractForm({
     "activate",
   );
 
+  const [departments, setDepartments] = useState(initialDepartments);
+  const [departmentDialogOpen, setDepartmentDialogOpen] = useState(false);
+  const [positionDialogOpen, setPositionDialogOpen] = useState(false);
+
   const [departmentId, setDepartmentId] = useState(() =>
     resolveInitialDepartmentId(
-      departments,
+      initialDepartments,
       history.employee.departmentId,
       history.employee.positionId,
+      isBoardMember,
     ),
   );
   const [positionId, setPositionId] = useState(
     history.employee.positionId ?? "",
   );
+
+  useEffect(() => {
+    setDepartments(initialDepartments);
+  }, [initialDepartments]);
 
   const [gratuityEligible, setGratuityEligible] = useState(
     sourceContract?.gratuityEligible ?? false,
@@ -250,7 +285,8 @@ export function EmploymentContractForm({
     sourceContract?.baseSalary ?? "",
   );
   const [gratuityRate, setGratuityRate] = useState(
-    sourceContract?.gratuityRate ?? "20",
+    sourceContract?.gratuityRate ??
+      String(gratuityPolicy.defaultRatePercent ?? ""),
   );
 
   const [allowances, setAllowances] = useState<ContractAllowanceInput[]>(
@@ -400,13 +436,11 @@ export function EmploymentContractForm({
         endDate: new Date(`${endDate}T00:00:00.000Z`),
         baseSalary,
         allowances,
-        ratePercent: gratuityRate || 20,
-        policy: {
-          formulaKind: "PCT_OF_TERM_EARNINGS",
-          defaultRatePercent: 20,
-          taxMode: "TIERED",
-          taxBands: TT_DEFAULT_GRATUITY_TAX_BANDS,
-        },
+        ratePercent:
+          gratuityRate !== ""
+            ? gratuityRate
+            : gratuityPolicy.defaultRatePercent,
+        policy: gratuityPolicy,
       });
     } catch {
       return null;
@@ -418,6 +452,7 @@ export function EmploymentContractForm({
     baseSalary,
     allowances,
     gratuityRate,
+    gratuityPolicy,
   ]);
 
   useEffect(() => {
@@ -445,9 +480,61 @@ export function EmploymentContractForm({
     [departmentId, departments],
   );
 
+  const structureDepartments = useMemo(
+    () => toStructureDepartments(departments),
+    [departments],
+  );
+
   const selectedPosition = positionsForDepartment.find(
     (position) => position.id === positionId,
   );
+
+  function handleDepartmentCreated(
+    entityId?: string,
+    createdEntity?: CreatedDepartmentEntity | { id: string; name?: string },
+  ) {
+    if (!entityId || !createdEntity?.name) {
+      return;
+    }
+
+    setDepartments((current) =>
+      appendDepartmentOption(current, {
+        id: createdEntity.id,
+        name: createdEntity.name!,
+      }),
+    );
+    setDepartmentId(entityId);
+    setPositionId("");
+    router.refresh();
+  }
+
+  function handlePositionCreated(
+    entityId?: string,
+    createdEntity?: CreatedPositionEntity | {
+      id: string;
+      title?: string;
+      departmentId?: string;
+    },
+  ) {
+    if (
+      !entityId ||
+      !createdEntity?.title ||
+      !createdEntity.departmentId
+    ) {
+      return;
+    }
+
+    const created = {
+      id: createdEntity.id,
+      title: createdEntity.title,
+      departmentId: createdEntity.departmentId,
+    };
+
+    setDepartments((current) => appendPositionToDepartments(current, created));
+    setDepartmentId(created.departmentId);
+    setPositionId(entityId);
+    router.refresh();
+  }
 
   const pageTitle = isRenewal
     ? "Renew Employment Contract"
@@ -468,6 +555,7 @@ export function EmploymentContractForm({
     : null;
 
   return (
+    <>
     <form action={action}>
       <PageShell>
       <input type="hidden" name="employeeId" value={employee.id} />
@@ -644,9 +732,21 @@ export function EmploymentContractForm({
           )}
 
           <div>
-            <label htmlFor="departmentId" className="text-sm font-medium">
-              Department
-            </label>
+            <div className="flex items-center justify-between gap-3">
+              <label htmlFor="departmentId" className="text-sm font-medium">
+                {isBoardMember ? "Board body" : "Department"}
+              </label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-auto px-2 py-1 text-xs"
+                onClick={() => setDepartmentDialogOpen(true)}
+              >
+                <Plus />
+                Add department
+              </Button>
+            </div>
             <select
               id="departmentId"
               value={departmentId}
@@ -668,19 +768,44 @@ export function EmploymentContractForm({
               className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
               required
             >
-              <option value="">Select department</option>
+              <option value="">
+                {departments.length === 0
+                  ? "No departments yet — add one"
+                  : isBoardMember
+                    ? "Select Board of Directors"
+                    : "Select department"}
+              </option>
               {departments.map((department) => (
                 <option key={department.id} value={department.id}>
                   {department.name}
                 </option>
               ))}
             </select>
+            {isBoardMember ? (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Use Board of Directors (or create it), then choose Chairman,
+                Deputy Chairman, or Director.
+              </p>
+            ) : null}
           </div>
 
           <div>
-            <label htmlFor="positionSelect" className="text-sm font-medium">
-              Position
-            </label>
+            <div className="flex items-center justify-between gap-3">
+              <label htmlFor="positionSelect" className="text-sm font-medium">
+                {isBoardMember ? "Board role" : "Position"}
+              </label>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-auto px-2 py-1 text-xs"
+                disabled={!departmentId}
+                onClick={() => setPositionDialogOpen(true)}
+              >
+                <Plus />
+                Add new position
+              </Button>
+            </div>
             <select
               id="positionSelect"
               value={positionId}
@@ -693,8 +818,10 @@ export function EmploymentContractForm({
                 {!departmentId
                   ? "Select a department first"
                   : positionsForDepartment.length === 0
-                    ? "No positions in this department"
-                    : "Select position"}
+                    ? "No positions — add one"
+                    : isBoardMember
+                      ? "Select board role"
+                      : "Select position"}
               </option>
               {positionsForDepartment.map((position) => (
                 <option key={position.id} value={position.id}>
@@ -705,9 +832,15 @@ export function EmploymentContractForm({
             <p className="mt-1 text-xs text-muted-foreground">
               {selectedPosition
                 ? positionId === employee.positionId
-                  ? "Uses the employee’s current organizational assignment."
-                  : "Saving will attach the employee to this position (same assignment path as Organization)."
-                : "Choose the catalog Position — job title is taken from it, not free text."}
+                  ? isBoardMember
+                    ? "Uses the current board role assignment."
+                    : "Uses the employee’s current organizational assignment."
+                  : isBoardMember
+                    ? "Saving will assign this board role on activation."
+                    : "Saving will attach the employee to this position (same assignment path as Organization)."
+                : isBoardMember
+                  ? "Choose Chairman, Deputy Chairman, Director — or add a new board role."
+                  : "Choose the catalog Position — job title is taken from it, not free text."}
             </p>
             {state.fieldErrors?.positionId ? (
               <FieldError>{state.fieldErrors.positionId}</FieldError>
@@ -1133,23 +1266,24 @@ export function EmploymentContractForm({
                   required
                 />
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Percentage of eligible contract earnings (base salary +
-                  gratuity-included allowances). Defaults to the org policy
-                  rate (typically 20%) when left to policy on settlement.
+                  Percentage of base salary over the contract term. Defaults from
+                  org policy ({Number(gratuityPolicy.defaultRatePercent)}%) —
+                  change under Payroll → Settings → Gratuity. Allowances are not
+                  included.
                 </p>
               </div>
 
-              {/* Flat tax rate removed from UI — IRD tiered tax comes from org GratuityPolicy. */}
+              {/* Flat tax rate removed from UI — tax comes from org GratuityPolicy. */}
               <input type="hidden" name="gratuityTaxRate" value="" />
 
               <div className="md:col-span-2 border-t border-border pt-5">
-                <p className="text-sm font-medium">Estimated gratuity</p>
+                <p className="text-sm font-medium">Gratuity breakdown</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Uses MoF term-% formula and IRD tiered tax (25% / 30%). Tax is
-                  configured under Payroll → Settings → Gratuity.
+                  Eligible earnings = base salary × contract months. Gross =
+                  eligible × rate. Tax and net use the org gratuity policy.
                 </p>
                 {gratuityEstimate ? (
-                  <div className="mt-3 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+                  <div className="mt-3 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
                     <div>
                       <p className="text-xs text-muted-foreground">
                         Contract months
@@ -1160,7 +1294,7 @@ export function EmploymentContractForm({
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Gratuity-eligible earnings (term)
+                        Eligible gross earnings
                       </p>
                       <p className="mt-1 text-sm font-semibold">
                         {formatMoney(gratuityEstimate.estimatedGrossEarnings, {
@@ -1170,7 +1304,7 @@ export function EmploymentContractForm({
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Gross gratuity
+                        Gross gratuity ({gratuityEstimate.ratePercent}%)
                       </p>
                       <p className="mt-1 text-sm font-semibold">
                         {formatMoney(gratuityEstimate.estimatedGrossGratuity, {
@@ -1180,7 +1314,17 @@ export function EmploymentContractForm({
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Net gratuity
+                        Government tax
+                      </p>
+                      <p className="mt-1 text-sm font-semibold">
+                        {formatMoney(gratuityEstimate.estimatedTax, {
+                          currency,
+                        })}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">
+                        Employee receives (after tax)
                       </p>
                       <p className="mt-1 text-sm font-semibold">
                         {formatMoney(gratuityEstimate.estimatedNetGratuity, {
@@ -1191,9 +1335,8 @@ export function EmploymentContractForm({
                   </div>
                 ) : (
                   <p className="mt-2 text-xs text-muted-foreground">
-                    Enter start date, end date, salary, and rates to preview the
-                    estimate. Mark allowances as included in gratuity to add
-                    them to the base.
+                    Enter start date, end date, salary, and rate to preview the
+                    estimate. Gratuity uses base salary only (not allowances).
                   </p>
                 )}
               </div>
@@ -1216,5 +1359,20 @@ export function EmploymentContractForm({
       </section>
       </PageShell>
     </form>
+
+    <DepartmentStructureDialog
+      open={departmentDialogOpen}
+      onOpenChange={setDepartmentDialogOpen}
+      onSuccess={handleDepartmentCreated}
+    />
+
+    <PositionStructureDialog
+      open={positionDialogOpen}
+      onOpenChange={setPositionDialogOpen}
+      departments={structureDepartments}
+      defaultDepartmentId={departmentId}
+      onSuccess={handlePositionCreated}
+    />
+    </>
   );
 }

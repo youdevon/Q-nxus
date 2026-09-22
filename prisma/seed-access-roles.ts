@@ -74,6 +74,16 @@ const permissions = [
     moduleKey: "contracts",
   },
   {
+    code: "assets.view",
+    name: "View asset register",
+    moduleKey: "assets",
+  },
+  {
+    code: "assets.manage",
+    name: "Manage assets and assignments",
+    moduleKey: "assets",
+  },
+  {
     code: "reports.view",
     name: "View reports",
     moduleKey: "reports",
@@ -234,6 +244,31 @@ const permissions = [
     moduleKey: "payroll",
   },
   {
+    code: "payroll.ach.view",
+    name: "View FCB ACH export preview and status",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.ach.generate",
+    name: "Generate FCB ACH salary files",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.ach.download",
+    name: "Download FCB ACH salary files",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.ach.regenerate",
+    name: "Regenerate FCB ACH salary files",
+    moduleKey: "payroll",
+  },
+  {
+    code: "payroll.ach.configure",
+    name: "Configure FCB ACH export settings",
+    moduleKey: "payroll",
+  },
+  {
     code: "documents.view",
     name: "View documents",
     moduleKey: "documents",
@@ -365,6 +400,8 @@ const roleTemplates: RoleTemplate[] = [
       "contracts.view",
       "contracts.manage",
       "documents.view",
+      "assets.view",
+      "assets.manage",
     ],
   },
   {
@@ -394,6 +431,8 @@ const roleTemplates: RoleTemplate[] = [
       "contracts.manage",
       "reports.view",
       "documents.view",
+      "assets.view",
+      "assets.manage",
     ],
   },
   {
@@ -460,6 +499,11 @@ const roleTemplates: RoleTemplate[] = [
       "payroll.payment_batches.prepare",
       "payroll.payment_batches.approve",
       "payroll.payment_batches.export",
+      "payroll.ach.view",
+      "payroll.ach.generate",
+      "payroll.ach.download",
+      "payroll.ach.regenerate",
+      "payroll.ach.configure",
     ],
   },
   {
@@ -474,6 +518,10 @@ const roleTemplates: RoleTemplate[] = [
       "payroll.bank_accounts.view",
       "payroll.bank_accounts.view_sensitive",
       "payroll.payment_batches.export",
+      "payroll.ach.view",
+      "payroll.ach.generate",
+      "payroll.ach.download",
+      "payroll.ach.regenerate",
     ],
   },
   {
@@ -522,6 +570,11 @@ const roleTemplates: RoleTemplate[] = [
       "payroll.payment_batches.prepare",
       "payroll.payment_batches.approve",
       "payroll.payment_batches.export",
+      "payroll.ach.view",
+      "payroll.ach.generate",
+      "payroll.ach.download",
+      "payroll.ach.regenerate",
+      "payroll.ach.configure",
     ],
   },
 ]

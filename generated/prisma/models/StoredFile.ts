@@ -294,6 +294,7 @@ export type StoredFileWhereInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestListRelationFilter
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileListRelationFilter
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentListRelationFilter
+  assetDocuments?: Prisma.AssetDocumentListRelationFilter
 }
 
 export type StoredFileOrderByWithRelationInput = {
@@ -317,6 +318,7 @@ export type StoredFileOrderByWithRelationInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestOrderByRelationAggregateInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileOrderByRelationAggregateInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentOrderByRelationAggregateInput
+  assetDocuments?: Prisma.AssetDocumentOrderByRelationAggregateInput
 }
 
 export type StoredFileWhereUniqueInput = Prisma.AtLeast<{
@@ -344,6 +346,7 @@ export type StoredFileWhereUniqueInput = Prisma.AtLeast<{
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestListRelationFilter
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileListRelationFilter
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentListRelationFilter
+  assetDocuments?: Prisma.AssetDocumentListRelationFilter
 }, "id" | "organizationId_storageKey">
 
 export type StoredFileOrderByWithAggregationInput = {
@@ -407,6 +410,7 @@ export type StoredFileCreateInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUncheckedCreateInput = {
@@ -428,6 +432,7 @@ export type StoredFileUncheckedCreateInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUpdateInput = {
@@ -449,6 +454,7 @@ export type StoredFileUpdateInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateInput = {
@@ -470,6 +476,7 @@ export type StoredFileUncheckedUpdateInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileCreateManyInput = {
@@ -751,6 +758,20 @@ export type StoredFileUpdateOneRequiredWithoutPriorEmploymentDocumentsNestedInpu
   update?: Prisma.XOR<Prisma.XOR<Prisma.StoredFileUpdateToOneWithWhereWithoutPriorEmploymentDocumentsInput, Prisma.StoredFileUpdateWithoutPriorEmploymentDocumentsInput>, Prisma.StoredFileUncheckedUpdateWithoutPriorEmploymentDocumentsInput>
 }
 
+export type StoredFileCreateNestedOneWithoutAssetDocumentsInput = {
+  create?: Prisma.XOR<Prisma.StoredFileCreateWithoutAssetDocumentsInput, Prisma.StoredFileUncheckedCreateWithoutAssetDocumentsInput>
+  connectOrCreate?: Prisma.StoredFileCreateOrConnectWithoutAssetDocumentsInput
+  connect?: Prisma.StoredFileWhereUniqueInput
+}
+
+export type StoredFileUpdateOneRequiredWithoutAssetDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.StoredFileCreateWithoutAssetDocumentsInput, Prisma.StoredFileUncheckedCreateWithoutAssetDocumentsInput>
+  connectOrCreate?: Prisma.StoredFileCreateOrConnectWithoutAssetDocumentsInput
+  upsert?: Prisma.StoredFileUpsertWithoutAssetDocumentsInput
+  connect?: Prisma.StoredFileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StoredFileUpdateToOneWithWhereWithoutAssetDocumentsInput, Prisma.StoredFileUpdateWithoutAssetDocumentsInput>, Prisma.StoredFileUncheckedUpdateWithoutAssetDocumentsInput>
+}
+
 export type StoredFileCreateWithoutOrganizationInput = {
   id?: string
   storageKey: string
@@ -769,6 +790,7 @@ export type StoredFileCreateWithoutOrganizationInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUncheckedCreateWithoutOrganizationInput = {
@@ -789,6 +811,7 @@ export type StoredFileUncheckedCreateWithoutOrganizationInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileCreateOrConnectWithoutOrganizationInput = {
@@ -855,6 +878,7 @@ export type StoredFileCreateWithoutUploadedByInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUncheckedCreateWithoutUploadedByInput = {
@@ -875,6 +899,7 @@ export type StoredFileUncheckedCreateWithoutUploadedByInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileCreateOrConnectWithoutUploadedByInput = {
@@ -921,6 +946,7 @@ export type StoredFileCreateWithoutFileUpdateRequestsInput = {
   employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUncheckedCreateWithoutFileUpdateRequestsInput = {
@@ -941,6 +967,7 @@ export type StoredFileUncheckedCreateWithoutFileUpdateRequestsInput = {
   employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileCreateOrConnectWithoutFileUpdateRequestsInput = {
@@ -977,6 +1004,7 @@ export type StoredFileUpdateWithoutFileUpdateRequestsInput = {
   employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateWithoutFileUpdateRequestsInput = {
@@ -997,6 +1025,7 @@ export type StoredFileUncheckedUpdateWithoutFileUpdateRequestsInput = {
   employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileCreateWithoutEmploymentContractsInput = {
@@ -1017,6 +1046,7 @@ export type StoredFileCreateWithoutEmploymentContractsInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUncheckedCreateWithoutEmploymentContractsInput = {
@@ -1037,6 +1067,7 @@ export type StoredFileUncheckedCreateWithoutEmploymentContractsInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutTd1StoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileCreateOrConnectWithoutEmploymentContractsInput = {
@@ -1073,6 +1104,7 @@ export type StoredFileUpdateWithoutEmploymentContractsInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateWithoutEmploymentContractsInput = {
@@ -1093,6 +1125,7 @@ export type StoredFileUncheckedUpdateWithoutEmploymentContractsInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileCreateWithoutEmployeeTaxProfilesInput = {
@@ -1113,6 +1146,7 @@ export type StoredFileCreateWithoutEmployeeTaxProfilesInput = {
   employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutStoredFileInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUncheckedCreateWithoutEmployeeTaxProfilesInput = {
@@ -1133,6 +1167,7 @@ export type StoredFileUncheckedCreateWithoutEmployeeTaxProfilesInput = {
   employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutStoredFileInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedCreateNestedManyWithoutStoredFileInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileCreateOrConnectWithoutEmployeeTaxProfilesInput = {
@@ -1169,6 +1204,7 @@ export type StoredFileUpdateWithoutEmployeeTaxProfilesInput = {
   employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutStoredFileNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateWithoutEmployeeTaxProfilesInput = {
@@ -1189,6 +1225,7 @@ export type StoredFileUncheckedUpdateWithoutEmployeeTaxProfilesInput = {
   employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutStoredFileNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileCreateWithoutPriorEmploymentDocumentsInput = {
@@ -1209,6 +1246,7 @@ export type StoredFileCreateWithoutPriorEmploymentDocumentsInput = {
   employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutStoredFileInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutTd1StoredFileInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileUncheckedCreateWithoutPriorEmploymentDocumentsInput = {
@@ -1229,6 +1267,7 @@ export type StoredFileUncheckedCreateWithoutPriorEmploymentDocumentsInput = {
   employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutStoredFileInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutTd1StoredFileInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutStoredFileInput
 }
 
 export type StoredFileCreateOrConnectWithoutPriorEmploymentDocumentsInput = {
@@ -1265,6 +1304,7 @@ export type StoredFileUpdateWithoutPriorEmploymentDocumentsInput = {
   employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutStoredFileNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutTd1StoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateWithoutPriorEmploymentDocumentsInput = {
@@ -1285,6 +1325,107 @@ export type StoredFileUncheckedUpdateWithoutPriorEmploymentDocumentsInput = {
   employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutStoredFileNestedInput
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
+}
+
+export type StoredFileCreateWithoutAssetDocumentsInput = {
+  id?: string
+  storageKey: string
+  fileName: string
+  mimeType?: string | null
+  fileSize?: number | null
+  checksumSha256?: string | null
+  uploadedAt?: Date | string
+  retentionUntil?: Date | string | null
+  legalHold?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutStoredFilesInput
+  uploadedBy?: Prisma.UserCreateNestedOneWithoutUploadedStoredFilesInput
+  employmentContracts?: Prisma.EmploymentContractCreateNestedManyWithoutStoredFileInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutStoredFileInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutTd1StoredFileInput
+  priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentCreateNestedManyWithoutStoredFileInput
+}
+
+export type StoredFileUncheckedCreateWithoutAssetDocumentsInput = {
+  id?: string
+  organizationId: string
+  storageKey: string
+  fileName: string
+  mimeType?: string | null
+  fileSize?: number | null
+  checksumSha256?: string | null
+  uploadedByUserId?: string | null
+  uploadedAt?: Date | string
+  retentionUntil?: Date | string | null
+  legalHold?: boolean
+  archivedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employmentContracts?: Prisma.EmploymentContractUncheckedCreateNestedManyWithoutStoredFileInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutStoredFileInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutTd1StoredFileInput
+  priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedCreateNestedManyWithoutStoredFileInput
+}
+
+export type StoredFileCreateOrConnectWithoutAssetDocumentsInput = {
+  where: Prisma.StoredFileWhereUniqueInput
+  create: Prisma.XOR<Prisma.StoredFileCreateWithoutAssetDocumentsInput, Prisma.StoredFileUncheckedCreateWithoutAssetDocumentsInput>
+}
+
+export type StoredFileUpsertWithoutAssetDocumentsInput = {
+  update: Prisma.XOR<Prisma.StoredFileUpdateWithoutAssetDocumentsInput, Prisma.StoredFileUncheckedUpdateWithoutAssetDocumentsInput>
+  create: Prisma.XOR<Prisma.StoredFileCreateWithoutAssetDocumentsInput, Prisma.StoredFileUncheckedCreateWithoutAssetDocumentsInput>
+  where?: Prisma.StoredFileWhereInput
+}
+
+export type StoredFileUpdateToOneWithWhereWithoutAssetDocumentsInput = {
+  where?: Prisma.StoredFileWhereInput
+  data: Prisma.XOR<Prisma.StoredFileUpdateWithoutAssetDocumentsInput, Prisma.StoredFileUncheckedUpdateWithoutAssetDocumentsInput>
+}
+
+export type StoredFileUpdateWithoutAssetDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  storageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  checksumSha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  retentionUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  legalHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutStoredFilesNestedInput
+  uploadedBy?: Prisma.UserUpdateOneWithoutUploadedStoredFilesNestedInput
+  employmentContracts?: Prisma.EmploymentContractUpdateManyWithoutStoredFileNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutTd1StoredFileNestedInput
+  priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUpdateManyWithoutStoredFileNestedInput
+}
+
+export type StoredFileUncheckedUpdateWithoutAssetDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  storageKey?: Prisma.StringFieldUpdateOperationsInput | string
+  fileName?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileSize?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  checksumSha256?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  retentionUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  legalHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employmentContracts?: Prisma.EmploymentContractUncheckedUpdateManyWithoutStoredFileNestedInput
+  fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileNestedInput
+  priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileCreateManyOrganizationInput = {
@@ -1321,6 +1462,7 @@ export type StoredFileUpdateWithoutOrganizationInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateWithoutOrganizationInput = {
@@ -1341,6 +1483,7 @@ export type StoredFileUncheckedUpdateWithoutOrganizationInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1393,6 +1536,7 @@ export type StoredFileUpdateWithoutUploadedByInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateWithoutUploadedByInput = {
@@ -1413,6 +1557,7 @@ export type StoredFileUncheckedUpdateWithoutUploadedByInput = {
   fileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutStoredFileNestedInput
   employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutTd1StoredFileNestedInput
   priorEmploymentDocuments?: Prisma.EmployeePriorEmploymentDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutStoredFileNestedInput
 }
 
 export type StoredFileUncheckedUpdateManyWithoutUploadedByInput = {
@@ -1441,6 +1586,7 @@ export type StoredFileCountOutputType = {
   fileUpdateRequests: number
   employeeTaxProfiles: number
   priorEmploymentDocuments: number
+  assetDocuments: number
 }
 
 export type StoredFileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1448,6 +1594,7 @@ export type StoredFileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   fileUpdateRequests?: boolean | StoredFileCountOutputTypeCountFileUpdateRequestsArgs
   employeeTaxProfiles?: boolean | StoredFileCountOutputTypeCountEmployeeTaxProfilesArgs
   priorEmploymentDocuments?: boolean | StoredFileCountOutputTypeCountPriorEmploymentDocumentsArgs
+  assetDocuments?: boolean | StoredFileCountOutputTypeCountAssetDocumentsArgs
 }
 
 /**
@@ -1488,6 +1635,13 @@ export type StoredFileCountOutputTypeCountPriorEmploymentDocumentsArgs<ExtArgs e
   where?: Prisma.EmployeePriorEmploymentDocumentWhereInput
 }
 
+/**
+ * StoredFileCountOutputType without action
+ */
+export type StoredFileCountOutputTypeCountAssetDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetDocumentWhereInput
+}
+
 
 export type StoredFileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1510,6 +1664,7 @@ export type StoredFileSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   fileUpdateRequests?: boolean | Prisma.StoredFile$fileUpdateRequestsArgs<ExtArgs>
   employeeTaxProfiles?: boolean | Prisma.StoredFile$employeeTaxProfilesArgs<ExtArgs>
   priorEmploymentDocuments?: boolean | Prisma.StoredFile$priorEmploymentDocumentsArgs<ExtArgs>
+  assetDocuments?: boolean | Prisma.StoredFile$assetDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.StoredFileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["storedFile"]>
 
@@ -1576,6 +1731,7 @@ export type StoredFileInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   fileUpdateRequests?: boolean | Prisma.StoredFile$fileUpdateRequestsArgs<ExtArgs>
   employeeTaxProfiles?: boolean | Prisma.StoredFile$employeeTaxProfilesArgs<ExtArgs>
   priorEmploymentDocuments?: boolean | Prisma.StoredFile$priorEmploymentDocumentsArgs<ExtArgs>
+  assetDocuments?: boolean | Prisma.StoredFile$assetDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.StoredFileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StoredFileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1596,6 +1752,7 @@ export type $StoredFilePayload<ExtArgs extends runtime.Types.Extensions.Internal
     fileUpdateRequests: Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>[]
     employeeTaxProfiles: Prisma.$EmployeeTaxProfilePayload<ExtArgs>[]
     priorEmploymentDocuments: Prisma.$EmployeePriorEmploymentDocumentPayload<ExtArgs>[]
+    assetDocuments: Prisma.$AssetDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2012,6 +2169,7 @@ export interface Prisma__StoredFileClient<T, Null = never, ExtArgs extends runti
   fileUpdateRequests<T extends Prisma.StoredFile$fileUpdateRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoredFile$fileUpdateRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeFileUpdateRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employeeTaxProfiles<T extends Prisma.StoredFile$employeeTaxProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoredFile$employeeTaxProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaxProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   priorEmploymentDocuments<T extends Prisma.StoredFile$priorEmploymentDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoredFile$priorEmploymentDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePriorEmploymentDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assetDocuments<T extends Prisma.StoredFile$assetDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoredFile$assetDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2568,6 +2726,30 @@ export type StoredFile$priorEmploymentDocumentsArgs<ExtArgs extends runtime.Type
   take?: number
   skip?: number
   distinct?: Prisma.EmployeePriorEmploymentDocumentScalarFieldEnum | Prisma.EmployeePriorEmploymentDocumentScalarFieldEnum[]
+}
+
+/**
+ * StoredFile.assetDocuments
+ */
+export type StoredFile$assetDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssetDocument
+   */
+  select?: Prisma.AssetDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssetDocument
+   */
+  omit?: Prisma.AssetDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetDocumentInclude<ExtArgs> | null
+  where?: Prisma.AssetDocumentWhereInput
+  orderBy?: Prisma.AssetDocumentOrderByWithRelationInput | Prisma.AssetDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.AssetDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssetDocumentScalarFieldEnum | Prisma.AssetDocumentScalarFieldEnum[]
 }
 
 /**

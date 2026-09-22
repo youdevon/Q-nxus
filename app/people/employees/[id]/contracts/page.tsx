@@ -3,15 +3,24 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Plus } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/src/components/layout/page-header";
-import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
-import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
+import { cn } from "@/lib/utils";
 import { formatDisplayDate } from "@/src/lib/format";
 import { EmployeeContractHistoryPanel } from "@/src/modules/hr/components/employee-contract-history-panel";
+import { EmployeeEntityNav } from "@/src/modules/hr/components/employee-entity-nav";
+import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
+import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { getEmployeeEntityChrome } from "@/src/modules/hr/data/get-employee-entity-chrome";
 import { getEmployeeContractHistory } from "@/src/modules/hr/data/get-employment-contracts";
 import { resolveEmployeeContractAccess } from "@/src/modules/hr/data/require-people-access";
+import {
+  employeeLeadershipAccentClass,
+  employeeLeadershipBadgeClass,
+  employeeHeaderBadgeLabel,
+} from "@/src/modules/hr/lib/employee-leadership-role";
 
 export const metadata: Metadata = {
   title: "Employment Contracts",
@@ -28,7 +37,10 @@ export default async function EmployeeContractsPage({
 }) {
   const { id } = await params;
   const access = await resolveEmployeeContractAccess(id);
-  const history = await getEmployeeContractHistory(id);
+  const [history, chrome] = await Promise.all([
+    getEmployeeContractHistory(id),
+    access.isSelfService ? Promise.resolve(null) : getEmployeeEntityChrome(id),
+  ]);
 
   if (!history) {
     notFound();
@@ -64,6 +76,19 @@ export default async function EmployeeContractsPage({
     </Button>
   ) : undefined;
 
+  const leadershipBadge =
+    chrome != null ? (
+      <Badge
+        variant="outline"
+        className={cn(employeeLeadershipBadgeClass(chrome.leadershipRole))}
+      >
+        {employeeHeaderBadgeLabel(
+          chrome.leadershipRole,
+          chrome.positionTitle,
+        )}
+      </Badge>
+    ) : null;
+
   return (
     <PageShell size="lg">
       {access.showPeopleNav ? (
@@ -73,6 +98,12 @@ export default async function EmployeeContractsPage({
           backHref={profileHref}
           backLabel={access.isSelfService ? "My profile" : "Employee"}
           actions={headerActions}
+          badge={access.isSelfService ? undefined : leadershipBadge}
+          titleAccentClassName={
+            chrome
+              ? employeeLeadershipAccentClass(chrome.leadershipRole)
+              : undefined
+          }
         />
       ) : access.isSelfService ? (
         <MePageHeader
@@ -91,6 +122,15 @@ export default async function EmployeeContractsPage({
           actions={headerActions}
         />
       )}
+
+      {!access.isSelfService && chrome ? (
+        <EmployeeEntityNav
+          employeeId={chrome.id}
+          current="contracts"
+          workforceCategory={chrome.workforceCategory}
+          isFullEmployee={chrome.isFullEmployee}
+        />
+      ) : null}
 
       <section className="grid grid-cols-2 gap-8 md:grid-cols-3">
         <div>

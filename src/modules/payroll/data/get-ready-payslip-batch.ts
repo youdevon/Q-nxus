@@ -84,6 +84,8 @@ async function mapPool<T, R>(
  */
 export async function getReadyPayslipBatch(options?: {
   periodKey?: string;
+  /** Optional payee group filter (same as payroll readiness directory). */
+  workforceCategories?: string[];
 }): Promise<ReadyPayslipBatchResult> {
   const periodKey = options?.periodKey ?? getPreviousPayslipPeriod();
   const asOf = payslipPeriodToAsOfDate(periodKey) ?? undefined;
@@ -92,7 +94,12 @@ export async function getReadyPayslipBatch(options?: {
   const statutoryAsOf = toStatutoryAsOfKey(periodEnd);
 
   const [readiness, statutoryBundle, organization] = await Promise.all([
-    getPayrollReadiness({ includeFileCompleteness: false }),
+    getPayrollReadiness({
+      includeFileCompleteness: false,
+      ...(options?.workforceCategories
+        ? { workforceCategories: options.workforceCategories }
+        : {}),
+    }),
     resolveStatutoryConfigBundle(statutoryAsOf),
     getOrganizationProfile(),
   ]);

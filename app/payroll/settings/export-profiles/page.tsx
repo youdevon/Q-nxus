@@ -6,6 +6,7 @@ import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { BankExportProfileEditor } from "@/src/modules/payroll/components/bank-export-profile-editor";
 import { PayrollNav } from "@/src/modules/payroll/components/payroll-nav";
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
@@ -22,14 +23,11 @@ export default async function BankExportProfilesSettingsPage() {
     capabilities.can("payroll.bank_export_profiles.manage") ||
     capabilities.can("payroll.manage");
 
-  const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
+  const sessionOrgId = await getSessionOrganizationId();
 
-  const profiles = organization
+  const profiles = sessionOrgId
     ? await prisma.bankExportProfile.findMany({
-        where: { organizationId: organization.id },
+        where: { organizationId: sessionOrgId },
         orderBy: [{ isDefault: "desc" }, { code: "asc" }],
       })
     : [];

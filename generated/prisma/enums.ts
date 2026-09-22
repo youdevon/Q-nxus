@@ -553,6 +553,16 @@ export const WorkforceCategory = {
 export type WorkforceCategory = (typeof WorkforceCategory)[keyof typeof WorkforceCategory]
 
 
+export const PayRunPayeeGroup = {
+  EMPLOYEE: 'EMPLOYEE',
+  BOARD: 'BOARD',
+  AGENT: 'AGENT',
+  CONTRACTOR: 'CONTRACTOR'
+} as const
+
+export type PayRunPayeeGroup = (typeof PayRunPayeeGroup)[keyof typeof PayRunPayeeGroup]
+
+
 export const EmployeeIdType = {
   NATIONAL_ID: 'NATIONAL_ID',
   DRIVERS_PERMIT: 'DRIVERS_PERMIT',
@@ -869,10 +879,24 @@ export const AchPaymentBatchStatus = {
   EXPORTED: 'EXPORTED',
   CANCELLED: 'CANCELLED',
   RELEASED: 'RELEASED',
-  RECONCILED: 'RECONCILED'
+  RECONCILED: 'RECONCILED',
+  INVALIDATED: 'INVALIDATED'
 } as const
 
 export type AchPaymentBatchStatus = (typeof AchPaymentBatchStatus)[keyof typeof AchPaymentBatchStatus]
+
+
+export const AchBankValidationStatus = {
+  GENERATED: 'GENERATED',
+  UPLOADED_FOR_VALIDATION: 'UPLOADED_FOR_VALIDATION',
+  VALIDATION_FAILED: 'VALIDATION_FAILED',
+  BANK_VALIDATED: 'BANK_VALIDATED',
+  SUBMITTED: 'SUBMITTED',
+  PROCESSED: 'PROCESSED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type AchBankValidationStatus = (typeof AchBankValidationStatus)[keyof typeof AchBankValidationStatus]
 
 
 export const BankExportAdapterKind = {
@@ -1031,3 +1055,75 @@ export const PayrollComponentCategory = {
 } as const
 
 export type PayrollComponentCategory = (typeof PayrollComponentCategory)[keyof typeof PayrollComponentCategory]
+
+
+export const AssetStatus = {
+  AVAILABLE: 'AVAILABLE',
+  ASSIGNED: 'ASSIGNED',
+  IN_REPAIR: 'IN_REPAIR',
+  RETIRED: 'RETIRED',
+  LOST: 'LOST',
+  STOLEN: 'STOLEN'
+} as const
+
+export type AssetStatus = (typeof AssetStatus)[keyof typeof AssetStatus]
+
+
+export const AssetCondition = {
+  NEW: 'NEW',
+  GOOD: 'GOOD',
+  FAIR: 'FAIR',
+  POOR: 'POOR'
+} as const
+
+export type AssetCondition = (typeof AssetCondition)[keyof typeof AssetCondition]
+
+
+export const AssetCategory = {
+  COMPUTER_EQUIPMENT: 'COMPUTER_EQUIPMENT',
+  MOBILE_DEVICES: 'MOBILE_DEVICES',
+  OFFICE_EQUIPMENT: 'OFFICE_EQUIPMENT',
+  FURNITURE: 'FURNITURE',
+  OTHER: 'OTHER'
+} as const
+
+export type AssetCategory = (typeof AssetCategory)[keyof typeof AssetCategory]
+
+
+export const AssetType = {
+  LAPTOP: 'LAPTOP',
+  DESKTOP: 'DESKTOP',
+  MONITOR: 'MONITOR',
+  PHONE: 'PHONE',
+  TABLET: 'TABLET',
+  DOCK: 'DOCK',
+  KEYBOARD: 'KEYBOARD',
+  MOUSE: 'MOUSE',
+  PRINTER: 'PRINTER',
+  OTHER: 'OTHER'
+} as const
+
+export type AssetType = (typeof AssetType)[keyof typeof AssetType]
+
+
+export const AssetAssignmentType = {
+  ISSUE: 'ISSUE',
+  TRANSFER: 'TRANSFER',
+  RETURN: 'RETURN',
+  OFFBOARDING: 'OFFBOARDING',
+  LOAN: 'LOAN',
+  REPLACEMENT: 'REPLACEMENT',
+  OFFICE: 'OFFICE'
+} as const
+
+export type AssetAssignmentType = (typeof AssetAssignmentType)[keyof typeof AssetAssignmentType]
+
+
+export const AssetDocumentKind = {
+  RECEIPT: 'RECEIPT',
+  PHOTO: 'PHOTO',
+  HANDOVER: 'HANDOVER',
+  OTHER: 'OTHER'
+} as const
+
+export type AssetDocumentKind = (typeof AssetDocumentKind)[keyof typeof AssetDocumentKind]

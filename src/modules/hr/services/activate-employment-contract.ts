@@ -85,7 +85,7 @@ export async function activateEmploymentContractInTransaction(
       assignments: {
         where: { isCurrent: true },
         take: 1,
-        select: { id: true },
+        select: { id: true, positionId: true },
       },
     },
   });
@@ -156,11 +156,13 @@ export async function activateEmploymentContractInTransaction(
       (employee.positionId !== selectedPosition.id ||
         employee.departmentId !== selectedPosition.departmentId)
     ) {
-      const hasCurrentAssignment = Boolean(employee.assignments[0]);
+      const hasPositionedAssignment = Boolean(
+        employee.assignments[0]?.positionId,
+      );
       const assignmentType =
         contract.changeType === "POSITION_CHANGE"
           ? EmployeeAssignmentType.REASSIGNMENT
-          : hasCurrentAssignment
+          : hasPositionedAssignment
             ? EmployeeAssignmentType.TRANSFER
             : EmployeeAssignmentType.INITIAL_APPOINTMENT;
 

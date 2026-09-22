@@ -4,6 +4,7 @@ import { Printer, X } from "lucide-react";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
+import { closePrintView } from "@/src/lib/close-print-view";
 
 type ReportPrintViewProps = {
   title: string;
@@ -13,6 +14,8 @@ type ReportPrintViewProps = {
   toolbarLabel?: string;
   /** Wider sheet for landscape registers (e.g. payroll paysheet). */
   wide?: boolean;
+  /** Fallback when Close has no same-origin referrer. */
+  closeHref?: string;
   children: React.ReactNode;
 };
 
@@ -23,6 +26,7 @@ export function ReportPrintView({
   generatedAtLabel,
   toolbarLabel,
   wide = false,
+  closeHref = "/reports",
   children,
 }: ReportPrintViewProps) {
   useEffect(() => {
@@ -52,7 +56,7 @@ export function ReportPrintView({
             <Button
               type="button"
               variant="ghost"
-              onClick={() => window.history.back()}
+              onClick={() => closePrintView(closeHref)}
             >
               <X />
               Close

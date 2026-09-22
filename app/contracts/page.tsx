@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
+import { ExpiredContractsCleanupList } from "@/src/modules/hr/components/expired-contracts-cleanup-list";
+import { contractExpiryBadgeVariant } from "@/src/config/ui-colors";
 import { formatMoney, formatDisplayDate } from "@/src/lib/format";
 import { cn } from "@/lib/utils";
 import { getContractMonitoringDashboard } from "@/src/modules/hr/data/get-employment-contracts";
@@ -38,29 +40,25 @@ function label(value: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function expiryLabel(
-  category:
-    | "EXPIRED"
-    | "WITHIN_30_DAYS"
-    | "WITHIN_60_DAYS"
-    | "WITHIN_90_DAYS"
-    | "LATER"
-    | "NO_END_DATE",
-): string {
-  switch (category) {
-    case "EXPIRED":
-      return "Expired";
-    case "WITHIN_30_DAYS":
-      return "Within 30 days";
-    case "WITHIN_60_DAYS":
-      return "Within 60 days";
-    case "WITHIN_90_DAYS":
-      return "Within 90 days";
-    case "NO_END_DATE":
-      return "No end date";
-    default:
-      return "Later";
+function formatExpiryDays(daysUntilExpiry: number | null): string {
+  if (daysUntilExpiry === null) {
+    return "No end date";
   }
+
+  if (daysUntilExpiry < 0) {
+    const elapsed = Math.abs(daysUntilExpiry);
+    return elapsed === 1
+      ? "Expired 1 day ago"
+      : `Expired ${elapsed} days ago`;
+  }
+
+  if (daysUntilExpiry === 0) {
+    return "Ends today";
+  }
+
+  return daysUntilExpiry === 1
+    ? "1 day remaining"
+    : `${daysUntilExpiry} days remaining`;
 }
 
 function parseExpiringFilter(value: string | undefined): ExpiringFilter | null {
@@ -90,6 +88,7 @@ function matchesExpiringFilter(
     | "LATER"
     | "NO_END_DATE",
   filter: ExpiringFilter,
+  status?: string,
 ): boolean {
   switch (filter) {
     case "30":
@@ -99,7 +98,11 @@ function matchesExpiringFilter(
     case "90":
       return category === "WITHIN_90_DAYS";
     case "expired":
-      return category === "EXPIRED";
+      return (
+        category === "EXPIRED" ||
+        status === "EXPIRED" ||
+        status === "TERMINATED"
+      );
     case "none":
       return category === "NO_END_DATE";
   }
@@ -162,9 +165,16 @@ export default async function ContractsPage({
 }: {
   searchParams: SearchParams;
 }) {
-  await requireContractViewAccess();
+  const [capabilities, params, dashboard] = await Promise.all([
+    requireContractViewAccess(),
+    searchParams,
+    getContractMonitoringDashboard(),
+  ]);
+  const canManageContracts = capabilities.canAny(
+    "contracts.manage",
+    "people.manage",
+  );
 
-  const params = await searchParams;
   const expiringFilter = parseExpiringFilter(params.expiring);
   const withinDays = expiringFilter ? null : parseWithinDays(params.within);
   const statusFilter: StatusFilter | null =
@@ -175,10 +185,12 @@ export default async function ContractsPage({
       : null;
   const hasListFilter = Boolean(expiringFilter || withinDays || statusFilter);
 
-  const dashboard = await getContractMonitoringDashboard();
-
   const monitoredContracts = dashboard.contracts.filter(
-    (contract) => contract.isCurrent || contract.expiryCategory === "EXPIRED",
+    (contract) =>
+      contract.isCurrent ||
+      contract.expiryCategory === "EXPIRED" ||
+      contract.status === "EXPIRED" ||
+      contract.status === "TERMINATED",
   );
 
   const statusQueueContracts = statusFilter
@@ -200,7 +212,11 @@ export default async function ContractsPage({
     ? statusQueueContracts
     : expiringFilter
       ? monitoredContracts.filter((contract) =>
-          matchesExpiringFilter(contract.expiryCategory, expiringFilter),
+          matchesExpiringFilter(
+            contract.expiryCategory,
+            expiringFilter,
+            contract.status,
+          ),
         )
       : withinDays
         ? monitoredContracts.filter((contract) =>
@@ -227,6 +243,25 @@ export default async function ContractsPage({
       : withinDays
         ? "Showing current and expired contracts ending within 90 days."
         : null;
+
+  const expiredCleanupRows =
+    expiringFilter === "expired"
+      ? filteredContracts.map((contract) => ({
+          id: contract.id,
+          employeeId: contract.employeeId,
+          employeeName: contract.employeeName,
+          employeeNumber: contract.employeeNumber,
+          contractNumber: contract.contractNumber,
+          positionTitle: contract.positionTitle,
+          endDateLabel: contract.endDate
+            ? formatDisplayDate(contract.endDate)
+            : "None",
+          expiryLabel: formatExpiryDays(contract.daysUntilExpiry),
+          expiryCategory: contract.expiryCategory,
+          statusLabel: label(contract.status),
+          isCurrent: contract.isCurrent,
+        }))
+      : [];
 
   return (
     <PageShell size="xl">
@@ -349,7 +384,9 @@ export default async function ContractsPage({
           <div>
             <p className="text-sm font-medium">Action required</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Expired current contracts should be closed, renewed or amended.
+              {expiringFilter === "expired"
+                ? "Use Delete selected to remove sample or historical expired terms. Prefer renew or close for live employment."
+                : "Expired current contracts should be closed, renewed or amended."}
             </p>
           </div>
         </div>
@@ -375,7 +412,13 @@ export default async function ContractsPage({
           </h2>
         </div>
 
-        {filteredContracts.length === 0 ? (
+        {expiringFilter === "expired" ? (
+          <ExpiredContractsCleanupList
+            contracts={expiredCleanupRows}
+            canManage={canManageContracts}
+            redirectTo="/contracts?expiring=expired"
+          />
+        ) : filteredContracts.length === 0 ? (
           <p className="py-10 text-center text-sm text-muted-foreground">
             {hasListFilter
               ? "No contracts match this filter."
@@ -422,17 +465,11 @@ export default async function ContractsPage({
                   <p className="text-xs text-muted-foreground">Expiry</p>
                   <div className="mt-1">
                     <Badge
-                      variant={
-                        contract.expiryCategory === "EXPIRED" ||
-                        contract.expiryCategory === "WITHIN_30_DAYS"
-                          ? "destructive"
-                          : contract.expiryCategory === "WITHIN_60_DAYS" ||
-                              contract.expiryCategory === "WITHIN_90_DAYS"
-                            ? "secondary"
-                            : "outline"
-                      }
+                      variant={contractExpiryBadgeVariant(
+                        contract.expiryCategory,
+                      )}
                     >
-                      {expiryLabel(contract.expiryCategory)}
+                      {formatExpiryDays(contract.daysUntilExpiry)}
                     </Badge>
                   </div>
                 </div>

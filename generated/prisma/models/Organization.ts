@@ -387,6 +387,9 @@ export type OrganizationWhereInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchListRelationFilter
   bankExportProfiles?: Prisma.BankExportProfileListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  assets?: Prisma.AssetListRelationFilter
+  assetAssignments?: Prisma.AssetAssignmentListRelationFilter
+  assetDocuments?: Prisma.AssetDocumentListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
@@ -464,6 +467,9 @@ export type OrganizationOrderByWithRelationInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchOrderByRelationAggregateInput
   bankExportProfiles?: Prisma.BankExportProfileOrderByRelationAggregateInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
+  assets?: Prisma.AssetOrderByRelationAggregateInput
+  assetAssignments?: Prisma.AssetAssignmentOrderByRelationAggregateInput
+  assetDocuments?: Prisma.AssetDocumentOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -544,6 +550,9 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   achPaymentBatches?: Prisma.AchPaymentBatchListRelationFilter
   bankExportProfiles?: Prisma.BankExportProfileListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
+  assets?: Prisma.AssetListRelationFilter
+  assetAssignments?: Prisma.AssetAssignmentListRelationFilter
+  assetDocuments?: Prisma.AssetDocumentListRelationFilter
 }, "id" | "code">
 
 export type OrganizationOrderByWithAggregationInput = {
@@ -673,6 +682,9 @@ export type OrganizationCreateInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
@@ -750,6 +762,9 @@ export type OrganizationUncheckedCreateInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
@@ -827,6 +842,9 @@ export type OrganizationUpdateInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
@@ -904,6 +922,9 @@ export type OrganizationUncheckedUpdateInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
@@ -1866,6 +1887,48 @@ export type OrganizationUpdateOneWithoutAuditEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAuditEventsInput, Prisma.OrganizationUpdateWithoutAuditEventsInput>, Prisma.OrganizationUncheckedUpdateWithoutAuditEventsInput>
 }
 
+export type OrganizationCreateNestedOneWithoutAssetsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetsInput, Prisma.OrganizationUncheckedCreateWithoutAssetsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssetsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAssetsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetsInput, Prisma.OrganizationUncheckedCreateWithoutAssetsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssetsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAssetsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAssetsInput, Prisma.OrganizationUpdateWithoutAssetsInput>, Prisma.OrganizationUncheckedUpdateWithoutAssetsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutAssetAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetAssignmentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetAssignmentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssetAssignmentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAssetAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetAssignmentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetAssignmentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssetAssignmentsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAssetAssignmentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAssetAssignmentsInput, Prisma.OrganizationUpdateWithoutAssetAssignmentsInput>, Prisma.OrganizationUncheckedUpdateWithoutAssetAssignmentsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutAssetDocumentsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetDocumentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssetDocumentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAssetDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetDocumentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssetDocumentsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAssetDocumentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAssetDocumentsInput, Prisma.OrganizationUpdateWithoutAssetDocumentsInput>, Prisma.OrganizationUncheckedUpdateWithoutAssetDocumentsInput>
+}
+
 export type OrganizationCreateWithoutOrganizationHolidaysInput = {
   id?: string
   code: string
@@ -1940,6 +2003,9 @@ export type OrganizationCreateWithoutOrganizationHolidaysInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutOrganizationHolidaysInput = {
@@ -2016,6 +2082,9 @@ export type OrganizationUncheckedCreateWithoutOrganizationHolidaysInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutOrganizationHolidaysInput = {
@@ -2108,6 +2177,9 @@ export type OrganizationUpdateWithoutOrganizationHolidaysInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutOrganizationHolidaysInput = {
@@ -2184,6 +2256,9 @@ export type OrganizationUncheckedUpdateWithoutOrganizationHolidaysInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutUsersInput = {
@@ -2260,6 +2335,9 @@ export type OrganizationCreateWithoutUsersInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutUsersInput = {
@@ -2336,6 +2414,9 @@ export type OrganizationUncheckedCreateWithoutUsersInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutUsersInput = {
@@ -2428,6 +2509,9 @@ export type OrganizationUpdateWithoutUsersInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutUsersInput = {
@@ -2504,6 +2588,9 @@ export type OrganizationUncheckedUpdateWithoutUsersInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRolesInput = {
@@ -2580,6 +2667,9 @@ export type OrganizationCreateWithoutRolesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRolesInput = {
@@ -2656,6 +2746,9 @@ export type OrganizationUncheckedCreateWithoutRolesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRolesInput = {
@@ -2748,6 +2841,9 @@ export type OrganizationUpdateWithoutRolesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRolesInput = {
@@ -2824,6 +2920,9 @@ export type OrganizationUncheckedUpdateWithoutRolesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutBusinessUnitsInput = {
@@ -2900,6 +2999,9 @@ export type OrganizationCreateWithoutBusinessUnitsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutBusinessUnitsInput = {
@@ -2976,6 +3078,9 @@ export type OrganizationUncheckedCreateWithoutBusinessUnitsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutBusinessUnitsInput = {
@@ -3068,6 +3173,9 @@ export type OrganizationUpdateWithoutBusinessUnitsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBusinessUnitsInput = {
@@ -3144,6 +3252,9 @@ export type OrganizationUncheckedUpdateWithoutBusinessUnitsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLocationsInput = {
@@ -3220,6 +3331,9 @@ export type OrganizationCreateWithoutLocationsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLocationsInput = {
@@ -3296,6 +3410,9 @@ export type OrganizationUncheckedCreateWithoutLocationsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLocationsInput = {
@@ -3388,6 +3505,9 @@ export type OrganizationUpdateWithoutLocationsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLocationsInput = {
@@ -3464,6 +3584,9 @@ export type OrganizationUncheckedUpdateWithoutLocationsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutReferenceDataSetsInput = {
@@ -3540,6 +3663,9 @@ export type OrganizationCreateWithoutReferenceDataSetsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutReferenceDataSetsInput = {
@@ -3616,6 +3742,9 @@ export type OrganizationUncheckedCreateWithoutReferenceDataSetsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutReferenceDataSetsInput = {
@@ -3708,6 +3837,9 @@ export type OrganizationUpdateWithoutReferenceDataSetsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutReferenceDataSetsInput = {
@@ -3784,6 +3916,9 @@ export type OrganizationUncheckedUpdateWithoutReferenceDataSetsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutFeatureControlsInput = {
@@ -3860,6 +3995,9 @@ export type OrganizationCreateWithoutFeatureControlsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutFeatureControlsInput = {
@@ -3936,6 +4074,9 @@ export type OrganizationUncheckedCreateWithoutFeatureControlsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutFeatureControlsInput = {
@@ -4028,6 +4169,9 @@ export type OrganizationUpdateWithoutFeatureControlsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutFeatureControlsInput = {
@@ -4104,6 +4248,9 @@ export type OrganizationUncheckedUpdateWithoutFeatureControlsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDomainSettingsInput = {
@@ -4180,6 +4327,9 @@ export type OrganizationCreateWithoutDomainSettingsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDomainSettingsInput = {
@@ -4256,6 +4406,9 @@ export type OrganizationUncheckedCreateWithoutDomainSettingsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDomainSettingsInput = {
@@ -4348,6 +4501,9 @@ export type OrganizationUpdateWithoutDomainSettingsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDomainSettingsInput = {
@@ -4424,6 +4580,9 @@ export type OrganizationUncheckedUpdateWithoutDomainSettingsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutNumberingSequencesInput = {
@@ -4500,6 +4659,9 @@ export type OrganizationCreateWithoutNumberingSequencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutNumberingSequencesInput = {
@@ -4576,6 +4738,9 @@ export type OrganizationUncheckedCreateWithoutNumberingSequencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutNumberingSequencesInput = {
@@ -4668,6 +4833,9 @@ export type OrganizationUpdateWithoutNumberingSequencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutNumberingSequencesInput = {
@@ -4744,6 +4912,9 @@ export type OrganizationUncheckedUpdateWithoutNumberingSequencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDepartmentsInput = {
@@ -4820,6 +4991,9 @@ export type OrganizationCreateWithoutDepartmentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
@@ -4896,6 +5070,9 @@ export type OrganizationUncheckedCreateWithoutDepartmentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDepartmentsInput = {
@@ -4988,6 +5165,9 @@ export type OrganizationUpdateWithoutDepartmentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
@@ -5064,6 +5244,9 @@ export type OrganizationUncheckedUpdateWithoutDepartmentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeesInput = {
@@ -5140,6 +5323,9 @@ export type OrganizationCreateWithoutEmployeesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeesInput = {
@@ -5216,6 +5402,9 @@ export type OrganizationUncheckedCreateWithoutEmployeesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeesInput = {
@@ -5308,6 +5497,9 @@ export type OrganizationUpdateWithoutEmployeesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
@@ -5384,6 +5576,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLeaveTypesInput = {
@@ -5460,6 +5655,9 @@ export type OrganizationCreateWithoutLeaveTypesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLeaveTypesInput = {
@@ -5536,6 +5734,9 @@ export type OrganizationUncheckedCreateWithoutLeaveTypesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLeaveTypesInput = {
@@ -5628,6 +5829,9 @@ export type OrganizationUpdateWithoutLeaveTypesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLeaveTypesInput = {
@@ -5704,6 +5908,9 @@ export type OrganizationUncheckedUpdateWithoutLeaveTypesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLeaveEntitlementRulesInput = {
@@ -5780,6 +5987,9 @@ export type OrganizationCreateWithoutLeaveEntitlementRulesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput = {
@@ -5856,6 +6066,9 @@ export type OrganizationUncheckedCreateWithoutLeaveEntitlementRulesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLeaveEntitlementRulesInput = {
@@ -5948,6 +6161,9 @@ export type OrganizationUpdateWithoutLeaveEntitlementRulesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput = {
@@ -6024,6 +6240,9 @@ export type OrganizationUncheckedUpdateWithoutLeaveEntitlementRulesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLeaveRequestsInput = {
@@ -6100,6 +6319,9 @@ export type OrganizationCreateWithoutLeaveRequestsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLeaveRequestsInput = {
@@ -6176,6 +6398,9 @@ export type OrganizationUncheckedCreateWithoutLeaveRequestsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLeaveRequestsInput = {
@@ -6268,6 +6493,9 @@ export type OrganizationUpdateWithoutLeaveRequestsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -6344,6 +6572,9 @@ export type OrganizationUncheckedUpdateWithoutLeaveRequestsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeCorrespondencesInput = {
@@ -6420,6 +6651,9 @@ export type OrganizationCreateWithoutEmployeeCorrespondencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeCorrespondencesInput = {
@@ -6496,6 +6730,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeCorrespondencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeCorrespondencesInput = {
@@ -6588,6 +6825,9 @@ export type OrganizationUpdateWithoutEmployeeCorrespondencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeCorrespondencesInput = {
@@ -6664,6 +6904,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeCorrespondencesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCorrespondenceTemplatesInput = {
@@ -6740,6 +6983,9 @@ export type OrganizationCreateWithoutCorrespondenceTemplatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCorrespondenceTemplatesInput = {
@@ -6816,6 +7062,9 @@ export type OrganizationUncheckedCreateWithoutCorrespondenceTemplatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCorrespondenceTemplatesInput = {
@@ -6908,6 +7157,9 @@ export type OrganizationUpdateWithoutCorrespondenceTemplatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCorrespondenceTemplatesInput = {
@@ -6984,6 +7236,9 @@ export type OrganizationUncheckedUpdateWithoutCorrespondenceTemplatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeCredentialsInput = {
@@ -7060,6 +7315,9 @@ export type OrganizationCreateWithoutEmployeeCredentialsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeCredentialsInput = {
@@ -7136,6 +7394,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeCredentialsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeCredentialsInput = {
@@ -7228,6 +7489,9 @@ export type OrganizationUpdateWithoutEmployeeCredentialsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeCredentialsInput = {
@@ -7304,6 +7568,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeCredentialsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeTrainingRecordsInput = {
@@ -7380,6 +7647,9 @@ export type OrganizationCreateWithoutEmployeeTrainingRecordsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeTrainingRecordsInput = {
@@ -7456,6 +7726,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeTrainingRecordsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeTrainingRecordsInput = {
@@ -7548,6 +7821,9 @@ export type OrganizationUpdateWithoutEmployeeTrainingRecordsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeTrainingRecordsInput = {
@@ -7624,6 +7900,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeTrainingRecordsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeQualificationDocumentsInput = {
@@ -7700,6 +7979,9 @@ export type OrganizationCreateWithoutEmployeeQualificationDocumentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeQualificationDocumentsInput = {
@@ -7776,6 +8058,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeQualificationDocumentsInpu
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeQualificationDocumentsInput = {
@@ -7868,6 +8153,9 @@ export type OrganizationUpdateWithoutEmployeeQualificationDocumentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeQualificationDocumentsInput = {
@@ -7944,6 +8232,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeQualificationDocumentsInpu
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeFileChecklistItemsInput = {
@@ -8020,6 +8311,9 @@ export type OrganizationCreateWithoutEmployeeFileChecklistItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeFileChecklistItemsInput = {
@@ -8096,6 +8390,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeFileChecklistItemsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeFileChecklistItemsInput = {
@@ -8188,6 +8485,9 @@ export type OrganizationUpdateWithoutEmployeeFileChecklistItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeFileChecklistItemsInput = {
@@ -8264,6 +8564,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeFileChecklistItemsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeFileUpdateRequestsInput = {
@@ -8340,6 +8643,9 @@ export type OrganizationCreateWithoutEmployeeFileUpdateRequestsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeFileUpdateRequestsInput = {
@@ -8416,6 +8722,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeFileUpdateRequestsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeFileUpdateRequestsInput = {
@@ -8508,6 +8817,9 @@ export type OrganizationUpdateWithoutEmployeeFileUpdateRequestsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeFileUpdateRequestsInput = {
@@ -8584,6 +8896,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeFileUpdateRequestsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeCorrespondenceResponsesInput = {
@@ -8660,6 +8975,9 @@ export type OrganizationCreateWithoutEmployeeCorrespondenceResponsesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeCorrespondenceResponsesInput = {
@@ -8736,6 +9054,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeCorrespondenceResponsesInp
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeCorrespondenceResponsesInput = {
@@ -8828,6 +9149,9 @@ export type OrganizationUpdateWithoutEmployeeCorrespondenceResponsesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeCorrespondenceResponsesInput = {
@@ -8904,6 +9228,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeCorrespondenceResponsesInp
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutAllowanceCategoriesInput = {
@@ -8980,6 +9307,9 @@ export type OrganizationCreateWithoutAllowanceCategoriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutAllowanceCategoriesInput = {
@@ -9056,6 +9386,9 @@ export type OrganizationUncheckedCreateWithoutAllowanceCategoriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutAllowanceCategoriesInput = {
@@ -9148,6 +9481,9 @@ export type OrganizationUpdateWithoutAllowanceCategoriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput = {
@@ -9224,6 +9560,9 @@ export type OrganizationUncheckedUpdateWithoutAllowanceCategoriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutStoredFilesInput = {
@@ -9300,6 +9639,9 @@ export type OrganizationCreateWithoutStoredFilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutStoredFilesInput = {
@@ -9376,6 +9718,9 @@ export type OrganizationUncheckedCreateWithoutStoredFilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutStoredFilesInput = {
@@ -9468,6 +9813,9 @@ export type OrganizationUpdateWithoutStoredFilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutStoredFilesInput = {
@@ -9544,6 +9892,9 @@ export type OrganizationUncheckedUpdateWithoutStoredFilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeFilePacksInput = {
@@ -9620,6 +9971,9 @@ export type OrganizationCreateWithoutEmployeeFilePacksInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeFilePacksInput = {
@@ -9696,6 +10050,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeFilePacksInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeFilePacksInput = {
@@ -9788,6 +10145,9 @@ export type OrganizationUpdateWithoutEmployeeFilePacksInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeFilePacksInput = {
@@ -9864,6 +10224,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeFilePacksInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeLifecycleTemplatesInput = {
@@ -9940,6 +10303,9 @@ export type OrganizationCreateWithoutEmployeeLifecycleTemplatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeLifecycleTemplatesInput = {
@@ -10016,6 +10382,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeLifecycleTemplatesInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeLifecycleTemplatesInput = {
@@ -10108,6 +10477,9 @@ export type OrganizationUpdateWithoutEmployeeLifecycleTemplatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeLifecycleTemplatesInput = {
@@ -10184,6 +10556,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeLifecycleTemplatesInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeOnboardingCasesInput = {
@@ -10260,6 +10635,9 @@ export type OrganizationCreateWithoutEmployeeOnboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeOnboardingCasesInput = {
@@ -10336,6 +10714,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeOnboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeOnboardingCasesInput = {
@@ -10428,6 +10809,9 @@ export type OrganizationUpdateWithoutEmployeeOnboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeOnboardingCasesInput = {
@@ -10504,6 +10888,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeOnboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeOffboardingCasesInput = {
@@ -10580,6 +10967,9 @@ export type OrganizationCreateWithoutEmployeeOffboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeOffboardingCasesInput = {
@@ -10656,6 +11046,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeOffboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeOffboardingCasesInput = {
@@ -10748,6 +11141,9 @@ export type OrganizationUpdateWithoutEmployeeOffboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeOffboardingCasesInput = {
@@ -10824,6 +11220,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeOffboardingCasesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeTaxProfilesInput = {
@@ -10900,6 +11299,9 @@ export type OrganizationCreateWithoutEmployeeTaxProfilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeTaxProfilesInput = {
@@ -10976,6 +11378,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeTaxProfilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeTaxProfilesInput = {
@@ -11068,6 +11473,9 @@ export type OrganizationUpdateWithoutEmployeeTaxProfilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeTaxProfilesInput = {
@@ -11144,6 +11552,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeTaxProfilesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeePriorEmploymentYtdsInput = {
@@ -11220,6 +11631,9 @@ export type OrganizationCreateWithoutEmployeePriorEmploymentYtdsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeePriorEmploymentYtdsInput = {
@@ -11296,6 +11710,9 @@ export type OrganizationUncheckedCreateWithoutEmployeePriorEmploymentYtdsInput =
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeePriorEmploymentYtdsInput = {
@@ -11388,6 +11805,9 @@ export type OrganizationUpdateWithoutEmployeePriorEmploymentYtdsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeePriorEmploymentYtdsInput = {
@@ -11464,6 +11884,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeePriorEmploymentYtdsInput =
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeOpeningYtdBalancesInput = {
@@ -11540,6 +11963,9 @@ export type OrganizationCreateWithoutEmployeeOpeningYtdBalancesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeOpeningYtdBalancesInput = {
@@ -11616,6 +12042,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeOpeningYtdBalancesInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeOpeningYtdBalancesInput = {
@@ -11708,6 +12137,9 @@ export type OrganizationUpdateWithoutEmployeeOpeningYtdBalancesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeOpeningYtdBalancesInput = {
@@ -11784,6 +12216,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeOpeningYtdBalancesInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeePayrollStatutoryOverridesInput = {
@@ -11860,6 +12295,9 @@ export type OrganizationCreateWithoutEmployeePayrollStatutoryOverridesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeePayrollStatutoryOverridesInput = {
@@ -11936,6 +12374,9 @@ export type OrganizationUncheckedCreateWithoutEmployeePayrollStatutoryOverridesI
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeePayrollStatutoryOverridesInput = {
@@ -12028,6 +12469,9 @@ export type OrganizationUpdateWithoutEmployeePayrollStatutoryOverridesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeePayrollStatutoryOverridesInput = {
@@ -12104,6 +12548,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeePayrollStatutoryOverridesI
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeAnnualPayrollProjectionsInput = {
@@ -12180,6 +12627,9 @@ export type OrganizationCreateWithoutEmployeeAnnualPayrollProjectionsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeAnnualPayrollProjectionsInput = {
@@ -12256,6 +12706,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeAnnualPayrollProjectionsIn
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeAnnualPayrollProjectionsInput = {
@@ -12348,6 +12801,9 @@ export type OrganizationUpdateWithoutEmployeeAnnualPayrollProjectionsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeAnnualPayrollProjectionsInput = {
@@ -12424,6 +12880,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeAnnualPayrollProjectionsIn
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeTaxYearAdjustmentsInput = {
@@ -12500,6 +12959,9 @@ export type OrganizationCreateWithoutEmployeeTaxYearAdjustmentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeTaxYearAdjustmentsInput = {
@@ -12576,6 +13038,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeTaxYearAdjustmentsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeTaxYearAdjustmentsInput = {
@@ -12668,6 +13133,9 @@ export type OrganizationUpdateWithoutEmployeeTaxYearAdjustmentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeTaxYearAdjustmentsInput = {
@@ -12744,6 +13212,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeTaxYearAdjustmentsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeEarningTreatmentOverridesInput = {
@@ -12820,6 +13291,9 @@ export type OrganizationCreateWithoutEmployeeEarningTreatmentOverridesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeEarningTreatmentOverridesInput = {
@@ -12896,6 +13370,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeEarningTreatmentOverridesI
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeEarningTreatmentOverridesInput = {
@@ -12988,6 +13465,9 @@ export type OrganizationUpdateWithoutEmployeeEarningTreatmentOverridesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeEarningTreatmentOverridesInput = {
@@ -13064,6 +13544,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeEarningTreatmentOverridesI
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeeBankAccountsInput = {
@@ -13140,6 +13623,9 @@ export type OrganizationCreateWithoutEmployeeBankAccountsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeeBankAccountsInput = {
@@ -13216,6 +13702,9 @@ export type OrganizationUncheckedCreateWithoutEmployeeBankAccountsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeeBankAccountsInput = {
@@ -13308,6 +13797,9 @@ export type OrganizationUpdateWithoutEmployeeBankAccountsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeeBankAccountsInput = {
@@ -13384,6 +13876,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeeBankAccountsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeePayrollAllocationsInput = {
@@ -13460,6 +13955,9 @@ export type OrganizationCreateWithoutEmployeePayrollAllocationsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeePayrollAllocationsInput = {
@@ -13536,6 +14034,9 @@ export type OrganizationUncheckedCreateWithoutEmployeePayrollAllocationsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeePayrollAllocationsInput = {
@@ -13628,6 +14129,9 @@ export type OrganizationUpdateWithoutEmployeePayrollAllocationsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeePayrollAllocationsInput = {
@@ -13704,6 +14208,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeePayrollAllocationsInput = 
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayrollPaymentsInput = {
@@ -13780,6 +14287,9 @@ export type OrganizationCreateWithoutPayrollPaymentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayrollPaymentsInput = {
@@ -13856,6 +14366,9 @@ export type OrganizationUncheckedCreateWithoutPayrollPaymentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayrollPaymentsInput = {
@@ -13948,6 +14461,9 @@ export type OrganizationUpdateWithoutPayrollPaymentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayrollPaymentsInput = {
@@ -14024,6 +14540,9 @@ export type OrganizationUncheckedUpdateWithoutPayrollPaymentsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutBankExportProfilesInput = {
@@ -14100,6 +14619,9 @@ export type OrganizationCreateWithoutBankExportProfilesInput = {
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutBankExportProfilesInput = {
@@ -14176,6 +14698,9 @@ export type OrganizationUncheckedCreateWithoutBankExportProfilesInput = {
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutBankExportProfilesInput = {
@@ -14268,6 +14793,9 @@ export type OrganizationUpdateWithoutBankExportProfilesInput = {
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBankExportProfilesInput = {
@@ -14344,6 +14872,9 @@ export type OrganizationUncheckedUpdateWithoutBankExportProfilesInput = {
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutAchPaymentBatchesInput = {
@@ -14420,6 +14951,9 @@ export type OrganizationCreateWithoutAchPaymentBatchesInput = {
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutAchPaymentBatchesInput = {
@@ -14496,6 +15030,9 @@ export type OrganizationUncheckedCreateWithoutAchPaymentBatchesInput = {
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutAchPaymentBatchesInput = {
@@ -14588,6 +15125,9 @@ export type OrganizationUpdateWithoutAchPaymentBatchesInput = {
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAchPaymentBatchesInput = {
@@ -14664,6 +15204,9 @@ export type OrganizationUncheckedUpdateWithoutAchPaymentBatchesInput = {
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutNisEarningsClassesInput = {
@@ -14740,6 +15283,9 @@ export type OrganizationCreateWithoutNisEarningsClassesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutNisEarningsClassesInput = {
@@ -14816,6 +15362,9 @@ export type OrganizationUncheckedCreateWithoutNisEarningsClassesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutNisEarningsClassesInput = {
@@ -14908,6 +15457,9 @@ export type OrganizationUpdateWithoutNisEarningsClassesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutNisEarningsClassesInput = {
@@ -14984,6 +15536,9 @@ export type OrganizationUncheckedUpdateWithoutNisEarningsClassesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutNisClassZRatesInput = {
@@ -15060,6 +15615,9 @@ export type OrganizationCreateWithoutNisClassZRatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutNisClassZRatesInput = {
@@ -15136,6 +15694,9 @@ export type OrganizationUncheckedCreateWithoutNisClassZRatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutNisClassZRatesInput = {
@@ -15228,6 +15789,9 @@ export type OrganizationUpdateWithoutNisClassZRatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutNisClassZRatesInput = {
@@ -15304,6 +15868,9 @@ export type OrganizationUncheckedUpdateWithoutNisClassZRatesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutNisEligibilityConfigsInput = {
@@ -15380,6 +15947,9 @@ export type OrganizationCreateWithoutNisEligibilityConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutNisEligibilityConfigsInput = {
@@ -15456,6 +16026,9 @@ export type OrganizationUncheckedCreateWithoutNisEligibilityConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutNisEligibilityConfigsInput = {
@@ -15548,6 +16121,9 @@ export type OrganizationUpdateWithoutNisEligibilityConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutNisEligibilityConfigsInput = {
@@ -15624,6 +16200,9 @@ export type OrganizationUncheckedUpdateWithoutNisEligibilityConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayeTaxConfigsInput = {
@@ -15700,6 +16279,9 @@ export type OrganizationCreateWithoutPayeTaxConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayeTaxConfigsInput = {
@@ -15776,6 +16358,9 @@ export type OrganizationUncheckedCreateWithoutPayeTaxConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayeTaxConfigsInput = {
@@ -15868,6 +16453,9 @@ export type OrganizationUpdateWithoutPayeTaxConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayeTaxConfigsInput = {
@@ -15944,6 +16532,9 @@ export type OrganizationUncheckedUpdateWithoutPayeTaxConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutHealthSurchargeConfigsInput = {
@@ -16020,6 +16611,9 @@ export type OrganizationCreateWithoutHealthSurchargeConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutHealthSurchargeConfigsInput = {
@@ -16096,6 +16690,9 @@ export type OrganizationUncheckedCreateWithoutHealthSurchargeConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutHealthSurchargeConfigsInput = {
@@ -16188,6 +16785,9 @@ export type OrganizationUpdateWithoutHealthSurchargeConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutHealthSurchargeConfigsInput = {
@@ -16264,6 +16864,9 @@ export type OrganizationUncheckedUpdateWithoutHealthSurchargeConfigsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutGratuityPoliciesInput = {
@@ -16340,6 +16943,9 @@ export type OrganizationCreateWithoutGratuityPoliciesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutGratuityPoliciesInput = {
@@ -16416,6 +17022,9 @@ export type OrganizationUncheckedCreateWithoutGratuityPoliciesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutGratuityPoliciesInput = {
@@ -16508,6 +17117,9 @@ export type OrganizationUpdateWithoutGratuityPoliciesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutGratuityPoliciesInput = {
@@ -16584,6 +17196,9 @@ export type OrganizationUncheckedUpdateWithoutGratuityPoliciesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutGratuitySettlementsInput = {
@@ -16660,6 +17275,9 @@ export type OrganizationCreateWithoutGratuitySettlementsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutGratuitySettlementsInput = {
@@ -16736,6 +17354,9 @@ export type OrganizationUncheckedCreateWithoutGratuitySettlementsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutGratuitySettlementsInput = {
@@ -16828,6 +17449,9 @@ export type OrganizationUpdateWithoutGratuitySettlementsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutGratuitySettlementsInput = {
@@ -16904,6 +17528,9 @@ export type OrganizationUncheckedUpdateWithoutGratuitySettlementsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutGratuityAccrualEntriesInput = {
@@ -16980,6 +17607,9 @@ export type OrganizationCreateWithoutGratuityAccrualEntriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutGratuityAccrualEntriesInput = {
@@ -17056,6 +17686,9 @@ export type OrganizationUncheckedCreateWithoutGratuityAccrualEntriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutGratuityAccrualEntriesInput = {
@@ -17148,6 +17781,9 @@ export type OrganizationUpdateWithoutGratuityAccrualEntriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutGratuityAccrualEntriesInput = {
@@ -17224,6 +17860,9 @@ export type OrganizationUncheckedUpdateWithoutGratuityAccrualEntriesInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayrollPeriodsInput = {
@@ -17300,6 +17939,9 @@ export type OrganizationCreateWithoutPayrollPeriodsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayrollPeriodsInput = {
@@ -17376,6 +18018,9 @@ export type OrganizationUncheckedCreateWithoutPayrollPeriodsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayrollPeriodsInput = {
@@ -17468,6 +18113,9 @@ export type OrganizationUpdateWithoutPayrollPeriodsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayrollPeriodsInput = {
@@ -17544,6 +18192,9 @@ export type OrganizationUncheckedUpdateWithoutPayrollPeriodsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayRunsInput = {
@@ -17620,6 +18271,9 @@ export type OrganizationCreateWithoutPayRunsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayRunsInput = {
@@ -17696,6 +18350,9 @@ export type OrganizationUncheckedCreateWithoutPayRunsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayRunsInput = {
@@ -17788,6 +18445,9 @@ export type OrganizationUpdateWithoutPayRunsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayRunsInput = {
@@ -17864,6 +18524,9 @@ export type OrganizationUncheckedUpdateWithoutPayRunsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayslipsInput = {
@@ -17940,6 +18603,9 @@ export type OrganizationCreateWithoutPayslipsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayslipsInput = {
@@ -18016,6 +18682,9 @@ export type OrganizationUncheckedCreateWithoutPayslipsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayslipsInput = {
@@ -18108,6 +18777,9 @@ export type OrganizationUpdateWithoutPayslipsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayslipsInput = {
@@ -18184,6 +18856,9 @@ export type OrganizationUncheckedUpdateWithoutPayslipsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayrollLineItemsInput = {
@@ -18260,6 +18935,9 @@ export type OrganizationCreateWithoutPayrollLineItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayrollLineItemsInput = {
@@ -18336,6 +19014,9 @@ export type OrganizationUncheckedCreateWithoutPayrollLineItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayrollLineItemsInput = {
@@ -18428,6 +19109,9 @@ export type OrganizationUpdateWithoutPayrollLineItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayrollLineItemsInput = {
@@ -18504,6 +19188,9 @@ export type OrganizationUncheckedUpdateWithoutPayrollLineItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayrollComponentDefinitionsInput = {
@@ -18580,6 +19267,9 @@ export type OrganizationCreateWithoutPayrollComponentDefinitionsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayrollComponentDefinitionsInput = {
@@ -18656,6 +19346,9 @@ export type OrganizationUncheckedCreateWithoutPayrollComponentDefinitionsInput =
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayrollComponentDefinitionsInput = {
@@ -18748,6 +19441,9 @@ export type OrganizationUpdateWithoutPayrollComponentDefinitionsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayrollComponentDefinitionsInput = {
@@ -18824,6 +19520,9 @@ export type OrganizationUncheckedUpdateWithoutPayrollComponentDefinitionsInput =
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEmployeePayrollRecurringItemsInput = {
@@ -18900,6 +19599,9 @@ export type OrganizationCreateWithoutEmployeePayrollRecurringItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEmployeePayrollRecurringItemsInput = {
@@ -18976,6 +19678,9 @@ export type OrganizationUncheckedCreateWithoutEmployeePayrollRecurringItemsInput
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEmployeePayrollRecurringItemsInput = {
@@ -19068,6 +19773,9 @@ export type OrganizationUpdateWithoutEmployeePayrollRecurringItemsInput = {
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEmployeePayrollRecurringItemsInput = {
@@ -19144,6 +19852,9 @@ export type OrganizationUncheckedUpdateWithoutEmployeePayrollRecurringItemsInput
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutAuditEventsInput = {
@@ -19220,6 +19931,9 @@ export type OrganizationCreateWithoutAuditEventsInput = {
   payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
   achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutAuditEventsInput = {
@@ -19296,6 +20010,9 @@ export type OrganizationUncheckedCreateWithoutAuditEventsInput = {
   payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutAuditEventsInput = {
@@ -19388,6 +20105,9 @@ export type OrganizationUpdateWithoutAuditEventsInput = {
   payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
   achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutAuditEventsInput = {
@@ -19464,6 +20184,1005 @@ export type OrganizationUncheckedUpdateWithoutAuditEventsInput = {
   payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
   achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
   bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAssetsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAssetsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAssetsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetsInput, Prisma.OrganizationUncheckedCreateWithoutAssetsInput>
+}
+
+export type OrganizationUpsertWithoutAssetsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssetsInput, Prisma.OrganizationUncheckedUpdateWithoutAssetsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetsInput, Prisma.OrganizationUncheckedCreateWithoutAssetsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAssetsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssetsInput, Prisma.OrganizationUncheckedUpdateWithoutAssetsInput>
+}
+
+export type OrganizationUpdateWithoutAssetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAssetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAssetAssignmentsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAssetAssignmentsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAssetAssignmentsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetAssignmentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetAssignmentsInput>
+}
+
+export type OrganizationUpsertWithoutAssetAssignmentsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssetAssignmentsInput, Prisma.OrganizationUncheckedUpdateWithoutAssetAssignmentsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetAssignmentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetAssignmentsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAssetAssignmentsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssetAssignmentsInput, Prisma.OrganizationUncheckedUpdateWithoutAssetAssignmentsInput>
+}
+
+export type OrganizationUpdateWithoutAssetAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAssetAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetDocuments?: Prisma.AssetDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAssetDocumentsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAssetDocumentsInput = {
+  id?: string
+  code: string
+  name: string
+  shortName?: string | null
+  legalName?: string | null
+  email?: string | null
+  phone?: string | null
+  website?: string | null
+  status?: $Enums.OrganizationStatus
+  defaultTimeZone?: string
+  defaultCurrency?: string
+  defaultLanguage?: string
+  dateFormat?: string
+  firstDayOfWeek?: number
+  version?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutOrganizationInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutOrganizationInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutOrganizationInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutOrganizationInput
+  businessUnits?: Prisma.BusinessUnitUncheckedCreateNestedManyWithoutOrganizationInput
+  locations?: Prisma.LocationUncheckedCreateNestedManyWithoutOrganizationInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedCreateNestedManyWithoutOrganizationInput
+  featureControls?: Prisma.FeatureControlUncheckedCreateNestedManyWithoutOrganizationInput
+  domainSettings?: Prisma.DomainSettingUncheckedCreateNestedManyWithoutOrganizationInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedCreateNestedManyWithoutOrganizationInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedCreateNestedManyWithoutOrganizationInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedCreateNestedManyWithoutOrganizationInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedCreateNestedManyWithoutOrganizationInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedCreateNestedManyWithoutOrganizationInput
+  storedFiles?: Prisma.StoredFileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedCreateNestedManyWithoutOrganizationInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedCreateNestedManyWithoutOrganizationInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedCreateNestedManyWithoutOrganizationInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedCreateNestedManyWithoutOrganizationInput
+  payRuns?: Prisma.PayRunUncheckedCreateNestedManyWithoutOrganizationInput
+  payslips?: Prisma.PayslipUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedCreateNestedManyWithoutOrganizationInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedCreateNestedManyWithoutOrganizationInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedCreateNestedManyWithoutOrganizationInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedCreateNestedManyWithoutOrganizationInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedCreateNestedManyWithoutOrganizationInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutOrganizationInput
+  assets?: Prisma.AssetUncheckedCreateNestedManyWithoutOrganizationInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAssetDocumentsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetDocumentsInput>
+}
+
+export type OrganizationUpsertWithoutAssetDocumentsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssetDocumentsInput, Prisma.OrganizationUncheckedUpdateWithoutAssetDocumentsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssetDocumentsInput, Prisma.OrganizationUncheckedCreateWithoutAssetDocumentsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAssetDocumentsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssetDocumentsInput, Prisma.OrganizationUncheckedUpdateWithoutAssetDocumentsInput>
+}
+
+export type OrganizationUpdateWithoutAssetDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAssetDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  shortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumOrganizationStatusFieldUpdateOperationsInput | $Enums.OrganizationStatus
+  defaultTimeZone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultCurrency?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLanguage?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  firstDayOfWeek?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutOrganizationNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutOrganizationNestedInput
+  businessUnits?: Prisma.BusinessUnitUncheckedUpdateManyWithoutOrganizationNestedInput
+  locations?: Prisma.LocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  referenceDataSets?: Prisma.ReferenceDataSetUncheckedUpdateManyWithoutOrganizationNestedInput
+  featureControls?: Prisma.FeatureControlUncheckedUpdateManyWithoutOrganizationNestedInput
+  domainSettings?: Prisma.DomainSettingUncheckedUpdateManyWithoutOrganizationNestedInput
+  numberingSequences?: Prisma.NumberingSequenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  allowanceCategories?: Prisma.AllowanceCategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveTypes?: Prisma.LeaveTypeUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveEntitlementRules?: Prisma.LeaveEntitlementRuleUncheckedUpdateManyWithoutOrganizationNestedInput
+  organizationHolidays?: Prisma.OrganizationHolidayUncheckedUpdateManyWithoutOrganizationNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondences?: Prisma.EmployeeCorrespondenceUncheckedUpdateManyWithoutOrganizationNestedInput
+  correspondenceTemplates?: Prisma.CorrespondenceTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCredentials?: Prisma.EmployeeCredentialUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTrainingRecords?: Prisma.EmployeeTrainingRecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeQualificationDocuments?: Prisma.EmployeeQualificationDocumentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileChecklistItems?: Prisma.EmployeeFileChecklistItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFileUpdateRequests?: Prisma.EmployeeFileUpdateRequestUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeCorrespondenceResponses?: Prisma.EmployeeCorrespondenceResponseUncheckedUpdateManyWithoutOrganizationNestedInput
+  storedFiles?: Prisma.StoredFileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeFilePacks?: Prisma.EmployeeFilePackUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeLifecycleTemplates?: Prisma.EmployeeLifecycleTemplateUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOnboardingCases?: Prisma.EmployeeOnboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOffboardingCases?: Prisma.EmployeeOffboardingCaseUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEarningsClasses?: Prisma.NisEarningsClassUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisClassZRates?: Prisma.NisClassZRateUncheckedUpdateManyWithoutOrganizationNestedInput
+  nisEligibilityConfigs?: Prisma.NisEligibilityConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  payeTaxConfigs?: Prisma.PayeTaxConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  healthSurchargeConfigs?: Prisma.HealthSurchargeConfigUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityPolicies?: Prisma.GratuityPolicyUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuitySettlements?: Prisma.EmployeeGratuitySettlementUncheckedUpdateManyWithoutOrganizationNestedInput
+  gratuityAccrualEntries?: Prisma.GratuityAccrualEntryUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxProfiles?: Prisma.EmployeeTaxProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePriorEmploymentYtds?: Prisma.EmployeePriorEmploymentYtdUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeOpeningYtdBalances?: Prisma.EmployeeOpeningYtdBalanceUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollStatutoryOverrides?: Prisma.EmployeePayrollStatutoryOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeAnnualPayrollProjections?: Prisma.EmployeeAnnualPayrollProjectionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeTaxYearAdjustments?: Prisma.EmployeeTaxYearAdjustmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeEarningTreatmentOverrides?: Prisma.EmployeeEarningTreatmentOverrideUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPeriods?: Prisma.PayrollPeriodUncheckedUpdateManyWithoutOrganizationNestedInput
+  payRuns?: Prisma.PayRunUncheckedUpdateManyWithoutOrganizationNestedInput
+  payslips?: Prisma.PayslipUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollLineItems?: Prisma.PayrollLineItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollComponentDefinitions?: Prisma.PayrollComponentDefinitionUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollRecurringItems?: Prisma.EmployeePayrollRecurringItemUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeeBankAccounts?: Prisma.EmployeeBankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  employeePayrollAllocations?: Prisma.EmployeePayrollAllocationUncheckedUpdateManyWithoutOrganizationNestedInput
+  payrollPayments?: Prisma.PayrollPaymentUncheckedUpdateManyWithoutOrganizationNestedInput
+  achPaymentBatches?: Prisma.AchPaymentBatchUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankExportProfiles?: Prisma.BankExportProfileUncheckedUpdateManyWithoutOrganizationNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutOrganizationNestedInput
+  assets?: Prisma.AssetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assetAssignments?: Prisma.AssetAssignmentUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -19527,6 +21246,9 @@ export type OrganizationCountOutputType = {
   achPaymentBatches: number
   bankExportProfiles: number
   auditEvents: number
+  assets: number
+  assetAssignments: number
+  assetDocuments: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -19585,6 +21307,9 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   achPaymentBatches?: boolean | OrganizationCountOutputTypeCountAchPaymentBatchesArgs
   bankExportProfiles?: boolean | OrganizationCountOutputTypeCountBankExportProfilesArgs
   auditEvents?: boolean | OrganizationCountOutputTypeCountAuditEventsArgs
+  assets?: boolean | OrganizationCountOutputTypeCountAssetsArgs
+  assetAssignments?: boolean | OrganizationCountOutputTypeCountAssetAssignmentsArgs
+  assetDocuments?: boolean | OrganizationCountOutputTypeCountAssetDocumentsArgs
 }
 
 /**
@@ -19982,6 +21707,27 @@ export type OrganizationCountOutputTypeCountAuditEventsArgs<ExtArgs extends runt
   where?: Prisma.AuditEventWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAssetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAssetAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetAssignmentWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAssetDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssetDocumentWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -20058,6 +21804,9 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   achPaymentBatches?: boolean | Prisma.Organization$achPaymentBatchesArgs<ExtArgs>
   bankExportProfiles?: boolean | Prisma.Organization$bankExportProfilesArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Organization$auditEventsArgs<ExtArgs>
+  assets?: boolean | Prisma.Organization$assetsArgs<ExtArgs>
+  assetAssignments?: boolean | Prisma.Organization$assetAssignmentsArgs<ExtArgs>
+  assetDocuments?: boolean | Prisma.Organization$assetDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -20184,6 +21933,9 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   achPaymentBatches?: boolean | Prisma.Organization$achPaymentBatchesArgs<ExtArgs>
   bankExportProfiles?: boolean | Prisma.Organization$bankExportProfilesArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Organization$auditEventsArgs<ExtArgs>
+  assets?: boolean | Prisma.Organization$assetsArgs<ExtArgs>
+  assetAssignments?: boolean | Prisma.Organization$assetAssignmentsArgs<ExtArgs>
+  assetDocuments?: boolean | Prisma.Organization$assetDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -20247,6 +21999,9 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     achPaymentBatches: Prisma.$AchPaymentBatchPayload<ExtArgs>[]
     bankExportProfiles: Prisma.$BankExportProfilePayload<ExtArgs>[]
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
+    assets: Prisma.$AssetPayload<ExtArgs>[]
+    assetAssignments: Prisma.$AssetAssignmentPayload<ExtArgs>[]
+    assetDocuments: Prisma.$AssetDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -20717,6 +22472,9 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   achPaymentBatches<T extends Prisma.Organization$achPaymentBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$achPaymentBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AchPaymentBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bankExportProfiles<T extends Prisma.Organization$bankExportProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$bankExportProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankExportProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditEvents<T extends Prisma.Organization$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assets<T extends Prisma.Organization$assetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$assetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assetAssignments<T extends Prisma.Organization$assetAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$assetAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assetDocuments<T extends Prisma.Organization$assetDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$assetDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssetDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -22475,6 +24233,78 @@ export type Organization$auditEventsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.AuditEventScalarFieldEnum | Prisma.AuditEventScalarFieldEnum[]
+}
+
+/**
+ * Organization.assets
+ */
+export type Organization$assetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Asset
+   */
+  select?: Prisma.AssetSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Asset
+   */
+  omit?: Prisma.AssetOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetInclude<ExtArgs> | null
+  where?: Prisma.AssetWhereInput
+  orderBy?: Prisma.AssetOrderByWithRelationInput | Prisma.AssetOrderByWithRelationInput[]
+  cursor?: Prisma.AssetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssetScalarFieldEnum | Prisma.AssetScalarFieldEnum[]
+}
+
+/**
+ * Organization.assetAssignments
+ */
+export type Organization$assetAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssetAssignment
+   */
+  select?: Prisma.AssetAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssetAssignment
+   */
+  omit?: Prisma.AssetAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetAssignmentInclude<ExtArgs> | null
+  where?: Prisma.AssetAssignmentWhereInput
+  orderBy?: Prisma.AssetAssignmentOrderByWithRelationInput | Prisma.AssetAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.AssetAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssetAssignmentScalarFieldEnum | Prisma.AssetAssignmentScalarFieldEnum[]
+}
+
+/**
+ * Organization.assetDocuments
+ */
+export type Organization$assetDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssetDocument
+   */
+  select?: Prisma.AssetDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssetDocument
+   */
+  omit?: Prisma.AssetDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssetDocumentInclude<ExtArgs> | null
+  where?: Prisma.AssetDocumentWhereInput
+  orderBy?: Prisma.AssetDocumentOrderByWithRelationInput | Prisma.AssetDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.AssetDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssetDocumentScalarFieldEnum | Prisma.AssetDocumentScalarFieldEnum[]
 }
 
 /**

@@ -2,11 +2,20 @@ import Link from "next/link";
 import { CircleAlert, CircleCheck, CircleDollarSign } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { ListSearchFilters } from "@/src/components/list-search-filters";
+import {
+  ListSearchFilters,
+  type ActiveFilterChip,
+} from "@/src/components/list-search-filters";
 import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
+import { cn } from "@/lib/utils";
 import { formatMoney } from "@/src/lib/format";
+import { BOARD_MEMBER_UI } from "@/src/modules/hr/lib/workforce-category";
+import {
+  PAY_RUN_PAYEE_GROUP_OPTIONS,
+  payRunPayeeGroupLabel,
+} from "@/src/modules/payroll/lib/pay-run-payee-group";
 import type {
   PayrollSalariesData,
   PayrollSalariesFilters,
@@ -93,10 +102,23 @@ export function PayrollSalariesDirectory({
 }) {
   const filterValues = {
     query: filters.query,
+    payeeGroup: filters.payeeGroup,
   };
   const salaryTotals = summarizeListedSalaries(data.rows);
   const hasMixedCurrencies = salaryTotals.length > 1;
-  const isFiltered = Boolean(filters.query?.trim());
+  const isFiltered = Boolean(
+    filters.query?.trim() || filters.payeeGroup,
+  );
+  const selectedGroupLabel = payRunPayeeGroupLabel(filters.payeeGroup);
+
+  const chips: ActiveFilterChip[] = [];
+  if (filters.payeeGroup && selectedGroupLabel) {
+    chips.push({
+      key: "payeeGroup",
+      value: filters.payeeGroup,
+      label: `Group: ${selectedGroupLabel}`,
+    });
+  }
 
   return (
     <PageShell size="lg">
@@ -104,7 +126,7 @@ export function PayrollSalariesDirectory({
 
       <PageHeader
         title="Salaries"
-        description="Current contract salaries for active employees. Open a payslip preview or payroll setup for detail — this is master pay data, not posted payroll history."
+        description="Current contract pay for active employees, board members, and other payees. Filter by payee group to match how pay runs are split. Master pay data — not posted payroll history."
         backHref="/payroll"
         backLabel="Payroll"
       />
@@ -112,40 +134,83 @@ export function PayrollSalariesDirectory({
       <ListSearchFilters
         basePath="/payroll/salaries"
         clearHref="/payroll/salaries"
-        searchPlaceholder="Name or employee number"
+        searchPlaceholder="Name or reference number"
         searchValue={filters.query ?? ""}
         values={filterValues}
-        fields={[]}
+        chips={chips}
+        fields={[
+          {
+            type: "checkbox",
+            name: "payeeGroup",
+            label: "Payee group",
+            options: PAY_RUN_PAYEE_GROUP_OPTIONS.map((option) => {
+              const count =
+                data.groupCounts.find((row) => row.value === option.value)
+                  ?.count ?? 0;
+              return {
+                value: option.value,
+                label: `${option.label} (${count})`,
+              };
+            }),
+          },
+        ]}
       />
 
       <section>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <CircleDollarSign className="size-4 text-muted-foreground" />
-            <SectionHeading>Salary roster</SectionHeading>
+            <SectionHeading>
+              {selectedGroupLabel
+                ? `${selectedGroupLabel} roster`
+                : "Pay roster"}
+            </SectionHeading>
           </div>
           <span className="text-xs text-muted-foreground">
-            {data.totalCount} employee{data.totalCount === 1 ? "" : "s"}
-            {isFiltered ? " matching search" : ""}
+            {data.totalCount}{" "}
+            {data.totalCount === 1 ? "person" : "people"}
+            {isFiltered ? " matching filters" : ""}
           </span>
         </div>
 
+        {!filters.payeeGroup && data.groupCounts.some((g) => g.count > 0) ? (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {data.groupCounts
+              .filter((group) => group.count > 0)
+              .map((group) => (
+                <Link
+                  key={group.value}
+                  href={`/payroll/salaries?payeeGroup=${group.value}`}
+                  className={cn(
+                    "rounded-md border px-2.5 py-1 text-xs transition-colors",
+                    group.value === "BOARD"
+                      ? BOARD_MEMBER_UI.badge
+                      : "border-border/70 text-muted-foreground hover:border-border hover:bg-muted/40 hover:text-foreground",
+                  )}
+                >
+                  {group.label}: {group.count}
+                </Link>
+              ))}
+          </div>
+        ) : null}
+
         {data.rows.length === 0 ? (
           <p className="py-12 text-center text-sm text-muted-foreground">
-            {filters.query?.trim()
-              ? "No employees match your search."
-              : "No active employees found."}
+            {isFiltered
+              ? "No payees match your filters."
+              : "No active payees found."}
           </p>
         ) : (
           <>
             {salaryTotals.length > 0 ? (
               <div
                 className="mb-6 rounded-lg border border-border/70 bg-muted/20 px-4 py-4"
-                aria-label="Salary totals for listed employees"
+                aria-label="Pay totals for listed people"
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                     Listed totals
+                    {selectedGroupLabel ? ` · ${selectedGroupLabel}` : ""}
                   </p>
                   {hasMixedCurrencies ? (
                     <p className="text-xs text-muted-foreground">
@@ -162,7 +227,7 @@ export function PayrollSalariesDirectory({
                     >
                       <div>
                         <p className="text-xs text-muted-foreground">
-                          Total base salary
+                          Total base pay
                           {hasMixedCurrencies ? ` (${total.currency})` : ""}
                         </p>
                         <p className="mt-1 text-xl font-semibold tabular-nums">
@@ -221,10 +286,10 @@ export function PayrollSalariesDirectory({
 
             <div className="divide-y divide-border/70">
               <div className="hidden gap-4 border-b border-border/70 pb-2 text-xs font-medium tracking-wide text-muted-foreground uppercase md:grid md:grid-cols-[minmax(12rem,1.4fr)_9rem_8rem_7rem_7rem_7rem_7rem_auto]">
-                <span>Employee</span>
-                <span>Department / position</span>
+                <span>Person</span>
+                <span>Department / role</span>
                 <span>Pay frequency</span>
-                <span className="text-right">Base salary</span>
+                <span className="text-right">Base pay</span>
                 <span className="text-right">Allowances</span>
                 <span className="text-right">Gross pay</span>
                 <span className="text-right">Taxable pay</span>
@@ -235,6 +300,7 @@ export function PayrollSalariesDirectory({
                 const setupHref = `/payroll/employees/${row.employeeId}`;
                 const payslipHref = `${setupHref}/payslip?from=salaries`;
                 const currency = row.currency ?? "TTD";
+                const isBoard = row.workforceCategory === "BOARD";
 
                 return (
                   <div
@@ -244,7 +310,25 @@ export function PayrollSalariesDirectory({
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-medium">{row.displayName}</p>
-                        <Badge variant="outline">{row.employeeNumber}</Badge>
+                        {isBoard ? (
+                          <Badge
+                            variant="outline"
+                            className={BOARD_MEMBER_UI.badge}
+                          >
+                            Board
+                          </Badge>
+                        ) : (
+                          <>
+                            <Badge variant="outline">
+                              {row.employeeNumber}
+                            </Badge>
+                            {row.workforceCategoryLabel ? (
+                              <Badge variant="outline">
+                                {row.workforceCategoryLabel}
+                              </Badge>
+                            ) : null}
+                          </>
+                        )}
                         {row.isReady ? (
                           <Badge variant="success">
                             <CircleCheck />
@@ -266,13 +350,17 @@ export function PayrollSalariesDirectory({
 
                     <div>
                       <p className="text-xs text-muted-foreground md:hidden">
-                        Department / position
+                        Department / role
                       </p>
                       <p className="mt-1 text-sm font-medium md:mt-0">
-                        {row.departmentName ?? "Unassigned"}
+                        {isBoard
+                          ? (row.positionTitle ?? "Board member")
+                          : (row.departmentName ?? "Unassigned")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {row.positionTitle ?? "No position"}
+                        {isBoard
+                          ? (row.departmentName ?? "No department")
+                          : (row.positionTitle ?? "No position")}
                       </p>
                     </div>
 
@@ -292,7 +380,7 @@ export function PayrollSalariesDirectory({
 
                     <div className="md:text-right">
                       <p className="text-xs text-muted-foreground md:hidden">
-                        Base salary
+                        Base pay
                       </p>
                       <p className="mt-1 text-sm font-medium tabular-nums md:mt-0">
                         {row.baseSalary != null

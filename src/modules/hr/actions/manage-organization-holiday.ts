@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 
@@ -58,10 +59,10 @@ export async function createOrganizationHoliday(
     };
   }
 
-  const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+    const organization = __sessionOrganizationId
+      ? { id: __sessionOrganizationId }
+      : null;
 
   if (!organization) {
     return {

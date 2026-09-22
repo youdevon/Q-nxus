@@ -13,7 +13,6 @@ import {
   ScrollText,
   Send,
   ShieldCheck,
-  UserRound,
   Wallet,
 } from "lucide-react";
 
@@ -45,9 +44,9 @@ export const REPORT_CATEGORY_LABELS: Record<ReportCategoryId, string> = {
 export const REPORT_DEFINITIONS: ReportDefinition[] = [
   {
     id: "monthly-payroll",
-    title: "Monthly payroll",
+    title: "Posted payroll",
     description:
-      "Gross, deductions, net, employer contributions, and total payroll cost from posted payslips for a selected month.",
+      "Org totals and employee payment history from posted payslips — all employees, selected people, or a department over any month range.",
     href: "/payroll/reports/monthly",
     category: "payroll",
     icon: CalendarRange,
@@ -61,16 +60,6 @@ export const REPORT_DEFINITIONS: ReportDefinition[] = [
     href: "/payroll/reports/remittance",
     category: "payroll",
     icon: Landmark,
-    permissions: PAYROLL_VIEW_CAPABILITIES,
-  },
-  {
-    id: "employee-payment-history",
-    title: "Employee payment history",
-    description:
-      "Posted payment totals by employee, department, or period — including corrections and off-cycle runs.",
-    href: "/payroll/reports/employee",
-    category: "payroll",
-    icon: UserRound,
     permissions: PAYROLL_VIEW_CAPABILITIES,
   },
   {

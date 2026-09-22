@@ -1,6 +1,7 @@
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { getPayRunBatchPrint } from "@/src/modules/payroll/data/get-pay-runs";
 import { renderPayslipsPdf } from "@/src/modules/payroll/lib/payslip-pdf";
+import { sanitizeReportFileName } from "@/src/modules/reports/lib/export-xlsx";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,7 +37,9 @@ export async function GET(_request: Request, { params }: RouteContext) {
     })),
   );
 
-  const fileName = `${batch.runNumber}-payslips.pdf`;
+  const fileName = `${sanitizeReportFileName(
+    `Payslips-${batch.periodName}`,
+  )}.pdf`;
 
   return new Response(new Uint8Array(pdf), {
     headers: {

@@ -33,7 +33,7 @@ export default async function PayRunPrintPage({
   return (
     <PayslipBatchPrintView
       title={`Pay run ${batch.runNumber} · ${batch.periodName}`}
-      subtitle={`${batch.documents.length} included payslip${batch.documents.length === 1 ? "" : "s"} · Print / Save as PDF`}
+      subtitle={`${batch.documents.length} included payslip${batch.documents.length === 1 ? "" : "s"} · up to 3 per Letter`}
       documents={batch.documents.map((doc) => ({
         key: doc.id,
         payslip: doc.payslip,

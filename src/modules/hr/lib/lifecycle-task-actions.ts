@@ -87,7 +87,7 @@ export function resolveOffboardingTaskAction(
     case "REVOKE_ACCESS":
       return {
         label: "Manage access",
-        href: `/administration/access/users`,
+        href: `/administration/access`,
       };
     default:
       return null;

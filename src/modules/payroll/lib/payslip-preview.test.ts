@@ -114,7 +114,6 @@ describe("applyFixedBankAllocations", () => {
     expect(lines).toEqual([
       {
         bankName: "Secondary Bank",
-        accountNumber: "999988887777",
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
@@ -122,7 +121,6 @@ describe("applyFixedBankAllocations", () => {
       },
       {
         bankName: "Primary Bank",
-        accountNumber: "111122223333",
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
@@ -183,7 +181,6 @@ describe("distributeNetToBanks", () => {
     expect(lines).toEqual([
       {
         bankName: "Secondary Bank",
-        accountNumber: "999988887777",
         accountNumberMasked: "••••7777",
         amount: 2_000,
         kind: "FIXED",
@@ -191,7 +188,6 @@ describe("distributeNetToBanks", () => {
       },
       {
         bankName: "Primary Bank",
-        accountNumber: "111122223333",
         accountNumberMasked: "••••3333",
         amount: 8_000,
         kind: "REMAINDER",
@@ -334,7 +330,6 @@ describe("assemblePayslipPreview", () => {
     expect(preview.bankDistribution).toEqual([
       {
         bankName: "Unit Trust",
-        accountNumber: "99887766",
         accountNumberMasked: "••••7766",
         amount: 500,
         kind: "FIXED",
@@ -342,7 +337,6 @@ describe("assemblePayslipPreview", () => {
       },
       {
         bankName: "Republic Bank",
-        accountNumber: "1234567890",
         accountNumberMasked: "••••7890",
         amount: preview.netPay,
         kind: "REMAINDER",

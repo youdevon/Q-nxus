@@ -4,6 +4,7 @@ import { unlink } from "node:fs/promises";
 import { revalidatePath } from "next/cache";
 
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { deleteNotificationsForUsers } from "@/src/modules/admin/lib/delete-user-notifications";
 import {
@@ -67,14 +68,10 @@ async function requireSystemAdminActor(): Promise<
 }
 
 async function resolveOrganizationId(): Promise<string | null> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   return organization?.id ?? null;
 }

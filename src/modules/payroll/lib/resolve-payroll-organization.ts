@@ -1,35 +1,31 @@
 import { prisma } from "@/lib/prisma";
+import { resolveActorOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 /**
  * Resolve the organization for payroll operations.
- * Prefers the actor user's organization; falls back to the oldest org
- * (legacy single-tenant scripts without a user context).
+ * Prefers the actor user's organization, then the session user's organization.
+ * Legacy “oldest org” fallback only when ALLOW_LEGACY_ORG_FALLBACK=true (scripts).
  */
 export async function resolvePayrollOrganization(input?: {
   actorUserId?: string | null;
+  allowLegacyFallback?: boolean;
 }): Promise<{ id: string; name: string; defaultCurrency: string }> {
-  if (input?.actorUserId) {
-    const user = await prisma.user.findUnique({
-      where: { id: input.actorUserId },
-      select: {
-        organization: {
-          select: { id: true, name: true, defaultCurrency: true },
-        },
-      },
-    });
+  const organizationId = await resolveActorOrganizationId({
+    actorUserId: input?.actorUserId,
+    allowLegacyFallback: input?.allowLegacyFallback,
+  });
 
-    if (user?.organization) {
-      return user.organization;
-    }
+  if (!organizationId) {
+    throw new Error("No organization is configured for this user.");
   }
 
   const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
+    where: { id: organizationId },
     select: { id: true, name: true, defaultCurrency: true },
   });
 
   if (!organization) {
-    throw new Error("No organization is configured.");
+    throw new Error("No organization is configured for this user.");
   }
 
   return organization;

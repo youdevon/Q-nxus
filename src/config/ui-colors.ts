@@ -145,6 +145,28 @@ export function recordStatusBadgeVariant(status: string): BadgeVariant {
 }
 
 /** Employment contract lifecycle (ACTIVE, DRAFT, SUPERSEDED, …). */
+/** Contract monitoring expiry column: red ≤30d, yellow ≤90d, green otherwise. */
+export function contractExpiryBadgeVariant(
+  category:
+    | "EXPIRED"
+    | "WITHIN_30_DAYS"
+    | "WITHIN_60_DAYS"
+    | "WITHIN_90_DAYS"
+    | "LATER"
+    | "NO_END_DATE"
+    | string,
+): BadgeVariant {
+  switch (category) {
+    case "WITHIN_30_DAYS":
+      return "destructive";
+    case "WITHIN_60_DAYS":
+    case "WITHIN_90_DAYS":
+      return "warning";
+    default:
+      return "success";
+  }
+}
+
 export function employmentContractStatusBadgeVariant(
   status: string,
 ): BadgeVariant {

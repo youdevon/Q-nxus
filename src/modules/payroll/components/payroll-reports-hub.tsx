@@ -4,7 +4,6 @@ import {
   CalendarDays,
   CalendarRange,
   Landmark,
-  UserRound,
 } from "lucide-react";
 
 import { PageHeader } from "@/src/components/layout/page-header";
@@ -14,18 +13,11 @@ import { PayrollNav } from "./payroll-nav";
 
 const reports = [
   {
-    title: "Monthly payroll",
+    title: "Posted payroll",
     description:
-      "How much the organization paid for a selected month — gross, deductions, net, employer contributions, and total payroll cost from posted payslips.",
+      "Org totals and employee payment history from posted payslips — all employees, selected people, or a department over any month range. Includes corrections and off-cycle runs.",
     href: "/payroll/reports/monthly",
     icon: CalendarRange,
-  },
-  {
-    title: "Employee payment history",
-    description:
-      "Posted payment totals for all employees, one person, or a department over a year, rolling months, or custom month range — including corrections and off-cycle runs.",
-    href: "/payroll/reports/employee",
-    icon: UserRound,
   },
   {
     title: "Year-end summaries",
@@ -53,12 +45,12 @@ export function PayrollReportsHub() {
         description="Posted payroll analytics only. Draft runs and live payslip previews are never included in these totals."
         backHref="/reports"
         backLabel="Reports"
+        icon={BarChart3}
       />
 
       <section>
         <div className="mb-4 flex items-center gap-2">
-          <BarChart3 className="size-4 text-muted-foreground" />
-          <SectionHeading>Reports</SectionHeading>
+          <SectionHeading icon={BarChart3}>Reports</SectionHeading>
         </div>
 
         <div className="divide-y divide-border/70">

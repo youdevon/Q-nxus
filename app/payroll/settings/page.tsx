@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Gift, HeartPulse, Landmark, Shield, Wallet } from "lucide-react";
+import { Gift, HeartPulse, Landmark, Settings, Shield, Wallet } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { PageHeader } from "@/src/components/layout/page-header";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
 import { formatMoney } from "@/src/lib/format";
+import { AchExportSettingsToggle } from "@/src/modules/payroll/components/ach-export-settings-toggle";
 import { PayrollNav } from "@/src/modules/payroll/components/payroll-nav";
 import { getCurrentNisClasses, getNisClassVersions } from "@/src/modules/payroll/data/get-nis-classes";
 import { getCurrentPayeTaxConfig } from "@/src/modules/payroll/data/get-paye-tax-config";
@@ -26,6 +27,10 @@ import {
   computePayeContribution,
   toPayeConfigInput,
 } from "@/src/modules/payroll/lib/paye-contribution";
+import {
+  isPayrollBankingFeatureEnabled,
+  PAYROLL_BANKING_FEATURE_FLAGS,
+} from "@/src/modules/payroll/lib/payroll-banking-flags";
 
 export const metadata: Metadata = {
   title: "Payroll Settings",
@@ -37,13 +42,16 @@ export default async function PayrollSettingsPage() {
   const capabilities = await requirePayrollViewAccess();
   const canManage = capabilities.can("payroll.manage");
 
-  const [nisVersions, currentNisClasses, payeConfig, healthConfig, gratuityPolicy] =
+  const [nisVersions, currentNisClasses, payeConfig, healthConfig, gratuityPolicy, achExportEnabled] =
     await Promise.all([
       getNisClassVersions(),
       getCurrentNisClasses(),
       getCurrentPayeTaxConfig(),
       getCurrentHealthSurchargeConfig(),
       getCurrentGratuityPolicy(),
+      isPayrollBankingFeatureEnabled(
+        PAYROLL_BANKING_FEATURE_FLAGS.ACH_EXPORT_ENABLED,
+      ),
     ]);
 
   const currentNisVersion =
@@ -78,13 +86,13 @@ export default async function PayrollSettingsPage() {
         description="Central Trinidad & Tobago statutory configuration — NIS earnings classes, PAYE, Health Surcharge, and gratuity."
         backHref="/payroll"
         backLabel="Payroll"
+        icon={Settings}
       />
 
       <section>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Shield className="size-4 text-muted-foreground" />
-            <SectionHeading>NIS earnings classes</SectionHeading>
+            <SectionHeading icon={Shield}>NIS earnings classes</SectionHeading>
             {currentNisVersion?.isCurrent ? (
               <Badge variant="success">In effect</Badge>
             ) : null}
@@ -149,8 +157,7 @@ export default async function PayrollSettingsPage() {
       <section className="mt-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Landmark className="size-4 text-muted-foreground" />
-            <SectionHeading>PAYE (income tax)</SectionHeading>
+            <SectionHeading icon={Landmark}>PAYE (income tax)</SectionHeading>
             {payeConfig?.isCurrent ? (
               <Badge variant="success">In effect</Badge>
             ) : null}
@@ -208,8 +215,7 @@ export default async function PayrollSettingsPage() {
       <section className="mt-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <HeartPulse className="size-4 text-muted-foreground" />
-            <SectionHeading>Health Surcharge</SectionHeading>
+            <SectionHeading icon={HeartPulse}>Health Surcharge</SectionHeading>
             {healthConfig?.isCurrent ? (
               <Badge variant="success">In effect</Badge>
             ) : null}
@@ -265,8 +271,7 @@ export default async function PayrollSettingsPage() {
       <section className="mt-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Gift className="size-4 text-muted-foreground" />
-            <SectionHeading>Gratuity</SectionHeading>
+            <SectionHeading icon={Gift}>Gratuity</SectionHeading>
             {gratuityPolicy?.isCurrent ? (
               <Badge variant="success">In effect</Badge>
             ) : null}
@@ -317,8 +322,7 @@ export default async function PayrollSettingsPage() {
       <section className="mt-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Landmark className="size-4 text-muted-foreground" />
-            <SectionHeading>Financial institutions</SectionHeading>
+            <SectionHeading icon={Landmark}>Financial institutions</SectionHeading>
           </div>
 
           <Button
@@ -331,16 +335,43 @@ export default async function PayrollSettingsPage() {
         </div>
 
         <p className="mb-4 text-sm text-muted-foreground">
-          Bank directory for employee payroll destinations. ACH routing codes
-          stay blank until confirmed (REQUIRES_CONFIRMATION).
+          Bank directory for employee payroll destinations. For FCB ACH salary
+          files, manage participant routing under{" "}
+          <Link
+            href="/payroll/settings/ach/banks"
+            className="underline underline-offset-2"
+          >
+            ACH banks & routing
+          </Link>
+          .
         </p>
       </section>
 
       <section className="mt-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Landmark className="size-4 text-muted-foreground" />
-            <SectionHeading>Bank export profiles</SectionHeading>
+            <SectionHeading icon={Landmark}>ACH banks & routing</SectionHeading>
+          </div>
+
+          <Button
+            nativeButton={false}
+            variant="outline"
+            render={<Link href="/payroll/settings/ach/banks" />}
+          >
+            {canManage ? "Manage ACH banks" : "View ACH banks"}
+          </Button>
+        </div>
+
+        <p className="mb-4 text-sm text-muted-foreground">
+          Add or enable Trinidad & Tobago banks that support domestic ACH
+          credits (9-digit routing, ACH flag, optional account length hints).
+        </p>
+      </section>
+
+      <section className="mt-10">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <SectionHeading icon={Landmark}>Bank export profiles</SectionHeading>
           </div>
 
           <Button
@@ -352,10 +383,29 @@ export default async function PayrollSettingsPage() {
           </Button>
         </div>
 
+        <div className="mb-4">
+          <AchExportSettingsToggle
+            enabled={achExportEnabled}
+            canManage={canManage}
+          />
+        </div>
+
+        <div className="mb-4">
+          <Button
+            nativeButton={false}
+            variant="outline"
+            size="sm"
+            render={<Link href="/payroll/settings/ach" />}
+          >
+            {canManage ? "Configure ACH format" : "View ACH format"}
+          </Button>
+        </div>
+
         <p className="mb-4 text-sm text-muted-foreground">
-          Manual register, First Citizens manual-entry worksheet, and generic CSV
-          adapters. First Citizens import-file download stays disabled until the
-          bank confirms Default Transactions layout.{" "}
+          Manual register, First Citizens manual-entry worksheet, First Citizens
+          NACHA ACH import file (
+          <code className="text-[11px]">FCB_TT_LEGACY_NACHA_NO_HEADER_V1</code>
+          ), and generic CSV adapters.{" "}
           <Link
             href="/payroll/payment-instructions/import"
             className="underline underline-offset-2"
@@ -369,8 +419,7 @@ export default async function PayrollSettingsPage() {
       <section className="mt-10">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Wallet className="size-4 text-muted-foreground" />
-            <SectionHeading>Recurring components</SectionHeading>
+            <SectionHeading icon={Wallet}>Recurring components</SectionHeading>
           </div>
 
           <Button

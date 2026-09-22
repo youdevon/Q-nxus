@@ -298,7 +298,7 @@ export function PayslipDocument({
       {showWarnings && !isOfficial && payslip.warnings.length > 0 ? (
         <section
           role="status"
-          className="mb-3 rounded-lg border border-amber-500/25 bg-amber-500/5 px-3 py-2.5 print:mb-0 print:rounded-none print:border-border print:bg-transparent"
+          className="mb-3 rounded-lg border border-amber-500/25 bg-amber-500/5 px-3 py-2.5 print:hidden"
         >
           <div className="flex items-start gap-2">
             <CircleAlert className="mt-0.5 size-3.5 shrink-0 text-amber-700 dark:text-amber-400 print:text-foreground" />
@@ -316,7 +316,7 @@ export function PayslipDocument({
         </section>
       ) : null}
 
-      <article className="overflow-hidden rounded-xl border border-border/80 bg-background print:rounded-none print:border print:border-border">
+      <article className="min-w-0 overflow-x-auto overflow-y-visible rounded-xl border border-border/80 bg-background print:overflow-visible print:rounded-none print:border print:border-border">
         <header className="border-b border-border/70 bg-muted/25 px-4 py-3 sm:px-5 print:bg-transparent print:px-2.5 print:py-1.5">
           <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2 print:gap-y-0.5">
             <div className="min-w-0">

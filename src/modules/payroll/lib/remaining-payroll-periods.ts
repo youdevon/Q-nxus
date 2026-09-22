@@ -4,6 +4,8 @@
  * Fortnightly / weekly require a full pay-period calendar (later).
  */
 
+import { toStatutoryAsOfDate } from "@/src/modules/payroll/lib/statutory-as-of";
+
 export type PayFrequencyCode =
   | "WEEKLY"
   | "FORTNIGHTLY"
@@ -21,12 +23,12 @@ export type RemainingPayrollPeriodsInput = {
    * When set, projection ends on this date (contract end / termination),
    * not 31 Dec of the tax year.
    */
-  employmentEndDate?: Date | null;
+  employmentEndDate?: Date | string | null;
   /**
    * When set, months before this hire date in the tax year are excluded
    * (Scenario 3 — mid-year joiner with no prior employment).
    */
-  employmentStartDate?: Date | null;
+  employmentStartDate?: Date | string | null;
 };
 
 export type RemainingPayrollPeriodsResult = {
@@ -42,10 +44,8 @@ export type RemainingPayrollPeriodsResult = {
   notes: string[];
 };
 
-function utcDay(value: Date): Date {
-  return new Date(
-    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()),
-  );
+function utcDay(value: Date | string): Date {
+  return toStatutoryAsOfDate(value);
 }
 
 function isoDate(value: Date): string {
@@ -80,7 +80,7 @@ export function countRemainingMonthlyPeriods(input: {
   asOfDate: Date;
   projectionEndDate: Date;
   /** Exclude month-ends strictly before the hire month. */
-  employmentStartDate?: Date | null;
+  employmentStartDate?: Date | string | null;
 }): { periodsElapsed: number; remainingPeriods: number } {
   const ends = listRemainingMonthlyPeriodEnds(input);
   const start = yearStart(input.taxYear);
@@ -126,7 +126,7 @@ export function listRemainingMonthlyPeriodEnds(input: {
   taxYear: number;
   asOfDate: Date;
   projectionEndDate: Date;
-  employmentStartDate?: Date | null;
+  employmentStartDate?: Date | string | null;
 }): Date[] {
   const start = yearStart(input.taxYear);
   const end = clampDate(
@@ -278,7 +278,7 @@ export function resolveRemainingPayrollPeriods(
  * Clamp hire date into the tax year (Jan 1 if hired earlier / unknown year).
  */
 export function employmentStartInTaxYear(
-  hireDate: Date | null | undefined,
+  hireDate: Date | string | null | undefined,
   taxYear: number,
 ): Date {
   const start = yearStart(taxYear);
@@ -301,10 +301,10 @@ export function employmentStartInTaxYear(
  */
 export function countEmploymentMonthlyPeriods(input: {
   taxYear: number;
-  employmentStartDate: Date | null | undefined;
-  employmentEndDate?: Date | null;
+  employmentStartDate: Date | string | null | undefined;
+  employmentEndDate?: Date | string | null;
   /** Current payroll period end (inclusive in elapsed). */
-  periodEnd: Date;
+  periodEnd: Date | string;
 }): {
   employmentStartUsed: string | null;
   periodsInEmploymentYear: number;

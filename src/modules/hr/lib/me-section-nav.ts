@@ -23,8 +23,8 @@ export type MeSectionNavItem = {
 };
 
 /**
- * My Profile hamburger destinations — in-page section navigation for `/me/*`.
- * Not the People workspace menu.
+ * My Profile section destinations — used for header icon resolution.
+ * Primary navigation is `meProfileTabs`.
  */
 export const meSectionNavItems: readonly MeSectionNavItem[] = [
   {

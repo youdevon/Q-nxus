@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
@@ -45,6 +46,10 @@ export default async function LoginPage() {
         <p className="mt-8 text-center text-xs text-muted-foreground">
           {chrome.organizationName}
           {chrome.organizationCode ? ` · ${chrome.organizationCode}` : ""}
+          {" · "}
+          <Link href="/privacy" className="underline-offset-4 hover:underline">
+            Privacy notice
+          </Link>
         </p>
       </div>
     </div>

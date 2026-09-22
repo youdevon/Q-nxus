@@ -4,6 +4,7 @@ import {
   Prisma,
 } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import {
   employeeDirectoryOrderBy,
   parseEmployeeDirectorySort,
@@ -83,14 +84,10 @@ export function isEmployeeDirectoryListing(
 export async function getEmployees(
   filters: EmployeeDirectoryFilters,
 ): Promise<EmployeeDirectoryData> {
-  const organization = await prisma.organization.findFirst({
-    orderBy: {
-      createdAt: "asc",
-    },
-    select: {
-      id: true,
-    },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+  const organization = __sessionOrganizationId
+    ? { id: __sessionOrganizationId }
+    : null;
 
   const { sort, order } = parseEmployeeDirectorySort(filters);
 
@@ -309,10 +306,10 @@ export async function searchEmployeeDirectoryLive(
     return [];
   }
 
-  const organization = await prisma.organization.findFirst({
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
+  const __sessionOrganizationId = await getSessionOrganizationId();
+    const organization = __sessionOrganizationId
+      ? { id: __sessionOrganizationId }
+      : null;
 
   if (!organization) {
     return [];

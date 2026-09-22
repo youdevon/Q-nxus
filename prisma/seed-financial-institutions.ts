@@ -5,6 +5,7 @@ import {
   TT_FINANCIAL_INSTITUTIONS,
   type TtFinancialInstitutionCategoryId,
 } from "../src/modules/payroll/lib/tt-financial-institutions";
+import { defaultAchAccountLength } from "../src/modules/payroll/lib/ach/ach-account-length-defaults";
 import { PAYROLL_BANKING_FEATURE_DEFAULTS } from "../src/modules/payroll/lib/payroll-banking-flags";
 import { ConfigurationStatus } from "../generated/prisma/client";
 
@@ -64,6 +65,15 @@ export async function seedFinancialInstitutions(
     const isCommercial = COMMERCIAL_BANK_CATALOG_KEYS.has(entry.id);
     const id = stableInstitutionId(entry.id);
     const routingCode = entry.routingCode?.trim() || null;
+    const accountDefaults = routingCode
+      ? defaultAchAccountLength(routingCode)
+      : null;
+    const accountLengthPatch = accountDefaults
+      ? {
+          accountNumberMinLength: accountDefaults.min,
+          accountNumberMaxLength: accountDefaults.max,
+        }
+      : {};
 
     await prisma.financialInstitution.upsert({
       where: { catalogKey: entry.id },
@@ -76,6 +86,8 @@ export async function seedFinancialInstitutions(
         currencyCode: "TTD",
         // Apply catalog ABA when known; otherwise leave operator-confirmed codes.
         ...(routingCode ? { routingCode } : {}),
+        // Commercial banks with a known ABA are ACH credit participants by default.
+        ...(routingCode && isCommercial ? { supportsAchCredits: true } : {}),
         supportsPayrollDeposits: isCommercial || entry.category === "CREDIT_UNIONS",
         isSelectableForEmployees: true,
         isActive: true,
@@ -92,7 +104,8 @@ export async function seedFinancialInstitutions(
         currencyCode: "TTD",
         achParticipantCode: null,
         routingCode,
-        supportsAchCredits: false,
+        ...accountLengthPatch,
+        supportsAchCredits: Boolean(routingCode && isCommercial),
         supportsAchDebits: false,
         supportsPayrollDeposits: isCommercial || entry.category === "CREDIT_UNIONS",
         supportsSplitDeposits: true,
@@ -251,33 +264,35 @@ export async function seedBankExportProfiles(
       },
     },
     update: {
-      name: "First Citizens import file (disabled)",
+      name: "First Citizens ACH import file",
       description:
-        "Disabled until First Citizens confirms Default Transactions / NACHA layout. Do not label downloads as bank-compatible.",
+        "FCB TT Legacy NACHA no-header salary file (FCB_ACH_SALARY_YYYYMMDD.txt) for First Citizens Business Online.",
       adapterKind: "FIRST_CITIZENS_IMPORT",
       isDefault: false,
-      isPlaceholder: true,
+      isPlaceholder: false,
       isActive: true,
       configurationJson: {
         ...DEFAULT_FIRST_CITIZENS_CONFIGURATION,
-        exportFormat: "IMPORT_DISABLED",
-        importFileDisabled: true,
+        exportFormat: "FCB_TT_LEGACY_NACHA_NO_HEADER_V1",
+        importFileDisabled: false,
+        companyAchId: null,
       },
     },
     create: {
       organizationId,
       code: "FCB_IMPORT",
-      name: "First Citizens import file (disabled)",
+      name: "First Citizens ACH import file",
       description:
-        "Disabled until First Citizens confirms Default Transactions / NACHA layout. Do not label downloads as bank-compatible.",
+        "FCB TT Legacy NACHA no-header salary file (FCB_ACH_SALARY_YYYYMMDD.txt) for First Citizens Business Online.",
       adapterKind: "FIRST_CITIZENS_IMPORT",
       isDefault: false,
-      isPlaceholder: true,
+      isPlaceholder: false,
       isActive: true,
       configurationJson: {
         ...DEFAULT_FIRST_CITIZENS_CONFIGURATION,
-        exportFormat: "IMPORT_DISABLED",
-        importFileDisabled: true,
+        exportFormat: "FCB_TT_LEGACY_NACHA_NO_HEADER_V1",
+        importFileDisabled: false,
+        companyAchId: null,
       },
     },
   });

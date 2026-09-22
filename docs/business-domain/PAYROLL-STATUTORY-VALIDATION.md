@@ -54,6 +54,24 @@ muddy PAYE (current-employer vs other-employer credits). Same rule for
 `EmployeeTaxProfile` vs `PayrollProfile`, and draft `PayrollLineItem` vs
 frozen `Payslip.snapshot` — see Architecture §6 “Payroll complementary stores”.
 
+## Prior-month NIS / PAYE corrections (catch-up)
+
+Posted payslips and prior ACH files are **immutable**. Never edit a posted slip
+to fix last month’s NIS/PAYE. Balance the employee in a new controlled event.
+
+| Need | Preferred path | Notes |
+|------|----------------|-------|
+| Fix remittance / YTD for the **wrong month** | **CORRECTION** run on that posted pay run | Add signed `CORRECTION_DEDUCTION` with exact label `NIS (employee)` or `PAYE (income tax)` (positive = recover, negative = refund) |
+| Catch up only in **this** month’s withholding (bank already paid last month) | **Statutory override** on current period end | Absolute amount = normal ± prior error; maker-checker approve → recalculate draft run |
+| Large refund (below zero not allowed on override) | **CORRECTION** signed line | Overrides floor at 0 |
+
+**Do not** use free-text Other deduction labels (remittance / YTD miss them),
+prior-employment YTD (wrong bucket), or OFF_CYCLE when you only need a statutory
+delta. Cumulative PAYE may partly self-correct next month via YTD; **NIS does not**.
+
+Draft paysheet advanced lines include **NIS catch-up** / **PAYE catch-up** presets
+that apply the exact remittance labels.
+
 ## Prior-employer YTD (Phase 3)
 
 `EmployeePriorEmploymentYtd` stores mid-year joiner prior taxable income / PAYE / NIS / Health totals (plus optional TD4, payslip, or letter attachments via `StoredFile`).

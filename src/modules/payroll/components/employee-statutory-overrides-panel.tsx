@@ -113,7 +113,10 @@ function RequestOverrideForm({
         <p className="text-sm font-medium">Request period override</p>
         <p className="text-xs text-muted-foreground">
           Maker-checker: save a draft or submit for approval. Amounts replace
-          calculated PAYE / NIS / Health for the selected duration.
+          calculated PAYE / NIS / Health for the selected duration. For a
+          prior-month error already paid by bank, set this month&apos;s absolute
+          amount to <span className="font-medium">normal ± catch-up</span>{" "}
+          (overrides cannot go below 0 — large refunds need a CORRECTION run).
         </p>
       </div>
       <div className="space-y-1.5">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { CalendarDays, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,6 +15,10 @@ import {
   createMonthlyPayPeriod,
   type PayRunFormState,
 } from "@/src/modules/payroll/actions/manage-pay-run";
+import {
+  PAY_RUN_PAYEE_GROUP_OPTIONS,
+  type PayRunPayeeGroupValue,
+} from "@/src/modules/payroll/lib/pay-run-payee-group";
 import { PayrollNav } from "./payroll-nav";
 
 const initialState: PayRunFormState = {
@@ -24,14 +28,23 @@ const initialState: PayRunFormState = {
 
 export function CreatePayPeriodForm({
   defaultPeriodKey,
-  readyCount,
+  readyCounts,
 }: {
   defaultPeriodKey: string;
-  readyCount: number;
+  readyCounts: Record<PayRunPayeeGroupValue, number>;
 }) {
   const [state, formAction, pending] = useActionState(
     createMonthlyPayPeriod,
     initialState,
+  );
+  const [payeeGroup, setPayeeGroup] =
+    useState<PayRunPayeeGroupValue>("EMPLOYEE");
+
+  const readyCount = readyCounts[payeeGroup] ?? 0;
+  const selectedOption = useMemo(
+    () =>
+      PAY_RUN_PAYEE_GROUP_OPTIONS.find((option) => option.value === payeeGroup),
+    [payeeGroup],
   );
 
   useEffect(() => {
@@ -47,7 +60,7 @@ export function CreatePayPeriodForm({
 
         <PageHeader
           title="New pay period"
-          description="Creates a monthly payroll period and draft pay run for all payroll-ready employees. Snapshots are computed from the current payslip preview rules."
+          description="Creates a monthly payroll period (or reuses one) and a draft pay run for one payee group only — employees and board members stay in separate runs."
           backHref="/payroll/runs"
           backLabel="Pay runs"
           actions={
@@ -94,20 +107,64 @@ export function CreatePayPeriodForm({
                 </p>
               ) : (
                 <p className="text-xs text-muted-foreground">
-                  Trinidad monthly default. Frequency remains MONTHLY for this
-                  slice.
+                  One regular run per group per month. Older runs without a
+                  group count as Employees.
                 </p>
               )}
             </div>
 
             <div className="space-y-2">
-              <p className="text-sm font-medium">Payroll-ready employees</p>
+              <p className="text-sm font-medium">Ready in selected group</p>
               <p className="text-2xl font-semibold">{readyCount}</p>
               <p className="text-xs text-muted-foreground">
-                Only ready employees are included. Create fails if any selected
-                employee fails the readiness gate at calculation time.
+                Only payroll-ready people in{" "}
+                {selectedOption?.label.toLowerCase() ?? "this group"} are
+                included.
               </p>
             </div>
+          </div>
+
+          <div className="mt-6 space-y-3">
+            <label className="text-sm font-medium" htmlFor="payeeGroup">
+              Payee group
+            </label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {PAY_RUN_PAYEE_GROUP_OPTIONS.map((option) => {
+                const count = readyCounts[option.value] ?? 0;
+                const selected = payeeGroup === option.value;
+                return (
+                  <label
+                    key={option.value}
+                    className={`cursor-pointer rounded-lg border px-3 py-3 transition-colors ${
+                      selected
+                        ? "border-border bg-muted/50"
+                        : "border-border/60 hover:border-border hover:bg-muted/30"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="payeeGroup"
+                      value={option.value}
+                      checked={selected}
+                      onChange={() => setPayeeGroup(option.value)}
+                      className="sr-only"
+                    />
+                    <p className="text-sm font-medium">{option.label}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {option.description}
+                    </p>
+                    <p className="mt-2 text-xs tabular-nums text-muted-foreground">
+                      {count} ready
+                    </p>
+                  </label>
+                );
+              })}
+            </div>
+            {state.fieldErrors?.payeeGroup ? (
+              <p className="text-xs text-destructive">
+                {state.fieldErrors.payeeGroup}
+              </p>
+            ) : null}
           </div>
 
           <div className="mt-5 space-y-2">

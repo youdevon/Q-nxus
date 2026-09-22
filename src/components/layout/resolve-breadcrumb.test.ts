@@ -88,7 +88,28 @@ describe("employee route breadcrumbs", () => {
     ]);
     expect(labels("/people/employees/new")).toEqual([
       "Employees",
-      "New employee",
+      "New person",
+    ]);
+    expect(labels("/people/board/new")).toEqual([
+      "Employees",
+      "Board",
+      "New board member",
+    ]);
+    // Header breadcrumbs keep the last three crumbs (Payroll is implied by nav).
+    expect(labels("/payroll/settings/ach/banks")).toEqual([
+      "Settings",
+      "ACH",
+      "Banks & routing",
+    ]);
+    expect(labels("/payroll/settings/ach")).toEqual([
+      "Payroll",
+      "Settings",
+      "ACH",
+    ]);
+    expect(labels("/payroll/settings/institutions")).toEqual([
+      "Payroll",
+      "Settings",
+      "Financial institutions",
     ]);
   });
 

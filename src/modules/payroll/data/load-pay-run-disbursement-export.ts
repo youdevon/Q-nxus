@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { decryptAccountNumber } from "@/src/modules/payroll/lib/bank-account-crypto";
 import {
   buildPayrollDisbursementRows,
@@ -77,8 +78,20 @@ export async function loadPayRunDisbursementExport(
     requiresVerifiedBankAccounts(),
   ]);
 
-  const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return {
+      ok: false,
+      status: 404,
+      body: {
+        error: "PAY_RUN_NOT_FOUND",
+        message: "Pay run not found.",
+      },
+    };
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId },
     include: {
       payrollPeriod: {
         select: {

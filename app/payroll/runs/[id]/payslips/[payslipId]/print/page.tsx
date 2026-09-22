@@ -34,6 +34,7 @@ export default async function StoredPayslipPrintPage({
       ytdBreakdown={result.ytdBreakdown}
       projectedTaxYearPosition={result.projectedTaxYearPosition}
       isOfficial={result.isPosted}
+      closeHref={`/payroll/runs/${id}/payslips/${payslipId}`}
     />
   );
 }

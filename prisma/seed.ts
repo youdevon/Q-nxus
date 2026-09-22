@@ -722,8 +722,12 @@ async function main(): Promise<void> {
     select: { id: true },
   });
   if (organization) {
-    const { seedGeneralDepartment } = await import("./seed-departments");
+    const {
+      seedGeneralDepartment,
+      seedBoardDepartmentAndPositions,
+    } = await import("./seed-departments");
     await seedGeneralDepartment(prisma, organization.id);
+    await seedBoardDepartmentAndPositions(prisma, organization.id);
     await seedBankExportProfiles(prisma, organization.id);
     const { seedGratuityPolicies } = await import("./seed-gratuity-policy");
     await seedGratuityPolicies(prisma, organization.id);

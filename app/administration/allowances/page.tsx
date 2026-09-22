@@ -38,7 +38,7 @@ export default async function AllowanceCategoriesPage() {
         }
       />
 
-      <section className="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-8 md:grid-cols-3">
         <div>
           <p className="text-xs text-muted-foreground">Categories</p>
           <p className="mt-1 text-2xl font-semibold">{categories.length}</p>
@@ -57,18 +57,12 @@ export default async function AllowanceCategoriesPage() {
             {categories.filter((category) => category.isTaxableDefault).length}
           </p>
         </div>
-
-        <div>
-          <p className="text-xs text-muted-foreground">Gratuity eligible</p>
-          <p className="mt-1 text-2xl font-semibold">
-            {
-              categories.filter(
-                (category) => category.includedInGratuityDefault,
-              ).length
-            }
-          </p>
-        </div>
       </section>
+
+      <p className="text-xs text-muted-foreground">
+        Contract gratuity is based on base salary only. Allowances never enter
+        the gratuity calculation.
+      </p>
 
       <section>
         <div className="mb-4 flex items-center gap-2">
@@ -88,7 +82,7 @@ export default async function AllowanceCategoriesPage() {
               <Link
                 key={category.id}
                 href={`/administration/allowances/${category.id}`}
-                className="grid gap-5 py-5 hover:bg-muted/20 md:grid-cols-[1fr_10rem_10rem_10rem]"
+                className="grid gap-5 py-5 hover:bg-muted/20 md:grid-cols-[1fr_10rem_10rem]"
               >
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -119,15 +113,6 @@ export default async function AllowanceCategoriesPage() {
                   <p className="text-xs text-muted-foreground">Taxable</p>
                   <p className="mt-1 text-sm font-medium">
                     {category.isTaxableDefault ? "Yes" : "No"}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground">Gratuity</p>
-                  <p className="mt-1 text-sm font-medium">
-                    {category.includedInGratuityDefault
-                      ? "Included"
-                      : "Excluded"}
                   </p>
                 </div>
               </Link>

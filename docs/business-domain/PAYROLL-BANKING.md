@@ -335,8 +335,9 @@ returns a clear JSON message pointing at the manual register / Bank CSV paths.
 - `/payroll/runs/[id]/payments/[batchId]/fcb-worksheet` — First Citizens
   manual-entry workbook (not a bank import file)
 - `/payroll/payment-instructions/import` — CSV payment-instruction import
-- `/payroll/settings` → **Financial institutions** + **Bank export profiles**
-  (typed First Citizens fields for FCB adapters)
+- `/payroll/settings` → **Financial institutions**, **ACH banks & routing**
+  (`/payroll/settings/ach/banks`), **ACH export format** (`/payroll/settings/ach`),
+  and **Bank export profiles** (typed First Citizens fields for FCB adapters)
 - Employee payroll setup: ACH-aligned destinations, verify / deactivate,
   soft-deactivated instruction history; destinations freeze into payment
   snapshots after prepare; Fixed / % toggle when `PERCENTAGE_ALLOCATION_ENABLED`

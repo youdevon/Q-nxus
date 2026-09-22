@@ -24,6 +24,7 @@ import {
 import { getGratuitySettlementForContract } from "@/src/modules/payroll/data/get-gratuity-settlements";
 import { resolveEmployeeContractAccess } from "@/src/modules/hr/data/require-people-access";
 import { daysUntilExpiry } from "@/src/modules/hr/lib/correspondence-visibility";
+import { isEmploymentContractCleanupEligible } from "@/src/modules/hr/lib/expired-contract-cleanup";
 import { getCurrentUser } from "@/src/modules/auth/data/get-current-user";
 
 export const metadata: Metadata = {
@@ -185,6 +186,12 @@ export default async function EmploymentContractPage({
       <DeleteEmploymentContractButton
         employeeId={id}
         contractId={contract.id}
+        cleanupEligible={isEmploymentContractCleanupEligible({
+          status: contract.status,
+          endDate: contract.endDate
+            ? new Date(`${contract.endDate}T00:00:00.000Z`)
+            : null,
+        })}
       />
     </div>
   ) : undefined;
@@ -342,10 +349,10 @@ export default async function EmploymentContractPage({
           Compensation Summary
         </h2>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-3">
           <Detail
-            labelText="Monthly base salary"
-            value={formatMoney(compensation.monthlyBaseSalary, {
+            labelText="Monthly gross compensation"
+            value={formatMoney(compensation.monthlyGrossCompensation, {
               currency: contract.currency,
             })}
           />
@@ -358,51 +365,15 @@ export default async function EmploymentContractPage({
           />
 
           <Detail
-            labelText="Monthly gross compensation"
-            value={formatMoney(compensation.monthlyGrossCompensation, {
-              currency: contract.currency,
-            })}
-          />
-
-          <Detail
             labelText="Annual gross compensation"
             value={formatMoney(compensation.annualGrossCompensation, {
               currency: contract.currency,
             })}
           />
-
-          <Detail
-            labelText="Annual recurring allowances"
-            value={formatMoney(compensation.annualRecurringAllowances, {
-              currency: contract.currency,
-            })}
-          />
-
-          <Detail
-            labelText="One-time allowances"
-            value={formatMoney(compensation.oneTimeAllowances, {
-              currency: contract.currency,
-            })}
-          />
-
-          <Detail
-            labelText="Annual taxable allowances"
-            value={formatMoney(compensation.taxableAllowanceAnnualTotal, {
-              currency: contract.currency,
-            })}
-          />
-
-          <Detail
-            labelText="Gratuity-eligible earnings (term)"
-            value={formatMoney(compensation.gratuityEligibleAnnualEarnings, {
-              currency: contract.currency,
-            })}
-          />
         </div>
         <p className="mt-3 text-xs text-muted-foreground">
-          TT gratuity base: monthly eligible (base salary + allowances marked
-          included in gratuity) × inclusive contract months. Without an end
-          date, shown as a 12-month annualization of that monthly base.
+          Gross = base salary (above) + recurring allowances. Line items are in
+          Allowances; gratuity is in Gratuity.
         </p>
       </section>
 
@@ -465,10 +436,6 @@ export default async function EmploymentContractPage({
                     <p className="text-xs text-muted-foreground">Taxable</p>
                     <p className="mt-1 text-sm font-medium">
                       {allowance.isTaxable ? "Yes" : "No"}
-                    </p>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      Gratuity:{" "}
-                      {allowance.includedInGratuity ? "Included" : "Excluded"}
                     </p>
                   </div>
                 </div>

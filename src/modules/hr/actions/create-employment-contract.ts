@@ -17,7 +17,11 @@ import { getAuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { resolveEmployeePositionTitle } from "@/src/modules/hr/lib/employee-position";
 import { isNonEmployeePayee } from "@/src/modules/hr/lib/workforce-category";
 import { activateEmploymentContractInTransaction } from "@/src/modules/hr/services/activate-employment-contract";
-import { syncAssignedEmployeeAccessRoles } from "@/src/modules/hr/services/assign-employee-to-position";
+import {
+  AssignEmployeeError,
+  syncAssignedEmployeeAccessRoles,
+} from "@/src/modules/hr/services/assign-employee-to-position";
+import { CurrentSeatMismatchError } from "@/src/modules/hr/lib/current-seat";
 import { revalidatePathsAfterContractActivate } from "@/src/modules/hr/lib/revalidate-after-contract-activate";
 import {
   CONTRACT_WORKFLOW_SETTING_CODE,
@@ -678,7 +682,7 @@ export async function createEmploymentContract(
               amount: Number(allowance.amount),
               frequency: allowance.frequency as AllowanceFrequency,
               isTaxable: allowance.isTaxable,
-              includedInGratuity: allowance.includedInGratuity,
+              includedInGratuity: false,
               notes: allowance.notes.trim() || null,
             },
           });
@@ -890,11 +894,32 @@ export async function createEmploymentContract(
       };
     }
 
+    if (error instanceof Error && error.message === "INVALID_ALLOWANCE_CATEGORY") {
+      return {
+        status: "error",
+        message: "One of the selected allowance categories is invalid.",
+      };
+    }
+
+    if (error instanceof AssignEmployeeError) {
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
+
+    if (error instanceof CurrentSeatMismatchError) {
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
+
     return {
       status: "error",
       message:
-        error instanceof Error && error.message === "INVALID_ALLOWANCE_CATEGORY"
-          ? "One of the selected allowance categories is invalid."
+        error instanceof Error && error.message.trim().length > 0
+          ? error.message
           : "The employment contract could not be saved.",
     };
   }

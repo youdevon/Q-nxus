@@ -50,6 +50,7 @@ export type AchPaymentBatchMinAggregateOutputType = {
   payrollNetTotal: runtime.Decimal | null
   detailCount: number | null
   effectivePaymentDate: Date | null
+  exportFormat: string | null
   achType: string | null
   purposeCode: string | null
   entryDescription: string | null
@@ -60,6 +61,12 @@ export type AchPaymentBatchMinAggregateOutputType = {
   fileStorageKey: string | null
   fileContentHash: string | null
   fileMimeType: string | null
+  bankValidationStatus: $Enums.AchBankValidationStatus | null
+  fcbErrorCode: string | null
+  fcbErrorMessage: string | null
+  correctedAt: Date | null
+  replacementBatchId: string | null
+  isRegenerated: boolean | null
   preparedByUserId: string | null
   preparedAt: Date | null
   approvedByUserId: string | null
@@ -88,6 +95,7 @@ export type AchPaymentBatchMaxAggregateOutputType = {
   payrollNetTotal: runtime.Decimal | null
   detailCount: number | null
   effectivePaymentDate: Date | null
+  exportFormat: string | null
   achType: string | null
   purposeCode: string | null
   entryDescription: string | null
@@ -98,6 +106,12 @@ export type AchPaymentBatchMaxAggregateOutputType = {
   fileStorageKey: string | null
   fileContentHash: string | null
   fileMimeType: string | null
+  bankValidationStatus: $Enums.AchBankValidationStatus | null
+  fcbErrorCode: string | null
+  fcbErrorMessage: string | null
+  correctedAt: Date | null
+  replacementBatchId: string | null
+  isRegenerated: boolean | null
   preparedByUserId: string | null
   preparedAt: Date | null
   approvedByUserId: string | null
@@ -126,6 +140,7 @@ export type AchPaymentBatchCountAggregateOutputType = {
   payrollNetTotal: number
   detailCount: number
   effectivePaymentDate: number
+  exportFormat: number
   achType: number
   purposeCode: number
   entryDescription: number
@@ -137,6 +152,13 @@ export type AchPaymentBatchCountAggregateOutputType = {
   fileStorageKey: number
   fileContentHash: number
   fileMimeType: number
+  bankValidationStatus: number
+  fcbErrorCode: number
+  fcbErrorMessage: number
+  fcbValidationErrorJson: number
+  correctedAt: number
+  replacementBatchId: number
+  isRegenerated: number
   preparedByUserId: number
   preparedAt: number
   approvedByUserId: number
@@ -179,6 +201,7 @@ export type AchPaymentBatchMinAggregateInputType = {
   payrollNetTotal?: true
   detailCount?: true
   effectivePaymentDate?: true
+  exportFormat?: true
   achType?: true
   purposeCode?: true
   entryDescription?: true
@@ -189,6 +212,12 @@ export type AchPaymentBatchMinAggregateInputType = {
   fileStorageKey?: true
   fileContentHash?: true
   fileMimeType?: true
+  bankValidationStatus?: true
+  fcbErrorCode?: true
+  fcbErrorMessage?: true
+  correctedAt?: true
+  replacementBatchId?: true
+  isRegenerated?: true
   preparedByUserId?: true
   preparedAt?: true
   approvedByUserId?: true
@@ -217,6 +246,7 @@ export type AchPaymentBatchMaxAggregateInputType = {
   payrollNetTotal?: true
   detailCount?: true
   effectivePaymentDate?: true
+  exportFormat?: true
   achType?: true
   purposeCode?: true
   entryDescription?: true
@@ -227,6 +257,12 @@ export type AchPaymentBatchMaxAggregateInputType = {
   fileStorageKey?: true
   fileContentHash?: true
   fileMimeType?: true
+  bankValidationStatus?: true
+  fcbErrorCode?: true
+  fcbErrorMessage?: true
+  correctedAt?: true
+  replacementBatchId?: true
+  isRegenerated?: true
   preparedByUserId?: true
   preparedAt?: true
   approvedByUserId?: true
@@ -255,6 +291,7 @@ export type AchPaymentBatchCountAggregateInputType = {
   payrollNetTotal?: true
   detailCount?: true
   effectivePaymentDate?: true
+  exportFormat?: true
   achType?: true
   purposeCode?: true
   entryDescription?: true
@@ -266,6 +303,13 @@ export type AchPaymentBatchCountAggregateInputType = {
   fileStorageKey?: true
   fileContentHash?: true
   fileMimeType?: true
+  bankValidationStatus?: true
+  fcbErrorCode?: true
+  fcbErrorMessage?: true
+  fcbValidationErrorJson?: true
+  correctedAt?: true
+  replacementBatchId?: true
+  isRegenerated?: true
   preparedByUserId?: true
   preparedAt?: true
   approvedByUserId?: true
@@ -381,6 +425,7 @@ export type AchPaymentBatchGroupByOutputType = {
   payrollNetTotal: runtime.Decimal | null
   detailCount: number
   effectivePaymentDate: Date | null
+  exportFormat: string | null
   achType: string | null
   purposeCode: string | null
   entryDescription: string | null
@@ -392,6 +437,13 @@ export type AchPaymentBatchGroupByOutputType = {
   fileStorageKey: string | null
   fileContentHash: string | null
   fileMimeType: string | null
+  bankValidationStatus: $Enums.AchBankValidationStatus | null
+  fcbErrorCode: string | null
+  fcbErrorMessage: string | null
+  fcbValidationErrorJson: runtime.JsonValue | null
+  correctedAt: Date | null
+  replacementBatchId: string | null
+  isRegenerated: boolean
   preparedByUserId: string | null
   preparedAt: Date | null
   approvedByUserId: string | null
@@ -443,6 +495,7 @@ export type AchPaymentBatchWhereInput = {
   payrollNetTotal?: Prisma.DecimalNullableFilter<"AchPaymentBatch"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFilter<"AchPaymentBatch"> | number
   effectivePaymentDate?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
+  exportFormat?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   achType?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   purposeCode?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   entryDescription?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
@@ -454,6 +507,13 @@ export type AchPaymentBatchWhereInput = {
   fileStorageKey?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   fileContentHash?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   fileMimeType?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  bankValidationStatus?: Prisma.EnumAchBankValidationStatusNullableFilter<"AchPaymentBatch"> | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  fcbErrorMessage?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  fcbValidationErrorJson?: Prisma.JsonNullableFilter<"AchPaymentBatch">
+  correctedAt?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
+  replacementBatchId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  isRegenerated?: Prisma.BoolFilter<"AchPaymentBatch"> | boolean
   preparedByUserId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   preparedAt?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
   approvedByUserId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
@@ -486,6 +546,7 @@ export type AchPaymentBatchOrderByWithRelationInput = {
   payrollNetTotal?: Prisma.SortOrderInput | Prisma.SortOrder
   detailCount?: Prisma.SortOrder
   effectivePaymentDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  exportFormat?: Prisma.SortOrderInput | Prisma.SortOrder
   achType?: Prisma.SortOrderInput | Prisma.SortOrder
   purposeCode?: Prisma.SortOrderInput | Prisma.SortOrder
   entryDescription?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -497,6 +558,13 @@ export type AchPaymentBatchOrderByWithRelationInput = {
   fileStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
   fileContentHash?: Prisma.SortOrderInput | Prisma.SortOrder
   fileMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankValidationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  fcbErrorCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  fcbErrorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  fcbValidationErrorJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  correctedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  replacementBatchId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isRegenerated?: Prisma.SortOrder
   preparedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   preparedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -533,6 +601,7 @@ export type AchPaymentBatchWhereUniqueInput = Prisma.AtLeast<{
   payrollNetTotal?: Prisma.DecimalNullableFilter<"AchPaymentBatch"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFilter<"AchPaymentBatch"> | number
   effectivePaymentDate?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
+  exportFormat?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   achType?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   purposeCode?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   entryDescription?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
@@ -544,6 +613,13 @@ export type AchPaymentBatchWhereUniqueInput = Prisma.AtLeast<{
   fileStorageKey?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   fileContentHash?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   fileMimeType?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  bankValidationStatus?: Prisma.EnumAchBankValidationStatusNullableFilter<"AchPaymentBatch"> | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  fcbErrorMessage?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  fcbValidationErrorJson?: Prisma.JsonNullableFilter<"AchPaymentBatch">
+  correctedAt?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
+  replacementBatchId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  isRegenerated?: Prisma.BoolFilter<"AchPaymentBatch"> | boolean
   preparedByUserId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   preparedAt?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
   approvedByUserId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
@@ -576,6 +652,7 @@ export type AchPaymentBatchOrderByWithAggregationInput = {
   payrollNetTotal?: Prisma.SortOrderInput | Prisma.SortOrder
   detailCount?: Prisma.SortOrder
   effectivePaymentDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  exportFormat?: Prisma.SortOrderInput | Prisma.SortOrder
   achType?: Prisma.SortOrderInput | Prisma.SortOrder
   purposeCode?: Prisma.SortOrderInput | Prisma.SortOrder
   entryDescription?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -587,6 +664,13 @@ export type AchPaymentBatchOrderByWithAggregationInput = {
   fileStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
   fileContentHash?: Prisma.SortOrderInput | Prisma.SortOrder
   fileMimeType?: Prisma.SortOrderInput | Prisma.SortOrder
+  bankValidationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  fcbErrorCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  fcbErrorMessage?: Prisma.SortOrderInput | Prisma.SortOrder
+  fcbValidationErrorJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  correctedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  replacementBatchId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isRegenerated?: Prisma.SortOrder
   preparedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   preparedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -623,6 +707,7 @@ export type AchPaymentBatchScalarWhereWithAggregatesInput = {
   payrollNetTotal?: Prisma.DecimalNullableWithAggregatesFilter<"AchPaymentBatch"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntWithAggregatesFilter<"AchPaymentBatch"> | number
   effectivePaymentDate?: Prisma.DateTimeNullableWithAggregatesFilter<"AchPaymentBatch"> | Date | string | null
+  exportFormat?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
   achType?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
   purposeCode?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
   entryDescription?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
@@ -634,6 +719,13 @@ export type AchPaymentBatchScalarWhereWithAggregatesInput = {
   fileStorageKey?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
   fileContentHash?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
   fileMimeType?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
+  bankValidationStatus?: Prisma.EnumAchBankValidationStatusNullableWithAggregatesFilter<"AchPaymentBatch"> | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
+  fcbErrorMessage?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
+  fcbValidationErrorJson?: Prisma.JsonNullableWithAggregatesFilter<"AchPaymentBatch">
+  correctedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AchPaymentBatch"> | Date | string | null
+  replacementBatchId?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
+  isRegenerated?: Prisma.BoolWithAggregatesFilter<"AchPaymentBatch"> | boolean
   preparedByUserId?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
   preparedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AchPaymentBatch"> | Date | string | null
   approvedByUserId?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatch"> | string | null
@@ -659,6 +751,7 @@ export type AchPaymentBatchCreateInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -670,6 +763,13 @@ export type AchPaymentBatchCreateInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -702,6 +802,7 @@ export type AchPaymentBatchUncheckedCreateInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -713,6 +814,13 @@ export type AchPaymentBatchUncheckedCreateInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -739,6 +847,7 @@ export type AchPaymentBatchUpdateInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -750,6 +859,13 @@ export type AchPaymentBatchUpdateInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -782,6 +898,7 @@ export type AchPaymentBatchUncheckedUpdateInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -793,6 +910,13 @@ export type AchPaymentBatchUncheckedUpdateInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -822,6 +946,7 @@ export type AchPaymentBatchCreateManyInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -833,6 +958,13 @@ export type AchPaymentBatchCreateManyInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -858,6 +990,7 @@ export type AchPaymentBatchUpdateManyMutationInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -869,6 +1002,13 @@ export type AchPaymentBatchUpdateManyMutationInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -897,6 +1037,7 @@ export type AchPaymentBatchUncheckedUpdateManyInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -908,6 +1049,13 @@ export type AchPaymentBatchUncheckedUpdateManyInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -951,6 +1099,7 @@ export type AchPaymentBatchCountOrderByAggregateInput = {
   payrollNetTotal?: Prisma.SortOrder
   detailCount?: Prisma.SortOrder
   effectivePaymentDate?: Prisma.SortOrder
+  exportFormat?: Prisma.SortOrder
   achType?: Prisma.SortOrder
   purposeCode?: Prisma.SortOrder
   entryDescription?: Prisma.SortOrder
@@ -962,6 +1111,13 @@ export type AchPaymentBatchCountOrderByAggregateInput = {
   fileStorageKey?: Prisma.SortOrder
   fileContentHash?: Prisma.SortOrder
   fileMimeType?: Prisma.SortOrder
+  bankValidationStatus?: Prisma.SortOrder
+  fcbErrorCode?: Prisma.SortOrder
+  fcbErrorMessage?: Prisma.SortOrder
+  fcbValidationErrorJson?: Prisma.SortOrder
+  correctedAt?: Prisma.SortOrder
+  replacementBatchId?: Prisma.SortOrder
+  isRegenerated?: Prisma.SortOrder
   preparedByUserId?: Prisma.SortOrder
   preparedAt?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrder
@@ -996,6 +1152,7 @@ export type AchPaymentBatchMaxOrderByAggregateInput = {
   payrollNetTotal?: Prisma.SortOrder
   detailCount?: Prisma.SortOrder
   effectivePaymentDate?: Prisma.SortOrder
+  exportFormat?: Prisma.SortOrder
   achType?: Prisma.SortOrder
   purposeCode?: Prisma.SortOrder
   entryDescription?: Prisma.SortOrder
@@ -1006,6 +1163,12 @@ export type AchPaymentBatchMaxOrderByAggregateInput = {
   fileStorageKey?: Prisma.SortOrder
   fileContentHash?: Prisma.SortOrder
   fileMimeType?: Prisma.SortOrder
+  bankValidationStatus?: Prisma.SortOrder
+  fcbErrorCode?: Prisma.SortOrder
+  fcbErrorMessage?: Prisma.SortOrder
+  correctedAt?: Prisma.SortOrder
+  replacementBatchId?: Prisma.SortOrder
+  isRegenerated?: Prisma.SortOrder
   preparedByUserId?: Prisma.SortOrder
   preparedAt?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrder
@@ -1034,6 +1197,7 @@ export type AchPaymentBatchMinOrderByAggregateInput = {
   payrollNetTotal?: Prisma.SortOrder
   detailCount?: Prisma.SortOrder
   effectivePaymentDate?: Prisma.SortOrder
+  exportFormat?: Prisma.SortOrder
   achType?: Prisma.SortOrder
   purposeCode?: Prisma.SortOrder
   entryDescription?: Prisma.SortOrder
@@ -1044,6 +1208,12 @@ export type AchPaymentBatchMinOrderByAggregateInput = {
   fileStorageKey?: Prisma.SortOrder
   fileContentHash?: Prisma.SortOrder
   fileMimeType?: Prisma.SortOrder
+  bankValidationStatus?: Prisma.SortOrder
+  fcbErrorCode?: Prisma.SortOrder
+  fcbErrorMessage?: Prisma.SortOrder
+  correctedAt?: Prisma.SortOrder
+  replacementBatchId?: Prisma.SortOrder
+  isRegenerated?: Prisma.SortOrder
   preparedByUserId?: Prisma.SortOrder
   preparedAt?: Prisma.SortOrder
   approvedByUserId?: Prisma.SortOrder
@@ -1159,6 +1329,10 @@ export type EnumAchPaymentBatchStatusFieldUpdateOperationsInput = {
   set?: $Enums.AchPaymentBatchStatus
 }
 
+export type NullableEnumAchBankValidationStatusFieldUpdateOperationsInput = {
+  set?: $Enums.AchBankValidationStatus | null
+}
+
 export type AchPaymentBatchCreateNestedOneWithoutDetailsInput = {
   create?: Prisma.XOR<Prisma.AchPaymentBatchCreateWithoutDetailsInput, Prisma.AchPaymentBatchUncheckedCreateWithoutDetailsInput>
   connectOrCreate?: Prisma.AchPaymentBatchCreateOrConnectWithoutDetailsInput
@@ -1224,6 +1398,7 @@ export type AchPaymentBatchCreateWithoutOrganizationInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1235,6 +1410,13 @@ export type AchPaymentBatchCreateWithoutOrganizationInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1265,6 +1447,7 @@ export type AchPaymentBatchUncheckedCreateWithoutOrganizationInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1276,6 +1459,13 @@ export type AchPaymentBatchUncheckedCreateWithoutOrganizationInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1334,6 +1524,7 @@ export type AchPaymentBatchScalarWhereInput = {
   payrollNetTotal?: Prisma.DecimalNullableFilter<"AchPaymentBatch"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFilter<"AchPaymentBatch"> | number
   effectivePaymentDate?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
+  exportFormat?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   achType?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   purposeCode?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   entryDescription?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
@@ -1345,6 +1536,13 @@ export type AchPaymentBatchScalarWhereInput = {
   fileStorageKey?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   fileContentHash?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   fileMimeType?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  bankValidationStatus?: Prisma.EnumAchBankValidationStatusNullableFilter<"AchPaymentBatch"> | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  fcbErrorMessage?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  fcbValidationErrorJson?: Prisma.JsonNullableFilter<"AchPaymentBatch">
+  correctedAt?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
+  replacementBatchId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
+  isRegenerated?: Prisma.BoolFilter<"AchPaymentBatch"> | boolean
   preparedByUserId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
   preparedAt?: Prisma.DateTimeNullableFilter<"AchPaymentBatch"> | Date | string | null
   approvedByUserId?: Prisma.StringNullableFilter<"AchPaymentBatch"> | string | null
@@ -1370,6 +1568,7 @@ export type AchPaymentBatchCreateWithoutBankExportProfileInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1381,6 +1580,13 @@ export type AchPaymentBatchCreateWithoutBankExportProfileInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1411,6 +1617,7 @@ export type AchPaymentBatchUncheckedCreateWithoutBankExportProfileInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1422,6 +1629,13 @@ export type AchPaymentBatchUncheckedCreateWithoutBankExportProfileInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1474,6 +1688,7 @@ export type AchPaymentBatchCreateWithoutDetailsInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1485,6 +1700,13 @@ export type AchPaymentBatchCreateWithoutDetailsInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1516,6 +1738,7 @@ export type AchPaymentBatchUncheckedCreateWithoutDetailsInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1527,6 +1750,13 @@ export type AchPaymentBatchUncheckedCreateWithoutDetailsInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1568,6 +1798,7 @@ export type AchPaymentBatchUpdateWithoutDetailsInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1579,6 +1810,13 @@ export type AchPaymentBatchUpdateWithoutDetailsInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1610,6 +1848,7 @@ export type AchPaymentBatchUncheckedUpdateWithoutDetailsInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1621,6 +1860,13 @@ export type AchPaymentBatchUncheckedUpdateWithoutDetailsInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1646,6 +1892,7 @@ export type AchPaymentBatchCreateWithoutPayRunInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1657,6 +1904,13 @@ export type AchPaymentBatchCreateWithoutPayRunInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1687,6 +1941,7 @@ export type AchPaymentBatchUncheckedCreateWithoutPayRunInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1698,6 +1953,13 @@ export type AchPaymentBatchUncheckedCreateWithoutPayRunInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1752,6 +2014,7 @@ export type AchPaymentBatchCreateManyOrganizationInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1763,6 +2026,13 @@ export type AchPaymentBatchCreateManyOrganizationInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1788,6 +2058,7 @@ export type AchPaymentBatchUpdateWithoutOrganizationInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1799,6 +2070,13 @@ export type AchPaymentBatchUpdateWithoutOrganizationInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1829,6 +2107,7 @@ export type AchPaymentBatchUncheckedUpdateWithoutOrganizationInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1840,6 +2119,13 @@ export type AchPaymentBatchUncheckedUpdateWithoutOrganizationInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1868,6 +2154,7 @@ export type AchPaymentBatchUncheckedUpdateManyWithoutOrganizationInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1879,6 +2166,13 @@ export type AchPaymentBatchUncheckedUpdateManyWithoutOrganizationInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1906,6 +2200,7 @@ export type AchPaymentBatchCreateManyBankExportProfileInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -1917,6 +2212,13 @@ export type AchPaymentBatchCreateManyBankExportProfileInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -1942,6 +2244,7 @@ export type AchPaymentBatchUpdateWithoutBankExportProfileInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1953,6 +2256,13 @@ export type AchPaymentBatchUpdateWithoutBankExportProfileInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1983,6 +2293,7 @@ export type AchPaymentBatchUncheckedUpdateWithoutBankExportProfileInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1994,6 +2305,13 @@ export type AchPaymentBatchUncheckedUpdateWithoutBankExportProfileInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2022,6 +2340,7 @@ export type AchPaymentBatchUncheckedUpdateManyWithoutBankExportProfileInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2033,6 +2352,13 @@ export type AchPaymentBatchUncheckedUpdateManyWithoutBankExportProfileInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2060,6 +2386,7 @@ export type AchPaymentBatchCreateManyPayRunInput = {
   payrollNetTotal?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: number
   effectivePaymentDate?: Date | string | null
+  exportFormat?: string | null
   achType?: string | null
   purposeCode?: string | null
   entryDescription?: string | null
@@ -2071,6 +2398,13 @@ export type AchPaymentBatchCreateManyPayRunInput = {
   fileStorageKey?: string | null
   fileContentHash?: string | null
   fileMimeType?: string | null
+  bankValidationStatus?: $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: string | null
+  fcbErrorMessage?: string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Date | string | null
+  replacementBatchId?: string | null
+  isRegenerated?: boolean
   preparedByUserId?: string | null
   preparedAt?: Date | string | null
   approvedByUserId?: string | null
@@ -2096,6 +2430,7 @@ export type AchPaymentBatchUpdateWithoutPayRunInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2107,6 +2442,13 @@ export type AchPaymentBatchUpdateWithoutPayRunInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2137,6 +2479,7 @@ export type AchPaymentBatchUncheckedUpdateWithoutPayRunInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2148,6 +2491,13 @@ export type AchPaymentBatchUncheckedUpdateWithoutPayRunInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2176,6 +2526,7 @@ export type AchPaymentBatchUncheckedUpdateManyWithoutPayRunInput = {
   payrollNetTotal?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   detailCount?: Prisma.IntFieldUpdateOperationsInput | number
   effectivePaymentDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  exportFormat?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   achType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   entryDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2187,6 +2538,13 @@ export type AchPaymentBatchUncheckedUpdateManyWithoutPayRunInput = {
   fileStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileContentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileMimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bankValidationStatus?: Prisma.NullableEnumAchBankValidationStatusFieldUpdateOperationsInput | $Enums.AchBankValidationStatus | null
+  fcbErrorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbErrorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fcbValidationErrorJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  correctedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  replacementBatchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isRegenerated?: Prisma.BoolFieldUpdateOperationsInput | boolean
   preparedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   preparedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   approvedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2246,6 +2604,7 @@ export type AchPaymentBatchSelect<ExtArgs extends runtime.Types.Extensions.Inter
   payrollNetTotal?: boolean
   detailCount?: boolean
   effectivePaymentDate?: boolean
+  exportFormat?: boolean
   achType?: boolean
   purposeCode?: boolean
   entryDescription?: boolean
@@ -2257,6 +2616,13 @@ export type AchPaymentBatchSelect<ExtArgs extends runtime.Types.Extensions.Inter
   fileStorageKey?: boolean
   fileContentHash?: boolean
   fileMimeType?: boolean
+  bankValidationStatus?: boolean
+  fcbErrorCode?: boolean
+  fcbErrorMessage?: boolean
+  fcbValidationErrorJson?: boolean
+  correctedAt?: boolean
+  replacementBatchId?: boolean
+  isRegenerated?: boolean
   preparedByUserId?: boolean
   preparedAt?: boolean
   approvedByUserId?: boolean
@@ -2290,6 +2656,7 @@ export type AchPaymentBatchSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   payrollNetTotal?: boolean
   detailCount?: boolean
   effectivePaymentDate?: boolean
+  exportFormat?: boolean
   achType?: boolean
   purposeCode?: boolean
   entryDescription?: boolean
@@ -2301,6 +2668,13 @@ export type AchPaymentBatchSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   fileStorageKey?: boolean
   fileContentHash?: boolean
   fileMimeType?: boolean
+  bankValidationStatus?: boolean
+  fcbErrorCode?: boolean
+  fcbErrorMessage?: boolean
+  fcbValidationErrorJson?: boolean
+  correctedAt?: boolean
+  replacementBatchId?: boolean
+  isRegenerated?: boolean
   preparedByUserId?: boolean
   preparedAt?: boolean
   approvedByUserId?: boolean
@@ -2332,6 +2706,7 @@ export type AchPaymentBatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   payrollNetTotal?: boolean
   detailCount?: boolean
   effectivePaymentDate?: boolean
+  exportFormat?: boolean
   achType?: boolean
   purposeCode?: boolean
   entryDescription?: boolean
@@ -2343,6 +2718,13 @@ export type AchPaymentBatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   fileStorageKey?: boolean
   fileContentHash?: boolean
   fileMimeType?: boolean
+  bankValidationStatus?: boolean
+  fcbErrorCode?: boolean
+  fcbErrorMessage?: boolean
+  fcbValidationErrorJson?: boolean
+  correctedAt?: boolean
+  replacementBatchId?: boolean
+  isRegenerated?: boolean
   preparedByUserId?: boolean
   preparedAt?: boolean
   approvedByUserId?: boolean
@@ -2374,6 +2756,7 @@ export type AchPaymentBatchSelectScalar = {
   payrollNetTotal?: boolean
   detailCount?: boolean
   effectivePaymentDate?: boolean
+  exportFormat?: boolean
   achType?: boolean
   purposeCode?: boolean
   entryDescription?: boolean
@@ -2385,6 +2768,13 @@ export type AchPaymentBatchSelectScalar = {
   fileStorageKey?: boolean
   fileContentHash?: boolean
   fileMimeType?: boolean
+  bankValidationStatus?: boolean
+  fcbErrorCode?: boolean
+  fcbErrorMessage?: boolean
+  fcbValidationErrorJson?: boolean
+  correctedAt?: boolean
+  replacementBatchId?: boolean
+  isRegenerated?: boolean
   preparedByUserId?: boolean
   preparedAt?: boolean
   approvedByUserId?: boolean
@@ -2401,7 +2791,7 @@ export type AchPaymentBatchSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AchPaymentBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "payRunId" | "bankExportProfileId" | "batchNumber" | "status" | "currencyCode" | "controlTotalAmount" | "payrollNetTotal" | "detailCount" | "effectivePaymentDate" | "achType" | "purposeCode" | "entryDescription" | "globalAddenda" | "discretionaryData" | "transactionType" | "validationSummaryJson" | "fileName" | "fileStorageKey" | "fileContentHash" | "fileMimeType" | "preparedByUserId" | "preparedAt" | "approvedByUserId" | "approvedAt" | "generatedAt" | "exportedAt" | "releasedAt" | "releasedByUserId" | "reconciledAt" | "reconciledByUserId" | "supersedesBatchId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["achPaymentBatch"]>
+export type AchPaymentBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "payRunId" | "bankExportProfileId" | "batchNumber" | "status" | "currencyCode" | "controlTotalAmount" | "payrollNetTotal" | "detailCount" | "effectivePaymentDate" | "exportFormat" | "achType" | "purposeCode" | "entryDescription" | "globalAddenda" | "discretionaryData" | "transactionType" | "validationSummaryJson" | "fileName" | "fileStorageKey" | "fileContentHash" | "fileMimeType" | "bankValidationStatus" | "fcbErrorCode" | "fcbErrorMessage" | "fcbValidationErrorJson" | "correctedAt" | "replacementBatchId" | "isRegenerated" | "preparedByUserId" | "preparedAt" | "approvedByUserId" | "approvedAt" | "generatedAt" | "exportedAt" | "releasedAt" | "releasedByUserId" | "reconciledAt" | "reconciledByUserId" | "supersedesBatchId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["achPaymentBatch"]>
 export type AchPaymentBatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   payRun?: boolean | Prisma.PayRunDefaultArgs<ExtArgs>
@@ -2444,6 +2834,10 @@ export type $AchPaymentBatchPayload<ExtArgs extends runtime.Types.Extensions.Int
     detailCount: number
     effectivePaymentDate: Date | null
     /**
+     * Explicit export format id (e.g. FCB_TT_LEGACY_NACHA_NO_HEADER_V1).
+     */
+    exportFormat: string | null
+    /**
      * PPD (payroll default) or CCD (future company payments).
      */
     achType: string | null
@@ -2457,6 +2851,13 @@ export type $AchPaymentBatchPayload<ExtArgs extends runtime.Types.Extensions.Int
     fileStorageKey: string | null
     fileContentHash: string | null
     fileMimeType: string | null
+    bankValidationStatus: $Enums.AchBankValidationStatus | null
+    fcbErrorCode: string | null
+    fcbErrorMessage: string | null
+    fcbValidationErrorJson: runtime.JsonValue | null
+    correctedAt: Date | null
+    replacementBatchId: string | null
+    isRegenerated: boolean
     preparedByUserId: string | null
     preparedAt: Date | null
     approvedByUserId: string | null
@@ -2912,6 +3313,7 @@ export interface AchPaymentBatchFieldRefs {
   readonly payrollNetTotal: Prisma.FieldRef<"AchPaymentBatch", 'Decimal'>
   readonly detailCount: Prisma.FieldRef<"AchPaymentBatch", 'Int'>
   readonly effectivePaymentDate: Prisma.FieldRef<"AchPaymentBatch", 'DateTime'>
+  readonly exportFormat: Prisma.FieldRef<"AchPaymentBatch", 'String'>
   readonly achType: Prisma.FieldRef<"AchPaymentBatch", 'String'>
   readonly purposeCode: Prisma.FieldRef<"AchPaymentBatch", 'String'>
   readonly entryDescription: Prisma.FieldRef<"AchPaymentBatch", 'String'>
@@ -2923,6 +3325,13 @@ export interface AchPaymentBatchFieldRefs {
   readonly fileStorageKey: Prisma.FieldRef<"AchPaymentBatch", 'String'>
   readonly fileContentHash: Prisma.FieldRef<"AchPaymentBatch", 'String'>
   readonly fileMimeType: Prisma.FieldRef<"AchPaymentBatch", 'String'>
+  readonly bankValidationStatus: Prisma.FieldRef<"AchPaymentBatch", 'AchBankValidationStatus'>
+  readonly fcbErrorCode: Prisma.FieldRef<"AchPaymentBatch", 'String'>
+  readonly fcbErrorMessage: Prisma.FieldRef<"AchPaymentBatch", 'String'>
+  readonly fcbValidationErrorJson: Prisma.FieldRef<"AchPaymentBatch", 'Json'>
+  readonly correctedAt: Prisma.FieldRef<"AchPaymentBatch", 'DateTime'>
+  readonly replacementBatchId: Prisma.FieldRef<"AchPaymentBatch", 'String'>
+  readonly isRegenerated: Prisma.FieldRef<"AchPaymentBatch", 'Boolean'>
   readonly preparedByUserId: Prisma.FieldRef<"AchPaymentBatch", 'String'>
   readonly preparedAt: Prisma.FieldRef<"AchPaymentBatch", 'DateTime'>
   readonly approvedByUserId: Prisma.FieldRef<"AchPaymentBatch", 'String'>

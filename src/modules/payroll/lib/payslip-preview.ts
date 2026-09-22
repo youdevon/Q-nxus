@@ -93,6 +93,10 @@ export function findPayslipMetaAllowanceAmount(
 
 export type PayslipBankLine = {
   bankName: string;
+  /**
+   * Plaintext account number — must not be persisted on snapshots or audits.
+   * Prefer accountNumberMasked; payment flows enrich from encrypted storage.
+   */
   accountNumber?: string;
   accountNumberMasked: string;
   amount: number;
@@ -184,8 +188,8 @@ export type AssemblePayslipPreviewInput = {
     /** @deprecated Prefer tax-year projection; kept for legacy cumulative. */
     monthsElapsed: number;
     taxYear?: number;
-    employmentStartDate?: Date | null;
-    employmentEndDate?: Date | null;
+    employmentStartDate?: Date | string | null;
+    employmentEndDate?: Date | string | null;
     previousEmploymentStatus?: PreviousEmploymentStatusCode | null;
     recognizePriorEmployment?: boolean;
     personalAllowanceOverride?: number | null;
@@ -511,7 +515,6 @@ export function applyFixedBankAllocations(input: {
 
     lines.push({
       bankName: account.bankName,
-      accountNumber: account.accountNumber,
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: paidAmount,
       kind: "FIXED",
@@ -530,7 +533,6 @@ export function applyFixedBankAllocations(input: {
 
   lines.push({
     bankName: primary.bankName,
-    accountNumber: primary.accountNumber,
     accountNumberMasked: maskAccountNumber(primary.accountNumber),
     amount: primaryRemainder,
     kind: "REMAINDER",

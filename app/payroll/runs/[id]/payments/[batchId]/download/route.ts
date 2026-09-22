@@ -17,8 +17,10 @@ type RouteContext = {
 export async function GET(_request: Request, { params }: RouteContext) {
   const capabilities = await getUserCapabilities();
   const canDownload =
+    capabilities?.can("payroll.ach.download") ||
     capabilities?.can("payroll.manage") ||
-    capabilities?.can("payroll.bank_accounts.view_sensitive");
+    capabilities?.can("payroll.bank_accounts.view_sensitive") ||
+    capabilities?.can("payroll.payment_batches.export");
   if (!capabilities || !canDownload) {
     return new Response("Not found", { status: 404 });
   }
@@ -32,10 +34,20 @@ export async function GET(_request: Request, { params }: RouteContext) {
     return new Response("Export file not found", { status: 404 });
   }
 
+  if (batch.status === "INVALIDATED") {
+    return new Response(
+      "This ACH file was invalidated because payroll amounts changed. Regenerate from the ACH preview page.",
+      { status: 409 },
+    );
+  }
+
   const absolute = resolveAchExportAbsolutePath(batch.fileStorageKey);
   const content = await readFile(absolute, "utf8");
 
-  if (capabilities.can("payroll.manage")) {
+  if (
+    capabilities.can("payroll.manage") ||
+    capabilities.can("payroll.ach.download")
+  ) {
     const audit = await getAuditRequestMetadata();
     await markAchPaymentBatchExported({
       batchId: batch.id,
@@ -46,7 +58,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
 
   return new Response(content, {
     headers: {
-      "content-type": batch.fileMimeType ?? "text/csv; charset=utf-8",
+      "content-type": batch.fileMimeType ?? "text/plain; charset=utf-8",
       "content-disposition": `attachment; filename="${batch.fileName}"`,
     },
   });

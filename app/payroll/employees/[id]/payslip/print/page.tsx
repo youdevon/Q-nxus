@@ -82,6 +82,7 @@ export default async function EmployeePayslipPrintPage({
       ytd={ytd}
       ytdBreakdown={ytdBreakdown}
       projectedTaxYearPosition={projectedTaxYearPosition}
+      closeHref={`/payroll/employees/${id}/payslip`}
     />
   );
 }

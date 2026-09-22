@@ -1,11 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   updateFinancialInstitution,
   type FinancialInstitutionFormState,
@@ -17,6 +17,10 @@ const initialState: FinancialInstitutionFormState = {
   message: "",
 };
 
+/**
+ * Full institution directory (employee selection flags).
+ * ACH routing / credits are edited on /payroll/settings/ach/banks (same table).
+ */
 export function FinancialInstitutionsManager({
   institutions,
   canManage,
@@ -27,24 +31,25 @@ export function FinancialInstitutionsManager({
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Known commercial-bank ABA / routing codes are seeded from the TT bank
-        participant list. Leave other institutions blank rather than inventing
-        values (REQUIRES_CONFIRMATION).
+        Shared bank directory for employee payment destinations. Routing numbers
+        and ACH credits are managed on{" "}
+        <Link
+          href="/payroll/settings/ach/banks"
+          className="underline underline-offset-2"
+        >
+          ACH banks & routing
+        </Link>{" "}
+        — one table, not a separate list.
       </p>
 
       <div className="overflow-x-auto rounded-md border">
-        <table className="w-full min-w-[56rem] text-left text-sm">
+        <table className="w-full min-w-[48rem] text-left text-sm">
           <thead className="border-b bg-muted/40 text-xs text-muted-foreground">
             <tr>
               <th className="px-3 py-2 font-medium">Institution</th>
               <th className="px-3 py-2 font-medium">Type</th>
+              <th className="px-3 py-2 font-medium">Routing</th>
               <th className="px-3 py-2 font-medium">Flags</th>
-              <th className="px-3 py-2 font-medium">
-                Routing (placeholder)
-              </th>
-              <th className="px-3 py-2 font-medium">
-                ACH participant (placeholder)
-              </th>
               <th className="px-3 py-2 font-medium">Actions</th>
             </tr>
           </thead>
@@ -95,27 +100,57 @@ function InstitutionRow({
       <td className="px-3 py-3 text-xs">
         {institution.institutionType.replaceAll("_", " ")}
       </td>
+      <td className="px-3 py-3 font-mono text-xs">
+        {institution.routingCode ?? "—"}
+      </td>
       <td className="px-3 py-3">
         <div className="flex flex-wrap gap-1">
           <Badge variant={institution.isActive ? "success" : "secondary"}>
             {institution.isActive ? "Active" : "Inactive"}
           </Badge>
           {institution.supportsAchCredits ? (
-            <Badge variant="outline">ACH credits</Badge>
+            <Badge variant="outline">ACH</Badge>
           ) : (
             <Badge variant="secondary">No ACH</Badge>
           )}
+          {institution.isSelectableForEmployees ? (
+            <Badge variant="outline">Selectable</Badge>
+          ) : null}
         </div>
       </td>
-      <td className="px-3 py-3" colSpan={canManage ? 3 : 2}>
+      <td className="px-3 py-3">
         {canManage ? (
-          <form action={formAction} className="grid gap-2 md:grid-cols-3">
+          <form action={formAction} className="flex flex-wrap items-center gap-3">
             <input type="hidden" name="id" value={institution.id} />
+            {/* Preserve ACH fields — edited on ACH banks page */}
+            <input
+              type="hidden"
+              name="routingCode"
+              value={institution.routingCode ?? ""}
+            />
+            {institution.supportsAchCredits ? (
+              <input type="hidden" name="supportsAchCredits" value="on" />
+            ) : null}
+            <input
+              type="hidden"
+              name="displayName"
+              value={institution.displayName}
+            />
+            <input type="hidden" name="shortName" value={institution.shortName} />
+            <input type="hidden" name="legalName" value={institution.legalName} />
+            {institution.achParticipantCode ? (
+              <input
+                type="hidden"
+                name="achParticipantCode"
+                value={institution.achParticipantCode}
+              />
+            ) : null}
             <label className="flex items-center gap-2 text-xs">
               <input
                 type="checkbox"
                 name="isActive"
                 defaultChecked={institution.isActive}
+                className="size-4"
               />
               Active
             </label>
@@ -124,6 +159,7 @@ function InstitutionRow({
                 type="checkbox"
                 name="isSelectableForEmployees"
                 defaultChecked={institution.isSelectableForEmployees}
+                className="size-4"
               />
               Selectable
             </label>
@@ -132,37 +168,31 @@ function InstitutionRow({
                 type="checkbox"
                 name="supportsPayrollDeposits"
                 defaultChecked={institution.supportsPayrollDeposits}
+                className="size-4"
               />
-              Payroll deposits
+              Payroll
             </label>
-            <label className="flex items-center gap-2 text-xs">
-              <input
-                type="checkbox"
-                name="supportsAchCredits"
-                defaultChecked={institution.supportsAchCredits}
-              />
-              ACH credits
-            </label>
-            <Input
-              name="routingCode"
-              defaultValue={institution.routingCode ?? ""}
-              placeholder="Routing — REQUIRES_CONFIRMATION"
-              className="md:col-span-1"
-            />
-            <Input
-              name="achParticipantCode"
-              defaultValue={institution.achParticipantCode ?? ""}
-              placeholder="ACH participant — REQUIRES_CONFIRMATION"
-            />
             <Button type="submit" size="sm" disabled={pending}>
-              Save
+              {pending ? "Saving…" : "Save"}
+            </Button>
+            <Button
+              nativeButton={false}
+              variant="outline"
+              size="sm"
+              render={<Link href="/payroll/settings/ach/banks" />}
+            >
+              ACH…
             </Button>
           </form>
         ) : (
-          <p className="text-xs text-muted-foreground">
-            Routing: {institution.routingCode ?? "—"} · ACH:{" "}
-            {institution.achParticipantCode ?? "—"}
-          </p>
+          <Button
+            nativeButton={false}
+            variant="outline"
+            size="sm"
+            render={<Link href="/payroll/settings/ach/banks" />}
+          >
+            View ACH banks
+          </Button>
         )}
       </td>
     </tr>

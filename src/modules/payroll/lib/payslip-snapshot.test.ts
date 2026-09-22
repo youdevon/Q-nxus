@@ -99,6 +99,37 @@ describe("payslip-snapshot", () => {
     expect(parsed?.meta.organizationName).toBe("Acme Ltd");
   });
 
+  it("strips plaintext account numbers from bank distribution", () => {
+    const withPlaintext = {
+      version: 1 as const,
+      payslip: {
+        ...samplePayslip,
+        bankDistribution: [
+          {
+            bankName: "RBC",
+            accountNumber: "12345678901234",
+            amount: 9_500,
+            kind: "REMAINDER" as const,
+          },
+        ],
+      },
+      meta: sampleMeta,
+    };
+
+    const parsed = parsePayslipSnapshot(withPlaintext as unknown);
+    expect(parsed?.payslip.bankDistribution).toEqual([
+      {
+        bankName: "RBC",
+        accountNumberMasked: "••••1234",
+        amount: 9_500,
+        kind: "REMAINDER",
+      },
+    ]);
+    expect(
+      parsed?.payslip.bankDistribution?.[0],
+    ).not.toHaveProperty("accountNumber");
+  });
+
   it("rejects malformed snapshots", () => {
     expect(parsePayslipSnapshot(null)).toBeNull();
     expect(parsePayslipSnapshot({ version: 2 })).toBeNull();

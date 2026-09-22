@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { FileText, Printer, Wallet } from "lucide-react";
+import { ChevronRight, Wallet } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { PageShell } from "@/src/components/layout/page-shell";
 import { SectionHeading } from "@/src/components/ui/section-heading";
-import { MePageHeader } from "@/src/modules/hr/components/me-page-header";
-import type { EmployeePayslipHistory } from "@/src/modules/payroll/data/get-pay-runs";
+import { cn } from "@/lib/utils";
+import { UI_MOTION, UI_SURFACE } from "@/src/config/ui-typography";
+import type { SelfServicePayslipHistoryItem } from "@/src/modules/payroll/data/get-stored-payslip";
 
 function runKindLabel(kind: "REGULAR" | "CORRECTION" | "OFF_CYCLE"): string {
   return kind === "CORRECTION"
@@ -16,89 +15,41 @@ function runKindLabel(kind: "REGULAR" | "CORRECTION" | "OFF_CYCLE"): string {
       : "Regular";
 }
 
-function FilterChip({
-  href,
-  label,
-  active,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className={[
-        "inline-flex items-center rounded-md border px-2.5 py-1 text-xs transition-colors",
-        active
-          ? "border-primary bg-primary/10 font-medium text-foreground"
-          : "border-border/70 text-muted-foreground hover:bg-muted/60 hover:text-foreground",
-      ].join(" ")}
-    >
-      {label}
-    </Link>
-  );
-}
-
 export function SelfServicePayslipHistory({
-  history,
+  items,
+  heading = "Payslips",
+  emptyMessage = "No posted payslips yet.",
+  className,
 }: {
-  history: EmployeePayslipHistory;
+  items: SelfServicePayslipHistoryItem[];
+  heading?: string;
+  emptyMessage?: string;
+  className?: string;
 }) {
-  const { items, years, selectedYear } = history;
-
   return (
-    <PageShell size="md">
-      <MePageHeader
-        title="Payslip history"
-        description="Your posted payslips. Preview periods without a posted run are not shown here."
-        backHref="/me"
-        backLabel="My Profile"
-      />
+    <section className={className}>
+      <div className="mb-4 flex items-center gap-2">
+        <Wallet className="size-4 text-muted-foreground" />
+        <SectionHeading>{heading}</SectionHeading>
+      </div>
 
-      {years.length > 0 ? (
-        <section className="mb-6 flex flex-wrap items-center gap-2">
-          <span className="text-xs text-muted-foreground">Show:</span>
-          <FilterChip
-            href="/me/payslips"
-            label="Last 12 months"
-            active={selectedYear == null}
-          />
-          {years.map((year) => (
-            <FilterChip
-              key={year}
-              href={`/me/payslips?year=${year}`}
-              label={String(year)}
-              active={selectedYear === year}
-            />
-          ))}
-        </section>
-      ) : null}
-
-      <section>
-        <div className="mb-4 flex items-center gap-2">
-          <Wallet className="size-4 text-muted-foreground" />
-          <SectionHeading>
-            {selectedYear == null
-              ? "Last 12 months"
-              : `Posted in ${selectedYear}`}
-          </SectionHeading>
-        </div>
-
-        {items.length === 0 ? (
-          <p className="py-10 text-center text-sm text-muted-foreground">
-            No posted payslips
-            {selectedYear == null ? " in the last 12 months" : ` for ${selectedYear}`}
-            .
-          </p>
-        ) : (
-          <div className="divide-y divide-border/70">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="grid gap-3 py-4 md:grid-cols-[1fr_8rem_8rem_auto] md:items-center"
+      {items.length === 0 ? (
+        <p className="py-6 text-sm text-muted-foreground">{emptyMessage}</p>
+      ) : (
+        <ul className={UI_SURFACE.listFrame}>
+          {items.map((item) => (
+            <li key={item.id}>
+              <Link
+                href={item.viewHref}
+                className={cn(
+                  UI_SURFACE.listRow,
+                  "grid md:grid-cols-[1fr_8rem_8rem_auto] md:items-center",
+                  UI_MOTION.interactive,
+                  "rounded-md outline-none hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring/50",
+                )}
+                aria-label={`${item.periodName} payslip`}
               >
-                <div>
+                <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-medium">{item.periodName}</p>
                     {item.runKind !== "REGULAR" ? (
@@ -111,6 +62,7 @@ export function SelfServicePayslipHistory({
                     {item.runNumber}
                   </p>
                 </div>
+
                 <div>
                   <p className="text-xs text-muted-foreground">Gross</p>
                   <p className="text-sm font-medium">{item.grossPay}</p>
@@ -119,31 +71,15 @@ export function SelfServicePayslipHistory({
                   <p className="text-xs text-muted-foreground">Net</p>
                   <p className="text-sm font-medium">{item.netPay}</p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 md:justify-end">
-                  <Button
-                    nativeButton={false}
-                    size="sm"
-                    variant="outline"
-                    render={<Link href={item.viewHref} />}
-                  >
-                    <FileText />
-                    View
-                  </Button>
-                  <Button
-                    nativeButton={false}
-                    size="sm"
-                    variant="outline"
-                    render={<Link href={item.printHref} />}
-                  >
-                    <Printer />
-                    Print
-                  </Button>
+
+                <div className="flex items-center justify-end text-muted-foreground">
+                  <ChevronRight className="size-4" aria-hidden />
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-    </PageShell>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

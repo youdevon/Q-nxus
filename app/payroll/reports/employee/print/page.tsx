@@ -1,56 +1,63 @@
-import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
-import {
-  EmployeePaymentHistoryReportPrintContent,
-  employeePaymentHistoryMetaLines,
-} from "@/src/modules/payroll/components/print/payroll-report-print-content";
-import { getEmployeePaymentHistory } from "@/src/modules/payroll/data/get-employee-payment-history";
+import { buildListFilterUrl } from "@/src/lib/list-filter-url";
+import { parseMonthlyPayrollEmployeeIds } from "@/src/modules/payroll/data/get-monthly-payroll-summary";
 import { requirePayrollViewAccess } from "@/src/modules/payroll/data/require-payroll-access";
-import { ReportPrintPage } from "@/src/modules/reports/lib/report-print-page";
-
-export const metadata: Metadata = {
-  title: "Print employee payment history",
-};
 
 export const dynamic = "force-dynamic";
 
 type SearchParams = Promise<{
   scope?: string;
-  employeeId?: string;
+  employeeId?: string | string[];
+  employeeIds?: string | string[];
   departmentId?: string;
-  query?: string;
   preset?: string;
   start?: string;
   end?: string;
 }>;
 
-export default async function EmployeePaymentHistoryPrintPage({
+/**
+ * Legacy employee payment history print → consolidated Posted payroll print.
+ */
+export default async function EmployeePaymentHistoryPrintRedirectPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
   await requirePayrollViewAccess();
   const params = await searchParams;
-  const data = await getEmployeePaymentHistory({
-    scope: typeof params.scope === "string" ? params.scope : undefined,
-    employeeId:
-      typeof params.employeeId === "string" ? params.employeeId : undefined,
-    departmentId:
-      typeof params.departmentId === "string"
-        ? params.departmentId
-        : undefined,
-    query: typeof params.query === "string" ? params.query : undefined,
-    preset: typeof params.preset === "string" ? params.preset : undefined,
-    startPeriodKey: typeof params.start === "string" ? params.start : undefined,
-    endPeriodKey: typeof params.end === "string" ? params.end : undefined,
-  });
+  const employeeIds = parseMonthlyPayrollEmployeeIds([
+    ...(Array.isArray(params.employeeIds)
+      ? params.employeeIds
+      : params.employeeIds
+        ? [params.employeeIds]
+        : []),
+    ...(Array.isArray(params.employeeId)
+      ? params.employeeId
+      : params.employeeId
+        ? [params.employeeId]
+        : []),
+  ]);
 
-  return (
-    <ReportPrintPage
-      title="Employee payment history"
-      metaLines={employeePaymentHistoryMetaLines(data)}
-    >
-      <EmployeePaymentHistoryReportPrintContent data={data} />
-    </ReportPrintPage>
+  const rawScope = params.scope?.trim();
+  const scope =
+    rawScope === "department"
+      ? "department"
+      : rawScope === "employee" ||
+          rawScope === "selected" ||
+          employeeIds.length > 0
+        ? "selected"
+        : "all";
+
+  redirect(
+    buildListFilterUrl("/payroll/reports/monthly/print", {
+      scope,
+      employeeIds: employeeIds.length > 0 ? employeeIds : undefined,
+      departmentId: params.departmentId,
+      preset: params.preset,
+      start: params.start,
+      end: params.end,
+      generated: "1",
+    }),
   );
 }

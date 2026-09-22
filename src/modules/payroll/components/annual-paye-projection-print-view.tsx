@@ -4,6 +4,7 @@ import { Printer, X } from "lucide-react";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
+import { closePrintView } from "@/src/lib/close-print-view";
 import {
   AnnualPayeProjectionPrintDocument,
   type AnnualPayeProjectionPrintContext,
@@ -16,11 +17,13 @@ export function AnnualPayeProjectionPrintView({
   context,
   projection,
   isMidYearJoiner = false,
+  closeHref = "/payroll",
 }: {
   employee: AnnualPayeProjectionPrintEmployee;
   context: AnnualPayeProjectionPrintContext;
   projection: AnnualPayeProjectionResult;
   isMidYearJoiner?: boolean;
+  closeHref?: string;
 }) {
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -45,7 +48,7 @@ export function AnnualPayeProjectionPrintView({
             <Button
               type="button"
               variant="ghost"
-              onClick={() => window.history.back()}
+              onClick={() => closePrintView(closeHref)}
             >
               <X />
               Close

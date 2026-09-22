@@ -2,6 +2,12 @@ import ExcelJS from "exceljs";
 
 import { toCsv } from "@/src/modules/payroll/lib/csv";
 import type { PayslipPreview } from "@/src/modules/payroll/lib/payslip-preview";
+import {
+  applyXlsxTableColumnFonts,
+  scaleXlsxColumnWidth,
+  XLSX_LAYOUT,
+  xlsxTableFont,
+} from "@/src/lib/xlsx-typography";
 
 /** Stable schema for bank-website / future ISO adapter consumers. */
 export const PAYROLL_DISBURSEMENT_SCHEMA_VERSION = 2 as const;
@@ -273,13 +279,26 @@ export async function buildPayrollDisbursementXlsx(
   workbook.created = new Date();
 
   const sheet = workbook.addWorksheet("Disbursements", {
-    views: [{ state: "frozen", ySplit: 1 }],
+    views: [
+      {
+        state: "frozen",
+        ySplit: 1,
+        zoomScale: XLSX_LAYOUT.viewZoom,
+      },
+    ],
+    properties: { defaultRowHeight: XLSX_LAYOUT.defaultRowHeight },
   });
 
   sheet.columns = PAYROLL_DISBURSEMENT_COLUMNS.map((header) => ({
     header,
     key: header,
-    width: header === "employeeName" || header === "bankName" ? 24 : 14,
+    width: scaleXlsxColumnWidth(
+      header === "employeeName" || header === "bankName" ? 24 : 14,
+      {
+        min: header === "employeeName" || header === "bankName" ? 18 : 12,
+        max: header === "employeeName" || header === "bankName" ? 48 : 28,
+      },
+    ),
   }));
 
   const moneyKeys = new Set([
@@ -293,6 +312,7 @@ export async function buildPayrollDisbursementXlsx(
 
   for (const row of rows) {
     const excelRow = sheet.addRow(row);
+    excelRow.height = XLSX_LAYOUT.dataRowHeight;
     for (const col of PAYROLL_DISBURSEMENT_COLUMNS) {
       if (!moneyKeys.has(col)) {
         continue;
@@ -304,13 +324,27 @@ export async function buildPayrollDisbursementXlsx(
     accountCell.numFmt = "@";
   }
 
-  sheet.getRow(1).font = { bold: true };
+  applyXlsxTableColumnFonts(sheet, PAYROLL_DISBURSEMENT_COLUMNS.length);
+  const headerRow = sheet.getRow(1);
+  headerRow.height = XLSX_LAYOUT.headerRowHeight;
+  headerRow.font = xlsxTableFont({ bold: true });
 
   const summary = summarizePayrollDisbursementRows(rows);
-  const summarySheet = workbook.addWorksheet("Summary");
+  const summarySheet = workbook.addWorksheet("Summary", {
+    properties: { defaultRowHeight: XLSX_LAYOUT.defaultRowHeight },
+    views: [{ zoomScale: XLSX_LAYOUT.viewZoom }],
+  });
   summarySheet.columns = [
-    { header: "metric", key: "metric", width: 28 },
-    { header: "value", key: "value", width: 18 },
+    {
+      header: "metric",
+      key: "metric",
+      width: scaleXlsxColumnWidth(28, { min: 18, max: 48 }),
+    },
+    {
+      header: "value",
+      key: "value",
+      width: scaleXlsxColumnWidth(18, { min: 12, max: 36 }),
+    },
   ];
   summarySheet.addRows([
     { metric: "schemaVersion", value: PAYROLL_DISBURSEMENT_SCHEMA_VERSION },
@@ -323,7 +357,12 @@ export async function buildPayrollDisbursementXlsx(
     { metric: "totalAllocationAmount", value: summary.totalAllocationAmount },
     { metric: "totalNetPay", value: summary.totalNetPay },
   ]);
-  summarySheet.getRow(1).font = { bold: true };
+  applyXlsxTableColumnFonts(summarySheet, 2);
+  summarySheet.getRow(1).height = XLSX_LAYOUT.headerRowHeight;
+  summarySheet.getRow(1).font = xlsxTableFont({ bold: true });
+  for (let rowIndex = 2; rowIndex <= 10; rowIndex += 1) {
+    summarySheet.getRow(rowIndex).height = XLSX_LAYOUT.dataRowHeight;
+  }
   summarySheet.getCell("B8").numFmt = "#,##0.00";
   summarySheet.getCell("B9").numFmt = "#,##0.00";
 

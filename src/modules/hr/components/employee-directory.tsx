@@ -428,7 +428,9 @@ export function EmployeeDirectory({ data, filters }: EmployeeDirectoryProps) {
                           </td>
 
                           <td className="hidden px-3 py-4 font-mono text-xs sm:table-cell">
-                            {employee.employeeNumber}
+                            {employee.workforceCategory === "BOARD"
+                              ? "—"
+                              : employee.employeeNumber}
                           </td>
 
                           <td className="px-3 py-4">

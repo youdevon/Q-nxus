@@ -1,6 +1,11 @@
 /**
  * Pure guard for employment-contract hard delete.
  * Delete is for contracts created in error — not a substitute for amend/close.
+ *
+ * Cleanup mode relaxes leave/payroll guards for expired or past-ended terms
+ * so sample and cutover history can be removed without amending first.
+ * Later versions are cascaded by the server action when they are also
+ * cleanup-eligible.
  */
 
 export type EmploymentContractDeletionInput = {
@@ -11,15 +16,26 @@ export type EmploymentContractDeletionInput = {
   hasLeaveUsage: boolean;
   /** True when a POSTED payslip period overlaps this contract’s dates. */
   hasPostedPayrollOverlap: boolean;
+  /**
+   * Expired / terminated / cancelled / superseded, or end date before today.
+   * Leaves and payroll overlap no longer block; leave requests are removed
+   * with the contract in the server action. Child versions cascade when
+   * cleanup-eligible.
+   */
+  cleanupEligible: boolean;
 };
 
 export type EmploymentContractDeletionResult =
-  | { allowed: true }
+  | { allowed: true; mode: "standard" | "cleanup" }
   | { allowed: false; reason: string };
 
 export function canDeleteEmploymentContract(
   input: EmploymentContractDeletionInput,
 ): EmploymentContractDeletionResult {
+  if (input.cleanupEligible) {
+    return { allowed: true, mode: "cleanup" };
+  }
+
   if (input.hasChildAmendments) {
     return {
       allowed: false,
@@ -52,5 +68,5 @@ export function canDeleteEmploymentContract(
     };
   }
 
-  return { allowed: true };
+  return { allowed: true, mode: "standard" };
 }

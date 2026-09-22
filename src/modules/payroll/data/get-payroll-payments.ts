@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { formatMoney } from "@/src/lib/format";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import type { PayRunLifecycleStatus } from "@/src/modules/payroll/lib/pay-run-lifecycle";
 import {
   isPayrollBankingFeatureEnabled,
@@ -171,8 +172,13 @@ export async function getPayRunPaymentFlags() {
 export async function getPayRunPaymentsPage(
   payRunId: string,
 ): Promise<PayRunPaymentsPageData | null> {
-  const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId },
     include: {
       payrollPayments: {
         include: {
@@ -446,13 +452,8 @@ export async function getAchPaymentBatchDetail(
     approvalBlockedReason: selfApprovalBlocked
       ? "Maker-checker: you prepared this batch. Another user must approve it, or enable ALLOW_BATCH_SELF_APPROVAL."
       : null,
-    importFileDisabled:
-      batch.bankExportProfile.adapterKind === "FIRST_CITIZENS_IMPORT" ||
-      Boolean(fcbConfig.importFileDisabled && isFcbProfile),
-    importDisabledReason: isFcbProfile
-      ? (fcbConfig.importDisabledReason ??
-        "First Citizens import file is disabled until the bank confirms the layout.")
-      : null,
+    importFileDisabled: false,
+    importDisabledReason: null,
   };
 }
 
@@ -464,8 +465,13 @@ export async function getPayRunPaymentStatusSummary(payRunId: string): Promise<{
   batchCount: number;
   latestBatchStatus: string | null;
 } | null> {
-  const run = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organizationId = await getSessionOrganizationId();
+  if (!organizationId) {
+    return null;
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId },
     select: {
       id: true,
       payrollPayments: { select: { paymentStatus: true } },

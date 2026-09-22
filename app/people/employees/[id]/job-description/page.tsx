@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { BriefcaseBusiness } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { PeoplePageHeader } from "@/src/modules/hr/components/people-page-header";
-import { PageShell } from "@/src/components/layout/page-shell";
+import { EmployeeSectionChrome } from "@/src/modules/hr/components/employee-section-chrome";
+import { getEmployeeEntityChrome } from "@/src/modules/hr/data/get-employee-entity-chrome";
 import { getEmployeeCurrentJobDescription } from "@/src/modules/hr/data/get-job-descriptions";
 import { requirePeopleManageAccess } from "@/src/modules/hr/data/require-people-access";
 
@@ -31,21 +31,21 @@ export default async function EmployeeJobDescriptionPage({
   await requirePeopleManageAccess();
 
   const { id } = await params;
-  const data = await getEmployeeCurrentJobDescription(id);
+  const [data, chrome] = await Promise.all([
+    getEmployeeCurrentJobDescription(id),
+    getEmployeeEntityChrome(id),
+  ]);
 
-  if (!data) {
+  if (!data || !chrome) {
     notFound();
   }
 
   return (
-    <PageShell size="lg">
-      <PeoplePageHeader
-        title="Job Description"
-        description={`${data.employee.firstName} ${data.employee.lastName} · ${data.employee.employeeNumber}`}
-        backHref={`/people/employees/${id}`}
-        backLabel="Employee"
-      />
-
+    <EmployeeSectionChrome
+      chrome={chrome}
+      current="job-description"
+      title="Job Description"
+    >
       {!data.position ? (
         <div className="py-12 text-center">
           <BriefcaseBusiness className="mx-auto size-7 text-muted-foreground" />
@@ -73,9 +73,9 @@ export default async function EmployeeJobDescriptionPage({
               <Badge variant="outline">
                 Version {data.jobDescription.versionNumber}
               </Badge>
-              {data.position.code && (
+              {data.position.code ? (
                 <Badge variant="secondary">{data.position.code}</Badge>
-              )}
+              ) : null}
             </div>
 
             <p className="mt-2 text-sm text-muted-foreground">
@@ -87,7 +87,7 @@ export default async function EmployeeJobDescriptionPage({
             </p>
           </section>
 
-          {data.jobDescription.summary && (
+          {data.jobDescription.summary ? (
             <section>
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
                 Summary
@@ -96,9 +96,9 @@ export default async function EmployeeJobDescriptionPage({
                 {data.jobDescription.summary}
               </p>
             </section>
-          )}
+          ) : null}
 
-          {data.jobDescription.positionPurpose && (
+          {data.jobDescription.positionPurpose ? (
             <section>
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
                 Position purpose
@@ -107,7 +107,7 @@ export default async function EmployeeJobDescriptionPage({
                 {data.jobDescription.positionPurpose}
               </p>
             </section>
-          )}
+          ) : null}
 
           <section>
             <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
@@ -146,22 +146,22 @@ export default async function EmployeeJobDescriptionPage({
                       {label(criterion.criterionType)}
                     </Badge>
                     <h3 className="font-medium">{criterion.title}</h3>
-                    {Number(criterion.weight) > 0 && (
+                    {Number(criterion.weight) > 0 ? (
                       <Badge variant="secondary">{criterion.weight}%</Badge>
-                    )}
+                    ) : null}
                   </div>
 
-                  {criterion.description && (
+                  {criterion.description ? (
                     <p className="mt-3 whitespace-pre-wrap text-sm">
                       {criterion.description}
                     </p>
-                  )}
+                  ) : null}
 
-                  {criterion.measurement && (
+                  {criterion.measurement ? (
                     <p className="mt-3 text-xs text-muted-foreground">
                       Measurement: {criterion.measurement}
                     </p>
-                  )}
+                  ) : null}
                 </article>
               ))}
             </div>
@@ -188,6 +188,6 @@ export default async function EmployeeJobDescriptionPage({
           </section>
         </>
       )}
-    </PageShell>
+    </EmployeeSectionChrome>
   );
 }

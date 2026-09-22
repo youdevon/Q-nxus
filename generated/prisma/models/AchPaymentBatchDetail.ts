@@ -50,9 +50,13 @@ export type AchPaymentBatchDetailMinAggregateOutputType = {
   abaNumber: string | null
   accountNumberMasked: string | null
   paymentType: string | null
+  transactionCode: string | null
+  traceNumber: string | null
   purposeCode: string | null
   addenda: string | null
   allocationKind: string | null
+  excludedFromExport: boolean | null
+  exclusionReason: string | null
   createdAt: Date | null
 }
 
@@ -70,9 +74,13 @@ export type AchPaymentBatchDetailMaxAggregateOutputType = {
   abaNumber: string | null
   accountNumberMasked: string | null
   paymentType: string | null
+  transactionCode: string | null
+  traceNumber: string | null
   purposeCode: string | null
   addenda: string | null
   allocationKind: string | null
+  excludedFromExport: boolean | null
+  exclusionReason: string | null
   createdAt: Date | null
 }
 
@@ -90,9 +98,13 @@ export type AchPaymentBatchDetailCountAggregateOutputType = {
   abaNumber: number
   accountNumberMasked: number
   paymentType: number
+  transactionCode: number
+  traceNumber: number
   purposeCode: number
   addenda: number
   allocationKind: number
+  excludedFromExport: number
+  exclusionReason: number
   createdAt: number
   _all: number
 }
@@ -122,9 +134,13 @@ export type AchPaymentBatchDetailMinAggregateInputType = {
   abaNumber?: true
   accountNumberMasked?: true
   paymentType?: true
+  transactionCode?: true
+  traceNumber?: true
   purposeCode?: true
   addenda?: true
   allocationKind?: true
+  excludedFromExport?: true
+  exclusionReason?: true
   createdAt?: true
 }
 
@@ -142,9 +158,13 @@ export type AchPaymentBatchDetailMaxAggregateInputType = {
   abaNumber?: true
   accountNumberMasked?: true
   paymentType?: true
+  transactionCode?: true
+  traceNumber?: true
   purposeCode?: true
   addenda?: true
   allocationKind?: true
+  excludedFromExport?: true
+  exclusionReason?: true
   createdAt?: true
 }
 
@@ -162,9 +182,13 @@ export type AchPaymentBatchDetailCountAggregateInputType = {
   abaNumber?: true
   accountNumberMasked?: true
   paymentType?: true
+  transactionCode?: true
+  traceNumber?: true
   purposeCode?: true
   addenda?: true
   allocationKind?: true
+  excludedFromExport?: true
+  exclusionReason?: true
   createdAt?: true
   _all?: true
 }
@@ -269,9 +293,13 @@ export type AchPaymentBatchDetailGroupByOutputType = {
   abaNumber: string | null
   accountNumberMasked: string
   paymentType: string | null
+  transactionCode: string | null
+  traceNumber: string | null
   purposeCode: string | null
   addenda: string | null
   allocationKind: string
+  excludedFromExport: boolean
+  exclusionReason: string | null
   createdAt: Date
   _count: AchPaymentBatchDetailCountAggregateOutputType | null
   _avg: AchPaymentBatchDetailAvgAggregateOutputType | null
@@ -312,9 +340,13 @@ export type AchPaymentBatchDetailWhereInput = {
   abaNumber?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   accountNumberMasked?: Prisma.StringFilter<"AchPaymentBatchDetail"> | string
   paymentType?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
+  transactionCode?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
+  traceNumber?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   purposeCode?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   addenda?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   allocationKind?: Prisma.StringFilter<"AchPaymentBatchDetail"> | string
+  excludedFromExport?: Prisma.BoolFilter<"AchPaymentBatchDetail"> | boolean
+  exclusionReason?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AchPaymentBatchDetail"> | Date | string
   achPaymentBatch?: Prisma.XOR<Prisma.AchPaymentBatchScalarRelationFilter, Prisma.AchPaymentBatchWhereInput>
   payrollPaymentAllocation?: Prisma.XOR<Prisma.PayrollPaymentAllocationScalarRelationFilter, Prisma.PayrollPaymentAllocationWhereInput>
@@ -334,9 +366,13 @@ export type AchPaymentBatchDetailOrderByWithRelationInput = {
   abaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   accountNumberMasked?: Prisma.SortOrder
   paymentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  transactionCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  traceNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   purposeCode?: Prisma.SortOrderInput | Prisma.SortOrder
   addenda?: Prisma.SortOrderInput | Prisma.SortOrder
   allocationKind?: Prisma.SortOrder
+  excludedFromExport?: Prisma.SortOrder
+  exclusionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   achPaymentBatch?: Prisma.AchPaymentBatchOrderByWithRelationInput
   payrollPaymentAllocation?: Prisma.PayrollPaymentAllocationOrderByWithRelationInput
@@ -360,9 +396,13 @@ export type AchPaymentBatchDetailWhereUniqueInput = Prisma.AtLeast<{
   abaNumber?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   accountNumberMasked?: Prisma.StringFilter<"AchPaymentBatchDetail"> | string
   paymentType?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
+  transactionCode?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
+  traceNumber?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   purposeCode?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   addenda?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   allocationKind?: Prisma.StringFilter<"AchPaymentBatchDetail"> | string
+  excludedFromExport?: Prisma.BoolFilter<"AchPaymentBatchDetail"> | boolean
+  exclusionReason?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AchPaymentBatchDetail"> | Date | string
   achPaymentBatch?: Prisma.XOR<Prisma.AchPaymentBatchScalarRelationFilter, Prisma.AchPaymentBatchWhereInput>
   payrollPaymentAllocation?: Prisma.XOR<Prisma.PayrollPaymentAllocationScalarRelationFilter, Prisma.PayrollPaymentAllocationWhereInput>
@@ -382,9 +422,13 @@ export type AchPaymentBatchDetailOrderByWithAggregationInput = {
   abaNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   accountNumberMasked?: Prisma.SortOrder
   paymentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  transactionCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  traceNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   purposeCode?: Prisma.SortOrderInput | Prisma.SortOrder
   addenda?: Prisma.SortOrderInput | Prisma.SortOrder
   allocationKind?: Prisma.SortOrder
+  excludedFromExport?: Prisma.SortOrder
+  exclusionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.AchPaymentBatchDetailCountOrderByAggregateInput
   _avg?: Prisma.AchPaymentBatchDetailAvgOrderByAggregateInput
@@ -410,9 +454,13 @@ export type AchPaymentBatchDetailScalarWhereWithAggregatesInput = {
   abaNumber?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatchDetail"> | string | null
   accountNumberMasked?: Prisma.StringWithAggregatesFilter<"AchPaymentBatchDetail"> | string
   paymentType?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatchDetail"> | string | null
+  transactionCode?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatchDetail"> | string | null
+  traceNumber?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatchDetail"> | string | null
   purposeCode?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatchDetail"> | string | null
   addenda?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatchDetail"> | string | null
   allocationKind?: Prisma.StringWithAggregatesFilter<"AchPaymentBatchDetail"> | string
+  excludedFromExport?: Prisma.BoolWithAggregatesFilter<"AchPaymentBatchDetail"> | boolean
+  exclusionReason?: Prisma.StringNullableWithAggregatesFilter<"AchPaymentBatchDetail"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AchPaymentBatchDetail"> | Date | string
 }
 
@@ -428,9 +476,13 @@ export type AchPaymentBatchDetailCreateInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
   achPaymentBatch: Prisma.AchPaymentBatchCreateNestedOneWithoutDetailsInput
   payrollPaymentAllocation: Prisma.PayrollPaymentAllocationCreateNestedOneWithoutBatchDetailsInput
@@ -450,9 +502,13 @@ export type AchPaymentBatchDetailUncheckedCreateInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
 }
 
@@ -468,9 +524,13 @@ export type AchPaymentBatchDetailUpdateInput = {
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achPaymentBatch?: Prisma.AchPaymentBatchUpdateOneRequiredWithoutDetailsNestedInput
   payrollPaymentAllocation?: Prisma.PayrollPaymentAllocationUpdateOneRequiredWithoutBatchDetailsNestedInput
@@ -490,9 +550,13 @@ export type AchPaymentBatchDetailUncheckedUpdateInput = {
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -510,9 +574,13 @@ export type AchPaymentBatchDetailCreateManyInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
 }
 
@@ -528,9 +596,13 @@ export type AchPaymentBatchDetailUpdateManyMutationInput = {
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -548,9 +620,13 @@ export type AchPaymentBatchDetailUncheckedUpdateManyInput = {
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -583,9 +659,13 @@ export type AchPaymentBatchDetailCountOrderByAggregateInput = {
   abaNumber?: Prisma.SortOrder
   accountNumberMasked?: Prisma.SortOrder
   paymentType?: Prisma.SortOrder
+  transactionCode?: Prisma.SortOrder
+  traceNumber?: Prisma.SortOrder
   purposeCode?: Prisma.SortOrder
   addenda?: Prisma.SortOrder
   allocationKind?: Prisma.SortOrder
+  excludedFromExport?: Prisma.SortOrder
+  exclusionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -608,9 +688,13 @@ export type AchPaymentBatchDetailMaxOrderByAggregateInput = {
   abaNumber?: Prisma.SortOrder
   accountNumberMasked?: Prisma.SortOrder
   paymentType?: Prisma.SortOrder
+  transactionCode?: Prisma.SortOrder
+  traceNumber?: Prisma.SortOrder
   purposeCode?: Prisma.SortOrder
   addenda?: Prisma.SortOrder
   allocationKind?: Prisma.SortOrder
+  excludedFromExport?: Prisma.SortOrder
+  exclusionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -628,9 +712,13 @@ export type AchPaymentBatchDetailMinOrderByAggregateInput = {
   abaNumber?: Prisma.SortOrder
   accountNumberMasked?: Prisma.SortOrder
   paymentType?: Prisma.SortOrder
+  transactionCode?: Prisma.SortOrder
+  traceNumber?: Prisma.SortOrder
   purposeCode?: Prisma.SortOrder
   addenda?: Prisma.SortOrder
   allocationKind?: Prisma.SortOrder
+  excludedFromExport?: Prisma.SortOrder
+  exclusionReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -735,9 +823,13 @@ export type AchPaymentBatchDetailCreateWithoutPayrollPaymentAllocationInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
   achPaymentBatch: Prisma.AchPaymentBatchCreateNestedOneWithoutDetailsInput
 }
@@ -755,9 +847,13 @@ export type AchPaymentBatchDetailUncheckedCreateWithoutPayrollPaymentAllocationI
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
 }
 
@@ -804,9 +900,13 @@ export type AchPaymentBatchDetailScalarWhereInput = {
   abaNumber?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   accountNumberMasked?: Prisma.StringFilter<"AchPaymentBatchDetail"> | string
   paymentType?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
+  transactionCode?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
+  traceNumber?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   purposeCode?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   addenda?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   allocationKind?: Prisma.StringFilter<"AchPaymentBatchDetail"> | string
+  excludedFromExport?: Prisma.BoolFilter<"AchPaymentBatchDetail"> | boolean
+  exclusionReason?: Prisma.StringNullableFilter<"AchPaymentBatchDetail"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AchPaymentBatchDetail"> | Date | string
 }
 
@@ -822,9 +922,13 @@ export type AchPaymentBatchDetailCreateWithoutAchPaymentBatchInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
   payrollPaymentAllocation: Prisma.PayrollPaymentAllocationCreateNestedOneWithoutBatchDetailsInput
 }
@@ -842,9 +946,13 @@ export type AchPaymentBatchDetailUncheckedCreateWithoutAchPaymentBatchInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
 }
 
@@ -887,9 +995,13 @@ export type AchPaymentBatchDetailCreateManyPayrollPaymentAllocationInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
 }
 
@@ -905,9 +1017,13 @@ export type AchPaymentBatchDetailUpdateWithoutPayrollPaymentAllocationInput = {
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   achPaymentBatch?: Prisma.AchPaymentBatchUpdateOneRequiredWithoutDetailsNestedInput
 }
@@ -925,9 +1041,13 @@ export type AchPaymentBatchDetailUncheckedUpdateWithoutPayrollPaymentAllocationI
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -944,9 +1064,13 @@ export type AchPaymentBatchDetailUncheckedUpdateManyWithoutPayrollPaymentAllocat
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -963,9 +1087,13 @@ export type AchPaymentBatchDetailCreateManyAchPaymentBatchInput = {
   abaNumber?: string | null
   accountNumberMasked: string
   paymentType?: string | null
+  transactionCode?: string | null
+  traceNumber?: string | null
   purposeCode?: string | null
   addenda?: string | null
   allocationKind: string
+  excludedFromExport?: boolean
+  exclusionReason?: string | null
   createdAt?: Date | string
 }
 
@@ -981,9 +1109,13 @@ export type AchPaymentBatchDetailUpdateWithoutAchPaymentBatchInput = {
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payrollPaymentAllocation?: Prisma.PayrollPaymentAllocationUpdateOneRequiredWithoutBatchDetailsNestedInput
 }
@@ -1001,9 +1133,13 @@ export type AchPaymentBatchDetailUncheckedUpdateWithoutAchPaymentBatchInput = {
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1020,9 +1156,13 @@ export type AchPaymentBatchDetailUncheckedUpdateManyWithoutAchPaymentBatchInput 
   abaNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accountNumberMasked?: Prisma.StringFieldUpdateOperationsInput | string
   paymentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  transactionCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   purposeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addenda?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   allocationKind?: Prisma.StringFieldUpdateOperationsInput | string
+  excludedFromExport?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  exclusionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1042,9 +1182,13 @@ export type AchPaymentBatchDetailSelect<ExtArgs extends runtime.Types.Extensions
   abaNumber?: boolean
   accountNumberMasked?: boolean
   paymentType?: boolean
+  transactionCode?: boolean
+  traceNumber?: boolean
   purposeCode?: boolean
   addenda?: boolean
   allocationKind?: boolean
+  excludedFromExport?: boolean
+  exclusionReason?: boolean
   createdAt?: boolean
   achPaymentBatch?: boolean | Prisma.AchPaymentBatchDefaultArgs<ExtArgs>
   payrollPaymentAllocation?: boolean | Prisma.PayrollPaymentAllocationDefaultArgs<ExtArgs>
@@ -1064,9 +1208,13 @@ export type AchPaymentBatchDetailSelectCreateManyAndReturn<ExtArgs extends runti
   abaNumber?: boolean
   accountNumberMasked?: boolean
   paymentType?: boolean
+  transactionCode?: boolean
+  traceNumber?: boolean
   purposeCode?: boolean
   addenda?: boolean
   allocationKind?: boolean
+  excludedFromExport?: boolean
+  exclusionReason?: boolean
   createdAt?: boolean
   achPaymentBatch?: boolean | Prisma.AchPaymentBatchDefaultArgs<ExtArgs>
   payrollPaymentAllocation?: boolean | Prisma.PayrollPaymentAllocationDefaultArgs<ExtArgs>
@@ -1086,9 +1234,13 @@ export type AchPaymentBatchDetailSelectUpdateManyAndReturn<ExtArgs extends runti
   abaNumber?: boolean
   accountNumberMasked?: boolean
   paymentType?: boolean
+  transactionCode?: boolean
+  traceNumber?: boolean
   purposeCode?: boolean
   addenda?: boolean
   allocationKind?: boolean
+  excludedFromExport?: boolean
+  exclusionReason?: boolean
   createdAt?: boolean
   achPaymentBatch?: boolean | Prisma.AchPaymentBatchDefaultArgs<ExtArgs>
   payrollPaymentAllocation?: boolean | Prisma.PayrollPaymentAllocationDefaultArgs<ExtArgs>
@@ -1108,13 +1260,17 @@ export type AchPaymentBatchDetailSelectScalar = {
   abaNumber?: boolean
   accountNumberMasked?: boolean
   paymentType?: boolean
+  transactionCode?: boolean
+  traceNumber?: boolean
   purposeCode?: boolean
   addenda?: boolean
   allocationKind?: boolean
+  excludedFromExport?: boolean
+  exclusionReason?: boolean
   createdAt?: boolean
 }
 
-export type AchPaymentBatchDetailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "achPaymentBatchId" | "payrollPaymentAllocationId" | "sequence" | "amount" | "currencyCode" | "employeeNumber" | "employeeName" | "individualId" | "bankName" | "abaNumber" | "accountNumberMasked" | "paymentType" | "purposeCode" | "addenda" | "allocationKind" | "createdAt", ExtArgs["result"]["achPaymentBatchDetail"]>
+export type AchPaymentBatchDetailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "achPaymentBatchId" | "payrollPaymentAllocationId" | "sequence" | "amount" | "currencyCode" | "employeeNumber" | "employeeName" | "individualId" | "bankName" | "abaNumber" | "accountNumberMasked" | "paymentType" | "transactionCode" | "traceNumber" | "purposeCode" | "addenda" | "allocationKind" | "excludedFromExport" | "exclusionReason" | "createdAt", ExtArgs["result"]["achPaymentBatchDetail"]>
 export type AchPaymentBatchDetailInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   achPaymentBatch?: boolean | Prisma.AchPaymentBatchDefaultArgs<ExtArgs>
   payrollPaymentAllocation?: boolean | Prisma.PayrollPaymentAllocationDefaultArgs<ExtArgs>
@@ -1151,9 +1307,19 @@ export type $AchPaymentBatchDetailPayload<ExtArgs extends runtime.Types.Extensio
     abaNumber: string | null
     accountNumberMasked: string
     paymentType: string | null
+    /**
+     * Frozen ACH transaction code (22 / 32).
+     */
+    transactionCode: string | null
+    /**
+     * Frozen 15-digit ACH trace number.
+     */
+    traceNumber: string | null
     purposeCode: string | null
     addenda: string | null
     allocationKind: string
+    excludedFromExport: boolean
+    exclusionReason: string | null
     createdAt: Date
   }, ExtArgs["result"]["achPaymentBatchDetail"]>
   composites: {}
@@ -1593,9 +1759,13 @@ export interface AchPaymentBatchDetailFieldRefs {
   readonly abaNumber: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
   readonly accountNumberMasked: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
   readonly paymentType: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
+  readonly transactionCode: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
+  readonly traceNumber: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
   readonly purposeCode: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
   readonly addenda: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
   readonly allocationKind: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
+  readonly excludedFromExport: Prisma.FieldRef<"AchPaymentBatchDetail", 'Boolean'>
+  readonly exclusionReason: Prisma.FieldRef<"AchPaymentBatchDetail", 'String'>
   readonly createdAt: Prisma.FieldRef<"AchPaymentBatchDetail", 'DateTime'>
 }
     

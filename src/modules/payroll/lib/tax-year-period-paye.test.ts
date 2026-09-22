@@ -27,6 +27,16 @@ describe("shouldUseTaxYearPeriodPaye", () => {
     ).toBe(true);
   });
 
+  it("uses tax-year projection when hire date is an ISO date string", () => {
+    expect(
+      shouldUseTaxYearPeriodPaye({
+        taxCalculationMethod: "STANDARD_NON_CUMULATIVE",
+        employmentStartDate: "2026-08-01",
+        taxYear: 2026,
+      }),
+    ).toBe(true);
+  });
+
   it("allows simple monthly path for Jan 1 starter on non-cumulative", () => {
     expect(
       shouldUseTaxYearPeriodPaye({

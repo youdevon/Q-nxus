@@ -134,7 +134,6 @@ export function applyPostNetBankAllocations(input: {
     remainingCents = subCents(remainingCents, wantCents);
     lines.push({
       bankName: account.bankName,
-      accountNumber: account.accountNumber,
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: fromCents(wantCents),
       kind: "FIXED",
@@ -163,7 +162,6 @@ export function applyPostNetBankAllocations(input: {
     remainingCents = subCents(remainingCents, wantCents);
     lines.push({
       bankName: account.bankName,
-      accountNumber: account.accountNumber,
       accountNumberMasked: maskAccountNumber(account.accountNumber),
       amount: fromCents(wantCents),
       kind: "PERCENTAGE",
@@ -175,7 +173,6 @@ export function applyPostNetBankAllocations(input: {
   const remainderAmount = fromCents(remainingCents);
   lines.push({
     bankName: remainder.bankName,
-    accountNumber: remainder.accountNumber,
     accountNumberMasked: maskAccountNumber(remainder.accountNumber),
     amount: remainderAmount,
     kind: "REMAINDER",

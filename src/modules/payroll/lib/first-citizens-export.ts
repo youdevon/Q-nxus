@@ -1,6 +1,6 @@
 /**
- * First Citizens Business Online field mappings + manual-entry worksheet.
- * Import-file generation stays disabled until the bank confirms Default Transactions layout.
+ * First Citizens Business Online field mappings, manual-entry worksheet,
+ * and NACHA type-6 ACH credit import file (94-char fixed-width).
  */
 
 import ExcelJS from "exceljs";
@@ -14,6 +14,33 @@ import {
 import { toCsv } from "@/src/modules/payroll/lib/csv";
 import { sumMoney } from "@/src/modules/payroll/lib/money";
 import { maskAccountNumber } from "@/src/modules/payroll/lib/payslip-preview";
+import {
+  applyXlsxTableColumnFonts,
+  scaleXlsxColumnWidth,
+  XLSX_LAYOUT,
+  xlsxTableFont,
+} from "@/src/lib/xlsx-typography";
+import {
+  buildFcbLegacyAchRecord,
+  formatAchAmountCents,
+  formatAchReceiverName,
+  formatAchSalaryReference,
+  normalizeAchRoutingNumber,
+} from "@/src/modules/payroll/lib/ach/ach-record-builder";
+import { buildConfiguredPrefixTrace } from "@/src/modules/payroll/lib/ach/ach-trace-number";
+import {
+  buildFcbAchSalaryFileName,
+  digitsOnly,
+  FIRST_CITIZENS_ODFI_ROUTING as ACH_ODFI_ROUTING,
+  padLeftFixed,
+  padRightFixed,
+} from "@/src/modules/payroll/lib/ach/fcb-legacy-format";
+
+export {
+  digitsOnly,
+  padLeftFixed,
+  padRightFixed,
+} from "@/src/modules/payroll/lib/ach/fcb-legacy-format";
 
 export {
   normalizeFirstCitizensPaymentTypeLabel,
@@ -48,6 +75,8 @@ type FcbGenerateInput = {
   currencyCode: string;
   details: FcbBankExportDetailLine[];
   configurationJson: unknown;
+  /** ISO date or Date — ACH effective / pay date (NACHA Individual ID). */
+  effectivePaymentDate?: Date | string | null;
 };
 
 type FcbGenerateResult = {
@@ -95,12 +124,24 @@ export const FIRST_CITIZENS_MANUAL_ENTRY_COLUMNS = [
   "Addenda",
 ] as const;
 
+/** First Citizens ODFI routing (TT ACH participant list). */
+export const FIRST_CITIZENS_ODFI_ROUTING = "010100013";
+
 export type FirstCitizensConfiguration = {
   profileName?: string;
   originatingInstitution?: string;
   /** Masked debit account shown on control sheet only when full number unavailable. */
   balanceAccountMasked?: string;
+  /**
+   * Company / originator id — optional. Only used if an older FCB_Payroll_{id}_*
+   * filename convention is reintroduced. Production filename is
+   * FCB_ACH_SALARY_YYYYMMDD.txt (no company id).
+   */
   companyAchId?: string | null;
+  /**
+   * Originating DFI routing for NACHA trace numbers (defaults to First Citizens).
+   */
+  odfiRoutingNumber?: string | null;
   templateName?: string | null;
   /** PPD (payroll default) or CCD. */
   achType?: "PPD" | "CCD";
@@ -115,7 +156,7 @@ export type FirstCitizensConfiguration = {
   defaultPurposeCode?: string;
   exportFormat?: string;
   exportVersion?: string;
-  /** When true, import-file download is refused (default until bank confirms layout). */
+  /** Kill switch reserved for future Default Transactions format — not used by legacy no-header V1. */
   importFileDisabled?: boolean;
   importDisabledReason?: string;
 };
@@ -123,6 +164,7 @@ export type FirstCitizensConfiguration = {
 export const DEFAULT_FIRST_CITIZENS_CONFIGURATION: FirstCitizensConfiguration = {
   profileName: "First Citizens payroll",
   originatingInstitution: "First Citizens",
+  odfiRoutingNumber: FIRST_CITIZENS_ODFI_ROUTING,
   achType: "PPD",
   effectiveDateRule: "PERIOD_END",
   globalAddenda: "Payroll",
@@ -132,9 +174,8 @@ export const DEFAULT_FIRST_CITIZENS_CONFIGURATION: FirstCitizensConfiguration = 
   defaultPurposeCode: "COMPENSATION OF EMPLOYEES",
   exportFormat: "MANUAL_WORKSHEET",
   exportVersion: "1",
-  importFileDisabled: true,
-  importDisabledReason:
-    "First Citizens Default Transactions / NACHA import layout is not confirmed. Request the layout from businessonlinequeries@firstcitizenstt.com, then enable after a successful bank test.",
+  importFileDisabled: false,
+  importDisabledReason: "",
 };
 
 export type FirstCitizensPeriodContext = {
@@ -290,6 +331,10 @@ export function parseFirstCitizensConfiguration(
         : undefined,
     companyAchId:
       typeof record.companyAchId === "string" ? record.companyAchId : null,
+    odfiRoutingNumber:
+      typeof record.odfiRoutingNumber === "string"
+        ? record.odfiRoutingNumber
+        : DEFAULT_FIRST_CITIZENS_CONFIGURATION.odfiRoutingNumber,
     templateName:
       typeof record.templateName === "string" ? record.templateName : null,
     achType: record.achType === "CCD" ? "CCD" : "PPD",
@@ -323,7 +368,7 @@ export function parseFirstCitizensConfiguration(
       typeof record.exportVersion === "string"
         ? record.exportVersion
         : DEFAULT_FIRST_CITIZENS_CONFIGURATION.exportVersion,
-    importFileDisabled: record.importFileDisabled !== false,
+    importFileDisabled: record.importFileDisabled === true,
     importDisabledReason:
       typeof record.importDisabledReason === "string"
         ? record.importDisabledReason
@@ -461,6 +506,187 @@ function hashContent(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");
 }
 
+/**
+ * NACHA Individual Name (22): first token + two spaces + remainder, truncated.
+ * Matches live FCB samples (`KIRT  BAYNES`, `NATALIE  MAXWELL-REGIS`).
+ */
+export function formatNachaIndividualName(name: string): string {
+  return formatAchReceiverName(name);
+}
+
+/** `SALARY 20260831` — entry description + effective date, 15 chars. */
+export function formatNachaIndividualId(
+  entryDescription: string,
+  effectiveDate: Date | string,
+): string {
+  return formatAchSalaryReference(effectiveDate, entryDescription);
+}
+
+/**
+ * NACHA transaction code for FCB payroll credits.
+ * 22 = Checking Credit, 32 = Savings Credit.
+ */
+export function resolveNachaCreditTransactionCode(
+  paymentType: string | null | undefined,
+  accountType?: string | null,
+): "22" | "32" | null {
+  const resolved = resolveFirstCitizensPaymentType({
+    paymentType,
+    accountType,
+  });
+  if (resolved === "Checking Credit") {
+    return "22";
+  }
+  if (resolved === "Savings Credit") {
+    return "32";
+  }
+  return null;
+}
+
+/** Normalize ABA to exactly 9 digits; null when incomplete. */
+export function normalizeNachaAbaNumber(
+  value: string | null | undefined,
+): string | null {
+  return normalizeAchRoutingNumber(value);
+}
+
+export function formatNachaAmountCents(amount: number): string | null {
+  return formatAchAmountCents(amount);
+}
+
+/**
+ * Trace = ODFI routing first 8 digits + 7-digit sequence (NACHA).
+ * Thin adapter — production exports should use AchTraceNumberGenerator.
+ */
+export function formatNachaTraceNumber(
+  odfiRoutingNumber: string,
+  sequence: number,
+): string {
+  return buildConfiguredPrefixTrace(odfiRoutingNumber, sequence);
+}
+
+export type NachaType6EntryInput = {
+  transactionCode: "22" | "32";
+  abaNumber: string;
+  accountNumber: string;
+  amount: number;
+  individualId: string;
+  individualName: string;
+  sequence: number;
+  odfiRoutingNumber: string;
+};
+
+/** One 94-character NACHA Entry Detail (record type 6). */
+export function buildNachaType6Record(input: NachaType6EntryInput): string {
+  return buildFcbLegacyAchRecord({
+    transactionCode: input.transactionCode,
+    routingNumber: input.abaNumber,
+    accountNumber: input.accountNumber,
+    amount: input.amount,
+    individualId: input.individualId,
+    receiverName: input.individualName,
+    discretionaryData: "  ",
+    addendaIndicator: "0",
+    traceNumber: formatNachaTraceNumber(
+      input.odfiRoutingNumber,
+      input.sequence,
+    ),
+  });
+}
+
+export type BuildFirstCitizensNachaFileInput = {
+  details: readonly FcbBankExportDetailLine[];
+  config: FirstCitizensConfiguration;
+  effectivePaymentDate: Date | string;
+  /** File-date stamp in the filename (defaults to today UTC). */
+  fileDate?: Date | string;
+};
+
+export function resolveFirstCitizensNachaEffectiveDate(
+  input: FcbGenerateInput,
+  config: FirstCitizensConfiguration,
+): string | null {
+  const explicit = input.effectivePaymentDate;
+  if (explicit) {
+    if (typeof explicit === "string") {
+      return explicit.slice(0, 10);
+    }
+    return explicit.toISOString().slice(0, 10);
+  }
+  void config;
+  return null;
+}
+
+/**
+ * Build CRLF-delimited NACHA type-6 payroll credit file matching FCB samples.
+ */
+export function buildFirstCitizensNachaType6File(
+  input: BuildFirstCitizensNachaFileInput,
+): {
+  content: string;
+  fileName: string;
+  detailCount: number;
+  controlTotalAmount: number;
+} {
+  const header = resolveFirstCitizensBatchHeader(input.config);
+  const odfi =
+    digitsOnly(input.config.odfiRoutingNumber ?? "") ||
+    ACH_ODFI_ROUTING;
+  const individualId = formatNachaIndividualId(
+    header.entryDescription,
+    input.effectivePaymentDate,
+  );
+
+  const lines: string[] = [];
+  for (const detail of input.details) {
+    const txn = resolveNachaCreditTransactionCode(
+      detail.paymentType,
+      detail.accountType,
+    );
+    if (!txn) {
+      throw new Error(
+        `Detail sequence ${detail.sequence} is missing Savings/Chequing payment type.`,
+      );
+    }
+    const aba = normalizeNachaAbaNumber(
+      detail.abaNumber ??
+        resolveFirstCitizensAbaNumber({ bankName: detail.bankName }),
+    );
+    if (!aba) {
+      throw new Error(
+        `Detail sequence ${detail.sequence} needs a 9-digit ABA / routing number.`,
+      );
+    }
+    const accountNumber = detail.accountNumber?.trim() ?? "";
+    if (!digitsOnly(accountNumber)) {
+      throw new Error(
+        `Detail sequence ${detail.sequence} is missing Account Number.`,
+      );
+    }
+    lines.push(
+      buildNachaType6Record({
+        transactionCode: txn,
+        abaNumber: aba,
+        accountNumber,
+        amount: detail.amount,
+        individualId,
+        individualName:
+          detail.beneficiaryName?.trim() || detail.employeeName,
+        sequence: detail.sequence,
+        odfiRoutingNumber: odfi,
+      }),
+    );
+  }
+
+  const content = lines.map((line) => `${line}\r\n`).join("");
+  return {
+    content,
+    fileName: buildFcbAchSalaryFileName(input.effectivePaymentDate),
+    detailCount: lines.length,
+    controlTotalAmount: controlTotalFromDetails(input.details),
+  };
+}
+
 export function buildFirstCitizensManualCsv(
   entries: readonly FirstCitizensEntryRow[],
 ): string {
@@ -487,7 +713,10 @@ export async function buildFirstCitizensManualWorkbook(input: {
   const c = input.control;
 
   // Sheet 1 — copy onto Business Online ACH header fields (exact form order).
-  const bankHeaderSheet = workbook.addWorksheet("Bank Header");
+  const bankHeaderSheet = workbook.addWorksheet("Bank Header", {
+    properties: { defaultRowHeight: XLSX_LAYOUT.defaultRowHeight },
+    views: [{ zoomScale: XLSX_LAYOUT.viewZoom }],
+  });
   const bankHeaderRows: Array<[string, string | number]> = [
     [
       "Instructions",
@@ -508,16 +737,34 @@ export async function buildFirstCitizensManualWorkbook(input: {
     ["Total No of Records", c.entryCount],
   ];
   for (const [label, value] of bankHeaderRows) {
-    bankHeaderSheet.addRow([label, value]);
+    const row = bankHeaderSheet.addRow([label, value]);
+    row.height = XLSX_LAYOUT.dataRowHeight;
   }
-  bankHeaderSheet.getColumn(1).font = { bold: true };
-  bankHeaderSheet.getColumn(2).width = 72;
+  applyXlsxTableColumnFonts(bankHeaderSheet, 2);
+  bankHeaderSheet.getColumn(1).font = xlsxTableFont({ bold: true });
+  bankHeaderSheet.getColumn(1).width = scaleXlsxColumnWidth(28, {
+    min: 18,
+    max: 48,
+  });
+  bankHeaderSheet.getColumn(2).width = scaleXlsxColumnWidth(72, {
+    min: 36,
+    max: 96,
+  });
 
   // Sheet 2 — row grid matching the ACH table.
-  const entriesSheet = workbook.addWorksheet("Manual Entry");
+  const entriesSheet = workbook.addWorksheet("Manual Entry", {
+    properties: { defaultRowHeight: XLSX_LAYOUT.defaultRowHeight },
+    views: [
+      {
+        state: "frozen",
+        ySplit: 1,
+        zoomScale: XLSX_LAYOUT.viewZoom,
+      },
+    ],
+  });
   entriesSheet.addRow([...FIRST_CITIZENS_MANUAL_ENTRY_COLUMNS]);
   for (const row of input.entries) {
-    entriesSheet.addRow([
+    const excelRow = entriesSheet.addRow([
       row.individualName,
       row.individualId,
       row.abaNumber,
@@ -527,12 +774,28 @@ export async function buildFirstCitizensManualWorkbook(input: {
       Number(row.amount.toFixed(2)),
       row.addenda,
     ]);
+    excelRow.height = XLSX_LAYOUT.dataRowHeight;
   }
-  entriesSheet.getRow(1).font = { bold: true };
+  applyXlsxTableColumnFonts(
+    entriesSheet,
+    FIRST_CITIZENS_MANUAL_ENTRY_COLUMNS.length,
+  );
+  entriesSheet.getRow(1).height = XLSX_LAYOUT.headerRowHeight;
+  entriesSheet.getRow(1).font = xlsxTableFont({ bold: true });
   entriesSheet.getColumn(7).numFmt = "#,##0.00";
+  for (let col = 1; col <= FIRST_CITIZENS_MANUAL_ENTRY_COLUMNS.length; col += 1) {
+    const header = FIRST_CITIZENS_MANUAL_ENTRY_COLUMNS[col - 1] ?? "";
+    entriesSheet.getColumn(col).width = scaleXlsxColumnWidth(
+      Math.max(header.length + 2, 12),
+      { min: 12, max: 40 },
+    );
+  }
 
   // Sheet 3 — internal control / audit.
-  const controlSheet = workbook.addWorksheet("Control Summary");
+  const controlSheet = workbook.addWorksheet("Control Summary", {
+    properties: { defaultRowHeight: XLSX_LAYOUT.defaultRowHeight },
+    views: [{ zoomScale: XLSX_LAYOUT.viewZoom }],
+  });
   const controlRows: Array<[string, string | number]> = [
     ["Document", c.documentLabel],
     [
@@ -556,10 +819,19 @@ export async function buildFirstCitizensManualWorkbook(input: {
     ["Batch reference", c.batchReference],
   ];
   for (const [label, value] of controlRows) {
-    controlSheet.addRow([label, value]);
+    const row = controlSheet.addRow([label, value]);
+    row.height = XLSX_LAYOUT.dataRowHeight;
   }
-  controlSheet.getColumn(1).font = { bold: true };
-  controlSheet.getColumn(2).width = 72;
+  applyXlsxTableColumnFonts(controlSheet, 2);
+  controlSheet.getColumn(1).font = xlsxTableFont({ bold: true });
+  controlSheet.getColumn(1).width = scaleXlsxColumnWidth(28, {
+    min: 18,
+    max: 48,
+  });
+  controlSheet.getColumn(2).width = scaleXlsxColumnWidth(72, {
+    min: 36,
+    max: 96,
+  });
   const batchTotalRow = controlRows.findIndex(([label]) => label === "Batch total");
   if (batchTotalRow >= 0) {
     controlSheet.getRow(batchTotalRow + 1).getCell(2).numFmt = "#,##0.00";
@@ -702,9 +974,10 @@ export class FirstCitizensManualWorksheetAdapter {
 }
 
 /**
- * Placeholder adapter — never emits a file labeled as First Citizens compatible.
+ * Adapter for First Citizens NACHA type-6 ACH credit import files
+ * (FCB_TT_LEGACY_NACHA_NO_HEADER_V1 → FCB_ACH_SALARY_YYYYMMDD.txt).
  */
-export class FirstCitizensImportDisabledAdapter {
+export class FirstCitizensImportAdapter {
   readonly kind = "FIRST_CITIZENS_IMPORT" as const;
 
   controlTotal(details: readonly FcbBankExportDetailLine[]): number {
@@ -719,23 +992,109 @@ export class FirstCitizensImportDisabledAdapter {
   }
 
   validate(input: FcbGenerateInput): FcbValidationResult {
+    const errors: string[] = [];
     const config = parseFirstCitizensConfiguration(input.configurationJson);
-    return {
-      ok: false,
-      errors: [
-        config.importDisabledReason ??
-          DEFAULT_FIRST_CITIZENS_CONFIGURATION.importDisabledReason!,
-      ],
-    };
+
+    // importFileDisabled historically blocked unconfirmed Default Transactions.
+    // FCB_TT_LEGACY_NACHA_NO_HEADER_V1 (FCB_ACH_SALARY_*.txt) is the confirmed
+    // production path and is gated by payroll ACH feature settings instead.
+
+    const header = resolveFirstCitizensBatchHeader(config);
+    if (!header.entryDescription.trim()) {
+      errors.push("Entry Description is required (e.g. Salary).");
+    }
+    if (!resolveFirstCitizensNachaEffectiveDate(input, config)) {
+      errors.push(
+        "Effective payment date is required to build the NACHA Individual ID.",
+      );
+    }
+    if (input.details.length === 0) {
+      errors.push("Batch has no payment allocation details.");
+    }
+    if (input.details.length > 3000) {
+      errors.push(
+        "First Citizens import batches allow at most 3000 entries; split this batch.",
+      );
+    }
+
+    for (const detail of input.details) {
+      if (!(detail.amount > 0)) {
+        errors.push(
+          `Detail sequence ${detail.sequence} has a non-positive amount.`,
+        );
+      }
+      if (!formatNachaAmountCents(detail.amount)) {
+        errors.push(
+          `Detail sequence ${detail.sequence} amount exceeds the NACHA 10-digit cents limit.`,
+        );
+      }
+      const txn = resolveNachaCreditTransactionCode(
+        detail.paymentType,
+        detail.accountType,
+      );
+      if (!txn) {
+        errors.push(
+          `Detail sequence ${detail.sequence} is missing Payment Type (set Savings or Chequing on the employee account).`,
+        );
+      }
+      const aba = normalizeNachaAbaNumber(
+        detail.abaNumber ??
+          resolveFirstCitizensAbaNumber({ bankName: detail.bankName }),
+      );
+      if (!aba) {
+        errors.push(
+          `Detail sequence ${detail.sequence} needs a 9-digit ABA / routing number (not a bank name label).`,
+        );
+      }
+      const accountDigits = digitsOnly(detail.accountNumber ?? "");
+      if (!accountDigits) {
+        errors.push(
+          `Detail sequence ${detail.sequence} is missing Account Number.`,
+        );
+      } else if (accountDigits.length > 17) {
+        errors.push(
+          `Detail sequence ${detail.sequence} account number exceeds 17 digits.`,
+        );
+      }
+      const name = detail.beneficiaryName?.trim() || detail.employeeName;
+      if (!name.trim()) {
+        errors.push(
+          `Detail sequence ${detail.sequence} is missing Individual Name.`,
+        );
+      }
+    }
+
+    return { ok: errors.length === 0, errors };
   }
 
-  generate(_input: FcbGenerateInput): FcbGenerateResult {
-    void _input;
-    throw new Error(
-      "First Citizens import file generation is disabled until the bank confirms the file layout.",
-    );
+  generate(input: FcbGenerateInput): FcbGenerateResult {
+    const validation = this.validate(input);
+    if (!validation.ok) {
+      throw new Error(validation.errors.join(" "));
+    }
+
+    const config = parseFirstCitizensConfiguration(input.configurationJson);
+    const effectiveDate = resolveFirstCitizensNachaEffectiveDate(input, config)!;
+    const built = buildFirstCitizensNachaType6File({
+      details: input.details,
+      config,
+      effectivePaymentDate: effectiveDate,
+    });
+
+    return {
+      fileName: built.fileName,
+      mimeType: "text/plain; charset=utf-8",
+      content: built.content,
+      contentHash: hashContent(built.content),
+      controlTotalAmount: built.controlTotalAmount,
+      detailCount: built.detailCount,
+      maskedPreview: this.maskPreview(built.content, input.details),
+    };
   }
 }
+
+/** @deprecated Use FirstCitizensImportAdapter — kept as an alias for older imports. */
+export const FirstCitizensImportDisabledAdapter = FirstCitizensImportAdapter;
 
 export function maskDebitAccountForControl(
   accountNumber: string | null | undefined,

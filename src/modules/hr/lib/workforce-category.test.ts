@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  formatInternalBoardReference,
   isFullEmployee,
   isNonEmployeePayee,
   parseWorkforceCategory,
@@ -57,6 +58,11 @@ describe("workforce-category helpers", () => {
     expect(suggestedContractTypeForCategory(WorkforceCategory.EMPLOYEE)).toBe(
       "FIXED_TERM",
     );
+  });
+
+  it("creates a board-only internal payee reference", () => {
+    expect(formatInternalBoardReference(12)).toBe("BRD-0012");
+    expect(formatInternalBoardReference(12, 5)).toBe("BRD-00012");
   });
 
   it("parses valid workforce category values", () => {

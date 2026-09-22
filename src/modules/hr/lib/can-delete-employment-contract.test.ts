@@ -7,11 +7,15 @@ const clear = {
   leaveRequestCount: 0,
   hasLeaveUsage: false,
   hasPostedPayrollOverlap: false,
+  cleanupEligible: false,
 };
 
 describe("canDeleteEmploymentContract", () => {
   it("allows delete when the contract is unused and has no successors", () => {
-    expect(canDeleteEmploymentContract(clear)).toEqual({ allowed: true });
+    expect(canDeleteEmploymentContract(clear)).toEqual({
+      allowed: true,
+      mode: "standard",
+    });
   });
 
   it("blocks delete when a later amendment references the contract", () => {
@@ -64,5 +68,27 @@ describe("canDeleteEmploymentContract", () => {
       reason:
         "This contract overlaps a posted pay period for the employee and cannot be deleted. Prefer amend instead.",
     });
+  });
+
+  it("allows cleanup delete for expired contracts despite leave and payroll", () => {
+    expect(
+      canDeleteEmploymentContract({
+        ...clear,
+        leaveRequestCount: 1,
+        hasLeaveUsage: true,
+        hasPostedPayrollOverlap: true,
+        cleanupEligible: true,
+      }),
+    ).toEqual({ allowed: true, mode: "cleanup" });
+  });
+
+  it("allows cleanup even when later versions exist (cascade handled by action)", () => {
+    expect(
+      canDeleteEmploymentContract({
+        ...clear,
+        hasChildAmendments: true,
+        cleanupEligible: true,
+      }),
+    ).toEqual({ allowed: true, mode: "cleanup" });
   });
 });

@@ -11,6 +11,12 @@ import { requireActor } from "@/src/modules/auth/data/get-user-capabilities";
 import { getPayrollReadiness } from "@/src/modules/payroll/data/get-payroll-readiness";
 import { buildMonthlyPeriodBounds } from "@/src/modules/payroll/lib/pay-period";
 import {
+  effectivePayRunPayeeGroup,
+  LEGACY_REGULAR_PAYEE_GROUP,
+  parsePayRunPayeeGroup,
+  payRunPayeeGroupLabel,
+} from "@/src/modules/payroll/lib/pay-run-payee-group";
+import {
   aggregatePayRunTotals,
   buildEmployeePayRunSnapshot,
   toPayslipCreateData,
@@ -234,18 +240,28 @@ async function collectReadyEmployeeSnapshots(
   asOf: Date,
   periodStart?: Date,
   periodEnd?: Date,
+  options?: {
+    payeeGroup?: "EMPLOYEE" | "BOARD" | "AGENT" | "CONTRACTOR";
+  },
 ): Promise<
   | { ok: true; rows: PayRunEmployeeSnapshot[] }
   | { ok: false; message: string }
 > {
-  const readiness = await getPayrollReadiness();
+  const readiness = await getPayrollReadiness({
+    includeFileCompleteness: false,
+    ...(options?.payeeGroup
+      ? { workforceCategories: [options.payeeGroup] }
+      : {}),
+  });
   const readyRows = readiness.rows.filter((row) => row.isReady);
 
   if (readyRows.length === 0) {
+    const groupLabel = options?.payeeGroup
+      ? ` in the ${options.payeeGroup.toLowerCase().replaceAll("_", " ")} group`
+      : "";
     return {
       ok: false,
-      message:
-        "No payroll-ready employees to include. Complete payroll setup before creating a pay run.",
+      message: `No payroll-ready people${groupLabel} to include. Complete payroll setup before creating a pay run.`,
     };
   }
 
@@ -308,6 +324,7 @@ export async function createMonthlyPayPeriod(
   }
 
   const periodKey = textValue(formData, "periodKey");
+  const payeeGroup = parsePayRunPayeeGroup(textValue(formData, "payeeGroup"));
   const bounds = buildMonthlyPeriodBounds(periodKey);
   const fieldErrors: Record<string, string> = {};
 
@@ -315,7 +332,11 @@ export async function createMonthlyPayPeriod(
     fieldErrors.periodKey = "Enter a valid month as YYYY-MM.";
   }
 
-  if (Object.keys(fieldErrors).length > 0 || !bounds) {
+  if (!payeeGroup) {
+    fieldErrors.payeeGroup = "Select which group this pay run is for.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0 || !bounds || !payeeGroup) {
     return {
       status: "error",
       message: "Review the pay period details.",
@@ -327,7 +348,7 @@ export async function createMonthlyPayPeriod(
     actorUserId: actor.actor.userId,
   });
 
-  const existing = await prisma.payrollPeriod.findUnique({
+  const existingPeriod = await prisma.payrollPeriod.findUnique({
     where: {
       organizationId_periodKey_frequency: {
         organizationId: organization.id,
@@ -335,14 +356,36 @@ export async function createMonthlyPayPeriod(
         frequency: "MONTHLY",
       },
     },
-    select: { id: true },
+    select: {
+      id: true,
+      name: true,
+      payRuns: {
+        where: {
+          runKind: "REGULAR",
+        },
+        select: { id: true, runNumber: true, status: true, payeeGroup: true },
+        take: 20,
+      },
+    },
   });
 
-  if (existing) {
+  // Legacy null payeeGroup = Employees. Backfill so later months are not blocked.
+  const legacyNullRuns =
+    existingPeriod?.payRuns.filter((run) => run.payeeGroup == null) ?? [];
+
+  const conflictingRun = existingPeriod?.payRuns.find(
+    (run) => effectivePayRunPayeeGroup(run.payeeGroup) === payeeGroup,
+  );
+
+  if (conflictingRun) {
+    const groupLabel =
+      payRunPayeeGroupLabel(payeeGroup)?.toLowerCase() ?? "group";
     return {
       status: "error",
-      message: `A ${bounds.name} payroll period already exists.`,
-      fieldErrors: { periodKey: "This period already exists." },
+      message: `A ${groupLabel} regular run already exists for ${existingPeriod!.name} (${conflictingRun.runNumber}). Open that run, or pick another payee group.`,
+      fieldErrors: {
+        payeeGroup: "This group already has a regular run for that month.",
+      },
     };
   }
 
@@ -350,6 +393,7 @@ export async function createMonthlyPayPeriod(
     bounds.asOf,
     bounds.periodStart,
     bounds.periodEnd,
+    { payeeGroup },
   );
 
   if (!collected.ok) {
@@ -364,21 +408,42 @@ export async function createMonthlyPayPeriod(
 
   try {
     payRunId = await prisma.$transaction(async (transaction) => {
-      const period = await transaction.payrollPeriod.create({
-        data: {
-          organizationId: organization.id,
-          name: bounds.name,
-          year: bounds.year,
-          month: bounds.month,
-          frequency: "MONTHLY",
-          periodKey: bounds.periodKey,
-          periodStart: bounds.periodStart,
-          periodEnd: bounds.periodEnd,
-          status: "OPEN",
-          notes,
-          createdById: actor.actor.userId,
-        },
-      });
+      const period =
+        existingPeriod ??
+        (await transaction.payrollPeriod.create({
+          data: {
+            organizationId: organization.id,
+            name: bounds.name,
+            year: bounds.year,
+            month: bounds.month,
+            frequency: "MONTHLY",
+            periodKey: bounds.periodKey,
+            periodStart: bounds.periodStart,
+            periodEnd: bounds.periodEnd,
+            status: "OPEN",
+            notes,
+            createdById: actor.actor.userId,
+          },
+          select: { id: true, name: true },
+        }));
+
+      // If period already existed, keep its OPEN status for additional group runs.
+      if (existingPeriod) {
+        await transaction.payrollPeriod.updateMany({
+          where: { id: existingPeriod.id, status: "CLOSED" },
+          data: { status: "OPEN" },
+        });
+
+        if (legacyNullRuns.length > 0) {
+          await transaction.payRun.updateMany({
+            where: {
+              id: { in: legacyNullRuns.map((run) => run.id) },
+              payeeGroup: null,
+            },
+            data: { payeeGroup: LEGACY_REGULAR_PAYEE_GROUP },
+          });
+        }
+      }
 
       const runNumber = await allocatePayRunNumber(
         transaction,
@@ -392,6 +457,7 @@ export async function createMonthlyPayPeriod(
           runNumber,
           status: "DRAFT",
           runKind: "REGULAR",
+          payeeGroup,
           currency: organization.defaultCurrency || "TTD",
           employeeCount: totals.employeeCount,
           totalGross: new Prisma.Decimal(totals.totalGross),
@@ -421,10 +487,11 @@ export async function createMonthlyPayPeriod(
           action: "CREATE",
           entityType: "PayRun",
           entityId: payRun.id,
-          description: `Created draft pay run ${runNumber} for ${bounds.name} with ${totals.employeeCount} employees.`,
+          description: `Created draft ${payRunPayeeGroupLabel(payeeGroup)?.toLowerCase() ?? "pay"} run ${runNumber} for ${bounds.name} with ${totals.employeeCount} people.`,
           newValues: {
             runNumber,
             periodKey: bounds.periodKey,
+            payeeGroup,
             employeeCount: totals.employeeCount,
             totalNet: totals.totalNet,
           },
@@ -683,6 +750,7 @@ export async function createSupplementalPayRun(
           runNumber,
           status: "DRAFT",
           runKind,
+          payeeGroup: source.payeeGroup,
           sourcePayRunId: source.id,
           currency: source.currency || organization.defaultCurrency || "TTD",
           employeeCount: totals.employeeCount,
@@ -760,6 +828,7 @@ export async function createSupplementalPayRun(
           newValues: {
             runNumber,
             runKind,
+            payeeGroup: source.payeeGroup,
             sourcePayRunId: source.id,
             periodKey: source.payrollPeriod.periodKey,
             employeeCount: totals.employeeCount,
@@ -836,8 +905,12 @@ export async function excludePayslipFromPayRun(
     };
   }
 
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payslips: {
         select: {
@@ -973,8 +1046,12 @@ export async function reincludePayslipInPayRun(
     return { status: "error", message: "Pay run and payslip are required." };
   }
 
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payslips: {
         select: {
@@ -1088,9 +1165,10 @@ export async function reincludePayslipInPayRun(
 async function recalculateDraftPayslipWithLineItems(input: {
   payRunId: string;
   payslipId: string;
+  organizationId: string;
 }): Promise<{ ok: true } | { ok: false; message: string }> {
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: input.payRunId },
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: input.payRunId, organizationId: input.organizationId },
     include: {
       payrollPeriod: {
         select: { periodStart: true, periodEnd: true },
@@ -1219,8 +1297,13 @@ export async function addPayrollLineItem(
 
   const isTaxable =
     lineType === "EARNING" ? textValue(formData, "isTaxable") === "on" : false;
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payslips: {
         where: { id: payslipId },
@@ -1275,6 +1358,7 @@ export async function addPayrollLineItem(
     const recalculated = await recalculateDraftPayslipWithLineItems({
       payRunId: payRun.id,
       payslipId: payslip.id,
+      organizationId: organization.id,
     });
 
     if (!recalculated.ok) {
@@ -1344,8 +1428,16 @@ export async function deletePayrollLineItem(
     return { status: "error", message: "Pay run and line item are required." };
   }
 
-  const line = await prisma.payrollLineItem.findUnique({
-    where: { id: lineItemId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const line = await prisma.payrollLineItem.findFirst({
+    where: {
+      id: lineItemId,
+      organizationId: organization.id,
+      payRunId,
+    },
     include: {
       payRun: { select: { id: true, runNumber: true, status: true } },
       payslip: { select: { id: true, employeeName: true } },
@@ -1373,6 +1465,7 @@ export async function deletePayrollLineItem(
     const recalculated = await recalculateDraftPayslipWithLineItems({
       payRunId: line.payRunId,
       payslipId: line.payslipId,
+      organizationId: organization.id,
     });
 
     if (!recalculated.ok) {
@@ -2171,8 +2264,12 @@ export async function deleteDraftPayRun(
     return { status: "error", message: "Pay run is required." };
   }
 
-  const payRun = await prisma.payRun.findUnique({
-    where: { id: payRunId },
+  const organization = await resolvePayrollOrganization({
+    actorUserId: actor.actor.userId,
+  });
+
+  const payRun = await prisma.payRun.findFirst({
+    where: { id: payRunId, organizationId: organization.id },
     include: {
       payrollPeriod: {
         select: {

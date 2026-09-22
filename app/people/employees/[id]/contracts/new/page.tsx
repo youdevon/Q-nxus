@@ -9,6 +9,11 @@ import {
   getEmployeeContractHistory,
 } from "@/src/modules/hr/data/get-employment-contracts";
 import { requireContractManageAccess } from "@/src/modules/hr/data/require-people-access";
+import {
+  defaultTtGratuityPolicyInput,
+  getCurrentGratuityPolicy,
+  toGratuityPolicyInput,
+} from "@/src/modules/payroll/data/get-gratuity-policy";
 
 export const metadata: Metadata = {
   title: "New Employment Contract",
@@ -26,17 +31,27 @@ export default async function NewEmploymentContractPage({
   await requireContractManageAccess();
 
   const { id } = await params;
-  const [history, allowanceCategories, leaveEntitlementDefaults, departments] =
-    await Promise.all([
-      getEmployeeContractHistory(id),
-      getAllowanceCategories(),
-      getContractLeaveEntitlementDefaults(id),
-      getEmployeeFormOptions(),
-    ]);
+  const [
+    history,
+    allowanceCategories,
+    leaveEntitlementDefaults,
+    departments,
+    gratuityPolicyRecord,
+  ] = await Promise.all([
+    getEmployeeContractHistory(id),
+    getAllowanceCategories(),
+    getContractLeaveEntitlementDefaults(id),
+    getEmployeeFormOptions(),
+    getCurrentGratuityPolicy(),
+  ]);
 
   if (!history) {
     notFound();
   }
+
+  const gratuityPolicy = gratuityPolicyRecord
+    ? toGratuityPolicyInput(gratuityPolicyRecord)
+    : defaultTtGratuityPolicyInput();
 
   return (
     <EmploymentContractForm
@@ -45,6 +60,7 @@ export default async function NewEmploymentContractPage({
       leaveEntitlementDefaults={leaveEntitlementDefaults}
       departments={departments}
       mode="create"
+      gratuityPolicy={gratuityPolicy}
     />
   );
 }

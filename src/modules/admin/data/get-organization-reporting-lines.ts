@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 export type OrganizationReportingLinePosition = {
   id: string;
@@ -191,17 +192,15 @@ function mapOrganizationReportingLines(
 export async function getOrganizationReportingLines(
   organizationId?: string,
 ): Promise<OrganizationReportingLinesData | null> {
-  const organization = organizationId
-    ? await prisma.organization.findUnique({
-        where: { id: organizationId },
+  const resolvedOrganizationId =
+    organizationId ?? (await getSessionOrganizationId());
+
+  const organization = resolvedOrganizationId
+    ? await prisma.organization.findFirst({
+        where: { id: resolvedOrganizationId },
         select: organizationReportingSelect,
       })
-    : await prisma.organization.findFirst({
-        orderBy: {
-          createdAt: "asc",
-        },
-        select: organizationReportingSelect,
-      });
+    : null;
 
   if (!organization) {
     return null;
@@ -218,15 +217,7 @@ export async function getOrganizationReportingLinesPreview(
   organizationId?: string,
 ): Promise<OrganizationReportingLinesPreviewData | null> {
   const resolvedOrganizationId =
-    organizationId ??
-    (
-      await prisma.organization.findFirst({
-        orderBy: {
-          createdAt: "asc",
-        },
-        select: { id: true },
-      })
-    )?.id;
+    organizationId ?? (await getSessionOrganizationId());
 
   if (!resolvedOrganizationId) {
     return null;

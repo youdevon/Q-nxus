@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   BriefcaseBusiness,
   CalendarDays,
-  ClipboardCheck,
   FolderOpen,
   History,
   FileSignature,
@@ -24,6 +23,7 @@ import { PageActionsEnd } from "@/src/components/layout/page-actions";
 import { PageShell } from "@/src/components/layout/page-shell";
 import { PageAlert } from "@/src/components/ui/page-alert";
 import { SectionHeading } from "@/src/components/ui/section-heading";
+import { cn } from "@/lib/utils";
 import { employmentStatusBadgeVariant } from "@/src/config/ui-colors";
 import { ageFromDateOfBirth } from "@/src/lib/age";
 import { formatDisplayDate, formatMoney } from "@/src/lib/format";
@@ -33,6 +33,7 @@ import type {
   SelfServiceSupervisorSummary,
   SelfServiceVacationForfeitureWarning,
 } from "@/src/modules/hr/data/get-self-service-profile-extras";
+import { EmployeeEntityNav } from "./employee-entity-nav";
 import { MePageHeader } from "./me-page-header";
 import { PeoplePageHeader } from "./people-page-header";
 import {
@@ -40,10 +41,24 @@ import {
   EmployeeFileCompletenessWarning,
 } from "./employee-file-completeness";
 import {
+  employeeLeadershipAccentClass,
+  employeeLeadershipBadgeClass,
+  employeeHeaderBadgeLabel,
+  resolveEmployeeLeadershipRole,
+} from "@/src/modules/hr/lib/employee-leadership-role";
+import {
   isFullEmployee,
   requiresEmployeeFile,
   workforceCategoryBadgeLabel,
 } from "@/src/modules/hr/lib/workforce-category";
+
+type FileCompletenessSummary = {
+  completeCount: number;
+  totalCount: number;
+  percentComplete: number;
+  isComplete: boolean;
+  missingLabels?: string[];
+};
 
 type EmployeeProfileProps = {
   employee: EmployeeProfileRecord;
@@ -70,13 +85,9 @@ type EmployeeProfileProps = {
   pendingCorrespondenceCount?: number;
   expiringFileCount?: number;
   /** HR: employee file checklist completeness summary. */
-  fileCompleteness?: {
-    completeCount: number;
-    totalCount: number;
-    percentComplete: number;
-    isComplete: boolean;
-    missingLabels: string[];
-  } | null;
+  fileCompleteness?: FileCompletenessSummary | null;
+  /** When true, skip PageShell + header (used under `/me` layout). */
+  embedded?: boolean;
 };
 
 function label(value: string): string {
@@ -130,6 +141,85 @@ function formatSupervisorValue(
   return "Not assigned";
 }
 
+function CurrentContractSection({
+  contract,
+  heading,
+  contractsHref,
+  showContractsButton,
+  contractsButtonLabel,
+}: {
+  contract: NonNullable<EmployeeProfileRecord["currentContract"]> | null;
+  heading: string;
+  contractsHref: string;
+  showContractsButton: boolean;
+  contractsButtonLabel: string;
+}) {
+  return (
+    <section>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="size-4 text-muted-foreground" />
+          <SectionHeading>{heading}</SectionHeading>
+        </div>
+
+        {showContractsButton ? (
+          <Button
+            nativeButton={false}
+            size="sm"
+            variant="outline"
+            render={<Link href={contractsHref} />}
+          >
+            <FileSignature />
+            {contractsButtonLabel}
+          </Button>
+        ) : null}
+      </div>
+
+      {!contract ? (
+        <p className="text-sm text-muted-foreground">
+          No current employment contract is recorded.
+        </p>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2">
+          <Detail
+            labelText="Start date"
+            value={formatDisplayDate(contract.startDate)}
+          />
+          <Detail
+            labelText="End date"
+            value={
+              contract.endDate
+                ? formatDisplayDate(contract.endDate)
+                : "No end date"
+            }
+          />
+          <Detail
+            labelText="Base salary"
+            value={formatMoney(contract.baseSalary, {
+              currency: contract.currency,
+            })}
+          />
+          {contract.allowances.length === 0 ? (
+            <Detail labelText="Allowances" value="None" />
+          ) : (
+            contract.allowances.map((allowance) => (
+              <Detail
+                key={allowance.id}
+                labelText={`${allowance.categoryName} (${label(allowance.frequency)}${
+                  allowance.isTaxable ? ", taxable" : ""
+                })`}
+                value={formatMoney(allowance.amount, {
+                  currency: contract.currency,
+                })}
+              />
+            ))
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function EmployeeProfile({
   employee,
   canManage = false,
@@ -149,94 +239,92 @@ export function EmployeeProfile({
   pendingCorrespondenceCount = 0,
   expiringFileCount = 0,
   fileCompleteness = null,
+  embedded = false,
 }: EmployeeProfileProps) {
   const displayName = `${employee.firstName}${
     employee.middleName ? ` ${employee.middleName}` : ""
   } ${employee.lastName}`;
   const fullEmployee = isFullEmployee(employee.workforceCategory);
+  const boardMember = employee.workforceCategory === "BOARD";
   const showEmployeeFile = requiresEmployeeFile(employee.workforceCategory);
   const categoryBadge = workforceCategoryBadgeLabel(employee.workforceCategory);
+  const leadershipRole = resolveEmployeeLeadershipRole({
+    positionTitle: employee.position?.title ?? null,
+    reportsToPositionId: employee.position?.reportsToPositionId ?? null,
+    directReportCount: employee.position?.directReportCount ?? 0,
+  });
+  const leadershipBadge = (
+    <Badge
+      variant="outline"
+      className={cn(employeeLeadershipBadgeClass(leadershipRole))}
+    >
+      {employeeHeaderBadgeLabel(
+        leadershipRole,
+        employee.position?.title ?? employee.currentContract?.positionTitle,
+      )}
+    </Badge>
+  );
+  const skipChrome = embedded || isSelfService;
   const contractsHref = isSelfService
     ? "/me/contracts"
     : `/people/employees/${employee.id}/contracts`;
   const documentsHref = isSelfService
     ? "/me/documents"
     : `/people/employees/${employee.id}/documents`;
+  /** Entity tabs already cover these destinations — avoid duplicate body CTAs. */
+  const showSectionNavButtons = !isSelfService && !showPeopleNav;
 
-  const headerTitle = isSelfService ? "My Profile" : displayName;
-  const headerDescription = isSelfService
-    ? `Your personal and employment details · ${employee.employeeNumber}`
+  const headerTitle = displayName;
+  const headerDescription = boardMember
+    ? "Board payee record"
     : isOwnProfile
       ? `Your record · ${employee.employeeNumber}`
       : `Workforce record · ${employee.employeeNumber}`;
+  const headerBadge = boardMember ? (
+    <Badge variant="secondary">Board member</Badge>
+  ) : (
+    leadershipBadge
+  );
   const headerActions = canManage ? (
-            <PageActionsEnd>
-                {fullEmployee ? (
-                  <Button
-                    nativeButton={false}
-                    variant="outline"
-                    render={
-                      <Link
-                        href={`/people/employees/${employee.id}/appraisals`}
-                      />
-                    }
-                  >
-                    <ClipboardCheck />
-                    Appraisals
-                  </Button>
-                ) : null}
+    <PageActionsEnd>
+      {canManageAccess && employee.userId ? (
+        <Button
+          nativeButton={false}
+          variant="outline"
+          render={
+            <Link
+              href={`/administration/access/users/${employee.userId}#assign-role`}
+            />
+          }
+        >
+          <KeyRound />
+          Manage access
+        </Button>
+      ) : null}
+      <Button
+        nativeButton={false}
+        render={<Link href={`/people/employees/${employee.id}/edit`} />}
+      >
+        <Pencil />
+        Edit
+      </Button>
+    </PageActionsEnd>
+  ) : undefined;
 
-                {canManageAccess && employee.userId ? (
-                  <Button
-                    nativeButton={false}
-                    variant="outline"
-                    render={
-                      <Link
-                        href={`/administration/access/users/${employee.userId}#assign-role`}
-                      />
-                    }
-                  >
-                    <KeyRound />
-                    Manage access
-                  </Button>
-                ) : null}
-              <Button
-                nativeButton={false}
-                render={<Link href={`/people/employees/${employee.id}/edit`} />}
-              >
-                <Pencil />
-                Edit
-              </Button>
-            </PageActionsEnd>
-          ) : isSelfService ? (
-            canRequestLeave && fullEmployee ? (
-              <Button
-                nativeButton={false}
-                render={<Link href="/me/leave/new" />}
-              >
-                <CalendarDays />
-                Request leave
-              </Button>
-            ) : undefined
-          ) : undefined;
-
-  return (
-    <PageShell size={showPeopleNav ? "lg" : "md"}>
-      {showPeopleNav ? (
+  const body = (
+    <>
+      {!skipChrome && showPeopleNav ? (
         <PeoplePageHeader
           title={headerTitle}
           description={headerDescription}
-          backHref={isSelfService ? undefined : "/people"}
+          backHref="/people"
           backLabel="People"
           actions={headerActions}
+          badge={headerBadge}
+          titleAccentClassName={employeeLeadershipAccentClass(leadershipRole)}
         />
-      ) : isSelfService ? (
-        <MePageHeader
-          title={headerTitle}
-          description={headerDescription}
-          actions={headerActions}
-        />
-      ) : (
+      ) : null}
+      {!skipChrome && !showPeopleNav ? (
         <PageHeader
           title={headerTitle}
           description={headerDescription}
@@ -244,8 +332,19 @@ export function EmployeeProfile({
           backLabel="People"
           icon={Users}
           actions={headerActions}
+          badge={headerBadge}
+          titleAccentClassName={employeeLeadershipAccentClass(leadershipRole)}
         />
-      )}
+      ) : null}
+
+      {!isSelfService && showPeopleNav ? (
+        <EmployeeEntityNav
+          employeeId={employee.id}
+          current="profile"
+          workforceCategory={employee.workforceCategory}
+          isFullEmployee={fullEmployee}
+        />
+      ) : null}
 
       {isSelfService && showEmployeeFile && pendingCorrespondenceCount > 0 ? (
         <PageAlert severity="warning" title="Letters need acknowledgement">
@@ -291,24 +390,19 @@ export function EmployeeProfile({
           className="max-w-md"
         />
       ) : null}
-      <section className="flex flex-wrap items-center gap-2">
-        {isSelfService ? (
-          <p className="mr-auto text-sm font-medium tracking-tight">
-            {employee.preferredName
-              ? `${employee.preferredName} ${employee.lastName}`
-              : displayName}
-          </p>
-        ) : null}
-        {categoryBadge ? (
-          <Badge variant="secondary">{categoryBadge}</Badge>
-        ) : null}
-        <Badge
-          variant={employmentStatusBadgeVariant(employee.employmentStatus)}
-        >
-          {label(employee.employmentStatus)}
-        </Badge>
-        <Badge variant="outline">{label(employee.employmentType)}</Badge>
-      </section>
+      {!isSelfService ? (
+        <section className="flex flex-wrap items-center gap-2">
+          {categoryBadge ? (
+            <Badge variant="secondary">{categoryBadge}</Badge>
+          ) : null}
+          <Badge
+            variant={employmentStatusBadgeVariant(employee.employmentStatus)}
+          >
+            {label(employee.employmentStatus)}
+          </Badge>
+          <Badge variant="outline">{label(employee.employmentType)}</Badge>
+        </section>
+      ) : null}
 
       <section>
         <div className="mb-4 flex items-center gap-2">
@@ -401,7 +495,7 @@ export function EmployeeProfile({
             </SectionHeading>
           </div>
 
-          {canManage && fullEmployee ? (
+          {canManage && fullEmployee && showSectionNavButtons ? (
             <div className="flex flex-wrap items-center gap-2">
               <Button
                 nativeButton={false}
@@ -518,249 +612,45 @@ export function EmployeeProfile({
         </div>
       </section>
 
-      {showEmployeeFile ? (
+      {!isSelfService && showEmployeeFile ? (
         <section>
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <FolderOpen className="size-4 text-muted-foreground" />
-              <SectionHeading>
-                {isSelfService ? "My documents" : "Employee file"}
-              </SectionHeading>
+              <SectionHeading>Employee file</SectionHeading>
             </div>
 
-            {isSelfService || canManage ? (
-              <div className="flex flex-wrap items-center gap-2">
-                {isSelfService ? (
-                  <Button
-                    nativeButton={false}
-                    size="sm"
-                    variant="outline"
-                    render={<Link href="/me/qualifications" />}
-                  >
-                    <ScrollText />
-                    Qualifications
-                  </Button>
-                ) : null}
-                <Button
-                  nativeButton={false}
-                  size="sm"
-                  variant="outline"
-                  render={<Link href={documentsHref} />}
-                >
-                  <FolderOpen />
-                  {isSelfService
-                    ? pendingCorrespondenceCount > 0
-                      ? `View documents (${pendingCorrespondenceCount})`
-                      : "View documents"
-                    : "Open employee file"}
-                </Button>
-              </div>
-            ) : null}
-          </div>
-
-          <p className="text-sm text-muted-foreground">
-            {isSelfService
-              ? "Issued letters, notices, qualifications, and other items on your employee file."
-              : "Recommendations, discipline, instructions, commendations, and other HR correspondence."}
-          </p>
-        </section>
-      ) : null}
-
-      <section>
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <CalendarDays className="size-4 text-muted-foreground" />
-            <SectionHeading>
-              {isSelfService ? "My current contract" : "Current contract"}
-            </SectionHeading>
-          </div>
-
-          {isSelfService || canManage ? (
-            <Button
-              nativeButton={false}
-              size="sm"
-              variant="outline"
-              render={<Link href={contractsHref} />}
-            >
-              <FileSignature />
-              {isSelfService ? "View all contracts" : "Contracts"}
-            </Button>
-          ) : null}
-        </div>
-
-        {employee.currentContract ? (
-          <div className="grid gap-6 md:grid-cols-2">
-            <Detail
-              labelText="Salary"
-              value={formatMoney(employee.currentContract.baseSalary, {
-                currency: employee.currentContract.currency,
-              })}
-            />
-
-            <Detail
-              labelText="Start date"
-              value={formatDisplayDate(employee.currentContract.startDate)}
-            />
-
-            <Detail
-              labelText="End date"
-              value={
-                employee.currentContract.endDate
-                  ? formatDisplayDate(employee.currentContract.endDate)
-                  : "No end date"
-              }
-            />
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            No current employment contract is recorded.
-          </p>
-        )}
-      </section>
-
-      {isSelfService && mostRecentPayslipHref ? (
-        <section>
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <Wallet className="size-4 text-muted-foreground" />
-              <SectionHeading>Payroll</SectionHeading>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {payslipHistoryHref && payslipHistoryCount > 0 ? (
-                <Button
-                  nativeButton={false}
-                  size="sm"
-                  variant="outline"
-                  render={<Link href={payslipHistoryHref} />}
-                >
-                  <History />
-                  Payslip history
-                </Button>
-              ) : null}
+            {canManage && showSectionNavButtons ? (
               <Button
                 nativeButton={false}
                 size="sm"
                 variant="outline"
-                render={<Link href={mostRecentPayslipHref} />}
+                render={<Link href={documentsHref} />}
               >
-                <FileText />
-                View most recent payslip
-              </Button>
-            </div>
-          </div>
-
-          <div className="rounded-lg border border-border/70 bg-muted/20 px-4 py-3">
-            <p className="text-sm font-medium">
-              Most recent payslip
-              {mostRecentPayslipPeriodLabel
-                ? ` · ${mostRecentPayslipPeriodLabel}`
-                : ""}
-            </p>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              {mostRecentPayslipIsPosted
-                ? "Opens your last posted payslip from payroll. Use print to save a copy."
-                : "No posted payslip yet — opens a live preview for the previous month. Official history appears after payroll posts a run."}
-            </p>
-          </div>
-        </section>
-      ) : null}
-
-      {isSelfService && fullEmployee ? (
-        <section>
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <History className="size-4 text-muted-foreground" />
-              <SectionHeading>Leave balances</SectionHeading>
-            </div>
-
-            {canRequestLeave ? (
-              <Button
-                nativeButton={false}
-                size="sm"
-                variant="outline"
-                render={<Link href="/me/leave" />}
-              >
-                <History />
-                Leave requests
+                <FolderOpen />
+                Open employee file
               </Button>
             ) : null}
           </div>
 
-          {vacationForfeitureWarning ? (
-            <PageAlert
-              className="mb-4"
-              severity={
-                vacationForfeitureWarning.isUrgent ? "critical" : "warning"
-              }
-              title="Mandatory vacation cannot roll over"
-            >
-              <p>{vacationForfeitureWarning.message}</p>
-              {canRequestLeave ? (
-                <p className="mt-2">
-                  <Link
-                    href="/me/leave/new"
-                    className="font-medium underline underline-offset-2 hover:text-foreground"
-                  >
-                    Request vacation leave
-                  </Link>{" "}
-                  so it finishes on or before {vacationForfeitureWarning.contractEndDateIso}.
-                </p>
-              ) : null}
-            </PageAlert>
-          ) : null}
-
-          {leaveBalances.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No leave balances are available for your current contract.
-            </p>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {leaveBalances.map((balance) => (
-                <div
-                  key={`${balance.leaveTypeCode}-${balance.cycleEnd}`}
-                  className="min-w-0"
-                >
-                  <p className="text-sm font-medium">{balance.leaveTypeName}</p>
-                  <p className="mt-1 font-mono text-xs text-muted-foreground">
-                    {balance.leaveTypeCode} · cycle ends {balance.cycleEnd}
-                  </p>
-
-                  <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Available</p>
-                      <p className="mt-1 text-sm font-medium tabular-nums">
-                        {balance.availableBalance}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs text-muted-foreground">Reserved</p>
-                      <p className="mt-1 text-sm font-medium tabular-nums">
-                        {balance.reserved}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs text-muted-foreground">Approved</p>
-                      <p className="mt-1 text-sm font-medium tabular-nums">
-                        {balance.approved}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs text-muted-foreground">Taken</p>
-                      <p className="mt-1 text-sm font-medium tabular-nums">
-                        {balance.taken}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <p className="text-sm text-muted-foreground">
+            Recommendations, discipline, instructions, commendations, and other
+            HR correspondence.
+          </p>
         </section>
       ) : null}
+
+      <CurrentContractSection
+        contract={employee.currentContract}
+        heading={isSelfService ? "My current contract" : "Current contract"}
+        contractsHref={contractsHref}
+        showContractsButton={
+          (isSelfService || canManage) && showSectionNavButtons
+        }
+        contractsButtonLabel={
+          isSelfService ? "View all contracts" : "Contracts"
+        }
+      />
 
       {!isSelfService ? (
         <footer className="border-t border-border pt-5">
@@ -769,26 +659,15 @@ export function EmployeeProfile({
             {employee.contractCount === 1 ? "" : "s"}
           </p>
         </footer>
-      ) : (
-        <footer className="border-t border-border pt-5">
-          <p className="text-xs text-muted-foreground">
-            {employee.contractCount} contract record
-            {employee.contractCount === 1 ? "" : "s"}
-            {canRequestLeave && fullEmployee ? (
-              <>
-                {" "}· Need time off? Submit and track requests on{" "}
-                <Link
-                  href="/me/leave"
-                  className="font-medium text-foreground underline-offset-4 hover:underline"
-                >
-                  My leave requests
-                </Link>
-                .
-              </>
-            ) : null}
-          </p>
-        </footer>
-      )}
-    </PageShell>
+      ) : null}
+    </>
+  );
+
+  if (skipChrome) {
+    return body;
+  }
+
+  return (
+    <PageShell size={showPeopleNav ? "lg" : "md"}>{body}</PageShell>
   );
 }

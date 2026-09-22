@@ -3,6 +3,12 @@ import type {
   ReportExportColumnKind,
   ReportExportTable,
 } from "@/src/modules/reports/lib/report-export-table";
+import {
+  estimateScaledXlsxColumnWidth,
+  XLSX_LAYOUT,
+  xlsxHeaderSectionFont,
+  xlsxTableFont,
+} from "@/src/lib/xlsx-typography";
 
 /** Corporate report palette — subtle, finance-friendly. */
 const COLORS = {
@@ -19,14 +25,6 @@ const COLORS = {
   employerCellText: "FF082F49",
   employerTotalHeader: "FF7DD3FC",
   employerTotalCell: "FFBAE6FD",
-} as const;
-
-const FONT = {
-  family: "Calibri",
-  titleSize: 15,
-  metaSize: 10,
-  headerSize: 11,
-  dataSize: 11,
 } as const;
 
 function numFmtForKind(
@@ -51,63 +49,18 @@ function numFmtForKind(
   }
 }
 
-function currencyDisplaySample(
-  value: string | number | null | undefined,
-  currency: string,
-): string {
-  if (value == null || value === "") {
-    return `${currency} 0.00`;
-  }
-  const amount = Number(value);
-  if (!Number.isFinite(amount)) {
-    return String(value);
-  }
-  const formatted = amount.toLocaleString("en-TT", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-  return `${currency} ${formatted}`;
-}
-
 function estimateColumnWidth(
   column: ReportExportColumn,
   values: Array<string | number | null | undefined>,
 ): number {
-  const kind = column.kind ?? "text";
-  const currency = column.currency ?? "TTD";
-
-  const displayLengths = values.map((value) => {
-    if (kind === "currency") {
-      return currencyDisplaySample(value, currency).length;
-    }
-    if (kind === "number" || kind === "integer") {
-      if (value == null || value === "") {
-        return 0;
-      }
-      const amount = Number(value);
-      if (!Number.isFinite(amount)) {
-        return String(value).length;
-      }
-      return amount.toLocaleString("en-TT", {
-        minimumFractionDigits: kind === "integer" ? 0 : 2,
-        maximumFractionDigits: kind === "integer" ? 0 : 2,
-      }).length;
-    }
-    return value == null ? 0 : String(value).length;
+  return estimateScaledXlsxColumnWidth({
+    header: column.header,
+    values,
+    kind: column.kind,
+    currency: column.currency,
+    min: column.width,
+    padding: 3,
   });
-
-  const headerLen = column.header.length;
-  const maxValueLen = displayLengths.reduce(
-    (max, length) => Math.max(max, length),
-    0,
-  );
-
-  const computed = Math.max(headerLen, maxValueLen) + 3;
-  const kindFloor =
-    kind === "currency" ? 14 : kind === "number" || kind === "integer" ? 12 : 10;
-  const min = Math.max(column.width ?? kindFloor, kindFloor);
-  const max = kind === "text" ? 42 : 22;
-  return Math.min(Math.max(computed, min), max);
 }
 
 function employerHeaderColors(section: "employer" | "employer-total") {
@@ -166,8 +119,15 @@ export async function buildStyledReportXlsx(
 
   const sheetName = (table.sheetName ?? "Report").slice(0, 31);
   const sheet = workbook.addWorksheet(sheetName, {
-    views: [{ state: "frozen", ySplit: 1, activeCell: "A1" }],
-    properties: { defaultRowHeight: 22 },
+    views: [
+      {
+        state: "frozen",
+        ySplit: 1,
+        activeCell: "A1",
+        zoomScale: XLSX_LAYOUT.viewZoom,
+      },
+    ],
+    properties: { defaultRowHeight: XLSX_LAYOUT.defaultRowHeight },
   });
 
   const thinBorder = {
@@ -181,62 +141,44 @@ export async function buildStyledReportXlsx(
 
   if (organizationName) {
     const row = sheet.getRow(rowIndex++);
-    row.height = 26;
+    row.height = XLSX_LAYOUT.metadataRowHeight;
     const cell = row.getCell(1);
     cell.value = organizationName;
-    cell.font = {
-      name: FONT.family,
-      size: FONT.titleSize,
-      bold: true,
-      color: { argb: COLORS.titleText },
-    };
+    cell.font = xlsxHeaderSectionFont({ color: COLORS.titleText });
   }
 
   {
     const row = sheet.getRow(rowIndex++);
-    row.height = 26;
+    row.height = XLSX_LAYOUT.metadataRowHeight;
     const cell = row.getCell(1);
     cell.value = table.title;
-    cell.font = {
-      name: FONT.family,
-      size: FONT.titleSize,
-      bold: true,
-      color: { argb: COLORS.titleText },
-    };
+    cell.font = xlsxHeaderSectionFont({ color: COLORS.titleText });
   }
 
   {
     const row = sheet.getRow(rowIndex++);
-    row.height = 18;
+    row.height = XLSX_LAYOUT.metadataRowHeight;
     const cell = row.getCell(1);
     cell.value = `Generated ${generatedAt.toLocaleString("en-TT", {
       dateStyle: "medium",
       timeStyle: "short",
     })}`;
-    cell.font = {
-      name: FONT.family,
-      size: FONT.metaSize,
-      color: { argb: COLORS.metaText },
-    };
+    cell.font = xlsxHeaderSectionFont({ color: COLORS.metaText });
   }
 
   for (const line of table.metadata ?? []) {
     const row = sheet.getRow(rowIndex++);
-    row.height = 18;
+    row.height = XLSX_LAYOUT.metadataRowHeight;
     const cell = row.getCell(1);
     cell.value = `${line.label}: ${line.value}`;
-    cell.font = {
-      name: FONT.family,
-      size: FONT.metaSize,
-      color: { argb: COLORS.metaText },
-    };
+    cell.font = xlsxHeaderSectionFont({ color: COLORS.metaText });
   }
 
   rowIndex += 1;
 
   const headerRowIndex = rowIndex;
   const headerRow = sheet.getRow(rowIndex++);
-  headerRow.height = 28;
+  headerRow.height = XLSX_LAYOUT.headerRowHeight;
 
   const columnCount = table.columns.length;
   for (let columnIndex = 0; columnIndex < columnCount; columnIndex += 1) {
@@ -247,12 +189,10 @@ export async function buildStyledReportXlsx(
     const employerHeader = employerSection
       ? employerHeaderColors(employerSection)
       : null;
-    cell.font = {
-      name: FONT.family,
-      size: FONT.headerSize,
+    cell.font = xlsxTableFont({
       bold: true,
-      color: { argb: employerHeader?.text ?? COLORS.headerText },
-    };
+      color: employerHeader?.text ?? COLORS.headerText,
+    });
     cell.fill = {
       type: "pattern",
       pattern: "solid",
@@ -285,7 +225,9 @@ export async function buildStyledReportXlsx(
     const isZebra = !isTotals && dataIndex % 2 === 1;
 
     const row = sheet.getRow(rowIndex++);
-    row.height = isTotals ? 26 : 24;
+    row.height = isTotals
+      ? XLSX_LAYOUT.totalsRowHeight
+      : XLSX_LAYOUT.dataRowHeight;
 
     for (let columnIndex = 0; columnIndex < columnCount; columnIndex += 1) {
       const column = table.columns[columnIndex];
@@ -317,12 +259,10 @@ export async function buildStyledReportXlsx(
         ? employerDataColors(employerSection, isTotals)
         : null;
 
-      cell.font = {
-        name: FONT.family,
-        size: FONT.dataSize,
+      cell.font = xlsxTableFont({
         bold: isTotals,
-        color: { argb: employerData?.text ?? COLORS.titleText },
-      };
+        color: employerData?.text ?? COLORS.titleText,
+      });
 
       if (employerData) {
         cell.fill = {

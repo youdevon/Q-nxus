@@ -144,9 +144,8 @@ export function ContractAllowanceEditor({
                           : "",
                       isTaxable:
                         category?.isTaxableDefault ?? allowance.isTaxable,
-                      includedInGratuity:
-                        category?.includedInGratuityDefault ??
-                        allowance.includedInGratuity,
+                      // Gratuity is base salary only.
+                      includedInGratuity: false,
                     });
                   }}
                   className="mt-2 flex h-9 w-full border border-input bg-transparent px-3 text-sm"
@@ -257,25 +256,9 @@ export function ContractAllowanceEditor({
                   </span>
                   <span className="mt-1 block text-xs text-muted-foreground">
                     Off by default. Check only if this amount should enter
-                    PAYE / NIS / Health taxable pay.
+                    PAYE / NIS / Health taxable pay. Gratuity uses base salary
+                    only and never includes allowances.
                   </span>
-                </span>
-              </label>
-
-              <label className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={allowance.includedInGratuity}
-                  onChange={(event) =>
-                    updateAllowance(allowance.rowId, {
-                      includedInGratuity: event.target.checked,
-                    })
-                  }
-                  className="size-4"
-                />
-
-                <span className="text-sm font-medium">
-                  Include in gratuity calculation
                 </span>
               </label>
             </div>

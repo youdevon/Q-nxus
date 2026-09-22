@@ -6,7 +6,7 @@ import {
   SESSION_COOKIE_NAME,
 } from "@/src/modules/auth/lib/session"
 
-const PUBLIC_PATHS = ["/login"]
+const PUBLIC_PATHS = ["/login", "/privacy"]
 const PASSWORD_CHANGE_PATH = "/account/change-password"
 
 function matchesPath(pathname: string, paths: string[]) {

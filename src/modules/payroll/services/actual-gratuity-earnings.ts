@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
 import { roundMoney } from "@/src/modules/payroll/lib/calculate-gratuity";
 
 export type ActualEligibleEarningsResult = {
@@ -9,22 +8,18 @@ export type ActualEligibleEarningsResult = {
   source: "ACTUAL_PAYROLL" | "NONE";
 };
 
-function normalizeLabel(value: string): string {
-  return value.trim().toLowerCase().replace(/\s+/g, " ");
-}
-
 /**
  * Sum eligible gross earnings actually paid during the contract term.
- * Uses posted payslip base salary + earnings whose labels match
- * gratuity-included allowance names. Falls back to a share of
- * allowancesTotal when labels cannot be matched.
+ * Gratuity uses base salary only — allowances are never included.
  */
 export async function sumActualEligibleContractEarnings(input: {
   employeeId: string;
   contractStart: Date;
   contractEnd: Date;
-  gratuityIncludedAllowanceNames: string[];
-  totalAllowanceNames: string[];
+  /** @deprecated Ignored — gratuity is base salary only. */
+  gratuityIncludedAllowanceNames?: string[];
+  /** @deprecated Ignored — gratuity is base salary only. */
+  totalAllowanceNames?: string[];
 }): Promise<ActualEligibleEarningsResult> {
   const slips = await prisma.payslip.findMany({
     where: {
@@ -41,27 +36,12 @@ export async function sumActualEligibleContractEarnings(input: {
     select: {
       id: true,
       baseSalary: true,
-      allowancesTotal: true,
-      grossPay: true,
-      snapshot: true,
-      payRun: { select: { runKind: true } },
       lineItems: {
-        select: { code: true, lineType: true, amount: true },
+        select: { code: true },
       },
     },
     orderBy: { createdAt: "asc" },
   });
-
-  const includedLabels = new Set(
-    input.gratuityIncludedAllowanceNames.map(normalizeLabel).filter(Boolean),
-  );
-  const allAllowanceLabels = input.totalAllowanceNames
-    .map(normalizeLabel)
-    .filter(Boolean);
-  const includedShare =
-    allAllowanceLabels.length === 0
-      ? 0
-      : includedLabels.size / allAllowanceLabels.length;
 
   let total = 0;
   let used = 0;
@@ -77,31 +57,6 @@ export async function sumActualEligibleContractEarnings(input: {
     }
 
     total += base;
-
-    const allowancesTotal = Number(slip.allowancesTotal.toString());
-    let matchedAllowances = 0;
-    let matchedAny = false;
-
-    const snapshot = parsePayslipSnapshot(slip.snapshot);
-    if (snapshot && includedLabels.size > 0) {
-      for (const earning of snapshot.payslip.earnings) {
-        const label = normalizeLabel(earning.label);
-        if (label.includes("base") || label.includes("salary")) {
-          continue;
-        }
-        if (includedLabels.has(label)) {
-          matchedAllowances += earning.amount;
-          matchedAny = true;
-        }
-      }
-    }
-
-    if (matchedAny) {
-      total += matchedAllowances;
-    } else if (allowancesTotal > 0 && includedShare > 0) {
-      total += allowancesTotal * includedShare;
-    }
-
     used += 1;
   }
 

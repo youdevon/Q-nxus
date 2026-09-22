@@ -77,17 +77,27 @@ export default async function DomainSettingsPage() {
 
       <PageHeader
         title="Domain Settings"
-        description="Current business, security and module configuration values."
+        description="Current business, security and module configuration values. See the privacy notice for how personal data is processed."
         backHref="/administration"
         backLabel="Administration"
+        icon={Settings2}
         actions={
-          <Button
-            nativeButton={false}
-            render={<Link href="/administration/settings/edit" />}
-          >
-            <Pencil />
-            Edit settings
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={<Link href="/privacy" />}
+            >
+              Privacy notice
+            </Button>
+            <Button
+              nativeButton={false}
+              render={<Link href="/administration/settings/edit" />}
+            >
+              <Pencil />
+              Edit settings
+            </Button>
+          </div>
         }
       />
 

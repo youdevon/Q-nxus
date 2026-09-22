@@ -156,18 +156,17 @@ export function AllowanceCategoryForm({
 
           <label className="flex items-start gap-3">
             <input
-              type="checkbox"
+              type="hidden"
               name="includedInGratuityDefault"
-              defaultChecked={category?.includedInGratuityDefault ?? false}
-              className="mt-0.5 size-4"
+              value="off"
             />
             <span>
-              <span className="block text-sm font-medium">
-                Include in gratuity by default
+              <span className="block text-sm font-medium text-muted-foreground">
+                Gratuity
               </span>
               <span className="mt-1 block text-xs text-muted-foreground">
-                Include this allowance when estimating gratuity-eligible
-                earnings.
+                Contract gratuity uses base salary only. Allowances are never
+                included in eligible earnings.
               </span>
             </span>
           </label>

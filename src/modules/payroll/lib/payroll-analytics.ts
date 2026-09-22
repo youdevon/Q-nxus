@@ -1,5 +1,5 @@
 /**
- * Posted payroll analytics — org monthly summary and employee payment history.
+ * Posted payroll analytics — period totals from POSTED payslip snapshots.
  *
  * Source of truth: POSTED payslip snapshot columns only (never live preview / draft).
  * EXCLUDED slips are ignored. Bank allocations are distribution of net, not extra cost.
@@ -24,7 +24,10 @@ import {
   sumMoney,
   toCents,
 } from "@/src/modules/payroll/lib/money";
-import { getPreviousPayslipPeriod } from "@/src/modules/payroll/lib/payslip-preview";
+import {
+  formatPayslipPeriodLabel,
+  getPreviousPayslipPeriod,
+} from "@/src/modules/payroll/lib/payslip-preview";
 import { parsePayslipSnapshot } from "@/src/modules/payroll/lib/payslip-snapshot";
 
 export type PayRunKindAnalytics = "REGULAR" | "CORRECTION" | "OFF_CYCLE";
@@ -59,78 +62,19 @@ export type PayrollMoneyTotals = {
   organizationCost: number;
 };
 
-export type PayrollRunKindTotals = PayrollMoneyTotals & {
-  runKind: PayRunKindAnalytics;
-  payslipCount: number;
-  employeeCount: number;
-};
-
-export type PayrollRunRowTotals = PayrollMoneyTotals & {
-  payRunId: string;
-  runNumber: string;
-  runKind: PayRunKindAnalytics;
-  postedAt: string | null;
-  payslipCount: number;
-  employeeCount: number;
-};
-
 export type MonthlyPayrollSummary = {
+  /** Inclusive range start (`YYYY-MM`). */
+  startPeriodKey: string;
+  /** Inclusive range end (`YYYY-MM`). Same as start for a single month. */
+  endPeriodKey: string;
+  /**
+   * @deprecated Prefer start/end. Kept as the end key for older callers.
+   */
   periodKey: string;
   periodName: string | null;
   payslipCount: number;
   employeeCount: number;
   totalsByCurrency: PayrollMoneyTotals[];
-  byRunKind: PayrollRunKindTotals[];
-  runs: PayrollRunRowTotals[];
-};
-
-export type EmployeePaymentMonthBucket = {
-  periodKey: string;
-  periodName: string;
-  payslips: PostedPayslipAnalyticsRow[];
-  totalsByCurrency: PayrollMoneyTotals[];
-};
-
-export type EmployeePaymentHistory = {
-  employeeId: string;
-  startPeriodKey: string;
-  endPeriodKey: string;
-  payslipCount: number;
-  runCount: number;
-  totalsByCurrency: PayrollMoneyTotals[];
-  byRunKind: PayrollRunKindTotals[];
-  months: EmployeePaymentMonthBucket[];
-};
-
-/** Scope for the employee payment history report. */
-export type EmployeePaymentHistoryScope =
-  | "all"
-  | "employee"
-  | "department";
-
-/** One employee’s posted totals within a multi-employee roster. */
-export type EmployeePaymentRosterRow = {
-  employeeId: string;
-  employeeNumber: string;
-  employeeName: string;
-  departmentName: string | null;
-  payslipCount: number;
-  totalsByCurrency: PayrollMoneyTotals[];
-};
-
-/**
- * Aggregated posted payment history across many employees
- * (org-wide or department-scoped).
- */
-export type EmployeePaymentRoster = {
-  startPeriodKey: string;
-  endPeriodKey: string;
-  employeeCount: number;
-  payslipCount: number;
-  runCount: number;
-  totalsByCurrency: PayrollMoneyTotals[];
-  byRunKind: PayrollRunKindTotals[];
-  employees: EmployeePaymentRosterRow[];
 };
 
 export type EmployeeHistoryPeriodPreset =
@@ -443,243 +387,49 @@ function uniqueEmployeeCount(rows: PostedPayslipAnalyticsRow[]): number {
   return new Set(rows.map((row) => row.employeeId)).size;
 }
 
-function aggregateByRunKind(
-  rows: PostedPayslipAnalyticsRow[],
-): PayrollRunKindTotals[] {
-  const kinds: PayRunKindAnalytics[] = ["REGULAR", "CORRECTION", "OFF_CYCLE"];
-  const result: PayrollRunKindTotals[] = [];
-
-  for (const runKind of kinds) {
-    const kindRows = rows.filter((row) => row.runKind === runKind);
-    if (kindRows.length === 0) {
-      continue;
-    }
-
-    const totals = totalsListFromRows(kindRows);
-    for (const total of totals) {
-      result.push({
-        ...total,
-        runKind,
-        payslipCount: kindRows.filter((row) => row.currency === total.currency)
-          .length,
-        employeeCount: uniqueEmployeeCount(
-          kindRows.filter((row) => row.currency === total.currency),
-        ),
-      });
-    }
+/** Human-readable label for an inclusive month range. */
+export function formatPayrollPeriodRangeLabel(
+  startPeriodKey: string,
+  endPeriodKey: string,
+): string {
+  if (startPeriodKey === endPeriodKey) {
+    return formatPayslipPeriodLabel(startPeriodKey) ?? startPeriodKey;
   }
 
-  return result;
-}
-
-function aggregateByRun(
-  rows: PostedPayslipAnalyticsRow[],
-): PayrollRunRowTotals[] {
-  const byRun = new Map<string, PostedPayslipAnalyticsRow[]>();
-
-  for (const row of rows) {
-    const list = byRun.get(row.payRunId) ?? [];
-    list.push(row);
-    byRun.set(row.payRunId, list);
-  }
-
-  const result: PayrollRunRowTotals[] = [];
-
-  for (const [, runRows] of byRun) {
-    const first = runRows[0]!;
-    const totals = totalsListFromRows(runRows);
-
-    for (const total of totals) {
-      const currencyRows = runRows.filter(
-        (row) => row.currency === total.currency,
-      );
-      result.push({
-        ...total,
-        payRunId: first.payRunId,
-        runNumber: first.runNumber,
-        runKind: first.runKind,
-        postedAt: first.postedAt,
-        payslipCount: currencyRows.length,
-        employeeCount: uniqueEmployeeCount(currencyRows),
-      });
-    }
-  }
-
-  return result.sort((a, b) => {
-    const postedA = a.postedAt ?? "";
-    const postedB = b.postedAt ?? "";
-    if (postedA !== postedB) {
-      return postedB.localeCompare(postedA);
-    }
-    return a.runNumber.localeCompare(b.runNumber);
-  });
+  const start =
+    formatPayslipPeriodLabel(startPeriodKey) ?? startPeriodKey;
+  const end = formatPayslipPeriodLabel(endPeriodKey) ?? endPeriodKey;
+  return `${start} – ${end}`;
 }
 
 export function assembleMonthlyPayrollSummary(input: {
-  periodKey: string;
+  /** Single-month shorthand — sets start and end to this key. */
+  periodKey?: string;
+  startPeriodKey?: string;
+  endPeriodKey?: string;
   periodName?: string | null;
   rows: PostedPayslipAnalyticsRow[];
 }): MonthlyPayrollSummary {
-  const rows = input.rows.filter(
-    (row) => row.periodKey === input.periodKey,
+  const startPeriodKey =
+    input.startPeriodKey ?? input.periodKey ?? input.endPeriodKey ?? "";
+  const endPeriodKey =
+    input.endPeriodKey ?? input.periodKey ?? input.startPeriodKey ?? "";
+
+  const rows = input.rows.filter((row) =>
+    isPeriodKeyInInclusiveRange(row.periodKey, startPeriodKey, endPeriodKey),
   );
 
   return {
-    periodKey: input.periodKey,
-    periodName: input.periodName ?? rows[0]?.periodName ?? null,
+    startPeriodKey,
+    endPeriodKey,
+    periodKey: endPeriodKey,
+    periodName:
+      input.periodName ??
+      formatPayrollPeriodRangeLabel(startPeriodKey, endPeriodKey),
     payslipCount: rows.length,
     employeeCount: uniqueEmployeeCount(rows),
     totalsByCurrency: totalsListFromRows(rows),
-    byRunKind: aggregateByRunKind(rows),
-    runs: aggregateByRun(rows),
   };
-}
-
-export function assembleEmployeePaymentHistory(input: {
-  employeeId: string;
-  startPeriodKey: string;
-  endPeriodKey: string;
-  rows: PostedPayslipAnalyticsRow[];
-}): EmployeePaymentHistory {
-  const rows = input.rows
-    .filter(
-      (row) =>
-        row.employeeId === input.employeeId &&
-        isPeriodKeyInInclusiveRange(
-          row.periodKey,
-          input.startPeriodKey,
-          input.endPeriodKey,
-        ),
-    )
-    .sort((a, b) => {
-      const periodCmp = comparePeriodKeys(a.periodKey, b.periodKey);
-      if (periodCmp !== 0) {
-        return periodCmp;
-      }
-      const postedA = a.postedAt ?? "";
-      const postedB = b.postedAt ?? "";
-      if (postedA !== postedB) {
-        return postedA.localeCompare(postedB);
-      }
-      return a.runNumber.localeCompare(b.runNumber);
-    });
-
-  const byMonth = new Map<string, PostedPayslipAnalyticsRow[]>();
-  for (const row of rows) {
-    const list = byMonth.get(row.periodKey) ?? [];
-    list.push(row);
-    byMonth.set(row.periodKey, list);
-  }
-
-  const months: EmployeePaymentMonthBucket[] = [...byMonth.entries()]
-    .sort(([a], [b]) => comparePeriodKeys(a, b))
-    .map(([periodKey, monthRows]) => ({
-      periodKey,
-      periodName: monthRows[0]?.periodName ?? periodKey,
-      payslips: monthRows,
-      totalsByCurrency: totalsListFromRows(monthRows),
-    }));
-
-  return {
-    employeeId: input.employeeId,
-    startPeriodKey: input.startPeriodKey,
-    endPeriodKey: input.endPeriodKey,
-    payslipCount: rows.length,
-    runCount: new Set(rows.map((row) => row.payRunId)).size,
-    totalsByCurrency: totalsListFromRows(rows),
-    byRunKind: aggregateByRunKind(rows),
-    months,
-  };
-}
-
-/**
- * Aggregate POSTED payslips across employees for a period range.
- * Rows outside the inclusive month range are dropped.
- * `departmentsByEmployeeId` supplies live department names for the table.
- */
-export function assembleEmployeePaymentRoster(input: {
-  startPeriodKey: string;
-  endPeriodKey: string;
-  rows: PostedPayslipAnalyticsRow[];
-  departmentsByEmployeeId?: ReadonlyMap<string, string | null>;
-}): EmployeePaymentRoster {
-  const rows = input.rows
-    .filter((row) =>
-      isPeriodKeyInInclusiveRange(
-        row.periodKey,
-        input.startPeriodKey,
-        input.endPeriodKey,
-      ),
-    )
-    .sort((a, b) => {
-      const nameCmp = a.employeeName.localeCompare(b.employeeName);
-      if (nameCmp !== 0) {
-        return nameCmp;
-      }
-      const numberCmp = a.employeeNumber.localeCompare(b.employeeNumber);
-      if (numberCmp !== 0) {
-        return numberCmp;
-      }
-      return comparePeriodKeys(a.periodKey, b.periodKey);
-    });
-
-  const byEmployee = new Map<string, PostedPayslipAnalyticsRow[]>();
-  for (const row of rows) {
-    const list = byEmployee.get(row.employeeId) ?? [];
-    list.push(row);
-    byEmployee.set(row.employeeId, list);
-  }
-
-  const employees: EmployeePaymentRosterRow[] = [...byEmployee.entries()]
-    .map(([employeeId, employeeRows]) => {
-      const first = employeeRows[0]!;
-      const departmentName =
-        input.departmentsByEmployeeId?.get(employeeId) ?? null;
-
-      return {
-        employeeId,
-        employeeNumber: first.employeeNumber,
-        employeeName: first.employeeName,
-        departmentName,
-        payslipCount: employeeRows.length,
-        totalsByCurrency: totalsListFromRows(employeeRows),
-      };
-    })
-    .sort((a, b) => {
-      const nameCmp = a.employeeName.localeCompare(b.employeeName);
-      if (nameCmp !== 0) {
-        return nameCmp;
-      }
-      return a.employeeNumber.localeCompare(b.employeeNumber);
-    });
-
-  return {
-    startPeriodKey: input.startPeriodKey,
-    endPeriodKey: input.endPeriodKey,
-    employeeCount: employees.length,
-    payslipCount: rows.length,
-    runCount: new Set(rows.map((row) => row.payRunId)).size,
-    totalsByCurrency: totalsListFromRows(rows),
-    byRunKind: aggregateByRunKind(rows),
-    employees,
-  };
-}
-
-export function resolveEmployeePaymentHistoryScope(
-  value?: string | null,
-  options?: { employeeId?: string | null },
-): EmployeePaymentHistoryScope {
-  const raw = value?.trim();
-  if (raw === "all" || raw === "employee" || raw === "department") {
-    return raw;
-  }
-
-  // Preserve deep links that only pass employeeId.
-  if (options?.employeeId?.trim()) {
-    return "employee";
-  }
-
-  return "all";
 }
 
 /** Empty totals helper for UI empty states. */

@@ -1,13 +1,16 @@
 import type { ElementType, ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { UI_TYPOGRAPHY } from "@/src/config/ui-typography";
+import { UI_MOTION, UI_TYPOGRAPHY } from "@/src/config/ui-typography";
 
 type SectionHeadingProps = {
   children: ReactNode;
   className?: string;
   id?: string;
   as?: "h2" | "h3" | "p";
+  /** Optional Lucide icon with primary tint and subtle hover scale. */
+  icon?: LucideIcon;
 };
 
 /** In-page section title — uppercase, compact, consistent across modules. */
@@ -16,9 +19,33 @@ export function SectionHeading({
   className,
   id,
   as: Comp = "h2",
+  icon: Icon,
 }: SectionHeadingProps) {
+  if (!Icon) {
+    return (
+      <Comp id={id} className={cn(UI_TYPOGRAPHY.sectionHeading, className)}>
+        {children}
+      </Comp>
+    );
+  }
+
   return (
-    <Comp id={id} className={cn(UI_TYPOGRAPHY.sectionHeading, className)}>
+    <Comp
+      id={id}
+      className={cn(
+        "group/section-heading inline-flex items-center gap-2",
+        UI_TYPOGRAPHY.sectionHeading,
+        className,
+      )}
+    >
+      <Icon
+        className={cn(
+          "size-4 shrink-0 text-primary",
+          UI_MOTION.interactive,
+          "group-hover/section-heading:scale-105 motion-reduce:group-hover/section-heading:scale-100",
+        )}
+        aria-hidden
+      />
       {children}
     </Comp>
   );

@@ -6,7 +6,7 @@ import { getLeaveWorkspace } from "@/src/modules/hr/data/get-leave-requests";
 import { getVacationForfeitureQueue } from "@/src/modules/hr/data/get-vacation-forfeiture-queue";
 import { getVacationForfeitureWarningForEmployee } from "@/src/modules/hr/data/get-vacation-forfeiture-warning";
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
-import { prisma } from "@/lib/prisma";
+import { getSessionOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 
 export const metadata: Metadata = {
   title: "Leave",
@@ -47,12 +47,10 @@ export default async function LeavePage({
   const view = params.view === "on-leave" ? "on-leave" : "default";
   const canManageLeave = Boolean(capabilities?.can("leave.manage"));
 
-  const organization = canManageLeave
-    ? await prisma.organization.findFirst({
-        orderBy: { createdAt: "asc" },
-        select: { id: true },
-      })
+  const sessionOrgId = canManageLeave
+    ? await getSessionOrganizationId()
     : null;
+  const organization = sessionOrgId ? { id: sessionOrgId } : null;
 
   const [data, vacationForfeitureWarning, vacationForfeitureQueue] =
     await Promise.all([

@@ -111,12 +111,20 @@ export type PayRunPaymentsCapabilities = {
 export function PayRunPaymentsView({
   data,
   capabilities,
+  achError = null,
 }: {
   data: PayRunPaymentsPageData;
   capabilities: PayRunPaymentsCapabilities;
+  achError?: string | null;
 }) {
   const { paymentSummary, flags } = data;
   const isPosted = isPayRunPosted(data.status);
+
+  useEffect(() => {
+    if (achError?.trim()) {
+      toast.error(achError);
+    }
+  }, [achError]);
 
   return (
     <PageShell size="lg">
@@ -210,12 +218,17 @@ export function PayRunPaymentsView({
         >
           <p className="font-medium">ACH export is disabled</p>
           <p className="mt-1 text-muted-foreground">
-            Enable <code className="text-xs">ACH_EXPORT_ENABLED</code> in
-            Administration → Feature controls when your bank layout is
-            confirmed. Until then, use{" "}
-            <strong>Manual register batch</strong>, <strong>Bank CSV</strong>,
-            or <strong>Download Excel (bank entry)</strong> — all remain
-            available when manual payment export is on.
+            Turn on ACH export in{" "}
+            <Link
+              href="/payroll/settings"
+              className="underline underline-offset-2"
+            >
+              Payroll Settings
+            </Link>
+            . Until then, use <strong>Manual register batch</strong>,{" "}
+            <strong>Bank CSV</strong>, or{" "}
+            <strong>Download Excel (bank entry)</strong> — all remain available
+            when manual payment export is on.
           </p>
         </div>
       ) : null}
@@ -529,7 +542,7 @@ export function AchPaymentBatchDetailView({
           <p className="mt-1 text-muted-foreground">
             {batch.importDisabledReason} Use the{" "}
             <strong>FCB manual worksheet</strong> for Business Online template
-            entry until the bank confirms Default Transactions layout.
+            entry, or clear the import kill switch on the export profile.
           </p>
         </div>
       ) : null}

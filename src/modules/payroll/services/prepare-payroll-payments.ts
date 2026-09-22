@@ -2,6 +2,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { AuditRequestMetadata } from "@/src/lib/audit-request-metadata";
 import { recordAuditEvent } from "@/src/modules/audit/services/record-audit-event";
+import { resolveActorOrganizationId } from "@/src/modules/auth/lib/organization-scope";
 import { decryptAccountNumber } from "@/src/modules/payroll/lib/bank-account-crypto";
 import { toPayslipBankAccountInputs } from "@/src/modules/payroll/lib/employee-bank-account-adapter";
 import {
@@ -24,6 +25,7 @@ import {
   type PreparePaymentsSummary,
   type PreparedPaymentDraft,
 } from "@/src/modules/payroll/lib/prepare-payroll-payments";
+import { invalidateAchBatchesIfPayrollChanged } from "@/src/modules/payroll/services/invalidate-ach-batches";
 
 export type PreparePayrollPaymentsResult =
   | {
@@ -248,8 +250,15 @@ export async function preparePayrollPaymentsForPayRun(input: {
   actorUserId: string;
   audit?: AuditRequestMetadata;
 }): Promise<PreparePayrollPaymentsResult> {
-  const run = await prisma.payRun.findUnique({
-    where: { id: input.payRunId },
+  const organizationId = await resolveActorOrganizationId({
+    actorUserId: input.actorUserId,
+  });
+  if (!organizationId) {
+    return { ok: false, error: "No organization is associated with this user." };
+  }
+
+  const run = await prisma.payRun.findFirst({
+    where: { id: input.payRunId, organizationId },
     include: {
       payrollPeriod: { select: { periodEnd: true } },
       payslips: {
@@ -276,6 +285,14 @@ export async function preparePayrollPaymentsForPayRun(input: {
       where: { payRunId: run.id },
       select: { id: true, paymentStatus: true, allocatedAmount: true },
     });
+
+    await invalidateAchBatchesIfPayrollChanged({
+      payRunId: run.id,
+      organizationId: run.organizationId,
+      actorUserId: input.actorUserId,
+      audit: input.audit,
+    });
+
     return {
       ok: true,
       alreadyPrepared: true,

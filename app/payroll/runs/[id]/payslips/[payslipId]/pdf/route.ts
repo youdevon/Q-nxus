@@ -1,6 +1,7 @@
 import { getUserCapabilities } from "@/src/modules/auth/data/get-user-capabilities";
 import { getStoredPayslip } from "@/src/modules/payroll/data/get-stored-payslip";
 import { renderPayslipsPdf } from "@/src/modules/payroll/lib/payslip-pdf";
+import { sanitizeReportFileName } from "@/src/modules/reports/lib/export-xlsx";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,7 +37,10 @@ export async function GET(_request: Request, { params }: RouteContext) {
     },
   ]);
 
-  const fileName = `${result.runNumber}-${result.payslip.employee.employeeNumber}-payslip.pdf`;
+  const employeeName = result.payslip.employee.displayName.trim() || "Employee";
+  const fileName = `${sanitizeReportFileName(
+    `${employeeName}-${result.periodName}`,
+  )}.pdf`;
 
   return new Response(new Uint8Array(pdf), {
     headers: {
